@@ -1,27 +1,11 @@
 <template>
-  <b-card no-body class="recipe-card">
-    <NuxtLink :to="{ name: 'recipe-id', params: { id: recipe.id } }">
-      <img :src="recipe.image" class="card-img-top" :alt="recipe.name" />
-    </NuxtLink>
+  <b-card no-body class="obra-card">
+    <!-- <NuxtLink :to="{ name: 'obra-id', params: { id: obra.id } }">
+      <img :src="obra.image" class="card-img-top" :alt="obra.name" />
+    </NuxtLink> -->
     <b-card-body>
-      <h2 class="h4">{{ recipe.name }}</h2>
-      <p>{{ recipe.description }}</p>
-
-      <RecipeRatingForm :recipe="recipe"></RecipeRatingForm>
-
-      <p>Ingredientes:</p>
-      <RecipeIngredientsList
-        :ingredients="recipe.ingredients"
-      ></RecipeIngredientsList>
-
-      <template v-if="recipe.tags.length">
-        <p>Tags:</p>
-        <ul>
-          <li v-for="tagId in recipe.tags" :key="tagId">
-            {{ tag(tagId) ? tag(tagId).name : '' }}
-          </li>
-        </ul>
-      </template>
+      <h2 class="h4">{{ obra.name }}</h2>
+      <p>{{ obra.description }}</p>
     </b-card-body>
   </b-card>
 </template>
@@ -29,7 +13,7 @@
 <script>
 export default {
   props: {
-    recipe: {
+    obra: {
       type: Object,
       required: true,
     },

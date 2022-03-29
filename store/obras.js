@@ -7,32 +7,33 @@ export const state = () => ({
 
 export const actions = {
   async getAll({ commit, state }) {
-    const found = await ObraService.getLatestRecipes(this.$axios, {
-      skip: state.latest.length,
+    const found = await ObraService.getLatest(this.$axios, {
+      // skip: state.latest.length,
     })
     commit('setLatest', found)
   },
-  async getSingleRecipe({ commit, state }, { id }) {
+  async getSingle({ commit, state }, { id }) {
     commit('setSingle', null)
-    const found = await ObraService.getSingleRecipe(this.$axios, {
+    const found = await ObraService.getSingle(this.$axios, {
       id,
     })
     commit('setSingle', found)
   },
-  async create({ commit, state }, { recipe, userToken }) {
-    const createdRecipe = await ObraService.createRecipe(this.$axios, {
-      recipe,
+  async create({ commit, state }, { obra, userToken }) {
+    const createdFile = await ObraService.create(this.$axios, {
+      obra,
       userToken,
     })
-    return createdRecipe
+    return createdFile
   },
 }
 
 export const mutations = {
-  setLatest(state, recipesList) {
-    state.latest = [...state.latest, ...recipesList]
+  setLatest(state, filesList) {
+    state.latest = filesList
+    // [...state.latest, ...filesList]
   },
-  setSingle(state, singleRecipe) {
-    state.single = singleRecipe
+  setSingle(state, singleFile) {
+    state.single = singleFile
   },
 }

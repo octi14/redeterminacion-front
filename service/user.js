@@ -8,9 +8,10 @@ const formatProfile = ({
   }
 }
 
-const formatAuthenticatedUser = ({ _id: id, token }) => {
+const formatAuthenticatedUser = ({ _id: id, username, token }) => {
   return {
     id,
+    username,
     token,
   }
 }

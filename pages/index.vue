@@ -3,7 +3,7 @@
     <div class="search shadow">
       <div class="container">
         <div class="row justify-content-center">
-          <div class="col col-md-10 col-lg-8">
+          <div class="col col-md-12">
             <div class="card shadow-lg">
               <div class="card-body">
                 <template v-if="isAuthenticated">
@@ -38,9 +38,9 @@ export default {
 
 <style type="text/css">
 .search {
-  padding: 6em 0;
+  padding: 11em 0;
   /* background-size: cover; */
   object-fit: contain;
-  background-color: #000000;
+  background-color: #c6d7ec;
 }
 </style>

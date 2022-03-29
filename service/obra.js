@@ -1,63 +1,48 @@
-const formatRecipe = (RecipeResponse) => ({
-  id: RecipeResponse._id,
-  name: RecipeResponse.name,
-  user: RecipeResponse.user,
-  description: RecipeResponse.description,
-  instructions: RecipeResponse.instructions,
-  ingredients: RecipeResponse.ingredients,
-  ratings: RecipeResponse.ratings,
-  avgRating: RecipeResponse.avgRating,
-  image: RecipeResponse.image,
-  tags: RecipeResponse.tags,
-  createdAt: new Date(RecipeResponse.createdAt),
+const formatFile = (FileResponse) => ({
+  id: FileResponse._id,
+  name: FileResponse.name,
+  description: FileResponse.description,
+  budget: FileResponse.budget,
+  // image: FileResponse.image,
+  createdAt: new Date(FileResponse.createdAt),
 })
 
 module.exports = {
-  getLatestRecipes: async (axios, { skip = 0, limit = 6 }) => {
-    const recipesResponse = await axios.$get('/recipes', {
-      params: {
-        skip,
-        limit,
-      },
+  getLatest: async (axios,
+    //  { skip = 0, limit = 6 }
+     ) => {
+    const filesResponse = await axios.$get('/obras', {
+      // params: {
+      //   skip,
+      //   limit,
+      // },
     })
-    return recipesResponse.data.map(formatRecipe)
+    return filesResponse.data.map(formatFile)
   },
-  getSingleRecipe: async (axios, { id }) => {
-    const recipeResponse = await axios.$get(`/recipes/${id}`)
-    return formatRecipe(recipeResponse.data)
+  getSingle: async (axios, { id }) => {
+    const fileResponse = await axios.$get(`/files/${id}`)
+    return formatFile(fileResponse.data)
   },
-  searchRecipes: async (
+  searchFiles: async (
     axios,
     { name = '', ingredients = [], tags = [], ids = [] }
   ) => {
-    const recipesResponse = await axios.$post('/recipes/search', {
+    const filesResponse = await axios.$post('/files/search', {
       // agrego condicionalmente los parámetros de busqueda
       // (no se agregan los que están vacíos)
       ...(name.length && { name }),
-      ...(ingredients.length && { ingredients }),
-      ...(tags.length && { tags }),
       ...(ids.length && { ids }),
     })
-    return recipesResponse.data.map(formatRecipe)
+    return filesResponse.data.map(formatFile)
   },
-  createRecipe: async (axios, { recipe, userToken }) => {
-    const createdRecipe = await axios.$post(
-      '/recipes',
-      { recipe },
+  create: async (axios, { obra, userToken }) => {
+    const createdFile = await axios.$post(
+      '/obras',
+      { obra },
       {
         headers: { Authorization: `Bearer ${userToken}` },
       }
     )
-    return formatRecipe(createdRecipe.data)
-  },
-  rateRecipe: async (axios, { rating, id, userToken }) => {
-    const ratedRecipe = await axios.$post(
-      `/recipes/${id}/rate`,
-      { rating },
-      {
-        headers: { Authorization: `Bearer ${userToken}` },
-      }
-    )
-    return formatRecipe(ratedRecipe.data)
+    return formatFile(createdFile.data)
   },
 }

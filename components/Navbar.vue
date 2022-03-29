@@ -8,21 +8,43 @@
             v-if="isAuthenticated"
             class="nav-link"
             active-class="active"
+            to="/"
+          >
+            <b-button class="btn btn-secondary" style="height: 37px; background-color: green" >
+              <p>Inicio</p>
+            </b-button>
+          </NuxtLink>
+        </b-navbar-nav>
+        <b-navbar-nav>
+          <NuxtLink
+            v-if="isAuthenticated"
+            class="nav-link"
+            active-class="active"
             to="/obra/create"
           >
-            Crear archivo
+            <b-button class="btn btn-secondary" style="height: 37px; background-color: green" >
+              <p>Crear</p>
+            </b-button>
           </NuxtLink>
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
           <template v-if="isAuthenticated">
             <b-nav-item-dropdown :text="username" right>
+              <b-dropdown-item>
+                <NuxtLink
+                  v-if="isAuthenticated"
+                  to="/obra/create"
+                >
+                  Crear archivo
+                </NuxtLink>
+              </b-dropdown-item>
               <b-dropdown-item @click="onUserLogout">
                 Cerrar Sesión
               </b-dropdown-item>
             </b-nav-item-dropdown>
           </template>
           <template v-else>
-            <NuxtLink class="nav-link" active-class="active" to="/login">
+            <NuxtLink class="nav-link" active-class="active" to="/">
               Iniciar Sesión
             </NuxtLink>
           </template>

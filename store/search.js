@@ -1,46 +1,42 @@
-const RecipeService = require('../service/obra')
+const ObraService = require('../service/obra')
 
 export const state = () => ({
   // guardo los parámetros de búsqueda en el store global
   params: {
     name: null,
-    ingredients: null,
-    tags: null,
+    description: null,
   },
   results: [],
 })
 
 export const actions = {
-  async searchRecipes({ commit }, { name, ingredients, tags }) {
+  async search({ commit }, { name, description }) {
     // TODO: Handle errors!!
     // TODO: add loading
-    commit('setSearchParams', { name, ingredients, tags })
-    const foundRecipes = await RecipeService.searchRecipes(this.$axios, {
+    commit('setSearchParams', { name, description })
+    const found = await ObraService.search(this.$axios, {
       name,
-      ingredients,
-      tags,
+      description,
     })
-    commit('setSearchResults', foundRecipes)
+    commit('setSearchResults', found)
     await this.$router.push('/results')
   },
 }
 
 export const mutations = {
-  setSearchParams(state, { name, ingredients, tags }) {
+  setSearchParams(state, { name, description }) {
     state.params = {
       name,
-      ingredients,
-      tags,
+      description,
     }
   },
   resetSearchParams(state) {
     state.params = {
       name: null,
-      ingredients: null,
-      tags: null,
+      description: null,
     }
   },
-  setSearchResults(state, recipesList) {
-    state.results = [...recipesList]
+  setSearchResults(state, filesList) {
+    state.results = [...filesList]
   },
 }

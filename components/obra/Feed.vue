@@ -1,14 +1,20 @@
 <template>
   <div class="obra-feed">
-    <b-nav-text class="fs-3" variant="primary"> Obras públicas </b-nav-text>
+    <b-nav-text class="fs-2" variant="primary"> Obras públicas </b-nav-text>
     <transition-group name="list" tag="div" class="row">
-      <div
+      <!-- <div
         v-for="obra in obras"
         :key="obra.id"
         class="transition-col col-6 col-lg-4 mb-2"
       >
         <ObraCard :obra="obra" class="h-100" />
+      </div> -->
+      <div class="table-responsive" v-for="table in tables" :key="table.id">
+        <b-table striped hover head-variant="dark" :items="items" :fields="fields"></b-table>
       </div>
+      <template slot="actions" slot-scope="data">
+        <b-button class="btn btn-dark" @click="update(data)" :ref="'btn' + data.index">Update</b-button>
+      </template>
     </transition-group>
   </div>
 </template>
@@ -18,23 +24,42 @@ export default {
   data() {
     return {
       lastLength: false,
+      items: [],
+      tables: [{
+        id: 1,
+      }],
+      fields: [
+        {
+          key: "name",
+          label: "Nombre"
+        },
+        {
+          key: "description",
+          label: "Descripción"
+        },
+        {
+          key: "createdAt",
+          label: "Fecha de creación"
+        }
+      ]
     }
   },
   async fetch() {
     await this.$store.dispatch('obras/getAll')
+    this.items = this.obras
+    console.log(this.items)
 
     // consulto si no hay más recetas para traer
-    const newLength = this.$store.state.obras.latest.length
-    this.all = newLength === this.lastLength
-    this.lastLength = newLength
+    // const newLength = this.$store.state.obras.latest.length
+    // this.all = newLength === this.lastLength
+    // this.lastLength = newLength
   },
-  fetchOnServer: false,
+  // fetchOnServer: false,
   computed: {
     loadingRecipes() {
       return this.$fetchState.pending
     },
     obras() {
-      console.log(this.$store.state.obras.latest)
       return this.$store.state.obras.latest
     },
   },

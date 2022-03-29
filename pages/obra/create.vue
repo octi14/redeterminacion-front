@@ -1,17 +1,23 @@
 <template>
   <div class="page">
     <div class="container my-5">
-      <h1>Crear Nueva obra</h1>
-      <p>Agrega una nueva obra con sus características</p>
-      <b-form class="my-5" @submit.stop.prevent="onSubmitCreateRecipe">
+      <h1>Crear nuevo archivo</h1>
+      <!-- <p>Agrega una nueva obra con sus características</p> -->
+      <b-form class="my-5" @submit.stop.prevent="onSubmitCreateFile">
         <b-form-group label="Nombre">
           <b-form-input v-model="name" type="text" />
         </b-form-group>
         <b-form-group label="Descripción">
           <b-form-input v-model="description" type="text" />
         </b-form-group>
-        <b-form-group label="Presupuesto inicial">
-          <b-form-input v-model="description" type="text" />
+        <b-form-group label="Presupuesto oficial">
+          <b-form-input v-model="budget" type="text" />
+        </b-form-group>
+        <b-form-group label="Objeto">
+          <b-form-input v-model="budget" type="text" />
+        </b-form-group>
+        <b-form-group label="Cotización">
+          <b-form-input v-model="budget" type="text" />
         </b-form-group>
         <!-- <hr />
         <hr /> -->
@@ -28,21 +34,20 @@ export default {
     return {
       name: '',
       description: '',
-      image: '',
-      tags: [],
-      ingredients: [
-        {
-          quantity: '',
-          ingredient: null,
-        },
-      ],
-      instructions: [
-        {
-          title: null,
-          description: null,
-          image: null,
-        },
-      ],
+      budget: '',
+      // ingredients: [
+      //   {
+      //     quantity: '',
+      //     ingredient: null,
+      //   },
+      // ],
+      // instructions: [
+      //   {
+      //     title: null,
+      //     description: null,
+      //     image: null,
+      //   },
+      // ],
     }
   },
   async fetch() {
@@ -51,54 +56,32 @@ export default {
   },
   fetchOnServer: false,
   methods: {
-    async onSubmitCreateRecipe() {
+    async onSubmitCreateFile() {
       try {
         const userToken = this.$store.state.user.token
-        await this.$store.dispatch('recipes/create', {
+        await this.$store.dispatch('obras/create', {
           userToken,
-          recipe: {
+          obra: {
             name: this.name,
             description: this.description,
-            image: this.image,
-            tags: this.tags,
-            ingredients: this.ingredients,
-            instructions: this.instructions,
+            budget: this.budget,
           },
         })
-        this.$bvToast.toast('Receta Creada correctamente', {
-          title: 'Receta Creada',
+        this.$bvToast.toast('Creada correctamente', {
+          title: 'Creada',
           variant: 'success',
           appendToast: true,
           solid: true,
         })
         await this.$router.push('/')
       } catch (e) {
-        this.$bvToast.toast('Error Cargando la Receta', {
+        this.$bvToast.toast('Error Cargando la Obra', {
           title: 'Error',
           variant: 'danger',
           appendToast: true,
           solid: true,
         })
       }
-    },
-    addIngredient() {
-      this.ingredients.push({
-        quantity: '',
-        ingredient: null,
-      })
-    },
-    deleteIngredient(index) {
-      this.ingredients.splice(index, 1)
-    },
-    addInstruction() {
-      this.instructions.push({
-        title: null,
-        description: null,
-        image: null,
-      })
-    },
-    deleteInstruction(index) {
-      this.instructions.splice(index, 1)
     },
   },
 }

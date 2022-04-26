@@ -30,12 +30,12 @@ export default {
       }],
       fields: [
         {
-          key: "name",
-          label: "Nombre"
+          key: "objeto",
+          label: "Objeto"
         },
         {
-          key: "description",
-          label: "Descripción"
+          key: "adjudicado",
+          label: "Adjudicado"
         },
         {
           key: "createdAt",

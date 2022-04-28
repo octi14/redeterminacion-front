@@ -32,7 +32,7 @@ export const actions = {
           appendToast: true,
           solid: true,
         })
-      commit('logout')
+      //commit('logout')
     }
 
     await this.$router.push('/')

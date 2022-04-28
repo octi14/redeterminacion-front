@@ -3,7 +3,7 @@
     <div class="container">
       <div class="row">
         <div class="col-md text-md-right">
-          <p align="center">Octavio Gonzalez - Municipalidad de Villa Gesell</p>
+          <p align="center">2022 - Municipalidad de Villa Gesell</p>
         </div>
       </div>
     </div>

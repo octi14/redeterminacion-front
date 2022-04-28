@@ -10,9 +10,7 @@
             active-class="active"
             to="/"
           >
-            <b-button class="btn btn-secondary" style="height: 37px; background-color: green" >
               <p>Inicio</p>
-            </b-button>
           </NuxtLink>
         </b-navbar-nav>
         <b-navbar-nav>
@@ -22,9 +20,7 @@
             active-class="active"
             to="/obra/create"
           >
-            <b-button class="btn btn-secondary" style="height: 37px; background-color: green" >
               <p>Crear</p>
-            </b-button>
           </NuxtLink>
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">

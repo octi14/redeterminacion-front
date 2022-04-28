@@ -10,7 +10,7 @@
             active-class="active"
             to="/"
           >
-              <p>Inicio</p>
+              Inicio
           </NuxtLink>
         </b-navbar-nav>
         <b-navbar-nav>
@@ -20,7 +20,7 @@
             active-class="active"
             to="/obra/create"
           >
-              <p>Crear</p>
+              Crear
           </NuxtLink>
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">

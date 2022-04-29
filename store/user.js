@@ -16,7 +16,6 @@ export const actions = {
       const { id, token } = authUser
       // guardo el token y el username en state
       commit('setAuthenticated', { id, username, token })
-      // dispatch('myFavRecipes', { userToken: token })
       window &&
         window.$nuxt.$bvToast.toast('Ingreso exitoso.', {
           // title: '',

@@ -23,6 +23,7 @@ module.exports = {
       username,
       password,
     })
+    console.log(authenticateResponse)
     return formatAuthenticatedUser(authenticateResponse.data)
   },
   register: async (axios, { email, password }) => {

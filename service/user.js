@@ -18,6 +18,7 @@ const formatAuthenticatedUser = ({ _id: id, username, token }) => {
 
 module.exports = {
   authenticate: async (axios, { username, password }) => {
+    axios.setHeader('Access-Control-Allow-Origin', true)
     const authenticateResponse = await axios.$post('/users/authenticate', {
       username,
       password,

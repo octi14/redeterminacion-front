@@ -24,6 +24,7 @@ export const actions = {
           solid: true,
         })
     } catch (e) {
+      console.log(e.message)
       window &&
         window.$nuxt.$bvToast.toast('Error iniciando sesión', {
           title: 'Error',
@@ -33,7 +34,6 @@ export const actions = {
         })
       //commit('logout')
     }
-
     await this.$router.push('/')
   },
   async register({ dispatch }, { email, password }) {

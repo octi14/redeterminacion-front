@@ -1,19 +1,15 @@
 <template>
   <div class="page">
     <div class="search shadow">
-      <div class="container">
-        <div class="row justify-content-center">
-          <div class="col col-md-12">
-            <div class="card shadow-lg">
-              <div class="card-body">
-                <template v-if="isAuthenticated">
-                  <ObraFeed />
-                </template>
-                <template v-else>
-                  <LoginForm />
-                </template>
-              </div>
-            </div>
+      <div class="row justify-content-center">
+        <div class="col col-sm-10">
+          <div class="card shadow-lg">
+            <template v-if="isAuthenticated">
+              <ObraFeed />
+            </template>
+            <template v-else>
+              <LoginForm />
+            </template>
           </div>
         </div>
       </div>

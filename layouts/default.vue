@@ -18,13 +18,13 @@ export default {
     if (localStorage.getItem('userId')) {
       const authUser = {
         id: localStorage.getItem('userId'),
-        email: localStorage.getItem('userEmail'),
+        username: localStorage.getItem('username'),
         token: localStorage.getItem('userToken'),
       }
       this.$store.commit('user/setAuthenticated', authUser)
-      this.$store.dispatch('user/getProfile', {
-        userId: authUser.id,
-      })
+      // this.$store.dispatch('user/getProfile', {
+      //   userId: authUser.id,
+      // })
     }
   },
 }

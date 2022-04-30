@@ -33,6 +33,9 @@
             <b-form-group label="Contrato">
               <b-form-input v-model="contrato" type="text" />
             </b-form-group>
+            <b-form-group label="Fecha Contrato">
+              <b-form-input v-model="fecha_contrato" type="date" />
+            </b-form-group>
             <b-form-group label="Ordenanza">
               <b-form-input v-model="ordenanza" type="text" />
             </b-form-group>
@@ -68,6 +71,7 @@ export default {
       garantia_contrato: '',
       adjudicacion: '',
       contrato: '',
+      fecha_contrato: '',
       ordenanza: '',
       decreto: '',
       plazo_obra: '',

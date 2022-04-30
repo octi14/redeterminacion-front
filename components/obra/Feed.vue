@@ -1,6 +1,6 @@
 <template>
   <div class="obra-feed">
-    <b-nav-text class="fs-2" variant="primary"> Obras públicas </b-nav-text>
+    <b-nav-text class="fs-5" variant="primary"> Obras públicas </b-nav-text>
     <transition-group name="list" tag="div" class="row">
       <!-- <div
         v-for="obra in obras"
@@ -10,7 +10,7 @@
         <ObraCard :obra="obra" class="h-100" />
       </div> -->
       <div class="table-responsive" v-for="table in tables" :key="table.id">
-        <b-table striped hover head-variant="dark" :items="items" :fields="fields"></b-table>
+        <b-table hover head-variant="dark" :items="items" :fields="fields"></b-table>
       </div>
       <template slot="actions" slot-scope="data">
         <b-button class="btn btn-dark" @click="update(data)" :ref="'btn' + data.index">Update</b-button>
@@ -38,8 +38,8 @@ export default {
           label: "Adjudicado"
         },
         {
-          key: "createdAt",
-          label: "Fecha de creación"
+          key: "fecha_contrato",
+          label: "Fecha Contrato"
         }
       ]
     }
@@ -56,7 +56,7 @@ export default {
   },
   // fetchOnServer: false,
   computed: {
-    loadingRecipes() {
+    loading() {
       return this.$fetchState.pending
     },
     obras() {
@@ -64,7 +64,7 @@ export default {
     },
   },
   methods: {
-    loadMoreRecipes() {
+    loadMore() {
       this.$fetch()
     },
   },

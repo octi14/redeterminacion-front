@@ -1,7 +1,7 @@
 <template>
   <div class="page">
-    <template v-if="recipe">
-      <img
+    <template v-if="obra">
+      <!-- <img
         v-if="recipe.image"
         :src="recipe.image"
         :alt="recipe.name"
@@ -12,13 +12,13 @@
           width: 100%;
           object-fit: cover;
         "
-      />
+      /> -->
       <div class="container my-5">
         <div class="row">
           <div class="col">
-            <h1 class="h2 text-center">{{ recipe.name }}</h1>
-            <p class="lead">{{ recipe.description }}</p>
-            <h2 class="h3">Instrucciones</h2>
+            <h1 class="h2 text-center">{{ obra.objeto }}</h1>
+            <p class="lead">{{ obra.adjudicado }}</p>
+            <!-- <h2 class="h3">Instrucciones</h2>
             <template v-for="(step, index) in recipe.instructions">
               <div
                 :key="step.description"
@@ -32,13 +32,13 @@
                   <p>{{ step.description }}</p>
                 </div>
               </div>
-            </template>
+            </template> -->
           </div>
           <div class="col-12 col-lg-4">
             <b-card class="mb-2 sticky-top">
               <h2 class="lead">Ficha Técnica</h2>
               <p>
-                Creada el {{ formattedDate }}
+                Fecha de contrato: {{ formattedDate }}
               </p>
             </b-card>
           </div>
@@ -59,7 +59,7 @@ export default {
   },
   async fetch() {
     const obraId = this.$route.params.id
-    this.obra = await ObraService.getSingleRecipe(this.$axios, {
+    this.obra = await ObraService.getSingle(this.$axios, {
       id: obraId,
     })
   },
@@ -70,7 +70,7 @@ export default {
         dateStyle: 'full',
         timeStyle: 'short',
       })
-      return formatter.format(this.recipe.createdAt)
+      return formatter.format(this.obra.fecha_contrato)
     },
   },
 }

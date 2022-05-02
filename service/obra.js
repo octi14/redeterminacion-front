@@ -31,7 +31,7 @@ module.exports = {
     return filesResponse.data.map(formatFile)
   },
   getSingle: async (axios, { id }) => {
-    const fileResponse = await axios.$get(`/files/${id}`)
+    const fileResponse = await axios.$get(`/obras/${id}`)
     return formatFile(fileResponse.data)
   },
   searchFiles: async (

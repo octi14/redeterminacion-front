@@ -1,6 +1,6 @@
 <template>
   <div class="obra-feed">
-    <b-nav-text class="fs-5" variant="primary"> Obras públicas </b-nav-text>
+    <!-- <b-nav-text class="fs-5" variant="primary" align="center"> Obras públicas </b-nav-text> -->
     <transition-group name="list" tag="div" class="row">
       <!-- <div
         v-for="obra in obras"

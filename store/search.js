@@ -3,20 +3,22 @@ const ObraService = require('../service/obra')
 export const state = () => ({
   // guardo los parámetros de búsqueda en el store global
   params: {
-    name: null,
-    description: null,
+    expediente: null,
+    objeto: null,
+    adjudicado: null,
   },
   results: [],
 })
 
 export const actions = {
-  async search({ commit }, { name, description }) {
+  async search({ commit }, { expediente, objeto, adjudicado }) {
     // TODO: Handle errors!!
     // TODO: add loading
-    commit('setSearchParams', { name, description })
-    const found = await ObraService.search(this.$axios, {
-      name,
-      description,
+    commit('setSearchParams', { expediente, objeto, adjudicado })
+    const found = await ObraService.searchFiles(this.$axios, {
+      expediente,
+      objeto,
+      adjudicado,
     })
     commit('setSearchResults', found)
     await this.$router.push('/results')
@@ -24,16 +26,18 @@ export const actions = {
 }
 
 export const mutations = {
-  setSearchParams(state, { name, description }) {
+  setSearchParams(state, { expediente, objeto, adjudicado }) {
     state.params = {
-      name,
-      description,
+      expediente,
+      objeto,
+      adjudicado,
     }
   },
   resetSearchParams(state) {
     state.params = {
-      name: null,
-      description: null,
+      expediente: null,
+      objeto: null,
+      adjudicado: null,
     }
   },
   setSearchResults(state, filesList) {

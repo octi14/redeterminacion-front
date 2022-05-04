@@ -4,8 +4,11 @@
       <img :src="obra.image" class="card-img-top" :alt="obra.name" />
     </NuxtLink> -->
     <b-card-body>
-      <h2 class="h4">{{ obra.name }}</h2>
-      <p>{{ obra.description }}</p>
+      <NuxtLink :to="{ name: 'obra-id', params: { id: obra.id } }">
+        <h2 class="h4">{{ obra.objeto }}</h2>
+      </NuxtLink>
+      <h5>{{ obra.adjudicado }}</h5>
+      <!-- <h5>{{ obra.fecha_contrato }}</h5> -->
     </b-card-body>
   </b-card>
 </template>

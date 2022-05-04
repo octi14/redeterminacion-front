@@ -13,11 +13,138 @@
           object-fit: cover;
         "
       /> -->
-      <div class="container my-5">
+      <div class="container my-1 col-sm-12">
         <div class="row">
           <div class="col">
             <h1 class="h2 text-center">{{ obra.objeto }}</h1>
-            <p class="lead">{{ obra.adjudicado }}</p>
+            <h4 class="h4 text-center">Adjudicado: {{ obra.adjudicado }}</h4>
+          <div class="container my-1">
+          <!-- Edit -->
+          <ObraForm
+            v-show="editing"
+            :obra="obra"
+            @submit="onSubmitEditObra"
+            @reset="editing = false"
+          ></ObraForm>
+
+          <!-- View -->
+          <div v-show="!editing" class="row justify-content-center">
+            <b-button class="col-md-3 badge-success"
+              variant="info"
+              @click="editObra"
+            >
+              Editar
+            </b-button>
+
+            <b-button
+              class="col-md-3"
+              block
+              variant="danger"
+              @click="onSubmitDelete"
+            >
+              Eliminar
+            </b-button>
+          </div>
+        </div>
+            <div class="container">
+              <div class="layout">
+                <p class="col col-main">
+                  <strong>Expediente</strong><br>
+                </p>
+                <p class="col col-complementary" role="complementary">
+                  <a>{{ obra.expediente }}</a>
+                </p>
+              </div>
+              <div class="layout">
+                <p class="col col-main">
+                  <strong>Cotización</strong><br>
+                </p>
+                <p class="col col-complementary" role="complementary">
+                  <a>${{ obra.cotizacion }}</a>
+                </p>
+              </div>
+              <div class="layout">
+                <p class="col col-main">
+                  <strong>Proveedor</strong><br>
+                </p>
+                <p class="col col-complementary" role="complementary">
+                  <a>{{ obra.proveedor }}</a>
+                </p>
+              </div>
+              <div class="layout">
+                <p class="col col-main">
+                  <strong>Presupuesto oficial</strong><br>
+                </p>
+                <p class="col col-complementary" role="complementary">
+                  <a>${{ obra.presup_oficial }}</a>
+                </p>
+              </div>
+              <div class="layout">
+                <p class="col col-main">
+                  <strong>Garantía Contrato</strong><br>
+                </p>
+                <p class="col col-complementary" role="complementary">
+                  <a>{{ obra.garantia_contrato }}%</a>
+                </p>
+              </div>
+              <div class="layout">
+                <p class="col col-main">
+                  <strong>Adjudicación</strong><br>
+                </p>
+                <p class="col col-complementary" role="complementary">
+                  <a>${{ obra.adjudicacion }}</a>
+                </p>
+              </div>
+              <div class="layout">
+                <p class="col col-main">
+                  <strong>Contrato</strong><br>
+                </p>
+                <p class="col col-complementary" role="complementary">
+                  <a>{{ obra.contrato }}</a>
+                </p>
+              </div>
+              <div class="layout">
+                <p class="col col-main">
+                  <strong>Fecha de contrato</strong><br>
+                </p>
+                <p class="col col-complementary" role="complementary">
+                  <a>{{ obra.fecha_contrato }}</a>
+                </p>
+              </div>
+              <div class="layout">
+                <p class="col col-main">
+                  <strong>Ordenanza</strong><br>
+                </p>
+                <p class="col col-complementary" role="complementary">
+                  <a>{{ obra.ordenanza }}</a>
+                </p>
+              </div>
+              <div class="layout">
+                <p class="col col-main">
+                  <strong>Decreto</strong><br>
+                </p>
+                <p class="col col-complementary" role="complementary">
+                  <a>{{ obra.decreto }}</a>
+                </p>
+              </div>
+              <div class="layout">
+                <p class="col col-main">
+                  <strong>Plazo de obra</strong><br>
+                </p>
+                <p class="col col-complementary" role="complementary">
+                  <a>{{ obra.plazo_obra }}</a>
+                </p>
+              </div>
+              <div class="layout">
+                <p class="col col-main">
+                  <strong>Anticipo financiero</strong><br>
+                </p>
+                <p class="col col-complementary" role="complementary">
+                  <a>${{ obra.anticipo_finan }}</a>
+                </p>
+              </div>
+            </div>
+
             <!-- <h2 class="h3">Instrucciones</h2>
             <template v-for="(step, index) in recipe.instructions">
               <div
@@ -34,14 +161,6 @@
               </div>
             </template> -->
           </div>
-          <div class="col-12 col-lg-4">
-            <b-card class="mb-2 sticky-top">
-              <h2 class="lead">Ficha Técnica</h2>
-              <p>
-                Fecha de contrato: {{ formattedDate }}
-              </p>
-            </b-card>
-          </div>
         </div>
       </div>
     </template>
@@ -54,6 +173,7 @@ import ObraService from '~/service/obra'
 export default {
   data() {
     return {
+      editing: false,
       obra: null,
     }
   },
@@ -65,15 +185,115 @@ export default {
   },
   fetchOnServer: false,
   computed: {
-    formattedDate() {
-      const formatter = new Intl.DateTimeFormat('es-AR', {
-        dateStyle: 'full',
-        timeStyle: 'short',
-      })
-      return formatter.format(this.obra.fecha_contrato)
+    // formattedDate() {
+    //   const formatter = new Intl.DateTimeFormat('es-AR', {
+    //     dateStyle: 'full',
+    //     timeStyle: 'short',
+    //   })
+    //   return formatter.format(this.obra.fecha_contrato)
+    // },
+  },
+  activated() {
+    this.obra = null
+    this.editing = false
+    this.$fetch()
+  },
+  methods: {
+    editObra() {
+      this.editing = true
+    },
+    async onSubmitEditObra({ obra }) {
+      try {
+        const userToken = this.$store.state.user.token
+        await this.$store.dispatch('obras/update', {
+          obra,
+          userToken,
+        })
+        // this.editing = false
+        this.$bvToast.toast('', {
+          title: 'Archivo actualizado.',
+          variant: 'success',
+          appendToast: true,
+          solid: true,
+        })
+        await this.$router.push('/')
+      } catch (e) {
+        this.$bvToast.toast('Error Editando', {
+          title: 'Error',
+          variant: 'danger',
+          appendToast: true,
+          solid: true,
+        })
+      }
+    },
+    async onSubmitDelete() {
+      try {
+        const userToken = this.$store.state.user.token
+        const id = this.$route.params.id
+
+        await this.$store.dispatch('obras/delete', {
+          id: id,
+          userToken,
+        })
+        this.$bvToast.toast('Eliminada correctamente', {
+          title: '',
+          variant: 'success',
+          appendToast: true,
+          solid: true,
+        })
+        await this.$router.push('/')
+      } catch (e) {
+        this.$bvToast.toast('Error Editando', {
+          title: '',
+          variant: 'danger',
+          appendToast: true,
+          solid: true,
+        })
+      }
+      this.$set(this, 'editing', false)
+    },
+    onResetEdit() {
+      this.editing = false
     },
   },
 }
 </script>
 
-<style type="text/css"></style>
+<style type="text/css">
+/* Layout: */
+
+.col-main {
+  flex: 1;
+}
+
+.col-complementary {
+  flex: 1;
+}
+
+/* Responsive: */
+
+@media only screen and (min-width: 640px) {
+  .layout {
+    display: flex;
+  }
+}
+
+/* etc */
+
+/* body {
+  margin: 1.5em;
+} */
+
+/* .container {
+  max-width: 60em;
+  margin-right: auto;
+  margin-left: auto;
+} */
+
+.col {
+  padding: 1em;
+  margin: 0 2px 2px 0;
+}
+
+
+</style>

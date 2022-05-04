@@ -9,7 +9,7 @@
       >
         <ObraCard :obra="obra" class="h-100" />
       </div> -->
-      <div class="table-responsive" v-for="table in tables" :key="table.id">
+      <div class="table-responsive col-md-12" v-for="table in tables" :key="table.id">
         <b-table hover head-variant="dark" :items="items" :fields="fields"></b-table>
       </div>
       <template slot="actions" slot-scope="data">

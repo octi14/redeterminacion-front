@@ -4,11 +4,11 @@
       <ContainersSection title="Resultados de Busqueda">
         <div v-if="searchResults.length" class="row">
           <div
-            v-for="recipe in searchResults"
-            :key="recipe._id"
-            class="col-6 col-lg-4 mb-2"
+            v-for="obra in searchResults"
+            :key="obra._id"
+            class="col-6 col-lg-12 mb-4"
           >
-            <RecipeCard :recipe="recipe" />
+            <ObraCard :obra="obra" />
           </div>
         </div>
         <div v-else>
@@ -30,9 +30,9 @@
 <script>
 export default {
   computed: {
-    ingredients() {
-      return this.$store.state.ingredients.list
-    },
+    // ingredients() {
+    //   return this.$store.state.ingredients.list
+    // },
     searchResults() {
       return this.$store.state.search.results
     },
@@ -44,9 +44,9 @@ export default {
     },
   },
   methods: {
-    ingredient(id) {
-      return this.ingredients.find((e) => e.id === id)
-    },
+    // ingredient(id) {
+    //   return this.ingredients.find((e) => e.id === id)
+    // },
   },
 }
 </script>

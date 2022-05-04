@@ -2,7 +2,7 @@ const formatFile = (FileResponse) => ({
   id: FileResponse._id,
   expediente: FileResponse.expediente,
   objeto: FileResponse.objeto,
-  presup: FileResponse.presup_oficial,
+  presup_oficial: FileResponse.presup_oficial,
   adjudicado: FileResponse.adjudicado,
   proveedor: FileResponse.proveedor,
   cotizacion: FileResponse.cotizacion,
@@ -36,13 +36,14 @@ module.exports = {
   },
   searchFiles: async (
     axios,
-    { name = '', ingredients = [], tags = [], ids = [] }
+    { expediente = '', objeto = '', adjudicado = '' }
   ) => {
-    const filesResponse = await axios.$post('/files/search', {
+    const filesResponse = await axios.$post('/obras/search', {
       // agrego condicionalmente los parámetros de busqueda
       // (no se agregan los que están vacíos)
-      ...(name.length && { name }),
-      ...(ids.length && { ids }),
+      ...(expediente.length && { expediente }),
+      ...(objeto.length && { objeto }),
+      ...(adjudicado.length && { adjudicado }),
     })
     return filesResponse.data.map(formatFile)
   },
@@ -55,5 +56,21 @@ module.exports = {
       }
     )
     return formatFile(createdFile.data)
+  },
+  update: async (axios, { obra, userToken }) => {
+    axios.setHeader('Access-Control-Allow-Origin', true)
+    const updated = await axios.$put(
+      `/obras/${obra.id}`,
+      { obra },
+      {
+        headers: { Authorization: `Bearer ${userToken}` },
+      }
+    )
+    return formatFile(updated.data)
+  },
+  delete: async (axios, { id, userToken }) => {
+    return await axios.$delete(`/obras/${id}`, {
+      headers: { Authorization: `Bearer ${userToken}` },
+    })
   },
 }

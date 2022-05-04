@@ -12,6 +12,11 @@ export const actions = {
     })
     commit('setLatest', found)
   },
+  async search({ commit, state }, { search }) {
+    const found = await ObraService.searchFiles(this.$axios, {
+      search,
+    })
+  },
   async getSingle({ commit, state }, { id }) {
     commit('setSingle', null)
     const found = await ObraService.getSingle(this.$axios, {
@@ -26,6 +31,26 @@ export const actions = {
     })
     return createdFile
   },
+  async update({ commit }, { obra, userToken }) {
+    try {
+      const updated = await ObraService.update(this.$axios, {
+        obra,
+        userToken,
+      })
+      commit('setSingle', { updated })
+    } catch (e) {
+      console.log(e)
+      throw new Error('Error actualizando')
+    }
+  },
+  async delete({ commit, state }, { id, userToken }) {
+    const deleted = await ObraService.delete(this.$axios, {
+      id,
+      userToken,
+    })
+    return deleted
+  },
+
 }
 
 export const mutations = {

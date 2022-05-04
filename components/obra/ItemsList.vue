@@ -1,10 +1,10 @@
 <template>
-  <div class="recipe-ingredients-list">
+  <div class="items-list">
     <ul>
       <li
-        v-for="ingredientItem in ingredients"
-        :key="ingredientItem.ingredient"
-        class="recipe-ingredient-list-item"
+        v-for="item in items"
+        :key="item.id"
+        class="list-item"
       >
         {{ getFormattedIngredient(ingredientItem) }}
       </li>

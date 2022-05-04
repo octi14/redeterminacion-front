@@ -40,10 +40,21 @@
               class="col-md-3"
               block
               variant="danger"
-              @click="onSubmitDelete"
+              @click="$bvModal.show('bv-modal-example')"
             >
               Eliminar
             </b-button>
+
+            <b-modal id="bv-modal-example" hide-footer>
+              <template #modal-title>
+                Eliminar archivo
+              </template>
+              <div class="d-block text-center">
+                <h3>Está seguro de que desea eliminar este archivo?</h3>
+              </div>
+              <b-button class="mt-3" variant="danger" block @click="onSubmitDelete">Si</b-button>
+              <b-button class="mt-3" variant="secondary" block @click="$bvModal.hide('bv-modal-example')">No</b-button>
+            </b-modal>
           </div>
         </div>
             <div class="container">

@@ -1,7 +1,7 @@
 <template>
   <div id="results-page">
     <template v-if="searchParamsIsInitialized">
-      <ContainersSection title="Resultados de Busqueda">
+      <ContainersSection title="Resultados de Búsqueda">
         <div v-if="searchResults.length" class="row">
           <div
             v-for="obra in searchResults"

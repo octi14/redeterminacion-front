@@ -2,19 +2,19 @@
   <div class="obra-feed">
     <!-- <b-nav-text class="fs-5" variant="primary" align="center"> Obras públicas </b-nav-text> -->
     <transition-group name="list" tag="div" class="row">
-      <!-- <div
+      <div
         v-for="obra in obras"
         :key="obra.id"
-        class="transition-col col-6 col-lg-4 mb-2"
+        class="transition-col col-6 col-lg-10 mb-1"
       >
-        <ObraCard :obra="obra" class="h-100" />
-      </div> -->
-      <div class="table-responsive col-md-12" v-for="table in tables" :key="table.id">
+        <ObraCard :obra="obra" class="h-100 col-lg-10" />
+      </div>
+      <!-- <div class="table-responsive col-md-12" v-for="table in tables" :key="table.id">
         <b-table hover head-variant="dark" :items="items" :fields="fields"></b-table>
       </div>
       <template slot="actions" slot-scope="data">
         <b-button class="btn btn-dark" @click="update(data)" :ref="'btn' + data.index">Update</b-button>
-      </template>
+      </template> -->
     </transition-group>
   </div>
 </template>

@@ -26,9 +26,22 @@
             @submit="onSubmitEditObra"
             @reset="editing = false"
           ></ObraForm>
-
+          <CertificadoForm
+          v-show="adding"
+          :obra="obra"
+          @submit="onSubmitCreateCertif">
+          </CertificadoForm>
           <!-- View -->
           <div v-show="!editing" class="row justify-content-center">
+
+
+            <b-button class="col-md-3 badge-success"
+              variant="info"
+              @click="agregarCertif"
+            >
+              Agregar certificado
+            </b-button>
+
             <b-button class="col-md-3 badge-success"
               variant="info"
               @click="editObra"
@@ -88,6 +101,14 @@
                 </p>
                 <p class="col col-complementary" role="complementary">
                   <a>${{ obra.presup_oficial }}</a>
+                </p>
+              </div>
+              <div class="layout" v-for="item in obra.items" :key="item.name">
+                <p class="col col-main">
+                  <strong> {{item.name}} </strong>
+                </p>
+                <p class="col col-complementary" role="complementary">
+                  <strong> {{item.monto}} </strong>
                 </p>
               </div>
               <div class="layout">
@@ -185,6 +206,7 @@ export default {
   data() {
     return {
       editing: false,
+      adding: false,
       obra: null,
     }
   },
@@ -207,9 +229,13 @@ export default {
   activated() {
     this.obra = null
     this.editing = false
+    this.adding = false
     this.$fetch()
   },
   methods: {
+    agregarCertif() {
+      this.adding = !this.adding
+    },
     editObra() {
       this.editing = true
     },
@@ -236,6 +262,25 @@ export default {
           solid: true,
         })
       }
+    },
+    async onSubmitCreateCertif({ certificado }) {
+      try {
+        const userToken = this.$store.state.user.token
+        await this.$store.dispatch('certificados/create', {
+          certificado,
+          userToken,
+        })
+        // this.editing = false
+        // await this.$router.push('/')
+      } catch (e) {
+        this.$bvToast.toast('Error Editando', {
+          title: 'Error',
+          variant: 'danger',
+          appendToast: true,
+          solid: true,
+        })
+      }
+      this.adding = false
     },
     async onSubmitDelete() {
       try {

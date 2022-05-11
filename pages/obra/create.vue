@@ -3,7 +3,7 @@
     <div class="container my-5">
       <h1>Crear nuevo archivo</h1>
       <!-- <p>Agrega una nueva obra con sus características</p> -->
-      <b-form class="my-5" @submit.stop.prevent="onSubmitCreateFile">
+      <b-form class="my-3" @submit.stop.prevent="onSubmitCreateFile">
         <b-form-group>
             <b-form-group label="Expediente">
               <b-form-input v-model="expediente" type="text" />
@@ -48,6 +48,56 @@
             <b-form-group label="Anticipo Financiero">
               <b-form-input v-model="anticipo_finan" type="number" placeholder="Solo números"/>
             </b-form-group>
+
+            <h3>Items</h3>
+            <b-list-group>
+              <b-list-group-item
+              v-for="item in items"
+              :key="item.name"
+              >
+                <div class="row no-gutters">
+                  <div class="col">
+                    <b-form-text>{{ item.name }}</b-form-text>
+                    <b-form-group
+                    label="Item:"
+                    >
+                      <b-form-input
+                        v-model="item.item"
+                        type="text"
+                        list="items-list"
+                      />
+                    <datalist id="items-list">
+                      <option
+                        v-for="itemOption in itemList"
+                        :key="itemOption.id"
+                      >
+                        {{ itemOption.name }}
+                      </option>
+                    </datalist>
+                    </b-form-group>
+                    <b-form-group label="Monto"
+                    description="Solo números"
+                    >
+                      <b-form-input
+                      v-model="item.monto"
+                      type="number"
+                      />
+                    </b-form-group>
+                  </div>
+                  <div class="col-auto mx-2">
+                    <b-btn
+                      :disabled="items.length <= 1"
+                      variant="danger"
+                      size="md"
+                      @click="deleteItem(index)"
+                    >
+                      x
+                    </b-btn>
+                  </div>
+                </div>
+              </b-list-group-item>
+            </b-list-group>
+          <b-btn @click="addItem">Agregar item</b-btn>
         <!-- <hr />
         <hr /> -->
         <b-btn type="submit">Enviar</b-btn>
@@ -67,7 +117,28 @@ export default {
       adjudicado: '',
       proveedor: '',
       cotizacion: '',
-      items: [],
+      items: [
+        {
+          item: 'Item 1',
+          monto: 0,
+        },
+        {
+          item: 'Item 2',
+          monto: 0,
+        },
+        {
+          item: 'Item 3',
+          monto: 0,
+        },
+        {
+          item: 'Item 4',
+          monto: 0,
+        },
+        {
+          item: 'Item 5',
+          monto: 0,
+        },
+      ],
       garantia_contrato: '',
       adjudicacion: '',
       contrato: '',
@@ -111,6 +182,7 @@ export default {
             cotizacion: this.cotizacion,
             garantia_contrato: this.garantia_contrato,
             adjudicacion: this.adjudicacion,
+            items: this.items,
             contrato: this.contrato,
             ordenanza: this.ordenanza,
             decreto: this.decreto,

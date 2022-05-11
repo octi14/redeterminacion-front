@@ -1,6 +1,7 @@
 <template>
   <div class="obra-form">
     <div class="card shadow-lg" style="color: white; background-color: #037F98">
+      <b-button align-center variant="danger" class="my-3 col-md-5 text-center" @click="onSolicitarRedet"> Solicitar redeterminación </b-button>
       <b-form
         class="my-4" style="margin-left:10px;margin-right:10px"
         @submit.stop.prevent="onSubmit"
@@ -249,6 +250,9 @@ export default {
     onResetForm() {
       this.initialize()
       this.$emit('reset')
+    },
+    onSolicitarRedet(){
+
     },
     // addIngredient() {
     //   this.ingredients.push({

@@ -8,6 +8,7 @@
         <h2 class="h4">{{ obra.objeto }}</h2>
       </NuxtLink>
       <h5>{{ obra.adjudicado }}</h5>
+      <h5>{{ obra.fecha_contrato }}</h5>
       <!-- <h5>{{ obra.fecha_contrato }}</h5> -->
     </b-card-body>
   </b-card>

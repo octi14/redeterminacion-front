@@ -1,26 +1,17 @@
 <template>
-  <div class="obra-feed">
-    <!-- <b-nav-text class="fs-5" variant="primary" align="center"> Obras públicas </b-nav-text> -->
-    <transition-group name="list" tag="div" class="row">
-      <div
-        v-for="obra in obras"
-        :key="obra.id"
-        class="transition-col col-12 col-lg-12 mb-1"
-      >
-        <ObraCard :obra="obra" />
-      </div>
-      <!-- <div class="table-responsive col-md-12" v-for="table in tables" :key="table.id">
-        <b-table hover head-variant="dark" :items="items" :fields="fields"></b-table>
-      </div>
-      <template slot="actions" slot-scope="data">
-        <b-button class="btn btn-dark" @click="update(data)" :ref="'btn' + data.index">Update</b-button>
-      </template> -->
-    </transition-group>
+  <div class="certificado-feed my-5 justify-content-center">
+    <div class="layout">
+      <CertificadoFeed />
+      <b-button @click="onReturn" variant="primary"> Volver </b-button>
+    </div>
   </div>
 </template>
 
+
 <script>
+import about from "../about.vue"
 export default {
+  components: { about },
   data() {
     return {
       lastLength: false,
@@ -45,12 +36,12 @@ export default {
     }
   },
   async fetch() {
-    await this.$store.dispatch('obras/getAll')
-    this.items = this.obras
+    await this.$store.dispatch('certificados/getAll')
+    this.items = this.certificados
     console.log(this.items)
 
     // consulto si no hay más recetas para traer
-    // const newLength = this.$store.state.obras.latest.length
+    // const newLength = this.$store.state.certificados.latest.length
     // this.all = newLength === this.lastLength
     // this.lastLength = newLength
   },
@@ -59,13 +50,16 @@ export default {
     loading() {
       return this.$fetchState.pending
     },
-    obras() {
-      return this.$store.state.obras.latest
+    certificados() {
+      return this.$store.state.certificados.latest
     },
   },
   methods: {
     loadMore() {
       this.$fetch()
+    },
+    onReturn() {
+      this.$router.push("/")
     },
   },
 }

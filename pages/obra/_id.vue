@@ -34,15 +34,30 @@
           <!-- View -->
           <div v-show="!editing" class="row justify-content-center">
 
+            <!-- <b-button class="col-md-3 badge-success"
+              variant="info"
+              @click="onShowCertif"
+            >
+            <NuxtLink :to="{ path:'../certificado/feed', props:{ obraId: obra.id }}">
+              Ver certificados
+            </NuxtLink>
+            </b-button> -->
 
-            <b-button class="col-md-3 badge-success"
+            <b-button v-if="!adding" class="col-md-3 badge-success"
               variant="info"
               @click="agregarCertif"
             >
               Agregar certificado
             </b-button>
 
-            <b-button class="col-md-3 badge-success"
+            <b-button v-else class="col-md-3 badge-success"
+              variant="info"
+              @click="agregarCertif"
+            >
+              Volver
+            </b-button>
+
+            <b-button v-if="!adding" class="col-md-3 badge-success"
               variant="info"
               @click="editObra"
             >
@@ -50,6 +65,7 @@
             </b-button>
 
             <b-button
+              v-if="!adding"
               class="col-md-3"
               block
               variant="danger"
@@ -70,7 +86,7 @@
             </b-modal>
           </div>
         </div>
-            <div class="container">
+            <div class="container" v-if="!adding && !editing">
               <div class="layout">
                 <p class="col col-main">
                   <strong>Expediente</strong><br>
@@ -103,13 +119,15 @@
                   <a>${{ obra.presup_oficial }}</a>
                 </p>
               </div>
-              <div class="layout" v-for="item in obra.items" :key="item.name">
-                <p class="col col-main">
-                  <strong> {{item.name}} </strong>
-                </p>
-                <p class="col col-complementary" role="complementary">
-                  <strong> {{item.monto}} </strong>
-                </p>
+              <div>
+                <div class="layout" v-for="item in obra.items" :key="item.item">
+                  <p class="col col-main">
+                    <strong class="h5"> - {{item.item}} </strong>
+                  </p>
+                  <p class="col col-complementary" role="complementary">
+                    <a> ${{item.monto}} </a>
+                  </p>
+                </div>
               </div>
               <div class="layout">
                 <p class="col col-main">
@@ -172,7 +190,7 @@
                   <strong>Anticipo financiero</strong><br>
                 </p>
                 <p class="col col-complementary" role="complementary">
-                  <a>${{ obra.anticipo_finan }}</a>
+                  <a>{{ obra.anticipo_finan }}</a>
                 </p>
               </div>
             </div>
@@ -205,6 +223,7 @@ import ObraService from '~/service/obra'
 export default {
   data() {
     return {
+      watchingCertif: false,
       editing: false,
       adding: false,
       obra: null,
@@ -228,6 +247,7 @@ export default {
   },
   activated() {
     this.obra = null
+    this.watchingCertif = false
     this.editing = false
     this.adding = false
     this.$fetch()
@@ -238,6 +258,9 @@ export default {
     },
     editObra() {
       this.editing = true
+    },
+    onShowCertif() {
+      this.watchingCertif = !this.watchingCertif
     },
     async onSubmitEditObra({ obra }) {
       try {

@@ -1,7 +1,7 @@
 <template>
   <div class="obra-form">
     <div class="card shadow-lg" style="color: white; background-color: #037F98">
-      <b-button align-center variant="danger" class="my-3 col-md-5 text-center" @click="onSolicitarRedet"> Solicitar redeterminación </b-button>
+      <!-- <b-button align-center variant="danger" class="my-3 col-md-5 text-center" @click="onSolicitarRedet"> Solicitar redeterminación </b-button> -->
       <b-form
         class="my-4" style="margin-left:10px;margin-right:10px"
         @submit.stop.prevent="onSubmit"
@@ -33,6 +33,9 @@
         </b-form-group>
         <b-form-group id="group-garantia" label="Garantía contrato" label-for="input-garantia">
           <b-form-textarea v-model="garantia_contrato" />
+        </b-form-group>
+        <b-form-group id="group-fecha" label="Fecha contrato" label-for="input-fecha">
+          <b-form-input v-model="fecha_contrato" type="date" />
         </b-form-group>
         <b-form-group id="group-ordenanza" label="Ordenanza" label-for="input-ordenanza">
           <b-form-input id="input-expediente" v-model="ordenanza" trim type="text" />
@@ -187,6 +190,7 @@ export default {
       adjudicado: '',
       cotizacion: '',
       contrato: '',
+      fecha_contrato: null,
       plazo_obra: '',
       proveedor: '',
       adjudicacion: '',
@@ -234,6 +238,8 @@ export default {
         presup_oficial: this.presup_oficial,
         cotizacion: this.cotizacion,
         adjudicado: this.adjudicado,
+        contrato: this.contrato,
+        fecha_contrato: this.fecha_contrato,
         garantia_contrato: this.garantia_contrato,
         ordenanza: this.ordenanza,
         decreto: this.decreto,
@@ -254,15 +260,15 @@ export default {
     onSolicitarRedet(){
 
     },
-    // addIngredient() {
-    //   this.ingredients.push({
-    //     quantity: '',
-    //     ingredient: null,
-    //   })
-    // },
-    // deleteIngredient(index) {
-    //   this.ingredients.splice(index, 1)
-    // },
+    addItem() {
+      this.items.push({
+        monto: '',
+        item: null,
+      })
+    },
+    deleteItem(index) {
+      this.items.splice(index, 1)
+    },
     // addInstruction() {
     //   this.instructions.push({
     //     title: null,
@@ -281,6 +287,7 @@ export default {
         adjudicado = '',
         cotizacion = '',
         contrato = '',
+        fecha_contrato = null,
         plazo_obra = '',
         proveedor = '',
         adjudicacion = '',
@@ -326,6 +333,7 @@ export default {
       this.cotizacion = cotizacion
       this.adjudicacion = adjudicacion
       this.contrato = contrato
+      this.fecha_contrato = fecha_contrato
       this.ordenanza = ordenanza
       this.decreto = decreto
       this.plazo_obra = plazo_obra

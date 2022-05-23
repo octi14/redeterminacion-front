@@ -3,11 +3,11 @@
     <!-- <b-nav-text class="fs-5" variant="primary" align="center"> Obras públicas </b-nav-text> -->
     <transition-group name="list" tag="div" class="row">
       <div
-        v-for="obra in obras"
-        :key="obra.id"
-        class="transition-col col-12 col-lg-12 mb-1"
+        v-for="certificado in certificados"
+        :key="certificado.id"
+        class="transition-col col-6 col-lg-10 mb-1"
       >
-        <ObraCard :obra="obra" />
+        <CertificadoCard :certificado="certificado" :obraId="obraId" class="h-100 col-lg-10" />
       </div>
       <!-- <div class="table-responsive col-md-12" v-for="table in tables" :key="table.id">
         <b-table hover head-variant="dark" :items="items" :fields="fields"></b-table>
@@ -21,36 +21,25 @@
 
 <script>
 export default {
+  props: {
+    obraId: {
+      type: Object,
+      required: true,
+    },
+  },
   data() {
     return {
       lastLength: false,
       items: [],
-      tables: [{
-        id: 1,
-      }],
-      fields: [
-        {
-          key: "objeto",
-          label: "Objeto"
-        },
-        {
-          key: "adjudicado",
-          label: "Adjudicado"
-        },
-        {
-          key: "fecha_contrato",
-          label: "Fecha Contrato"
-        }
-      ]
     }
   },
   async fetch() {
-    await this.$store.dispatch('obras/getAll')
-    this.items = this.obras
+    await this.$store.dispatch('certificados/getAll')
+    this.items = this.certificados
     console.log(this.items)
 
     // consulto si no hay más recetas para traer
-    // const newLength = this.$store.state.obras.latest.length
+    // const newLength = this.$store.state.certificados.latest.length
     // this.all = newLength === this.lastLength
     // this.lastLength = newLength
   },
@@ -59,8 +48,8 @@ export default {
     loading() {
       return this.$fetchState.pending
     },
-    obras() {
-      return this.$store.state.obras.latest
+    certificados() {
+      return this.$store.state.certificados.latest
     },
   },
   methods: {

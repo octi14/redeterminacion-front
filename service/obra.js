@@ -10,7 +10,7 @@ const formatFile = (FileResponse) => ({
   garantia_contrato: FileResponse.garantia_contrato,
   adjudicacion: FileResponse.adjudicacion,
   contrato: FileResponse.contrato,
-  fecha_contrato: new Date(FileResponse.fecha_contrato),
+  fecha_contrato: FileResponse.fecha_contrato.substr(0, 10),
   ordenanza: FileResponse.ordenanza,
   decreto: FileResponse.decreto,
   plazo_obra: FileResponse.plazo_obra,

@@ -39,7 +39,6 @@ export const actions = {
       })
       commit('setSingle', { updated })
     } catch (e) {
-      console.log(e)
       throw new Error('Error actualizando')
     }
   },

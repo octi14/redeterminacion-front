@@ -5,12 +5,12 @@
     </NuxtLink> -->
     <b-card-body class="text-center">
       <!-- <NuxtLink :to="{ name: 'certificado-id', props: { id: certificado.id } }"> -->
-        <h2 class="h4">{{ certificado.certificacion }}</h2>
+        <h2 class="h4">{{ certificado.item }}</h2>
       <!-- </NuxtLink> -->
-      <h5>Fecha: {{ certificado.fecha }}</h5>
-      <h5>Factura: {{ certificado.factura }}</h5>
-      <h5>OP: {{ certificado.op }}</h5>
-      <h5>Fecha cancelación: {{ certificado.fecha_cancelacion }}</h5>
+      <h5>Contratado: {{ certificado.contratado }}</h5>
+      <h5>Anticipo: {{ certificado.anticipo }}</h5>
+      <h5>Avance: {{ certificado.avance }}</h5>
+      <h5>Saldo: {{ certificado.saldo }}</h5>
 
       <!-- <h5>{{ certificado.fecha_contrato }}</h5> -->
     </b-card-body>

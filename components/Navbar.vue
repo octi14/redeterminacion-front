@@ -23,7 +23,12 @@
               Crear
           </NuxtLink>
         </b-navbar-nav>
-        <b-input type="text" class="my-1 justify-content-center" v-model="search" placeholder="Buscar obra" @keypress="onSearchFileByName"/>
+        <b-input type="text"
+         class="my-1 justify-content-center"
+         v-if="isAuthenticated"
+         v-model="search"
+         placeholder="Buscar obra"
+         @keypress="onSearchFileByName"/>
         <b-navbar-nav class="ml-auto">
           <template v-if="isAuthenticated">
             <b-nav-item-dropdown :text="username" right>
@@ -79,7 +84,6 @@ export default {
           objeto: this.search,
           adjudicado: this.search,
         })
-        console.log(this.result)
       }
     }
   },

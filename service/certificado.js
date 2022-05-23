@@ -1,9 +1,10 @@
 const formatCertif = (CertifResponse) => ({
   id: CertifResponse._id,
-  certificacion: CertifResponse.certificacion,
-  fecha: new Date(CertifResponse.fecha),
-  op: CertifResponse.op,
-  fecha_cancelacion: new Date(CertifResponse.fecha_cancelacion),
+  item: CertifResponse.item,
+  contratado: CertifResponse.contratado,
+  anticipo: CertifResponse.anticipo,
+  avance: CertifResponse.avance,
+  saldo: CertifResponse.saldo,
 })
 
 module.exports = {
@@ -17,6 +18,20 @@ module.exports = {
       // },
     })
     return certifsResponse.data.map(formatCertif)
+  },
+  search: async (
+    axios,
+    { obra = ''}
+  ) => {
+    const filesResponse = await axios.$post('/certificados/search', {
+      // agrego condicionalmente los parámetros de busqueda
+      // (no se agregan los que están vacíos)
+      ...(obra.length && { obra }),
+      // ...(objeto.length && { objeto }),
+      // ...(adjudicado.length && { adjudicado }),
+    })
+    console.log(filesResponse.data)
+    return filesResponse.data.map(formatCertif)
   },
   getSingle: async (axios, { id }) => {
     const certifResponse = await axios.$get(`/certificados/${id}`)

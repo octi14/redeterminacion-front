@@ -22,7 +22,7 @@
 <script>
 export default {
   props: {
-    obraId: {
+    obra: {
       type: Object,
       required: true,
     },
@@ -34,16 +34,18 @@ export default {
     }
   },
   async fetch() {
-    await this.$store.dispatch('certificados/getAll')
+    await this.$store.dispatch('certificados/search', {
+      obra: this.obra.id
+      })
     this.items = this.certificados
-    console.log(this.items)
+    // console.log(this.items)
 
     // consulto si no hay más recetas para traer
     // const newLength = this.$store.state.certificados.latest.length
     // this.all = newLength === this.lastLength
     // this.lastLength = newLength
   },
-  // fetchOnServer: false,
+  fetchOnServer: false,
   computed: {
     loading() {
       return this.$fetchState.pending

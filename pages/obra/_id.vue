@@ -31,17 +31,19 @@
           :obra="obra"
           @submit="onSubmitCreateCertif">
           </CertificadoForm>
+          <CertificadoFeed
+          v-show="watchingCertif"
+          :obra="obra">
+          </CertificadoFeed>
           <!-- View -->
           <div v-show="!editing" class="row justify-content-center">
 
-            <!-- <b-button class="col-md-3 badge-success"
+            <b-button class="col-md-3 badge-success"
               variant="info"
               @click="onShowCertif"
             >
-            <NuxtLink :to="{ path:'../certificado/feed', props:{ obraId: obra.id }}">
               Ver certificados
-            </NuxtLink>
-            </b-button> -->
+            </b-button>
 
             <b-button v-if="!adding" class="col-md-3 badge-success"
               variant="info"
@@ -294,7 +296,7 @@ export default {
           userToken,
         })
         // this.editing = false
-        // await this.$router.push('/')
+        await this.$router.push('/')
       } catch (e) {
         this.$bvToast.toast('Error Editando', {
           title: 'Error',

@@ -13,7 +13,7 @@ export const actions = {
     commit('setLatest', found)
   },
   async search({ commit, state }, { search }) {
-    const found = await CertificadoService.searchFiles(this.$axios, {
+    const found = await CertificadoService.search(this.$axios, {
       search,
     })
   },
@@ -39,7 +39,6 @@ export const actions = {
       })
       commit('setSingle', { updated })
     } catch (e) {
-      console.log(e)
       throw new Error('Error actualizando')
     }
   },

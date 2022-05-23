@@ -5,19 +5,19 @@
       <b-form class="my-1"
       @submit.stop.prevent="onSubmit"
       @reset.stop.prevent="onResetForm">
-            <b-form-group label="Item"  class="my-3" v-for="item in obra.items" :key="item.item">
-                <a>{{item.item}}</a>
-              <b-form-group label="Contratado">
-                <a>{{item.monto}}</a>
+            <b-form-group label="Item"  class="my-3" v-for="(_, index) in obra.items" :key="index">
+                <a>{{obra.items[index].item}}</a>
+              <b-form-group class="my-3" label="Contratado">
+                <a>{{obra.items[index].monto}}</a>
               </b-form-group>
               <b-form-group label="Anticipo">
-                <a> {{calculameElAnticipoDe(item.monto)}} </a>
+                <a>{{anticipoProp(obra.items[index].monto)}} </a>
               </b-form-group>
               <b-form-group label="Porcentaje de avance">
-              <b-form-input v-model="item.avance" placeholder="%" type="number" />
+              <b-form-input v-model="avances[index]" placeholder="%" type="number" />
               </b-form-group>
-              <b-form-group class="h4" label="Saldo a pagar (avance/contratado - anticipo prop.)">
-                <output> {{item.saldo}} </output>
+              <b-form-group class="h4" label="Saldo a pagar">
+                <output> ${{saldoItem(obra.items[index].monto, avances[index])}} </output>
               </b-form-group>
             </b-form-group>
         <b-button type="submit" variant="success">Crear</b-button>
@@ -45,7 +45,16 @@ export default {
   },
   data() {
     return {
-      items: [],
+      avances: [],
+      items: [
+        {
+          item: '',
+          contratado: '',
+          anticipo: '',
+          avance: '',
+          saldo: '',
+        },
+      ],
     }
   },
   async fetch() {
@@ -58,33 +67,49 @@ export default {
     this.initializeCertif()
   },
   methods: {
-    calculameElAnticipoDe(monto) {
+    anticipoProp(monto) {
       const anticipoTotal = this.obra.anticipo_finan
       const cotizacion = this.obra.cotizacion
       return monto*(anticipoTotal/cotizacion)
     },
-    async onSubmitCreateCertif() {
-      try {
-        const userToken = this.$store.state.user.token
-        await this.$store.dispatch('certificados/create', {
-          userToken,
-          certificado: {
-            items: this.items,
-          },
-        })
-      } catch (e) {
-        this.$bvToast.toast('Error Cargando el certificado', {
-          title: 'Error',
-          variant: 'danger',
-          appendToast: true,
-          solid: true,
+    saldoItem(monto, avance) {
+      const realizado = monto * (avance/100)
+      const anticipo = this.anticipoProp(monto) * ((avance || 0)/100)
+      return (realizado - anticipo)
+    },
+    // async onSubmitCreateCertif() {
+
+    //   console.log(this.items)
+    //   try {
+    //     const userToken = this.$store.state.user.token
+    //     await this.$store.dispatch('certificados/create', {
+    //       userToken,
+    //       certificado: {
+    //         items: this.items,
+    //       },
+    //     })
+    //   } catch (e) {
+    //     this.$bvToast.toast('Error Cargando el certificado', {
+    //       title: 'Error',
+    //       variant: 'danger',
+    //       appendToast: true,
+    //       solid: true,
+    //     })
+    //   }
+    // },
+    onSubmit() {
+      for (var i = 0; i < this.obra.items.length; i++) {
+        this.items.push({
+          item: this.obra.items[i].item,
+          contratado: this.obra.items[i].monto,
+          anticipo: this.anticipoProp(this.obra.items[i].monto),
+          avance: this.avances[i],
+          saldo: this.saldoItem(this.obra.items[i].monto, this.avances[i]),
         })
       }
-    },
-    onSubmit() {
       const certificado = {
         obra: this.obra.id,
-        items: this.props.obra.items,
+        items: this.items,
       }
       // agrego Id condicionalmente
       if (this.certificado.id) {
@@ -104,12 +129,7 @@ export default {
     },
     initializeCertif() {
       const {
-        items = [
-          {
-            avance: '',
-            item: null,
-          },
-        ],
+        items = [],
       } = this.certificado
 
       this.items = JSON.parse(JSON.stringify(items))

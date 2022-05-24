@@ -41,16 +41,16 @@ export default {
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    baseURL: 'https://redeterminacion-back.herokuapp.com/',
-    // baseURL: 'http://localhost:5000/',  // Used as fallback if no runtime config is provided
+    // baseURL: 'https://redeterminacion-back.herokuapp.com/',
+    baseURL: 'http://localhost:5000/',  // Used as fallback if no runtime config is provided
   },
 
 
   // BootstrapVue module configuration https://bootstrap-vue.org/docs#nuxtjs-module
-  // bootstrapVue: {
-  //   bootstrapCSS: false, // Or `css: false`
-  //   bootstrapVueCSS: false, // Or `bvCSS: false`
-  // },
+  bootstrapVue: {
+    bootstrapCSS: true, // Or `css: false`
+    bootstrapVueCSS: true, // Or `bvCSS: false`
+  },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {

@@ -1,5 +1,5 @@
 <template>
-  <div class="obra-feed">
+  <div class="obra-feed" style='padding-left:160px'>
     <!-- <b-nav-text class="fs-5" variant="primary" align="center"> Obras públicas </b-nav-text> -->
     <transition-group name="list" tag="div" class="row">
       <div
@@ -7,7 +7,7 @@
         :key="certificado.id"
         class="transition-col col-6 col-lg-10 mb-1"
       >
-        <CertificadoCard :certificado="certificado" :obraId="obraId" class="h-100 col-lg-10" />
+        <CertificadoCard :certificado="certificado" :obra="obra" class="h-100 row" />
       </div>
       <!-- <div class="table-responsive col-md-12" v-for="table in tables" :key="table.id">
         <b-table hover head-variant="dark" :items="items" :fields="fields"></b-table>
@@ -38,7 +38,7 @@ export default {
       obra: this.obra.id
       })
     this.items = this.certificados
-    // console.log(this.items)
+    console.log(this.items)
 
     // consulto si no hay más recetas para traer
     // const newLength = this.$store.state.certificados.latest.length
@@ -51,7 +51,7 @@ export default {
       return this.$fetchState.pending
     },
     certificados() {
-      return this.$store.state.certificados.latest
+      return this.$store.state.certificados.certifs
     },
   },
   methods: {

@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <div class="container my-3">
+    <div class="container my-3 col-md-9">
       <h4>Asignar certificado a esta obra</h4>
       <b-form class="my-1"
       @submit.stop.prevent="onSubmit"
@@ -16,7 +16,7 @@
               <b-form-group label="Porcentaje de avance">
               <b-form-input v-model="avances[index]" placeholder="%" type="number" />
               </b-form-group>
-              <b-form-group class="h4" label="Saldo a pagar">
+              <b-form-group class="h5" label="Saldo a pagar">
                 <output> ${{saldoItem(obra.items[index].monto, avances[index])}} </output>
               </b-form-group>
             </b-form-group>

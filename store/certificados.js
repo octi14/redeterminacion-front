@@ -3,6 +3,7 @@ const CertificadoService = require('../service/certificado')
 export const state = () => ({
   single: null,
   latest: [],
+  certifs: [],
 })
 
 export const actions = {
@@ -16,6 +17,7 @@ export const actions = {
     const found = await CertificadoService.search(this.$axios, {
       search,
     })
+    commit('setMany', found)
   },
   async getSingle({ commit, state }, { id }) {
     commit('setSingle', null)
@@ -60,4 +62,7 @@ export const mutations = {
   setSingle(state, singleFile) {
     state.single = singleFile
   },
+  setMany(state, certifList) {
+    state.certifs = certifList
+  }
 }

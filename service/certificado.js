@@ -1,10 +1,15 @@
 const formatCertif = (CertifResponse) => ({
   id: CertifResponse._id,
-  item: CertifResponse.item,
-  contratado: CertifResponse.contratado,
-  anticipo: CertifResponse.anticipo,
-  avance: CertifResponse.avance,
-  saldo: CertifResponse.saldo,
+  obra: CertifResponse.obra,
+  items: CertifResponse.items.map(formatItem),
+})
+
+const formatItem = (ItemsData) => ({
+  item: ItemsData.item,
+  contratado: ItemsData.contratado,
+  anticipo: ItemsData.anticipo,
+  avance: ItemsData.avance,
+  saldo: ItemsData.saldo,
 })
 
 module.exports = {
@@ -30,7 +35,6 @@ module.exports = {
       // ...(objeto.length && { objeto }),
       // ...(adjudicado.length && { adjudicado }),
     })
-    console.log(filesResponse.data)
     return filesResponse.data.map(formatCertif)
   },
   getSingle: async (axios, { id }) => {

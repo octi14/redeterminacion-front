@@ -4,15 +4,17 @@
       <img :src="certificado.image" class="card-img-top" :alt="certificado.name" />
     </NuxtLink> -->
     <b-card-body class="text-center">
-      <!-- <NuxtLink :to="{ name: 'certificado-id', props: { id: certificado.id } }"> -->
-        <h2 class="h4">{{ certificado.item }}</h2>
-      <!-- </NuxtLink> -->
-      <h5>Contratado: {{ certificado.contratado }}</h5>
-      <h5>Anticipo: {{ certificado.anticipo }}</h5>
-      <h5>Avance: {{ certificado.avance }}</h5>
-      <h5>Saldo: {{ certificado.saldo }}</h5>
+      <b-form-group  v-for="item in certificado.items" :key="item.id">
+        <!-- <NuxtLink :to="{ name: 'certificado-id', props: { id: certificado.id } }"> -->
+          <strong class="h5">{{ item.item }}</strong>
+        <!-- </NuxtLink> -->
+        <h6>Contratado: ${{ item.contratado }}</h6>
+        <h6>Anticipo: ${{ item.anticipo }}</h6>
+        <h6>Avance: {{ item.avance }}%</h6>
+        <h6>Saldo: ${{ item.saldo }}</h6>
 
-      <!-- <h5>{{ certificado.fecha_contrato }}</h5> -->
+        <!-- <h5>{{ certificado.fecha_contrato }}</h5> -->
+      </b-form-group>
     </b-card-body>
   </b-card>
 </template>
@@ -20,7 +22,7 @@
 <script>
 export default {
   props: {
-    obraId: {
+    obra: {
       type: Object,
       required: true,
     },

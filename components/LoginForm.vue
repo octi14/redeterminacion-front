@@ -26,7 +26,7 @@
           required
         ></b-form-input>
       </b-form-group>
-      <b-button type="submit" variant="primary"> Ingresar </b-button>
+      <b-button type="submit" variant="primary" style="margin-left:75px"> Ingresar </b-button>
     </b-form>
   </ContainersForm>
 </template>

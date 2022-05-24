@@ -8,10 +8,10 @@
         <!-- <NuxtLink :to="{ name: 'certificado-id', props: { id: certificado.id } }"> -->
           <strong class="h5">{{ item.item }}</strong>
         <!-- </NuxtLink> -->
-        <h6>Contratado: ${{ item.contratado }}</h6>
-        <h6>Anticipo: ${{ item.anticipo }}</h6>
-        <h6>Avance: {{ item.avance }}%</h6>
-        <h6>Saldo: ${{ item.saldo }}</h6>
+        <h6>Contratado: ${{ redondear(item.contratado) }}</h6>
+        <h6>Anticipo: ${{ redondear(item.anticipo) }}</h6>
+        <h6>Avance: {{ redondear(item.avance) }}%</h6>
+        <h6>Saldo: ${{ redondear(item.saldo) }}</h6>
 
         <!-- <h5>{{ certificado.fecha_contrato }}</h5> -->
       </b-form-group>
@@ -38,6 +38,9 @@ export default {
   methods: {
     tag(id) {
       return this.$store.getters['tags/getTagById'](id)
+    },
+    redondear(numero) {
+      return Number(numero).toFixed(2)
     },
   },
 }

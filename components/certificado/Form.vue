@@ -11,13 +11,13 @@
                 <a>{{obra.items[index].monto}}</a>
               </b-form-group>
               <b-form-group label="Anticipo">
-                <a>{{anticipoProp(obra.items[index].monto)}} </a>
+                <a>{{redondear(anticipoProp(obra.items[index].monto))}} </a>
               </b-form-group>
               <b-form-group label="Porcentaje de avance">
               <b-form-input v-model="avances[index]" placeholder="%" type="number" />
               </b-form-group>
               <b-form-group class="h5" label="Saldo a pagar">
-                <output> ${{saldoItem(obra.items[index].monto, avances[index])}} </output>
+                <output> ${{redondear(saldoItem(obra.items[index].monto, avances[index]))}} </output>
               </b-form-group>
             </b-form-group>
         <b-button type="submit" variant="success">Crear</b-button>
@@ -184,6 +184,9 @@ export default {
       // this.tags = JSON.parse(JSON.stringify(tags))
       this.items = JSON.parse(JSON.stringify(items))
       // this.instructions = JSON.parse(JSON.stringify(instructions))
+    },
+    redondear(numero) {
+      return Number(numero).toFixed(2)
     },
   },
 }

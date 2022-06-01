@@ -5,20 +5,18 @@
       <b-form class="my-1"
       @submit.stop.prevent="onSubmit"
       @reset.stop.prevent="onResetForm">
-            <b-form-group label="Item"  class="my-3" v-for="(_, index) in obra.items" :key="index">
+            <b-form-group label="Item"  class="my-4" v-for="(_, index) in obra.items" :key="index">
                 <a>{{obra.items[index].item}}</a>
               <b-form-group class="my-3" label="Contratado">
-                <a>{{obra.items[index].monto}}</a>
+                <a>${{obra.items[index].monto}}</a>
               </b-form-group>
               <b-form-group label="Anticipo">
-                <a>{{redondear(anticipoProp(obra.items[index].monto))}} </a>
+                <a>${{redondear(anticipoProp(obra.items[index].monto))}} </a>
               </b-form-group>
               <b-form-group label="Porcentaje de avance">
               <b-form-input v-model="avances[index]" placeholder="%" type="number" />
               </b-form-group>
-              <b-form-group class="h5" label="Saldo a pagar">
-                <output> ${{redondear(saldoItem(obra.items[index].monto, avances[index]))}} </output>
-              </b-form-group>
+              <output class="h5">Saldo a pagar: ${{redondear(saldoItem(obra.items[index].monto, avances[index]))}} </output>
             </b-form-group>
         <b-button type="submit" variant="success">Crear</b-button>
       </b-form>

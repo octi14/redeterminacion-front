@@ -38,9 +38,7 @@ export default {
       obra: this.obra.id
       })
     this.items = this.certificados
-    console.log(this.items)
 
-    // consulto si no hay más recetas para traer
     // const newLength = this.$store.state.certificados.latest.length
     // this.all = newLength === this.lastLength
     // this.lastLength = newLength

@@ -62,6 +62,13 @@
                   <b-form-group label="Nombre:" label-cols-sm="3" label-cols-md="2">
                     <b-form-input v-model="items[index].item" type="text" />
                   </b-form-group>
+                  <!-- <b-form-text> Categoría </b-form-text>
+                  <b-form-select v-model="items[index].categoria" class="mb-3">
+                    <b-form-select-option
+                    v-for="categoria in categorias"
+                    :key="categoria.id"
+                    :value="categoria">{{categoria.nombre}}</b-form-select-option>
+                  </b-form-select> -->
                   <b-form-group label="Monto:" label-cols-sm="3" label-cols-md="2">
                     <b-form-input v-model="items[index].monto" type="float" />
                   </b-form-group>
@@ -79,8 +86,24 @@
                 </div>
               </div>
             </b-list-group-item>
+            <b-btn class="col-md-3 my-2" @click="addItem">Agregar Item</b-btn>
+          <hr />
+          <h3>Ponderación</h3>
+            <b-list-group-item
+              v-for="(_, index) in ponderacion"
+              :key="index"
+              class="pr-12"
+            >
+              <div class="row no-gutters">
+                <div class="col-md-12">
+                  <strong>{{ponderacion[index].categoria.nombre}}</strong>
+                  <b-form-group label="Porcentaje" class="col-md-12 my-1" label-cols-sm="5" label-cols-md="2">
+                    <b-form-input class="col-md-3" v-model="ponderacion[index].porcentaje" type="number" />
+                  </b-form-group>
+                </div>
+              </div>
+            </b-list-group-item>
           </b-list-group>
-          <b-btn @click="addItem">Agregar Item</b-btn>
           <hr />
         <b-btn type="submit">Enviar</b-btn>
       </b-form>
@@ -113,44 +136,58 @@ export default {
       decreto: '',
       plazo_obra: '',
       anticipo_finan: '',
+      ponderacion: [],
+      categorias: [],
     }
   },
   async fetch() {
-    // await this.$store.dispatch('ingredients/getIngredients')
+    await this.$store.dispatch('categorias/getAll')
+    this.categorias = this.$store.state.categorias.all
+    for (var i = 0; i < this.categorias.length; i++) {
+      this.ponderacion.push({
+        categoria: this.categorias[i],
+        porcentaje: null,
+      })
+    }
     // await this.$store.dispatch('tags/getTags')
   },
   fetchOnServer: false,
   methods: {
     async onSubmitCreateFile() {
-      try {
-        const userToken = this.$store.state.user.token
-        await this.$store.dispatch('obras/create', {
-          userToken,
-          obra: {
-            expediente: this.expediente,
-            objeto: this.objeto,
-            presup_oficial: this.presup_oficial,
-            adjudicado: this.adjudicado,
-            proveedor: this.proveedor,
-            cotizacion: this.cotizacion,
-            garantia_contrato: this.garantia_contrato,
-            adjudicacion: this.adjudicacion,
-            items: this.items,
-            contrato: this.contrato,
-            fecha_contrato: this.fecha_contrato,
-            ordenanza: this.ordenanza,
-            decreto: this.decreto,
-            plazo_obra: this.plazo_obra,
-            anticipo_finan: this.anticipo_finan,
-          },
-        })
-        this.$bvToast.toast('Creada correctamente', {
-          title: 'Creada',
-          variant: 'success',
-          appendToast: true,
-          solid: true,
-        })
-        await this.$router.push('/')
+    for (var i = 0; i < this.ponderacion.length; i++) {
+      const id = this.ponderacion[i].categoria.id
+      this.ponderacion[i].categoria = id
+    }
+    try {
+      const userToken = this.$store.state.user.token
+      await this.$store.dispatch('obras/create', {
+        userToken,
+        obra: {
+          expediente: this.expediente,
+          objeto: this.objeto,
+          presup_oficial: this.presup_oficial,
+          adjudicado: this.adjudicado,
+          proveedor: this.proveedor,
+          cotizacion: this.cotizacion,
+          garantia_contrato: this.garantia_contrato,
+          adjudicacion: this.adjudicacion,
+          items: this.items,
+          contrato: this.contrato,
+          fecha_contrato: this.fecha_contrato,
+          ordenanza: this.ordenanza,
+          decreto: this.decreto,
+          plazo_obra: this.plazo_obra,
+          anticipo_finan: this.anticipo_finan,
+          ponderacion: this.ponderacion,
+        },
+      })
+      this.$bvToast.toast('Creada correctamente', {
+        title: 'Creada',
+        variant: 'success',
+        appendToast: true,
+        solid: true,
+      })
+      await this.$router.push('/')
       } catch (e) {
         this.$bvToast.toast('Error Cargando la Obra', {
           title: 'Error',
@@ -169,6 +206,10 @@ export default {
     deleteItem(index) {
       this.items.splice(index, 1)
     },
+    // categorias() {
+    //   console.log(this.$store.state.categorias.all)
+    //   return this.$store.state.categorias.all
+    // },
   },
 }
 </script>

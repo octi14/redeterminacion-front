@@ -1,47 +1,37 @@
-const formatCertif = (CertifResponse) => ({
-  id: CertifResponse._id,
-  obra: CertifResponse.obra,
-  items: CertifResponse.items.map(formatItem),
-})
-
-const formatItem = (ItemsData) => ({
-  item: ItemsData.item,
-  contratado: ItemsData.contratado,
-  anticipo: ItemsData.anticipo,
-  avance: ItemsData.avance,
-  saldo: ItemsData.saldo,
+const formatCateg = (CategResponse) => ({
+  id: CategResponse._id,
+  nombre: CategResponse.nombre,
 })
 
 module.exports = {
   getLatest: async (axios,
     //  { skip = 0, limit = 6 }
      ) => {
-    const certifsResponse = await axios.$get('/certificados', {
+    const categsResponse = await axios.$get('/categorias', {
       // params: {
       //   skip,
       //   limit,
       // },
     })
-    return certifsResponse.data.map(formatCertif)
+    return categsResponse.data.map(formatCateg)
   },
-  search: async (
-    axios,
-    { obra }
-  ) => {
-    const filesResponse = await axios.$post('/certificados/search', {
-      obra,
-      // agrego condicionalmente los parámetros de busqueda
-      // (no se agregan los que están vacíos)
-      // ...(obra.length && { obra }),
-      // ...(objeto.length && { objeto }),
-      // ...(adjudicado.length && { adjudicado }),
-    })
-    return filesResponse.data.map(formatCertif)
-  },
-  getSingle: async (axios, { id }) => {
-    const certifResponse = await axios.$get(`/certificados/${id}`)
-    return formatCertif(certifResponse.data)
-  },
+  // search: async (
+  //   axios,
+  //   { obra = ''}
+  // ) => {
+  //   const filesResponse = await axios.$post('/certificados/search', {
+  //     // agrego condicionalmente los parámetros de busqueda
+  //     // (no se agregan los que están vacíos)
+  //     ...(obra.length && { obra }),
+  //     // ...(objeto.length && { objeto }),
+  //     // ...(adjudicado.length && { adjudicado }),
+  //   })
+  //   return filesResponse.data.map(formatCertif)
+  // },
+  // getSingle: async (axios, { id }) => {
+  //   const certifResponse = await axios.$get(`/certificados/${id}`)
+  //   return formatCertif(certifResponse.data)
+  // },
   // searchCertifs: async (
   //   axios,
   //   { expediente = '', objeto = '', adjudicado = '' }

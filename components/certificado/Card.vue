@@ -12,9 +12,9 @@
         <h6>Anticipo: ${{ redondear(item.anticipo) }}</h6>
         <h6>Avance: {{ redondear(item.avance) }}%</h6>
         <h6>Saldo: ${{ redondear(item.saldo) }}</h6>
-
         <!-- <h5>{{ certificado.fecha_contrato }}</h5> -->
       </b-form-group>
+      <b-button @click="onRedeterminar"> Redeterminar </b-button>
     </b-card-body>
   </b-card>
 </template>
@@ -42,6 +42,8 @@ export default {
     redondear(numero) {
       return Number(numero).toFixed(2)
     },
+    onRedeterminar() {
+    }
   },
 }
 </script>

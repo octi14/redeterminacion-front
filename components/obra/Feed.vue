@@ -47,7 +47,6 @@ export default {
   async fetch() {
     await this.$store.dispatch('obras/getAll')
     this.items = this.obras
-    console.log(this.items)
 
     // consulto si no hay más recetas para traer
     // const newLength = this.$store.state.obras.latest.length

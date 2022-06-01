@@ -62,6 +62,7 @@
                         v-model="item.item"
                         placeholder="Item"
                       />
+
                     </b-form-group>
                     <b-form-group label="Monto"
                     description="Solo números"
@@ -108,22 +109,27 @@ export default {
       items: [
         {
           item: '',
+          categoria: '',
           monto: 0,
         },
         {
           item: '',
+          categoria: '',
           monto: 0,
         },
         {
           item: '',
+          categoria: '',
           monto: 0,
         },
         {
           item: '',
+          categoria: '',
           monto: 0,
         },
         {
           item: '',
+          categoria: '',
           monto: 0,
         },
       ],

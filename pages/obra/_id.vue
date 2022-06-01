@@ -124,7 +124,7 @@
               <div>
                 <div class="layout" v-for="item in obra.items" :key="item.item">
                   <p class="col col-main">
-                    <strong class="h5"> - {{item.item}} </strong>
+                    <strong class="h6"> - {{item.item}} </strong>
                   </p>
                   <p class="col col-complementary" role="complementary">
                     <a> ${{item.monto}} </a>

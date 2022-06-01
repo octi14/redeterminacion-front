@@ -1,21 +1,20 @@
-const CertificadoService = require('../service/certificado')
+const CategoriaService = require('../service/categoria')
 
 export const state = () => ({
   single: null,
-  latest: [],
-  certifs: [],
+  all: [],
 })
 
 export const actions = {
   async getAll({ commit, state }) {
-    const found = await CertificadoService.getLatest(this.$axios, {
+    const found = await CategoriaService.getLatest(this.$axios, {
       // skip: state.latest.length,
     })
-    commit('setLatest', found)
+    commit('setAll', found)
   },
-  async search({ commit, state }, { obra }) {
+  async search({ commit, state }, { search }) {
     const found = await CertificadoService.search(this.$axios, {
-      obra,
+      search,
     })
     commit('setMany', found)
   },
@@ -55,8 +54,8 @@ export const actions = {
 }
 
 export const mutations = {
-  setLatest(state, filesList) {
-    state.latest = filesList
+  setAll(state, filesList) {
+    state.all = filesList
     // [...state.latest, ...filesList]
   },
   setSingle(state, singleFile) {

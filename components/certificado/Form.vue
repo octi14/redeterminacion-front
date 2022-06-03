@@ -13,7 +13,7 @@
               <b-form-group label="Anticipo">
                 <a>${{format(redondear(anticipoProp(obra.items[index].monto)))}} </a>
               </b-form-group>
-              <b-form-group label="Porcentaje de avance">
+              <b-form-group label="Porcentaje de avance (dejar en blanco en caso de no necesitarlo)">
               <b-form-input v-model="avances[index]" placeholder="%" type="number" />
               </b-form-group>
               <output class="h5">Saldo a pagar: ${{format(redondear(saldoItem(obra.items[index].monto, avances[index])))}} </output>
@@ -181,6 +181,9 @@ export default {
       this.anticipo_finan = anticipo_finan
       // this.tags = JSON.parse(JSON.stringify(tags))
       this.items = JSON.parse(JSON.stringify(items))
+      for (var i = 0; i < this.obra.items.length; i++) {
+        this.avances.push(0)
+      }
       // this.instructions = JSON.parse(JSON.stringify(instructions))
     },
     redondear(numero) {

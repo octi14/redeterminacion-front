@@ -296,7 +296,7 @@ export default {
           userToken,
         })
         // this.editing = false
-        await this.$router.push('/')
+        await this.$router.push('/obra/feed')
       } catch (e) {
         this.$bvToast.toast('Error Editando', {
           title: 'Error',

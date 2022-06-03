@@ -98,7 +98,7 @@
                 <div class="col-md-12">
                   <strong>{{ponderacion[index].categoria.nombre}}</strong>
                   <b-form-group label="Porcentaje" class="col-md-12 my-1" label-cols-sm="5" label-cols-md="2">
-                    <b-form-input class="col-md-3" v-model="ponderacion[index].porcentaje" type="number" />
+                    <b-form-input class="col-md-3 my-2" v-model="ponderacion[index].porcentaje" type="number" />
                   </b-form-group>
                 </div>
               </div>

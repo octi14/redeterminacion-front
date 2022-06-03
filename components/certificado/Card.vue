@@ -8,10 +8,10 @@
         <!-- <NuxtLink :to="{ name: 'certificado-id', props: { id: certificado.id } }"> -->
           <strong class="h5">{{ item.item }}</strong>
         <!-- </NuxtLink> -->
-        <h6>Contratado: ${{ redondear(item.contratado) }}</h6>
-        <h6>Anticipo: ${{ redondear(item.anticipo) }}</h6>
-        <h6>Avance: {{ redondear(item.avance) }}%</h6>
-        <h6>Saldo: ${{ redondear(item.saldo) }}</h6>
+        <h6>Contratado: ${{ format(redondear(item.contratado)) }}</h6>
+        <h6>Anticipo: ${{ format(redondear(item.anticipo)) }}</h6>
+        <h6>Avance: {{ item.avance }}%</h6>
+        <h6>Saldo: ${{ format(redondear(item.saldo)) }}</h6>
         <!-- <h5>{{ certificado.fecha_contrato }}</h5> -->
       </b-form-group>
       <b-button @click="onRedeterminar"> Redeterminar </b-button>
@@ -43,7 +43,11 @@ export default {
       return Number(numero).toFixed(2)
     },
     onRedeterminar() {
-    }
+    },
+    format(value) {
+        let val = (value/1).toFixed(2).replace('.', ',')
+        return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+    },
   },
 }
 </script>

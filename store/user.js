@@ -31,9 +31,9 @@ export const actions = {
           appendToast: true,
           solid: true,
         })
-      //commit('logout')
+      commit('logout')
     }
-    await this.$router.push('/')
+    await this.$router.push('/obra/feed')
   },
   // async register({ dispatch }, { email, password }) {
   //   // TODO: add loading

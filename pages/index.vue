@@ -4,10 +4,7 @@
       <div class="row justify-content-center">
         <div class="col col-sm-8">
           <div class="card shadow-lg">
-            <template v-if="isAuthenticated">
-              <ObraFeed />
-            </template>
-            <template v-else>
+            <template>
               <LoginForm />
             </template>
           </div>

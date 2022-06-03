@@ -102,7 +102,7 @@
                   <strong>Cotización</strong><br>
                 </p>
                 <p class="col col-complementary" role="complementary">
-                  <a>${{ obra.cotizacion }}</a>
+                  <a>${{ format(obra.cotizacion) }}</a>
                 </p>
               </div>
               <div class="layout">
@@ -118,7 +118,7 @@
                   <strong>Presupuesto oficial</strong><br>
                 </p>
                 <p class="col col-complementary" role="complementary">
-                  <a>${{ obra.presup_oficial }}</a>
+                  <a>${{ format(obra.presup_oficial) }}</a>
                 </p>
               </div>
               <div>
@@ -127,7 +127,7 @@
                     <strong class="h6"> - {{item.item}} </strong>
                   </p>
                   <p class="col col-complementary" role="complementary">
-                    <a> ${{item.monto}} </a>
+                    <a> ${{ format(item.monto) }} </a>
                   </p>
                 </div>
               </div>
@@ -144,7 +144,7 @@
                   <strong>Adjudicación</strong><br>
                 </p>
                 <p class="col col-complementary" role="complementary">
-                  <a>${{ obra.adjudicacion }}</a>
+                  <a>{{ obra.adjudicacion }}</a>
                 </p>
               </div>
               <div class="layout">
@@ -335,6 +335,10 @@ export default {
     },
     onResetEdit() {
       this.editing = false
+    },
+    format(value) {
+        let val = (value/1).toFixed(2).replace('.', ',')
+        return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
     },
   },
 }

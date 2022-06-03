@@ -6,17 +6,17 @@
       @submit.stop.prevent="onSubmit"
       @reset.stop.prevent="onResetForm">
             <b-form-group label="Item"  class="my-4" v-for="(_, index) in obra.items" :key="index">
-                <a>{{obra.items[index].item}}</a>
+                <a>{{ obra.items[index].item }}</a>
               <b-form-group class="my-3" label="Contratado">
-                <a>${{obra.items[index].monto}}</a>
+                <a>${{ format(obra.items[index].monto) }}</a>
               </b-form-group>
               <b-form-group label="Anticipo">
-                <a>${{redondear(anticipoProp(obra.items[index].monto))}} </a>
+                <a>${{format(redondear(anticipoProp(obra.items[index].monto)))}} </a>
               </b-form-group>
               <b-form-group label="Porcentaje de avance">
               <b-form-input v-model="avances[index]" placeholder="%" type="number" />
               </b-form-group>
-              <output class="h5">Saldo a pagar: ${{redondear(saldoItem(obra.items[index].monto, avances[index]))}} </output>
+              <output class="h5">Saldo a pagar: ${{format(redondear(saldoItem(obra.items[index].monto, avances[index])))}} </output>
             </b-form-group>
         <b-button type="submit" variant="success">Crear</b-button>
       </b-form>
@@ -185,6 +185,10 @@ export default {
     },
     redondear(numero) {
       return Number(numero).toFixed(2)
+    },
+    format(value) {
+      let val = (value/1).toFixed(2).replace('.', ',')
+      return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
     },
   },
 }

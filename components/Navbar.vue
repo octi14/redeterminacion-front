@@ -8,7 +8,7 @@
             v-if="isAuthenticated"
             class="nav-link"
             active-class="active"
-            to="/"
+            to="/obra/feed"
           >
               Inicio
           </NuxtLink>

@@ -23,6 +23,7 @@ export const actions = {
           appendToast: true,
           solid: true,
         })
+        await this.$router.push('/obra/feed')
     } catch (e) {
       window &&
         window.$nuxt.$bvToast.toast('Error iniciando sesión', {
@@ -33,7 +34,6 @@ export const actions = {
         })
       commit('logout')
     }
-    await this.$router.push('/obra/feed')
   },
   // async register({ dispatch }, { email, password }) {
   //   // TODO: add loading

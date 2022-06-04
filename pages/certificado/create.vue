@@ -190,7 +190,7 @@ export default {
           appendToast: true,
           solid: true,
         })
-        await this.$router.push('/')
+        await this.$router.push('/obra/feed')
       } catch (e) {
         this.$bvToast.toast('Error Cargando la Obra', {
           title: 'Error',

@@ -1,5 +1,5 @@
 <template>
-  <b-navbar toggleable="md" type="dark" variant="primary">
+  <b-navbar toggleable="lg" type="dark" variant="primary">
     <div class="container">
       <!-- <b-navbar-toggle target="nav-collapse"></b-navbar-toggle> -->
       <b-collapse id="nav-collapse" is-nav>
@@ -20,11 +20,21 @@
             active-class="active"
             to="/obra/create"
           >
-              Crear
+              Nueva obra
+          </NuxtLink>
+        </b-navbar-nav>
+        <b-navbar-nav>
+          <NuxtLink
+            v-if="isAuthenticated"
+            class="nav-link"
+            active-class="active"
+            to="/indices/menu"
+          >
+              Índices
           </NuxtLink>
         </b-navbar-nav>
         <b-input type="text"
-         class="my-1 justify-content-center"
+         class="my-1 col-md-7  mx-auto justify-content-center"
          v-if="isAuthenticated"
          v-model="search"
          placeholder="Buscar obra"

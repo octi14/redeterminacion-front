@@ -4,16 +4,16 @@ import LoginForm from 'C:/Users/rocto/Desktop/dev/Redeterminación/front/compone
 import Navbar from 'C:/Users/rocto/Desktop/dev/Redeterminación/front/components/Navbar.vue'
 import NuxtLogo from 'C:/Users/rocto/Desktop/dev/Redeterminación/front/components/NuxtLogo.vue'
 import Tutorial from 'C:/Users/rocto/Desktop/dev/Redeterminación/front/components/Tutorial.vue'
-import CommentForm from 'C:/Users/rocto/Desktop/dev/Redeterminación/front/components/comment/Form.vue'
-import ContainersForm from 'C:/Users/rocto/Desktop/dev/Redeterminación/front/components/containers/Form.vue'
+import ObraForm from 'C:/Users/rocto/Desktop/dev/Redeterminación/front/components/obra/Form.vue'
+import CertificadoForm from 'C:/Users/rocto/Desktop/dev/Redeterminación/front/components/certificado/Form.vue'
 import ContainersSection from 'C:/Users/rocto/Desktop/dev/Redeterminación/front/components/containers/Section.vue'
-import ProfileCard from 'C:/Users/rocto/Desktop/dev/Redeterminación/front/components/profile/Card.vue'
-import ProfileFollowButton from 'C:/Users/rocto/Desktop/dev/Redeterminación/front/components/profile/FollowButton.vue'
+import ProfileCard from 'C:/Users/rocto/Desktop/dev/Redeterminación/front/components/obra/Card.vue'
+// import ProfileFollowButton from 'C:/Users/rocto/Desktop/dev/Redeterminación/front/components/profile/FollowButton.vue'
 import ProfileForm from 'C:/Users/rocto/Desktop/dev/Redeterminación/front/components/profile/Form.vue'
-import RecipeCard from 'C:/Users/rocto/Desktop/dev/Redeterminación/front/components/recipe/Card.vue'
-import RecipeComments from 'C:/Users/rocto/Desktop/dev/Redeterminación/front/components/recipe/Comments.vue'
-import RecipeFavButton from 'C:/Users/rocto/Desktop/dev/Redeterminación/front/components/recipe/FavButton.vue'
-import RecipeFeed from 'C:/Users/rocto/Desktop/dev/Redeterminación/front/components/recipe/Feed.vue'
+import CertificadoCard from 'C:/Users/rocto/Desktop/dev/Redeterminación/front/components/certificado/Card.vue'
+// import RecipeComments from 'C:/Users/rocto/Desktop/dev/Redeterminación/front/components/recipe/Comments.vue'
+// import RecipeFavButton from 'C:/Users/rocto/Desktop/dev/Redeterminación/front/components/recipe/FavButton.vue'
+import ObraFeed from 'C:/Users/rocto/Desktop/dev/Redeterminación/front/components/obra/Feed.vue'
 import RecipeIngredientsList from 'C:/Users/rocto/Desktop/dev/Redeterminación/front/components/recipe/IngredientsList.vue'
 import RecipeRatingForm from 'C:/Users/rocto/Desktop/dev/Redeterminación/front/components/recipe/RatingForm.vue'
 
@@ -33,14 +33,14 @@ Vue.component('ContainersForm', ContainersForm)
 Vue.component('LazyContainersForm', ContainersForm)
 Vue.component('ContainersSection', ContainersSection)
 Vue.component('LazyContainersSection', ContainersSection)
-Vue.component('ProfileCard', ProfileCard)
-Vue.component('LazyProfileCard', ProfileCard)
+Vue.component('ObraCard', ObraCard)
+Vue.component('LazyObraCard', ObraCard)
 Vue.component('ProfileFollowButton', ProfileFollowButton)
 Vue.component('LazyProfileFollowButton', ProfileFollowButton)
 Vue.component('ProfileForm', ProfileForm)
 Vue.component('LazyProfileForm', ProfileForm)
-Vue.component('RecipeCard', RecipeCard)
-Vue.component('LazyRecipeCard', RecipeCard)
+Vue.component('CertificadoCard', CertificadoCard)
+Vue.component('LazyCertificadoCard', CertificadoCard)
 Vue.component('RecipeComments', RecipeComments)
 Vue.component('LazyRecipeComments', RecipeComments)
 Vue.component('RecipeFavButton', RecipeFavButton)

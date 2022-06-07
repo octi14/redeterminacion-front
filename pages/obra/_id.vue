@@ -136,7 +136,7 @@
                   <strong>Garantía Contrato</strong><br>
                 </p>
                 <p class="col col-complementary" role="complementary">
-                  <a>{{ obra.garantia_contrato }}%</a>
+                  <a>${{ format(obra.garantia_contrato) }}</a>
                 </p>
               </div>
               <div class="layout">
@@ -161,6 +161,14 @@
                 </p>
                 <p class="col col-complementary" role="complementary">
                   <a>{{ obra.fecha_contrato }}</a>
+                </p>
+              </div>
+              <div class="layout">
+                <p class="col col-main">
+                  <strong>Acta de inicio</strong><br>
+                </p>
+                <p class="col col-complementary" role="complementary">
+                  <a>{{ obra.acta_inicio }}</a>
                 </p>
               </div>
               <div class="layout">
@@ -192,7 +200,7 @@
                   <strong>Anticipo financiero</strong><br>
                 </p>
                 <p class="col col-complementary" role="complementary">
-                  <a>{{ obra.anticipo_finan }}</a>
+                  <a>${{ format(obra.anticipo_finan) }}</a>
                 </p>
               </div>
             </div>

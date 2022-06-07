@@ -1,9 +1,9 @@
 <template>
   <div class="page">
-    <div class="container my-5">
-      <h1>Crear nuevo archivo</h1>
+    <div class="container my-3">
+      <h1 class="text-center">Crear nueva obra</h1>
       <!-- <p>Agrega una nueva obra con sus características</p> -->
-      <b-form class="my-3" @submit.stop.prevent="onSubmitCreateFile">
+      <b-form class="my-2 col-md-7 mx-auto" @submit.stop.prevent="onSubmitCreateFile">
         <b-form-group>
             <b-form-group label="Expediente">
               <b-form-input v-model="expediente" type="text" />
@@ -35,6 +35,9 @@
         </b-form-group>
         <b-form-group label="Fecha Contrato">
           <b-form-input v-model="fecha_contrato" type="date" />
+        </b-form-group>
+        <b-form-group label="Acta de inicio">
+          <b-form-input v-model="acta_inicio" type="date" />
         </b-form-group>
         <b-form-group label="Ordenanza">
           <b-form-input v-model="ordenanza" type="text" />
@@ -94,12 +97,11 @@
               :key="index"
               class="pr-12"
             >
-              <div class="row no-gutters">
-                <div class="col-md-12">
+              <div class="row">
+                <div class="col">
                   <strong>{{ponderacion[index].categoria.nombre}}</strong>
-                  <b-form-group label="Porcentaje" class="col-md-12 my-1" label-cols-sm="5" label-cols-md="2">
-                    <b-form-input class="col-md-3 my-2" v-model="ponderacion[index].porcentaje" type="number" />
-                  </b-form-group>
+                  <b-form-text class="h6"> Porcentaje</b-form-text>
+                  <b-form-input class="col-md-4" placeholder="%" v-model="ponderacion[index].porcentaje" type="number" />
                 </div>
               </div>
             </b-list-group-item>
@@ -132,6 +134,7 @@ export default {
       adjudicacion: '',
       contrato: '',
       fecha_contrato: null,
+      acta_inicio: null,
       ordenanza: '',
       decreto: '',
       plazo_obra: '',
@@ -174,6 +177,7 @@ export default {
           items: this.items,
           contrato: this.contrato,
           fecha_contrato: this.fecha_contrato,
+          acta_inicio: this.acta_inicio,
           ordenanza: this.ordenanza,
           decreto: this.decreto,
           plazo_obra: this.plazo_obra,

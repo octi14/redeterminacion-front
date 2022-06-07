@@ -11,6 +11,7 @@ const formatFile = (FileResponse) => ({
   adjudicacion: FileResponse.adjudicacion,
   contrato: FileResponse.contrato,
   fecha_contrato: FileResponse.fecha_contrato.substr(0, 10),
+  acta_inicio: FileResponse.acta_inicio.substr(0,10),
   ordenanza: FileResponse.ordenanza,
   decreto: FileResponse.decreto,
   plazo_obra: FileResponse.plazo_obra,

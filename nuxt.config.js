@@ -2,7 +2,7 @@ export default {
   target: 'server',
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'front',
+    title: 'Redeterminación',
     htmlAttrs: {
       lang: 'en'
     },
@@ -41,8 +41,8 @@ export default {
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    baseURL: 'https://redeterminacion-back.herokuapp.com/',
-    // baseURL: 'http://localhost:5000/',  // Used as fallback if no runtime config is provided
+    // baseURL: 'https://redeterminacion-back.herokuapp.com/',
+    baseURL: 'http://localhost:5000/',  // Used as fallback if no runtime config is provided
   },
 
 

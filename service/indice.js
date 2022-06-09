@@ -1,7 +1,9 @@
 const formatIndice = (IndiceResponse) => ({
   id: IndiceResponse._id,
-  obra: IndiceResponse.obra,
-  items: IndiceResponse.items.map(formatItem),
+  año: IndiceResponse.año,
+  mes: IndiceResponse.mes,
+  categoria: IndiceResponse.categoria,
+  valor: IndiceResponse.valor,
 })
 
 const formatItem = (ItemsData) => ({

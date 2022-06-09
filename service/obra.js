@@ -16,6 +16,7 @@ const formatFile = (FileResponse) => ({
   decreto: FileResponse.decreto,
   plazo_obra: FileResponse.plazo_obra,
   anticipo_finan: FileResponse.anticipo_finan,
+  ponderacion: FileResponse.ponderacion,
   createdAt: new Date(FileResponse.createdAt),
 })
 

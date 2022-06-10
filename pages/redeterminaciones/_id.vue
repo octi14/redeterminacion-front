@@ -6,11 +6,6 @@
           <div class="col mx-auto">
           <div class="container mx-auto">
           <!-- Edit -->
-          <!-- <CertificadoForm
-          v-show="adding"
-          :obra="obra"
-          @submit="onSubmitCreateCertif">
-          </CertificadoForm> -->
           <!-- View -->
           <h2 class="mx-auto text-center"> Redeterminar certificado </h2>
 
@@ -23,11 +18,10 @@
           <b-form class="col mx-auto">
             <h5> Acta de inicio: {{ this.obra.acta_inicio }} </h5>
             <h6> Introducir fecha de cancelación </h6>
-            <b-form-input class="col-md-2" placeholder="Mes" v-model="indiceDestino"> </b-form-input>
-            <b-form-input class="col-md-2" placeholder="Año" v-model="indiceDestino"> </b-form-input>
+            <b-form-input class="col-md-2" placeholder="Mes" v-model="fechaCancelacion" type="date"> </b-form-input>
             <p> Los importes se calcularán teniendo en cuenta la variación entre los índices de los meses de cancelación y de acta de inicio. </p>
-            <b-button type="submit" variant="primary"> Aplicar índices </b-button>
           </b-form>
+          <b-button variant="primary" @click="onApplyIndex"> Aplicar índices </b-button>
           <div class="row mx-auto">
             <b-button class="col-md-3 badge-success"
               variant="info"
@@ -113,7 +107,12 @@
                   <a>${{ item.saldo }} </a>
                 </p>
               </div>
-
+              <hr/>
+              <div class="container">
+                <p class="col col-main">
+                  <strong>Redeterminación materiales </strong>
+                  <p>$ {{ format(redeterminar(ponderar(item.saldo, obra.ponderacion[0].porcentaje))) }} </p>
+              </div>
           </div>
         </div>
       </div>
@@ -129,7 +128,7 @@ export default {
     return {
       certificado: null,
       obra: null,
-      fechaDestino: null,
+      fechaCancelacion: null,
       indiceOrigen: null,
       indiceDestino: null,
     }
@@ -147,27 +146,12 @@ export default {
     this.obra = this.$store.state.obras.single
   },
   fetchOnServer: false,
-  computed: {
-    // formattedDate() {
-    //   const formatter = new Intl.DateTimeFormat('es-AR', {
-    //     dateStyle: 'full',
-    //     timeStyle: 'short',
-    //   })
-    //   return formatter.format(this.obra.fecha_contrato)
-    // },
-  },
   activated() {
     this.certificado = null
     this.obra = null
     this.$fetch()
   },
   methods: {
-    agregarCertif() {
-      this.adding = !this.adding
-    },
-    editObra() {
-      this.editing = true
-    },
     async onSubmitEditObra({ obra }) {
       try {
         const userToken = this.$store.state.user.token
@@ -247,6 +231,27 @@ export default {
         let val = (value/1).toFixed(2).replace('.', ',')
         return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
     },
+    async onApplyIndex(){
+      const mes = new Date(this.obra.acta_inicio).getUTCMonth() +1
+      const año = new Date(this.obra.acta_inicio).getFullYear()
+      await this.$store.dispatch('indices/search', {
+        mes,
+        año,
+      })
+      this.indiceOrigen = this.$store.state.indices.indices[0].valor
+      const mes2 = new Date(this.fechaCancelacion).getUTCMonth() +1
+      const año2 = new Date(this.fechaCancelacion).getFullYear()
+      await this.$store.dispatch('indices/search', {
+        mes: mes2,
+        año: año2,
+      })
+      this.indiceDestino = this.$store.state.indices.indices[0].valor
+      console.log(this.indiceOrigen)
+      console.log(this.indiceDestino)
+    },
+    redeterminar(monto) {
+      return monto * ( (this.indiceDestino/this.indiceOrigen) -1)
+    }
   },
 }
 </script>

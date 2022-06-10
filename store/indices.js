@@ -13,9 +13,10 @@ export const actions = {
     })
     commit('setLatest', found)
   },
-  async search({ commit, state }, { obra }) {
+  async search({ commit, state }, { mes, año }) {
     const found = await IndiceService.search(this.$axios, {
-      obra,
+      mes,
+      año,
     })
     commit('setMany', found)
   },
@@ -62,7 +63,7 @@ export const mutations = {
   setSingle(state, singleFile) {
     state.single = singleFile
   },
-  setMany(state, certifList) {
-    state.certifs = certifList
+  setMany(state, indiceList) {
+    state.indices = indiceList
   }
 }

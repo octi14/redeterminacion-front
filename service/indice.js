@@ -27,10 +27,11 @@ module.exports = {
   },
   search: async (
     axios,
-    { obra }
+    { mes, año }
   ) => {
     const filesResponse = await axios.$post('/indices/search', {
-      obra,
+      mes,
+      año,
       // agrego condicionalmente los parámetros de busqueda
       // (no se agregan los que están vacíos)
       // ...(obra.length && { obra }),

@@ -16,13 +16,13 @@
               Agregar certificado
             </b-button> -->
           <b-form class="col mx-auto">
-            <h5> Acta de inicio: {{ this.obra.acta_inicio }} </h5>
+            <h5 class="col-main"> Acta de inicio: {{ this.obra.acta_inicio }} </h5>
             <h6> Introducir fecha de cancelación </h6>
             <b-form-input class="col-md-2" placeholder="Mes" v-model="fechaCancelacion" type="date"> </b-form-input>
             <p> Los importes se calcularán teniendo en cuenta la variación entre los índices de los meses de cancelación y de acta de inicio. </p>
           </b-form>
           <b-button variant="primary" @click="onApplyIndex"> Aplicar índices </b-button>
-          <div class="row mx-auto">
+          <!-- <div class="row mx-auto">
             <b-button class="col-md-3 badge-success"
               variant="info"
               @click="editObra"
@@ -39,7 +39,7 @@
               Eliminar
             </b-button>
 
-          </div>
+          </div> -->
 
             <!-- <b-modal id="bv-modal-example" hide-footer>
               <template #modal-title>
@@ -53,11 +53,9 @@
             </b-modal> -->
           </div>
         </div>
-            <div class="container" v-for="item in certificado.items" :key="item.id">
+            <div class="container mx-auto" v-for="item in certificado.items" :key="item.id">
               <div class="layout">
-                <a class="col mx-auto" role="complementary">
-                  <h4>{{ item.item }}</h4>
-                </a>
+                  <strong class="row h5">{{ item.item }}</strong>
               </div>
               <div class="layout">
                 <p class="col col-main">
@@ -77,7 +75,7 @@
               </div>
               <div class="layout">
                 <p class="col col-main">
-                  <strong>Proporcional mano de obra</strong><br>
+                  <strong>Proporcional gastos generales</strong><br>
                 </p>
                 <p class="col col-complementary" role="complementary">
                   <a>${{ format(ponderar(item.saldo, obra.ponderacion[1].porcentaje)) }}</a>
@@ -85,7 +83,7 @@
               </div>
               <div class="layout">
                 <p class="col col-main">
-                  <strong>Proporcional combustible</strong><br>
+                  <strong>Proporcional mano de obra</strong><br>
                 </p>
                 <p class="col col-complementary" role="complementary">
                   <a>${{ format(ponderar(item.saldo, obra.ponderacion[2].porcentaje)) }}</a>
@@ -93,26 +91,38 @@
               </div>
               <div class="layout">
                 <p class="col col-main">
-                  <strong>Proporcional gastos generales</strong><br>
+                  <strong>Proporcional combustible</strong><br>
                 </p>
                 <p class="col col-complementary" role="complementary">
                   <a>${{ format(ponderar(item.saldo, obra.ponderacion[3].porcentaje)) }}</a>
                 </p>
               </div>
-              <div class="layout">
-                <p class="col col-main">
-                  <strong>Saldo redeterminado</strong><br>
-                </p>
-                <p class="col col-complementary" role="complementary">
-                  <a>${{ item.saldo }} </a>
-                </p>
-              </div>
-              <hr/>
+              <!-- <hr/> -->
               <div class="container">
                 <p class="col col-main">
                   <strong>Redeterminación materiales </strong>
-                  <p>$ {{ format(redeterminar(ponderar(item.saldo, obra.ponderacion[0].porcentaje))) }} </p>
+                  <p>$ {{ format(redeterminarMateriales(ponderar(item.saldo, obra.ponderacion[0].porcentaje))) }} </p>
               </div>
+              <div class="container">
+                <p class="col col-main">
+                  <strong>Redeterminación gastos generales </strong>
+                  <p>$ {{ format(redeterminarGenerales(ponderar(item.saldo, obra.ponderacion[1].porcentaje))) }} </p>
+              </div>
+              <div class="container">
+                <p class="col col-main">
+                  <strong>Redeterminación mano de obra </strong>
+                  <p>$ {{ format(redeterminarManoObra(ponderar(item.saldo, obra.ponderacion[2].porcentaje))) }} </p>
+              </div>
+              <div class="container">
+                <p class="col col-main">
+                  <strong>Redeterminación combustible </strong>
+                  <p>$ {{ format(redeterminarCombustible(ponderar(item.saldo, obra.ponderacion[3].porcentaje))) }} </p>
+              </div>              <div class="container">
+                <p class="col col-main">
+                  <strong class="h4">Total redeterminado </strong>
+                  <p>$ {{ format(redeterminarCombustible(ponderar(item.saldo, obra.ponderacion[3].porcentaje))) }} </p>
+              </div>
+              <hr/>
           </div>
         </div>
       </div>
@@ -129,8 +139,14 @@ export default {
       certificado: null,
       obra: null,
       fechaCancelacion: null,
-      indiceOrigen: null,
-      indiceDestino: null,
+      origenMateriales: 0,
+      destinoMateriales: 0,
+      origenManoObra: 0,
+      destinoManoObra: 0,
+      origenGenerales: 0,
+      destinoGenerales: 0,
+      origenCombustible: 0,
+      destinoCombustible: 0,
     }
   },
   async fetch() {
@@ -238,19 +254,32 @@ export default {
         mes,
         año,
       })
-      this.indiceOrigen = this.$store.state.indices.indices[0].valor
+      this.origenMateriales = this.$store.state.indices.indices[0].valor
+      this.origenGenerales = this.$store.state.indices.indices[1].valor
+      this.origenManoObra = this.$store.state.indices.indices[2].valor
+      this.origenCombustible = this.$store.state.indices.indices[3].valor
       const mes2 = new Date(this.fechaCancelacion).getUTCMonth() +1
       const año2 = new Date(this.fechaCancelacion).getFullYear()
       await this.$store.dispatch('indices/search', {
         mes: mes2,
         año: año2,
       })
-      this.indiceDestino = this.$store.state.indices.indices[0].valor
-      console.log(this.indiceOrigen)
-      console.log(this.indiceDestino)
+      this.destinoMateriales = this.$store.state.indices.indices[0].valor
+      this.destinoGenerales = this.$store.state.indices.indices[1].valor
+      this.destinoManoObra = this.$store.state.indices.indices[2].valor
+      this.destinoCombustible = this.$store.state.indices.indices[3].valor
     },
-    redeterminar(monto) {
-      return monto * ( (this.indiceDestino/this.indiceOrigen) -1)
+    redeterminarMateriales(monto) {
+      return monto * ( (this.destinoMateriales/this.origenMateriales) -1)
+    },
+    redeterminarGenerales(monto) {
+      return monto * ( (this.destinoGenerales/this.origenGenerales) -1)
+    },
+    redeterminarManoObra(monto) {
+      return monto * ( (this.destinoManoObra/this.origenManoObra) -1)
+    },
+    redeterminarCombustible(monto) {
+      return monto * ( (this.destinoCombustible/this.origenCombustible) -1)
     }
   },
 }

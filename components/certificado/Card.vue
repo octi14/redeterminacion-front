@@ -14,9 +14,7 @@
         <h6>Saldo: ${{ format(redondear(item.saldo)) }}</h6>
         <!-- <h5>{{ certificado.fecha_contrato }}</h5> -->
       </b-form-group>
-      <b-button>
        <NuxtLink :to="{ name: 'redeterminaciones-id', params: { id: certificado.id } }"> Redeterminar </NuxtLink>
-      </b-button>
     </b-card-body>
   </b-card>
 </template>

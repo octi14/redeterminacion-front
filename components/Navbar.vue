@@ -8,7 +8,7 @@
             v-if="isAuthenticated"
             class="nav-link"
             active-class="active"
-            to="/obra/feed"
+            to="/"
           >
               Inicio
           </NuxtLink>
@@ -25,7 +25,7 @@
         </b-navbar-nav>
         <b-navbar-nav>
           <NuxtLink
-            v-if="isAuthenticated"
+            v-if="isAuthenticated && isAdmin"
             class="nav-link"
             active-class="active"
             to="/indices/menu"
@@ -75,6 +75,9 @@ export default {
   computed: {
     isAuthenticated() {
       return Boolean(this.$store.state.user.token)
+    },
+    isAdmin(){
+      return Boolean(this.$store.state.user.admin)
     },
     username() {
       return this.$store.state.user.username

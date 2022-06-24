@@ -1,11 +1,14 @@
 <template>
   <div class="page">
-    <div class="search shadow">
+    <div class="background shadow-lg">
       <div class="row justify-content-center">
-        <div class="col col-sm-8">
+        <div class="col col-sm-7">
           <div class="card shadow-lg">
-            <template>
+            <template v-if="!isAuthenticated">
               <LoginForm />
+            </template>
+            <template v-else>
+              <ObraFeed />
             </template>
           </div>
         </div>
@@ -30,10 +33,10 @@ export default {
 </script>
 
 <style type="text/css">
-.search {
-  padding: 11em 0;
-  /* background-size: cover; */
+.background {
+  padding: 0% 0;
+  background-size: cover;
   object-fit: contain;
-  background-color: #c6d7ec;
+  background-color: #e7f5f5;
 }
 </style>

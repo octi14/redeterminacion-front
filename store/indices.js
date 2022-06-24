@@ -20,6 +20,14 @@ export const actions = {
     })
     commit('setMany', found)
   },
+  async searchSingle({ commit, state }, { mes, año, categoria}) {
+    const found = await IndiceService.searchSingle(this.$axios, {
+      mes,
+      año,
+      categoria,
+    })
+    commit('setSingle', found)
+  },
   async getSingle({ commit, state }, { id }) {
     commit('setSingle', null)
     const found = await IndiceService.getSingle(this.$axios, {

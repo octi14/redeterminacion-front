@@ -40,6 +40,22 @@ module.exports = {
     })
     return filesResponse.data.map(formatIndice)
   },
+  searchSingle: async (
+    axios,
+    { mes, año, categoria }
+  ) => {
+    const filesResponse = await axios.$post('/indices/searchSingle', {
+      mes,
+      año,
+      categoria,
+      // agrego condicionalmente los parámetros de busqueda
+      // (no se agregan los que están vacíos)
+      // ...(obra.length && { obra }),
+      // ...(objeto.length && { objeto }),
+      // ...(adjudicado.length && { adjudicado }),
+    })
+    return formatIndice(filesResponse.data)
+  },
   getSingle: async (axios, { id }) => {
     const indiceResponse = await axios.$get(`/indices/${id}`)
     return formatIndice(indiceResponse.data)

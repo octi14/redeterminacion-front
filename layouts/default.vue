@@ -20,6 +20,7 @@ export default {
         id: localStorage.getItem('userId'),
         username: localStorage.getItem('username'),
         token: localStorage.getItem('userToken'),
+        admin: localStorage.getItem('userAdmin')
       }
       this.$store.commit('user/setAuthenticated', authUser)
       // this.$store.dispatch('user/getProfile', {

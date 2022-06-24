@@ -8,11 +8,12 @@ const formatProfile = ({
   }
 }
 
-const formatAuthenticatedUser = ({ _id: id, username, token }) => {
+const formatAuthenticatedUser = ({ _id: id, username, token, admin }) => {
   return {
     id,
     username,
     token,
+    admin,
   }
 }
 

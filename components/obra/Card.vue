@@ -10,6 +10,11 @@
       <h5>{{ obra.adjudicado }}</h5>
       <h5>{{ obra.fecha_contrato }}</h5>
     </b-card-body>
+      <NuxtLink class="col-md-3" :to="{ name: 'obra-id', params: { id: obra.id } }">
+        <b-button variant="success" class="col-sm-12">
+          <h5 class="text-center">Detalles</h5>
+        </b-button>
+      </NuxtLink>
   </b-card>
 </template>
 

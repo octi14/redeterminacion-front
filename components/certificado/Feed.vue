@@ -7,6 +7,7 @@
         :key="certificado.id"
         class="transition-col col-6 col-lg-10 mb-1"
       >
+      <strong> Certificado {{certificado.index}} </strong>
         <CertificadoCard :certificado="certificado" :obra="obra" class="h-100 row" />
       </div>
       <!-- <div class="table-responsive col-md-12" v-for="table in tables" :key="table.id">

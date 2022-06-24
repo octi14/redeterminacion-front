@@ -4,6 +4,7 @@ export const state = () => ({
   username: null,
   id: null,
   token: null,
+  admin: null,
 })
 
 export const actions = {
@@ -13,9 +14,9 @@ export const actions = {
         username,
         password,
       })
-      const { id, token } = authUser
+      const { id, token, admin } = authUser
       // guardo el token y el username en state
-      commit('setAuthenticated', { id, username, token })
+      commit('setAuthenticated', { id, username, token, admin })
       window &&
         window.$nuxt.$bvToast.toast('Ingreso exitoso.', {
           // title: '',
@@ -23,7 +24,7 @@ export const actions = {
           appendToast: true,
           solid: true,
         })
-        await this.$router.push('/obra/feed')
+        await this.$router.push('/')
     } catch (e) {
       window &&
         window.$nuxt.$bvToast.toast('Error iniciando sesión', {
@@ -59,25 +60,31 @@ export const actions = {
 }
 
 export const mutations = {
-  setAuthenticated(state, { id, username, token }) {
+  setAuthenticated(state, { id, username, token, admin }) {
     state.id = id
     state.username = username
     state.token = token
+    state.admin = admin
 
+    // localStorage.setItem('userAdmin', JSON.stringify(admin))
     if (process.client) {
       localStorage.setItem('userId', id)
       localStorage.setItem('username', username)
       localStorage.setItem('userToken', token)
+      localStorage.setItem('userAdmin', admin)
+
     }
   },
   logout(state) {
     state.id = null
     state.username = null
     state.token = null
+    state.admin = null
     if (process.client) {
       localStorage.removeItem('userId')
       localStorage.removeItem('username')
       localStorage.removeItem('userToken')
+      localStorage.removeItem('userAdmin')
     }
   },
 }

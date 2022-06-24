@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page background">
     <template v-if="obra">
       <!-- <img
         v-if="recipe.image"
@@ -38,28 +38,35 @@
           <!-- View -->
           <div v-show="!editing" class="row justify-content-center">
 
-            <b-button class="col-md-3 badge-success"
+            <b-button v-if="!watchingCertif" class="col-md-3 badge-success"
               variant="info"
               @click="onShowCertif"
             >
               Ver certificados
             </b-button>
 
-            <b-button v-if="!adding" class="col-md-3 badge-success"
+            <b-button v-else class="col-md-3 badge-success"
+              variant="info"
+              @click="onShowCertif"
+            >
+              Ocultar certificados
+            </b-button>
+
+            <b-button v-if="!adding && isAdmin" class="col-md-3 badge-success"
               variant="info"
               @click="agregarCertif"
             >
               Agregar certificado
             </b-button>
 
-            <b-button v-else class="col-md-3 badge-success"
+            <b-button v-if="adding && isAdmin" class="col-md-3 badge-success"
               variant="info"
               @click="agregarCertif"
             >
               Volver
             </b-button>
 
-            <b-button v-if="!adding" class="col-md-3 badge-success"
+            <b-button v-if="!adding && isAdmin" class="col-md-3 badge-success"
               variant="info"
               @click="editObra"
             >
@@ -67,7 +74,7 @@
             </b-button>
 
             <b-button
-              v-if="!adding"
+              v-if="!adding && isAdmin"
               class="col-md-3"
               block
               variant="danger"
@@ -83,7 +90,7 @@
               <div class="d-block text-center">
                 <h3>Está seguro de que desea eliminar este archivo?</h3>
               </div>
-              <b-button class="mt-3" variant="danger" block @click="onSubmitDelete">Si</b-button>
+              <b-button class="mt-3" variant="danger" block @click="onSubmitDelete; $bvModal.hide('bv-modal-example')">Si</b-button>
               <b-button class="mt-3" variant="secondary" block @click="$bvModal.hide('bv-modal-example')">No</b-button>
             </b-modal>
           </div>
@@ -231,6 +238,7 @@
 import ObraService from '~/service/obra'
 
 export default {
+  middleware: ['authenticated'],
   data() {
     return {
       watchingCertif: false,
@@ -254,6 +262,11 @@ export default {
     //   })
     //   return formatter.format(this.obra.fecha_contrato)
     // },
+    isAdmin(){
+      console.log(this.$store.state)
+      console.log(localStorage)
+      return Boolean(this.$store.state.user.admin == "true")
+    },
   },
   activated() {
     this.obra = null
@@ -347,6 +360,11 @@ export default {
     format(value) {
         let val = (value/1).toFixed(2).replace('.', ',')
         return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+    },
+    isAdmin(){
+      console.log(this.$store.state)
+      console.log(localStorage)
+      return (this.$store.state.user.admin == true) || (this.$store.state.user.admin == "true")
     },
   },
 }

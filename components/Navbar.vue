@@ -77,7 +77,7 @@ export default {
       return Boolean(this.$store.state.user.token)
     },
     isAdmin(){
-      return Boolean(this.$store.state.user.admin)
+      return (this.$store.state.user.admin == true) || (this.$store.state.user.admin == "true")
     },
     username() {
       return this.$store.state.user.username

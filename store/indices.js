@@ -15,8 +15,8 @@ export const actions = {
   },
   async search({ commit, state }, { mes, año }) {
     const found = await IndiceService.search(this.$axios, {
-      mes,
-      año,
+      mes: mes,
+      año: año,
     })
     commit('setMany', found)
   },

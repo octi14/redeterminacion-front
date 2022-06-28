@@ -1,14 +1,14 @@
 <template>
-  <div class="obra-feed" style='padding-left:160px'>
+  <div class="certificado-feed" style='padding-left:160px'>
     <!-- <b-nav-text class="fs-5" variant="primary" align="center"> Obras públicas </b-nav-text> -->
-    <transition-group name="list" tag="div" class="row">
+    <div class="row">
       <div
-        v-for="certificado in certificados"
-        :key="certificado.id"
+        v-for="(_, index) in certificados"
+        :key="index"
         class="transition-col col-6 col-lg-10 mb-1"
       >
-      <strong> Certificado {{certificado.index}} </strong>
-        <CertificadoCard :certificado="certificado" :obra="obra" class="h-100 row" />
+      <strong class="row my-2 h6 justify-content-center"> Certificado {{index +1}} </strong>
+        <CertificadoCard :certificado="certificados[index]" :obra="obra" class="h-1 row" />
       </div>
       <!-- <div class="table-responsive col-md-12" v-for="table in tables" :key="table.id">
         <b-table hover head-variant="dark" :items="items" :fields="fields"></b-table>
@@ -16,7 +16,7 @@
       <template slot="actions" slot-scope="data">
         <b-button class="btn btn-dark" @click="update(data)" :ref="'btn' + data.index">Update</b-button>
       </template> -->
-    </transition-group>
+    </div>
   </div>
 </template>
 

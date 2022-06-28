@@ -103,8 +103,11 @@
               <!-- <hr/> -->
               <div class="container">
                 <p class="col col-main">
-                  <strong>Redeterminación materiales </strong>
-                  <p>$ {{ format(redeterminarMateriales(ponderar(certificado.items[index].saldo, obra.ponderacion[0].porcentaje))) }} </p>
+                  <strong>Redeterminación materiales </strong> <br>
+                </p>
+                <p class="col col-complementary">
+                  <a>$ {{ format(redeterminarMateriales(ponderar(certificado.items[index].saldo, obra.ponderacion[0].porcentaje))) }} </a>
+                </p>
               </div>
               <div class="container">
                 <p class="col col-main">
@@ -124,7 +127,7 @@
               <div class="container">
                 <p class="col col-main">
                   <strong class="h4">Total redeterminado </strong>
-                  <p>$ {{ totales[index] }} </p>
+                  <p class="col col-complementary">$ {{ totales[index] }} </p>
               </div>
               <hr />
           </div>
@@ -152,8 +155,8 @@ export default {
       destinoManoObra: 0,
       origenGenerales: 0,
       destinoGenerales: 0,
-      origenCombustible: 0,
-      destinoCombustible: 0,
+      origenEquipos: 0,
+      destinoEquipos: 0,
 
       totales: [],
     }
@@ -262,13 +265,13 @@ export default {
     async onApplyIndex(){
       const mes = new Date(this.obra.acta_inicio).getUTCMonth() +1
       const año = new Date(this.obra.acta_inicio).getFullYear()
-      if(this.obra.fechaAnterior){
+      if(this.fechaAnterior){
         mes = new Date(this.fechaAnterior).getUTCMonth() +1
         año = new Date(this.fechaAnterior).getFullYear()
       }
       await this.$store.dispatch('indices/search', {
-        mes,
-        año,
+        mes: mes,
+        año: año,
       })
       this.origenMateriales = this.$store.state.indices.indices[0].valor
       this.origenGenerales = this.$store.state.indices.indices[1].valor

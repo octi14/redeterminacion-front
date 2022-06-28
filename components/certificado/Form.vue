@@ -18,6 +18,7 @@
               </b-form-group>
               <output class="h5">Saldo a pagar: ${{format(redondear(saldoItem(obra.items[index].monto, avances[index])))}} </output>
             </b-form-group>
+            <!-- <strong class="h5"> Saldo total: ${{format(redondear(saldoAPagar()))}} </strong> <hr/> -->
         <b-button type="submit" variant="success">Crear</b-button>
       </b-form>
     </div>
@@ -53,6 +54,7 @@ export default {
           saldo: '',
         },
       ],
+      saldoTotal: 0,
     }
   },
   async fetch() {
@@ -63,6 +65,8 @@ export default {
   created() {
     this.initializeObra()
     this.initializeCertif()
+  },
+  computed: {
   },
   methods: {
     anticipoProp(monto) {
@@ -192,6 +196,12 @@ export default {
     format(value) {
       let val = (value/1).toFixed(2).replace('.', ',')
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+    },
+    saldoAPagar(){
+      for (var i = 0; i < this.obra.items.length; i++) {
+        this.saldoTotal = this.saldoTotal + this.saldoItem(this.obra.items[i].monto, this.avances[i])
+      }
+      return this.saldoTotal
     },
   },
 }

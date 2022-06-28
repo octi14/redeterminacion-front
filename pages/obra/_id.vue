@@ -129,12 +129,12 @@
                 </p>
               </div>
               <div>
-                <div class="layout" v-for="item in obra.items" :key="item.item">
+                <div class="layout" v-for="(_,index) in obra.items" :key="index">
                   <p class="col col-main">
-                    <strong class="h6"> - {{item.item}} </strong>
+                    <strong class="h6"> - {{index +1}}. {{obra.items[index].item}} </strong>
                   </p>
                   <p class="col col-complementary" role="complementary">
-                    <a> ${{ format(item.monto) }} </a>
+                    <a> ${{ format(obra.items[index].monto) }} </a>
                   </p>
                 </div>
               </div>
@@ -143,7 +143,7 @@
                   <strong>Garantía Contrato</strong><br>
                 </p>
                 <p class="col col-complementary" role="complementary">
-                  <a>${{ format(obra.garantia_contrato) }}</a>
+                  <a>${{ format((obra.cotizacion * obra.garantia_contrato) /100) }}</a>
                 </p>
               </div>
               <div class="layout">
@@ -263,8 +263,6 @@ export default {
     //   return formatter.format(this.obra.fecha_contrato)
     // },
     isAdmin(){
-      console.log(this.$store.state)
-      console.log(localStorage)
       return Boolean(this.$store.state.user.admin == "true")
     },
   },

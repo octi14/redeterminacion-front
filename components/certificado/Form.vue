@@ -5,7 +5,8 @@
       <b-form class="my-1"
       @submit.stop.prevent="onSubmit"
       @reset.stop.prevent="onResetForm">
-            <b-form-group label="Item"  class="my-4" v-for="(_, index) in obra.items" :key="index">
+            <b-form-group label=""  class="my-4" v-for="(_, index) in obra.items" :key="index">
+                <strong> Item {{index +1 }} </strong> <br>
                 <a>{{ obra.items[index].item }}</a>
               <b-form-group class="my-3" label="Contratado">
                 <a>${{ format(obra.items[index].monto) }}</a>
@@ -211,6 +212,13 @@ export default {
 output {
   border: 1px solid black;
   border-radius: 5px;
+}
+
+.b-form-group {
+  margin-bottom: 0%;
+}
+.strong h5 a{
+  margin-bottom: 0%;
 }
 
 </style>

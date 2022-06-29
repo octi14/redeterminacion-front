@@ -1,11 +1,16 @@
 <template>
-  <div class="mx-auto row-md-12">
-    <b-card no-body class="certificado-card mx-auto" v-if="visible">
+  <div class="mx-auto">
+    <b-button class="mx-auto my-2 justify-content-center" variant="info" @click="toggleShow">
+      {{ visible ? "Ocultar" : "Mostrar"}}
+    </b-button>
+    <b-card no-body class="certificado-card col-md-12 text-center" v-if="visible">
       <!-- <NuxtLink :to="{ name: 'certificado-id', params: { id: certificado.id } }">
         <img :src="certificado.image" class="card-img-top" :alt="certificado.name" />
       </NuxtLink> -->
-      <b-card-body class="text-center">
-        <b-button v-if="visible" variant="info" @click="visible= !visible"> Ocultar </b-button>
+      <NuxtLink class="row-sm-2" :to="{ name: 'redeterminaciones-id', params: { id: certificado.id } }">
+        <b-button variant="success" class="my-1 col-sm-3"> Redeterminar  </b-button>
+      </NuxtLink>
+      <b-card-body class="col-md-12 text-center">
         <b-form-group  v-for="(_, index) in certificado.items" :key="index">
           <!-- <NuxtLink :to="{ name: 'certificado-id', props: { id: certificado.id } }"> -->
             <strong class="h5"> Item {{index +1 }}: {{ certificado.items[index].item }}</strong>
@@ -16,10 +21,8 @@
           <h6>Saldo: ${{ format(redondear(certificado.items[index].saldo)) }}</h6>
           <!-- <h5>{{ certificado.fecha_contrato }}</h5> -->
         </b-form-group>
-        <NuxtLink :to="{ name: 'redeterminaciones-id', params: { id: certificado.id } }"> Redeterminar </NuxtLink>
       </b-card-body>
     </b-card>
-    <b-button v-else class="mx-auto justify-content-center" variant="info" @click="visible = !visible"> Mostrar </b-button>
   </div>
 </template>
 
@@ -54,6 +57,15 @@ export default {
         let val = (value/1).toFixed(2).replace('.', ',')
         return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
     },
+    toggleShow(){
+      this.visible = !this.visible
+    },
   },
 }
 </script>
+
+<style>
+.col h6{
+  margin-bottom: 0%;
+}
+</style>

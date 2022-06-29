@@ -1,6 +1,7 @@
 <template>
   <div class="obra-form">
-    <div class="card shadow-lg" style="color: white; background-color: #037F98">
+    <div class="card shadow-lg" style="color: black">
+      <strong class="h4 text-center my-3"> Editar obra </strong>
       <!-- <b-button align-center variant="danger" class="my-3 col-md-5 text-center" @click="onSolicitarRedet"> Solicitar redeterminación </b-button> -->
       <b-form
         class="my-4" style="margin-left:10px;margin-right:10px"
@@ -92,117 +93,6 @@
             <b-btn class="col-md-3 my-2" @click="addItem">Agregar Item</b-btn>
           </b-list-group>
           <hr />
-        <!-- <b-form-group label="Etiquetas:">
-          <b-form-checkbox-group
-            v-model="tags"
-            name="tags"
-            class="d-flex justify-content-center flex-wrap"
-            :options="tagsList"
-            value-field="id"
-            text-field="name"
-          >
-          </b-form-checkbox-group>
-        </b-form-group> -->
-
-        <!-- <hr /> -->
-        <!-- <h2>Ingredientes</h2>
-        <b-list-group class="mb-2">
-          <b-list-group-item
-            v-for="(_, index) in ingredients"
-            :key="index"
-            class="pr-0"
-          >
-            <div class="row no-gutters">
-              <div class="col">
-                <b-form-text>Ingrediente {{ index + 1 }}</b-form-text>
-                <b-form-group
-                  label="Ingrediente:"
-                  label-cols-sm="3"
-                  label-cols-md="2"
-                >
-                  <b-form-input
-                    v-model="ingredients[index].ingredient"
-                    type="text"
-                    list="ingredients-list"
-                  />
-                  <datalist id="ingredients-list">
-                    <option
-                      v-for="ingredientOption in ingredientsList"
-                      :key="ingredientOption.id"
-                    >
-                      {{ ingredientOption.name }}
-                    </option>
-                  </datalist>
-                </b-form-group>
-                <b-form-group
-                  label="Cantidad:"
-                  label-cols-sm="3"
-                  label-cols-md="2"
-                  description="Ej: 3 unidades, 4 gotas, 200 gramos, etc..."
-                >
-                  <b-form-input
-                    v-model="ingredients[index].quantity"
-                    type="text"
-                  />
-                </b-form-group>
-              </div>
-              <div class="col-auto mx-2">
-                <b-btn
-                  :disabled="ingredients.length <= 1"
-                  variant="danger"
-                  size="sm"
-                  @click="deleteIngredient(index)"
-                >
-                  x
-                </b-btn>
-              </div>
-            </div>
-          </b-list-group-item>
-        </b-list-group>
-        <b-btn @click="addIngredient">Agregar Ingrediente</b-btn> -->
-
-        <!-- <hr /> -->
-        <!-- <h2>Instrucciones</h2>
-        <b-list-group v-if="instructions" class="mb-2">
-          <b-list-group-item
-            v-for="(_, index) in instructions"
-            :key="index"
-            class="pr-0"
-          >
-            <div class="row no-gutters">
-              <div class="col">
-                <b-form-text>Paso {{ index + 1 }}</b-form-text>
-                <b-form-group label="Titulo:" label-cols-sm="3" label-cols-md="2">
-                  <b-form-input v-model="instructions[index].title" type="text" />
-                </b-form-group>
-                <b-form-group label="Imagen:" label-cols-sm="3" label-cols-md="2">
-                  <b-form-input v-model="instructions[index].image" type="text" />
-                </b-form-group>
-                <b-form-group
-                  label="Descripción:"
-                  label-cols-sm="3"
-                  label-cols-md="2"
-                >
-                  <b-form-textarea
-                    v-model="instructions[index].description"
-                  ></b-form-textarea>
-                </b-form-group>
-              </div>
-              <div class="col-auto mx-2">
-                <b-btn
-                  :disabled="instructions.length <= 1"
-                  variant="danger"
-                  size="sm"
-                  title="Eliminar Ingrediente"
-                  @click="deleteInstruction(index)"
-                >
-                  x
-                </b-btn>
-              </div>
-            </div>
-          </b-list-group-item>
-        </b-list-group>
-        <b-btn @click="addInstruction">Agregar Paso</b-btn> -->
         <hr />
         <b-button type="submit" variant="success">
           {{ create ? 'Crear' : 'Editar' }} Obra
@@ -281,6 +171,7 @@ export default {
         expediente: this.expediente,
         objeto: this.objeto,
         presup_oficial: this.presup_oficial,
+        proveedor: this.proveedor,
         cotizacion: this.cotizacion,
         adjudicado: this.adjudicado,
         contrato: this.contrato,
@@ -303,9 +194,6 @@ export default {
     onResetForm() {
       this.initialize()
       this.$emit('reset')
-    },
-    onSolicitarRedet(){
-
     },
     addItem() {
       this.items.push({

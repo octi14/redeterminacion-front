@@ -60,6 +60,7 @@ module.exports = {
     return formatFile(createdFile.data)
   },
   update: async (axios, { obra, userToken }) => {
+    console.log(obra.id)
     axios.setHeader('Access-Control-Allow-Origin', true)
     const updated = await axios.$put(
       `/obras/${obra.id}`,

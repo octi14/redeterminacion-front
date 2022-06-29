@@ -38,32 +38,18 @@
           <!-- View -->
           <div v-show="!editing" class="row justify-content-center">
 
-            <b-button v-if="!watchingCertif" class="col-md-3 badge-success"
+            <b-button class="col-md-3 badge-success"
               variant="info"
               @click="onShowCertif"
             >
-              Ver certificados
+            {{ watchingCertif ? 'Ocultar' : 'Ver' }} certificados
             </b-button>
 
-            <b-button v-else class="col-md-3 badge-success"
-              variant="info"
-              @click="onShowCertif"
-            >
-              Ocultar certificados
-            </b-button>
-
-            <b-button v-if="!adding && isAdmin" class="col-md-3 badge-success"
+            <b-button v-if="isAdmin" class="col-md-3 badge-success"
               variant="info"
               @click="agregarCertif"
             >
-              Agregar certificado
-            </b-button>
-
-            <b-button v-if="adding && isAdmin" class="col-md-3 badge-success"
-              variant="info"
-              @click="agregarCertif"
-            >
-              Volver
+            {{ adding ? 'Volver' : 'Agregar certificado' }}
             </b-button>
 
             <b-button v-if="!adding && isAdmin" class="col-md-3 badge-success"
@@ -297,7 +283,7 @@ export default {
           appendToast: true,
           solid: true,
         })
-        await this.$router.push('/obra/feed')
+        await this.$router.push('/')
       } catch (e) {
         this.$bvToast.toast('Error Editando', {
           title: 'Error',

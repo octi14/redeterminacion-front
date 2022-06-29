@@ -15,10 +15,11 @@ export default {}
 </script>
 
 <style>
-#app-logo {
+/* #app-logo {
   height: 48px;
-}
+} */
 .row p {
   margin-bottom: 0;
+  padding-bottom: 0;
 }
 </style>

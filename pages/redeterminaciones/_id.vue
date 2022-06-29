@@ -58,7 +58,7 @@
         </div>
             <div class="container mx-auto" v-for="(_,index) in certificado.items" :key="index">
               <div class="layout">
-                  <strong class="row h5">{{ certificado.items[index].item }}</strong>
+                  <strong class="row h5">{{index +1}}. {{ certificado.items[index].item }}</strong>
               </div>
               <div class="layout">
                 <p class="col col-main">
@@ -68,6 +68,7 @@
                   <a>${{ format(certificado.items[index].saldo) }}</a>
                 </p>
               </div>
+              <br>
               <div class="layout">
                 <p class="col col-main">
                   <strong>Proporcional materiales</strong><br>
@@ -94,37 +95,47 @@
               </div>
               <div class="layout">
                 <p class="col col-main">
-                  <strong>Proporcional combustible</strong><br>
+                  <strong>Proporcional equipos</strong><br>
                 </p>
                 <p class="col col-complementary" role="complementary">
                   <a>${{ format(ponderar(certificado.items[index].saldo, obra.ponderacion[3].porcentaje)) }}</a>
                 </p>
               </div>
               <!-- <hr/> -->
-              <div class="container">
+              <br>
+              <div class="layout">
                 <p class="col col-main">
                   <strong>Redeterminación materiales </strong> <br>
                 </p>
-                <p class="col col-complementary">
+                <p class="col col-complementary" role="complementary">
                   <a>$ {{ format(redeterminarMateriales(ponderar(certificado.items[index].saldo, obra.ponderacion[0].porcentaje))) }} </a>
                 </p>
               </div>
-              <div class="container">
+              <div class="layout">
                 <p class="col col-main">
                   <strong>Redeterminación gastos generales </strong>
-                  <p>$ {{ format(redeterminarGenerales(ponderar(certificado.items[index].saldo, obra.ponderacion[1].porcentaje))) }} </p>
+                </p>
+                <p class="col col-complementary" role="complementary">
+                  <a>$ {{ format(redeterminarGenerales(ponderar(certificado.items[index].saldo, obra.ponderacion[1].porcentaje))) }}</a>
+                </p>
               </div>
-              <div class="container">
+              <div class="layout">
                 <p class="col col-main">
                   <strong>Redeterminación mano de obra </strong>
-                  <p>$ {{ format(redeterminarManoObra(ponderar(certificado.items[index].saldo, obra.ponderacion[2].porcentaje))) }} </p>
+                  <p class="col col-complementary" role="complementary">
+                    <a>$ {{ format(redeterminarManoObra(ponderar(certificado.items[index].saldo, obra.ponderacion[2].porcentaje))) }}
+                    </a>
+                  </p>
               </div>
-              <div class="container">
+              <div class="layout">
                 <p class="col col-main">
                   <strong>Redeterminación equipos </strong>
-                  <p>$ {{ format(redeterminarEquipos(ponderar(certificado.items[index].saldo, obra.ponderacion[3].porcentaje))) }} </p>
+                </p>
+                <p class="col col-complementary" role="complementary">
+                  <a>$ {{ format(redeterminarEquipos(ponderar(certificado.items[index].saldo, obra.ponderacion[3].porcentaje))) }} </a>
+                </p>
               </div>
-              <div class="container">
+              <div class="layout">
                 <p class="col col-main">
                   <strong class="h4">Total redeterminado </strong>
                   <p class="col col-complementary">$ {{ totales[index] }} </p>
@@ -316,6 +327,9 @@ export default {
   flex: 1;
 }
 
+.col strong{
+  margin-bottom: 0%;
+}
 /* Responsive: */
 
 @media only screen and (min-width: 640px) {

@@ -1,5 +1,5 @@
 <template>
-  <b-navbar toggleable="lg" type="dark" variant="primary">
+  <b-navbar toggleable="sm" type="dark" variant="primary">
     <div class="container">
       <!-- <b-navbar-toggle target="nav-collapse"></b-navbar-toggle> -->
       <b-collapse id="nav-collapse" is-nav>
@@ -31,6 +31,16 @@
             to="/indices/menu"
           >
               Índices
+          </NuxtLink>
+        </b-navbar-nav>
+        <b-navbar-nav>
+          <NuxtLink
+            v-if="isAuthenticated && isAdmin"
+            class="nav-link"
+            active-class="active"
+            to="/indices/menu"
+          >
+              Normativas
           </NuxtLink>
         </b-navbar-nav>
         <b-input type="text"

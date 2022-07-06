@@ -7,9 +7,10 @@
       <!-- <NuxtLink :to="{ name: 'certificado-id', params: { id: certificado.id } }">
         <img :src="certificado.image" class="card-img-top" :alt="certificado.name" />
       </NuxtLink> -->
-      <NuxtLink class="row-sm-2" :to="{ name: 'redeterminaciones-id', params: { id: certificado.id } }">
-        <b-button variant="success" class="my-1 col-sm-3"> Redeterminar  </b-button>
+      <NuxtLink v-if="!certificado.redeterminado" class="row-sm-2" :to="{ name: 'redeterminaciones-id', params: { id: certificado.id } }">
+        <b-button variant="success" class="my-1 col-sm-3"> Redeterminación  </b-button>
       </NuxtLink>
+      <strong v-else> Redeterminado el {{ certificado.redeterminado }} </strong>
       <b-card-body class="col-md-12 text-center">
         <b-form-group  v-for="(_, index) in certificado.items" :key="index">
           <!-- <NuxtLink :to="{ name: 'certificado-id', props: { id: certificado.id } }"> -->

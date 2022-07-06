@@ -76,7 +76,7 @@
               <div class="d-block text-center">
                 <h3>Está seguro de que desea eliminar este archivo?</h3>
               </div>
-              <b-button class="mt-3" variant="danger" block @click="onSubmitDelete; $bvModal.hide('bv-modal-example')">Si</b-button>
+              <b-button class="mt-3" variant="danger" block @click="onSubmitDelete(); $bvModal.hide('bv-modal-example')">Si</b-button>
               <b-button class="mt-3" variant="secondary" block @click="$bvModal.hide('bv-modal-example')">No</b-button>
             </b-modal>
           </div>
@@ -114,16 +114,24 @@
                   <a>${{ format(obra.presup_oficial) }}</a>
                 </p>
               </div>
+
               <div>
-                <div class="layout" v-for="(_,index) in obra.items" :key="index">
-                  <p class="col col-main">
-                    <strong class="h6"> - {{index +1}}. {{obra.items[index].item}} </strong>
-                  </p>
-                  <p class="col col-complementary" role="complementary">
-                    <a> ${{ format(obra.items[index].monto) }} </a>
-                  </p>
+                <div class="container" v-if="watchItems">
+                  <b-button variant="outline-dark" class="my-3" @click="watchItems = !watchItems"> Ocultar Items </b-button>
+                  <div class="layout" v-for="(_,index) in obra.items" :key="index">
+                    <p class="col col-main">
+                      <strong class="h6"> - {{index +1}}. {{obra.items[index].item}} </strong>
+                    </p>
+                    <p class="col col-complementary" role="complementary">
+                      <a> ${{ format(obra.items[index].monto) }} </a>
+                    </p>
+                  </div>
+                </div>
+                <div v-else class="container my-3">
+                  <b-button variant="outline-dark" @click="watchItems = !watchItems"> Ver Items </b-button>
                 </div>
               </div>
+
               <div class="layout">
                 <p class="col col-main">
                   <strong>Garantía Contrato</strong><br>
@@ -228,6 +236,7 @@ export default {
   data() {
     return {
       watchingCertif: false,
+      watchItems: false,
       editing: false,
       adding: false,
       obra: null,

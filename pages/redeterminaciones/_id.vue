@@ -4,144 +4,109 @@
       <div class="container mx-auto">
         <div class="row mx-auto" v-if="obra">
           <div class="col mx-auto">
-          <div class="container mx-auto">
-          <!-- Edit -->
+            <div class="container mx-auto">
           <!-- View -->
-          <h2 class="mx-auto text-center"> Redeterminar certificado </h2>
+              <h2 class="mx-auto text-center"> Redeterminar certificado </h2>
 
-            <!-- <b-button class="col-md-3 badge-success"
-              variant="info"
-              @click="agregarCertif"
-            >
-              Agregar certificado
-            </b-button> -->
-          <b-form class="col mx-auto">
-            <h5 class="col-main"> Acta de inicio: {{ this.obra.acta_inicio }} </h5>
-            <h6> Fecha de última redeterminación: </h6>
-            <b-form-input class="col-md-2" placeholder="Mes" v-model="fechaAnterior" type="date"> </b-form-input>
-            <p> En caso de ser la primera redeterminación, se tomará como índice origen el correspondiente al mes de inicio de la obra. </p>
-            <hr/>
-            <h6> Fecha de cancelación: </h6>
-            <b-form-input class="col-md-2" placeholder="Mes" v-model="fechaCancelacion" type="date"> </b-form-input>
-          </b-form>
-          <b-button variant="primary" @click="onApplyIndex"> Aplicar índices </b-button>
-          <!-- <div class="row mx-auto">
-            <b-button class="col-md-3 badge-success"
-              variant="info"
-              @click="editObra"
-            >
-              Editar
-            </b-button>
-
-            <b-button
-              class="col-md-3"
-              block
-              variant="danger"
-              @click="$bvModal.show('bv-modal-example')"
-            >
-              Eliminar
-            </b-button>
-
-          </div> -->
-
-            <!-- <b-modal id="bv-modal-example" hide-footer>
-              <template #modal-title>
-                Eliminar certificado
-              </template>
-              <div class="d-block text-center">
-                <h3>Está seguro de que desea eliminar este certificado?</h3>
-              </div>
-              <b-button class="mt-3" variant="danger" block @click="onSubmitDelete">Si</b-button>
-              <b-button class="mt-3" variant="secondary" block @click="$bvModal.hide('bv-modal-example')">No</b-button>
-            </b-modal> -->
+              <b-form class="col mx-auto">
+                <h5 class="col-main"> Acta de inicio: {{ this.obra.acta_inicio }} </h5>
+                <h6> Fecha de última redeterminación: </h6>
+                <b-form-input class="col-md-2" placeholder="Mes" v-model="fechaAnterior" type="date"> </b-form-input>
+                <p> En caso de ser la primera redeterminación, se tomará como índice origen el correspondiente al mes de inicio de la obra. </p>
+                <hr/>
+                <h6> Fecha de cancelación: </h6>
+                <b-form-input class="col-md-2" placeholder="Mes" v-model="fechaCancelacion" type="date"> </b-form-input>
+              </b-form>
+              <b-button variant="primary" @click="onApplyIndex"> Aplicar índices </b-button>
+            </div>
           </div>
-        </div>
-            <div class="container mx-auto" v-for="(_,index) in certificado.items" :key="index">
-              <div class="layout">
-                  <strong class="row h5">{{index +1}}. {{ certificado.items[index].item }}</strong>
-              </div>
-              <div class="layout">
-                <p class="col col-main">
-                  <strong>Saldo original</strong><br>
-                </p>
+          <div class="container mx-auto" v-for="(_,index) in certificado.items" :key="index">
+            <div class="layout">
+                <strong class="row h5">{{index +1}}. {{ certificado.items[index].item }}</strong>
+            </div>
+            <div class="layout">
+              <p class="col col-main">
+                <strong>Saldo original</strong><br>
+              </p>
+              <p class="col col-complementary" role="complementary">
+                <a>${{ format(certificado.items[index].saldo) }}</a>
+              </p>
+            </div>
+            <br>
+            <div class="layout">
+              <p class="col col-main">
+                <strong>Proporcional materiales</strong><br>
+              </p>
+              <p class="col col-complementary" role="complementary">
+                <a>${{ format(ponderar(certificado.items[index].saldo, obra.ponderacion[0].porcentaje)) }}</a>
+              </p>
+            </div>
+            <div class="layout">
+              <p class="col col-main">
+                <strong>Proporcional gastos generales</strong><br>
+              </p>
+              <p class="col col-complementary" role="complementary">
+                <a>${{ format(ponderar(certificado.items[index].saldo, obra.ponderacion[1].porcentaje)) }}</a>
+              </p>
+            </div>
+            <div class="layout">
+              <p class="col col-main">
+                <strong>Proporcional mano de obra</strong><br>
+              </p>
+              <p class="col col-complementary" role="complementary">
+                <a>${{ format(ponderar(certificado.items[index].saldo, obra.ponderacion[2].porcentaje)) }}</a>
+              </p>
+            </div>
+            <div class="layout">
+              <p class="col col-main">
+                <strong>Proporcional equipos</strong><br>
+              </p>
+              <p class="col col-complementary" role="complementary">
+                <a>${{ format(ponderar(certificado.items[index].saldo, obra.ponderacion[3].porcentaje)) }}</a>
+              </p>
+            </div>
+            <!-- <hr/> -->
+            <br>
+            <div class="layout">
+              <p class="col col-main">
+                <strong>Redeterminación materiales </strong> <br>
+              </p>
+              <p class="col col-complementary" role="complementary">
+                <a>$ {{ format(redeterminarMateriales(ponderar(certificado.items[index].saldo, obra.ponderacion[0].porcentaje))) }} </a>
+              </p>
+            </div>
+            <div class="layout">
+              <p class="col col-main">
+                <strong>Redeterminación gastos generales </strong>
+              </p>
+              <p class="col col-complementary" role="complementary">
+                <a>$ {{ format(redeterminarGenerales(ponderar(certificado.items[index].saldo, obra.ponderacion[1].porcentaje))) }}</a>
+              </p>
+            </div>
+            <div class="layout">
+              <p class="col col-main">
+                <strong>Redeterminación mano de obra </strong>
                 <p class="col col-complementary" role="complementary">
-                  <a>${{ format(certificado.items[index].saldo) }}</a>
+                  <a>$ {{ format(redeterminarManoObra(ponderar(certificado.items[index].saldo, obra.ponderacion[2].porcentaje))) }}
+                  </a>
                 </p>
-              </div>
-              <br>
-              <div class="layout">
-                <p class="col col-main">
-                  <strong>Proporcional materiales</strong><br>
-                </p>
-                <p class="col col-complementary" role="complementary">
-                  <a>${{ format(ponderar(certificado.items[index].saldo, obra.ponderacion[0].porcentaje)) }}</a>
-                </p>
-              </div>
-              <div class="layout">
-                <p class="col col-main">
-                  <strong>Proporcional gastos generales</strong><br>
-                </p>
-                <p class="col col-complementary" role="complementary">
-                  <a>${{ format(ponderar(certificado.items[index].saldo, obra.ponderacion[1].porcentaje)) }}</a>
-                </p>
-              </div>
-              <div class="layout">
-                <p class="col col-main">
-                  <strong>Proporcional mano de obra</strong><br>
-                </p>
-                <p class="col col-complementary" role="complementary">
-                  <a>${{ format(ponderar(certificado.items[index].saldo, obra.ponderacion[2].porcentaje)) }}</a>
-                </p>
-              </div>
-              <div class="layout">
-                <p class="col col-main">
-                  <strong>Proporcional equipos</strong><br>
-                </p>
-                <p class="col col-complementary" role="complementary">
-                  <a>${{ format(ponderar(certificado.items[index].saldo, obra.ponderacion[3].porcentaje)) }}</a>
-                </p>
-              </div>
-              <!-- <hr/> -->
-              <br>
-              <div class="layout">
-                <p class="col col-main">
-                  <strong>Redeterminación materiales </strong> <br>
-                </p>
-                <p class="col col-complementary" role="complementary">
-                  <a>$ {{ format(redeterminarMateriales(ponderar(certificado.items[index].saldo, obra.ponderacion[0].porcentaje))) }} </a>
-                </p>
-              </div>
-              <div class="layout">
-                <p class="col col-main">
-                  <strong>Redeterminación gastos generales </strong>
-                </p>
-                <p class="col col-complementary" role="complementary">
-                  <a>$ {{ format(redeterminarGenerales(ponderar(certificado.items[index].saldo, obra.ponderacion[1].porcentaje))) }}</a>
-                </p>
-              </div>
-              <div class="layout">
-                <p class="col col-main">
-                  <strong>Redeterminación mano de obra </strong>
-                  <p class="col col-complementary" role="complementary">
-                    <a>$ {{ format(redeterminarManoObra(ponderar(certificado.items[index].saldo, obra.ponderacion[2].porcentaje))) }}
-                    </a>
-                  </p>
-              </div>
-              <div class="layout">
-                <p class="col col-main">
-                  <strong>Redeterminación equipos </strong>
-                </p>
-                <p class="col col-complementary" role="complementary">
-                  <a>$ {{ format(redeterminarEquipos(ponderar(certificado.items[index].saldo, obra.ponderacion[3].porcentaje))) }} </a>
-                </p>
-              </div>
-              <div class="layout">
-                <p class="col col-main">
-                  <strong class="h4">Total redeterminado </strong>
-                  <p class="col col-complementary">$ {{ totales[index] }} </p>
-              </div>
-              <hr />
+            </div>
+            <div class="layout">
+              <p class="col col-main">
+                <strong>Redeterminación equipos </strong>
+              </p>
+              <p class="col col-complementary" role="complementary">
+                <a>$ {{ format(redeterminarEquipos(ponderar(certificado.items[index].saldo, obra.ponderacion[3].porcentaje))) }} </a>
+              </p>
+            </div>
+            <div class="layout">
+              <p class="col col-main">
+                <strong class="h4">Total redeterminado </strong>
+                <p class="col col-complementary">$ {{ totales[index] }} </p>
+            </div>
+            <hr />
           </div>
+          <b-button variant="success" @click="onGuardar"> Guardar </b-button>
         </div>
       </div>
     </template>
@@ -170,6 +135,8 @@ export default {
       destinoEquipos: 0,
 
       totales: [],
+
+      redeterminacion: [],
     }
   },
   async fetch() {
@@ -274,11 +241,15 @@ export default {
         return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
     },
     async onApplyIndex(){
-      const mes = new Date(this.obra.acta_inicio).getUTCMonth() +1
-      const año = new Date(this.obra.acta_inicio).getFullYear()
+      var mes = new Date(this.obra.acta_inicio).getUTCMonth() +1
+      var año = new Date(this.obra.acta_inicio).getFullYear()
       if(this.fechaAnterior){
-        mes = new Date(this.fechaAnterior).getUTCMonth() +1
-        año = new Date(this.fechaAnterior).getFullYear()
+        var mess = new Date(this.fechaAnterior).getUTCMonth() +1
+        var añoo = new Date(this.fechaAnterior).getFullYear()
+        await this.$store.dispatch('indices/search', {
+          mes: mess,
+          año: añoo,
+        })
       }
       await this.$store.dispatch('indices/search', {
         mes: mes,
@@ -311,6 +282,41 @@ export default {
     },
     redeterminarEquipos(monto) {
       return monto * ( (this.destinoEquipos/this.origenEquipos) -1)
+    },
+    async onGuardar(){
+      for (var i = 0; i < this.certificado.items.length; i++) {
+        this.redeterminacion.push({
+          item: this.certificado.items[i].item,
+          saldo: this.obra.items[i].saldo,
+          materiales: this.redeterminarMateriales(this.ponderar(this.certificado.items[i].saldo, this.obra.ponderacion[0].porcentaje)),
+          generales: this.redeterminarGenerales(this.ponderar(this.certificado.items[i].saldo,this.obra.ponderacion[1].porcentaje)),
+          manoObra: this.redeterminarManoObra(this.ponderar(this.certificado.items[i].saldo,this.obra.ponderacion[2].porcentaje)),
+          equipos: this.redeterminarEquipos(this.ponderar(this.certificado.items[i].saldo,this.obra.ponderacion[3].porcentaje)),
+        })
+      }
+      try {
+        const userToken = this.$store.state.user.token
+        await this.$store.dispatch('redeterminaciones/create', {
+          obra: this.obra.id,
+          certificado: this.certificado.id,
+          items: this.redeterminacion,
+          userToken,
+        })
+        this.$bvToast.toast('Creada correctamente', {
+          title: 'Creada',
+          variant: 'success',
+          appendToast: true,
+          solid: true,
+        })
+        await this.$router.push('/obra/feed')
+      } catch (e) {
+        this.$bvToast.toast('Error creando la redeterminación', {
+          title: 'Error',
+          variant: 'danger',
+          appendToast: true,
+          solid: true,
+        })
+      }
     }
   },
 }

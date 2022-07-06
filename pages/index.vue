@@ -37,6 +37,6 @@ export default {
   padding: 0% 0;
   background-size: cover;
   object-fit: contain;
-  background-color: #e7f5f5;
+  background-color: #f5f8f9;
 }
 </style>

@@ -28,7 +28,7 @@
           <b-form-input v-model="garantia_contrato" type="number" placeholder="Solo números" />
         </b-form-group>
         <b-form-group label="Adjudicación">
-          <b-form-input v-model="adjudicacion" type="number" placeholder="Solo números"/>
+          <b-form-input v-model="adjudicacion" type="text"/>
         </b-form-group>
         <b-form-group label="Contrato">
           <b-form-input v-model="contrato" type="text" />

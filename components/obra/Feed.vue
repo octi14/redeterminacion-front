@@ -1,13 +1,13 @@
 <template>
   <div class="obra-feed">
     <b-nav-text class="text-center col-md-12" variant="primary">
-      <strong class="h1"> Últimos archivos </strong>
-      </b-nav-text>
-    <transition-group name="list" tag="div" class="row">
+      <strong class="h2"> Últimos archivos </strong>
+    </b-nav-text>
+    <transition-group name="list" tag="div" class="col">
       <div
         v-for="obra in obras"
         :key="obra.id"
-        class="transition-col col-12 col-lg-12 mb-1"
+        class="transition-col col-12 col-lg-12 mb-2"
       >
         <ObraCard :obra="obra" />
       </div>

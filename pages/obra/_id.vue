@@ -1,18 +1,6 @@
 <template>
   <div class="page background">
     <template v-if="obra">
-      <!-- <img
-        v-if="recipe.image"
-        :src="recipe.image"
-        :alt="recipe.name"
-        style="
-          display: block;
-          height: 100%;
-          max-height: 50vh;
-          width: 100%;
-          object-fit: cover;
-        "
-      /> -->
       <div class="container my-1 col-sm-12">
         <div class="row">
           <div class="col">

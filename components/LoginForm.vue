@@ -1,34 +1,40 @@
 <template>
-  <ContainersForm title="Ingresar">
-    <b-form @submit.stop.prevent="onSubmitLoginForm">
-      <b-form-group
-        id="input-group-username"
-        label="Usuario"
-        label-for="input-email"
-      >
-        <b-form-input
-          id="input-username"
-          v-model="form.username"
-          type="username"
-          required
-        ></b-form-input>
-      </b-form-group>
+  <div class="text-center">
+    <ContainersForm title="Bienvenido">
+      <strong> Inicie sesión para continuar </strong>
+      <b-form @submit.stop.prevent="onSubmitLoginForm">
+        <b-form-group
+          class="my-3"
+          id="input-group-username"
+          label="Usuario"
+          label-for="input-email"
+        >
+          <b-form-input
+            class="col-md-4 mx-auto"
+            id="input-username"
+            v-model="form.username"
+            type="username"
+            required
+          ></b-form-input>
+        </b-form-group>
 
-      <b-form-group
-        id="input-group-password"
-        label="Contraseña"
-        label-for="input-password"
-      >
-        <b-form-input
-          id="input-password"
-          v-model="form.password"
-          type="password"
-          required
-        ></b-form-input>
-      </b-form-group>
-      <b-button type="submit" variant="primary" style="margin-left:75px"> Ingresar </b-button>
-    </b-form>
-  </ContainersForm>
+        <b-form-group
+          id="input-group-password"
+          label="Contraseña"
+          label-for="input-password"
+        >
+          <b-form-input
+            class="col-md-4 mx-auto"
+            id="input-password"
+            v-model="form.password"
+            type="password"
+            required
+          ></b-form-input>
+        </b-form-group>
+        <b-button type="submit" variant="primary"> Ingresar </b-button>
+      </b-form>
+    </ContainersForm>
+  </div>
 </template>
 
 <script>
@@ -49,4 +55,3 @@ export default {
 }
 </script>
 
-<style type="text/css"></style>

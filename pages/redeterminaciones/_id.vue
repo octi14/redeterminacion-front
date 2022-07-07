@@ -99,11 +99,11 @@
                 <a>$ {{ format(redeterminarEquipos(ponderar(certificado.items[index].saldo, obra.ponderacion[3].porcentaje))) }} </a>
               </p>
             </div>
-            <div class="layout">
+            <!-- <div class="layout">
               <p class="col col-main">
                 <strong class="h4">Total redeterminado </strong>
                 <p class="col col-complementary">$ {{ totales[index] }} </p>
-            </div>
+            </div> -->
             <hr />
           </div>
           <b-button variant="success" @click="onGuardar"> Guardar </b-button>

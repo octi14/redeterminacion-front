@@ -52,14 +52,14 @@
         <b-navbar-nav class="ml-auto">
           <template v-if="isAuthenticated">
             <b-nav-item-dropdown :text="username" right>
-              <b-dropdown-item>
+              <!-- <b-dropdown-item>
                 <NuxtLink
                   v-if="isAuthenticated"
                   to="/obra/create"
                 >
                   Crear archivo
                 </NuxtLink>
-              </b-dropdown-item>
+              </b-dropdown-item> -->
               <b-dropdown-item @click="onUserLogout">
                 Cerrar Sesión
               </b-dropdown-item>
@@ -67,7 +67,7 @@
           </template>
           <template v-else>
             <NuxtLink class="nav-link" active-class="active" to="/">
-              Iniciar Sesión
+              <!-- Iniciar Sesión -->
             </NuxtLink>
           </template>
         </b-navbar-nav>

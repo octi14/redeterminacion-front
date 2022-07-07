@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <div class="background shadow-lg">
+    <div class="background shadow-sm">
       <div class="row justify-content-center">
         <div class="col col-sm-7">
           <div class="card shadow-lg">
@@ -36,7 +36,8 @@ export default {
 .background {
   padding: 0% 0;
   background-size: cover;
-  object-fit: contain;
+  object-fit: fill;
   background-color: #f5f8f9;
 }
+
 </style>

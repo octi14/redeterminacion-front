@@ -2,6 +2,7 @@ const formatCertif = (CertifResponse) => ({
   id: CertifResponse._id,
   obra: CertifResponse.obra,
   items: CertifResponse.items.map(formatItem),
+  redeterminado: CertifResponse.redeterminado,
 })
 
 const formatItem = (ItemsData) => ({

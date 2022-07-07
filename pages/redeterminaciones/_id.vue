@@ -11,11 +11,11 @@
               <b-form class="col mx-auto">
                 <h5 class="col-main"> Acta de inicio: {{ this.obra.acta_inicio }} </h5>
                 <h6> Fecha de última redeterminación: </h6>
-                <b-form-input class="col-md-2" placeholder="Mes" v-model="fechaAnterior" type="date"> </b-form-input>
+                <b-form-input class="col-md-2" v-model="fechaAnterior" type="date"> </b-form-input>
                 <p> En caso de ser la primera redeterminación, se tomará como índice origen el correspondiente al mes de inicio de la obra. </p>
                 <hr/>
                 <h6> Fecha de cancelación: </h6>
-                <b-form-input class="col-md-2" placeholder="Mes" v-model="fechaCancelacion" type="date"> </b-form-input>
+                <b-form-input class="col-md-2" v-model="fechaCancelacion" type="date"> </b-form-input>
               </b-form>
               <b-button variant="primary" @click="onApplyIndex"> Aplicar índices </b-button>
             </div>
@@ -161,49 +161,6 @@ export default {
     this.$fetch()
   },
   methods: {
-    async onSubmitEditObra({ obra }) {
-      try {
-        const userToken = this.$store.state.user.token
-        await this.$store.dispatch('obras/update', {
-          obra,
-          userToken,
-        })
-        // this.editing = false
-        this.$bvToast.toast('', {
-          title: 'Archivo actualizado.',
-          variant: 'success',
-          appendToast: true,
-          solid: true,
-        })
-        await this.$router.push('/')
-      } catch (e) {
-        this.$bvToast.toast('Error Editando', {
-          title: 'Error',
-          variant: 'danger',
-          appendToast: true,
-          solid: true,
-        })
-      }
-    },
-    async onSubmitCreateCertif({ certificado }) {
-      try {
-        const userToken = this.$store.state.user.token
-        await this.$store.dispatch('certificados/create', {
-          certificado,
-          userToken,
-        })
-        // this.editing = false
-        // await this.$router.push('/')
-      } catch (e) {
-        this.$bvToast.toast('Error Editando', {
-          title: 'Error',
-          variant: 'danger',
-          appendToast: true,
-          solid: true,
-        })
-      }
-      this.adding = false
-    },
     async onSubmitDelete() {
       try {
         const userToken = this.$store.state.user.token
@@ -244,17 +201,18 @@ export default {
       var mes = new Date(this.obra.acta_inicio).getUTCMonth() +1
       var año = new Date(this.obra.acta_inicio).getFullYear()
       if(this.fechaAnterior){
-        var mess = new Date(this.fechaAnterior).getUTCMonth() +1
-        var añoo = new Date(this.fechaAnterior).getFullYear()
+        const otroMes = new Date(this.fechaAnterior).getUTCMonth() +1
+        const otroAño = new Date(this.fechaAnterior).getFullYear()
         await this.$store.dispatch('indices/search', {
-          mes: mess,
-          año: añoo,
+          mes: otroMes,
+          año: otroAño,
+        })
+      } else {
+        await this.$store.dispatch('indices/search', {
+          mes: mes,
+          año: año,
         })
       }
-      await this.$store.dispatch('indices/search', {
-        mes: mes,
-        año: año,
-      })
       this.origenMateriales = this.$store.state.indices.indices[0].valor
       this.origenGenerales = this.$store.state.indices.indices[1].valor
       this.origenManoObra = this.$store.state.indices.indices[2].valor

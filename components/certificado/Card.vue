@@ -20,6 +20,7 @@
           <h6>Anticipo: ${{ format(redondear(certificado.items[index].anticipo)) }}</h6>
           <h6>Avance: {{ certificado.items[index].avance }}%</h6>
           <h6>Saldo: ${{ format(redondear(certificado.items[index].saldo)) }}</h6>
+          <strong v-if="certificado.redeterminado">Saldo redeterminado: ${{ format(redondear(totalRedet(redeterminacion.items[index]))) }}  </strong>
           <!-- <h5>{{ certificado.fecha_contrato }}</h5> -->
         </b-form-group>
       </b-card-body>
@@ -42,7 +43,15 @@ export default {
   data() {
     return {
       visible: false,
+      redeterminacion: null,
     }
+  },
+  async fetch() {
+    await this.$store.dispatch('redeterminaciones/search',{
+      obra: this.obra,
+      certificado: this.certificado,
+    })
+    this.redeterminacion = this.$store.state.redeterminaciones.redets[0]
   },
   computed: {},
   methods: {
@@ -52,8 +61,6 @@ export default {
     redondear(numero) {
       return Number(numero).toFixed(2)
     },
-    onRedeterminar() {
-    },
     format(value) {
         let val = (value/1).toFixed(2).replace('.', ',')
         return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
@@ -61,6 +68,9 @@ export default {
     toggleShow(){
       this.visible = !this.visible
     },
+    totalRedet(item){
+      return item.materiales + item.generales + item.manoObra + item.equipos
+    }
   },
 }
 </script>

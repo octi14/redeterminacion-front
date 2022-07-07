@@ -28,21 +28,22 @@ module.exports = {
   },
   search: async (
     axios,
-    { obra }
+    { obra, certificado }
   ) => {
-    const filesResponse = await axios.$post('/certificados/search', {
+    const filesResponse = await axios.$post('/redeterminaciones/search', {
       obra,
+      certificado,
       // agrego condicionalmente los parámetros de busqueda
       // (no se agregan los que están vacíos)
       // ...(obra.length && { obra }),
       // ...(objeto.length && { objeto }),
       // ...(adjudicado.length && { adjudicado }),
     })
-    return filesResponse.data.map(formatCertif)
+    return filesResponse.data.map(formatRedet)
   },
   getSingle: async (axios, { id }) => {
-    const certifResponse = await axios.$get(`/certificados/${id}`)
-    return formatCertif(certifResponse.data)
+    const redetResponse = await axios.$get(`/redeterminaciones/${id}`)
+    return formatRedet(redetResponse.data)
   },
   // searchCertifs: async (
   //   axios,

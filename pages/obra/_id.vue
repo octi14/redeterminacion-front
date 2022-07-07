@@ -343,8 +343,6 @@ export default {
         return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
     },
     isAdmin(){
-      console.log(this.$store.state)
-      console.log(localStorage)
       return (this.$store.state.user.admin == true) || (this.$store.state.user.admin == "true")
     },
   },

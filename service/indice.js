@@ -38,7 +38,6 @@ module.exports = {
       // ...(objeto.length && { objeto }),
       // ...(adjudicado.length && { adjudicado }),
     })
-    console.log(filesResponse.data)
     return filesResponse.data.map(formatIndice)
   },
   searchSingle: async (

@@ -13,9 +13,10 @@ export const actions = {
     })
     commit('setLatest', found)
   },
-  async search({ commit, state }, { obra }) {
+  async search({ commit, state }, { obra, certificado }) {
     const found = await RedeterminacionService.search(this.$axios, {
       obra,
+      certificado,
     })
     commit('setMany', found)
   },

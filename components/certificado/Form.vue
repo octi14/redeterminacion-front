@@ -15,7 +15,7 @@
                 <a>${{format(redondear(anticipoProp(obra.items[index].monto)))}} </a>
               </b-form-group>
               <b-form-group label="Porcentaje de avance (dejar en blanco en caso de no necesitarlo)">
-              <b-form-input v-model="avances[index]" placeholder="%" type="number" />
+              <b-form-input v-model="avances[index]" placeholder="%" type="float" />
               </b-form-group>
               <output class="h5">Saldo a pagar: ${{format(redondear(saldoItem(obra.items[index].monto, avances[index])))}} </output>
             </b-form-group>

@@ -53,7 +53,7 @@
         </b-form-group>
 
         <h3>Items</h3>
-          <b-list-group v-if="items" class="mb-2">
+          <b-list-group v-if="items">
             <b-list-group-item
               v-for="(_, index) in items"
               :key="index"
@@ -91,21 +91,29 @@
             </b-list-group-item>
             <b-btn class="col-md-3 my-2" @click="addItem">Agregar Item</b-btn>
           <hr />
-          <h3>Ponderación</h3>
-            <b-list-group-item
-              v-for="(_, index) in ponderacion"
-              :key="index"
-              class="pr-12"
-            >
-              <div class="row">
-                <div class="col">
-                  <strong>{{ponderacion[index].categoria.nombre}}</strong>
-                  <b-form-text class="h6"> Porcentaje</b-form-text>
-                  <b-form-input class="col-md-4" placeholder="%" v-model="ponderacion[index].porcentaje" type="number" />
-                </div>
-              </div>
-            </b-list-group-item>
           </b-list-group>
+
+          <div class="row no-gutters">
+            <h5 class="col col-main"> Es aplicable a UVI? </h5>
+            <b-checkbox size="lg" class= "col col-complementary" v-model="uvis"> </b-checkbox>
+          </div>
+          <h3 v-if="!uvis">Ponderación</h3>
+            <b-list-group v-if="!uvis">
+              <b-list-group-item
+                v-for="(_, index) in ponderacion"
+                :key="index"
+                class="pr-12"
+              >
+                <div class="row">
+                  <div class="col">
+                    <strong>{{ponderacion[index].categoria.nombre}}</strong>
+                    <b-form-text class="h6"> Porcentaje</b-form-text>
+                    <b-form-input class="col-md-4" placeholder="%" v-model="ponderacion[index].porcentaje" type="number" />
+                  </div>
+                </div>
+              </b-list-group-item>
+            </b-list-group>
+
           <hr />
         <b-btn type="submit">Enviar</b-btn>
       </b-form>
@@ -141,6 +149,7 @@ export default {
       anticipo_finan: '',
       ponderacion: [],
       categorias: [],
+      uvis: false,
     }
   },
   async fetch() {

@@ -33,71 +33,76 @@
               </p>
             </div>
             <br>
-            <div class="layout">
-              <p class="col col-main">
-                <strong>Proporcional materiales</strong><br>
-              </p>
-              <p class="col col-complementary" role="complementary">
-                <a>${{ format(ponderar(certificado.items[index].saldo, obra.ponderacion[0].porcentaje)) }}</a>
-              </p>
-            </div>
-            <div class="layout">
-              <p class="col col-main">
-                <strong>Proporcional gastos generales</strong><br>
-              </p>
-              <p class="col col-complementary" role="complementary">
-                <a>${{ format(ponderar(certificado.items[index].saldo, obra.ponderacion[1].porcentaje)) }}</a>
-              </p>
-            </div>
-            <div class="layout">
-              <p class="col col-main">
-                <strong>Proporcional mano de obra</strong><br>
-              </p>
-              <p class="col col-complementary" role="complementary">
-                <a>${{ format(ponderar(certificado.items[index].saldo, obra.ponderacion[2].porcentaje)) }}</a>
-              </p>
-            </div>
-            <div class="layout">
-              <p class="col col-main">
-                <strong>Proporcional equipos</strong><br>
-              </p>
-              <p class="col col-complementary" role="complementary">
-                <a>${{ format(ponderar(certificado.items[index].saldo, obra.ponderacion[3].porcentaje)) }}</a>
-              </p>
+            <div v-if="!obraUvi">
+              <div class="layout">
+                <p class="col col-main">
+                  <strong>Proporcional materiales</strong><br>
+                </p>
+                <p class="col col-complementary" role="complementary">
+                  <a>${{ format(ponderar(certificado.items[index].saldo, obra.ponderacion[0].porcentaje)) }}</a>
+                </p>
+              </div>
+              <div class="layout">
+                <p class="col col-main">
+                  <strong>Proporcional gastos generales</strong><br>
+                </p>
+                <p class="col col-complementary" role="complementary">
+                  <a>${{ format(ponderar(certificado.items[index].saldo, obra.ponderacion[1].porcentaje)) }}</a>
+                </p>
+              </div>
+              <div class="layout">
+                <p class="col col-main">
+                  <strong>Proporcional mano de obra</strong><br>
+                </p>
+                <p class="col col-complementary" role="complementary">
+                  <a>${{ format(ponderar(certificado.items[index].saldo, obra.ponderacion[2].porcentaje)) }}</a>
+                </p>
+              </div>
+              <div class="layout">
+                <p class="col col-main">
+                  <strong>Proporcional equipos</strong><br>
+                </p>
+                <p class="col col-complementary" role="complementary">
+                  <a>${{ format(ponderar(certificado.items[index].saldo, obra.ponderacion[3].porcentaje)) }}</a>
+                </p>
+              </div>
+              <br>
             </div>
             <!-- <hr/> -->
-            <br>
-            <div class="layout">
-              <p class="col col-main">
-                <strong>Redeterminación materiales </strong> <br>
-              </p>
-              <p class="col col-complementary" role="complementary">
-                <a>$ {{ format(redeterminarMateriales(ponderar(certificado.items[index].saldo, obra.ponderacion[0].porcentaje))) }} </a>
-              </p>
-            </div>
-            <div class="layout">
-              <p class="col col-main">
-                <strong>Redeterminación gastos generales </strong>
-              </p>
-              <p class="col col-complementary" role="complementary">
-                <a>$ {{ format(redeterminarGenerales(ponderar(certificado.items[index].saldo, obra.ponderacion[1].porcentaje))) }}</a>
-              </p>
-            </div>
-            <div class="layout">
-              <p class="col col-main">
-                <strong>Redeterminación mano de obra </strong>
-                <p class="col col-complementary" role="complementary">
-                  <a>$ {{ format(redeterminarManoObra(ponderar(certificado.items[index].saldo, obra.ponderacion[2].porcentaje))) }}
-                  </a>
+
+            <div v-if="!obraUvi">
+              <div class="layout">
+                <p class="col col-main">
+                  <strong>Redeterminación materiales </strong> <br>
                 </p>
-            </div>
-            <div class="layout">
-              <p class="col col-main">
-                <strong>Redeterminación equipos </strong>
-              </p>
-              <p class="col col-complementary" role="complementary">
-                <a>$ {{ format(redeterminarEquipos(ponderar(certificado.items[index].saldo, obra.ponderacion[3].porcentaje))) }} </a>
-              </p>
+                <p class="col col-complementary" role="complementary">
+                  <a>$ {{ format(redeterminarMateriales(ponderar(certificado.items[index].saldo, obra.ponderacion[0].porcentaje))) }} </a>
+                </p>
+              </div>
+              <div class="layout">
+                <p class="col col-main">
+                  <strong>Redeterminación gastos generales </strong>
+                </p>
+                <p class="col col-complementary" role="complementary">
+                  <a>$ {{ format(redeterminarGenerales(ponderar(certificado.items[index].saldo, obra.ponderacion[1].porcentaje))) }}</a>
+                </p>
+              </div>
+              <div class="layout">
+                <p class="col col-main">
+                  <strong>Redeterminación mano de obra </strong>
+                  <p class="col col-complementary" role="complementary">
+                    <a>$ {{ format(redeterminarManoObra(ponderar(certificado.items[index].saldo, obra.ponderacion[2].porcentaje))) }}
+                    </a>
+                  </p>
+              </div>
+              <div class="layout">
+                <p class="col col-main">
+                  <strong>Redeterminación equipos </strong>
+                </p>
+                <p class="col col-complementary" role="complementary">
+                  <a>$ {{ format(redeterminarEquipos(ponderar(certificado.items[index].saldo, obra.ponderacion[3].porcentaje))) }} </a>
+                </p>
+              </div>
             </div>
             <!-- <div class="layout">
               <p class="col col-main">
@@ -121,6 +126,8 @@ export default {
     return {
       certificado: null,
       obra: null,
+
+      obraUvi: false,
 
       fechaAnterior: null,
       fechaCancelacion: null,
@@ -153,6 +160,7 @@ export default {
     for (var i = 0; i < this.obra.items.length; i++) {
       this.totales.push(0)
     }
+    this.obraUvi = (this.obra.ponderacion[0].porcentaje == null)
   },
   fetchOnServer: false,
   activated() {
@@ -275,7 +283,7 @@ export default {
           solid: true,
         })
       }
-    }
+    },
   },
 }
 </script>

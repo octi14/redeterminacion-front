@@ -20,6 +20,12 @@ export const actions = {
     })
     commit('setMany', found)
   },
+  async searchByObra({ commit, state }, { obra }) {
+    const found = await RedeterminacionService.searchByObra(this.$axios, {
+      obra,
+    })
+    commit('setMany', found)
+  },
   async getSingle({ commit, state }, { id }) {
     commit('setSingle', null)
     const found = await RedeterminacionService.getSingle(this.$axios, {

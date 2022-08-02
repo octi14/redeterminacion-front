@@ -1,15 +1,15 @@
 <template>
-  <ContainersSection title="Acerca de Recetaris">
-    <p>
-      Aplicación desarrollada para la materia "Taller de Trabajo de Inserción
-      Profesional" de la UNQ.
+  <ContainersSection title="Redeterminación Villa Gesell">
+    <p class="h5">
+      Aplicación de cálculo de Redeterminación de presupuesto de obra pública de la Municipalidad de Villa Gesell.
     </p>
-    <p>
-      Para más info, visitar el
-      <a href="https://github.com/tehuel/ttip-grupo11">repo en Github</a>.
+    <strong> Project owner: Octavio Gonzalez </strong>
+    <p class="h6 my-3"><a href="https://github.com/octi14/redeterminacion">Backend: NodeJS + express + MongoDB</a>.
+    </p>
+    <p class="h6"><a href="https://github.com/octi14/redeterminacion-front">Frontend: Nuxt.js</a>.
     </p>
     <hr />
-    <h2 class="h3">Licencias</h2>
+    <!-- <h2 class="h3">Licencias</h2>
     <p>
       Photo:
       <a
@@ -23,7 +23,7 @@
       <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank"
         >Creative Commons 2.0</a
       >
-    </p>
+    </p> -->
   </ContainersSection>
 </template>
 

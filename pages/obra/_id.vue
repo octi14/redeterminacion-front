@@ -62,14 +62,15 @@
                 Eliminar archivo
               </template>
               <div class="d-block text-center">
-                <h3>Está seguro de que desea eliminar este archivo?</h3>
+                <h4>Está seguro de que desea eliminar este archivo?</h4>
+                <h6>Al eliminar un archivo, se eliminarán todos sus certificados y redeterminaciones. </h6>
               </div>
               <b-button class="mt-3" variant="danger" block @click="onSubmitDelete(); $bvModal.hide('bv-modal-example')">Si</b-button>
               <b-button class="mt-3" variant="secondary" block @click="$bvModal.hide('bv-modal-example')">No</b-button>
             </b-modal>
           </div>
         </div>
-            <div class="container" v-if="!adding && !editing">
+            <div class="container" v-if="!adding && !editing" style="background-color: #ffffff">
               <div class="layout">
                 <p class="col col-main">
                   <strong>Expediente</strong><br>

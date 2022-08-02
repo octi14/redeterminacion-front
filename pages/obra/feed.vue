@@ -14,11 +14,11 @@
   </div>
 </template>
 
-<style scoped>
+<style>
 .background {
   padding: 0% 0;
   background-size: cover;
   object-fit: contain;
-  background-color: #e5d1c2;
+  /* background-image: url('https://mktposgrado.ucontinental.edu.pe/hubfs/shutterstock_747626554.jpg'); */
 }
 </style>

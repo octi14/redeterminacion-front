@@ -41,6 +41,20 @@ module.exports = {
     })
     return filesResponse.data.map(formatRedet)
   },
+  searchByObra: async (
+    axios,
+    { obra }
+  ) => {
+    const filesResponse = await axios.$post('/redeterminaciones/searchByObra', {
+      obra,
+      // agrego condicionalmente los parámetros de busqueda
+      // (no se agregan los que están vacíos)
+      // ...(obra.length && { obra }),
+      // ...(objeto.length && { objeto }),
+      // ...(adjudicado.length && { adjudicado }),
+    })
+    return filesResponse.data.map(formatRedet)
+  },
   getSingle: async (axios, { id }) => {
     const redetResponse = await axios.$get(`/redeterminaciones/${id}`)
     return formatRedet(redetResponse.data)

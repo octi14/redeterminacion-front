@@ -8,7 +8,7 @@
         <img :src="certificado.image" class="card-img-top" :alt="certificado.name" />
       </NuxtLink> -->
       <NuxtLink v-if="!certificado.redeterminado" class="row-sm-2" :to="{ name: 'redeterminaciones-id', params: { id: certificado.id } }">
-        <b-button variant="success" class="my-1 col-sm-3"> Redeterminación  </b-button>
+        <b-button variant="success" class="my-1 col-sm-5"> Redeterminación  </b-button>
       </NuxtLink>
       <strong v-else> Redeterminado el {{ certificado.redeterminado.substr(0,10) }} </strong>
       <b-card-body class="col-md-12 text-center">
@@ -20,7 +20,7 @@
           <h6>Anticipo: ${{ format(redondear(certificado.items[index].anticipo)) }}</h6>
           <h6>Avance: {{ certificado.items[index].avance }}%</h6>
           <h6>Saldo: ${{ format(redondear(certificado.items[index].saldo)) }}</h6>
-          <strong v-if="certificado.redeterminado">Saldo redeterminado: ${{ format(redondear(totalRedet(redeterminacion.items[index]))) }}  </strong>
+          <strong v-if="certificado.redeterminado">Saldo redeterminado: ${{ format(redondear(totalRedet(redet.items[index]))) }}  </strong>
           <!-- <h5>{{ certificado.fecha_contrato }}</h5> -->
         </b-form-group>
       </b-card-body>
@@ -39,21 +39,27 @@ export default {
       type: Object,
       required: true,
     },
+    redet: {
+      type: Object,
+    },
   },
   data() {
     return {
       visible: false,
-      redeterminacion: null,
     }
   },
   async fetch() {
-    await this.$store.dispatch('redeterminaciones/search',{
-      obra: this.obra,
-      certificado: this.certificado,
-    })
-    this.redeterminacion = this.$store.state.redeterminaciones.redets[0]
+    // await this.$store.dispatch('redeterminaciones/search',{
+    //   obra: this.obra,
+    //   certificado: this.certificado,
+    // })
+    // this.redet = this.redeterminacion
   },
-  computed: {},
+  computed: {
+    redeterminacion(){
+      return this.$store.state.redeterminaciones.redets[0]
+    },
+  },
   methods: {
     tag(id) {
       return this.$store.getters['tags/getTagById'](id)

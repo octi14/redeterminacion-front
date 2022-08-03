@@ -2,7 +2,7 @@
   <div class="page">
     <div class="background shadow-sm">
       <div class="row justify-content-center">
-        <div class="col col-sm-7">
+        <div class="col col-sm-7 my-3">
           <div class="card shadow-lg">
             <template v-if="!isAuthenticated">
               <LoginForm />

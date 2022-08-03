@@ -1,9 +1,11 @@
 <template>
-  <div class="container">
+  <div class="container my-4">
     <b-card>
       <h4 class="text-center"> Menú de índices </h4>
       <b-card-body class="col text-center mx-auto">
-        <b-button variant="primary" @click="onCreate"> Crear índice
+        <b-button variant="primary" @click="onCreate"> Crear índice ICC
+        </b-button>
+        <b-button variant="primary" @click="onCreateUvi"> Crear índice UVI
         </b-button>
         <b-button variant="primary" @click="onSearch"> Buscar índice
         </b-button>
@@ -21,6 +23,9 @@ export default {
   methods: {
     async onCreate() {
       await this.$router.push("/indices/create")
+    },
+    async onCreateUvi() {
+      await this.$router.push("/indices/createuvi")
     },
     async onSearch() {
       await this.$router.push("/indices/search")

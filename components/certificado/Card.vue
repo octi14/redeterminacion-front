@@ -7,10 +7,10 @@
       <!-- <NuxtLink :to="{ name: 'certificado-id', params: { id: certificado.id } }">
         <img :src="certificado.image" class="card-img-top" :alt="certificado.name" />
       </NuxtLink> -->
-      <NuxtLink v-if="!certificado.redeterminado" class="row-sm-2" :to="{ name: 'redeterminaciones-id', params: { id: certificado.id } }">
-        <b-button variant="success" class="my-1 col-sm-5"> Redeterminación  </b-button>
+      <NuxtLink v-if="!certificado.redeterminado && isAdmin" class="row-sm-2" :to="{ name: 'redeterminaciones-id', params: { id: certificado.id } }">
+        <b-button variant="success" class="my-1 col-sm-5" > Redeterminar  </b-button>
       </NuxtLink>
-      <strong v-else> Redeterminado el {{ certificado.redeterminado.substr(0,10) }} </strong>
+      <strong v-if="certificado.redeterminado"> Redeterminado el {{ certificado.redeterminado.substr(0,10) }} </strong>
       <b-card-body class="col-md-12 text-center">
         <b-form-group  v-for="(_, index) in certificado.items" :key="index">
           <!-- <NuxtLink :to="{ name: 'certificado-id', props: { id: certificado.id } }"> -->
@@ -59,6 +59,9 @@ export default {
     redeterminacion(){
       return this.$store.state.redeterminaciones.redets[0]
     },
+    isAdmin(){
+      return Boolean(this.$store.state.user.admin == "true")
+    },
   },
   methods: {
     tag(id) {
@@ -76,7 +79,10 @@ export default {
     },
     totalRedet(item){
       return item.materiales + item.generales + item.manoObra + item.equipos
-    }
+    },
+    isAdmin(){
+      return (this.$store.state.user.admin == true) || (this.$store.state.user.admin == "true")
+    },
   },
 }
 </script>

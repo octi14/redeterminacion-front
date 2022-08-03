@@ -2,7 +2,7 @@
   <div id="app-layout">
     <Navbar />
 
-    <div id="app-content">
+    <div id="app-content" class="my-5">
       <Nuxt keep-alive />
     </div>
 

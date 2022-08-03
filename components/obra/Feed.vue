@@ -1,7 +1,7 @@
 <template>
-  <div class="obra-feed">
+  <div class="obra-feed my-3">
     <b-nav-text class="text-center col-md-12" variant="primary">
-      <strong class="h3"> Archivos mas recientes </strong>
+      <strong class="h2"> Archivos mas recientes </strong>
     </b-nav-text>
     <transition-group name="list" tag="div" class="col">
       <div

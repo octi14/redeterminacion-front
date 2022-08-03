@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <div class="container my-3">
+    <div class="container my-5">
       <h1 class="text-center">Crear nueva obra</h1>
       <!-- <p>Agrega una nueva obra con sus características</p> -->
       <b-form class="my-2 col-md-7 mx-auto" @submit.stop.prevent="onSubmitCreateFile">

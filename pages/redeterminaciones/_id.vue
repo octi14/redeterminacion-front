@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page my-4">
     <template v-if="certificado">
       <div class="container mx-auto">
         <div class="row mx-auto" v-if="obra">

@@ -1,7 +1,10 @@
 <template>
-  <b-navbar toggleable="sm" type="dark" variant="primary">
-    <div class="container">
-      <!-- <b-navbar-toggle target="nav-collapse"></b-navbar-toggle> -->
+  <b-navbar toggleable="sm" type="dark" variant="primary" class="row" fixed="top">
+    <div class="col-xs-1">
+      <img src="https://arvige.gob.ar/assets/img/header.png" style="height: 62px; width: 47px">
+    </div>
+    <div class="container col-10">
+      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
           <NuxtLink
@@ -35,10 +38,10 @@
         </b-navbar-nav>
         <b-navbar-nav>
           <NuxtLink
-            v-if="isAuthenticated && isAdmin"
+            v-if="isAuthenticated"
             class="nav-link"
             active-class="active"
-            to="/indices/menu"
+            to="/normativas"
           >
               Normativas
           </NuxtLink>

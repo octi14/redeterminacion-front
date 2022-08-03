@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <div class="container my-5">
-      <h4 class="text-center">Crear índice</h4>
+      <h4 class="text-center">Crear índice UVI</h4>
       <b-form class="my-3 col-md-5 mx-auto justify-content-center" @submit.stop.prevent="onSubmitCreateFile">
         <b-form-group>
             <b-form-group label="Año">
@@ -10,22 +10,16 @@
             <b-form-group label="Mes">
               <b-form-input v-model="mes" type="text" />
             </b-form-group>
-            <b-form-text class="h6"> Categoría </b-form-text>
-            <b-form-select v-model="categoria" class="mb-3">
-              <b-form-select-option
-              v-for="categoria in categorias"
-              :key="categoria.id"
-              :value="categoria">{{categoria.nombre}}</b-form-select-option>
-            </b-form-select>
             <b-form-group label="Valor">
               <b-form-input v-model="valor" type="float" />
             </b-form-group>
         </b-form-group>
           <hr />
-        <b-btn variant="success" style="color: black" type="submit">Crear índice</b-btn>
-        <b-btn variant="info">
-        <NuxtLink style="color: black" to="/indices/menu"> Volver </NuxtLink>
-        </b-btn>
+        <b-btn variant="success" type="submit">Crear índice</b-btn>
+        <NuxtLink to="/indices/menu">
+          <b-btn variant="info"> Volver</b-btn>
+        </NuxtLink>
+
       </b-form>
     </div>
   </div>

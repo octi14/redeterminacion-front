@@ -1,7 +1,7 @@
 <template>
   <div class="page background">
     <template v-if="obra">
-      <div class="container my-1 col-sm-12">
+      <div class="container my-4 col-sm-12">
         <div class="row">
           <div class="col">
             <h1 class="h2 text-center">{{ obra.objeto }}</h1>
@@ -299,7 +299,7 @@ export default {
           userToken,
         })
         // this.editing = false
-        await this.$router.push('/obra/feed')
+        await this.$router.push('/')
       } catch (e) {
         this.$bvToast.toast('Error Editando', {
           title: 'Error',
@@ -325,7 +325,7 @@ export default {
           appendToast: true,
           solid: true,
         })
-        await this.$router.push('/obra/feed')
+        await this.$router.push('/')
       } catch (e) {
         this.$bvToast.toast('Error Editando', {
           title: '',

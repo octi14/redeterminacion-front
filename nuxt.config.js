@@ -48,8 +48,8 @@ export default {
 
   // BootstrapVue module configuration https://bootstrap-vue.org/docs#nuxtjs-module
   bootstrapVue: {
-    bootstrapCSS: true, // Or `css: false`
-    bootstrapVueCSS: true, // Or `bvCSS: false`
+    bootstrapCSS: false, // Or `css: false`
+    bootstrapVueCSS: false, // Or `bvCSS: false`
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

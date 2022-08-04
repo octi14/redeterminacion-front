@@ -2,7 +2,7 @@
   <div id="results-page">
     <template v-if="searchParamsIsInitialized">
       <ContainersSection title="Resultados de Búsqueda">
-        <div v-if="searchResults.length" class="row">
+        <div v-if="searchResults.length" class="row mt-5">
           <div
             v-for="obra in searchResults"
             :key="obra._id"
@@ -17,7 +17,7 @@
       </ContainersSection>
     </template>
     <template v-else>
-      <ContainersSection title="No se hizo ninguna busqueda">
+      <ContainersSection>
         <b-alert variant="primary" show>
           No se hizo ninguna búsqueda.
           <nuxt-link to="/">Volver al inicio</nuxt-link>.

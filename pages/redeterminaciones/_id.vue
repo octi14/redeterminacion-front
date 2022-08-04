@@ -119,7 +119,6 @@
 </template>
 
 <script>
-import CertificadoService from '~/service/certificado'
 
 export default {
   data() {
@@ -202,8 +201,12 @@ export default {
       return (saldo * ponderacion) / 100
     },
     format(value) {
-        let val = (value/1).toFixed(2).replace('.', ',')
-        return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+        if(value){
+          let val = (value/1).toFixed(2).replace('.', ',')
+          return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+        }else{
+          return 0
+        }
     },
     async onApplyIndex(){
       var mes = new Date(this.obra.acta_inicio).getUTCMonth() +1

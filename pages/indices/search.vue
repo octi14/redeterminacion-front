@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <div class="container text-center my-3 mx-auto">
+    <div class="container text-center my-5 mx-auto">
       <h4> Buscar índice </h4>
       <b-form class="col-md-4 mx-auto" @submit.stop.prevent="onSearchIndex">
         <b-text class="h6"> Mes </b-text>

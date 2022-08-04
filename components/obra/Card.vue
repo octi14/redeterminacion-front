@@ -5,10 +5,10 @@
     </NuxtLink> -->
     <b-card-body>
       <NuxtLink :to="{ name: 'obra-id', params: { id: obra.id } }">
-        <h2 class="h4">{{ obra.objeto }}</h2>
+        <h5>{{ obra.objeto }}</h5>
       </NuxtLink>
-      <h5>{{ obra.adjudicado }}</h5>
-      <h5>{{ obra.fecha_contrato }}</h5>
+      <h6>{{ obra.adjudicado }}</h6>
+      <strong>{{ obra.fecha_contrato }}</strong>
     </b-card-body>
       <NuxtLink class="col-md-2" :to="{ name: 'obra-id', params: { id: obra.id } }">
         <!-- <b-button variant="success" class="col-sm-12 my-1"> Detalles </b-button> -->

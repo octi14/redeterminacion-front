@@ -1,9 +1,9 @@
 <template>
   <div class="page">
     <div class="container my-5">
-      <h1 class="text-center">Crear nueva obra</h1>
+      <h2 class="text-center">Crear nueva obra</h2>
       <!-- <p>Agrega una nueva obra con sus características</p> -->
-      <b-form class="my-2 col-md-7 mx-auto" @submit.stop.prevent="onSubmitCreateFile">
+      <b-form class="my-2 col-md-9 mx-auto" @submit.stop.prevent="onSubmitCreateFile">
         <b-form-group>
             <b-form-group label="Expediente">
               <b-form-input v-model="expediente" type="text" />

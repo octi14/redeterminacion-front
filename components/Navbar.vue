@@ -1,9 +1,11 @@
 <template>
   <b-navbar toggleable="sm" type="dark" variant="primary" class="row" fixed="top">
-    <div class="col-xs-1">
-      <img src="https://arvige.gob.ar/assets/img/header.png" style="height: 62px; width: 47px">
+    <div class="col-xs-1 ml-2">
+      <a href="https://gesell.gob.ar/">
+        <img src="https://arvige.gob.ar/assets/img/header.png" style="height: 52px; width: 42px">
+      </a>
     </div>
-    <div class="container col-10">
+    <div class="container">
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>

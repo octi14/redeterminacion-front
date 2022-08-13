@@ -8,7 +8,7 @@
           <!-- View -->
               <h2 class="mx-auto text-center"> Redeterminar certificado </h2>
 
-              <b-form class="col mx-auto">
+              <b-form class="col mx-auto" v-if="!obraUvi">
                 <h5 class="col-main"> Acta de inicio: {{ this.obra.acta_inicio }} </h5>
                 <h6> Fecha de última redeterminación: </h6>
                 <b-form-input class="col-md-2" v-model="fechaAnterior" type="date"> </b-form-input>
@@ -17,7 +17,14 @@
                 <h6> Fecha de cancelación: </h6>
                 <b-form-input class="col-md-2" v-model="fechaCancelacion" type="date"> </b-form-input>
               </b-form>
-              <b-button variant="primary" @click="onApplyIndex"> Aplicar índices </b-button>
+              <b-form class="col mx-auto" v-else>
+                <h6> Introducir valor de índice UVI inicial </h6>
+                <b-form-input class="col-md-2" v-model="uviOrigen" type="double"> </b-form-input>
+                <hr/>
+                <h6> Introducir valor de índice UVI de fecha de redeterminación </h6>
+                <b-form-input class="col-md-2" v-model="uviDestino" type="double"> </b-form-input>
+              </b-form>
+              <b-button variant="primary" @click="onApplyIndex" v-if="!obraUvi"> Aplicar índices </b-button>
             </div>
           </div>
           <div class="container mx-auto" v-for="(_,index) in certificado.items" :key="index">
@@ -104,6 +111,16 @@
                 </p>
               </div>
             </div>
+            <div v-else>
+              <div class="layout">
+                <p class="col col-main">
+                  <strong>Saldo redeterminado</strong> <br>
+                </p>
+                <p class="col col-complementary" role="complementary">
+                  <a>$ {{ format(redeterminarUVI(certificado.items[index].saldo))}} </a>
+                </p>
+              </div>
+            </div>
             <!-- <div class="layout">
               <p class="col col-main">
                 <strong class="h4">Total redeterminado </strong>
@@ -139,6 +156,9 @@ export default {
       destinoGenerales: 0,
       origenEquipos: 0,
       destinoEquipos: 0,
+
+      uviOrigen: 0,
+      uviDestino: 0,
 
       totales: [],
 
@@ -209,36 +229,37 @@ export default {
         }
     },
     async onApplyIndex(){
-      var mes = new Date(this.obra.acta_inicio).getUTCMonth() +1
-      var año = new Date(this.obra.acta_inicio).getFullYear()
-      if(this.fechaAnterior){
-        const otroMes = new Date(this.fechaAnterior).getUTCMonth() +1
-        const otroAño = new Date(this.fechaAnterior).getFullYear()
+      if(!this.obraUvi){
+        var mes = new Date(this.obra.acta_inicio).getUTCMonth() +1
+        var año = new Date(this.obra.acta_inicio).getFullYear()
+        if(this.fechaAnterior){
+          const otroMes = new Date(this.fechaAnterior).getUTCMonth() +1
+          const otroAño = new Date(this.fechaAnterior).getFullYear()
+          await this.$store.dispatch('indices/search', {
+            mes: otroMes,
+            año: otroAño,
+          })
+        } else {
+          await this.$store.dispatch('indices/search', {
+            mes: mes,
+            año: año,
+          })
+        }
+        this.origenMateriales = this.$store.state.indices.indices[0].valor
+        this.origenGenerales = this.$store.state.indices.indices[1].valor
+        this.origenManoObra = this.$store.state.indices.indices[2].valor
+        this.origenEquipos = this.$store.state.indices.indices[3].valor
+        const mes2 = new Date(this.fechaCancelacion).getUTCMonth() +1
+        const año2 = new Date(this.fechaCancelacion).getFullYear()
         await this.$store.dispatch('indices/search', {
-          mes: otroMes,
-          año: otroAño,
+          mes: mes2,
+          año: año2,
         })
-      } else {
-        await this.$store.dispatch('indices/search', {
-          mes: mes,
-          año: año,
-        })
+        this.destinoMateriales = this.$store.state.indices.indices[0].valor
+        this.destinoGenerales = this.$store.state.indices.indices[1].valor
+        this.destinoManoObra = this.$store.state.indices.indices[2].valor
+        this.destinoEquipos = this.$store.state.indices.indices[3].valor
       }
-      this.origenMateriales = this.$store.state.indices.indices[0].valor
-      this.origenGenerales = this.$store.state.indices.indices[1].valor
-      this.origenManoObra = this.$store.state.indices.indices[2].valor
-      this.origenEquipos = this.$store.state.indices.indices[3].valor
-      const mes2 = new Date(this.fechaCancelacion).getUTCMonth() +1
-      const año2 = new Date(this.fechaCancelacion).getFullYear()
-      await this.$store.dispatch('indices/search', {
-        mes: mes2,
-        año: año2,
-      })
-      this.destinoMateriales = this.$store.state.indices.indices[0].valor
-      this.destinoGenerales = this.$store.state.indices.indices[1].valor
-      this.destinoManoObra = this.$store.state.indices.indices[2].valor
-      this.destinoEquipos = this.$store.state.indices.indices[3].valor
-
     },
     redeterminarMateriales(monto) {
       return monto * ( (this.destinoMateriales/this.origenMateriales) -1)
@@ -251,6 +272,9 @@ export default {
     },
     redeterminarEquipos(monto) {
       return monto * ( (this.destinoEquipos/this.origenEquipos) -1)
+    },
+    redeterminarUVI(monto) {
+      return monto * ( (this.uviDestino/this.uviOrigen) -1)
     },
     async onGuardar(){
       for (var i = 0; i < this.certificado.items.length; i++) {

@@ -10,7 +10,7 @@
       <NuxtLink v-if="!certificado.redeterminado && isAdmin" class="row-sm-2" :to="{ name: 'redeterminaciones-id', params: { id: certificado.id } }">
         <b-button variant="success" class="my-1 col-sm-5" > Redeterminar  </b-button>
       </NuxtLink>
-      <strong v-if="certificado.redeterminado"> Redeterminado el {{ certificado.redeterminado.substr(0,10) }} </strong>
+      <strong v-if="certificado.redeterminado"> Redeterminado el {{ formatDate(certificado.redeterminado.substr(0,10)) }} </strong>
       <b-card-body class="col-md-12 text-center">
         <b-form-group  v-for="(_, index) in certificado.items" :key="index">
           <!-- <NuxtLink :to="{ name: 'certificado-id', props: { id: certificado.id } }"> -->
@@ -48,31 +48,21 @@ export default {
       visible: false,
     }
   },
-  async fetch() {
-    // await this.$store.dispatch('redeterminaciones/search',{
-    //   obra: this.obra,
-    //   certificado: this.certificado,
-    // })
-    // this.redet = this.redeterminacion
-  },
   computed: {
-    redeterminacion(){
-      return this.$store.state.redeterminaciones.redets[0]
-    },
     isAdmin(){
       return Boolean(this.$store.state.user.admin == "true")
     },
   },
   methods: {
-    tag(id) {
-      return this.$store.getters['tags/getTagById'](id)
-    },
     redondear(numero) {
       return Number(numero).toFixed(2)
     },
     format(value) {
         let val = (value/1).toFixed(2).replace('.', ',')
         return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+    },
+    formatDate(value) {
+      return value.toString().replace(/^(0?[1-9]|[12][0-9]|2[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/g,".")
     },
     toggleShow(){
       this.visible = !this.visible

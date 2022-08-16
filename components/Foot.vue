@@ -1,5 +1,5 @@
 <template>
-  <div class="footer bg-primary text-light py-2">
+  <div class="footer bg-success text-light py-2">
     <div class="container">
       <div class="row">
         <div class="col-md text-md-right">

@@ -5,7 +5,7 @@
       <div
         v-for="(_, index) in certificados"
         :key="index"
-        class="transition-col mx-auto col-7 mb-1"
+        class="transition-col mx-auto mb-1"
       >
       <strong class="row my-2 h6 justify-content-center"> Certificado {{index +1}} </strong>
         <CertificadoCard :certificado="certificados[index]" :obra="obra" :redet="redets[index]" class="h-1 row" />

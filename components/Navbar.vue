@@ -1,5 +1,5 @@
 <template>
-  <b-navbar toggleable="sm" type="dark" variant="primary" class="row" fixed="top">
+  <b-navbar toggleable="sm" type="dark" variant="success" class="row" fixed="top">
     <div class="col-xs-1 ml-2">
       <a href="https://gesell.gob.ar/">
         <img src="https://arvige.gob.ar/assets/img/header.png" style="height: 52px; width: 42px">

@@ -1,5 +1,5 @@
 <template>
-  <div class="container my-4">
+  <div class="container my-4 background">
     <b-card>
       <h4 class="text-center"> Menú de índices </h4>
       <b-card-body class="col text-center mx-auto">

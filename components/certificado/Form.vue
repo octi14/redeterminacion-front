@@ -1,27 +1,29 @@
 <template>
   <div class="page">
-    <div class="container my-3 col-md-9">
-      <h4>Asignar certificado a esta obra</h4>
-      <b-form class="my-1"
-      @submit.stop.prevent="onSubmit"
-      @reset.stop.prevent="onResetForm">
-            <b-form-group label=""  class="my-4" v-for="(_, index) in obra.items" :key="index">
-                <strong> Item {{index +1 }} </strong> <br>
-                <a>{{ obra.items[index].item }}</a>
-              <b-form-group class="my-3" label="Contratado">
-                <a>${{ format(obra.items[index].monto) }}</a>
+    <div class="card">
+      <div class="container my-3 col-md-9">
+        <h4>Asignar certificado a esta obra</h4>
+        <b-form class="my-1"
+        @submit.stop.prevent="onSubmit"
+        @reset.stop.prevent="onResetForm">
+              <b-form-group label=""  class="my-4" v-for="(_, index) in obra.items" :key="index">
+                  <strong> Item {{index +1 }} </strong> <br>
+                  <a>{{ obra.items[index].item }}</a>
+                <b-form-group class="my-3" label="Contratado">
+                  <a>${{ format(obra.items[index].monto) }}</a>
+                </b-form-group>
+                <b-form-group label="Anticipo">
+                  <a>${{format(redondear(anticipoProp(obra.items[index].monto)))}} </a>
+                </b-form-group>
+                <b-form-group label="Porcentaje de avance (dejar en blanco en caso de no necesitarlo)">
+                <b-form-input v-model="avances[index]" placeholder="%" type="float" />
+                </b-form-group>
+                <output class="h5">Saldo a pagar: ${{format(redondear(saldoItem(obra.items[index].monto, avances[index])))}} </output>
               </b-form-group>
-              <b-form-group label="Anticipo">
-                <a>${{format(redondear(anticipoProp(obra.items[index].monto)))}} </a>
-              </b-form-group>
-              <b-form-group label="Porcentaje de avance (dejar en blanco en caso de no necesitarlo)">
-              <b-form-input v-model="avances[index]" placeholder="%" type="float" />
-              </b-form-group>
-              <output class="h5">Saldo a pagar: ${{format(redondear(saldoItem(obra.items[index].monto, avances[index])))}} </output>
-            </b-form-group>
-            <!-- <strong class="h5"> Saldo total: ${{format(redondear(saldoAPagar()))}} </strong> <hr/> -->
-        <b-button type="submit" variant="success">Crear</b-button>
-      </b-form>
+              <!-- <strong class="h5"> Saldo total: ${{format(redondear(saldoAPagar()))}} </strong> <hr/> -->
+          <b-button type="submit" variant="success">Crear</b-button>
+        </b-form>
+    </div>
     </div>
   </div>
 </template>

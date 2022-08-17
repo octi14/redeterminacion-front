@@ -1,9 +1,9 @@
 <template>
-  <div class="page">
-    <div class="container my-5">
+  <div class="page background">
+    <div class="container my-4">
       <h2 class="text-center">Crear nueva obra</h2>
       <!-- <p>Agrega una nueva obra con sus características</p> -->
-      <b-form class="my-2 col-md-9 mx-auto" @submit.stop.prevent="onSubmitCreateFile">
+      <b-form class=" card my-2 col-md-9 mx-auto" @submit.stop.prevent="onSubmitCreateFile">
         <b-form-group>
             <b-form-group label="Expediente">
               <b-form-input v-model="expediente" type="text" />
@@ -115,7 +115,10 @@
             </b-list-group>
 
           <hr />
-        <b-btn type="submit">Enviar</b-btn>
+        <div class="row-5 mx-auto">
+          <b-btn type="submit" class="mx-auto" variant="success">Enviar</b-btn>
+          <b-btn @click="onReturn" class="mx-auto" variant="danger">Cancelar</b-btn>
+        </div>
       </b-form>
     </div>
   </div>
@@ -218,6 +221,9 @@ export default {
     },
     deleteItem(index) {
       this.items.splice(index, 1)
+    },
+    async onReturn(){
+      await this.$router.push('/obra/feed')
     },
     // categorias() {
     //   console.log(this.$store.state.categorias.all)

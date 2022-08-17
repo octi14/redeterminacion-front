@@ -93,7 +93,7 @@
             <b-btn class="col-md-3 my-2" @click="addItem">Agregar Item</b-btn>
           </b-list-group>
           <hr />
-        <hr />
+        <!-- <hr /> -->
         <b-button type="submit" variant="success">
           {{ create ? 'Crear' : 'Editar' }} Obra
         </b-button>

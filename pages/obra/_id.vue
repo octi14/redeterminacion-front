@@ -1,6 +1,6 @@
 <template>
   <div class="page background">
-    <template v-if="obra">
+    <div v-if="obra">
       <div class="container my-4 col-sm-12">
         <div class="row">
           <div class="col">
@@ -213,7 +213,7 @@
           </div>
         </div>
       </div>
-    </template>
+    </div>
   </div>
 </template>
 

@@ -5,11 +5,8 @@
     </div>
     <div class="container">
       <h4>Lista de normativas </h4>
-      <div class="mt-5 col">
-        <h6>Agregar archivo </h6>
-      </div>
-      <div class="col-5">
-        <b-form-file class="my-3" placeholder="Arrastre o seleccione un archivo" browse-text="Buscar" accept=".pdf" multiple></b-form-file>
+      <div class="mt-5">
+        <a class="h5" style="color:blue" href="https://drive.google.com/file/d/1SpthBoIJ17dhc9erRcXz3WoaLXHH88Vr/view?usp=sharing"> Decreto 290/2021 </a>
       </div>
     </div>
   </div>

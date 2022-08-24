@@ -3,8 +3,8 @@
     <div class="container my-4">
       <h2 class="text-center">Crear nueva obra</h2>
       <!-- <p>Agrega una nueva obra con sus características</p> -->
-      <b-form class=" card my-2 col-md-9 mx-auto" @submit.stop.prevent="onSubmitCreateFile">
-        <b-form-group>
+      <b-form class=" card my-4 col-md-9 mx-auto" @submit.stop.prevent="onSubmitCreateFile">
+        <b-form-group class="mt-3">
             <b-form-group label="Expediente">
               <b-form-input v-model="expediente" type="text" />
             </b-form-group>
@@ -115,7 +115,7 @@
             </b-list-group>
 
           <hr />
-        <div class="row-5 mx-auto">
+        <div class="row-5 my-3 mx-auto">
           <b-btn type="submit" class="mx-auto" variant="success">Enviar</b-btn>
           <b-btn @click="onReturn" class="mx-auto" variant="danger">Cancelar</b-btn>
         </div>

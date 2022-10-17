@@ -23,6 +23,10 @@
           v-show="watchingCertif"
           :obra="obra">
           </CertificadoFeed>
+          <ObraProgress
+          v-show="watchingProgress"
+          :obra="obra">
+          </ObraProgress>
           <!-- View -->
           <div v-show="!editing" class="row justify-content-center">
 
@@ -31,6 +35,13 @@
               @click="onShowCertif"
             >
             {{ watchingCertif ? 'Ocultar' : 'Ver' }} certificados
+            </b-button>
+
+
+            <b-button v-if="!adding" class="col-md-3 badge-success"
+              variant="info"
+              @click="mostrarAvance">
+              {{ watchingProgress ? 'Ocultar' : 'Ver' }} avance
             </b-button>
 
             <b-button v-if="isAdmin" class="col-md-3 badge-success"
@@ -46,6 +57,7 @@
             >
               Editar
             </b-button>
+
 
             <b-button
               v-if="!adding && isAdmin"
@@ -225,6 +237,7 @@ export default {
   data() {
     return {
       watchingCertif: false,
+      watchingProgress: false,
       watchItems: false,
       editing: false,
       adding: false,
@@ -266,6 +279,9 @@ export default {
     },
     onShowCertif() {
       this.watchingCertif = !this.watchingCertif
+    },
+    async mostrarAvance() {
+      this.watchingProgress = !this.watchingProgress
     },
     async onSubmitEditObra({ obra }) {
       try {

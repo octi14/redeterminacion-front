@@ -82,7 +82,7 @@
             </b-modal>
           </div>
         </div>
-            <div class="container" v-if="!adding && !editing" style="background-color: #ffffff">
+            <div class="card shadow-lg col-6 mx-auto" v-if="!adding && !editing" style="background-color: #ffffff">
               <div class="layout">
                 <p class="col col-main">
                   <strong>Expediente</strong><br>
@@ -128,7 +128,7 @@
                     </p>
                   </div>
                 </div>
-                <div v-else class="container my-3">
+                <div v-else class="my-1 ml-4 mt-3">
                   <b-button variant="outline-dark" @click="watchItems = !watchItems"> Ver Items </b-button>
                 </div>
               </div>

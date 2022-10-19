@@ -14,6 +14,12 @@
           {{ format(certificados[index].items[index2].avance) }}%
         </b-row>
       </div>
+      <div class="col">
+        <b-row> <strong> Total </strong></b-row>
+        <b-row v-for="(_, index3) in obra.items" :key="index3">
+          <strong> {{ avanceTotal(index3) }} </strong>
+        </b-row>
+      </div>
     </div>
   </div>
 </template>
@@ -60,6 +66,13 @@ export default {
     format(value) {
         let val = (value/1).toFixed(1).replace('.', ',')
         return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+    },
+    avanceTotal(number) {
+      var total = 0
+      for (var i = 0; i < this.items.length; i++) {
+        total = total + this.items[i].items[number].avance
+      }
+      return String(this.format(total) + "%")
     },
   },
 }

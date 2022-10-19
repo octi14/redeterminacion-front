@@ -1,6 +1,6 @@
 <template>
-  <div class="container my-4 background">
-    <b-card>
+  <div class="container my-4">
+    <b-card class="shadow-lg">
       <h4 class="text-center"> Menú de índices </h4>
       <b-card-body class="col text-center mx-auto">
         <b-button variant="primary" @click="onCreate"> Crear índice ICC

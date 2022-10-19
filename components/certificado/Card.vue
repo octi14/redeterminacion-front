@@ -70,9 +70,9 @@ export default {
     totalRedet(item){
       return item.materiales + item.generales + item.manoObra + item.equipos
     },
-    isAdmin(){
-      return (this.$store.state.user.admin == true) || (this.$store.state.user.admin == "true")
-    },
+    // isAdmin(){
+    //   return (this.$store.state.user.admin == true) || (this.$store.state.user.admin == "true")
+    // },
   },
 }
 </script>

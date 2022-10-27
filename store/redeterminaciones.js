@@ -53,12 +53,11 @@ export const actions = {
       throw new Error('Error actualizando')
     }
   },
-  async delete({ commit, state }, { id, userToken }) {
-    const deleted = await RedeterminacionService.delete(this.$axios, {
-      id,
+  async delete({ commit, state }, { redeterminacion , userToken }) {
+    return await RedeterminacionService.delete(this.$axios, {
+      redeterminacion,
       userToken,
     })
-    return deleted
   },
 
 }

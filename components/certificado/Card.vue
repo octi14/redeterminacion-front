@@ -4,17 +4,23 @@
       {{ visible ? "Ocultar" : "Mostrar"}}
     </b-button>
     <b-card no-body class="certificado-card col-md-12 text-center" v-if="visible">
-      <!-- <NuxtLink :to="{ name: 'certificado-id', params: { id: certificado.id } }">
-        <img :src="certificado.image" class="card-img-top" :alt="certificado.name" />
-      </NuxtLink> -->
-      <NuxtLink v-if="!certificado.redeterminado && isAdmin" class="row-sm-2" :to="{ name: 'redeterminaciones-id', params: { id: certificado.id } }">
-        <b-button variant="success" class="my-1 col-sm-5" > Redeterminar  </b-button>
-      </NuxtLink>
-      <strong v-if="certificado.redeterminado"> Redeterminado el {{ formatDate(certificado.redeterminado.substr(0,10)) }} </strong>
+      <div class="row">
+        <!-- <NuxtLink :to="{ name: 'certificado-id', params: { id: certificado.id } }">
+          <img :src="certificado.image" class="card-img-top" :alt="certificado.name" />
+        </NuxtLink> -->
+        <NuxtLink v-if="!certificado.redeterminado && isAdmin" class="text-center col" :to="{ name: 'redeterminaciones-id', params: { id: certificado.id } }">
+          <b-button variant="success" class="my-1 col-sm-3" > Redeterminar  </b-button>
+        </NuxtLink>
+        <strong v-if="certificado.redeterminado" class="text-center col"> Redeterminado el {{ formatDate(certificado.redeterminado.substr(0,10)) }} </strong>
+        <b-dropdown variant="outline-primary">
+          <b-dropdown-item @click="eliminarRedet"> Eliminar redeterminación </b-dropdown-item>
+          <b-dropdown-item @click="eliminarCert" variant="danger"> Eliminar certificado </b-dropdown-item>
+        </b-dropdown>
+      </div>
       <b-card-body class="col-md-12 text-center">
         <b-form-group  v-for="(_, index) in certificado.items" :key="index">
           <!-- <NuxtLink :to="{ name: 'certificado-id', props: { id: certificado.id } }"> -->
-            <strong class="h5"> Item {{index +1 }}: {{ certificado.items[index].item }}</strong>
+            <strong class="h5 mx-auto"> Item {{index +1 }}: {{ certificado.items[index].item }}</strong>
           <!-- </NuxtLink> -->
           <h6>Contratado: ${{ format(redondear(certificado.items[index].contratado)) }}</h6>
           <h6>Anticipo: ${{ format(redondear(certificado.items[index].anticipo)) }}</h6>
@@ -29,6 +35,7 @@
 </template>
 
 <script>
+import certificado from '~/service/certificado'
 export default {
   props: {
     obra: {
@@ -70,6 +77,57 @@ export default {
     totalRedet(item){
       return item.materiales + item.generales + item.manoObra + item.equipos
     },
+    async eliminarCert(){
+      try {
+        // const userToken = this.$store.state.user.token
+        const certificado = this.certificado
+        await this.$store.dispatch('certificados/delete', {
+          certificado
+        })
+        this.$bvToast.toast('Eliminada correctamente', {
+          title: '',
+          variant: 'success',
+          appendToast: true,
+          solid: true,
+        })
+        await this.$router.push('/')
+        // this.editing = false
+      } catch (e) {
+        this.$bvToast.toast('Error eliminando', {
+          title: 'Error',
+          variant: 'danger',
+          appendToast: true,
+          solid: true,
+        })
+      }
+    },
+    async eliminarRedet(){
+      try {
+        // const userToken = this.$store.state.user.token
+        const redeterminacion = this.redet
+        const userToken = this.$store.state.user.token
+
+        await this.$store.dispatch('redeterminaciones/delete', {
+          redeterminacion,
+          userToken
+        })
+        this.$bvToast.toast('Eliminada correctamente', {
+          title: '',
+          variant: 'success',
+          appendToast: true,
+          solid: true,
+        })
+        await this.$router.push('/')
+        // this.editing = false
+      } catch (e) {
+        this.$bvToast.toast('Error eliminando', {
+          title: 'Error',
+          variant: 'danger',
+          appendToast: true,
+          solid: true,
+        })
+      }
+    }
     // isAdmin(){
     //   return (this.$store.state.user.admin == true) || (this.$store.state.user.admin == "true")
     // },

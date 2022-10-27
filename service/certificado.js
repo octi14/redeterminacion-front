@@ -66,10 +66,10 @@ module.exports = {
     )
     return formatCertif(createdCertif.data)
   },
-  update: async (axios, { obra, userToken }) => {
+  update: async (axios, { certificado, userToken }) => {
     axios.setHeader('Access-Control-Allow-Origin', true)
     const updated = await axios.$put(
-      `/certificados/${obra.id}`,
+      `/certificados/${certificado.id}`,
       { obra },
       {
         headers: { Authorization: `Bearer ${userToken}` },
@@ -77,9 +77,9 @@ module.exports = {
     )
     return formatCertif(updated.data)
   },
-  delete: async (axios, { id, userToken }) => {
-    return await axios.$delete(`/certificados/${id}`, {
-      headers: { Authorization: `Bearer ${userToken}` },
-    })
+  delete: async (axios, { certificado }) => {
+    return await axios.$delete(`/certificados/${certificado.id}`
+    // headers: { Authorization: `Bearer ${userToken}` },
+    )
   },
 }

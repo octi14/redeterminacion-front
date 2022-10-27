@@ -44,12 +44,10 @@ export const actions = {
       throw new Error('Error actualizando')
     }
   },
-  async delete({ commit, state }, { id, userToken }) {
-    const deleted = await CertificadoService.delete(this.$axios, {
-      id,
-      userToken,
+  async delete({ commit, state }, { certificado }) {
+    return await CertificadoService.delete(this.$axios, {
+      certificado
     })
-    return deleted
   },
 
 }

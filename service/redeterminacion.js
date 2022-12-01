@@ -94,7 +94,6 @@ module.exports = {
     return formatCertif(updated.data)
   },
   delete: async (axios, { redeterminacion, userToken }) => {
-    console.log(redeterminacion)
     return await axios.$delete(`/redeterminaciones/${redeterminacion.id}`, {
       headers: { Authorization: `Bearer ${userToken}` },
     })

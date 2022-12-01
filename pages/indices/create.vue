@@ -87,10 +87,6 @@ export default {
     deleteItem(index) {
       this.items.splice(index, 1)
     },
-    // categorias() {
-    //   console.log(this.$store.state.categorias.all)
-    //   return this.$store.state.categorias.all
-    // },
   },
 }
 </script>

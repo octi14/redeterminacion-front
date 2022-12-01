@@ -1,5 +1,5 @@
 <template>
-  <div id="results-page">
+  <div id="results-page" class="mt-5">
     <template v-if="searchParamsIsInitialized">
       <ContainersSection title="Resultados de Búsqueda">
         <div v-if="searchResults.length" class="row mt-5">

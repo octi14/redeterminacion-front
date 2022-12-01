@@ -2,9 +2,9 @@ export default {
   target: 'server',
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'Redeterminación',
+    title: 'Hacienda Villa Gesell',
     htmlAttrs: {
-      lang: 'en'
+      lang: 'es'
     },
     meta: [
       { charset: 'utf-8' },

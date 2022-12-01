@@ -38,7 +38,6 @@ export default {
   async fetch() {
     await this.$store.dispatch('certificados/getAll')
     this.items = this.certificados
-    // console.log(this.items)
 
     // consulto si no hay más recetas para traer
     // const newLength = this.$store.state.certificados.latest.length

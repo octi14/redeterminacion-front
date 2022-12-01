@@ -36,7 +36,7 @@
                 <strong>Saldo original</strong><br>
               </p>
               <p class="col col-complementary" role="complementary">
-                <a>${{ format(certificado.items[index].saldo) }}</a>
+                <a>${{ format(certificado.items[index].contratado - saldoAcumulado(index)) }}</a>
               </p>
             </div>
             <br>
@@ -46,7 +46,7 @@
                   <strong>Proporcional materiales</strong><br>
                 </p>
                 <p class="col col-complementary" role="complementary">
-                  <a>${{ format(ponderar(certificado.items[index].saldo, obra.ponderacion[0].porcentaje)) }}</a>
+                  <a>${{ format(ponderar(certificado.items[index].contratado - saldoAcumulado(index), obra.ponderacion[0].porcentaje)) }}</a>
                 </p>
               </div>
               <div class="layout">
@@ -54,7 +54,7 @@
                   <strong>Proporcional gastos generales</strong><br>
                 </p>
                 <p class="col col-complementary" role="complementary">
-                  <a>${{ format(ponderar(certificado.items[index].saldo, obra.ponderacion[1].porcentaje)) }}</a>
+                  <a>${{ format(ponderar(certificado.items[index].contratado - saldoAcumulado(index), obra.ponderacion[1].porcentaje)) }}</a>
                 </p>
               </div>
               <div class="layout">
@@ -62,7 +62,7 @@
                   <strong>Proporcional mano de obra</strong><br>
                 </p>
                 <p class="col col-complementary" role="complementary">
-                  <a>${{ format(ponderar(certificado.items[index].saldo, obra.ponderacion[2].porcentaje)) }}</a>
+                  <a>${{ format(ponderar(certificado.items[index].contratado - saldoAcumulado(index), obra.ponderacion[2].porcentaje)) }}</a>
                 </p>
               </div>
               <div class="layout">
@@ -70,7 +70,7 @@
                   <strong>Proporcional equipos</strong><br>
                 </p>
                 <p class="col col-complementary" role="complementary">
-                  <a>${{ format(ponderar(certificado.items[index].saldo, obra.ponderacion[3].porcentaje)) }}</a>
+                  <a>${{ format(ponderar(certificado.items[index].contratado - saldoAcumulado(index), obra.ponderacion[3].porcentaje)) }}</a>
                 </p>
               </div>
               <br>
@@ -83,7 +83,7 @@
                   <strong>Redeterminación materiales </strong> <br>
                 </p>
                 <p class="col col-complementary" role="complementary">
-                  <a>$ {{ format(redeterminarMateriales(ponderar(certificado.items[index].saldo, obra.ponderacion[0].porcentaje))) }} </a>
+                  <a>$ {{ format(redeterminarMateriales(ponderar(certificado.items[index].contratado - saldoAcumulado(index), obra.ponderacion[0].porcentaje))) }} </a>
                 </p>
               </div>
               <div class="layout">
@@ -91,14 +91,14 @@
                   <strong>Redeterminación gastos generales </strong>
                 </p>
                 <p class="col col-complementary" role="complementary">
-                  <a>$ {{ format(redeterminarGenerales(ponderar(certificado.items[index].saldo, obra.ponderacion[1].porcentaje))) }}</a>
+                  <a>$ {{ format(redeterminarGenerales(ponderar(certificado.items[index].contratado - saldoAcumulado(index), obra.ponderacion[1].porcentaje))) }}</a>
                 </p>
               </div>
               <div class="layout">
                 <p class="col col-main">
                   <strong>Redeterminación mano de obra </strong>
                   <p class="col col-complementary" role="complementary">
-                    <a>$ {{ format(redeterminarManoObra(ponderar(certificado.items[index].saldo, obra.ponderacion[2].porcentaje))) }}
+                    <a>$ {{ format(redeterminarManoObra(ponderar(certificado.items[index].contratado - saldoAcumulado(index), obra.ponderacion[2].porcentaje))) }}
                     </a>
                   </p>
               </div>
@@ -107,7 +107,7 @@
                   <strong>Redeterminación equipos </strong>
                 </p>
                 <p class="col col-complementary" role="complementary">
-                  <a>$ {{ format(redeterminarEquipos(ponderar(certificado.items[index].saldo, obra.ponderacion[3].porcentaje))) }} </a>
+                  <a>$ {{ format(redeterminarEquipos(ponderar(certificado.items[index].contratado - saldoAcumulado(index), obra.ponderacion[3].porcentaje))) }} </a>
                 </p>
               </div>
             </div>
@@ -262,6 +262,7 @@ export default {
       }
     },
     redeterminarMateriales(monto) {
+      console.log(this.destinoMateriales / this.origenMateriales)
       return monto * ( (this.destinoMateriales/this.origenMateriales) -1)
     },
     redeterminarGenerales(monto) {
@@ -309,6 +310,28 @@ export default {
           appendToast: true,
           solid: true,
         })
+      }
+    },
+    saldoAcumulado(i) {
+      var saldoAcumulado = 0
+      //recorro los certificados
+      for(var c = 0; c < this.obra.certificados.length; c++) {
+        if (this.obra.certificados[c] != this.certificado.id) {
+          saldoAcumulado = saldoAcumulado + this.$store.state.certificados.certifs[c].items[i].saldo
+        }else{
+          saldoAcumulado = saldoAcumulado + this.$store.state.certificados.certifs[c].items[i].saldo
+          return saldoAcumulado
+        }
+      }
+    },
+    buscarAvance(n){
+      var avanceTotal = 0
+      for(var c = 0; c < this.obra.certificados.length; c++) {
+        if (this.obra.certificados[c] != this.certificado.id) {
+          avanceTotal = avanceTotal + this.$store.state.certificados.certifs[c].items[n].avance
+        }else{
+          return (this.certificado.items[n].contratado * avanceTotal)/100
+        }
       }
     },
   },

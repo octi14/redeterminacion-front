@@ -82,27 +82,7 @@ export default {
       const anticipo = this.anticipoProp(monto) * ((avance || 0)/100)
       return (realizado - anticipo)
     },
-    // async onSubmitCreateCertif() {
-
-    //   console.log(this.items)
-    //   try {
-    //     const userToken = this.$store.state.user.token
-    //     await this.$store.dispatch('certificados/create', {
-    //       userToken,
-    //       certificado: {
-    //         items: this.items,
-    //       },
-    //     })
-    //   } catch (e) {
-    //     this.$bvToast.toast('Error Cargando el certificado', {
-    //       title: 'Error',
-    //       variant: 'danger',
-    //       appendToast: true,
-    //       solid: true,
-    //     })
-    //   }
-    // },
-    onSubmit() {
+    async onSubmit() {
       for (var i = 0; i < this.obra.items.length; i++) {
         this.items.push({
           item: this.obra.items[i].item,
@@ -120,6 +100,7 @@ export default {
       if (this.certificado.id) {
         certificado.id = this.certificado.id
       }
+
       this.$bvToast.toast('Certificación agregada', {
         title: 'Agregada',
         variant: 'success',

@@ -310,8 +310,14 @@ export default {
     async onSubmitCreateCertif({ certificado }) {
       try {
         const userToken = this.$store.state.user.token
-        await this.$store.dispatch('certificados/create', {
+        const verifiedCert = await this.$store.dispatch('certificados/create', {
           certificado,
+          userToken,
+        })
+        this.obra.certificados.push(verifiedCert.id)
+        const obra = this.obra
+        await this.$store.dispatch('obras/update', {
+          obra,
           userToken,
         })
         // this.editing = false

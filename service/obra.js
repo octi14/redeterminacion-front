@@ -7,6 +7,7 @@ const formatFile = (FileResponse) => ({
   proveedor: FileResponse.proveedor,
   cotizacion: FileResponse.cotizacion,
   items: FileResponse.items,
+  certificados: FileResponse.certificados,
   garantia_contrato: FileResponse.garantia_contrato,
   adjudicacion: FileResponse.adjudicacion,
   contrato: FileResponse.contrato,

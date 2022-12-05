@@ -1,7 +1,7 @@
 <template>
   <div class="page background">
     <div v-if="obra">
-      <div class="container my-4 col-sm-12">
+      <div class="container my-3 col-sm-12">
         <div class="row">
           <div class="col">
             <h1 class="h2 text-center">{{ obra.objeto }}</h1>

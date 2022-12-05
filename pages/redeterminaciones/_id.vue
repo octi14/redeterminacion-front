@@ -18,6 +18,7 @@
                 <b-form-input class="col-md-2" v-model="fechaCancelacion" type="date"> </b-form-input>
               </b-form>
               <b-form class="col mx-auto" v-else>
+                <h5 class="col-main"> Acta de inicio: {{ this.obra.acta_inicio }} </h5>
                 <h6> Introducir valor de índice UVI inicial </h6>
                 <b-form-input class="col-md-2" v-model="uviOrigen" type="double"> </b-form-input>
                 <hr/>
@@ -25,6 +26,7 @@
                 <b-form-input class="col-md-2" v-model="uviDestino" type="double"> </b-form-input>
               </b-form>
               <b-button variant="primary" @click="onApplyIndex" v-if="!obraUvi"> Aplicar índices </b-button>
+              <a href="https://www.camarco.org.ar/wp-content/uploads/2022/10/Evolucion-UVIs.pdf" target="_blank"> Ver índices UVI </a>
             </div>
           </div>
           <div class="container mx-auto" v-for="(_,index) in certificado.items" :key="index">
@@ -117,7 +119,7 @@
                   <strong>Saldo redeterminado</strong> <br>
                 </p>
                 <p class="col col-complementary" role="complementary">
-                  <a>$ {{ format(redeterminarUVI(certificado.items[index].saldo))}} </a>
+                  <a>$ {{ format(redeterminarUVI(certificado.items[index].contratado - saldoAcumulado(index)))}} </a>
                 </p>
               </div>
             </div>

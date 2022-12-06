@@ -264,7 +264,6 @@ export default {
       }
     },
     redeterminarMateriales(monto) {
-      console.log(this.destinoMateriales / this.origenMateriales)
       return monto * ( (this.destinoMateriales/this.origenMateriales) -1)
     },
     redeterminarGenerales(monto) {
@@ -316,12 +315,19 @@ export default {
     },
     saldoAcumulado(i) {
       var saldoAcumulado = 0
+      //le saco el anticipo financiero proporcional al ítem
+      saldoAcumulado = saldoAcumulado + ((this.obra.anticipo_finan / this.obra.cotizacion) * this.obra.items[i].monto)
       //recorro los certificados
       for(var c = 0; c < this.obra.certificados.length; c++) {
+        //si es el certificado 1 (el primero):
+        if(this.obra.certificados[0] == this.certificado.id) {
+          return saldoAcumulado
+        }
+        //si es anterior al que estoy usando:
         if (this.obra.certificados[c] != this.certificado.id) {
+          //acumulo saldo
           saldoAcumulado = saldoAcumulado + this.$store.state.certificados.certifs[c].items[i].saldo
         }else{
-          saldoAcumulado = saldoAcumulado + this.$store.state.certificados.certifs[c].items[i].saldo
           return saldoAcumulado
         }
       }

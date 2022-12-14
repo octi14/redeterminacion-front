@@ -79,8 +79,19 @@ export default {
     },
     async eliminarCert(){
       try {
-        // const userToken = this.$store.state.user.token
+        const userToken = this.$store.state.user.token
         const certificado = this.certificado
+        const obra = this.obra
+        for(var i=0; i< obra.certificados.length; i++){
+          if(obra.certificados[i] == certificado.id){
+            obra.certificados.splice(i, 1)
+            i = 0
+          }
+        }
+        await this.$store.dispatch('obras/update',{
+          obra,
+          userToken
+        })
         await this.$store.dispatch('certificados/delete', {
           certificado
         })

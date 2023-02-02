@@ -23,9 +23,10 @@
             <strong class="h5 mx-auto"> Item {{index +1 }}: {{ certificado.items[index].item }}</strong>
           <!-- </NuxtLink> -->
           <h6>Contratado: ${{ format(redondear(certificado.items[index].contratado)) }}</h6>
-          <h6>Anticipo: ${{ format(redondear(certificado.items[index].anticipo)) }}</h6>
+          <h6 v-if="!obraUvi">Anticipo: ${{ format(redondear(certificado.items[index].anticipo)) }}</h6>
           <h6>Avance: {{ certificado.items[index].avance }}%</h6>
-          <h6>Saldo: ${{ format(redondear(certificado.items[index].saldo)) }}</h6>
+          <h6 v-if="!obraUvi">Saldo: ${{ format(redondear(certificado.items[index].saldo)) }}</h6>
+          <h6 v-else>Saldo: ${{ format(redondear((certificado.items[index].contratado - certificado.items[index].anticipo) * (certificado.items[index].avance/100))) }}</h6>
           <strong v-if="certificado.redeterminado">Saldo redeterminado: ${{ format(redondear(totalRedet(redet.items[index]))) }}  </strong>
           <!-- <h5>{{ certificado.fecha_contrato }}</h5> -->
         </b-form-group>
@@ -53,7 +54,11 @@ export default {
   data() {
     return {
       visible: false,
+      obraUvi: false,
     }
+  },
+  async fetch() {
+    this.obraUvi = (this.obra.ponderacion[0].porcentaje == null)
   },
   computed: {
     isAdmin(){

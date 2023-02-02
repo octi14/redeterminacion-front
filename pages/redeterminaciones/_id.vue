@@ -29,6 +29,7 @@
               <a href="https://www.camarco.org.ar/wp-content/uploads/2022/10/Evolucion-UVIs.pdf" target="_blank"> Ver índices UVI </a>
             </div>
           </div>
+          <!-- Cambiar el formato del panel si la obra es UVI -->
           <div class="container mx-auto" v-for="(_,index) in certificado.items" :key="index">
             <div class="layout">
                 <strong class="row h5">{{index +1}}. {{ certificado.items[index].item }}</strong>
@@ -37,8 +38,12 @@
               <p class="col col-main">
                 <strong>Saldo original</strong><br>
               </p>
-              <p class="col col-complementary" role="complementary">
+              <!-- Calcular al revés si es UVI -->
+              <p class="col col-complementary" role="complementary" v-if="!obraUvi">
                 <a>${{ format(certificado.items[index].contratado - saldoAcumulado(index)) }}</a>
+              </p>
+              <p class="col col-complementary" role="complementary" v-else>
+                <a>${{ format((certificado.items[index].contratado - certificado.items[index].anticipo) * (certificado.items[index].avance/100))}}</a>
               </p>
             </div>
             <br>
@@ -118,8 +123,12 @@
                 <p class="col col-main">
                   <strong>Saldo redeterminado</strong> <br>
                 </p>
-                <p class="col col-complementary" role="complementary">
+                <!-- Cambiar fórmula: monto = certificado -->
+                <p class="col col-complementary" role="complementary" v-if="!obraUvi">
                   <a>$ {{ format(redeterminarUVI(certificado.items[index].contratado - saldoAcumulado(index)))}} </a>
+                </p>
+                <p class="col col-complementary" role="complementary" v-else>
+                  <a>$ {{ format(redeterminarUVI((certificado.items[index].contratado - certificado.items[index].anticipo) * (certificado.items[index].avance/100)))}} </a>
                 </p>
               </div>
             </div>

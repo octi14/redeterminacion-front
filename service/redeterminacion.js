@@ -12,6 +12,7 @@ const formatItem = (ItemsData) => ({
   generales: ItemsData.generales,
   manoObra: ItemsData.manoObra,
   equipos: ItemsData.equipos,
+  uvi: ItemsData.uvi,
 })
 
 module.exports = {

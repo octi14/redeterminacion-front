@@ -289,14 +289,29 @@ export default {
     },
     async onGuardar(){
       for (var i = 0; i < this.certificado.items.length; i++) {
-        this.redeterminacion.push({
-          item: this.certificado.items[i].item,
-          saldo: this.obra.items[i].saldo,
-          materiales: this.redeterminarMateriales(this.ponderar(this.certificado.items[i].saldo, this.obra.ponderacion[0].porcentaje)),
-          generales: this.redeterminarGenerales(this.ponderar(this.certificado.items[i].saldo,this.obra.ponderacion[1].porcentaje)),
-          manoObra: this.redeterminarManoObra(this.ponderar(this.certificado.items[i].saldo,this.obra.ponderacion[2].porcentaje)),
-          equipos: this.redeterminarEquipos(this.ponderar(this.certificado.items[i].saldo,this.obra.ponderacion[3].porcentaje)),
-        })
+        if(!this.obraUvi){
+          console.log("paso")
+          this.redeterminacion.push({
+            item: this.certificado.items[i].item,
+            saldo: this.obra.items[i].saldo,
+            materiales: this.redeterminarMateriales(this.ponderar(this.certificado.items[i].saldo, this.obra.ponderacion[0].porcentaje)),
+            generales: this.redeterminarGenerales(this.ponderar(this.certificado.items[i].saldo,this.obra.ponderacion[1].porcentaje)),
+            manoObra: this.redeterminarManoObra(this.ponderar(this.certificado.items[i].saldo,this.obra.ponderacion[2].porcentaje)),
+            equipos: this.redeterminarEquipos(this.ponderar(this.certificado.items[i].saldo,this.obra.ponderacion[3].porcentaje)),
+            uvi: 0,
+          })
+        }else{
+          console.log("acá")
+          this.redeterminacion.push({
+            item: this.certificado.items[i].item,
+            saldo: this.obra.items[i].saldo,
+            materiales: 0,
+            generales: 0,
+            manoObra: 0,
+            equipos: 0,
+            uvi: this.redeterminarUVI((this.certificado.items[i].contratado - this.certificado.items[i].anticipo) * (this.certificado.items[i].avance/100)),
+          })
+        }
       }
       try {
         const userToken = this.$store.state.user.token

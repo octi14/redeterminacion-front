@@ -80,7 +80,7 @@ export default {
       this.visible = !this.visible
     },
     totalRedet(item){
-      return item.materiales + item.generales + item.manoObra + item.equipos
+      return item.materiales + item.generales + item.manoObra + item.equipos + item.uvi
     },
     async eliminarCert(){
       try {

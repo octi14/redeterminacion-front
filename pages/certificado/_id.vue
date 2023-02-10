@@ -152,7 +152,7 @@ export default {
         })
         await this.$router.push('/')
       } catch (e) {
-        this.$bvToast.toast('Error Editando', {
+        this.$bvToast.toast('Error Editando. Intente cerrar sesión e iniciar nuevamente.', {
           title: 'Error',
           variant: 'danger',
           appendToast: true,
@@ -170,7 +170,7 @@ export default {
         // this.editing = false
         // await this.$router.push('/')
       } catch (e) {
-        this.$bvToast.toast('Error Editando', {
+        this.$bvToast.toast('Error Editando. Intente cerrar sesión e iniciar nuevamente.', {
           title: 'Error',
           variant: 'danger',
           appendToast: true,
@@ -196,7 +196,7 @@ export default {
         })
         await this.$router.push('/')
       } catch (e) {
-        this.$bvToast.toast('Error Editando', {
+        this.$bvToast.toast('Error Editando. Intente cerrar sesión e iniciar nuevamente.', {
           title: '',
           variant: 'danger',
           appendToast: true,

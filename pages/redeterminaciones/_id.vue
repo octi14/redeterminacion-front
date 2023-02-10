@@ -216,7 +216,7 @@ export default {
         })
         await this.$router.push('/')
       } catch (e) {
-        this.$bvToast.toast('Error Editando', {
+        this.$bvToast.toast('Error Editando. Intente cerrar sesión e iniciar nuevamente.', {
           title: '',
           variant: 'danger',
           appendToast: true,

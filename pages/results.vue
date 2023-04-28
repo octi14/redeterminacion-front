@@ -6,7 +6,7 @@
           <div
             v-for="obra in searchResults"
             :key="obra._id"
-            class="col-6 col-lg-12 mb-4"
+            class="col-6 col-lg-12"
           >
             <ObraCard :obra="obra" />
           </div>
@@ -20,7 +20,7 @@
       <ContainersSection>
         <b-alert variant="primary" show>
           No se hizo ninguna búsqueda.
-          <nuxt-link to="/">Volver al inicio</nuxt-link>.
+          <nuxt-link to="/redeterminacion">Volver al inicio</nuxt-link>.
         </b-alert>
       </ContainersSection>
     </template>

@@ -1,7 +1,7 @@
 <template>
   <div class="text-center">
-    <ContainersForm title="Bienvenido">
-      <strong> Inicie sesión para continuar </strong>
+    <ContainersForm title="Redeterminación">
+      <h5> Inicie sesión para continuar </h5>
       <b-form @submit.stop.prevent="onSubmitLoginForm">
         <b-form-group
           class="my-3"

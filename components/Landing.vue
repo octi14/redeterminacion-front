@@ -1,10 +1,28 @@
 <template>
-  <div class="landing">
-    <b-card class="text-center m-4">
-      <h4 class="text-center m-1"> Hacienda Villa Gesell </h4>
-      <b-button variant="success" class="m-5" @click="redeterminacion"> Redeterminación </b-button>
-      <b-button variant="success" class="m-5" @click="balnearios"> Balnearios Villa Gesell </b-button>
-    </b-card>
+  <div>
+    <div class="title">
+      <b-card class="mx-auto landing-banner shadow-md" border-variant="light">
+        <h1 class="text-center m-3" style="color:white"><b> Secretaría de Hacienda </b> </h1>
+        <h5 class="text-center" style="color:white"> Municipalidad de Villa Gesell </h5>
+      </b-card>
+    </div>
+    <div>
+      <div class="text-center" border-variant="light">
+        <b-button variant="success" v-if="isAdmin" class="mt-5 mx-3" @click="redeterminacion">
+          <h5 style="color:white"> Redeterminación </h5>
+        </b-button>
+        <b-button variant="success" class="mt-5 mx-3" @click="comercios">
+          <h5 style="color:white"> Habilitaciones Comerciales </h5>
+        </b-button>
+        <b-button variant="success" class="mt-5 mx-3" @click="turnos">
+          <h5 style="color:white"> Turnos comercio </h5>
+        </b-button>
+        <br>
+        <b-button variant="success" class="mt-5 mx-3">
+          <h5 style="color:white"> Ordenanzas vigentes </h5>
+        </b-button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -14,10 +32,30 @@ export default {
     return {
     }
   },
+  computed: {
+    isAdmin(){
+      return (this.$store.state.user.admin)
+    },
+  },
   methods: {
     async onSubmitLoginForm() {
       await this.$store.dispatch('user/authenticate', this.form)
     },
+    async redeterminacion(){
+      await this.$router.push('/redeterminacion')
+    },
+    async comercios(){
+      await this.$router.push('/comercios')
+    },
+    async turnos(){
+      await this.$router.push('/turnos')
+    },
   },
 }
 </script>
+
+<style>
+  .bg{
+    background-image: url(https://images.unsplash.com/photo-1588420343624-8b15ebd3573d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1112&q=80);
+  }
+</style>

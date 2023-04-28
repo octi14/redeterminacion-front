@@ -1,5 +1,5 @@
 <template>
-  <div class="obra-feed my-3">
+  <div class="obra-feed">
     <b-nav-text class="text-center col-md-12" variant="primary">
       <strong class="h2"> Archivos mas recientes </strong>
     </b-nav-text>
@@ -7,7 +7,7 @@
       <div
         v-for="obra in obras"
         :key="obra.id"
-        class="transition-col col-12 col-lg-12 mb-2"
+        class="transition-col col-12 col-lg"
       >
         <ObraCard :obra="obra" />
       </div>

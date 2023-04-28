@@ -1,8 +1,9 @@
 <template>
   <div id="app-layout">
-    <Navbar />
-
-    <div id="app-content" class="my-5">
+    <div id="app-navbar">
+      <Navbar />
+    </div>
+    <div id="app-content" class="mt-5">
       <Nuxt keep-alive />
     </div>
 

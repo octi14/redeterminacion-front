@@ -4,10 +4,11 @@ html, body, div#__nuxt, div#__layout {
 
 #app-layout {
   height: 100%;
+  width: auto;
   display: flex;
   flex-direction: column;
   #app-content {
-    flex-grow: 3;
+    flex-grow: 1;
   }
 }
 // transition
@@ -26,4 +27,8 @@ html, body, div#__nuxt, div#__layout {
 
 .background{
   background-image: linear-gradient(to right bottom, #e0f4e9, #def1e6, #ddede3, #dbeae1, #d9e7de, #c9e4d2, #bae0c5, #abdcb7, #8bd69a, #6bcf7c, #47c75a, #00be32);
+}
+
+.landing-banner{
+  background-image: linear-gradient(to bottom, #017005,#09841b,#0a8f15,#0a8f15,#0a9115,#0b9216,#08960d,#089908,#0aa00a,#08a208,#14b314,#48d148, #98ea92);
 }

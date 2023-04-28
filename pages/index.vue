@@ -1,16 +1,11 @@
 <template>
   <div class="page">
-    <div class="background shadow-sm">
-      <div class="row justify-content-center">
-        <div class="col col-sm-7 my-3">
-          <div class="card shadow-lg">
-            <template v-if="!isAuthenticated">
-              <LoginForm />
-            </template>
-            <template v-else>
-              <ObraFeed />
-            </template>
-          </div>
+    <div style="height: 100%">
+      <div class="mx-auto m-2" style="height:100%">
+        <div class="shadow-lg" style="height:100%">
+          <template>
+            <Landing />
+          </template>
         </div>
       </div>
     </div>
@@ -19,11 +14,6 @@
 
 <script>
 export default {
-  // async fetch() {
-    // await this.$store.dispatch('ingredients/getIngredients')
-    // await this.$store.dispatch('tags/getTags')
-  // },
-  // fetchOnServer: false,
   computed: {
     isAuthenticated() {
       return Boolean(this.$store.state.user.token)

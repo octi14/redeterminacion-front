@@ -3,7 +3,7 @@
     <div class="container">
       <div class="row">
         <div class="flex row mx-auto">
-          <p>2022 - Municipalidad de Villa Gesell  </p>
+          <p>2023 - Municipalidad de Villa Gesell  </p>
           <a class="ml-2" href="https://github.com/octi14" target="_blank">
             <svg
               aria-hidden="true"

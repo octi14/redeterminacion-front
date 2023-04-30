@@ -3,7 +3,7 @@
     <b-nav-text class="text-center col-md-12" variant="primary">
       <strong class="h2"> Archivos mas recientes </strong>
     </b-nav-text>
-    <transition-group name="list" tag="div" class="col">
+    <transition-group name="list" tag="div" class="col mt-3">
       <div
         v-for="obra in obras"
         :key="obra.id"

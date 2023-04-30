@@ -1,11 +1,6 @@
 <template>
   <div>
-    <div class="title">
-      <b-card class="mx-auto landing-banner shadow-md" border-variant="light">
-        <h1 class="text-center m-3" style="color:white"><b> Secretaría de Hacienda </b> </h1>
-        <h5 class="text-center" style="color:white"> Municipalidad de Villa Gesell </h5>
-      </b-card>
-    </div>
+    <Banner title="Secretaría de Hacienda" subtitle="Municipalidad de Villa Gesell" />
     <div>
       <div class="text-center" border-variant="light">
         <b-button variant="success" v-if="isAdmin" class="mt-5 mx-3" @click="redeterminacion">
@@ -18,7 +13,7 @@
           <h5 style="color:white"> Turnos comercio </h5>
         </b-button>
         <br>
-        <b-button variant="success" class="mt-5 mx-3">
+        <b-button variant="success" class="mt-5 mx-3" @click="ordenanzas">
           <h5 style="color:white"> Ordenanzas vigentes </h5>
         </b-button>
       </div>
@@ -49,6 +44,9 @@ export default {
     },
     async turnos(){
       await this.$router.push('/turnos')
+    },
+    async ordenanzas(){
+      await this.$router.push('/ordenanzas')
     },
   },
 }

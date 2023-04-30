@@ -24,7 +24,7 @@
           <hr />
         <b-btn variant="success" style="color: black" type="submit">Crear índice</b-btn>
         <b-btn variant="info">
-        <NuxtLink style="color: black" to="/indices/menu"> Volver </NuxtLink>
+        <NuxtLink style="color: black" to="/redeterminacion"> Volver </NuxtLink>
         </b-btn>
       </b-form>
     </div>

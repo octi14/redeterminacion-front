@@ -290,7 +290,6 @@ export default {
     async onGuardar(){
       for (var i = 0; i < this.certificado.items.length; i++) {
         if(!this.obraUvi){
-          console.log("paso")
           this.redeterminacion.push({
             item: this.certificado.items[i].item,
             saldo: this.obra.items[i].saldo,
@@ -301,7 +300,6 @@ export default {
             uvi: 0,
           })
         }else{
-          console.log("acá")
           this.redeterminacion.push({
             item: this.certificado.items[i].item,
             saldo: this.obra.items[i].saldo,
@@ -327,7 +325,7 @@ export default {
           appendToast: true,
           solid: true,
         })
-        await this.$router.push('/obra/feed')
+        await this.$router.push('/redeterminacion')
       } catch (e) {
         this.$bvToast.toast('Error creando la redeterminación', {
           title: 'Error',

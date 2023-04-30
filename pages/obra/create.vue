@@ -1,7 +1,7 @@
 <template>
-  <div class="page background">
+  <div class="page background mt-2">
+    <Banner title="Crear nueva obra" />
     <div class="container my-4">
-      <h2 class="text-center">Crear nueva obra</h2>
       <!-- <p>Agrega una nueva obra con sus características</p> -->
       <b-form class=" card my-4 col-md-9 mx-auto" @submit.stop.prevent="onSubmitCreateFile">
         <b-form-group class="mt-3">
@@ -203,7 +203,7 @@ export default {
         appendToast: true,
         solid: true,
       })
-      await this.$router.push('/obra/feed')
+      await this.$router.push('/redeterminacion')
       } catch (e) {
         this.$bvToast.toast('Error Cargando la Obra', {
           title: 'Error',
@@ -223,7 +223,7 @@ export default {
       this.items.splice(index, 1)
     },
     async onReturn(){
-      await this.$router.push('/obra/feed')
+      await this.$router.push('/redeterminacion')
     },
     // categorias() {
     //   console.log(this.$store.state.categorias.all)

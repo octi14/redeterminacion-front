@@ -1,6 +1,6 @@
 <template>
   <div class="text-center">
-    <ContainersForm title="Redeterminación">
+    <ContainersForm>
       <h5> Inicie sesión para continuar </h5>
       <b-form @submit.stop.prevent="onSubmitLoginForm">
         <b-form-group
@@ -10,7 +10,7 @@
           label-for="input-email"
         >
           <b-form-input
-            class="col-md-4 mx-auto"
+            class="col-md-5 mx-auto"
             id="input-username"
             v-model="form.username"
             type="username"
@@ -24,7 +24,7 @@
           label-for="input-password"
         >
           <b-form-input
-            class="col-md-4 mx-auto"
+            class="col-md-5 mx-auto"
             id="input-password"
             v-model="form.password"
             type="password"

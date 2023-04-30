@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <div>
-      <Banner title="Comercio" subtitle="Sistema de turnos" />
+      <Banner title="Ordenanzas vigentes" class="mt-3"/>
     </div>
   </div>
 </template>

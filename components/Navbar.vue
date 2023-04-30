@@ -1,68 +1,85 @@
 <template>
-  <b-navbar toggleable="sm" type="dark" variant="success" class="row" fixed="top">
-    <div class="col-xs-1 ml-3">
+  <b-navbar toggleable="sm" type="dark" variant="success" fixed="top">
+    <div class="col-xs-1 ml-2">
       <a href="https://gesell.gob.ar/">
-        <img src="https://arvige.gob.ar/assets/img/header.png" style="height: 52px; width: 42px">
+        <img src="https://arvige.gob.ar/assets/img/header.png" style="height: 58px; width: 42px">
       </a>
     </div>
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
     <b-collapse id="nav-collapse" is-nav class="m-2" style="width:90%">
-      <b-navbar-nav>
-        <NuxtLink
-          class="nav-link"
-          active-class="active"
-          to="/"
-        >
-            Inicio
-        </NuxtLink>
-      </b-navbar-nav>
-      <b-navbar-nav>
-        <NuxtLink
-          v-if="isAdmin"
-          class="nav-link"
-          active-class="active"
-          to="/redeterminacion"
-        >
-            Obras
-        </NuxtLink>
-      </b-navbar-nav>
-      <b-navbar-nav>
-        <NuxtLink
+      <div class="row col-4">
+        <b-navbar-nav>
+          <NuxtLink
+            class="nav-link"
+            active-class="active"
+            to="/"
+          >
+              Inicio
+          </NuxtLink>
+        </b-navbar-nav>
+        <b-dropdown v-if="isAuthenticated" text="Obras" variant="success">
+          <b-dropdown-item>
+            <NuxtLink
+              style="color:black"
+              class="nav-link"
+              v-if="isAuthenticated"
+              to="/redeterminacion"
+            >
+              Lista de obras
+            </NuxtLink>
+          </b-dropdown-item>
+          <b-dropdown-item v-if="isAuthenticated && isAdmin">
+            <NuxtLink
+            style="color:black"
+            class="nav-link"
+            active-class="active"
+            to="/obra/create"
+          >
+              Nueva obra
+          </NuxtLink>
+          </b-dropdown-item>
+        </b-dropdown>
+        <b-dropdown v-if="isAuthenticated" text="Índices" variant="success">
+          <b-dropdown-item v-if="isAuthenticated && isAdmin">
+            <NuxtLink
+              style="color:black"
+              class="nav-link"
+              to="/indices/create"
+            >
+              Crear
+            </NuxtLink>
+          </b-dropdown-item>
+          <b-dropdown-item>
+            <NuxtLink
+            style="color:black"
+            v-if="isAuthenticated"
+            class="nav-link"
+            active-class="active"
+            to="/indices/search"
+          >
+              Buscar
+          </NuxtLink>
+          </b-dropdown-item>
+        </b-dropdown>
+        <b-navbar-nav>
+          <NuxtLink
+            v-if="isAuthenticated"
+            class="nav-link"
+            active-class="active"
+            to="/normativas"
+          >
+              Normativas
+          </NuxtLink>
+        </b-navbar-nav>
+      </div>
+      <div class="col-4 mr-auto">
+        <b-input type="text"
           v-if="isAuthenticated"
-          class="nav-link"
-          active-class="active"
-          to="/obra/create"
-        >
-            Nueva obra
-        </NuxtLink>
-      </b-navbar-nav>
+          v-model="search"
+          placeholder="Buscar obra"
+          @keypress="onSearchFileByName"/>
+      </div>
       <b-navbar-nav>
-        <NuxtLink
-          v-if="isAuthenticated && isAdmin"
-          class="nav-link"
-          active-class="active"
-          to="/indices/menu"
-        >
-            Índices
-        </NuxtLink>
-      </b-navbar-nav>
-      <b-navbar-nav>
-        <NuxtLink
-          v-if="isAuthenticated"
-          class="nav-link"
-          active-class="active"
-          to="/normativas"
-        >
-            Normativas
-        </NuxtLink>
-      </b-navbar-nav>
-      <b-input type="text"
-        class="col-md-3  mx-auto"
-        v-if="isAuthenticated"
-        v-model="search"
-        placeholder="Buscar obra"
-        @keypress="onSearchFileByName"/>
-      <b-navbar-nav class="ml-auto">
         <template v-if="isAuthenticated">
           <b-nav-item-dropdown :text="username" right>
             <!-- <b-dropdown-item>
@@ -79,20 +96,14 @@
           </b-nav-item-dropdown>
         </template>
         <template v-else>
-          <NuxtLink class="nav-link" active-class="active" to="/">
-            <!-- Iniciar Sesión -->
+          <NuxtLink
+            class="nav-link"
+            active-class="active"
+            to="/redeterminacion"
+          >
+              Uso interno
           </NuxtLink>
         </template>
-      </b-navbar-nav>
-      <b-navbar-nav>
-        <NuxtLink
-          v-if="!isAuthenticated"
-          class="nav-link"
-          active-class="active"
-          to="/redeterminacion"
-        >
-            Uso interno
-        </NuxtLink>
       </b-navbar-nav>
     </b-collapse>
   </b-navbar>
@@ -109,7 +120,7 @@ export default {
       return Boolean(this.$store.state.user.token)
     },
     isAdmin(){
-      return (this.$store.state.user.admin)
+      return Boolean(this.$store.state.user.admin == "true")
     },
     username() {
       return this.$store.state.user.username

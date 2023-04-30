@@ -82,7 +82,7 @@
             </b-modal>
           </div>
         </div>
-            <div class="card shadow-lg col-8 mx-auto" v-if="!adding && !editing">
+            <div class="card shadow-lg col-10 mx-auto" v-if="!adding && !editing">
               <div class="layout">
                 <p class="col col-main">
                   <strong>Expediente</strong><br>

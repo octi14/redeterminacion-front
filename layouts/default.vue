@@ -6,7 +6,6 @@
     <div id="app-content" class="mt-5">
       <Nuxt keep-alive />
     </div>
-
     <Foot />
   </div>
 </template>

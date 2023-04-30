@@ -3,17 +3,17 @@
     <Banner title="Secretaría de Hacienda" subtitle="Municipalidad de Villa Gesell" />
     <div>
       <div class="text-center" border-variant="light">
-        <b-button variant="success" v-if="isAdmin" class="mt-5 mx-3" @click="redeterminacion">
+        <b-button pill variant="success" v-if="isAdmin" class="mt-5 mx-3" @click="redeterminacion">
           <h5 style="color:white"> Redeterminación </h5>
         </b-button>
-        <b-button variant="success" class="mt-5 mx-3" @click="comercios">
+        <b-button pill variant="success" class="mt-5 mx-3" @click="comercios">
           <h5 style="color:white"> Habilitaciones Comerciales </h5>
         </b-button>
-        <b-button variant="success" class="mt-5 mx-3" @click="turnos">
+        <b-button pill variant="success" class="mt-5 mx-3" @click="turnos">
           <h5 style="color:white"> Turnos comercio </h5>
         </b-button>
         <br>
-        <b-button variant="success" class="mt-5 mx-3" @click="ordenanzas">
+        <b-button pill variant="success" class="mt-5 mx-3" @click="ordenanzas">
           <h5 style="color:white"> Ordenanzas vigentes </h5>
         </b-button>
       </div>

@@ -19,6 +19,9 @@
         <b-button pill variant="success" class="mt-5 mx-3" @click="modernizacion">
           <h5 style="color:white"> Modernización </h5>
         </b-button>
+        <b-button pill variant="success" class="mt-5 mx-3" @click="guias">
+          <h5 style="color:white"> Guías </h5>
+        </b-button>
       </div>
     </div>
   </div>

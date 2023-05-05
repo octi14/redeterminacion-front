@@ -22,11 +22,7 @@
 export default{
   data() {
     return {
-      date: null,
-      time: null,
     }
-  },
-  methods: {
-  },
+  }
 }
 </script>

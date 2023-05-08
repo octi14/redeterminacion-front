@@ -1,23 +1,26 @@
 <template>
   <div class="tutoriales-feed mt-5">
     <div class="col text-center">
-      <b-button variant="primary" @click="agregarArchivo" v-if="!isAdding"> + </b-button>
+      <b-button variant="primary" @click="agregarArchivo" v-if="!isAdding"> Nuevo </b-button>
       <TutorialForm v-else @reset="agregarArchivo"/>
     </div>
     <!-- <b-nav-text class="text-center col-md-12 mt-4 " variant="primary">
       <strong class="h2"> Archivos mas recientes </strong>
     </b-nav-text> -->
     <!-- <transition-group name="list" tag="div" class="col mt-3"> -->
+      <div class="mx-auto text-center mt-4">
+        <h4> Lista de archivos </h4>
+      </div>
       <div
         v-for="item in items"
         :key="item.id"
       >
         <TutorialCard :item="item" />
       </div>
-      <b-table class="col-11 mx-auto" fixed hover head-variant="dark" :items="items" :fields="fields"></b-table>
+      <!-- <b-table class="col-11 mx-auto" fixed hover head-variant="dark" :items="items" :fields="fields"></b-table>
       <template slot="my-link" slot-scope="data">
         <a :href="data.item.link">link</a>
-      </template>
+      </template> -->
     <!-- </transition-group> -->
   </div>
 </template>

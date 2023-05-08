@@ -50,7 +50,7 @@ export default {
   bootstrapVue: {
     bootstrapCSS: false, // Or `css: false`
     icons: true,
-    bootstrapVueCSS: true, // Or `bvCSS: false`
+    bootstrapVueCSS: false, // Or `bvCSS: false`
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

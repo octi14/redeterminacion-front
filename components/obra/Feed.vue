@@ -11,12 +11,6 @@
       >
         <ObraCard :obra="obra" />
       </div>
-      <!-- <div class="table-responsive col-md-12" v-for="table in tables" :key="table.id">
-        <b-table hover head-variant="dark" :items="items" :fields="fields"></b-table>
-      </div>
-      <template slot="actions" slot-scope="data">
-        <b-button class="btn btn-dark" @click="update(data)" :ref="'btn' + data.index">Update</b-button>
-      </template> -->
     </transition-group>
   </div>
 </template>
@@ -50,7 +44,7 @@ export default {
     await this.$store.dispatch('obras/getAll')
     this.items = this.obras
 
-    // consulto si no hay más recetas para traer
+    // consulto si no hay más para traer
     // const newLength = this.$store.state.obras.latest.length
     // this.all = newLength === this.lastLength
     // this.lastLength = newLength

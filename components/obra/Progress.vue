@@ -25,9 +25,7 @@
 </template>
 
 <script>
-import about from '~/pages/about.vue'
 export default {
-  components: { about },
   props: {
     obra: {
       type: Object,

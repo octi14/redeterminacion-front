@@ -4,8 +4,9 @@
       <img :src="item.image" class="card-img-top" :alt="item.nombre" />
     </NuxtLink> -->
     <b-card-body>
-      <h6>{{ item.nombre }}</h6>
-      <a :href="item.link">{{item.link}}</a>
+      <a :href="item.link" target="blank">
+        <strong>{{item.nombre}} </strong>
+      </a>
     </b-card-body>
   </b-card>
 </template>
@@ -23,9 +24,6 @@ export default {
   },
   computed: {},
   methods: {
-    tag(id) {
-      return this.$store.getters['tags/getTagById'](id)
-    },
   },
 }
 </script>

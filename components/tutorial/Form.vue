@@ -10,6 +10,13 @@
             <b-form-input v-model="link" type="text" />
           </b-form-group>
       </b-form-group>
+      <b-form-text class="h6"> Categoría </b-form-text>
+      <b-form-select v-model="categoria" class="mb-3">
+      <b-form-select-option
+        v-for="categoria in categorias"
+        :key="categoria.id"
+        :value="categoria">{{categoria.nombre}}</b-form-select-option>
+      </b-form-select>
       <b-btn type="submit" size="sm" variant="success">Crear</b-btn>
       <b-btn type="reset" size="sm">Volver</b-btn>
     </b-form>
@@ -23,10 +30,15 @@ export default {
     return {
       nombre: '',
       link: '',
+      categoria: null,
+      categorias: [],
     }
   },
-  // async fetch() {
-  // },
+  async fetch() {
+    await this.$store.dispatch('multimediacategorias/getAll')
+    this.categorias = this.$store.state.multimediacategorias.all
+    console.log(this.categorias)
+  },
   // fetchOnServer: false,
   methods: {
     volver(){
@@ -40,6 +52,7 @@ export default {
         multimedia: {
           nombre: this.nombre,
           link: this.link,
+          categoria: this.categoria.id,
         },
       })
       this.$bvToast.toast('Creado correctamente', {
@@ -49,7 +62,7 @@ export default {
         solid: true,
       })
       this.$emit('submit')
-      await this.$router.push('/repositorio')
+      await this.$router.push('/modernizacion')
       } catch (e) {
         this.$bvToast.toast('Error Cargando el archivo', {
           title: 'Error',

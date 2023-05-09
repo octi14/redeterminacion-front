@@ -4,7 +4,7 @@
     <div>
       <div class="text-center" border-variant="light">
         <NuxtLink to="/redeterminacion">
-          <b-button pill variant="success" v-if="isAdmin" class="mt-5 mx-3">
+          <b-button pill variant="success" class="mt-5 mx-3">
             <h5 style="color:white"> Redeterminación </h5>
           </b-button>
         </NuxtLink>
@@ -47,7 +47,7 @@ export default {
   },
   computed: {
     isAdmin(){
-      return (this.$store.state.user.admin)
+      return Boolean(this.$store.state.user.admin == "true")
     },
   },
   methods: {

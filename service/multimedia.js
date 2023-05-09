@@ -2,11 +2,13 @@ const formatMultimedia = (MultimediaResponse) => ({
   id: MultimediaResponse._id,
   nombre: MultimediaResponse.nombre,
   link: MultimediaResponse.link,
+  categoria: MultimediaResponse.categoria,
 })
 
 const formatItem = (ItemsData) => ({
   nombre: ItemsData.nombre,
   link: ItemsData.link,
+  categoria: ItemsData.categoria
 })
 
 module.exports = {
@@ -23,11 +25,10 @@ module.exports = {
   },
   search: async (
     axios,
-    { nombre, link }
+    { categoria }
   ) => {
     const filesResponse = await axios.$post('/multimedias/search', {
-      nombre,
-      link,
+      categoria,
     })
     return filesResponse.data.map(formatMultimedia)
   },

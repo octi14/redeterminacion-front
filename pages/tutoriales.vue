@@ -1,27 +1,14 @@
 <template>
   <div class="tutoriales-feed mt-5">
-    <div class="col text-center">
-      <b-button variant="primary" @click="agregarArchivo" v-if="!isAdding"> Nuevo </b-button>
-      <TutorialForm v-else @reset="agregarArchivo"/>
+    <div class="mx-auto text-center mt-4">
+      <h4> Lista de archivos </h4>
     </div>
-    <!-- <b-nav-text class="text-center col-md-12 mt-4 " variant="primary">
-      <strong class="h2"> Archivos mas recientes </strong>
-    </b-nav-text> -->
-    <!-- <transition-group name="list" tag="div" class="col mt-3"> -->
-      <div class="mx-auto text-center mt-4">
-        <h4> Lista de archivos </h4>
-      </div>
-      <div
-        v-for="item in items"
-        :key="item.id"
-      >
-        <TutorialCard :item="item" />
-      </div>
-      <!-- <b-table class="col-11 mx-auto" fixed hover head-variant="dark" :items="items" :fields="fields"></b-table>
-      <template slot="my-link" slot-scope="data">
-        <a :href="data.item.link">link</a>
-      </template> -->
-    <!-- </transition-group> -->
+    <div
+      v-for="item in items"
+      :key="item.id"
+    >
+      <TutorialCard :item="item" />
+    </div>
   </div>
 </template>
 
@@ -48,9 +35,10 @@ export default {
     }
   },
   async fetch() {
-    await this.$store.dispatch('multimedias/getAll')
-    this.items = this.multimedias
-
+    await this.$store.dispatch('multimedias/search',{
+      categoria: '6459913deb2fdbd45da9912b',
+    })
+    this.items = this.$store.state.multimedias.multimedias
     // consulto si no hay más recetas para traer
     // const newLength = this.$store.state.obras.latest.length
     // this.all = newLength === this.lastLength
@@ -63,6 +51,9 @@ export default {
     },
     multimedias() {
       return this.$store.state.multimedias.latest
+    },
+    isAdmin(){
+      return Boolean(this.$store.state.user.admin == "true")
     },
   },
   methods: {

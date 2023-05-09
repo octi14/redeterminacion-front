@@ -13,10 +13,9 @@ export const actions = {
     })
     commit('setLatest', found)
   },
-  async search({ commit, state }, { mes, año }) {
+  async search({ commit, state }, { categoria }) {
     const found = await MultimediaService.search(this.$axios, {
-      mes: mes,
-      año: año,
+      categoria,
     })
     commit('setMany', found)
   },

@@ -1,10 +1,23 @@
 <template>
   <div class="page">
     <Banner title="Modernización" />
-    <div class="text-center mt-3">
-      <NuxtLink to="/repositorio">
-        <b-button pill size="sm" variant="success"> Repositorio </b-button>
-      </NuxtLink>
+    <div class="col text-center" v-if="isAdmin">
+      <b-button variant="primary" @click="agregarArchivo" v-if="!isAdding"> Agregar archivo </b-button>
+      <TutorialForm v-else @reset="agregarArchivo"/>
+    </div>
+    <div class="row justify-content-center" style="height: 60%">
+      <div class="text-center mr-5 mt-3 my-auto">
+        <NuxtLink to="/procedimientos">
+          <b-icon-display class="h1" /> <br />
+          <h3> Procedimientos </h3>
+        </NuxtLink>
+      </div>
+      <div class="text-center ml-5 mt-3 my-auto">
+        <NuxtLink to="/tutoriales">
+          <b-icon-display class="h1" /> <br />
+          <h3> Tutoriales </h3>
+        </NuxtLink>
+      </div>
     </div>
   </div>
 </template>
@@ -13,8 +26,19 @@
 
 export default {
   data() {
+    return {
+      isAdding: false,
+    }
+  },
+  computed: {
+    isAdmin(){
+      return Boolean(this.$store.state.user.admin == "true")
+    },
   },
   methods: {
+    agregarArchivo() {
+      this.isAdding = !this.isAdding
+    },
   }
 }
 </script>

@@ -1,0 +1,64 @@
+<template>
+  <div class="tutoriales-feed mt-5">
+    <div class="mx-auto text-center mt-4">
+      <h4> Lista de archivos </h4>
+    </div>
+    <div
+      v-for="item in items"
+      :key="item.id"
+    >
+      <TutorialCard :item="item" />
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      isAdding: false,
+      lastLength: false,
+      items: [],
+    }
+  },
+  async fetch() {
+    await this.$store.dispatch('multimedias/search',{
+      categoria: '64599147eb2fdbd45da9912d',
+    })
+    this.items = this.multimedias
+    // consulto si no hay más recetas para traer
+    // const newLength = this.$store.state.obras.latest.length
+    // this.all = newLength === this.lastLength
+    // this.lastLength = newLength
+  },
+  // fetchOnServer: false,
+  computed: {
+    loading() {
+      return this.$fetchState.pending
+    },
+    multimedias() {
+      return this.$store.state.multimedias.multimedias
+    },
+    isAdmin(){
+      return Boolean(this.$store.state.user.admin == "true")
+    },
+  },
+  methods: {
+    loadMore() {
+      this.$fetch()
+    },
+  },
+}
+</script>
+
+<style>
+.list-enter-active,
+.list-leave-active {
+  transition: all 1s;
+}
+.list-enter,
+.list-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+</style>

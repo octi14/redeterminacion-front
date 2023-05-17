@@ -30,9 +30,6 @@
 <script>
 export default {
   computed: {
-    // ingredients() {
-    //   return this.$store.state.ingredients.list
-    // },
     searchResults() {
       return this.$store.state.search.results
     },
@@ -44,9 +41,6 @@ export default {
     },
   },
   methods: {
-    // ingredient(id) {
-    //   return this.ingredients.find((e) => e.id === id)
-    // },
   },
 }
 </script>

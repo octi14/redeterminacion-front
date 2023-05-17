@@ -116,8 +116,8 @@
                 </p>
               </div>
 
-              <div>
-                <div class="container" v-if="watchItems">
+              <div class="col">
+                <div v-if="watchItems">
                   <b-button variant="outline-dark" class="my-3" @click="watchItems = !watchItems"> Ocultar Items </b-button>
                   <div class="layout" v-for="(_,index) in obra.items" :key="index">
                     <p class="col col-main">
@@ -206,22 +206,6 @@
                 </p>
               </div>
             </div>
-
-            <!-- <h2 class="h3">Instrucciones</h2>
-            <template v-for="(step, index) in recipe.instructions">
-              <div
-                :key="step.description"
-                class="recipe-step my-2 py-2 border-bottom"
-              >
-                <h3 class="h4 py-2 sticky-top bg-white">
-                  Paso {{ index + 1 }}{{ step.title ? `: ${step.title}` : '' }}
-                </h3>
-                <div class="recipe-step-content">
-                  <b-img v-if="step.image" fluid-grow :src="step.image" />
-                  <p>{{ step.description }}</p>
-                </div>
-              </div>
-            </template> -->
           </div>
         </div>
       </div>

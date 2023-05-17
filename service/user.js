@@ -26,11 +26,11 @@ module.exports = {
     })
     return formatAuthenticatedUser(authenticateResponse.data)
   },
-  register: async (axios, { email, password }) => {
-    const registerResponse = await axios.$post('/users/register', {
-      email,
-      password,
-    })
-    return registerResponse
-  },
+  // register: async (axios, { username, password }) => {
+  //   const registerResponse = await axios.$post('/users/register', {
+  //     username,
+  //     password,
+  //   })
+  //   return registerResponse
+  // },
 }

@@ -1,8 +1,8 @@
 <template>
   <div class="page">
-    <div class="background shadow-sm mt-2">
-      <Banner v-if="!isAuthenticated" title="Redeterminación" />
-      <div class="card shadow-lg col-8 mx-auto m-4">
+    <Banner title="Redeterminación" />
+    <div class="background shadow-sm">
+      <div class="card shadow-lg col-8 mx-auto">
         <template v-if="!isAuthenticated">
           <LoginForm />
         </template>

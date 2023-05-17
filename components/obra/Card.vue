@@ -1,5 +1,5 @@
 <template>
-  <b-card no-body class="obra-card">
+  <b-card no-body class="obra-card mt-1">
     <!-- <NuxtLink :to="{ name: 'obra-id', params: { id: obra.id } }">
       <img :src="obra.image" class="card-img-top" :alt="obra.name" />
     </NuxtLink> -->

@@ -1,5 +1,5 @@
 <template>
-  <div class="tutorial-form">
+  <div class="multimedia-form">
     <h5 class="text-center">Crear archivo</h5>
     <b-form class="my-3 col-md-5 mx-auto justify-content-center" @submit.stop.prevent="onSubmitCreateFile" @reset="volver">
       <b-form-group>
@@ -62,7 +62,7 @@ export default {
         solid: true,
       })
       this.$emit('submit')
-      await this.$router.push('/modernizacion')
+      await this.$router.push('/')
       } catch (e) {
         this.$bvToast.toast('Error Cargando el archivo', {
           title: 'Error',

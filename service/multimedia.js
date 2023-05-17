@@ -5,12 +5,6 @@ const formatMultimedia = (MultimediaResponse) => ({
   categoria: MultimediaResponse.categoria,
 })
 
-const formatItem = (ItemsData) => ({
-  nombre: ItemsData.nombre,
-  link: ItemsData.link,
-  categoria: ItemsData.categoria
-})
-
 module.exports = {
   getLatest: async (axios,
     //  { skip = 0, limit = 6 }

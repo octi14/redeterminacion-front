@@ -7,7 +7,12 @@
       v-for="item in items"
       :key="item.id"
     >
-      <TutorialCard :item="item" />
+      <MultimediaCard :item="item" />
+    </div>
+    <div class="text-center mt-3 float-lg-end">
+      <NuxtLink to="/modernizacion">
+        <b-button variant="success"> Volver </b-button>
+      </NuxtLink>
     </div>
   </div>
 </template>
@@ -16,7 +21,6 @@
 export default {
   data() {
     return {
-      isAdding: false,
       lastLength: false,
       items: [],
       tables: [{
@@ -39,7 +43,7 @@ export default {
       categoria: '6459913deb2fdbd45da9912b',
     })
     this.items = this.$store.state.multimedias.multimedias
-    // consulto si no hay más recetas para traer
+    // consulto si no hay más para traer
     // const newLength = this.$store.state.obras.latest.length
     // this.all = newLength === this.lastLength
     // this.lastLength = newLength
@@ -59,9 +63,6 @@ export default {
   methods: {
     loadMore() {
       this.$fetch()
-    },
-    agregarArchivo() {
-      this.isAdding = !this.isAdding
     },
   },
 }

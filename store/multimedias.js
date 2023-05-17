@@ -53,6 +53,7 @@ export const actions = {
     }
   },
   async delete({ commit, state }, { id, userToken }) {
+    console.log(id)
     const deleted = await MultimediaService.delete(this.$axios, {
       id,
       userToken,

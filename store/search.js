@@ -12,8 +12,6 @@ export const state = () => ({
 
 export const actions = {
   async search({ commit }, { expediente, objeto, adjudicado }) {
-    // TODO: Handle errors!!
-    // TODO: add loading
     commit('setSearchParams', { expediente, objeto, adjudicado })
     const found = await ObraService.searchFiles(this.$axios, {
       expediente,

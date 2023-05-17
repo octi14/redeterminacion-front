@@ -65,13 +65,6 @@
                   <b-form-group label="Nombre:" label-cols-sm="3" label-cols-md="2">
                     <b-form-input v-model="items[index].item" type="text" />
                   </b-form-group>
-                  <!-- <b-form-text> Categoría </b-form-text>
-                  <b-form-select v-model="items[index].categoria" class="mb-3">
-                    <b-form-select-option
-                    v-for="categoria in categorias"
-                    :key="categoria.id"
-                    :value="categoria">{{categoria.nombre}}</b-form-select-option>
-                  </b-form-select> -->
                   <b-form-group label="Monto:" label-cols-sm="3" label-cols-md="2">
                     <b-form-input v-model="items[index].monto" type="float" />
                   </b-form-group>
@@ -164,7 +157,6 @@ export default {
         porcentaje: null,
       })
     }
-    // await this.$store.dispatch('tags/getTags')
   },
   fetchOnServer: false,
   methods: {
@@ -225,10 +217,6 @@ export default {
     async onReturn(){
       await this.$router.push('/redeterminacion')
     },
-    // categorias() {
-    //   console.log(this.$store.state.categorias.all)
-    //   return this.$store.state.categorias.all
-    // },
   },
 }
 </script>

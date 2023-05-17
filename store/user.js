@@ -36,23 +36,6 @@ export const actions = {
       commit('logout')
     }
   },
-  // async register({ dispatch }, { email, password }) {
-  //   // TODO: add loading
-  //   try {
-  //     const registerResponse = await UserService.register(this.$axios, {
-  //       username,
-  //       password,
-  //     })
-  //     if (registerResponse.message === 'Created') {
-  //       dispatch('authenticate', {
-  //         email,
-  //         password,
-  //       })
-  //     }
-  //   } catch (e) {
-  //     throw new Error('Error registrando usuario')
-  //   }
-  // },
   async logout({ commit }) {
     commit('logout')
     await this.$router.push('/')

@@ -1,5 +1,5 @@
 <template>
-  <div class="tutoriales-feed mt-5">
+  <div class="tutoriales-feed mx-auto mt-5">
     <div class="mx-auto text-center mt-4">
       <h4> Lista de archivos </h4>
     </div>
@@ -7,7 +7,12 @@
       v-for="item in items"
       :key="item.id"
     >
-      <TutorialCard :item="item" />
+      <MultimediaCard :item="item" />
+    </div>
+    <div class="text-center mt-3 float-lg-end">
+      <NuxtLink to="/modernizacion">
+        <b-button variant="success"> Volver </b-button>
+      </NuxtLink>
     </div>
   </div>
 </template>
@@ -26,7 +31,8 @@ export default {
       categoria: '64599147eb2fdbd45da9912d',
     })
     this.items = this.multimedias
-    // consulto si no hay más recetas para traer
+    this.updateComponent
+    // consulto si no hay más para traer
     // const newLength = this.$store.state.obras.latest.length
     // this.all = newLength === this.lastLength
     // this.lastLength = newLength
@@ -35,6 +41,9 @@ export default {
   computed: {
     loading() {
       return this.$fetchState.pending
+    },
+    updateComponent(){
+      this.$fetch()
     },
     multimedias() {
       return this.$store.state.multimedias.multimedias

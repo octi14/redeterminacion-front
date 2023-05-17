@@ -60,19 +60,6 @@ module.exports = {
     const redetResponse = await axios.$get(`/redeterminaciones/${id}`)
     return formatRedet(redetResponse.data)
   },
-  // searchCertifs: async (
-  //   axios,
-  //   { expediente = '', objeto = '', adjudicado = '' }
-  // ) => {
-  //   const certifsResponse = await axios.$post('/certificados/search', {
-  //     // agrego condicionalmente los parámetros de busqueda
-  //     // (no se agregan los que están vacíos)
-  //     ...(expediente.length && { expediente }),
-  //     ...(objeto.length && { objeto }),
-  //     ...(adjudicado.length && { adjudicado }),
-  //   })
-  //   return certifsResponse.data.map(formatCertif)
-  // },
   create: async (axios, { obra, certificado, items, userToken }) => {
     const created = await axios.$post(
       '/redeterminaciones',
@@ -83,17 +70,17 @@ module.exports = {
     )
     return formatRedet(created.data)
   },
-  update: async (axios, { obra, userToken }) => {
-    axios.setHeader('Access-Control-Allow-Origin', true)
-    const updated = await axios.$put(
-      `/certificados/${obra.id}`,
-      { obra },
-      {
-        headers: { Authorization: `Bearer ${userToken}` },
-      }
-    )
-    return formatCertif(updated.data)
-  },
+  // update: async (axios, { obra, userToken }) => {
+  //   axios.setHeader('Access-Control-Allow-Origin', true)
+  //   const updated = await axios.$put(
+  //     `/certificados/${obra.id}`,
+  //     { obra },
+  //     {
+  //       headers: { Authorization: `Bearer ${userToken}` },
+  //     }
+  //   )
+  //   return formatCertif(updated.data)
+  // },
   delete: async (axios, { redeterminacion, userToken }) => {
     return await axios.$delete(`/redeterminaciones/${redeterminacion.id}`, {
       headers: { Authorization: `Bearer ${userToken}` },

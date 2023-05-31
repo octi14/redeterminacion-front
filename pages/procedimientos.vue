@@ -28,7 +28,7 @@ export default {
   },
   async fetch() {
     await this.$store.dispatch('multimedias/search',{
-      categoria: '64599147eb2fdbd45da9912d',
+      categoria: 'Procedimientos',
     })
     this.items = this.multimedias
     this.updateComponent

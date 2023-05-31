@@ -14,7 +14,7 @@
       <b-form-select v-model="categoria" class="mb-3">
       <b-form-select-option
         v-for="categoria in categorias"
-        :key="categoria.id"
+        :key="categoria.nombre"
         :value="categoria">{{categoria.nombre}}</b-form-select-option>
       </b-form-select>
       <b-btn type="submit" size="sm" variant="success">Crear</b-btn>
@@ -31,13 +31,17 @@ export default {
       nombre: '',
       link: '',
       categoria: null,
-      categorias: [],
+      categorias: [
+        {
+          nombre: "Notas",
+        },
+        {
+          nombre: "Procedimientos",
+        }
+      ],
     }
   },
   async fetch() {
-    await this.$store.dispatch('multimediacategorias/getAll')
-    this.categorias = this.$store.state.multimediacategorias.all
-    console.log(this.categorias)
   },
   // fetchOnServer: false,
   methods: {
@@ -52,7 +56,7 @@ export default {
         multimedia: {
           nombre: this.nombre,
           link: this.link,
-          categoria: this.categoria.id,
+          categoria: this.categoria.nombre,
         },
       })
       this.$bvToast.toast('Creado correctamente', {

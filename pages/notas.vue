@@ -40,7 +40,7 @@ export default {
   },
   async fetch() {
     await this.$store.dispatch('multimedias/search',{
-      categoria: '6459913deb2fdbd45da9912b',
+      categoria: 'Notas',
     })
     this.items = this.$store.state.multimedias.multimedias
     // consulto si no hay más para traer

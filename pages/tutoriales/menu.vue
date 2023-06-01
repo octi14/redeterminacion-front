@@ -1,21 +1,21 @@
 <template>
   <div class="page">
-    <Banner title="Procedimientos" />
-    <div class="procedimientos-feed mx-auto mt-5" v-if="items.length > 0">
-      <div class="mx-auto text-center mt-4">
-        <h4> Lista de archivos </h4>
+    <Banner title="Tutoriales" />
+    <div class="row justify-content-center" style="height: 50%">
+      <div class="text-center mx-5 my-auto">
+        <NuxtLink to="/tutoriales/mail-institucional">
+          <b-icon-folder class="h1" /> <br />
+          <h3> Mail institucional </h3>
+        </NuxtLink>
       </div>
-      <div
-        v-for="item in items"
-        :key="item.id"
-      >
-        <MultimediaCard :item="item" />
+      <div class="text-center mx-5 my-auto">
+        <NuxtLink to="/tutoriales/gde">
+          <b-icon-folder class="h1" /> <br />
+          <h3> Sistema GDE </h3>
+        </NuxtLink>
       </div>
     </div>
-    <div class="mx-auto text-center mt-5" v-else>
-      <h5> No hay archivos actualmente. </h5>
-    </div>
-    <div class="text-center mt-5 float-lg-end">
+    <div class="text-center mt-3 float-lg-end">
       <NuxtLink to="/modernizacion">
         <b-button variant="success"> Volver </b-button>
       </NuxtLink>
@@ -34,10 +34,10 @@ export default {
   },
   async fetch() {
     await this.$store.dispatch('multimedias/search',{
-      categoria: 'Procedimientos',
+      categoria: 'Tutoriales',
     })
     this.items = this.multimedias
-
+    this.updateComponent
     // consulto si no hay más para traer
     // const newLength = this.$store.state.obras.latest.length
     // this.all = newLength === this.lastLength
@@ -47,6 +47,9 @@ export default {
   computed: {
     loading() {
       return this.$fetchState.pending
+    },
+    updateComponent(){
+      this.$fetch()
     },
     multimedias() {
       return this.$store.state.multimedias.multimedias

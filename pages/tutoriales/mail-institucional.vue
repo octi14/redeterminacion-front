@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <Banner title="Procedimientos" />
+    <Banner title="Mail institucional" />
     <div class="procedimientos-feed mx-auto mt-5" v-if="items.length > 0">
       <div class="mx-auto text-center mt-4">
         <h4> Lista de archivos </h4>
@@ -34,10 +34,10 @@ export default {
   },
   async fetch() {
     await this.$store.dispatch('multimedias/search',{
-      categoria: 'Procedimientos',
+      categoria: 'Mail Institucional',
     })
     this.items = this.multimedias
-
+    this.updateComponent
     // consulto si no hay más para traer
     // const newLength = this.$store.state.obras.latest.length
     // this.all = newLength === this.lastLength
@@ -47,6 +47,9 @@ export default {
   computed: {
     loading() {
       return this.$fetchState.pending
+    },
+    updateComponent(){
+      this.$fetch()
     },
     multimedias() {
       return this.$store.state.multimedias.multimedias

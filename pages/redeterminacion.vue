@@ -1,7 +1,7 @@
 <template>
-  <div class="page">
+  <div class="page background">
     <Banner title="Redeterminación" />
-    <div class="background shadow-sm">
+    <div class="shadow-sm">
       <div class="card shadow-lg col-8 mx-auto">
         <template v-if="!isAuthenticated">
           <LoginForm />

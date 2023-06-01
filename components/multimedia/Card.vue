@@ -9,7 +9,7 @@
           <strong>{{item.nombre}} </strong>
         </a>
       </div>
-      <div class="float-right">
+      <div class="float-right" v-if="isAdmin">
         <b-button variant="secondary" @click="editarArchivo">
           <b-icon-pen size="sm"/>
         </b-button>
@@ -32,7 +32,11 @@ export default {
   data() {
     return {}
   },
-  computed: {},
+  computed: {
+    isAdmin(){
+      return Boolean(this.$store.state.user.admin == "true")
+    },
+  },
   methods: {
     async eliminarArchivo(){
       try{

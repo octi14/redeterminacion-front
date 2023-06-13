@@ -49,8 +49,8 @@
           <b-button variant="success" v-if="page <= 2" @click="onNextPage" class="mt-3 mx-auto"> Siguiente </b-button>
           <b-button variant="success" v-if="page == 3" @click="onSelectTurno" class="mt-3 mx-auto"> Solicitar turno </b-button>
           <b-button variant="danger" class="mt-3" @click="onResetParams"> Volver </b-button>
-        </b-form> -->
-      </div>
+        </b-form>
+      </div> -->
 
       <!-- Modal -->
       <!-- <div class="modal-overlay" v-if="date && time && solicitado">
@@ -63,8 +63,8 @@
           <b-button variant="success" class="mt-4" @click="onPrintTicket"> Guardar comprobante </b-button> <br/>
           <b-button variant="success" class="mt-3" @click="onResetParams"> Salir </b-button>
         </b-card>
-      </div> -->
-    </div>
+      </div>
+    </div> -->
   </div>
 </template>
 

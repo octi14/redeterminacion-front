@@ -134,32 +134,11 @@ export default {
       decreto: '',
       garantia_contrato: '',
       tags: [],
-      // ingredients: [
-      //   {
-      //     quantity: '',
-      //     ingredient: null,
-      //   },
-      // ],
-      // instructions: [
-      //   {
-      //     title: null,
-      //     description: null,
-      //     image: null,
-      //   },
-      // ],
     }
   },
   async fetch() {
-    // await this.$store.dispatch('ingredients/getIngredients')
-    // await this.$store.dispatch('tags/getTags')
   },
   computed: {
-    // tagsList() {
-    //   return this.$store.state.tags.list
-    // },
-    // ingredientsList() {
-    //   return this.$store.state.ingredients.list
-    // },
   },
   created() {
     this.initialize()

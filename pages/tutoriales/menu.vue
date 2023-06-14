@@ -4,13 +4,13 @@
     <div class="row justify-content-center" style="height: 50%">
       <div class="text-center mx-5 my-auto">
         <NuxtLink to="/tutoriales/mail-institucional">
-          <b-icon-folder class="h1" /> <br />
+          <b-icon-folder class="h1 landing-icon" /> <br />
           <h3> Mail institucional </h3>
         </NuxtLink>
       </div>
       <div class="text-center mx-5 my-auto">
         <NuxtLink to="/tutoriales/gde">
-          <b-icon-folder class="h1" /> <br />
+          <b-icon-folder class="h1 landing-icon" /> <br />
           <h3> Sistema GDE </h3>
         </NuxtLink>
       </div>

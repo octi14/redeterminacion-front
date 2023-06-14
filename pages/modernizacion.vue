@@ -2,28 +2,33 @@
   <div class="page">
     <Banner title="Modernización" />
     <div class="col text-center" v-if="isAdmin">
-      <b-button variant="primary" @click="agregarArchivo" v-if="!isAdding"> Agregar archivo </b-button>
-      <MultimediaForm v-else @reset="agregarArchivo"/>
+      <b-button variant="primary" @click="onShowModal" v-if="!isAdding"> Agregar archivo </b-button>
+      <MultimediaForm v-else @submit="onSubmit" @reset="onHideModal"/>
     </div>
     <div class="row justify-content-center" style="height: 50%">
       <div class="text-center mx-5 my-auto" v-if="isAdmin">
         <NuxtLink to="/procedimientos">
-          <b-icon-folder class="h1" /> <br />
+          <b-icon-folder class="h1 landing-icon" /> <br />
           <h3><b> Procedimientos </b></h3>
         </NuxtLink>
       </div>
       <div class="text-center mx-5 my-auto">
         <NuxtLink to="/tutoriales/menu">
-          <b-icon-folder class="h1" /> <br />
+          <b-icon-folder class="h1 landing-icon" /> <br />
           <h3><b> Tutoriales </b></h3>
         </NuxtLink>
       </div>
       <div class="text-center mx-5 my-auto">
         <NuxtLink to="/notas">
-          <b-icon-folder class="h1" /> <br />
-          <h3><b> Formularios / Notas tipo </b></h3>
+          <b-icon-folder class="h1 landing-icon" /> <br />
+          <h4><b> Formularios / Notas tipo </b></h4>
         </NuxtLink>
       </div>
+    </div>
+    <div class="text-center">
+      <NuxtLink to="/">
+        <b-button variant="success"> Volver </b-button>
+      </NuxtLink>
     </div>
   </div>
 </template>
@@ -42,9 +47,21 @@ export default {
     },
   },
   methods: {
-    agregarArchivo() {
-      this.isAdding = !this.isAdding
+    onSubmit(){
+      this.$bvToast.toast('Creado correctamente', {
+        title: 'Creado',
+        variant: 'success',
+        appendToast: true,
+        solid: true,
+      })
+      this.onHideModal()
     },
+    onShowModal() {
+      this.isAdding = true
+    },
+    onHideModal(){
+      this.isAdding = false
+    }
   }
 }
 </script>

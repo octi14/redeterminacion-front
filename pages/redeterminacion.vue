@@ -1,8 +1,8 @@
 <template>
   <div class="page background">
-    <Banner title="Redeterminación" />
+    <Banner title="Obras" />
     <div class="shadow-sm">
-      <div class="card shadow-lg col-8 mx-auto">
+      <div class="card feed shadow-lg col-9 mx-auto">
         <template v-if="!isAuthenticated">
           <LoginForm />
         </template>
@@ -33,4 +33,7 @@ export default {
   background-color: #f5f8f9;
 }
 
+.feed{
+  background-color: #ffffff78;
+}
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <Banner title="GDE" />
+    <Banner title="Sistema GDE" />
     <div class="procedimientos-feed mx-auto mt-5" v-if="items.length > 0">
       <div class="mx-auto text-center mt-4">
         <h4> Lista de archivos </h4>

@@ -50,6 +50,17 @@ module.exports = {
     )
     return formatMultimedia(createdMultimedia.data)
   },
+  update: async (axios, { multimedia, userToken }) => {
+    axios.setHeader('Access-Control-Allow-Origin', true)
+    const updated = await axios.$put(
+      `/multimedias/${multimedia.id}`,
+      { multimedia },
+      {
+        headers: { Authorization: `Bearer ${userToken}` },
+      }
+    )
+    return formatFile(updated.data)
+  },
   delete: async (axios, { id, userToken }) => {
     return await axios.$delete(`/multimedias/${id}`, {
       headers: { Authorization: `Bearer ${userToken}` },

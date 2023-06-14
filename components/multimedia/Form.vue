@@ -1,8 +1,10 @@
 <template>
-  <div class="multimedia-form">
+  <div class="multimedia-form modal-overlay">
     <div class="form">
-      <h4 class="text-center mb-3">Crear archivo</h4>
-      <b-form class="col-md-10 mx-auto justify-content-center" @submit.stop.prevent="onSubmitCreateFile" @reset="volver">
+      <h4 class="text-center mb-3">
+        {{ create ? 'Crear' : 'Editar' }} archivo
+      </h4>
+      <b-form class="col-md-10 mx-auto justify-content-center" @submit.stop.prevent="onSubmit" @reset="volver">
         <b-form-group>
             <b-form-group label="Título">
               <b-form-input v-model="nombre" type="text" />
@@ -13,13 +15,17 @@
         </b-form-group>
         <b-form-text class="h6"> Categoría </b-form-text>
         <b-form-select v-model="categoria" class="mb-3">
-        <b-form-select-option
-          v-for="categoria in categorias"
-          :key="categoria.nombre"
-          :value="categoria">{{categoria.nombre}}</b-form-select-option>
+          <b-form-select-option
+            v-for="categoria in categorias"
+            :key="categoria.nombre"
+            :value="categoria">{{categoria.nombre}}
+          </b-form-select-option>
         </b-form-select>
-        <b-btn type="submit" size="sm" variant="success">
+        <b-btn type="submit" size="sm" v-if="create" variant="success">
           <h4 class="my-auto" style="color:white">Crear </h4>
+        </b-btn>
+        <b-btn type="submit" size="sm" v-else variant="success">
+          <h4 class="my-auto" style="color:white">Editar </h4>
         </b-btn>
         <b-btn type="reset" size="sm">
           <h4 class="my-auto" style="color:white"> Volver </h4>
@@ -30,13 +36,22 @@
 </template>
 
 <script>
+import MultimediaService from '~/service/multimedia'
+
 export default {
+  props: {
+    multimedia: {
+      type: Object,
+      default: () => ({}),
+    },
+    create: {
+      type: Boolean,
+      default: true,
+    },
+  },
   middleware: ['authenticated'],
   data() {
     return {
-      nombre: '',
-      link: '',
-      categoria: null,
       categorias: [
         {
           nombre: "Notas",
@@ -57,11 +72,27 @@ export default {
     }
   },
   async fetch() {
+    const multimediaId = this.multimedia.id
+    if (!this.create){
+      this.item = await MultimediaService.getSingle(this.$axios, {
+        id: multimediaId,
+      })
+    }
   },
-  // fetchOnServer: false,
+  created() {
+    this.initialize()
+  },
+  fetchOnServer: false,
   methods: {
     volver(){
       this.$emit('reset')
+    },
+    onSubmit(){
+      if (this.create){
+        this.onSubmitCreateFile()
+      }else{
+        this.onSubmitEditMultimedia()
+      }
     },
     async onSubmitCreateFile() {
     try {
@@ -74,14 +105,7 @@ export default {
           categoria: this.categoria.nombre,
         },
       })
-      this.$bvToast.toast('Creado correctamente', {
-        title: 'Creado',
-        variant: 'success',
-        appendToast: true,
-        solid: true,
-      })
       this.$emit('submit')
-      await this.$router.push('/')
       } catch (e) {
         this.$bvToast.toast('Error Cargando el archivo', {
           title: 'Error',
@@ -90,6 +114,28 @@ export default {
           solid: true,
         })
       }
+    },
+    initialize() {
+      const {
+        nombre = '',
+        link = '',
+        categoria = '',
+      } = this.multimedia
+
+      this.nombre = nombre
+      this.link = link
+      this.categoria = categoria
+    },
+    onSubmitEditMultimedia() {
+      const multimedia = {
+        nombre: this.nombre,
+        link: this.link,
+        categoria: this.categoria,
+      }
+      if (this.multimedia.id) {
+        multimedia.id = this.multimedia.id
+      }
+      this.$emit('submit', { multimedia })
     },
   },
 }
@@ -107,7 +153,7 @@ export default {
   border-radius: 20px;
 }
 
-.multimedia-form {
+.modal-overlay {
   position: fixed;
   top: 0;
   bottom: 0;
@@ -115,7 +161,7 @@ export default {
   right: 0;
   display: flex;
   justify-content: center;
-  background-color: #000000da;
+  background-color: #000000c3;
 }
 
 </style>

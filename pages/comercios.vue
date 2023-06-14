@@ -44,6 +44,10 @@
       <b class="h4 mt-3"> 5. Representante voluntario </b>
       <h6> Persona que actúa en nombre y por cuenta de otra, en virtud de la facultad que ella le confiere mediante un mandato
          (poder o autorización). Podés consultar la documentación que acredita personería, en</h6>
+      <NuxtLink to="/comercio/form">
+         <b-button variant="success">Entendido?</b-button>
+      </NuxtLink>
     </div>
   </div>
-</template>
+        
+  </template>

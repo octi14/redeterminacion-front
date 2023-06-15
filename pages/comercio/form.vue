@@ -93,12 +93,8 @@
       <b-form-group label="Nombre de fantasía" label-for="nombre-fantasia" >
         <b-form-input id="nombre-fantasia" v-model="inmueble.nombreFantasia" required></b-form-input>
       </b-form-group>
-      <b-form-group label="Rubro" label-for="rubro" >
-        <b-form-select id="rubro" v-model="inmueble.rubro" required>
-          <option value="">Seleccione...</option>
-          <option value="restaurante">Restaurante</option>
-          <option value="kiosko">Kiosko</option>
-        </b-form-select>
+      <b-form-group label="Rubro" label-for="rubro" ><b-link class="popup-link float-right" @click="openPopup('Rubros')">(?)</b-link>
+        <b-form-select v-model="rubroSeleccionado" :options="listaRubros" value-field="id" text-field="nombre"></b-form-select>
       </b-form-group>
       <b-row>
         <b-col md="6">
@@ -117,13 +113,39 @@
     <b-button type="submit" variant="primary">Enviar</b-button>
   </b-form> 
   </b-card>
+  <b-modal v-model="showPopupRubros" title="Información Adicional Rubros" :hide-footer="true" @click-outside="showPopupRubros = false" centered>
+    <b-form-group label="Seleccione el Rubro" label-for="rubro" >
+      <b-form-select @change="updateRubroData" v-model="rubroSeleccionado" :options="listaRubros" value-field="id" text-field="nombre"></b-form-select>
+    </b-form-group>
+     <b-container v-if="descripcionSeleccionada">
+      <h4>Descripción:</h4>
+      <p>{{ descripcionSeleccionada }}</p>
+    </b-container>
+
+    <b-container v-if="ordenanzasSeleccionadas.length">
+      <h4>Lista de ordenanzas:</h4>
+      <ul>
+        <li v-for="ordenanza in ordenanzasSeleccionadas" :key="ordenanza.id">
+          <a :href="linksSeleccionados[ordenanza.id]">{{ ordenanza.nombre }}</a>
+        </li>
+      </ul>
+    </b-container>
+    <b-btn class="float-right" variant="primary" @click="showPopupRubros = false">OK</b-btn>
+  </b-modal>
 </div>
 </template>
 <script>
+  import rubros from "@/plugins/rubros.js";
 export default {
   data() {
-      return {
-        contact: {
+      return {  
+      listaRubros: rubros,
+      showPopupRubros: false,
+      selectedRubro: null,
+      descripcionSeleccionada:'',
+      ordenanzasSeleccionadas:[],
+      linksSeleccionados:[],
+      contact: {
         email: '',
         nombre: '',
         apellido: '',
@@ -149,16 +171,52 @@ export default {
       }
       }
   },
+  mounted() {
+    //ORDENAR listaRubros antes de mostrarla.
+    this.listaRubros.sort((a, b) => a.nombre.localeCompare(b.nombre));
+  },
   methods: {
     submitForm() {
       // Aquí puedes agregar la lógica para enviar el formulario
       // Hacer popup  
       console.log('Formulario enviado');
     },
-    
+    openPopup(type) {
+      // Lógica para abrir el popup correspondiente según el tipo (A, B, C, D)
+      if (type === 'Rubros') {
+        this.showPopupRubros = true;
+        this.updateRubroData()
+      } else if (type === 'B') {
+        this.showPopupB = true;
+      }
+    },
+    updateRubroData() {
+      console.log('updateRubroData');
+      console.log('this.rubroSeleccionado');
+      console.log(this.rubroSeleccionado);
+      console.log('this.listaRubros');
+      console.log(this.listaRubros);
+      console.log('updateRubroData');
+    if (this.rubroSeleccionado) {
+      // Obtener los datos correspondientes al rubro seleccionado
+      const descripcion = this.listaRubros[this.rubroSeleccionado].descripcion;
+      const ordenanzas = this.listaRubros[this.rubroSeleccionado].ordenanzas;
+      const links = this.listaRubros[this.rubroSeleccionado].links;
+
+      // Actualizar las propiedades con los nuevos valores
+      this.descripcionSeleccionada = descripcion;
+      this.ordenanzasSeleccionadas = ordenanzas;
+      this.linksSeleccionados = links;
+      } else {
+        // Si no se ha seleccionado ninguna opción, reiniciar las propiedades
+        this.descripcionSeleccionada = '';
+        this.ordenanzasSeleccionadas = [];
+        this.linksSeleccionados = [];
+      }
+    },
   computed: {
       isAdmin(){
-        return Boolean(this.$store.state.user.admin == "true")
+        return Boolean(this.$store.state.user.admin == "true");
       },
     },
     methods: {
@@ -184,4 +242,9 @@ export default {
     width: 100%; /* Ajusta el ancho según tus necesidades */
     padding: 0.375rem 0.75rem; /* Ajusta el padding según tus necesidades */
   }
+  
+.popup-link {
+  color: #dc3545;
+  font-weight: bold;
+}
 </style>

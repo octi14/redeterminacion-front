@@ -94,7 +94,7 @@
         <b-form-input id="nombre-fantasia" v-model="inmueble.nombreFantasia" required></b-form-input>
       </b-form-group>
       <b-form-group label="Rubro" label-for="rubro" ><b-link class="popup-link float-right" @click="openPopup('Rubros')">(?)</b-link>
-        <b-form-select v-model="rubroSeleccionado" :options="listaRubros" value-field="id" text-field="nombre"></b-form-select>
+        <b-form-select v-model="rubroSeleccionado" :options="listaRubros" value-field="id" text-field="nombre" @change="updateRubroData" ></b-form-select>
       </b-form-group>
       <b-row>
         <b-col md="6">
@@ -123,10 +123,10 @@
     </b-container>
 
     <b-container v-if="ordenanzasSeleccionadas.length">
-      <h4>Lista de ordenanzas:</h4>
+      <h4>Ordenanzas relacionadas:</h4>
       <ul>
-        <li v-for="ordenanza in ordenanzasSeleccionadas" :key="ordenanza.id">
-          <a :href="linksSeleccionados[ordenanza.id]">{{ ordenanza.nombre }}</a>
+        <li v-for="(ordenanza, index) in ordenanzasSeleccionadas" :key="index">
+      <a :href="linksSeleccionados[index]">{{ ordenanza }}</a>
         </li>
       </ul>
     </b-container>
@@ -141,7 +141,7 @@ export default {
       return {  
       listaRubros: rubros,
       showPopupRubros: false,
-      selectedRubro: null,
+      rubroSeleccionado: null,
       descripcionSeleccionada:'',
       ordenanzasSeleccionadas:[],
       linksSeleccionados:[],
@@ -192,17 +192,21 @@ export default {
     },
     updateRubroData() {
       console.log('updateRubroData');
-      console.log('this.rubroSeleccionado');
-      console.log(this.rubroSeleccionado);
-      console.log('this.listaRubros');
-      console.log(this.listaRubros);
-      console.log('updateRubroData');
     if (this.rubroSeleccionado) {
       // Obtener los datos correspondientes al rubro seleccionado
-      const descripcion = this.listaRubros[this.rubroSeleccionado].descripcion;
-      const ordenanzas = this.listaRubros[this.rubroSeleccionado].ordenanzas;
-      const links = this.listaRubros[this.rubroSeleccionado].links;
+      const i = this.listaRubros.findIndex(rubro => rubro.id === this.rubroSeleccionado);
+      console.log('this.rubroSeleccionado findIndex');
+      console.log(i);
+      const descripcion = this.listaRubros[i].descripcion;
+      const ordenanzas = this.listaRubros[i].ordenanzas;
+      const links = this.listaRubros[i].links;
 
+      console.log('this.rubroSeleccionado');
+      console.log(this.rubroSeleccionado);
+      console.log('this.listaRubros[i].ordenanzas');
+      console.log(this.listaRubros[i].ordenanzas);
+      console.log('this.listaRubros[i].links');
+      console.log(this.listaRubros[i].links);
       // Actualizar las propiedades con los nuevos valores
       this.descripcionSeleccionada = descripcion;
       this.ordenanzasSeleccionadas = ordenanzas;
@@ -213,6 +217,7 @@ export default {
         this.ordenanzasSeleccionadas = [];
         this.linksSeleccionados = [];
       }
+      
     },
   computed: {
       isAdmin(){

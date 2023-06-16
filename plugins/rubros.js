@@ -3,8 +3,8 @@ const rubros = [
     id: 1,
     nombre: 'Carnicerías',
     descripcion: 'Establecimiento comercial dedicado pre eminentemente al fraccionamiento de cortes bovinos, ovinos, porcinos y caprinos en general, así como a sus menudencias y embutidos.',
-    ordenanzas: [],
-    links: []
+    ordenanzas: ["12312/22", "6543213/18"],
+    links: ["www.google.com.ar", "www.youtube.com"]
   },
   {
     id: 2,

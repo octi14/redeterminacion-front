@@ -11,7 +11,7 @@
             <li>El interesado futuro comerciante/industrial o afin mayor de 21 años</li>
             <li>El apoderado del anterior con documentación que acredite el carácter de tal <b-link class="popup-link" @click="openPopup('A')">(A)</b-link></li>
           </ol>
-          <h2>REQUISITOS DE INICIO DE TRAMITE</h2>
+          <h2>REQUISITOS GENERALES DE INICIO DE TRAMITE</h2>
           <ol>
             <li>DNI del solicitante</li>
             <li>Copia de plano conforme a obra/aprobado o registrado del edificio donde se instalará el negocio que se solicita habilitar <b-link class="popup-link" @click="openPopup('B')">(B)</b-link></li>
@@ -23,6 +23,14 @@
             <li>Constancia de Inscripción de AFIP e IIBB actualizada al momento de la solicitud la que debe mantenerse activa mientras el comercio, industria o asimilable esté habilitado bajo pena de ser pasible de la clausura del establecimiento</li>
             <li>Planilla de Autorización de Trámite en caso de realizarlo mediante apoderado</li>
           </ol>
+          <h2>REQUISITOS ESPECIALES POR RUBRO</h2>
+          <p>Selecciona el rubro para consultar sus requisitos específicos. Si no encontrás el rubro que querés consultar, es porque no tiene ningún requisito especial.</p>
+          <p>(También podríamos poner el mapa del GIS?)</p>          
+          <b-form-select v-model="rubroSeleccionado" :options="filteredRubros" value-field="id" text-field="nombre" @change="handleRubroChange"  style="margin:10px 0;"></b-form-select>
+          <ul v-if="rubroSeleccionado">
+            <li v-for="requisito in filteredRubros.find(rubro => rubro.id === this.rubroSeleccionado).requisitos" :key="requisito">{{ requisito }}</li>
+          </ul>
+
         <b-button class="float-right" @click="openPopup('Form')">Acceder al formulario</b-button>
 
         </b-col>
@@ -74,21 +82,27 @@
 </template>
 
 <script>
+import rubros from "@/plugins/rubros.js";
 export default {
   data() {
     return {
+      filteredRubros: rubros.filter(rubro => rubro.requisitos.length > 0),
       showPopupA: false,
       showPopupB: false,
       showPopupC: false,
       showPopupD: false,
       showConfirmationPopup: false,
-      documentCheckboxChecked: false
+      documentCheckboxChecked: false,
+      rubroSeleccionado: null,
     };
+  },
+  mounted() {
   },
   methods: {
     openPopup(type) {
       // Lógica para abrir el popup correspondiente según el tipo (A, B, C, D)
       if (type === 'A') {
+        console.log("ShowPopup A")
         this.showPopupA = true;
       } else if (type === 'B') {
         this.showPopupB = true;
@@ -103,6 +117,10 @@ export default {
     proceedToForm() {
       // Aquí puedes realizar alguna acción adicional si es necesario antes de redirigir al formulario
       this.showConfirmationPopup = false;
+    },
+    handleRubroChange() {
+      //console.log("this.rubroSeleccionado: ");
+      //console.log(this.filteredRubros.find(rubro => rubro.id === this.rubroSeleccionado).requisitos );
     }
   }
 }

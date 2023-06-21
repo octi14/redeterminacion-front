@@ -92,14 +92,21 @@
       </b-form-group>
       <b-form-group label="Nombre de fantasía" label-for="nombre-fantasia" >
         <b-form-input id="nombre-fantasia" v-model="inmueble.nombreFantasia" required></b-form-input>
-      </b-form-group>
-      <b-form-group label="Rubro" label-for="rubro" ><b-link class="popup-link float-right" @click="openPopup('Rubros')">(?)</b-link>
+      </b-form-group>     
+      <b-form-group label-for="rubro">
+        <label for="rubro" class="rubro-label">Rubro <b-link class="popup-link float-right" @click="openPopup('Rubros')">(?)</b-link>
+        </label>
         <b-form-select v-model="rubroSeleccionado" :options="listaRubros" value-field="id" text-field="nombre" @change="updateRubroData" ></b-form-select>
       </b-form-group>
       <b-row>
         <b-col md="6">
-          <b-form-group label="Superficie" label-for="superficie" >
-            <b-form-input id="superficie" v-model="inmueble.superficie" type="number" required  placeholder="superficie en metros cuadrados" no-wheel ></b-form-input>
+          <b-form-group label="Superficie" label-for="superficie">
+            <div class="input-group">
+              <b-form-input id="superficie" v-model="inmueble.superficie" type="number" required no-wheel></b-form-input>
+              <div class="input-group-append">
+                <span class="input-group-text">m2</span>
+              </div>
+            </div>
           </b-form-group>
         </b-col>
         <b-col md="6">
@@ -109,12 +116,34 @@
         </b-col>
       </b-row>
     </b-fieldset>
-
-    <b-button type="submit" variant="primary">Enviar</b-button>
+    <b-fieldset>
+      <b-legend><h3>Documentación requerida</h3></b-legend>
+      <p>Los documentos deben ser subidos en formato PDF o imagen.</p>
+      <b-form-group label="DNI (Fente y Dorso)" label-for="DNI" >
+        <b-form-file v-model="dni" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required multiple :state="getFormFieldState('dni')" @input="clearFormFieldState('dni')"></b-form-file>
+      </b-form-group>
+      <b-form-group label="CUIT" label-for="constanciaCuit" >
+      <b-form-file v-model="constanciaCuit" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required multiple :state="getFormFieldState('constanciaCuit')" @input="clearFormFieldState('constanciaCuit')"></b-form-file>      
+      </b-form-group>
+      <b-form-group label="Libre deuda" label-for="libreDeuda" >
+      <b-form-file v-model="libreDeuda" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required multiple :state="getFormFieldState('libreDeuda')" @input="clearFormFieldState('libreDeuda')"></b-form-file>
+      </b-form-group>
+      <b-form-group label="Título de propiedad/contrato de locación" label-for="tituloPropiedad" >
+      <b-form-file v-model="tituloPropiedad" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required multiple :state="getFormFieldState('tituloPropiedad')" @input="clearFormFieldState('tituloPropiedad')"></b-form-file>
+      </b-form-group>
+      <b-form-group label="Planilla de Autorización de trámite" label-for="planillaAutorizacion" >
+      <b-form-file v-model="planillaAutorizacion" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required multiple :state="getFormFieldState('planillaAutorizacion')" @input="clearFormFieldState('planillaAutorizacion')"></b-form-file>
+      </b-form-group>
+    </b-fieldset>
+    <b-form-group>
+      <div id="captchaContainer" class="float-right"></div>
+    </b-form-group>
+    <input type="hidden" id="captchaResponse" name="captchaResponse" v-model="captchaResponse">
+    <b-button class="float-right" type="submit" variant="primary">Enviar</b-button>
   </b-form> 
   </b-card>
   <b-modal v-model="showPopupRubros" title="Información Adicional Rubros" :hide-footer="true" @click-outside="showPopupRubros = false" centered>
-    <b-form-group label="Seleccione el Rubro" label-for="rubro" >
+    <b-form-group label="Seleccione el Rubro" label-for="rubro">
       <b-form-select @change="updateRubroData" v-model="rubroSeleccionado" :options="listaRubros" value-field="id" text-field="nombre"></b-form-select>
     </b-form-group>
      <b-container v-if="descripcionSeleccionada">
@@ -126,25 +155,42 @@
       <h4>Ordenanzas relacionadas:</h4>
       <ul>
         <li v-for="(ordenanza, index) in ordenanzasSeleccionadas" :key="index">
-      <a :href="linksSeleccionados[index]">{{ ordenanza }}</a>
+          <a :href="linksSeleccionados[index]">{{ ordenanza }}</a>
         </li>
       </ul>
     </b-container>
+    <ComercioRubros1 :rubro = rubroPrueba />
     <b-btn class="float-right" variant="primary" @click="showPopupRubros = false">OK</b-btn>
   </b-modal>
 </div>
 </template>
+
 <script>
   import rubros from "@/plugins/rubros.js";
+  
 export default {
   data() {
       return {  
       listaRubros: rubros,
+      rubroPrueba: null,
       showPopupRubros: false,
       rubroSeleccionado: null,
       descripcionSeleccionada:'',
       ordenanzasSeleccionadas:[],
       linksSeleccionados:[],
+      dni: null,
+      constanciaCuit: null,
+      libreDeuda: null,
+      tituloPropiedad: null,
+      planillaAutorizacion: null,
+      captchaResponse: null,
+      formFieldStates: {
+        dni: null,
+        cuit: null,
+        libreDeuda: null,
+        tituloPropiedad: null,
+        planillaAutorizacion: null
+      },
       contact: {
         email: '',
         nombre: '',
@@ -174,11 +220,22 @@ export default {
   mounted() {
     //ORDENAR listaRubros antes de mostrarla.
     this.listaRubros.sort((a, b) => a.nombre.localeCompare(b.nombre));
+    
+    grecaptcha.ready(() => {
+    grecaptcha.render('captchaContainer', {
+      sitekey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
+      });
+    });
   },
   methods: {
     submitForm() {
       // Aquí puedes agregar la lógica para enviar el formulario
       // Hacer popup  
+      this.this.grecaptcha.execute('6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI', { action: 'submit' })
+      .then((token) => {
+        this.captchaResponse = token;
+        // Lógica adicional para enviar el formulario
+      });
       console.log('Formulario enviado');
     },
     openPopup(type) {
@@ -191,22 +248,13 @@ export default {
       }
     },
     updateRubroData() {
-      console.log('updateRubroData');
     if (this.rubroSeleccionado) {
       // Obtener los datos correspondientes al rubro seleccionado
       const i = this.listaRubros.findIndex(rubro => rubro.id === this.rubroSeleccionado);
-      console.log('this.rubroSeleccionado findIndex');
-      console.log(i);
+      this.rubroPrueba = this.listaRubros.find(rubro => rubro.id === this.rubroSeleccionado);
       const descripcion = this.listaRubros[i].descripcion;
       const ordenanzas = this.listaRubros[i].ordenanzas;
       const links = this.listaRubros[i].links;
-
-      console.log('this.rubroSeleccionado');
-      console.log(this.rubroSeleccionado);
-      console.log('this.listaRubros[i].ordenanzas');
-      console.log(this.listaRubros[i].ordenanzas);
-      console.log('this.listaRubros[i].links');
-      console.log(this.listaRubros[i].links);
       // Actualizar las propiedades con los nuevos valores
       this.descripcionSeleccionada = descripcion;
       this.ordenanzasSeleccionadas = ordenanzas;
@@ -217,7 +265,12 @@ export default {
         this.ordenanzasSeleccionadas = [];
         this.linksSeleccionados = [];
       }
-      
+    },
+     getFormFieldState(fieldName) {
+      return this.formFieldStates[fieldName];
+    },
+    clearFormFieldState(fieldName) {
+      this.formFieldStates[fieldName] = null;
     },
   computed: {
       isAdmin(){
@@ -252,4 +305,9 @@ export default {
   color: #dc3545;
   font-weight: bold;
 }
+
+.rubro-label a{
+  margin-left: 10px;
+}
+
 </style>

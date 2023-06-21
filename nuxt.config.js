@@ -14,6 +14,9 @@ export default {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+    ],
+    script: [
+      { src: 'https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit', async: true, defer: true }
     ]
   },
 

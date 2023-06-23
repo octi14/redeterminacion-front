@@ -21,11 +21,8 @@
             :value="categoria">{{categoria.nombre}}
           </b-form-select-option>
         </b-form-select>
-        <b-btn type="submit" size="sm" v-if="create" variant="success">
-          <h4 class="my-auto" style="color:white">Crear </h4>
-        </b-btn>
-        <b-btn type="submit" size="sm" v-else variant="success">
-          <h4 class="my-auto" style="color:white">Editar </h4>
+        <b-btn type="submit" size="sm" variant="success">
+          <h4 class="my-auto" style="color:white">{{ create ? 'Crear' : 'Editar' }} </h4>
         </b-btn>
         <b-btn type="reset" size="sm">
           <h4 class="my-auto" style="color:white"> Volver </h4>
@@ -67,6 +64,9 @@ export default {
         },
         {
           nombre: "GDE",
+        },
+        {
+          nombre: "Ordenanzas",
         }
       ],
     }
@@ -130,14 +130,14 @@ export default {
       const multimedia = {
         nombre: this.nombre,
         link: this.link,
-        categoria: this.categoria,
+        categoria: this.categoria.nombre,
       }
       if (this.multimedia.id) {
         multimedia.id = this.multimedia.id
       }
       this.$emit('submit', { multimedia })
     },
-  },
+  }
 }
 </script>
 

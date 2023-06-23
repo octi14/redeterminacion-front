@@ -9,7 +9,7 @@
             <h5 style="color:green"><b> Compras </b></h5>
           </b-button>
         </NuxtLink>
-        <NuxtLink to="/comercio">
+        <NuxtLink to="/comercio/menu">
           <b-button pill variant="outline" class="mt-5 mx-3">
             <b-icon-pen class="mb-3 h1 landing-icon" />
             <h5 style="color:green"><b> Habilitaciones Comerciales </b></h5>
@@ -47,10 +47,6 @@
 
 <script>
 export default {
-  data() {
-    return {
-    }
-  },
   computed: {
     isAdmin(){
       return Boolean(this.$store.state.user.admin == "true")

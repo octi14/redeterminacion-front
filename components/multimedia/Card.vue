@@ -5,10 +5,10 @@
         <a :href="item.link" target="blank">
           <strong>{{item.nombre}} </strong>
         </a>
-        <b-button class="float-right" variant="outline-danger" @click="eliminarArchivo">
+        <b-button class="float-right" v-if="isAdmin" variant="outline-danger" @click="eliminarArchivo">
           <b-icon-trash size="sm"/>
         </b-button>
-        <b-button class="float-right" variant="outline-secondary" @click="editarArchivo">
+        <b-button class="float-right" v-if="isAdmin" variant="outline-secondary" @click="editarArchivo">
           <b-icon-pen size="sm"/>
         </b-button>
       </div>
@@ -63,7 +63,7 @@ export default {
           appendToast: true,
           solid: true,
         })
-        // this.editing = false
+        this.editing = false
         // await this.$router.push('/modernizacion')
       } catch (e) {
         this.$bvToast.toast('Error Editando. Intente cerrar sesión e iniciar nuevamente.', {

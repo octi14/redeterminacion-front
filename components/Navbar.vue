@@ -17,7 +17,7 @@
               Inicio
           </NuxtLink>
         </b-navbar-nav>
-        <b-dropdown v-if="isAuthenticated" text="Obras" variant="success">
+        <b-dropdown v-if="adminHacienda" text="Obras" variant="success">
           <b-dropdown-item>
             <NuxtLink
               style="color:black"
@@ -39,7 +39,7 @@
           </NuxtLink>
           </b-dropdown-item>
         </b-dropdown>
-        <b-dropdown v-if="isAuthenticated" text="Índices" variant="success">
+        <b-dropdown v-if="adminHacienda" text="Índices" variant="success">
           <b-dropdown-item v-if="isAuthenticated && isAdmin">
             <NuxtLink
               style="color:black"
@@ -74,7 +74,7 @@
       </div>
       <div class="col-4 mr-auto">
         <b-input type="text"
-          v-if="isAuthenticated"
+          v-if="adminHacienda"
           v-model="search"
           placeholder="Buscar obra"
           @keypress="onSearchFileByName"/>
@@ -99,7 +99,7 @@
           <NuxtLink
             class="nav-link"
             active-class="active"
-            to="/redeterminacion"
+            to="/login"
           >
               Uso interno
           </NuxtLink>
@@ -121,6 +121,9 @@ export default {
     },
     isAdmin(){
       return Boolean(this.$store.state.user.admin == "true")
+    },
+    adminHacienda(){
+      return this.$store.state.user.admin == "hacienda"
     },
     username() {
       return this.$store.state.user.username

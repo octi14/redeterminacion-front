@@ -1,12 +1,12 @@
 <template>
   <div class="page">
     <Banner title="Modernización" />
-    <div class="col text-center" v-if="isAdmin">
+    <div class="col text-center" v-if="adminModernizacion">
       <b-button variant="primary" @click="onShowModal" v-if="!isAdding"> Agregar archivo </b-button>
       <MultimediaForm v-else @submit="onSubmit" @reset="onHideModal"/>
     </div>
     <div class="row justify-content-center" style="height: 50%">
-      <div class="text-center mx-5 my-auto" v-if="isAdmin">
+      <div class="text-center mx-5 my-auto" v-if="adminModernizacion">
         <NuxtLink to="/procedimientos">
           <b-icon-folder class="h1 landing-icon" /> <br />
           <h3><b> Procedimientos </b></h3>
@@ -45,6 +45,9 @@ export default {
     isAdmin(){
       return Boolean(this.$store.state.user.admin == "true")
     },
+    adminModernizacion(){
+      return this.$store.state.user.admin == "modernizacion"
+    }
   },
   methods: {
     onSubmit(){

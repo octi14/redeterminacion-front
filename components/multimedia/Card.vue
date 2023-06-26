@@ -5,15 +5,15 @@
         <a :href="item.link" target="blank">
           <strong>{{item.nombre}} </strong>
         </a>
-        <b-button class="float-right" v-if="isAdmin" variant="outline-danger" @click="eliminarArchivo">
+        <b-button class="float-right" v-if="adminModernizacion" variant="outline-danger" @click="eliminarArchivo">
           <b-icon-trash size="sm"/>
         </b-button>
-        <b-button class="float-right" v-if="isAdmin" variant="outline-secondary" @click="editarArchivo">
+        <b-button class="float-right" v-if="adminModernizacion" variant="outline-secondary" @click="editarArchivo">
           <b-icon-pen size="sm"/>
         </b-button>
       </div>
     </div>
-    <!-- TODO: fixear el bug gráfico -->
+    <!-- Modal editar archivo -->
     <MultimediaForm
       v-if="editing"
       v-on:show="fetch"
@@ -42,6 +42,9 @@ export default {
     isAdmin(){
       return Boolean(this.$store.state.user.admin == "true")
     },
+    adminModernizacion(){
+      return this.$store.state.user.admin == "modernizacion"
+    }
   },
   activated() {
     this.editing = false

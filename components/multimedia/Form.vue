@@ -95,24 +95,35 @@ export default {
       }
     },
     async onSubmitCreateFile() {
-    try {
-      const userToken = this.$store.state.user.token
-      await this.$store.dispatch('multimedias/create', {
-        userToken,
-        multimedia: {
-          nombre: this.nombre,
-          link: this.link,
-          categoria: this.categoria.nombre,
-        },
+    if(this.nombre == "" || this.link == "" || this.categoria == null){
+      this.$bvToast.toast('Faltan datos para la carga del archivo. Asegúrese que todos los campos están completos.', {
+        title: 'Error',
+        toaster: 'b-toaster-top-center',
+        variant: 'danger',
+        bodyClass: 'text-center',
+        appendToast: true,
+        solid: true,
       })
-      this.$emit('submit')
-      } catch (e) {
-        this.$bvToast.toast('Error Cargando el archivo', {
-          title: 'Error',
-          variant: 'danger',
-          appendToast: true,
-          solid: true,
+      } else{
+      try {
+        const userToken = this.$store.state.user.token
+        await this.$store.dispatch('multimedias/create', {
+          userToken,
+          multimedia: {
+            nombre: this.nombre,
+            link: this.link,
+            categoria: this.categoria.nombre,
+          },
         })
+        this.$emit('submit')
+        } catch (e) {
+          this.$bvToast.toast('Error Cargando el archivo', {
+            title: 'Error',
+            variant: 'danger',
+            appendToast: true,
+            solid: true,
+          })
+        }
       }
     },
     initialize() {
@@ -127,15 +138,25 @@ export default {
       this.categoria = categoria
     },
     onSubmitEditMultimedia() {
-      const multimedia = {
-        nombre: this.nombre,
-        link: this.link,
-        categoria: this.categoria.nombre,
+      if(this.nombre == "" || this.link == "" || this.categoria == null){
+        this.$bvToast.toast('Faltan datos para la carga del archivo. Asegúrese que todos los campos están completos.', {
+          title: 'Error',
+          toaster: 'b-toaster-top-center',
+          variant: 'danger',
+          appendToast: true,
+          solid: true,
+        })
+      }else{
+        const multimedia = {
+          nombre: this.nombre,
+          link: this.link,
+          categoria: this.categoria.nombre,
+        }
+        if (this.multimedia.id) {
+          multimedia.id = this.multimedia.id
+        }
+        this.$emit('submit', { multimedia })
       }
-      if (this.multimedia.id) {
-        multimedia.id = this.multimedia.id
-      }
-      this.$emit('submit', { multimedia })
     },
   }
 }

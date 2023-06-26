@@ -22,7 +22,7 @@
           </b-button>
         </NuxtLink>
         <br>
-        <NuxtLink v-if="isAdmin" to="/redeterminacion">
+        <NuxtLink v-if="adminHacienda" to="/redeterminacion">
           <b-button pill variant="outline" class="mt-5 mx-3">
             <b-icon-calculator class="mb-3 h1 landing-icon" />
             <h5 style="color:green"><b> Redeterminación </b></h5>
@@ -51,6 +51,9 @@ export default {
     isAdmin(){
       return Boolean(this.$store.state.user.admin == "true")
     },
+    adminHacienda(){
+      return this.$store.state.user.admin == "hacienda"
+    }
   },
   methods: {
   },

@@ -1,31 +1,27 @@
 <template>
   <div class="multimedia-card">
-    <b-card no-body class="multimedia-card shadow col-5 mx-auto">
-      <b-card-body>
-        <div class="float-left mt-2">
-          <a :href="item.link" target="blank">
-            <strong>{{item.nombre}} </strong>
-          </a>
-        </div>
-        <div class="float-right" v-if="isAdmin">
-          <!-- <b-button variant="secondary" @click="editarArchivo">
-            <b-icon-pen size="sm"/>
-          </b-button> -->
-          <b-button variant="danger" @click="eliminarArchivo">
-            <b-icon-trash size="sm"/>
-          </b-button>
-        </div>
-      </b-card-body>
-    </b-card>
+    <div class="multimedia-card mx-auto">
+      <div class="mt-4">
+        <a :href="item.link" target="blank">
+          <strong>{{item.nombre}} </strong>
+        </a>
+        <b-button class="float-right" v-if="isAdmin" variant="outline-danger" @click="eliminarArchivo">
+          <b-icon-trash size="sm"/>
+        </b-button>
+        <b-button class="float-right" v-if="isAdmin" variant="outline-secondary" @click="editarArchivo">
+          <b-icon-pen size="sm"/>
+        </b-button>
+      </div>
+    </div>
     <!-- TODO: fixear el bug gráfico -->
-    <!-- <MultimediaForm
+    <MultimediaForm
       v-if="editing"
       v-on:show="fetch"
       :multimedia="item"
       :create= false
       @submit="onSubmitEditArchivo"
       @reset="editing = false"
-    ></MultimediaForm> -->
+    ></MultimediaForm>
   </div>
 </template>
 
@@ -61,7 +57,6 @@ export default {
           multimedia,
           userToken,
         })
-        // this.editing = false
         this.$bvToast.toast('', {
           title: 'Archivo actualizado.',
           variant: 'success',
@@ -69,7 +64,7 @@ export default {
           solid: true,
         })
         this.editing = false
-        await this.$router.push('/modernizacion')
+        // await this.$router.push('/modernizacion')
       } catch (e) {
         this.$bvToast.toast('Error Editando. Intente cerrar sesión e iniciar nuevamente.', {
           title: 'Error',

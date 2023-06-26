@@ -59,7 +59,7 @@ module.exports = {
         headers: { Authorization: `Bearer ${userToken}` },
       }
     )
-    return formatFile(updated.data)
+    return formatMultimedia(updated.data)
   },
   delete: async (axios, { id, userToken }) => {
     return await axios.$delete(`/multimedias/${id}`, {

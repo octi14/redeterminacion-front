@@ -3,13 +3,13 @@
     <Banner title="Secretaría de Hacienda" subtitle="Municipalidad de Villa Gesell" />
     <div>
       <div class="text-center"  border-variant="light">
-        <NuxtLink v-if="isAdmin" to="/redeterminacion">
+        <NuxtLink to="/compras">
           <b-button pill variant="outline" class="mt-5 mx-3">
-            <b-icon-calculator class="mb-3 h1 landing-icon" />
-            <h5 style="color:green"><b> Redeterminación </b></h5>
+            <b-icon-wallet class="mb-3 h1 landing-icon"/>
+            <h5 style="color:green"><b> Compras </b></h5>
           </b-button>
         </NuxtLink>
-        <NuxtLink to="/comercio">
+        <NuxtLink to="/comercio/menu">
           <b-button pill variant="outline" class="mt-5 mx-3">
             <b-icon-pen class="mb-3 h1 landing-icon" />
             <h5 style="color:green"><b> Habilitaciones Comerciales </b></h5>
@@ -22,6 +22,12 @@
           </b-button>
         </NuxtLink>
         <br>
+        <NuxtLink v-if="isAdmin" to="/redeterminacion">
+          <b-button pill variant="outline" class="mt-5 mx-3">
+            <b-icon-calculator class="mb-3 h1 landing-icon" />
+            <h5 style="color:green"><b> Redeterminación </b></h5>
+          </b-button>
+        </NuxtLink>
         <NuxtLink to="/ordenanzas">
           <b-button pill variant="outline" class="mt-5 mx-3">
             <b-icon-receipt class="mb-3 h1 landing-icon" />
@@ -41,10 +47,6 @@
 
 <script>
 export default {
-  data() {
-    return {
-    }
-  },
   computed: {
     isAdmin(){
       return Boolean(this.$store.state.user.admin == "true")

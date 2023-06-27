@@ -12,7 +12,7 @@
       </div>
     </b-card>
     <div class="mx-auto text-center mt-5" v-else>
-      <h5> No hay archivos actualmente. </h5>
+      <h5> Cargando... </h5>
     </div>
   </div>
 </template>

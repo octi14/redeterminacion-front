@@ -1,5 +1,5 @@
 <template>
-  <div class="page background">
+  <div class="page">
     <Banner title="Obras" />
     <div class="shadow-sm">
       <div class="card feed shadow-lg col-9 mx-auto">
@@ -24,7 +24,7 @@ export default {
 }
 </script>
 
-<style type="text/css">
+<style>
 .background {
   padding: 0% 0;
   height:100%;

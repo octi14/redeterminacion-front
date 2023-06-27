@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <Banner title="Ordenanzas vigentes"/>
+    <Banner title="Digesto comercial"/>
     <MultimediaFeed keyword="Ordenanzas" />
     <div class="text-center m-5 float-lg-end">
       <NuxtLink to="/">

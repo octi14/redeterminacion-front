@@ -44,14 +44,14 @@
               {{ watchingProgress ? 'Ocultar' : 'Ver' }} avance
             </b-button>
 
-            <b-button v-if="isAdmin" class="col-md-3 badge-success"
+            <b-button v-if="adminHacienda" class="col-md-3 badge-success"
               variant="info"
               @click="agregarCertif"
             >
             {{ adding ? 'Volver' : 'Agregar certificado' }}
             </b-button>
 
-            <b-button v-if="!adding && isAdmin" class="col-md-3 badge-success"
+            <b-button v-if="!adding && adminHacienda" class="col-md-3 badge-success"
               variant="info"
               @click="editObra"
             >
@@ -60,7 +60,7 @@
 
 
             <b-button
-              v-if="!adding && isAdmin"
+              v-if="!adding && adminHacienda"
               class="col-md-3"
               block
               variant="danger"
@@ -245,6 +245,9 @@ export default {
     // },
     isAdmin(){
       return Boolean(this.$store.state.user.admin == "true")
+    },
+    adminHacienda(){
+      return this.$store.state.user.admin == "hacienda"
     },
   },
   activated() {

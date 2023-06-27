@@ -2,8 +2,8 @@
   <div class="multimedia-card">
     <div class="multimedia-card mx-auto">
       <div class="mt-4">
-        <a :href="item.link" target="blank">
-          <strong>{{item.nombre}} </strong>
+        <a class="link" :href="item.link" target="blank">
+          {{item.nombre}}
         </a>
         <b-button class="float-right" v-if="adminModernizacion" variant="outline-danger" @click="eliminarArchivo">
           <b-icon-trash size="sm"/>
@@ -98,3 +98,9 @@ export default {
   },
 }
 </script>
+
+<style>
+.link {
+  color: #018811;
+}
+</style>

@@ -1,8 +1,8 @@
 <template>
   <div class="page">
     <Banner title="Modernización" />
-    <div class="col text-center" v-if="adminModernizacion">
-      <b-button variant="primary" @click="onShowModal" v-if="!isAdding"> Agregar archivo </b-button>
+    <div class="col text-center mt-3" v-if="adminModernizacion">
+      <b-button variant="secondary" @click="onShowModal" v-if="!isAdding"> Agregar archivo </b-button>
       <MultimediaForm v-else @submit="onSubmit" @reset="onHideModal"/>
     </div>
     <div class="row justify-content-center" style="height: 50%">
@@ -13,7 +13,7 @@
         </NuxtLink>
       </div>
       <div class="text-center mx-5 my-auto">
-        <NuxtLink to="/tutoriales/menu">
+        <NuxtLink to="/tutoriales">
           <b-icon-folder class="h1 landing-icon" /> <br />
           <h3><b> Tutoriales </b></h3>
         </NuxtLink>

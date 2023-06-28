@@ -116,6 +116,10 @@
             </div>
           </div>
         </b-form-group>
+        <b-form-group>
+          <div id="captchaContainer" class=""></div>
+        </b-form-group>
+        <input type="hidden" id="captchaResponse" name="captchaResponse" v-model="captchaResponse">
         <b-button variant="primary" class="float-right" @click="submitLibreDeuda">Enviar</b-button>
       </b-form>
     </b-modal>
@@ -149,10 +153,12 @@ export default {
         loteParcela: '',
         subparcela: '',
         catastralDataState: null
-      }
+      },
+      captchaResponse: null,
     };
   },
   mounted() {
+    
   },
   methods: {
     openPopup(type) {
@@ -171,6 +177,12 @@ export default {
       } else if (type === 'Form') {
         this.showConfirmationPopup = true;
       } else if (type === 'LibreDeuda') {
+        //CAMBIAR EL SITEKEY POR UNO DE VERDAD
+        grecaptcha.ready(() => {
+        grecaptcha.render('captchaContainer', {
+          sitekey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
+          });
+        });
         this.showLibreDeudaPopup = true;
       }
     },
@@ -191,7 +203,13 @@ export default {
       alert('Debes completar la partida municipal o los datos catastrales.');
       return;
     }else {
-      this.showLibreDeudaPopup = false;
+      //CAMBIAR EL SITEKEY POR UNO DE VERDAD
+      grecaptcha.execute('6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI', { action: 'submit' })
+      .then((token) => {
+        this.captchaResponse = token;
+        alert('La solicitud fue enviada correctamente. En breve nos comunicaremos con usted con una respuesta.');
+        this.showLibreDeudaPopup = false;
+      });
     // Resto de la lógica para enviar la solicitud de libre deuda...
     }
   },

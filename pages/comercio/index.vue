@@ -15,11 +15,11 @@
           <ol>
             <li>DNI del solicitante</li>
             <li>Copia de plano conforme a obra/aprobado o registrado del edificio donde se instalará el negocio que se solicita habilitar <b-link class="popup-link" @click="openPopup('B')">(B)</b-link></li>
-            <li>Certificados de libre-deuda de las Tasas Municipales del local a habilitar</li>
+            <li>Certificados de libre-deuda de las Tasas Municipales del local a habilitar <b-link class="popup-link" @click="openPopup('LibreDeuda')">(C: ¿Como solicitar el libre deuda?)</b-link></li>
             <li>Copia de Escritura traslativa de Dominio del inmueble donde se desarrollará la actividad, Contrato de locación, o Boleto de Compraventa con el correspondiente sellado de Ley y firma certificada por Entidad Policial, Entidad Bancaria, Escribano o firmado en presencia de Funcionarios Municipales</li>
-            <li>Declaración Jurada indicando correo electrónico a fin de recibir notificaciones <b-link class="popup-link" @click="openPopup('C')">(C)</b-link></li>
+            <li>Declaración Jurada indicando correo electrónico a fin de recibir notificaciones <b-link class="popup-link" @click="openPopup('D')">(D)</b-link></li>
             <li>Domicilio real y legal del establecimiento en el cual deberá constar calle y número respectivo dentro del Partido de Villa Gesell-donde en caso de carecer del primero- podrá notificarse con igual efecto jurídico</li>
-            <li>Certificación de Rubro Permitido <b-link class="popup-link" @click="openPopup('D')">(D)</b-link></li>
+            <li>Certificación de Rubro Permitido <b-link class="popup-link" @click="openPopup('E')">(E)</b-link></li>
             <li>Constancia de Inscripción de AFIP e IIBB actualizada al momento de la solicitud la que debe mantenerse activa mientras el comercio, industria o asimilable esté habilitado bajo pena de ser pasible de la clausura del establecimiento</li>
             <li>Planilla de Autorización de Trámite en caso de realizarlo mediante apoderado</li>
           </ol>
@@ -53,10 +53,10 @@
     <b-modal v-model="showPopupB" title="Información Adicional (B)" :hide-footer="true" @click-outside="showPopupB = false" centered>
         <p>En caso que el plano no se encuentre conforme a obra/aprobado o registrado iniciara via de excepcion.</p>
     </b-modal>
-    <b-modal v-model="showPopupC" title="Información Adicional (C)" :hide-footer="true" @click-outside="showPopupC = false" centered>
+    <b-modal v-model="showPopupD" title="Información Adicional (D)" :hide-footer="true" @click-outside="showPopupD = false" centered>
       <p>En caso de ser positiva la inspección correspondiente deberá constituir domicilio fiscal electrónico de quien ejerza la actividad donde serán válidas las notificaciones efectuadas.</p>
     </b-modal>
-    <b-modal v-model="showPopupD" title="Información Adicional (D)" :hide-footer="true" @click-outside="showPopupD = false" centered>
+    <b-modal v-model="showPopupE" title="Información Adicional (E)" :hide-footer="true" @click-outside="showPopupE = false" centered>
       <p>Ingrese aqui.</p>
     </b-modal>
     <!-- Popup de advertencia -->
@@ -78,6 +78,47 @@
             </nuxt-link>
         </div>
     </b-modal>
+    <!-- Popup de solicitud de libredeuda -->
+    <b-modal v-model="showLibreDeudaPopup" title="SOLICITUD DE LIBRE DEUDA" @hide="resetForm" hide-footer centered>
+      <p>Si no tienes el libre deuda, Puedes solicitarlo completando los datos a continuación:</p>
+      <b-form @submit="submitLibreDeuda">
+        <b-form-group label="Email" label-for="email" :state="solicitudLibreDeuda.emailState" description="Campo requerido">
+          <b-form-input id="email" v-model="solicitudLibreDeuda.email" type="email" required></b-form-input>
+        </b-form-group>
+        <b-form-group label="Partida Municipal" label-for="partidaMunicipal" :state="solicitudLibreDeuda.partidaMunicipalState">
+          <b-form-input id="partidaMunicipal" v-model="solicitudLibreDeuda.partidaMunicipal" type="text"></b-form-input>
+        </b-form-group>
+        <b-form-group label="Datos Catastrales" :state="solicitudLibreDeuda.catastralDataState" class="datosCatastralesContainer">
+          <div class="row">
+            <div class="col-sm">
+              <label for="solicitudLibreDeuda.seccion">Sección</label>
+              <b-form-input v-model="solicitudLibreDeuda.seccion" type="text" placeholder="S" title="Sección" maxlength="3"></b-form-input>
+            </div>
+            <div class="col-sm">
+              <label for="solicitudLibreDeuda.fraccion">Fracción</label>
+              <b-form-input v-model="solicitudLibreDeuda.fraccion" type="text" placeholder="F" title="Fracción" maxlength="3"></b-form-input>
+            </div>
+            <div class="col-sm">
+              <label for="solicitudLibreDeuda.quinta">Quinta</label>
+              <b-form-input v-model="solicitudLibreDeuda.quinta" type="text" placeholder="Q" title="Quinta" maxlength="3"></b-form-input>
+            </div>
+            <div class="col-sm">
+              <label for="solicitudLibreDeuda.manzana">Manzana</label>
+              <b-form-input v-model="solicitudLibreDeuda.manzana" type="text" placeholder="M" title="Manzana" maxlength="3"></b-form-input>
+            </div>
+            <div class="col-sm">
+              <label for="solicitudLibreDeuda.loteParcela">Lote</label>
+              <b-form-input v-model="solicitudLibreDeuda.loteParcela" type="text" placeholder="L" title="Lote/Parcela" maxlength="3"></b-form-input>
+            </div>
+            <div class="col-sm">
+              <label for="solicitudLibreDeuda.subparcela">Sublote</label>
+              <b-form-input v-model="solicitudLibreDeuda.subparcela" type="text" placeholder="S" title="Subparcela" maxlength="3"></b-form-input>
+            </div>
+          </div>
+        </b-form-group>
+        <b-button variant="primary" class="float-right" @click="submitLibreDeuda">Enviar</b-button>
+      </b-form>
+    </b-modal>
   </div>
 </template>
 
@@ -91,9 +132,24 @@ export default {
       showPopupB: false,
       showPopupC: false,
       showPopupD: false,
+      showPopupE: false,
       showConfirmationPopup: false,
+      showLibreDeudaPopup: false,
       documentCheckboxChecked: false,
       rubroSeleccionado: null,
+      solicitudLibreDeuda: {
+        email: '',
+        emailState: null,
+        partidaMunicipal: '',
+        partidaMunicipalState: null,
+        seccion: '',
+        fraccion: '',
+        quinta: '',
+        manzana: '',
+        loteParcela: '',
+        subparcela: '',
+        catastralDataState: null
+      }
     };
   },
   mounted() {
@@ -110,8 +166,12 @@ export default {
         this.showPopupC = true;
       } else if (type === 'D') {
         this.showPopupD = true;
+      } else if (type === 'E') {
+        this.showPopupE = true;
       } else if (type === 'Form') {
         this.showConfirmationPopup = true;
+      } else if (type === 'LibreDeuda') {
+        this.showLibreDeudaPopup = true;
       }
     },
     proceedToForm() {
@@ -121,7 +181,30 @@ export default {
     handleRubroChange() {
       //console.log("this.rubroSeleccionado: ");
       //console.log(this.filteredRubros.find(rubro => rubro.id === this.rubroSeleccionado).requisitos );
+    },
+    resetForm() {
+      // Lógica para resetear el formulario
+    },
+    submitLibreDeuda() {
+      if (!this.solicitudLibreDeuda.partidaMunicipal && !this.hasCatastralData()) {
+      // Si ni la partida municipal ni los datos catastrales están completos, mostrar un mensaje de error o realizar alguna acción apropiada.
+      alert('Debes completar la partida municipal o los datos catastrales.');
+      return;
+    }else {
+      this.showLibreDeudaPopup = false;
+    // Resto de la lógica para enviar la solicitud de libre deuda...
     }
+  },
+  hasCatastralData() {
+    return (
+      this.solicitudLibreDeuda.seccion ||
+      this.solicitudLibreDeuda.fraccion ||
+      this.solicitudLibreDeuda.quinta ||
+      this.solicitudLibreDeuda.manzana ||
+      this.solicitudLibreDeuda.loteParcela ||
+      this.solicitudLibreDeuda.subparcela
+    );
+  }
   }
 }
 </script>
@@ -138,5 +221,9 @@ export default {
 
 .disabled {
   pointer-events: none;
+}
+
+.datosCatastralesContainer *{
+  text-align: center;
 }
 </style>

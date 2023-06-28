@@ -28,7 +28,7 @@
               Lista de obras
             </NuxtLink>
           </b-dropdown-item>
-          <b-dropdown-item v-if="isAuthenticated && isAdmin">
+          <b-dropdown-item v-if="isAuthenticated && adminHacienda">
             <NuxtLink
             style="color:black"
             class="nav-link"
@@ -40,7 +40,7 @@
           </b-dropdown-item>
         </b-dropdown>
         <b-dropdown v-if="adminHacienda" text="Índices" variant="success">
-          <b-dropdown-item v-if="isAuthenticated && isAdmin">
+          <b-dropdown-item v-if="isAuthenticated && adminHacienda">
             <NuxtLink
               style="color:black"
               class="nav-link"
@@ -52,7 +52,7 @@
           <b-dropdown-item>
             <NuxtLink
             style="color:black"
-            v-if="isAuthenticated"
+            v-if="isAuthenticated && adminHacienda"
             class="nav-link"
             active-class="active"
             to="/indices/search"

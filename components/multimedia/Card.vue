@@ -1,16 +1,19 @@
 <template>
   <div class="multimedia-card">
     <div class="multimedia-card mx-auto">
-      <div class="mt-4">
-        <a :href="item.link" target="blank">
-          <strong>{{item.nombre}} </strong>
+      <div class="mt-3">
+        <b-icon-link45deg style="color:green; width:15px; height: 15px"/>
+        <a class="link" :href="item.link" target="blank">
+          {{item.nombre}}
         </a>
-        <b-button class="float-right" v-if="adminModernizacion" variant="outline-danger" @click="eliminarArchivo">
-          <b-icon-trash size="sm"/>
-        </b-button>
-        <b-button class="float-right" v-if="adminModernizacion" variant="outline-secondary" @click="editarArchivo">
-          <b-icon-pen size="sm"/>
-        </b-button>
+        <b-button-group class="float-right" v-if="adminModernizacion">
+          <b-button variant="outline-secondary" title="Editar" @click="editarArchivo">
+            <b-icon-pen size="sm"/>
+          </b-button>
+          <b-button variant="outline-danger" title="Eliminar" @click="eliminarArchivo">
+            <b-icon-trash size="sm"/>
+          </b-button>
+        </b-button-group>
       </div>
     </div>
     <!-- Modal editar archivo -->
@@ -98,3 +101,9 @@ export default {
   },
 }
 </script>
+
+<style>
+.link {
+  color: #018811;
+}
+</style>

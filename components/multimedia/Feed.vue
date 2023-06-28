@@ -1,9 +1,9 @@
 <template>
   <div class="multimedia-feed">
-    <b-card class="shadow-lg mx-auto mt-5 col-6" v-if="items.length > 0">
-      <div class="mx-auto text-center">
+    <b-card class="shadow-lg mx-auto mt-5 col-8" v-if="items.length > 0">
+      <!-- <div class="mx-auto text-center">
         <h4> Lista de archivos </h4>
-      </div>
+      </div> -->
       <div
         v-for="item in items"
         :key="item.id"
@@ -12,12 +12,7 @@
       </div>
     </b-card>
     <div class="mx-auto text-center mt-5" v-else>
-      <h5> No hay archivos actualmente. </h5>
-    </div>
-    <div class="text-center mt-5 float-lg-end">
-      <NuxtLink to="/modernizacion">
-        <b-button variant="success"> Volver </b-button>
-      </NuxtLink>
+      <h5> Cargando... </h5>
     </div>
   </div>
 </template>

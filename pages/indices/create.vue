@@ -68,7 +68,7 @@ export default {
         appendToast: true,
         solid: true,
       })
-      await this.$router.push('/indices/menu')
+      await this.$router.push('/')
       } catch (e) {
         this.$bvToast.toast('Error Cargando el índice', {
           title: 'Error',

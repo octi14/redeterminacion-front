@@ -1142,6 +1142,14 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: []
+  },
+  {
+    id: 146,
+    nombre: 'Hotelería',
+    descripcion: 'Lorem ipsum dolor et...',
+    ordenanzas: [],
+    links: [],
+    requisitos: []
   }
   ];
   

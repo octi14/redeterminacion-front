@@ -5,7 +5,7 @@
       <b-row>
         <b-col>
           <h2>NORMAS APLICABLES</h2>
-          <p>La habilitación de comercios/industrias o asimilables deberá adecuarse a lo determinado en concordancia con leyes <a href="URL_NACIONALES" target="_blank" class="external-link">nacionales</a>, <a href="URL_PROVINCIALES" target="_blank" class="external-link">provinciales</a> y la <a href="URL_ORDENANZA" target="_blank" class="external-link">Ordenanza 2156/08 (TO)</a> y el <a href="URL_DIGESTO" target="_blank" class="external-link">Digesto Comercial Municipal</a>.</p>
+          <p>La habilitación de comercios/industrias o asimilables deberá adecuarse a lo determinado en concordancia con leyes <a href="URL_NACIONALES" target="_blank" class="external-link">nacionales</a>, <a href="URL_PROVINCIALES" target="_blank" class="external-link">provinciales</a> y la <a href="URL_ORDENANZA" target="_blank" class="external-link">Ordenanza 2156/08 (TO)</a> y el <a href="/ordenanzas" target="_blank" class="external-link">Digesto Comercial Municipal</a> (Creado por el <a href="URL_DIGESTO" target="_blank" class="external-link">Decreto 1856/23</a>).</p>
           <h2>QUIEN PUEDE INICIAR EL TRAMITE?</h2>
           <ol>
             <li>El interesado futuro comerciante/industrial o afin mayor de 21 años</li>

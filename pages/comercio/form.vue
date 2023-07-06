@@ -6,78 +6,97 @@
   <b-form @submit="submitForm" class="my-3" style="margin-left:10px;margin-right:10px"> 
     <!-- Sección: Información de contacto -->
     <fieldset >
-      <legend><h3>Información de contacto</h3></legend>
-      <b-form-group label="Email *" label-for="email" >
-        <b-form-input id="email" v-model="contact.email" type="email" required></b-form-input>
-      </b-form-group>
+      <legend><h3>Información de contacto</h3></legend>     
+      <b-form-group label="Tipo de Solicitud *" label-for="tipo-solicitud" >
+        <b-form-select title="Por el momento solo se pueden solicitar habilitaciones comerciales." id="tipo-solicitud" v-model="contact.tipoSolicitud" disabled required>
+            <b-form-select-option selected="selected" value="habilitar">Habilitar nuevo comercio</b-form-select-option>
+        </b-form-select>
+      </b-form-group>      
       <b-row>
         <b-col md="6">
           <b-form-group label="Nombre *" label-for="nombre" >
-            <b-form-input id="nombre" v-model="contact.nombre" required></b-form-input>
+            <b-form-input id="nombre" v-model="contact.nombre" required @change="bindInfo()"></b-form-input>
           </b-form-group>
         </b-col>
         <b-col md="6">
           <b-form-group label="Apellido *" label-for="apellido" >
-            <b-form-input id="apellido" v-model="contact.apellido" required></b-form-input>
+            <b-form-input id="apellido" v-model="contact.apellido" required @change="bindInfo()"></b-form-input>
           </b-form-group>
         </b-col>
-      </b-row>
+      </b-row>      
       <b-form-group label="Teléfono *" label-for="telefono" >
-        <b-form-input id="telefono" v-model="contact.telefono"  type="number" no-wheel required ></b-form-input>
+        <b-form-input id="telefono" v-model="contact.telefono" type="tel" no-wheel required ></b-form-input>
       </b-form-group>
-      <b-form-group label="Tipo de solicitud *" label-for="tipo-solicitud" >
-        <b-form-select id="tipo-solicitud" v-model="contact.tipoSolicitud" required>
-          <option value="">Seleccione...</option>
-          <option value="habilitar">Habilitar nuevo comercio</option>
-          <option value="renovacion">Renovación comercio</option>
-        </b-form-select>
+      <b-form-group label="Email *" label-for="email" >
+        <b-form-input id="email" v-model="contact.email" type="email" required></b-form-input>
       </b-form-group>
     </fieldset>
-
     <!-- Sección: Datos del titular -->
     <fieldset >
-      <legend><h3>Datos del titular</h3></legend>
-      <b-form-group label="Razón social *" label-for="razon-social" >
-        <b-form-input id="razon-social" v-model="titular.razonSocial" required></b-form-input>
-      </b-form-group>
+      <legend><h3>Datos del titular</h3></legend>      
+        <b-form-checkbox v-model="datosDelTitular" switch @change="bindInfo()"><p>* Los Datos de Contacto son los Datos del Titular</p></b-form-checkbox>
       <b-row>
+      <b-col md="6">
+          <b-form-group label="Nombre del Titular *" label-for="nombreTitular" >
+            <b-form-input id="nombreTitular" v-model="titular.nombre" :disabled="datosDelTitular" ref="nombreTitularInput" required></b-form-input>
+          </b-form-group>
+        </b-col>
+        <b-col md="6">
+          <b-form-group label="Apellido del Titular *" label-for="apellidoTitular" >
+            <b-form-input id="apellidoTitular" v-model="titular.apellido" :disabled="datosDelTitular" ref="apellidoTitularInput" required></b-form-input>
+          </b-form-group>
+        </b-col>
+      </b-row>      
+      <b-row>
+        <b-col md="6">
+          <b-form-group label="DNI del Titular *" label-for="DNITitular" >
+            <b-form-input id="DNITitular" v-model="titular.DNI" required></b-form-input>
+          </b-form-group>
+        </b-col>        
         <b-col md="6">
           <b-form-group label="CUIT o CUIL *" label-for="cuit-cuil" >
             <b-form-input id="cuit-cuil" v-model="titular.cuitCuil" required></b-form-input>
           </b-form-group>
         </b-col>
+      </b-row>
+      <b-form-group label="Razón Social *" label-for="razon-social" >
+        <b-form-input id="razon-social" v-model="titular.razonSocial" required></b-form-input>
+      </b-form-group>
+      <b-row>
         <b-col md="6">
-          <b-form-group label="Domicilio real *" label-for="domicilio-real" >
+          <b-form-group label="Teléfono Fijo *" label-for="telefonoTitular" >
+            <b-form-input id="telefonoTitular" v-model="titular.telefono"  type="tel" no-wheel ></b-form-input>
+          </b-form-group>
+        </b-col>
+        <b-col md="6">
+          <b-form-group label="Domicilio Real y/o Legal *" label-for="domicilio-real" >
             <b-form-input id="domicilio-real" v-model="titular.domicilioReal" required></b-form-input>
           </b-form-group>
         </b-col>
       </b-row>
       <b-row>
         <b-col md="6">
-          <b-form-group label="Teléfono fijo" label-for="telefono-fijo" >
-            <b-form-input id="telefono-fijo" v-model="titular.telefonoFijo" type="tel"></b-form-input>
+          <b-form-group label="Localidad *" label-for="localidadTitular" >
+            <b-form-input id="localidadTitular" v-model="titular.localidad" required></b-form-input>
           </b-form-group>
         </b-col>
         <b-col md="6">
-          <b-form-group label="Teléfono móvil" label-for="telefono-movil" >
-            <b-form-input id="telefono-movil" v-model="titular.telefonoMovil" type="tel"></b-form-input>
+          <b-form-group label="Código Postal *" label-for="codigoPostal" >
+            <b-form-input id="codigoPostal" v-model="titular.codigoPostal" type="number" required></b-form-input>
           </b-form-group>
         </b-col>
       </b-row>
       <b-form-group label="Mail *" label-for="mail" >
         <b-form-input id="mail" v-model="titular.mail" type="email" required></b-form-input>
       </b-form-group>
-      <b-form-group label="Domicilio fiscal electrónico *" label-for="domicilio-fiscal" >
-        <b-form-input title="Ingrese un email valido como domicilio fiscal electronico" id="domicilio-fiscal" v-model="titular.domicilioFiscal" type="email" required></b-form-input>
+      <b-form-group label="Domicilio fiscal electrónico" label-for="domicilio-fiscal" >
+        <b-form-input title="Ingrese un email valido como domicilio fiscal electronico" id="domicilio-fiscal" v-model="titular.domicilioFiscal" type="email"></b-form-input>
       </b-form-group>
     </fieldset>
 
     <!-- Sección: Datos del inmueble -->
     <fieldset >
       <legend><h3>Datos del inmueble</h3></legend>
-      <b-form-group id="group-expediente" label="Expediente?" label-for="input-expediente">
-          <b-form-input id="input-expediente" v-model="expediente" trim type="text" />
-        </b-form-group>      
       <b-row>
         <b-col md="6">  
           <b-form-group label="Localidad *" label-for="localidad" >
@@ -92,9 +111,9 @@
         </b-col>
         <b-col md="6">          
           <b-form-group label-for="rubro">
-            <label for="rubro" class="rubro-label">Rubro *<b-link class="popup-link float-right" @click="openPopup('Rubros')">(?)</b-link>
-            </label>
-            <b-form-select v-model="rubroSeleccionado" :options="listaRubros" value-field="id" text-field="nombre" @change="updateRubroData" ></b-form-select>
+            <label for="rubro" class="rubro-label">Rubro *</label>
+            <b-form-select v-model="rubroSeleccionado" :options="listaRubros" value-field="id" text-field="nombre" >
+            </b-form-select>
           </b-form-group>
         </b-col>
       </b-row>
@@ -103,51 +122,71 @@
       </b-form-group>
       <b-form-group label="Nombre de fantasía *" label-for="nombre-fantasia" >
         <b-form-input id="nombre-fantasia" v-model="inmueble.nombreFantasia" required></b-form-input>
-      </b-form-group>     
-      <b-row>
-        <b-col md="6">
-          <b-form-group label="Superficie *" label-for="superficie">
-            <div class="input-group">
-              <b-form-input id="superficie" v-model="inmueble.superficie" type="number" required no-wheel></b-form-input>
-              <div class="input-group-append">
-                <span class="input-group-text">m2</span>
-              </div>
-            </div>
-          </b-form-group>
-        </b-col>
-        <b-col md="6">
-          <b-form-group label="Número de partida ARBA *" label-for="numero-partida" >
-            <b-form-input id="numero-partida" v-model="inmueble.numeroPartida" type="number"  required no-wheel ></b-form-input>
-          </b-form-group>
-        </b-col>
-      </b-row>
+      </b-form-group>    
+    
+        <b-form-group label="" label-for="espaciopublico" >
+        <b-form-checkbox id="espaciopublico" v-model="inmueble.espacioPublico" size="lg" switch>¿Hará uso del espacio público? *</b-form-checkbox>
+      </b-form-group>
+      <fieldset v-if="inmueble.espacioPublico">
+        <b-form-group label="" label-for="marquesina">
+            <b-form-checkbox  id="marquesina" v-model="inmueble.marquesina" switch size="lg">Marquesina - Toldo</b-form-checkbox>
+        </b-form-group>
+        <b-form-group label="" label-for="mercaderia">
+            <b-form-checkbox  id="mercaderia" v-model="inmueble.mercaderia" switch size="lg">Mercadería en la Vía Pública</b-form-checkbox>            
+        </b-form-group>
+        <b-form-group label="" label-for="carteles">
+            <b-form-checkbox  id="carteles" v-model="inmueble.carteles" switch size="lg">Carteles</b-form-checkbox> 
+        </b-form-group>
+        <b-form-group label="" label-for="mesas">
+            <b-form-checkbox  id="mesas" v-model="inmueble.mesas" switch size="lg">Mesas y Sillas</b-form-checkbox> 
+        </b-form-group>
+      </fieldset>
+
     </fieldset>
     <fieldset  v-if="rubroSeleccionado === 146" key="rubro-146">
       <legend><h3>Servicios exclusivos del rubro HOTELERIA</h3></legend>
       <p>Seleccione los servicios que brinda su establecimiento.</p>
       <b-form-group>
-              <b-form-checkbox v-for="servicio in servicios" :key="servicio.id" v-model="inmueble.serviciosExtras" :value="servicio.id" size="lg">
+              <b-form-checkbox v-for="servicio in servicios" :key="servicio.id" v-model="inmueble.serviciosExtras" :value="servicio.id" size="lg" switch>
                 {{ servicio.nombre }}
               </b-form-checkbox>
             </b-form-group>
     </fieldset>
     <fieldset >
       <legend><h3>Documentación requerida</h3></legend>
-      <p>Los documentos deben ser subidos en formato PDF o imagen.</p>
-      <b-form-group label="DNI (Fente y Dorso) *" label-for="DNI" >
-        <b-form-file v-model="dni" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required multiple :state="getFormFieldState('dni')" @input="clearFormFieldState('dni')"></b-form-file>
+      <p>Los documentos deben ser subidos en formato PDF o imagen. AGREGAR TEXTO PARA ACLARAR QUE LA IMAGEN TIENE QUE SER LEGIBLE Y QUE NO PUEDE PESAR MAS DE 16MB</p>
+      <b-row>
+        <b-col md="6">  
+          <b-form-group label="DNI (Frente) *" label-for="dniFrente" >
+            <b-form-file v-model="dniFrente" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('dni')" @input="clearFormFieldState('dni')"></b-form-file>
+          </b-form-group>
+        </b-col>
+        <b-col md="6">  
+          <b-form-group label="DNI (Dorso) *" label-for="dniDorso" >
+            <b-form-file v-model="dniDorso" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('dni')" @input="clearFormFieldState('dni')"></b-form-file>
+          </b-form-group>
+        </b-col>
+      </b-row>
+      <b-form-group label="Constancia de CUIT *" label-for="constanciaCuit" >
+      <b-form-file v-model="constanciaCuit" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('constanciaCuit')" @input="clearFormFieldState('constanciaCuit')"></b-form-file>      
       </b-form-group>
-      <b-form-group label="CUIT *" label-for="constanciaCuit" >
-      <b-form-file v-model="constanciaCuit" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required multiple :state="getFormFieldState('constanciaCuit')" @input="clearFormFieldState('constanciaCuit')"></b-form-file>      
-      </b-form-group>
-      <b-form-group label="Libre deuda *" label-for="libreDeuda" >
-      <b-form-file v-model="libreDeuda" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required multiple :state="getFormFieldState('libreDeuda')" @input="clearFormFieldState('libreDeuda')"></b-form-file>
-      </b-form-group>
+      <b-row>
+        <b-col md="6">  
+          <b-form-group label="Libre Deuda de Tasa Urbana *" label-for="libreDeudaUrbana" >
+          <b-form-file v-model="libreDeudaUrbana" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('libreDeudaUrbana')" @input="clearFormFieldState('libreDeudaUrbana')"></b-form-file>
+          </b-form-group>      
+        </b-col>
+        <b-col md="6">  
+          <b-form-group label="Libre Deuda de Tasa por Inspección de Seguridad e Higiene *" label-for="libreDeudaHigiene" >
+          <b-form-file v-model="libreDeudaHigiene" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('libreDeudaHigiene')" @input="clearFormFieldState('libreDeudaHigiene')"></b-form-file>
+          </b-form-group>
+        </b-col>
+      </b-row>
       <b-form-group label="Título de propiedad/contrato de locación *" label-for="tituloPropiedad" >
-      <b-form-file v-model="tituloPropiedad" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required multiple :state="getFormFieldState('tituloPropiedad')" @input="clearFormFieldState('tituloPropiedad')"></b-form-file>
+      <b-form-file v-model="tituloPropiedad" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('tituloPropiedad')" @input="clearFormFieldState('tituloPropiedad')"></b-form-file>
       </b-form-group>
       <b-form-group label="Planilla de Autorización de trámite *" label-for="planillaAutorizacion" >
-      <b-form-file v-model="planillaAutorizacion" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required multiple :state="getFormFieldState('planillaAutorizacion')" @input="clearFormFieldState('planillaAutorizacion')"></b-form-file>
+      <b-form-file v-model="planillaAutorizacion" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('planillaAutorizacion')" @input="clearFormFieldState('planillaAutorizacion')"></b-form-file>
       </b-form-group>
     </fieldset>
     <b-form-group>
@@ -157,25 +196,6 @@
     <b-button class="float-right" type="submit" variant="primary">Enviar</b-button>
   </b-form> 
   </b-card>
-  <b-modal v-model="showPopupRubros" title="Información Adicional Rubros" :hide-footer="true" @click-outside="showPopupRubros = false" centered>
-    <b-form-group label="Seleccione el Rubro" label-for="rubro">
-      <b-form-select @change="updateRubroData" v-model="rubroSeleccionado" :options="listaRubros" value-field="id" text-field="nombre"></b-form-select>
-    </b-form-group>
-     <b-container v-if="descripcionSeleccionada">
-      <h4>Descripción:</h4>
-      <p>{{ descripcionSeleccionada }}</p>
-    </b-container>
-
-    <b-container v-if="ordenanzasSeleccionadas.length">
-      <h4>Ordenanzas relacionadas:</h4>
-      <ul>
-        <li v-for="(ordenanza, index) in ordenanzasSeleccionadas" :key="index">
-          <a :href="linksSeleccionados[index]">{{ ordenanza }}</a>
-        </li>
-      </ul>
-    </b-container>
-    <b-btn class="float-right" variant="primary" @click="showPopupRubros = false">OK</b-btn>
-  </b-modal>
 </div>
 </template>
 
@@ -188,9 +208,6 @@ export default {
       listaRubros: rubros,
       showPopupRubros: false,
       rubroSeleccionado: null,
-      descripcionSeleccionada:'',
-      ordenanzasSeleccionadas:[],
-      linksSeleccionados:[],
       dni: null,
       constanciaCuit: null,
       libreDeuda: null,
@@ -208,9 +225,11 @@ export default {
         email: '',
         nombre: '',
         apellido: '',
+        DNI: '',
         telefono: '',
-        tipoSolicitud: ''
+        tipoSolicitud: 'habilitar'
       },
+      datosDelTitular: false,
       titular: {
         razonSocial: '',
         cuitCuil: '',
@@ -225,8 +244,11 @@ export default {
         direccionLocal: '',
         nombreFantasia: '',
         rubro: '',
-        superficie: '',
-        numeroPartida: '',
+        espacioPublico: false,
+        marquesina: false,
+        mercaderia: false,
+        mesas: false,
+        carteles: false,
         serviciosExtras: []
       },
       servicios: [
@@ -268,31 +290,9 @@ export default {
       console.log('Formulario enviado');
     },
     openPopup(type) {
-      // Lógica para abrir el popup correspondiente según el tipo (A, B, C, D)
-      if (type === 'Rubros') {
-        this.showPopupRubros = true;
-        this.updateRubroData()
-      } else if (type === 'B') {
+      // Lógica para abrir el popup correspondiente según el tipo (A, B, C, D)else if (type === 'B') 
+      {
         this.showPopupB = true;
-      }
-    },
-    updateRubroData() {
-    if (this.rubroSeleccionado) {
-      // Obtener los datos correspondientes al rubro seleccionado
-      const i = this.listaRubros.findIndex(rubro => rubro.id === this.rubroSeleccionado);
-      this.rubroPrueba = this.listaRubros.find(rubro => rubro.id === this.rubroSeleccionado);
-      const descripcion = this.listaRubros[i].descripcion;
-      const ordenanzas = this.listaRubros[i].ordenanzas;
-      const links = this.listaRubros[i].links;
-      // Actualizar las propiedades con los nuevos valores
-      this.descripcionSeleccionada = descripcion;
-      this.ordenanzasSeleccionadas = ordenanzas;
-      this.linksSeleccionados = links;
-      } else {
-        // Si no se ha seleccionado ninguna opción, reiniciar las propiedades
-        this.descripcionSeleccionada = '';
-        this.ordenanzasSeleccionadas = [];
-        this.linksSeleccionados = [];
       }
     },
      getFormFieldState(fieldName) {
@@ -301,12 +301,63 @@ export default {
     clearFormFieldState(fieldName) {
       this.formFieldStates[fieldName] = null;
     },
-  computed: {
+    bindInfo(){
+      console.log("bindInfo() CALLED");
+      console.log("this.datosDelTitular: " + this.datosDelTitular);
+      if (this.datosDelTitular){
+        this.titular.nombre = this.contact.nombre;
+        this.titular.apellido = this.contact.apellido;
+        console.log("this.titular.nombre: " + this.titular.nombre);
+        console.log("this.titular.apellido: " + this.titular.apellido);        
+        this.actualizarInputs();
+      }
+    },
+    actualizarInputs() {      
+      if (this.datosDelTitular){
+        this.$nextTick(() => {
+          this.$refs.nombreTitularInput.$el.value = this.titular.nombre;
+          this.$refs.apellidoTitularInput.$el.value = this.titular.apellido;
+        });
+      }
+    },
+    watch: {
+      'contact.nombre': {
+        handler() {
+          this.bindInfo();
+        },
+        deep: true,
+      },
+      'contact.apellido': {
+        handler() {
+          this.bindInfo();
+        },
+        deep: true,
+      },
+    },
+    computed: {
       isAdmin(){
         return Boolean(this.$store.state.user.admin == "true");
       },
-    },
-    methods: {
+      // Propiedad computada para actualizar los valores del titular con los datos de contacto
+      datosDelTitular: {
+        get() {
+          return this.contact.datosDelTitular;
+        },
+        set(value) {
+          if (value) {
+            // Si se activa la opción, se actualizan los valores del titular con los datos de contacto
+            this.titular.nombre = this.contact.nombre;
+            this.titular.apellido = this.contact.apellido;
+            console.log("this.titular.nombre: " + this.titular.nombre);
+            console.log("this.titular.apellido: " + this.titular.apellido);
+          } else {
+            // Si se desactiva la opción, se limpian los valores del titular
+            this.titular.nombre = '';
+            this.titular.apellido = '';
+          }
+          this.contact.datosDelTitular = value;
+        },
+      },
     },
   }
 }
@@ -331,7 +382,7 @@ export default {
   }
   
 .popup-link {
-  color: #dc3545;
+  color: green;
   font-weight: bold;
 }
 .rubro-label{

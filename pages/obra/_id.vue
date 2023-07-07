@@ -1,209 +1,175 @@
 <template>
-  <div class="page background">
+  <div class="page background-2">
     <div v-if="obra">
       <div class="container my-3 col-sm-12">
         <div class="row">
-          <div class="col">
+          <div class="col mt-4">
             <h1 class="h2 text-center">{{ obra.objeto }}</h1>
             <h4 class="h4 text-center">Adjudicado: {{ obra.adjudicado }}</h4>
-          <div class="container my-1">
-          <!-- Edit -->
-          <ObraForm
-            v-show="editing"
-            :obra="obra"
-            @submit="onSubmitEditObra"
-            @reset="editing = false"
-          ></ObraForm>
-          <CertificadoForm
-          v-show="adding"
-          :obra="obra"
-          @submit="onSubmitCreateCertif">
-          </CertificadoForm>
-          <CertificadoFeed
-          v-show="watchingCertif"
-          :obra="obra">
-          </CertificadoFeed>
-          <ObraProgress
-          v-show="watchingProgress"
-          :obra="obra">
-          </ObraProgress>
-          <!-- View -->
-          <div v-show="!editing" class="row justify-content-center">
-
-            <b-button class="col-md-3 badge-success"
-              variant="info"
-              @click="onShowCertif"
-            >
-            {{ watchingCertif ? 'Ocultar' : 'Ver' }} certificados
-            </b-button>
-
-
-            <b-button v-if="!adding" class="col-md-3 badge-success"
-              variant="info"
-              @click="mostrarAvance">
-              {{ watchingProgress ? 'Ocultar' : 'Ver' }} avance
-            </b-button>
-
-            <b-button v-if="adminHacienda" class="col-md-3 badge-success"
-              variant="info"
-              @click="agregarCertif"
-            >
-            {{ adding ? 'Volver' : 'Agregar certificado' }}
-            </b-button>
-
-            <b-button v-if="!adding && adminHacienda" class="col-md-3 badge-success"
-              variant="info"
-              @click="editObra"
-            >
-              Editar
-            </b-button>
-
-
-            <b-button
-              v-if="!adding && adminHacienda"
-              class="col-md-3"
-              block
-              variant="danger"
-              @click="$bvModal.show('bv-modal-example')"
-            >
-              Eliminar
-            </b-button>
-
-            <b-modal id="bv-modal-example" hide-footer>
-              <template #modal-title>
-                Eliminar archivo
-              </template>
-              <div class="d-block text-center">
-                <h4>Está seguro de que desea eliminar este archivo?</h4>
-                <h6>Al eliminar un archivo, se eliminarán todos sus certificados y redeterminaciones. </h6>
-              </div>
-              <b-button class="mt-3" variant="danger" block @click="onSubmitDelete(); $bvModal.hide('bv-modal-example')">Si</b-button>
-              <b-button class="mt-3" variant="secondary" block @click="$bvModal.hide('bv-modal-example')">No</b-button>
-            </b-modal>
-          </div>
-        </div>
-            <div class="card shadow-lg col-10 mx-auto" v-if="!adding && !editing">
-              <div class="layout">
-                <p class="col col-main">
-                  <strong>Expediente</strong><br>
-                </p>
-                <p class="col col-complementary" role="complementary">
-                  <a>{{ obra.expediente }}</a>
-                </p>
-              </div>
-              <div class="layout">
-                <p class="col col-main">
-                  <strong>Cotización</strong><br>
-                </p>
-                <p class="col col-complementary" role="complementary">
-                  <a>${{ format(obra.cotizacion) }}</a>
-                </p>
-              </div>
-              <div class="layout">
-                <p class="col col-main">
-                  <strong>Proveedor</strong><br>
-                </p>
-                <p class="col col-complementary" role="complementary">
-                  <a>{{ obra.proveedor }}</a>
-                </p>
-              </div>
-              <div class="layout">
-                <p class="col col-main">
-                  <strong>Presupuesto oficial</strong><br>
-                </p>
-                <p class="col col-complementary" role="complementary">
-                  <a>${{ format(obra.presup_oficial) }}</a>
-                </p>
-              </div>
-
-              <div class="col">
-                <div v-if="watchItems">
-                  <b-button variant="outline-dark" class="my-3" @click="watchItems = !watchItems"> Ocultar Items </b-button>
-                  <div class="layout" v-for="(_,index) in obra.items" :key="index">
-                    <p class="col col-main">
-                      <strong class="h6"> - {{index +1}}. {{obra.items[index].item}} </strong>
-                    </p>
-                    <p class="col col-complementary" role="complementary">
-                      <a> ${{ format(obra.items[index].monto) }} </a>
-                    </p>
+            <div class="container my-1">
+              <!-- Edit -->
+              <ObraForm
+                v-show="editing"
+                :obra="obra"
+                @submit="onSubmitEditObra"
+                @reset="editing = false"
+              ></ObraForm>
+              <CertificadoForm
+              v-show="adding"
+              :obra="obra"
+              @submit="onSubmitCreateCertif">
+              </CertificadoForm>
+              <CertificadoFeed
+              v-show="watchingCertif"
+              :obra="obra">
+              </CertificadoFeed>
+              <ObraProgress
+              v-show="watchingProgress"
+              :obra="obra">
+              </ObraProgress>
+              <!-- Buttons -->
+              <div v-show="!editing" class="row mt-4 mb-4 justify-content-center">
+                <div class="col-12 d-flex flex-wrap justify-content-center">
+                  <b-button pill class="fixed-size-button btn-4 mb-2 mx-2" :variant="button.variant" v-for="(button, index) in filteredButtons" :key="index" @click="button.action">
+                    <b>{{ button.label }}</b>
+                  </b-button>
+                </div>
+                <b-modal id="bv-modal-example" hide-footer>
+                  <template #modal-title>
+                    Eliminar archivo
+                  </template>
+                  <div class="d-block text-center">
+                    <h4>Está seguro de que desea eliminar este archivo?</h4>
+                    <h6>Al eliminar un archivo, se eliminarán todos sus certificados y redeterminaciones. </h6>
                   </div>
-                </div>
-                <div v-else class="my-1 ml-4 mt-3">
-                  <b-button variant="outline-dark" @click="watchItems = !watchItems"> Ver Items </b-button>
-                </div>
+                  <b-button class="mt-3" variant="danger" block @click="onSubmitDelete(); $bvModal.hide('bv-modal-example')">Si</b-button>
+                  <b-button class="mt-3" variant="secondary" block @click="$bvModal.hide('bv-modal-example')">No</b-button>
+                </b-modal>
               </div>
+            </div>
+            <!-- Body -->
+            <div class="card shadow-lg col-lg-6 col-sm-12 mx-auto" v-if="!adding && !editing">
+              <div class="obra-content col-12 mx-auto mb-4">
+                <div class="layout">
+                  <p class="col col-main">
+                    <strong style="color:green">Expediente</strong>
+                  </p>
+                  <p class="col col-complementary" role="complementary">
+                    <a>{{ obra.expediente }}</a>
+                  </p>
+                </div>
+                <div class="layout">
+                  <p class="col col-main">
+                    <strong style="color:green">Cotización</strong>
+                  </p>
+                  <p class="col col-complementary" role="complementary">
+                    <a>${{ format(obra.cotizacion) }}</a>
+                  </p>
+                </div>
+                <div class="layout">
+                  <p class="col col-main">
+                    <strong style="color:green">Proveedor</strong>
+                  </p>
+                  <p class="col col-complementary" role="complementary">
+                    <a>{{ obra.proveedor }}</a>
+                  </p>
+                </div>
+                <div class="layout">
+                  <p class="col col-main">
+                    <strong style="color:green">Presupuesto oficial</strong>
+                  </p>
+                  <p class="col col-complementary" role="complementary">
+                    <a>${{ format(obra.presup_oficial) }}</a>
+                  </p>
+                </div>
 
-              <div class="layout">
-                <p class="col col-main">
-                  <strong>Garantía Contrato</strong><br>
-                </p>
-                <p class="col col-complementary" role="complementary">
-                  <a>${{ format((obra.cotizacion * obra.garantia_contrato) /100) }}</a>
-                </p>
-              </div>
-              <div class="layout">
-                <p class="col col-main">
-                  <strong>Adjudicación</strong><br>
-                </p>
-                <p class="col col-complementary" role="complementary">
-                  <a>{{ obra.adjudicacion }}</a>
-                </p>
-              </div>
-              <div class="layout">
-                <p class="col col-main">
-                  <strong>Contrato</strong><br>
-                </p>
-                <p class="col col-complementary" role="complementary">
-                  <a>{{ obra.contrato }}</a>
-                </p>
-              </div>
-              <div class="layout">
-                <p class="col col-main">
-                  <strong>Fecha de contrato</strong><br>
-                </p>
-                <p class="col col-complementary" role="complementary">
-                  <a>{{ obra.fecha_contrato }}</a>
-                </p>
-              </div>
-              <div class="layout">
-                <p class="col col-main">
-                  <strong>Acta de inicio</strong><br>
-                </p>
-                <p class="col col-complementary" role="complementary">
-                  <a>{{ obra.acta_inicio }}</a>
-                </p>
-              </div>
-              <div class="layout">
-                <p class="col col-main">
-                  <strong>Ordenanza</strong><br>
-                </p>
-                <p class="col col-complementary" role="complementary">
-                  <a>{{ obra.ordenanza }}</a>
-                </p>
-              </div>
-              <div class="layout">
-                <p class="col col-main">
-                  <strong>Decreto</strong><br>
-                </p>
-                <p class="col col-complementary" role="complementary">
-                  <a>{{ obra.decreto }}</a>
-                </p>
-              </div>
-              <div class="layout">
-                <p class="col col-main">
-                  <strong>Plazo de obra</strong><br>
-                </p>
-                <p class="col col-complementary" role="complementary">
-                  <a>{{ obra.plazo_obra }}</a>
-                </p>
-              </div>
-              <div class="layout">
-                <p class="col col-main">
-                  <strong>Anticipo financiero</strong><br>
-                </p>
-                <p class="col col-complementary" role="complementary">
-                  <a>${{ format(obra.anticipo_finan) }}</a>
-                </p>
+                  <div v-if="watchItems">
+                    <b-button variant="outline-dark" class="my-3" @click="watchItems = !watchItems"> Ocultar Items </b-button>
+                    <div class="layout" v-for="(_,index) in obra.items" :key="index">
+                      <p class="col col-main">
+                        <strong style="color:green" class="h6"> - {{index +1}}. {{obra.items[index].item}} </strong>
+                      </p>
+                      <p class="col col-complementary" role="complementary">
+                        <a> ${{ format(obra.items[index].monto) }} </a>
+                      </p>
+                    </div>
+                  </div>
+                  <div v-else class="my-1 ml-3 mt-3">
+                    <b-button variant="outline-dark" @click="watchItems = !watchItems"> Ver Items </b-button>
+                  </div>
+
+                <div class="layout">
+                  <p class="col col-main">
+                    <strong style="color:green">Garantía Contrato</strong>
+                  </p>
+                  <p class="col col-complementary">
+                    <a>${{ format((obra.cotizacion * obra.garantia_contrato) /100) }}</a>
+                  </p>
+                </div>
+                <div class="layout">
+                  <p class="col col-main">
+                    <strong style="color:green">Adjudicación</strong>
+                  </p>
+                  <p class="col col-complementary">
+                    <a>{{ obra.adjudicacion }}</a>
+                  </p>
+                </div>
+                <div class="layout">
+                  <p class="col col-main">
+                    <strong style="color:green">Contrato</strong>
+                  </p>
+                  <p class="col col-complementary">
+                    <a>{{ obra.contrato }}</a>
+                  </p>
+                </div>
+                <div class="layout">
+                  <p class="col col-main">
+                    <strong style="color:green">Fecha de contrato</strong>
+                  </p>
+                  <p class="col col-complementary">
+                    <a>{{ obra.fecha_contrato }}</a>
+                  </p>
+                </div>
+                <div class="layout">
+                  <p class="col col-main">
+                    <strong style="color:green">Acta de inicio</strong>
+                  </p>
+                  <p class="col col-complementary">
+                    <a>{{ obra.acta_inicio }}</a>
+                  </p>
+                </div>
+                <div class="layout">
+                  <p class="col col-main">
+                    <strong style="color:green">Ordenanza</strong>
+                  </p>
+                  <p class="col col-complementary">
+                    <a>{{ obra.ordenanza }}</a>
+                  </p>
+                </div>
+                <div class="layout">
+                  <p class="col col-main">
+                    <strong style="color:green">Decreto</strong>
+                  </p>
+                  <p class="col col-complementary">
+                    <a>{{ obra.decreto }}</a>
+                  </p>
+                </div>
+                <div class="layout">
+                  <p class="col col-main">
+                    <strong style="color:green">Plazo de obra</strong>
+                  </p>
+                  <p class="col col-complementary">
+                    <a>{{ obra.plazo_obra }}</a>
+                  </p>
+                </div>
+                <div class="layout">
+                  <p class="col col-main">
+                    <strong style="color:green">Anticipo financiero</strong>
+                  </p>
+                  <p class="col col-complementary">
+                    <a>${{ format(obra.anticipo_finan) }}</a>
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -243,6 +209,35 @@ export default {
     //   })
     //   return formatter.format(this.obra.fecha_contrato)
     // },
+    filteredButtons() {
+      return [
+        {
+          variant: "success",
+          label: this.$data.watchingCertif ? "Ocultar certificados" : "Ver certificados",
+          action: this.onShowCertif
+        },
+        {
+          variant: "success",
+          label: this.$data.watchingProgress ? "Ocultar avance" : "Ver avance",
+          action: this.mostrarAvance
+        },
+        {
+          variant: "success",
+          label: this.$data.adding ? "Volver" : "Agregar certificado",
+          action: this.agregarCertif
+        },
+        {
+          variant: "success",
+          label: "Editar",
+          action: this.editObra
+        },
+        {
+          variant: "danger",
+          label: "Eliminar",
+          action: () => this.$bvModal.show("bv-modal-example")
+        }
+      ].filter(button => this.shouldShowButton(button));
+    },
     isAdmin(){
       return Boolean(this.$store.state.user.admin == "true")
     },
@@ -258,6 +253,29 @@ export default {
     this.$fetch()
   },
   methods: {
+    onShowCertif() {
+      this.watchingCertif = !this.watchingCertif
+    },
+    mostrarAvance() {
+      this.watchingProgress = !this.watchingProgress
+    },
+    agregarCertif() {
+      this.adding = !this.adding
+    },
+    editObra() {
+      this.editing = !this.editing
+    },
+    shouldShowButton(button) {
+      if (button.label === "Agregar certificado") {
+        return this.adminHacienda && !this.adding;
+      } else if (button.label === "Editar") {
+        return this.adminHacienda && !this.adding;
+      } else if (button.label === "Eliminar") {
+        return this.adminHacienda && !this.adding;
+      } else {
+        return true;
+      }
+    },
     agregarCertif() {
       this.adding = !this.adding
     },
@@ -375,6 +393,16 @@ export default {
 @media only screen and (min-width: 640px) {
   .layout {
     display: flex;
+  }
+}
+
+.fixed-size-button {
+  width: 206px; /* Tamaño fijo deseado */
+}
+
+@media (max-width: 767px) {
+  .fixed-size-button {
+    width: 100%; /* Ancho completo en dispositivos móviles */
   }
 }
 

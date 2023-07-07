@@ -10,8 +10,8 @@
           <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(1) }">
             <h4 class="section-title" @click="toggleCard(1)">
               ¿QUIEN PUEDE INICIAR EL TRAMITE?
-              <b-icon-chevron-down v-if="!isCardExpanded(1)"></b-icon-chevron-down>
-              <b-icon-chevron-up v-else></b-icon-chevron-up>
+              <b-icon-chevron-compact-down v-if="!isCardExpanded(1)"></b-icon-chevron-compact-down>
+              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
             </h4>
             <transition name="expand">
               <ul v-show="isCardExpanded(1)">
@@ -24,8 +24,8 @@
           <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(2) }">
             <h4 class="section-title" @click="toggleCard(2)">
               ¿QUE NECESITO PARA INICIAR EL TRAMITE?
-              <b-icon-chevron-down v-if="!isCardExpanded(2)"></b-icon-chevron-down>
-              <b-icon-chevron-up v-else></b-icon-chevron-up>
+              <b-icon-chevron-compact-down v-if="!isCardExpanded(2)"></b-icon-chevron-compact-down>
+              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
             </h4>
             <transition name="expand">
               <ul v-show="isCardExpanded(2)">
@@ -45,8 +45,8 @@
           <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(3) }">
             <h4 class="section-title" @click="toggleCard(3)">
               REQUISITOS ESPECIALES POR RUBRO
-              <b-icon-chevron-down v-if="!isCardExpanded(3)"></b-icon-chevron-down>
-              <b-icon-chevron-up v-else></b-icon-chevron-up>
+              <b-icon-chevron-compact-down v-if="!isCardExpanded(3)"></b-icon-chevron-compact-down>
+              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
             </h4>
             <transition name="expand">
               <div v-show="isCardExpanded(3)">
@@ -57,10 +57,12 @@
                 <p v-if="descripcionSeleccionada">{{ descripcionSeleccionada }}</p>                
                 <br v-if="descripcionSeleccionada" />
                 <h4 v-if="rubroSeleccionado">Requisitos especiales para el rubro: {{ nombreRubroSeleccionado }}</h4>
+                <!--
                 <ul v-if="rubroSeleccionado">
                   <li v-for="requisito in filteredRubros.find(rubro => rubro.id === rubroSeleccionado).requisitos" :key="requisito"><b-icon-check-circle-fill variant="info"></b-icon-check-circle-fill> {{ requisito }} </li>
                 </ul>
                 <br v-if="requisito in filteredRubros.find(rubro => rubro.id === rubroSeleccionado).requisitos" />
+                -->
                 <h4 v-if="rubroSeleccionado">Zonas permitidas para el rubro: {{ nombreRubroSeleccionado }}</h4>
                 <p v-if="rubroSeleccionado">Descarga el Mapa con las zonas permitidas para el rubro {{ nombreRubroSeleccionado }}
                   <nuxt-link :to="`/static/PDFs/${filteredRubros.find(rubro => rubro.id === rubroSeleccionado).pom}.pdf`">AQUI</nuxt-link>
@@ -77,8 +79,8 @@
           </b-card>
           <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(4) }">
             <h4 class="section-title" @click="toggleCard(4)">PREGUNTAS FRECUENTES PARA HABILITAR
-              <b-icon-chevron-down v-if="!isCardExpanded(4)"></b-icon-chevron-down>
-              <b-icon-chevron-up v-else></b-icon-chevron-up>
+              <b-icon-chevron-compact-down v-if="!isCardExpanded(4)"></b-icon-chevron-compact-down>
+              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
             </h4>            
             <transition name="expand">
               <ul v-show="isCardExpanded(4)" class="FAQs">
@@ -106,8 +108,8 @@
           <b-card id="normas" class="section-card" v-bind:class="{ 'expanded': isCardExpanded(0) }">
             <h4 class="section-title" @click="toggleCard(0)">
               NORMAS APLICABLES/CONDICIONES LEGALES
-              <b-icon-chevron-down v-if="!isCardExpanded(0)"></b-icon-chevron-down>
-              <b-icon-chevron-up v-else></b-icon-chevron-up>
+              <b-icon-chevron-compact-down v-if="!isCardExpanded(0)"></b-icon-chevron-compact-down>
+              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
             </h4>
             <transition name="expand">
               <p v-show="isCardExpanded(0)">
@@ -118,8 +120,8 @@
               </p>
             </transition>
           </b-card>
-        <b-button class="float-right" @click="openPopup('Form')">Acceder al formulario</b-button>
-
+        <b-button variant="" class="float-right" @click="openPopup('Form')">Acceder al formulario</b-button>
+        <br />
         </b-col>
       </b-row>
     </b-container>
@@ -408,7 +410,7 @@ export default {
 .expanded h4{
   margin-bottom: 8px;
 }
-.bi-chevron-up, .bi-chevron-down{
+.bi-chevron-compact-up, .bi-chevron-compact-down{
   position: absolute;
   right: 20px;
 }

@@ -58,6 +58,7 @@ export const actions = {
       id,
       userToken,
     })
+    commit('delete', id);
     return deleted
   },
 
@@ -73,5 +74,8 @@ export const mutations = {
   },
   setMany(state, multimediaList) {
     state.multimedias = multimediaList
+  },
+  delete(state, fileId) {
+    state.multimedias = state.multimedias.filter(file => file.id !== fileId);
   }
 }

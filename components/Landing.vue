@@ -1,45 +1,24 @@
 <template>
   <div>
     <Banner title="Secretaría de Hacienda" subtitle="Municipalidad de Villa Gesell" />
-    <div>
-      <div class="text-center">
-        <NuxtLink to="/ordenanzas">
-          <b-button variant="outline" class="mt-5 mx-5">
-            <b-icon-receipt class="mb-3 h1 landing-icon" />
-            <h5 style="color:green"><b> Digesto <br> comercial </b></h5>
-          </b-button>
-        </NuxtLink>
-        <NuxtLink to="/comercio/menu">
-          <b-button variant="outline" class="mt-5 mx-5">
-            <b-icon-pen class="mb-3 h1 landing-icon"  />
-            <h5 style="color:green"><b> Habilitaciones <br> comerciales </b></h5>
-          </b-button>
-        </NuxtLink>
-        <NuxtLink to="/turnos">
-          <b-button variant="outline" class="mt-5 mx-5">
-            <b-icon-clock class="mb-3 h1 landing-icon" />
-            <h5 style="color:green"><b> Turnos <br> inspección </b></h5>
-          </b-button>
-        </NuxtLink>
-        <br>
-        <NuxtLink to="/modernizacion">
-          <b-button variant="outline" class="mt-5 mx-5">
-            <b-icon-list-ul class="mb-3 h1 landing-icon"/>
-            <h5 style="color:green"><b> Modernización </b></h5>
-          </b-button>
-        </NuxtLink>
-        <NuxtLink to="/compras">
-          <b-button variant="outline" class="mt-5 mx-5">
-            <b-icon-briefcase class="mb-3 h1 landing-icon"/>
-            <h5 style="color:green"><b> Compras </b></h5>
-          </b-button>
-        </NuxtLink>
-        <NuxtLink v-if="adminHacienda" to="/redeterminacion">
-          <b-button variant="outline" class="mt-5 mx-5">
-            <b-icon-calculator class="mb-3 h1 landing-icon" />
-            <h5 style="color:green"><b> Redeterminación </b></h5>
-          </b-button>
-        </NuxtLink>
+    <div class="container text-center">
+      <div class="row custom-row">
+        <div v-for="(link, index) in links" :key="index" class="col-lg-4 mx-auto col-md-6 col-sm-12 mb-3">
+          <NuxtLink :to="link.to" class="d-block">
+            <b-button variant="outline" class="btn-5">
+              <b-icon :icon="link.icon" class="mb-2 landing-icon" />
+              <h5 style="color:green"><b>{{ link.title }}</b></h5>
+            </b-button>
+          </NuxtLink>
+        </div>
+        <div v-if="adminHacienda" class="col-lg-4 col-md-6 col-sm-12 mb-3">
+          <NuxtLink to="/redeterminacion" class="d-block">
+            <b-button variant="outline" class="btn-5">
+              <b-icon-calculator class="mb-2 landing-icon" />
+              <h5 style="color:green"><b> Redeterminación </b></h5>
+            </b-button>
+          </NuxtLink>
+        </div>
       </div>
     </div>
   </div>
@@ -47,6 +26,37 @@
 
 <script>
 export default {
+  data() {
+    return {
+      links: [
+        {
+          to: "/ordenanzas",
+          icon: "receipt",
+          title: "Digesto comercial"
+        },
+        {
+          to: "/comercio/menu",
+          icon: "pen",
+          title: "Habilitaciones comerciales"
+        },
+        {
+          to: "/turnos",
+          icon: "clock",
+          title: "Turnos inspección"
+        },
+        {
+          to: "/modernizacion",
+          icon: "list-ul",
+          title: "Modernización"
+        },
+        {
+          to: "/compras",
+          icon: "briefcase",
+          title: "Compras"
+        }
+      ]
+    };
+  },
   computed: {
     isAdmin(){
       return Boolean(this.$store.state.user.admin == "true")
@@ -54,16 +64,21 @@ export default {
     adminHacienda(){
       return this.$store.state.user.admin == "hacienda"
     }
-  },
-  methods: {
-  },
+  }
 }
 </script>
 
 <style>
 .landing-icon{
+  margin-top: 20px;
   width: 80px;
   height: 80px;
   color:#145314db
+}
+.custom-row {
+  padding-top:60px;
+  max-width: 800px; /* Ajusta el ancho máximo deseado */
+  margin-left: auto;
+  margin-right: auto;
 }
 </style>

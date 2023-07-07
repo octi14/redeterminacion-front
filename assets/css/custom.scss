@@ -29,6 +29,73 @@ html, body, div#__nuxt, div#__layout {
   background-image: linear-gradient(to right bottom, #e0f4e9, #def1e6, #ddede3, #dbeae1, #d9e7de, #c9e4d2, #bae0c5, #abdcb7, #8bd69a, #6bcf7c, #47c75a, #00be32);
 }
 
+.background-2{
+  background-color: #edebebeb;
+}
+
 .landing-banner{
-  background-image: linear-gradient(to bottom, #017005,#09841b,#0a8f15,#0a8f15,#0a9115,#0b9216,#08960d,#089908,#0aa00a,#09a709,#14b314,#48d148, #98ea92);
+  background-image: linear-gradient(to bottom, #036406,#09841b,#0a8f15,#0a910c,#0b9216,#099a0e,#09a709,#14b314,#31d031, #98ea92);
+}
+
+.banner-text{
+  text-shadow: 1px 1px 2px #143b10cd;
+}
+
+.landing-button{
+  background: none;
+  border: 2px solid;
+  font: inherit;
+  line-height: 1;
+  margin: 0.5em;
+  padding: 1em 2em;
+}
+
+.btn-5 {
+  outline-color: rgba(20, 108, 23, 0.5);
+  border: 1px;
+  text-shadow: 1px 1px 1px #0c3e0642;
+  transition: all 500ms cubic-bezier(0.19, 1.5, 0.22, 1.25);
+}
+
+.btn-5:hover {
+  // border: 1px solid;
+  // border-radius: 12%;
+  // box-shadow: inset 0 0 3px 3px rgba(4, 93, 5, 0.313), 0 1px 4px 4px rgba(0, 123, 4, 0.467);
+  // outline-offset: 30px;
+  text-shadow: 0 0 3px #15ff00cd;
+}
+
+
+.btn-4 {
+  box-shadow: inset 0 0 0 0 rgba(6, 47, 11, 0.559), 0 0 1px 1px rgba(1, 121, 37, 0.331);
+  transition: all 500ms cubic-bezier(0.19, 1, 0.2, 1.25);
+}
+
+.btn-4:hover {
+  border: 1px solid;
+  border-color: #607b07;
+  box-shadow: inset 0 0 7px 4px rgba(42, 24, 5, 0), 0 0 3px 4px rgba(162, 179, 143, 0.769);
+  outline-offset: 15px;
+  text-shadow: 2px 4px 3px #034c578b;
+}
+
+.btn-3 {
+  background-color: rgba(244, 10, 10, 0.848);
+  box-shadow: inset 0 0 0 0 rgba(69, 6, 6, 0.575), 0 2px 6px 4px rgba(121, 1, 1, 0.331);
+  outline-color: rgba(94, 7, 7, 0.38);
+  border: 1px;
+  transition: all 500ms cubic-bezier(0.19, 1, 0.2, 1.25);
+}
+
+.btn-3:hover {
+  // border: 1px solid;
+  // border-radius: 12%;
+  background-color: #d70808;
+  box-shadow: inset 0 0 7px 4px rgba(73, 1, 1, 0.2), 0 2px 6px 4px rgba(94, 18, 6, 0.331);
+  outline-offset: 15px;
+  text-shadow: 2px 5px 12px #034c578b;
+}
+
+.a:hover {
+  text-decoration: underline;
 }

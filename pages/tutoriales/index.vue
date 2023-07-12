@@ -21,7 +21,7 @@
     </div>
     <div class="text-center mt-3 float-lg-end">
       <NuxtLink to="/modernizacion">
-        <b-button variant="success"> Volver </b-button>
+        <b-button variant="primary"> Volver </b-button>
       </NuxtLink>
     </div>
   </div>

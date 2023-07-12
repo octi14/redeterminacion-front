@@ -1,8 +1,9 @@
 <template>
   <div class="title">
-    <b-card class="mx-auto landing-banner mt-4 shadow-md" border-variant="light">
-      <h1 class="text-center m-3 banner-text" style="color:white"><b> {{ title }} </b> </h1>
-      <h5 class="text-center banner-text" style="color:white"> {{ subtitle }} </h5>
+    <b-card class="mx-auto landing-banner3 mt-4" border-variant="light">
+      <h1 class="text-center mt-4 banner-title"><b> {{ title }} </b> </h1>
+      <h4 v-if="subtitle" class="text-center banner-subtitle"><b> {{ subtitle }} </b></h4>
+      <br v-else />
     </b-card>
   </div>
 </template>

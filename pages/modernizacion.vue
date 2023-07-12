@@ -1,11 +1,13 @@
 <template>
-  <div class="page">
+  <div class="page main-background">
     <Banner title="Modernización" />
-    <div class="col text-center mt-3" v-if="adminModernizacion">
-      <b-button variant="secondary" @click="onShowModal" v-if="!isAdding"> Agregar archivo </b-button>
-      <MultimediaForm v-else @submit="onSubmit" @reset="onHideModal"/>
+    <div class="col text-center" v-if="adminModernizacion">
+      <b-button  class="mt-4" variant="secondary" @click="onShowModal"> Agregar archivo </b-button>
+      <b-modal v-model="isAdding" hide-header hide-footer centered>
+        <MultimediaForm @submit="onSubmit" @reset="onHideModal"/>
+      </b-modal>
     </div>
-    <div class="row justify-content-center" style="height: 50%">
+    <div class="row justify-content-center" style="height: 40%">
       <div class="text-center mx-5 my-auto" v-if="adminModernizacion">
         <NuxtLink to="/procedimientos">
           <b-button variant="outline" class="mt-5">
@@ -33,7 +35,7 @@
     </div>
     <div class="text-center">
       <NuxtLink to="/">
-        <b-button variant="success"> Volver </b-button>
+        <b-button variant="primary"> Volver </b-button>
       </NuxtLink>
     </div>
   </div>

@@ -17,14 +17,16 @@
       </div>
     </div>
     <!-- Modal editar archivo -->
-    <MultimediaForm
-      v-if="editing"
-      v-on:show="fetch"
-      :multimedia="item"
-      :create= false
-      @submit="onSubmitEditArchivo"
-      @reset="editing = false"
-    ></MultimediaForm>
+    <b-modal v-model="editing" hide-header hide-footer centered>
+      <MultimediaForm
+        v-if="editing"
+        v-on:show="fetch"
+        :multimedia="item"
+        :create= false
+        @submit="onSubmitEditArchivo"
+        @reset="editing = false"
+      ></MultimediaForm>
+    </b-modal>
   </div>
 </template>
 

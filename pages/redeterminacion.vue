@@ -1,15 +1,13 @@
 <template>
   <div class="page">
     <Banner title="Obras" />
-    <div class="shadow-sm">
-      <div class="card feed shadow-lg col-9 mx-auto">
-        <template v-if="!isAuthenticated">
-          <LoginForm />
-        </template>
-        <template v-else>
-          <ObraFeed />
-        </template>
-      </div>
+    <div class="card mt-4 mb-4 feed shadow-lg col-md-9 col-sm-10 mx-auto">
+      <template v-if="!isAuthenticated">
+        <LoginForm />
+      </template>
+      <template v-else>
+        <ObraFeed />
+      </template>
     </div>
   </div>
 </template>

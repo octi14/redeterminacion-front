@@ -1,12 +1,23 @@
 <template>
   <div class="page">
     <Banner title="Comercio" subtitle="Sistema de turnos" />
-    <!-- <div class="mx-auto">
-      <div class="text-center mt-3">
+    <div class="mx-auto">
+      <!-- <div class="text-center mt-3">
         <h4 v-if="page === 1">Seleccione una fecha</h4>
         <h6 v-if="page === 1">Podrá seleccionar una fecha dentro de los próximos 15 días</h6>
         <h4 v-if="page === 2">Seleccione un horario</h4>
         <h4 v-if="page === 3">Complete los siguientes datos</h4>
+      </div>
+      <div v-if="page === 0" class="col-8 mt-5 mx-auto">
+        <div class="text-center mt-4">
+          <h5>Está a punto de solicitar un turno para que su comercio sea habilitado.</h5>
+          <h5 class="mt-3">Recuerde ingresar su <b>número de trámite</b> asignado al haber completado el formulario de Solicitud de Habilitación.</h5>
+          <b-form>
+            <b-form-input type="number" size="lg" class="col-6 mt-4 mx-auto" placeholder="Número de trámite" no-wheel></b-form-input>
+          </b-form>
+          <b-button variant="success" class="mt-5 mr-1" @click="onNextPage">Aceptar</b-button>
+          <b-button variant="danger" class="mt-5" @click="onResetParams">Salir</b-button>
+        </div>
       </div>
       <div class="text-center">
         <b-form @submit="onSelectTurno"> -->
@@ -50,22 +61,23 @@
               <h6>Domicilio del comercio</h6>
               <b-form-input v-model="domicilio" type="text" placeholder="Domicilio del comercio"></b-form-input>
             </div>
-          </div> -->
+          </div>
 
-          <!-- Comprobante (página 4) -->
-          <!-- <b-card class="text-center col-8 mx-auto" v-if="page === 4">
+        </b-form> -->
+
+        <!-- Comprobante (página 4) -->
+          <!-- <b-card class="text-center shadow-lg col-8 mx-auto" v-if="page === 4">
             <h1>Comprobante de turno</h1>
             <h4>Secretaría de Hacienda</h4>
             <h5>Día: {{ formattedDate }}</h5>
             <h5>Horario: {{ time }}</h5>
             <h5>Código de trámite: {{ token }}</h5>
             <h5>Solicita el turno: {{ nombre }}</h5>
+            <b-button @click="onResetParams" variant="primary"> Salir </b-button>
           </b-card>
-
-          <b-button variant="primary" v-if="page <= 2" @click="onNextPage" class="mt-3 mx-auto">Siguiente</b-button>
-          <b-button variant="primary" type="submit" v-if="page === 3" @click="onSelectTurno" class="mt-3 mx-auto">Solicitar turno</b-button>
-          <b-button variant="danger" class="mt-3" @click="onResetParams">Salir</b-button>
-        </b-form>
+        <b-button variant="primary" v-if="page > 0 && page <= 2" @click="onNextPage" class="mt-3 mx-auto">Siguiente</b-button>
+        <b-button variant="primary" type="submit" v-if="page === 3" @click="onSelectTurno" class="mt-3 mx-auto">Solicitar turno</b-button>
+        <b-button variant="danger" class="mt-3" v-if="page > 0 && page < 4" @click="page-= 1"> Atrás </b-button>
       </div> -->
 
       <!-- Modal -->
@@ -78,8 +90,8 @@
           <b-button variant="success" class="mt-3 mr-1" @click="onPrintTicket">Guardar comprobante</b-button>
           <b-button variant="danger" class="mt-3 ml-1" @click="onResetParams">Salir</b-button>
         </div>
-      </b-modal>
-    </div> -->
+      </b-modal> -->
+    </div>
   </div>
 </template>
 
@@ -87,7 +99,8 @@
 export default {
   data() {
     return {
-      page: 1,
+      nroTramite: null,
+      page: 0,
       date: null,
       time: null,
       nombre: '',
@@ -156,17 +169,18 @@ export default {
       print();
     },
     onNextPage() {
-      if (this.page === 1 && !this.date) {
-        this.$bvToast.toast('No ha seleccionado una fecha', {
-          title: 'Error',
-          variant: 'danger',
-          appendToast: true,
-          solid: true,
-          toaster: 'b-toaster-top-center',
-        });
+      if (this.page === 0 && !this.nroTramite) {
+        // this.$bvToast.toast('No ha ingresado un número de trámite.', {
+        //   title: 'Error',
+        //   variant: 'danger',
+        //   appendToast: true,
+        //   solid: true,
+        //   toaster: 'b-toaster-top-center',
+        // });
+        this.page += 1
       } else {
-        if (this.page === 2 && !this.time) {
-          this.$bvToast.toast('No ha seleccionado un horario', {
+        if (this.page === 1 && !this.date) {
+          this.$bvToast.toast('No ha seleccionado una fecha', {
             title: 'Error',
             variant: 'danger',
             appendToast: true,
@@ -174,7 +188,17 @@ export default {
             toaster: 'b-toaster-top-center',
           });
         } else {
-          this.page += 1;
+          if (this.page === 2 && !this.time) {
+            this.$bvToast.toast('No ha seleccionado un horario', {
+              title: 'Error',
+              variant: 'danger',
+              appendToast: true,
+              solid: true,
+              toaster: 'b-toaster-top-center',
+            });
+          } else {
+            this.page += 1;
+          }
         }
       }
     },
@@ -182,7 +206,7 @@ export default {
       this.date = null;
       this.time = null;
       this.$router.push('/');
-      this.page = 1;
+      this.page = 0;
       this.nombre = null;
       this.domicilio = null;
       this.dni = null;

@@ -5,97 +5,96 @@
   <b-form @submit="submitForm" class="my-3" style="margin-left:10px;margin-right:10px"> 
     
   <b-card no-body class="col-8 mt-1 shadow-lg "  style="margin: 0px auto">
-    <!-- Sección: Datos del Solicitante -->
+    <!-- Sección: Datos del solicitante -->
     <fieldset >
       <legend><h3>Datos del Solcitante <b-icon-question-circle-fill @click="openPopup('DatosDelSolicitante')" font-scale="0.75" variant="info"></b-icon-question-circle-fill></h3></legend>  
       <b-form-group label="Tipo de Solicitud *" label-for="tipo-solicitud" >
-        <b-form-select title="Por el momento solo se pueden solicitar habilitaciones comerciales." id="tipo-solicitud" v-model="contact.tipoSolicitud" disabled required>
-            <b-form-select-option selected="selected" value="habilitar">Habilitar nuevo comercio</b-form-select-option>
+        <b-form-select title="Por el momento solo se pueden solicitar habilitaciones comerciales." id="tipo-solicitud" v-model="solicitante.tipoSolicitud" disabled required>
+            <b-form-select-option selected="selected" value="habilitacion">Habilitar nuevo comercio</b-form-select-option>
         </b-form-select>
       </b-form-group>      
       
     </fieldset>
-    <!-- Sección: Datos del titular -->
     <fieldset >   
       <b-row>
       <b-col md="6">
-          <b-form-group label="Nombre *" label-for="nombreTitular" >
-            <b-form-input id="nombreTitular" v-model="titular.nombre" required></b-form-input>
+          <b-form-group label="Nombre *" label-for="nombreSolicitante" >
+            <b-form-input id="nombreSolicitante" v-model="solicitante.nombre" required></b-form-input>
           </b-form-group>
         </b-col>
         <b-col md="6">
-          <b-form-group label="Apellido *" label-for="apellidoTitular" >
-            <b-form-input id="apellidoTitular" v-model="titular.apellido" required></b-form-input>
+          <b-form-group label="Apellido *" label-for="apellidoSolicitante" >
+            <b-form-input id="apellidoSolicitante" v-model="solicitante.apellido" required></b-form-input>
           </b-form-group>
         </b-col>
       </b-row>      
       <b-row>
         <b-col md="6">
-          <b-form-group label="DNI/Pasaporte *" label-for="DNITitular" >
-            <b-form-input id="DNITitular" v-model="titular.DNI" required></b-form-input>
+          <b-form-group label="DNI/Pasaporte *" label-for="DNISolicitante" >
+            <b-form-input id="DNISolicitante" v-model="solicitante.DNI" required></b-form-input>
           </b-form-group>
         </b-col>        
         <b-col md="6">
           <b-form-group label="CUIT o CUIL *" label-for="cuit-cuil" >
-            <b-form-input id="cuit-cuil" v-model="titular.cuitCuil" required></b-form-input>
+            <b-form-input id="cuit-cuil" v-model="solicitante.cuitCuil" required></b-form-input>
           </b-form-group>
         </b-col>
       </b-row>
       <b-form-group label="Razón Social (completar sólo si se trata de una Persona Jurídica)" label-for="razon-social" >
-        <b-form-input id="razon-social" v-model="titular.razonSocial" ></b-form-input>
+        <b-form-input id="razon-social" v-model="solicitante.razonSocial" ></b-form-input>
       </b-form-group>      
       <b-form-group label="Domicilio Real y/o Legal *" label-for="domicilio-real" >
-        <b-form-input id="domicilio-real" v-model="titular.domicilioReal" required></b-form-input>
+        <b-form-input id="domicilio-real" v-model="solicitante.domicilioReal" required></b-form-input>
       </b-form-group>
       <b-row>
         <b-col md="10">
           <b-form-group label="Teléfono *" label-for="telefonoTitular" >
-            <b-form-input id="telefonoTitular" v-model="titular.telefono"  type="tel" no-wheel ></b-form-input>
+            <b-form-input id="telefonoTitular" v-model="solicitante.telefono"  type="tel" no-wheel ></b-form-input>
           </b-form-group>
         </b-col>
         <b-col md="2">
           <b-form-group label="Código Postal *" label-for="codigoPostal" >
-            <b-form-input id="codigoPostal" v-model="titular.codigoPostal" type="number" required></b-form-input>
+            <b-form-input id="codigoPostal" v-model="solicitante.codigoPostal" type="number" required></b-form-input>
           </b-form-group>
         </b-col>
       </b-row>
       <b-row>
         <b-col md="6">
-          <b-form-group label="Localidad *" label-for="localidadTitular" >
-            <b-form-input id="localidadTitular" v-model="titular.localidad" required></b-form-input>
+          <b-form-group label="Localidad *" label-for="localidadSolicitante" >
+            <b-form-input id="localidadSolicitante" v-model="solicitante.localidad" required></b-form-input>
           </b-form-group>
         </b-col>
         <b-col md="6">          
           <b-form-group label="Provincia *" label-for="provincia" >
-            <b-form-input id="provincia" v-model="titular.provincia" required></b-form-input>
+            <b-form-input id="provincia" v-model="solicitante.provincia" required></b-form-input>
           </b-form-group>
         </b-col>
       </b-row>
       <b-form-group label="Correo Electrónico *" label-for="mail" >
-        <b-form-input id="mail" v-model="titular.mail" type="email" required></b-form-input>
+        <b-form-input id="mail" v-model="solicitante.mail" type="email" required></b-form-input>
       </b-form-group>
     </fieldset>      
     <b-row>
       <b-col md="5">  
         <h5>¿Sos apoderado/representante? <b-icon-question-circle-fill @click="openPopup('ApoderadoRepresentante')" font-scale="1" variant="info"></b-icon-question-circle-fill></h5>   
       </b-col>
-      <b-form-group label="" label-for="datosDelTitular" style="margin:auto 0">   
+      <b-form-group label="" label-for="esApoderado" style="margin:auto 0">   
         <div class="form-check-inline">
           <b-col md="3">
-            <b-form-radio  id="datosDelTitular-no" v-model="datosDelTitular" name="radio-datosDelTitular" checked="checked" value="false"> No</b-form-radio>
+            <b-form-radio  id="esApoderado-no" v-model="esApoderado" name="radio-esApoderado" checked="checked" value="false"> No</b-form-radio>
           </b-col>
           <b-col md="3">
-            <b-form-radio  id="datosDelTitular-si" v-model="datosDelTitular" name="radio-datosDelTitular" value="true"> Si</b-form-radio>
+            <b-form-radio  id="esApoderado-si" v-model="esApoderado" name="radio-esApoderado" value="true"> Si</b-form-radio>
           </b-col> 
         </div>
       </b-form-group>
     </b-row>
     <!-- Sección: Datos del Apoderado -->
-    <fieldset v-if="datosDelTitular === 'true'">   
+    <fieldset v-if="esApoderado === 'true'">   
         <p>Al finalizar, deberás subir la Planilla de Autorización de Trámite que te solicitamos que completes previamente (ítem ¿Qué necesito para iniciar el trámite).</p>
       
-      <b-form-group v-if="datosDelTitular === 'true'" label="Planilla de Autorización de trámite *" label-for="planillaAutorizacion" >
-        <b-form-file v-model="planillaAutorizacion" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('planillaAutorizacion')" @input="clearFormFieldState('planillaAutorizacion')"></b-form-file>
+      <b-form-group v-if="esApoderado === 'true'" label="Planilla de Autorización de trámite *" label-for="documentos.planillaAutorizacion" >
+        <b-form-file v-model="documentos.planillaAutorizacion" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('planillaAutorizacion')" @input="clearFormFieldState('planillaAutorizacion')"></b-form-file>
       </b-form-group>
     </fieldset>
   </b-card>
@@ -146,33 +145,17 @@
         <b-form-input id="nombre-fantasia" v-model="inmueble.nombreFantasia"></b-form-input>
       </b-form-group>    
     <fieldset  v-if="rubroSeleccionado === 146" key="rubro-146">
-      <legend><h5>Servicios exclusivos del rubro HOTELERIA *</h5></legend>
+      <legend><h5>servicios exclusivos del rubro HOTELERIA *</h5></legend>
       <p>Seleccioná los servicios que brinda tu establecimiento:</p>
       
         <b-form-group>
-        <b-form-checkbox v-for="servicio in servicios" :key="servicio" :id="`servicio${servicio.id}`" :name="`servicio${servicio.id}`" v-model="inmueble.serviciosSeleccionados" :value="servicio.id" scale=1.5 >
+        <b-form-checkbox v-for="servicio in serviciosHoteleria" :key="servicio.id" :id="`servicio${servicio.id}`" :name="`servicio${servicio.id}`" v-model="servicio.value" scale=1.5 >
           {{ servicio.nombre }}
         </b-form-checkbox>
       </b-form-group>
-     <!--
-        <template v-for="servicio in servicios">              
-          <b-form-group :key="servicio.id" v-model="inmueble.servicios" style="margin-bottom: 0">
-            <b-row style="border-bottom: 1px solid #EEE">
-              <b-col md="6">  
-                <label>{{ servicio.nombre }}: </label>
-              </b-col>              
-              <div class="form-check-inline">
-                <b-col md="3">
-                  <b-form-radio :checked="servicio.id.value === 'false'" :value="false" :key="`servicio${servicio.id}-no`" :name="`radio-servicio${servicio.id}`" > No </b-form-radio>
-                </b-col>
-                <b-col md="3">
-                  <b-form-radio :key="`servicio${servicio.id}-si`" :value="true" :name="`radio-servicio${servicio.id}`" > Si </b-form-radio>
-                </b-col>
-              </div>
-            </b-row>
-          </b-form-group>
-        </template>
-         -->
+<!--
+      <b-button size="lg" @click="loguearServicios" variant="primary" class="float-right">Enviar</b-button>
+-->
     </fieldset>
       <b-form-group label="" label-for="espaciopublico" style="margin: 0px auto">
             <b-row>
@@ -214,36 +197,36 @@
       <b-row>
         <b-col md="6">  
           <b-form-group label="DNI (Frente) *" label-for="dniFrente" >
-            <b-form-file v-model="dniFrente" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('dni')" @input="clearFormFieldState('dni')"></b-form-file>
+            <b-form-file v-model="documentos.dniFrente" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('dniFrente')" @input="clearFormFieldState('dniFrente')"></b-form-file>
           </b-form-group>
         </b-col>
         <b-col md="6">  
           <b-form-group label="DNI (Dorso) *" label-for="dniDorso" >
-            <b-form-file v-model="dniDorso" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('dni')" @input="clearFormFieldState('dni')"></b-form-file>
+            <b-form-file v-model="documentos.dniDorso" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('dniDorso')" @input="clearFormFieldState('dniDorso')"></b-form-file>
           </b-form-group>
         </b-col>
       </b-row>
       <b-form-group label="Constancia de CUIT *" label-for="constanciaCuit" >
-        <b-form-file v-model="constanciaCuit" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('constanciaCuit')" @input="clearFormFieldState('constanciaCuit')"></b-form-file>      
+        <b-form-file v-model="documentos.constanciaCuit" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('constanciaCuit')" @input="clearFormFieldState('constanciaCuit')"></b-form-file>      
       </b-form-group>
       <b-form-group>
         <label for="constanciaIngresosBrutos" class="rubro-label">Constancia de inscripción a ingresos brutos * <b-icon-question-circle-fill @click="openPopup('ConstanciaIngresosBrutos')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>   
-        <b-form-file v-model="constanciaIngresosBrutos" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('constanciaIngresosBrutos')" @input="clearFormFieldState('constanciaIngresosBrutos')"></b-form-file>      
+        <b-form-file v-model="documentos.constanciaIngresosBrutos" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('constanciaIngresosBrutos')" @input="clearFormFieldState('constanciaIngresosBrutos')"></b-form-file>      
       </b-form-group>
       <b-form-group label="Acta de Constitución de Persona Jurídica *" label-for="actaPersonaJuridica" >
-        <b-form-file v-model="actaPersonaJuridica" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('actaPersonaJuridica')" @input="clearFormFieldState('actaPersonaJuridica')"></b-form-file>      
+        <b-form-file v-model="documentos.actaPersonaJuridica" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('actaPersonaJuridica')" @input="clearFormFieldState('actaPersonaJuridica')"></b-form-file>      
       </b-form-group>
       <b-form-group label="Acta de Directorio Actualizada *" label-for="actaDirectorio" >
-        <b-form-file v-model="actaDirectorio" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('actaDirectorio')" @input="clearFormFieldState('actaDirectorio')"></b-form-file>      
+        <b-form-file v-model="documentos.actaDirectorio" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('actaDirectorio')" @input="clearFormFieldState('actaDirectorio')"></b-form-file>      
       </b-form-group>
       <b-form-group label="Libre Deuda de Tasa Urbana *" label-for="libreDeudaUrbana" >
-        <b-form-file v-model="libreDeudaUrbana" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('libreDeudaUrbana')" @input="clearFormFieldState('libreDeudaUrbana')"></b-form-file>
+        <b-form-file v-model="documentos.libreDeudaUrbana" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('libreDeudaUrbana')" @input="clearFormFieldState('libreDeudaUrbana')"></b-form-file>
       </b-form-group>      
       <b-form-group label="Título de propiedad / contrato de locación / Otro *" label-for="tituloPropiedad" >
-        <b-form-file v-model="tituloPropiedad" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" multiple required :state="getFormFieldState('tituloPropiedad')" @input="clearFormFieldState('tituloPropiedad')"></b-form-file>
+        <b-form-file v-model="documentos.tituloPropiedad" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" multiple required :state="getFormFieldState('tituloPropiedad')" @input="clearFormFieldState('tituloPropiedad')"></b-form-file>
       </b-form-group>
       <b-form-group label="PLANO *" label-for="plano" >
-        <b-form-file v-model="plano" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('plano')" @input="clearFormFieldState('plano')"></b-form-file>
+        <b-form-file v-model="documentos.plano" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('plano')" @input="clearFormFieldState('plano')"></b-form-file>
       </b-form-group>
     </fieldset>
     <b-form-group>
@@ -251,7 +234,7 @@
     </b-form-group>
     <fieldset>
       <input type="hidden" id="captchaResponse" name="captchaResponse" v-model="captchaResponse">
-      <b-button size="lg" type="submit" variant="primary" class="float-right">Enviar</b-button>
+      <b-button size="lg" @click="submitForm" variant="primary" class="float-right">Enviar</b-button>
     </fieldset>
   </b-card>
   </b-form> 
@@ -277,6 +260,12 @@
 <b-modal v-model="showPopupConstanciaIngresosBrutos" title="Constancia de Ingresos Brutos" :hide-footer="true" @click-outside="showPopupConstanciaIngresosBrutos = false" centered>
   <p>Lorem ipsum dolor </p>
 </b-modal>
+<b-modal v-model="showPopupConstanciaIngresosBrutos" title="Constancia de Ingresos Brutos" :hide-footer="true" @click-outside="showPopupConstanciaIngresosBrutos = false" centered>
+  <p>Lorem ipsum dolor </p>
+</b-modal>
+<b-modal v-model="showPopupFormOk" title="Formulario Enviado!" :hide-footer="true" @click-outside="showPopupFormOk = false" centered>
+  <p>Lorem ipsum dolor </p>
+</b-modal>
 
 
 </div>
@@ -289,44 +278,22 @@ export default {
   data() {
       return {  
       listaRubros: rubros,
-      showPopupDatosDelSolicitante: false,
-      showPopupApoderadoRepresentante: false,
-      showPopupNroInmueble: false,
-      showPopupConstanciaIngresosBrutos: false,
-      showPopupformOk: false,
       rubroSeleccionado: null,
-      dni: null,
-      constanciaCuit: null,
-      libreDeuda: null,
-      tituloPropiedad: null,
-      planillaAutorizacion: null,
-      captchaResponse: null,
-      formFieldStates: {
-        dni: null,
-        cuit: null,
-        actaPersonaJuridica: null,
-        libreDeuda: null,
-        tituloPropiedad: null,
-        planillaAutorizacion: null
-      },
-      contact: {
-        email: '',
+      solicitante: {
+        tipoSolicitud: 'habilitacion',
         nombre: '',
         apellido: '',
         DNI: '',
-        telefono: '',
-        tipoSolicitud: 'habilitar'
-      },
-      datosDelTitular: false,
-      titular: {
-        razonSocial: '',
         cuitCuil: '',
+        razonSocial: '',
         domicilioReal: '',
-        telefonoFijo: '',
-        telefonoMovil: '',
-        mail: '',
-        provincia: ''
+        telefono: '',
+        codigoPostal: '',
+        localidad: '',
+        provincia: '',
+        mail: ''
       },
+      esApoderado: false,
       inmueble: {
         localidad: '',
         direccionLocal: '',
@@ -338,21 +305,50 @@ export default {
         mesas: false,
         carteles: false,
       },
-      servicios: [
-        { id: "1", nombre: "Servicio de Mucama-Ropa Blanca"},
-        { id: "2", nombre: "Desayuno"},
-        { id: "3", nombre: "Restaurante - Bar"},
-        { id: "4", nombre: "Gimnasio"},
-        { id: "5", nombre: "Piletas de Natación"},
-        { id: "6", nombre: "Spa"},
-        { id: "7", nombre: "Estacionamiento dentro del predio"},
-        { id: "8", nombre: "TV-Electrodomésticos"},
-        { id: "9", nombre: "Ventiladores y/o Aire Acondicionado"},
-        { id: "10", nombre: "Calefacción"},
-        { id: "11", nombre: "WI FI y/o Internet"},
-        { id: "12", nombre: "Otros"}
+      documentos: {
+        planillaAutorizacion: null,
+        dniFrente: null,
+        dniDorso: null,
+        constanciaCuit: null,
+        constanciaIngresosBrutos: null,
+        actaPersonaJuridica: null,
+        actaDirectorio: null,
+        libreDeudaUrbana: null,
+        tituloPropiedad: null,
+        plano: null,
+      },
+      formFieldStates: {
+        planillaAutorizacion: null,
+        dniFrente: null,
+        dniDorso: null,
+        constanciaCuit: null,
+        constanciaIngresosBrutos: null,
+        actaPersonaJuridica: null,
+        actaDirectorio: null,
+        libreDeudaUrbana: null,
+        tituloPropiedad: null,
+        plano: null,
+      },
+      serviciosHoteleria: [
+        { id: "1", nombre: "Servicio de Mucama-Ropa Blanca", value: false},
+        { id: "2", nombre: "Desayuno", value: false},
+        { id: "3", nombre: "Restaurante - Bar", value: false},
+        { id: "4", nombre: "Gimnasio", value: false},
+        { id: "5", nombre: "Piletas de Natación", value: false},
+        { id: "6", nombre: "Spa", value: false},
+        { id: "7", nombre: "Estacionamiento dentro del predio", value: false},
+        { id: "8", nombre: "TV-Electrodomésticos", value: false},
+        { id: "9", nombre: "Ventiladores y/o Aire Acondicionado", value: false},
+        { id: "10", nombre: "Calefacción", value: false},
+        { id: "11", nombre: "WI FI y/o Internet", value: false},
+        { id: "12", nombre: "Otros", value: false}
       ],
-      serviciosSeleccionados: [],
+      captchaResponse: null,
+      showPopupDatosDelSolicitante: false,
+      showPopupApoderadoRepresentante: false,
+      showPopupNroInmueble: false,
+      showPopupConstanciaIngresosBrutos: false,
+      showPopupFormOk: false,
       }
   },
   mounted() {
@@ -366,17 +362,26 @@ export default {
     });
   },
   methods: {
-    submitForm() {
-      // Aquí puedes agregar la lógica para enviar el formulario
-      // Hacer popup        
-      //CAMBIAR EL SITEKEY POR UNO DE VERDAD
-      this.this.grecaptcha.execute('6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI', { action: 'submit' })
-      .then((token) => {
-        this.captchaResponse = token;
-        // Lógica adicional para enviar el formulario
-      });
-      console.log('Formulario enviado');
-      openPopup('formOk')
+    loguearServicios(){
+      console.log("Servicios Hoteleria");
+      console.log(this.serviciosHoteleria[0].id + ": " + this.serviciosHoteleria[0].value);
+      console.log(this.serviciosHoteleria[1].id + ": " + this.serviciosHoteleria[1].value);
+      console.log(this.serviciosHoteleria[2].id + ": " + this.serviciosHoteleria[2].value);
+      console.log(this.serviciosHoteleria[3].id + ": " + this.serviciosHoteleria[3].value);
+      console.log(this.serviciosHoteleria[4].id + ": " + this.serviciosHoteleria[4].value);
+      console.log(this.serviciosHoteleria[5].id + ": " + this.serviciosHoteleria[5].value);
+      console.log(this.serviciosHoteleria[6].id + ": " + this.serviciosHoteleria[6].value);
+      console.log(this.serviciosHoteleria[7].id + ": " + this.serviciosHoteleria[7].value);
+      console.log(this.serviciosHoteleria[8].id + ": " + this.serviciosHoteleria[8].value);
+      console.log(this.serviciosHoteleria[9].id + ": " + this.serviciosHoteleria[9].value);
+      console.log(this.serviciosHoteleria[10].id + ": " + this.serviciosHoteleria[10].value);
+      console.log(this.serviciosHoteleria[11].id + ": " + this.serviciosHoteleria[11].value);
+      
+      console.log("this.inmueble.espacioPublico: " + this.inmueble.espacioPublico);
+      console.log("this.inmueble.marquesina: " + this.inmueble.marquesina);
+      console.log("this.inmueble.mercaderia: " + this.inmueble.mercaderia);
+      console.log("this.inmueble.mesas: " + this.inmueble.mesas);
+      console.log("this.inmueble.carteles: " + this.inmueble.carteles);
     },
     openPopup(type) {
       // Lógica para abrir el popup correspondiente según el tipo (A, B, C, D)else if (type === 'B') 
@@ -391,9 +396,19 @@ export default {
         this.showPopupNroInmueble = true;
       } else if (type === 'ConstanciaIngresosBrutos') {
         this.showPopupConstanciaIngresosBrutos = true;
-      } else if (type === 'formOk') {
-        this.showPopupformOk = true;
+      } else if (type === 'FormOk') {
+        this.showPopupFormOk = true;
       } 
+    },
+    submitForm() {
+      // Aquí puedes agregar la lógica para enviar el formulario
+      // Hacer popup        
+      //CAMBIAR EL SITEKEY POR UNO DE VERDAD
+      //grecaptcha.execute('6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI', { action: 'submit' }).then((token) => {
+      // this.captchaResponse = token;
+        // Lógica adicional para enviar el formulario
+      //});
+      this.openPopup('FormOk')
     },
      getFormFieldState(fieldName) {
       return this.formFieldStates[fieldName];

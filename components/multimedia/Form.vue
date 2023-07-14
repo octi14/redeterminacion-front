@@ -1,34 +1,32 @@
 <template>
-  <div class="multimedia-form modal-overlay">
-    <div class="form">
-      <h4 class="text-center mb-3">
-        {{ create ? 'Crear' : 'Editar' }} archivo
-      </h4>
-      <b-form class="col-md-10 mx-auto justify-content-center" @submit.stop.prevent="onSubmit" @reset="volver">
-        <b-form-group>
-            <b-form-group label="Título">
-              <b-form-input v-model="nombre" type="text" />
-            </b-form-group>
-            <b-form-group label="Link">
-              <b-form-input v-model="link" type="text" />
-            </b-form-group>
-        </b-form-group>
-        <b-form-text class="h6"> Categoría </b-form-text>
-        <b-form-select v-model="categoria" class="mb-3">
-          <b-form-select-option
-            v-for="categoria in categorias"
-            :key="categoria.nombre"
-            :value="categoria">{{categoria.nombre}}
-          </b-form-select-option>
-        </b-form-select>
-        <b-btn type="submit" size="sm" variant="success">
-          <h4 class="my-auto" style="color:white">{{ create ? 'Crear' : 'Editar' }} </h4>
-        </b-btn>
-        <b-btn type="reset" size="sm">
-          <h4 class="my-auto" style="color:white"> Volver </h4>
-        </b-btn>
-      </b-form>
-    </div>
+  <div class="multimedia-form form">
+    <h4 class="text-center mb-3">
+      {{ create ? 'Crear' : 'Editar' }} archivo
+    </h4>
+    <b-form class="col-md-10 mx-auto justify-content-center" @submit.stop.prevent="onSubmit" @reset="volver">
+      <b-form-group>
+          <b-form-group label="Título">
+            <b-form-input v-model="nombre" type="text" />
+          </b-form-group>
+          <b-form-group label="Link">
+            <b-form-input v-model="link" type="text" />
+          </b-form-group>
+      </b-form-group>
+      <b-form-text class="h6"> Categoría </b-form-text>
+      <b-form-select v-model="categoria" class="mb-3">
+        <b-form-select-option
+          v-for="categoria in categorias"
+          :key="categoria.nombre"
+          :value="categoria">{{categoria.nombre}}
+        </b-form-select-option>
+      </b-form-select>
+      <b-btn type="submit" size="md" variant="success">
+        <h5 class="my-auto" style="color:white">{{ create ? 'Crear' : 'Editar' }} </h5>
+      </b-btn>
+      <b-btn type="reset" size="md">
+        <h5 class="my-auto" style="color:white"> Volver </h5>
+      </b-btn>
+    </b-form>
   </div>
 </template>
 
@@ -55,9 +53,6 @@ export default {
         },
         {
           nombre: "Procedimientos",
-        },
-        {
-          nombre: "Tutoriales",
         },
         {
           nombre: "Mail Institucional",
@@ -167,11 +162,11 @@ export default {
 .form {
   text-align: center;
   background-color: white;
-  height: 440px;
-  width: 500px;
-  margin-top: 10%;
-  padding: 40px 0;
-  border-radius: 20px;
+  height: auto;
+  width: auto;
+  margin-bottom: 40px;
+  border-radius: 12%;
+  overflow: visible;
 }
 
 .modal-overlay {

@@ -8,7 +8,7 @@
         <!-- <NuxtLink :to="{ name: 'certificado-id', params: { id: certificado.id } }">
           <img :src="certificado.image" class="card-img-top" :alt="certificado.name" />
         </NuxtLink> -->
-        <NuxtLink v-if="!certificado.redeterminado && isAdmin" class="text-center col" :to="{ name: 'redeterminaciones-id', params: { id: certificado.id } }">
+        <NuxtLink v-if="!certificado.redeterminado && adminHacienda" class="text-center col" :to="{ name: 'redeterminaciones-id', params: { id: certificado.id } }">
           <b-button variant="success" class="my-1 col-sm-3" > Redeterminar  </b-button>
         </NuxtLink>
         <strong v-if="certificado.redeterminado" class="text-center col"> Redeterminado el {{ formatDate(certificado.redeterminado.substr(0,10)) }} </strong>
@@ -63,6 +63,9 @@ export default {
   computed: {
     isAdmin(){
       return Boolean(this.$store.state.user.admin == "true")
+    },
+    adminHacienda(){
+      return this.$store.state.user.admin == "hacienda"
     },
   },
   methods: {

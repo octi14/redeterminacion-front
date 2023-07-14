@@ -1,21 +1,20 @@
 <template>
   <div>
-    <Banner title="Secretaría de Hacienda" subtitle="Municipalidad de Villa Gesell" />
     <div class="container text-center">
       <div class="row custom-row">
-        <div v-for="(link, index) in links" :key="index" class="col-lg-4 mx-auto col-md-6 col-sm-12 mb-3">
+        <div v-for="(link, index) in links" :key="index" class="col-lg-4 my-4 mx-auto col-md-6 col-sm-12 mb-3">
           <NuxtLink :to="link.to" class="d-block">
             <b-button variant="outline" class="btn-5">
-              <b-icon :icon="link.icon" class="mb-2 landing-icon" />
-              <h5 style="color:green"><b>{{ link.title }}</b></h5>
+              <b-icon :icon="link.icon" class="mb-4 landing-icon" />
+              <h5 class="landing-text"><b>{{ link.title }}</b></h5>
             </b-button>
           </NuxtLink>
         </div>
-        <div v-if="adminHacienda" class="col-lg-4 col-md-6 col-sm-12 mb-3">
+        <div v-if="adminHacienda" class="col-lg-4 col-md-6 my-4 col-sm-12 mb-4">
           <NuxtLink to="/redeterminacion" class="d-block">
             <b-button variant="outline" class="btn-5">
-              <b-icon-calculator class="mb-2 landing-icon" />
-              <h5 style="color:green"><b> Redeterminación </b></h5>
+              <b-icon-calculator class="mb-4 landing-icon" />
+              <h5 class="landing-text"><b> Redeterminación </b></h5>
             </b-button>
           </NuxtLink>
         </div>
@@ -73,10 +72,10 @@ export default {
   margin-top: 20px;
   width: 80px;
   height: 80px;
-  color:#145314db
+  color:#d88d00
 }
 .custom-row {
-  padding-top:60px;
+  padding-top:10px;
   max-width: 800px; /* Ajusta el ancho máximo deseado */
   margin-left: auto;
   margin-right: auto;

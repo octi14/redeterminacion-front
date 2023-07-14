@@ -1,6 +1,6 @@
 <template>
   <div class="multimedia-feed">
-    <b-card class="shadow-lg mx-auto mt-5 col-8" v-if="items.length > 0">
+    <b-card class="shadow-lg mx-auto mt-4 col-8" v-if="items.length > 0">
       <!-- <div class="mx-auto text-center">
         <h4> Lista de archivos </h4>
       </div> -->

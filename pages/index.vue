@@ -2,8 +2,9 @@
   <div class="page">
     <div style="height: 100%">
       <div class="mx-auto m-2" style="height:100%">
-        <div class="shadow-lg" style="height:100%">
+        <div class="main-background" style="height:100%">
           <template>
+            <Banner title="SECRETARÍA DE HACIENDA" subtitle="MUNICIPALIDAD DE VILLA GESELL" />
             <Landing />
           </template>
         </div>
@@ -21,13 +22,3 @@ export default {
   }
 }
 </script>
-
-<style type="text/css">
-.background {
-  padding: 0% 0;
-  background-size: cover;
-  object-fit: fill;
-  background-color: #f5f8f9;
-}
-
-</style>

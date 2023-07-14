@@ -26,7 +26,7 @@
                 <b-form-input class="col-md-2" v-model="uviDestino" type="double"> </b-form-input>
               </b-form>
               <b-button variant="primary" @click="onApplyIndex" v-if="!obraUvi"> Aplicar índices </b-button>
-              <a href="https://www.camarco.org.ar/wp-content/uploads/2022/10/Evolucion-UVIs.pdf" target="_blank"> Ver índices UVI </a>
+              <a href="https://www.camarco.org.ar/wp-content/uploads/2023/05/Evolucion-UVIs.pdf" target="_blank"> Ver índices UVI </a>
             </div>
           </div>
           <!-- Cambiar el formato del panel si la obra es UVI -->

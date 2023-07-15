@@ -7,6 +7,7 @@ const rubros = [
     links: ["www.google.com.ar", "www.youtube.com"],
     requisitos: ["Lorem ipsum dolor sit amet, consectetur <a href='www.google.com.ar'>adipiscing elit</a>, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.", "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 2,
@@ -16,6 +17,7 @@ const rubros = [
     links: [],
     requisitos: ["Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.", "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 3,
@@ -25,6 +27,7 @@ const rubros = [
     links: [],
     requisitos: ["Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 4,
@@ -34,6 +37,7 @@ const rubros = [
     links: [],
     requisitos: ["Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.", "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 5,
@@ -43,6 +47,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 6,
@@ -52,6 +57,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 7,
@@ -61,6 +67,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 8,
@@ -70,6 +77,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 9,
@@ -79,6 +87,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 10,
@@ -88,6 +97,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 11,
@@ -97,6 +107,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 12,
@@ -106,6 +117,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 13,
@@ -115,6 +127,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 14,
@@ -124,6 +137,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 15,
@@ -133,6 +147,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 16,
@@ -142,6 +157,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 18,
@@ -151,6 +167,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 19,
@@ -160,6 +177,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 20,
@@ -169,6 +187,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 21,
@@ -178,6 +197,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 22,
@@ -187,6 +207,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 23,
@@ -196,6 +217,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 24,
@@ -205,6 +227,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 25,
@@ -214,6 +237,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 26,
@@ -223,6 +247,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 27,
@@ -232,6 +257,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 28,
@@ -241,6 +267,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 29,
@@ -250,6 +277,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 30,
@@ -259,6 +287,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 31,
@@ -268,6 +297,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 32,
@@ -277,6 +307,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 33,
@@ -286,6 +317,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 34,
@@ -295,6 +327,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 35,
@@ -304,6 +337,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 36,
@@ -313,6 +347,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 37,
@@ -322,6 +357,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 38,
@@ -331,6 +367,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 39,
@@ -340,6 +377,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 40,
@@ -349,6 +387,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 41,
@@ -358,6 +397,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 42,
@@ -367,6 +407,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 43,
@@ -376,6 +417,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 44,
@@ -385,6 +427,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 45,
@@ -394,6 +437,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 46,
@@ -403,6 +447,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 47,
@@ -412,6 +457,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 48,
@@ -421,6 +467,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 49,
@@ -430,6 +477,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 50,
@@ -439,6 +487,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 51,
@@ -448,6 +497,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 52,
@@ -457,6 +507,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 53,
@@ -466,6 +517,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 54,
@@ -475,6 +527,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 55,
@@ -484,6 +537,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 56,
@@ -493,6 +547,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 57,
@@ -502,6 +557,7 @@ const rubros = [
     links: ["www.google.com.ar", "www.youtube.com"],
     requisitos: ["Lorem ipsum dolor sit amet, consectetur <a href='www.google.com.ar'>adipiscing elit</a>, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.", "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."],
     pom: ["POM001"], 
+    inspeccion: false,
   },
   {
     id: 58,
@@ -511,6 +567,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 59,
@@ -520,6 +577,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 60,
@@ -529,6 +587,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 61,
@@ -538,6 +597,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: ["POM052"], 
+    inspeccion: false,
   },
   {
     id: 62,
@@ -547,6 +607,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: ["POM050"], 
+    inspeccion: false,
   },
   {
     id: 63,
@@ -556,6 +617,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 64,
@@ -565,6 +627,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 65,
@@ -574,6 +637,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 66,
@@ -583,6 +647,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 67,
@@ -592,6 +657,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 68,
@@ -601,6 +667,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 69,
@@ -610,6 +677,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 70,
@@ -619,6 +687,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 71,
@@ -628,6 +697,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 72,
@@ -637,6 +707,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 73,
@@ -646,6 +717,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 74,
@@ -655,6 +727,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 75,
@@ -664,6 +737,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 76,
@@ -673,6 +747,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 77,
@@ -682,6 +757,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 78,
@@ -691,6 +767,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 79,
@@ -700,6 +777,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 80,
@@ -709,6 +787,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 81,
@@ -718,6 +797,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 82,
@@ -727,6 +807,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 83,
@@ -736,6 +817,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 84,
@@ -745,6 +827,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 85,
@@ -754,6 +837,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 86,
@@ -763,6 +847,7 @@ const rubros = [
     links: ["www.google.com.ar","google.com.ar","www.google.com","google.com"],
     requisitos: ["Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.", "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 87,
@@ -772,6 +857,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 88,
@@ -781,6 +867,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 89,
@@ -790,6 +877,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 90,
@@ -799,6 +887,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 91,
@@ -808,6 +897,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 92,
@@ -817,6 +907,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 93,
@@ -826,6 +917,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 94,
@@ -835,6 +927,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 95,
@@ -844,6 +937,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 96,
@@ -853,6 +947,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 97,
@@ -862,6 +957,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 98,
@@ -871,6 +967,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 99,
@@ -880,6 +977,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 100,
@@ -889,6 +987,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 101,
@@ -898,6 +997,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 102,
@@ -907,6 +1007,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 103,
@@ -916,6 +1017,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 104,
@@ -925,6 +1027,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 105,
@@ -934,6 +1037,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 106,
@@ -943,6 +1047,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 107,
@@ -952,6 +1057,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 108,
@@ -961,6 +1067,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 109,
@@ -970,6 +1077,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 110,
@@ -979,6 +1087,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 111,
@@ -988,6 +1097,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 112,
@@ -997,6 +1107,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 113,
@@ -1006,6 +1117,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 114,
@@ -1015,6 +1127,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 115,
@@ -1024,6 +1137,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 116,
@@ -1033,6 +1147,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 117,
@@ -1042,6 +1157,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 118,
@@ -1051,6 +1167,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 119,
@@ -1060,6 +1177,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 120,
@@ -1069,6 +1187,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 121,
@@ -1078,6 +1197,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 122,
@@ -1087,6 +1207,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 124,
@@ -1096,6 +1217,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 125,
@@ -1105,6 +1227,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 126,
@@ -1114,6 +1237,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 127,
@@ -1123,6 +1247,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 128,
@@ -1132,6 +1257,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 129,
@@ -1141,6 +1267,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 130,
@@ -1150,6 +1277,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 131,
@@ -1159,6 +1287,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 132,
@@ -1168,6 +1297,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 133,
@@ -1177,6 +1307,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 134,
@@ -1186,6 +1317,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 135,
@@ -1195,6 +1327,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 136,
@@ -1204,6 +1337,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 137,
@@ -1213,6 +1347,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 138,
@@ -1222,6 +1357,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 139,
@@ -1231,6 +1367,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 140,
@@ -1240,6 +1377,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 141,
@@ -1249,6 +1387,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 142,
@@ -1258,6 +1397,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 143,
@@ -1267,6 +1407,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 144,
@@ -1276,6 +1417,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 145,
@@ -1285,6 +1427,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: [], 
+    inspeccion: false,
   },
   {
     id: 146,
@@ -1292,7 +1435,9 @@ const rubros = [
     descripcion: 'Lorem ipsum dolor et...',
     ordenanzas: [],
     links: [],
-    requisitos: []
+    requisitos: [],
+    pom: [], 
+    inspeccion: false,
   }
   ];
   

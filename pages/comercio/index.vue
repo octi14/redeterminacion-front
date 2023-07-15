@@ -1,12 +1,61 @@
 <template>
   <div class="page">
     <Banner title="Habilitaciones comerciales" />
+    <b-jumbotron bg-variant="#F8EFE5" text-variant="black" fluid >
+            <template #lead>        
+              <b-row>
+                <b-col md="10">
+                  <b-row><b-col>
+                      <h3 class="icon-orange">¡Habilitá tu comercio en simples pasos!</h3>
+                  </b-col></b-row>
+                  <b-row>
+                    <b-col md="4" style="display:flex">
+                      <div>
+                        <p class="text-circle-border">1</p>
+                        <p>Leé la información y requisitos necesarios para iniciar el trámite.</p>
+                      </div>                      
+                      <div class="separador">
+                      </div>
+                    </b-col>
+                    <b-col md="4" style="display:flex">
+                      <div>
+                      <p class="text-circle-border">2</p>
+                      <p> Completá el formulario con los datos solicitados.</p>
+                      </div>                      
+                      <div class="separador">
+                      </div>
+                    </b-col>
+                    <b-col md="4">
+                      <p class="text-circle-border">3</p>
+                      <p>Esperá la confirmación de aprobación de la solicitud.</p>
+                    </b-col>
+                  </b-row>
+                </b-col>
+                <b-col md="2">
+                  <div class="banner-icon">
+                    <b-iconstack font-scale="5" shift-v="-7">                 
+                        <b-icon-list-nested stacked shift-h="-8" shift-v="-4" scale="1" flip-v variant="info"></b-icon-list-nested>
+                        <b-icon-list-nested stacked shift-h="-7" shift-v="4" scale="1" flip-v variant="info"></b-icon-list-nested>
+                        <b-icon-exclamation-lg stacked></b-icon-exclamation-lg>
+                        <b-icon-circle-fill stacked scale="1.25" variant="info" ></b-icon-circle-fill>
+                        <b-icon-circle-fill stacked style="color:#EC93B1" ></b-icon-circle-fill>
+                        <b-icon-pen-fill stacked scale="0.62" style="color:#000"></b-icon-pen-fill>
+                        <b-icon-pen-fill stacked scale="0.6" style="color:#EB9929"></b-icon-pen-fill>
+                    </b-iconstack>
+                  </div>
+                </b-col>
+              </b-row>
+            </template>
+          </b-jumbotron>
     <b-container>
       <b-row>
         <b-col>
           <br />
+<!--
           <p class="texto-introd">Texto explicando que tipo de trámites se pueden hacer desde esta página, que pasos va a tener que seguir, y que resultado va a obtener.</p>
           <p class="texto-introd">Aclarar que va a tener que llevar los documentos fisicos en un plazo de 30 días y todo eso.</p>
+-->          
+          
           <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(1) }">
             <h4 class="section-title" @click="toggleCard(1)">
               ¿QUIEN PUEDE INICIAR EL TRAMITE?
@@ -15,8 +64,8 @@
             </h4>
             <transition name="expand">
               <ul v-show="isCardExpanded(1)">
-                <li><b-icon-person-circle variant="info"></b-icon-person-circle>El interesado futuro comerciante/industrial o afin mayor de 18 años.</li>
-                <li><b-icon-person-circle variant="info"></b-icon-person-circle>El apoderado o autorizado del anterior con documentación que acredite el carácter de tal. <b-link class="popup-link" @click="openPopup('A')">(A)</b-link></li>
+                <li><b-icon-person-circle font-scale="1.25" class="icon-orange"></b-icon-person-circle>El interesado futuro comerciante/industrial o afin mayor de 18 años.</li>
+                <li><b-icon-person-circle font-scale="1.25" class="icon-orange"></b-icon-person-circle>El apoderado o autorizado del anterior con documentación que acredite el carácter de tal. <b-icon-question-circle-fill @click="openPopup('A')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></li>
               </ul>
             </transition>
           </b-card>
@@ -28,17 +77,30 @@
               <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
             </h4>
             <transition name="expand">
-              <ul v-show="isCardExpanded(2)">
-                <li><b-icon-check-circle-fill variant="info"></b-icon-check-circle-fill>DNI del solicitante</li>
-                <li><b-icon-check-circle-fill variant="info"></b-icon-check-circle-fill>Copia de plano conforme a obra/aprobado o registrado del edificio donde se instalará el negocio que se solicita habilitar. <b-link class="popup-link" @click="openPopup('B')">(B)</b-link></li>
-                <li><b-icon-check-circle-fill variant="info"></b-icon-check-circle-fill>Certificados de libre-deuda de las Tasas Municipales del local a habilitar. <b-link class="popup-link" @click="openPopup('LibreDeuda')">(C: ¿Como solicitar el libre deuda?)</b-link></li>
-                <li><b-icon-check-circle-fill variant="info"></b-icon-check-circle-fill>Copia de Escritura traslativa de Dominio del inmueble donde se desarrollará la actividad, Contrato de locación, o Boleto de Compraventa con el correspondiente sellado de Ley y firma certificada por Entidad Policial, Entidad Bancaria, Escribano o firmado en presencia de Funcionarios Municipales.</li>
-                <li><b-icon-check-circle-fill variant="info"></b-icon-check-circle-fill>Declaración Jurada indicando correo electrónico a fin de recibir notificaciones. <b-link class="popup-link" @click="openPopup('D')">(D)</b-link></li>
-                <li><b-icon-check-circle-fill variant="info"></b-icon-check-circle-fill>Domicilio real y legal del establecimiento en el cual deberá constar calle y número respectivo dentro del Partido de Villa Gesell-donde en caso de carecer del primero- podrá notificarse con igual efecto jurídico</li>
-                <li><b-icon-check-circle-fill variant="info"></b-icon-check-circle-fill>Certificación de Rubro Permitido <b-link class="popup-link" @click="openPopup('E')">(E)</b-link></li>
-                <li><b-icon-check-circle-fill variant="info"></b-icon-check-circle-fill>Constancia de Inscripción de AFIP e IIBB actualizada al momento de la solicitud la que debe mantenerse activa mientras el comercio, industria o asimilable esté habilitado bajo pena de ser pasible de la clausura del establecimiento</li>
-                <li><b-icon-check-circle-fill variant="info"></b-icon-check-circle-fill>Planilla de Autorización de Trámite en caso de realizarlo mediante apoderado</li>
+              <div v-show="isCardExpanded(2)">
+              <ul>
+                <li><b-icon-check-circle font-scale="1.25" class="icon-orange"></b-icon-check-circle> DNI del solicitante (imagen del frente y dorso).</li>
+                <li><b-icon-check-circle font-scale="1.25" class="icon-orange"></b-icon-check-circle> Domicilio real y legal del establecimiento (deberá constar calle y número). <b-icon-question-circle-fill @click="openPopup('B')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></li>
+                <li><b-icon-check-circle font-scale="1.25" class="icon-orange"></b-icon-check-circle> Copia de plano del edificio (conforme a obra/aprobado/registrado) donde se instalará el comercio que se solicita habilitar. Allí deberás señalar con una cruz sobre el plano la unidad funcional en donde se ubicará el establecimiento. <b-icon-question-circle-fill @click="openPopup('B')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></li>
+                <li><b-icon-check-circle font-scale="1.25" class="icon-orange"></b-icon-check-circle> Certificado de libre-deuda de la <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Tasa por Sevicios Urbanos</a> (ó útima factura de pago que indique que la Tasa municipal no registra deuda). <b-icon-question-circle-fill @click="openPopup('LibreDeuda')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></li>
+                <li><b-icon-check-circle font-scale="1.25" class="icon-orange"></b-icon-check-circle> Copia de la Escritura traslativa de Dominio del inmueble donde se desarrollará la actividad / Contrato de locación / Boleto de Compraventa o afín, con el correspondiente Impuesto de Sellos Provincial y firma certificada por Escribano Publico, Entidad Bancaria o Autoridad Administrativa.</li>
+                <li><b-icon-check-circle font-scale="1.25" class="icon-orange"></b-icon-check-circle> Constancia de <a href="https://seti.afip.gob.ar/padron-puc-constancia-internet/ConsultaConstanciaAction.do" target="_blank" class="external-link">CUIT</a> actualizada. </li>
+                <li><b-icon-check-circle font-scale="1.25" class="icon-orange"></b-icon-check-circle> <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" class="external-link">Constancia de Inscripción en Ingresos Brutos</a> (ARBA) actualizada al momento de la solicitud. Esta deberá mantenerse activa mientras el comercio, industria o asimilable esté habilitado, bajo pena de ser pasible de la clausura del establecimiento.</li>
+                <li><b-icon-check-circle font-scale="1.25" class="icon-orange"></b-icon-check-circle> <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Planilla de Autorización de Trámite</a> en caso de realizarlo mediante apoderado</li>
               </ul>
+              <b-card border-variant="warning" align="center" >
+                <b-card-text>                              
+                  <b-row>
+                    <b-col md="1">
+                      <b-icon-exclamation-triangle variant="warning" font-scale="4"></b-icon-exclamation-triangle>
+                    </b-col>
+                    <b-col md="11">
+                      <p><u><b>Importante!</b></u> Excepto el domicilio, el resto de los <b>documentos</b> deberán encontrarse <b>digitalizados</b> (podés escanearlos o sacarles una fotografía) y deben <b>ser legibles</b>. Pueden encontrarse en <b>formato pdf o imagen</b> y tener un <b>peso máximo de 15 Mb</b>.</p>
+                    </b-col>
+                  </b-row>
+                </b-card-text>
+              </b-card>
+              </div>
             </transition>
           </b-card>
 
@@ -71,7 +133,7 @@
                 <h4 v-if="ordenanzasSeleccionadas.length">Ordenanzas relacionadas:</h4>
                 <ul v-if="ordenanzasSeleccionadas.length">
                   <li v-for="(ordenanza, index) in ordenanzasSeleccionadas" :key="index">
-                    <b-icon-info-circle-fill variant="info"></b-icon-info-circle-fill><a :href="linksSeleccionados[index]"> {{ ordenanza }}</a>
+                    <b-icon-info-circle-fill font-scale="1.25" class="icon-orange"></b-icon-info-circle-fill><a :href="linksSeleccionados[index]"> {{ ordenanza }}</a>
                   </li>
                 </ul>
               </div>
@@ -84,23 +146,42 @@
             </h4>            
             <transition name="expand">
               <ul v-show="isCardExpanded(4)" class="FAQs">
-                <li><b-icon-question-circle-fill variant="info"></b-icon-question-circle-fill>¿PORQUE TENGO QUE HABILITAR MI LOCAL?</li>
-                <p>La municipalidad de Villa Gesell dispone que toda persona humana o jurídica que pretende ejercer el comercio industria o actividad asimilable deberá previo al desarrollo de las mismas dentro del Partido de Villa Gesell solicitar la habilitación pertinente.</p>
-
-                <li><b-icon-question-circle-fill variant="info"></b-icon-question-circle-fill>¿QUÉ PASA SI ABRO UN LOCAL COMERCIAL SIN HABILITACIÓN?</li>
-                <p>La omisión de la habilitación determinará la inmediata clausura del establecimiento debiendo abonar la multa establecida para aquellos que cometieran tal infracción. El establecimiento deberá permanecer cerrado hasta tanto regularice su trámite de habilitación.</p>
-
-                <li><b-icon-question-circle-fill variant="info"></b-icon-question-circle-fill>¿COMO SE CALCULA LA TASA DE HABILITACIÓN?</li>
-                <p>La tasa de habilitación depende de los siguientes factores: el rubro que se quiere habilitar, la zona donde se encuentra el local, la superficie total afectada a la actividad comercial (sector de atención al público, depósito, espacio de circulación, entrepiso, sanitarios, etc.) y la condición del plano de obra.</p>
-
-                <li><b-icon-question-circle-fill variant="info"></b-icon-question-circle-fill>¿PARA FACILITAR LA BÚSQUEDA DE UN LOCAL: DONDE CONSULTO LA ZONA COMERCIAL APTA PARA HABILITAR Y LOS REQUISITOS EDILICIOS PARA SU INSTALACIÓN Y FUNCIONAMIENTO?</li>
-                <p>Enviar mail a: ... informando rubro a habilitar, domicilio real del local (calle y número), localidad del Partido de Villa Gesell y acompañar datos catastrales (sección - manzana - parcela - unidad contributiva).</p>
-
-                <li><b-icon-question-circle-fill variant="info"></b-icon-question-circle-fill>¿LAS HABILITACIONES COMERCIALES DEBEN RENOVARSE?</li>
-                <p>Las habilitaciones se extienden por el periodo que abarca el contrato de locación y deben reempadronarse anualmente, según corresponda, teniendo en cuenta la normativa vigente. En el caso de ser propietario del inmueble la habilitación no tienen caducidad si no cambia la titularidad o las condiciones que acreditó al momento de la entrega del certificado de habilitación.</p>
-
-                <li><b-icon-question-circle-fill variant="info"></b-icon-question-circle-fill>¿COMO OBTENGO EL REGISTRO PROVINCIAL PARA LA COMERCIALIZACIÓN DE BEBIDAS ALCOHÓLICAS (REBA)?</li>
-                <p>Las actividades que comercializan bebidas alcohólicas deben tramitar el certificado del REBA correspondiente, el mismo tiene un costo según la actividad comercial. Para tramitarlo debe tener su habilitación comercial vigente.</p>
+                <li><b-icon-question-circle font-scale="1.25" class="icon-orange"></b-icon-question-circle> ¿Por qué tengo que habilitar mi local?</li>
+                <div class="sangria">
+                  <p>La Municipalidad de Villa Gesell dispone que toda persona humana o jurídica que pretenda ejercer el comercio, industria o actividad asimilable deberá, previo a su desarrollo dentro del Partido, solicitar la habilitación pertinente.</p>
+                </div>
+                <li><b-icon-question-circle font-scale="1.25" class="icon-orange"></b-icon-question-circle> ¿Qué sucede si abro un local comercial sin realizar la habilitación correspondiente?</li>
+                <div class="sangria">
+                  <p><b-icon-caret-right-fill class="icon-orange"></b-icon-caret-right-fill>La omisión de la habilitación determinará la inmediata clausura del establecimiento, debiendo abonar la multa correspondiente para quienes cometieran tal infracción.</p>                  
+                  <p><b-icon-caret-right-fill class="icon-orange"></b-icon-caret-right-fill>El establecimiento deberá permanecer cerrado hasta tanto regularice su trámite de habilitación.</p>
+                </div>
+                <li><b-icon-question-circle font-scale="1.25" class="icon-orange"></b-icon-question-circle> ¿Cómo se calcula la Tasa de Habilitación?</li>
+                <div class="sangria">
+                  <p>La Tasa de Habilitación depende de los siguientes factores:</p>
+                  <p><b-icon-caret-right-fill class="icon-orange"></b-icon-caret-right-fill>El rubro que se quiere habilitar.</p>
+                  <p><b-icon-caret-right-fill class="icon-orange"></b-icon-caret-right-fill>La zona donde se encuentra el local.</p>
+                  <p><b-icon-caret-right-fill class="icon-orange"></b-icon-caret-right-fill>La superficie total afectada a la actividad comercial (que implican el sector de atención al público, depósito, espacio de circulación, entrepiso, sanitarios, entre otros).</p>
+                  <p><b-icon-caret-right-fill class="icon-orange"></b-icon-caret-right-fill>La condición del plano de obra.</p>
+                </div>
+                <li><b-icon-question-circle font-scale="1.25" class="icon-orange"></b-icon-question-circle> Para facilitar la búsqueda de un local: ¿Dónde puedo consultar la Zona Comercial Apta para habilitar y los requisitos edilicios para su instalación y funcionamiento?</li>
+                <div class="sangria">
+                  <p>Para realizar tu consulta, podés enviar un correo electrónico a: ………….……, informando los siguientes datos: </p>
+                  <p><b-icon-caret-right-fill class="icon-orange"></b-icon-caret-right-fill>Rubro a habilitar.</p>
+                  <p><b-icon-caret-right-fill class="icon-orange"></b-icon-caret-right-fill>Domicilio real del local (Calle y Número).</p>
+                  <p><b-icon-caret-right-fill class="icon-orange"></b-icon-caret-right-fill>Localidad de ubicación en el Partido de Villa Gesell.</p>
+                  <p><b-icon-caret-right-fill class="icon-orange"></b-icon-caret-right-fill>Datos catastrales: Sección- Manzana - Parcela - Unidad Contributiva.</p>
+                </div>
+                <li><b-icon-question-circle font-scale="1.25" class="icon-orange"></b-icon-question-circle> ¿Deben renovarse las habilitaciones comerciales?</li>
+                <div class="sangria">
+                  <p><b-icon-caret-right-fill class="icon-orange"></b-icon-caret-right-fill><u>En caso de contrato de locación:</u> Las habilitaciones se extienden por el período que abarca el contrato de locación y deben reempadronarse anualmente, según corresponda, teniendo en cuenta la normativa vigente.</p>
+                  <p><b-icon-caret-right-fill class="icon-orange"></b-icon-caret-right-fill><u>En caso de ser propietario/a del inmueble:</u> Las habilitaciones no tienen caducidad si la titularidad o las condiciones acreditadas al momento de la entrega del certificado de habilitación no cambian.</p>
+                </div>
+                <li><b-icon-question-circle font-scale="1.25" class="icon-orange"></b-icon-question-circle> ¿Cómo puedo obtener el Registro Provincial para la Comercialización de Bebidas Alcohólicas (REBA)?</li>
+                <div class="sangria">
+                  <p>Las actividades que comercializan bebidas alcohólicas deben tramitar el certificado del REBA correspondiente.</p>
+                  <p><b-icon-caret-right-fill class="icon-orange"></b-icon-caret-right-fill>Para tramitarlo debés tener tu habilitación comercial vigente.</p>
+                  <p><b-icon-caret-right-fill class="icon-orange"></b-icon-caret-right-fill>Su costo dependerá de la actividad comercial que se lleve a cabo.</p>
+                </div>
               </ul>
             </transition>
           </b-card>
@@ -114,13 +195,15 @@
             <transition name="expand">
               <p v-show="isCardExpanded(0)">
                 La habilitación de comercios/industrias o asimilables deberá adecuarse a lo determinado en concordancia con leyes nacionales, provinciales y la
-                <a href="https://hcdvillagesell.com.ar/3177-21-ordenanza-modificacion-ord-2156/" target="_blank" class="external-link">Ordenanza 2156/08 (TO)</a>
-                y el <a href="/ordenanzas" target="_blank" class="external-link">Digesto Comercial Municipal</a> (Creado por el
+                <a href="https://hcdvillagesell.com.ar/3177-21-ordenanza-modificacion-ord-2156/" target="_blank" class="external-link">Ordenanza 2156/08 (TO 2023)</a>
+                y el 
+                <a href="/ordenanzas" target="_blank" class="external-link">Digesto Comercial Municipal</a>
+                 (Creado por el
                 <span class="external-link">Decreto 1856/23</span>).
               </p>
             </transition>
           </b-card>
-        <b-button variant="" class="float-right" @click="openPopup('Form')">Acceder al formulario</b-button>
+        <b-button variant="" class="float-right" @click="openPopup('Form')">Iniciar Trámite</b-button>
         <br />
         </b-col>
       </b-row>
@@ -149,15 +232,22 @@
       <p>Ingrese aqui.</p>
     </b-modal>
     <!-- Popup de advertencia -->
-    <b-modal v-model="showConfirmationPopup" title="Advertencia!" hide-footer centered>
+    <b-modal v-model="showConfirmationPopup" hide-footer centered>
+        <template #modal-header>
+          <div><h3>
+              <b-icon icon="exclamation-triangle" scale="1.5" variant="warning" style="margin: 0 20px 0 10px"></b-icon>
+              <b>Advertencia!</b>
+          </h3></div>
+        </template>
         <p>Antes de continuar, tené en cuenta lo siguiente:</p>
         <ul>
-        <li>El formulario al que estás a punto de acceder no se guarda automáticamente.</li>
-        <li>Si no cuentas con toda la información requerida o los documentos digitalizados necesarios, no podrás completar el proceso y deberás comenzar desde cero.</li>
+          <li>El formulario al que estás a punto de acceder no se guarda automáticamente.</li>
+          <li>Si no contás con toda la información requerida y/o los documentos digitalizados no podrás completar el proceso y deberás comenzarlo nuevamente una vez que tengas toda la documentación.</li>
+          <li>Recordá que los documentos deben ser legibles, estar subidos en formato de imagen ó pdf y tener un peso máximo de 15 mb.</li>
         </ul>
         <div class="form-check">
             <input class="form-check-input" type="checkbox" id="documentCheckbox" v-model="documentCheckboxChecked"/>
-            <label class="form-check-label" for="documentCheckbox">Ya tengo todos los documentos digitalizados y la información requerida</label>
+            <label class="form-check-label" for="documentCheckbox">Ya tengo todos los documentos digitalizados y la información requerida.</label>
         </div>
         <div class="text-center mt-3">
             <nuxt-link :class="{ 'disabled': !documentCheckboxChecked }" to="/comercio/form">
@@ -177,6 +267,9 @@
         </b-form-group>
         <b-form-group label="Partida Municipal" label-for="partidaMunicipal" :state="solicitudLibreDeuda.partidaMunicipalState">
           <b-form-input id="partidaMunicipal" v-model="solicitudLibreDeuda.partidaMunicipal" type="text"></b-form-input>
+        </b-form-group>
+        <b-form-group label="Partida Comercial" label-for="partidaComercial" :state="solicitudLibreDeuda.partidaComercialState">
+          <b-form-input id="partidaComercial" v-model="solicitudLibreDeuda.partidaComercial" type="text"></b-form-input>
         </b-form-group>
         <b-form-group label="Datos Catastrales" :state="solicitudLibreDeuda.catastralDataState" class="datosCatastralesContainer">
           <div class="row">
@@ -240,6 +333,8 @@ export default {
         emailState: null,
         partidaMunicipal: '',
         partidaMunicipalState: null,
+        partidaComercial: '',
+        partidaComercialState: null,
         seccion: '',
         fraccion: '',
         quinta: '',
@@ -314,7 +409,7 @@ export default {
       // Lógica para resetear el formulario
     },
     submitLibreDeuda() {
-      if (!this.solicitudLibreDeuda.partidaMunicipal && !this.hasCatastralData()) {
+      if ((!this.solicitudLibreDeuda.partidaMunicipal && !this.solicitudLibreDeuda.partidaComercial) || !this.hasCatastralData()) {
       // Si ni la partida municipal ni los datos catastrales están completos, mostrar un mensaje de error o realizar alguna acción apropiada.
       alert('Debes completar la partida municipal o los datos catastrales.');
       return;
@@ -331,11 +426,11 @@ export default {
   },
   hasCatastralData() {
     return (
-      this.solicitudLibreDeuda.seccion ||
-      this.solicitudLibreDeuda.fraccion ||
-      this.solicitudLibreDeuda.quinta ||
-      this.solicitudLibreDeuda.manzana ||
-      this.solicitudLibreDeuda.loteParcela ||
+      this.solicitudLibreDeuda.seccion &&
+      this.solicitudLibreDeuda.fraccion &&
+      this.solicitudLibreDeuda.quinta &&
+      this.solicitudLibreDeuda.manzana &&
+      this.solicitudLibreDeuda.loteParcela &&
       this.solicitudLibreDeuda.subparcela
     );
   },
@@ -372,6 +467,50 @@ export default {
 }
 </script>
 <style>
+.jumbotron{
+  margin: 2rem 0;
+  padding: 1.5rem 0;
+  text-align: center;
+}
+.banner-icon{
+  width: 100%;
+  height: 100%;
+  margin: auto;
+
+}
+.jumbotron h3{
+  margin-bottom: 2rem;
+  font-size: 2.75rem;
+}
+.jumbotron p{
+  font-weight: bold;
+  color: black;
+  padding: 0 10px;
+}
+.jumbotron .text-circle-border{
+  border: 2px solid black;
+  width: fit-content;
+  margin: 0 auto 15px;
+  border-radius: 300px;
+  padding: 5px 20px;
+  font-size: 2rem;
+}
+.jumbotron .separador {
+    border-right: 2px solid black;
+    height: 125px;
+    display: inline-block;
+    margin: auto;
+    box-shadow: -2px 0px 2px #888;
+}
+.container{
+  margin-bottom: 25px;
+}
+.sangria{
+  margin-left: 25px;
+}
+.icon-orange{
+  color: #E27910;
+}
 .texto-introd{
   font-size: 1.3rem;
 }
@@ -418,7 +557,8 @@ export default {
   margin-right: 5px;
 }
 .FAQs li{
-  font-weight: bold;
+  font-weight: 600;
+  color: green;
 }
 /* Estilos para Animaciones de Expansión/Contracción  */
 .expanded {

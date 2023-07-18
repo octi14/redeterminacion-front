@@ -1,8 +1,13 @@
 <template>
   <div class="page">
     <Banner title="Habilitaciones comerciales" />
-    <b-jumbotron bg-variant="#F8EFE5" text-variant="black" fluid >
-            <template #lead>        
+    <div class="col-md-12 col-sm-12">
+      <div class="row justify-content-center" style="width: 100%">
+        <img src="../../assets/Habilitá en simples pasos.png"/>
+      </div>
+    </div>
+    <!-- <b-jumbotron bg-variant="#F8EFE5" text-variant="black" fluid >
+            <template #lead>
               <b-row>
                 <b-col md="10">
                   <b-row><b-col>
@@ -13,7 +18,7 @@
                       <div>
                         <p class="text-circle-border">1</p>
                         <p>Leé la información y requisitos necesarios para iniciar el trámite.</p>
-                      </div>                      
+                      </div>
                       <div class="separador">
                       </div>
                     </b-col>
@@ -21,7 +26,7 @@
                       <div>
                       <p class="text-circle-border">2</p>
                       <p> Completá el formulario con los datos solicitados.</p>
-                      </div>                      
+                      </div>
                       <div class="separador">
                       </div>
                     </b-col>
@@ -33,7 +38,7 @@
                 </b-col>
                 <b-col md="2">
                   <div class="banner-icon">
-                    <b-iconstack font-scale="5" shift-v="-7">                 
+                    <b-iconstack font-scale="5" shift-v="-7">
                         <b-icon-list-nested stacked shift-h="-8" shift-v="-4" scale="1" flip-v variant="info"></b-icon-list-nested>
                         <b-icon-list-nested stacked shift-h="-7" shift-v="4" scale="1" flip-v variant="info"></b-icon-list-nested>
                         <b-icon-exclamation-lg stacked></b-icon-exclamation-lg>
@@ -46,7 +51,7 @@
                 </b-col>
               </b-row>
             </template>
-          </b-jumbotron>
+          </b-jumbotron> -->
     <b-container>
       <b-row>
         <b-col>
@@ -54,8 +59,8 @@
 <!--
           <p class="texto-introd">Texto explicando que tipo de trámites se pueden hacer desde esta página, que pasos va a tener que seguir, y que resultado va a obtener.</p>
           <p class="texto-introd">Aclarar que va a tener que llevar los documentos fisicos en un plazo de 30 días y todo eso.</p>
--->          
-          
+-->
+
           <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(1) }">
             <h4 class="section-title" @click="toggleCard(1)">
               ¿QUIEN PUEDE INICIAR EL TRAMITE?
@@ -64,8 +69,8 @@
             </h4>
             <transition name="expand">
               <ul v-show="isCardExpanded(1)">
-                <li><b-icon-person-circle font-scale="1.25" class="icon-orange"></b-icon-person-circle>El interesado futuro comerciante/industrial o afin mayor de 18 años.</li>
-                <li><b-icon-person-circle font-scale="1.25" class="icon-orange"></b-icon-person-circle>El apoderado o autorizado del anterior con documentación que acredite el carácter de tal. <b-icon-question-circle-fill @click="openPopup('A')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></li>
+                <li><b-icon-person-circle font-scale="1.25" class="icon-orange ml-3"></b-icon-person-circle>El interesado futuro comerciante/industrial o afin mayor de 18 años.</li>
+                <li><b-icon-person-circle font-scale="1.25" class="icon-orange ml-3"></b-icon-person-circle>El apoderado o autorizado del anterior con documentación que acredite el carácter de tal. <b-icon-question-circle-fill @click="openPopup('A')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></li>
               </ul>
             </transition>
           </b-card>
@@ -89,7 +94,7 @@
                 <li><b-icon-check-circle font-scale="1.25" class="icon-orange"></b-icon-check-circle> <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Planilla de Autorización de Trámite</a> en caso de realizarlo mediante apoderado</li>
               </ul>
               <b-card border-variant="warning" align="center" >
-                <b-card-text>                              
+                <b-card-text>
                   <b-row>
                     <b-col md="1">
                       <b-icon-exclamation-triangle variant="warning" font-scale="4"></b-icon-exclamation-triangle>
@@ -115,8 +120,8 @@
                 <p>Selecciona el rubro para consultar sus requisitos específicos y para ver en el mapa las zonas permitidas. Si no encontrás el rubro que querés consultar, es porque no tiene ningún requisito especial.</p>
                 <b-form-group label="Seleccione el Rubro" label-for="rubro">
                   <b-form-select v-model="rubroSeleccionado" :options="filteredRubros" value-field="id" text-field="nombre" @change="handleRubroChange" style="margin:10px 0;"></b-form-select>
-                </b-form-group>                
-                <p v-if="descripcionSeleccionada">{{ descripcionSeleccionada }}</p>                
+                </b-form-group>
+                <p v-if="descripcionSeleccionada">{{ descripcionSeleccionada }}</p>
                 <br v-if="descripcionSeleccionada" />
                 <h4 v-if="rubroSeleccionado">Requisitos especiales para el rubro: {{ nombreRubroSeleccionado }}</h4>
                 <!--
@@ -143,7 +148,7 @@
             <h4 class="section-title" @click="toggleCard(4)">PREGUNTAS FRECUENTES PARA HABILITAR
               <b-icon-chevron-compact-down v-if="!isCardExpanded(4)"></b-icon-chevron-compact-down>
               <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
-            </h4>            
+            </h4>
             <transition name="expand">
               <ul v-show="isCardExpanded(4)" class="FAQs">
                 <li><b-icon-question-circle font-scale="1.25" class="icon-orange"></b-icon-question-circle> ¿Por qué tengo que habilitar mi local?</li>
@@ -152,7 +157,7 @@
                 </div>
                 <li><b-icon-question-circle font-scale="1.25" class="icon-orange"></b-icon-question-circle> ¿Qué sucede si abro un local comercial sin realizar la habilitación correspondiente?</li>
                 <div class="sangria">
-                  <p><b-icon-caret-right-fill class="icon-orange"></b-icon-caret-right-fill>La omisión de la habilitación determinará la inmediata clausura del establecimiento, debiendo abonar la multa correspondiente para quienes cometieran tal infracción.</p>                  
+                  <p><b-icon-caret-right-fill class="icon-orange"></b-icon-caret-right-fill>La omisión de la habilitación determinará la inmediata clausura del establecimiento, debiendo abonar la multa correspondiente para quienes cometieran tal infracción.</p>
                   <p><b-icon-caret-right-fill class="icon-orange"></b-icon-caret-right-fill>El establecimiento deberá permanecer cerrado hasta tanto regularice su trámite de habilitación.</p>
                 </div>
                 <li><b-icon-question-circle font-scale="1.25" class="icon-orange"></b-icon-question-circle> ¿Cómo se calcula la Tasa de Habilitación?</li>
@@ -196,7 +201,7 @@
               <p v-show="isCardExpanded(0)">
                 La habilitación de comercios/industrias o asimilables deberá adecuarse a lo determinado en concordancia con leyes nacionales, provinciales y la
                 <a href="https://hcdvillagesell.com.ar/3177-21-ordenanza-modificacion-ord-2156/" target="_blank" class="external-link">Ordenanza 2156/08 (TO 2023)</a>
-                y el 
+                y el
                 <a href="/ordenanzas" target="_blank" class="external-link">Digesto Comercial Municipal</a>
                  (Creado por el
                 <span class="external-link">Decreto 1856/23</span>).
@@ -208,7 +213,7 @@
         </b-col>
       </b-row>
     </b-container>
-    
+
     <!-- Popups -->
     <b-modal v-model="showPopupA" title="Información Adicional (A)" :hide-footer="true" @click-outside="showPopupA = false" centered>
         <p>El apoderado del anterior con documentación que acredite el carácter de tal.</p>
@@ -219,7 +224,7 @@
             <li><b>REPRESENTANTE LEGAL:</b> Persona que actúa en nombre y por cuenta de una persona Jurídica en virtud del carácter que posee por integrar los órganos de mando. Asimismo, los padres que ejercen la patria potestad sobre sus hijos/as.</li>
             <li><b>REPRESENTANTE JUDICIAL:</b> Persona que actúa en nombre y por cuenta de otra (Humana o Jurídica) en virtud de una designación judicial, debido a una incapacidad legal que recae sobre aquella.</li>
             <li><b>REPRESENTANTE VOLUNTARIO:</b> Persona que actúa en nombre y por cuenta de otra, en virtud de la facultad que ella le confiere mediante un mandato (poder o autorización).</li>
-        </ol>        
+        </ol>
             <b-btn class="float-right" variant="primary" @click="showPopupA = false">OK</b-btn>
     </b-modal>
     <b-modal v-model="showPopupB" title="Información Adicional (B)" :hide-footer="true" @click-outside="showPopupB = false" centered>
@@ -253,7 +258,7 @@
             <nuxt-link :class="{ 'disabled': !documentCheckboxChecked }" to="/comercio/form">
             <b-btn variant="primary" :disabled="!documentCheckboxChecked" @click="proceedToForm()" >
                 Confirmar
-            </b-btn>            
+            </b-btn>
             </nuxt-link>
         </div>
     </b-modal>
@@ -324,7 +329,7 @@ export default {
       showLibreDeudaPopup: false,
       documentCheckboxChecked: false,
       rubroSeleccionado: null,
-      nombreRubroSeleccionado: "",      
+      nombreRubroSeleccionado: "",
       descripcionSeleccionada:'',
       ordenanzasSeleccionadas:[],
       linksSeleccionados:[],
@@ -347,7 +352,7 @@ export default {
       expandedCards: [],
     };
   },
-  mounted() {    
+  mounted() {
     this.filteredRubros.sort((a, b) => a.nombre.localeCompare(b.nombre));
   },
   methods: {

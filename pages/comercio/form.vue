@@ -154,7 +154,7 @@
         </b-form-checkbox>
 
       </b-form-group>
-      <b-form-group v-if="serviciosHoteleria[11].value === true" label="Contanos que otros servicios brinda tu establecimiento: " label-for="otrosServicios" >
+      <b-form-group v-if="inmueble.serviciosHoteleria[11].value === true" label="Contanos que otros servicios brinda tu establecimiento: " label-for="otrosServicios" >
         <b-form-textarea id="otrosServicios" v-model="inmueble.otrosServicios" rows="2" max-rows="4" type="text" required></b-form-textarea>
       </b-form-group>
 <!--
@@ -383,18 +383,18 @@ export default {
   methods: {
     loguearServicios(){
       console.log("Servicios Hoteleria");
-      console.log(this.serviciosHoteleria[0].id + ": " + this.serviciosHoteleria[0].value);
-      console.log(this.serviciosHoteleria[1].id + ": " + this.serviciosHoteleria[1].value);
-      console.log(this.serviciosHoteleria[2].id + ": " + this.serviciosHoteleria[2].value);
-      console.log(this.serviciosHoteleria[3].id + ": " + this.serviciosHoteleria[3].value);
-      console.log(this.serviciosHoteleria[4].id + ": " + this.serviciosHoteleria[4].value);
-      console.log(this.serviciosHoteleria[5].id + ": " + this.serviciosHoteleria[5].value);
-      console.log(this.serviciosHoteleria[6].id + ": " + this.serviciosHoteleria[6].value);
-      console.log(this.serviciosHoteleria[7].id + ": " + this.serviciosHoteleria[7].value);
-      console.log(this.serviciosHoteleria[8].id + ": " + this.serviciosHoteleria[8].value);
-      console.log(this.serviciosHoteleria[9].id + ": " + this.serviciosHoteleria[9].value);
-      console.log(this.serviciosHoteleria[10].id + ": " + this.serviciosHoteleria[10].value);
-      console.log(this.serviciosHoteleria[11].id + ": " + this.serviciosHoteleria[11].value);
+      console.log(this.inmueble.serviciosHoteleria[0].id + ": " + this.inmueble.serviciosHoteleria[0].value);
+      console.log(this.inmueble.serviciosHoteleria[1].id + ": " + this.inmueble.serviciosHoteleria[1].value);
+      console.log(this.inmueble.serviciosHoteleria[2].id + ": " + this.inmueble.serviciosHoteleria[2].value);
+      console.log(this.inmueble.serviciosHoteleria[3].id + ": " + this.inmueble.serviciosHoteleria[3].value);
+      console.log(this.inmueble.serviciosHoteleria[4].id + ": " + this.inmueble.serviciosHoteleria[4].value);
+      console.log(this.inmueble.serviciosHoteleria[5].id + ": " + this.inmueble.serviciosHoteleria[5].value);
+      console.log(this.inmueble.serviciosHoteleria[6].id + ": " + this.inmueble.serviciosHoteleria[6].value);
+      console.log(this.inmueble.serviciosHoteleria[7].id + ": " + this.inmueble.serviciosHoteleria[7].value);
+      console.log(this.inmueble.serviciosHoteleria[8].id + ": " + this.inmueble.serviciosHoteleria[8].value);
+      console.log(this.inmueble.serviciosHoteleria[9].id + ": " + this.inmueble.serviciosHoteleria[9].value);
+      console.log(this.inmueble.serviciosHoteleria[10].id + ": " + this.inmueble.serviciosHoteleria[10].value);
+      console.log(this.inmueble.serviciosHoteleria[11].id + ": " + this.inmueble.serviciosHoteleria[11].value);
 
       console.log("this.inmueble.espacioPublico: " + this.inmueble.espacioPublico);
       console.log("this.inmueble.marquesina: " + this.inmueble.marquesina);

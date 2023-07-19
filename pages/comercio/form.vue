@@ -152,11 +152,16 @@
         <b-form-checkbox v-for="servicio in serviciosHoteleria" :key="servicio.id" :id="`servicio${servicio.id}`" :name="`servicio${servicio.id}`" v-model="servicio.value" scale=1.5 >
           {{ servicio.nombre }}
         </b-form-checkbox>
+
+      </b-form-group>
+      <b-form-group v-if="serviciosHoteleria[11].value === true" label="Contanos que otros servicios brinda tu establecimiento: " label-for="otrosServicios" >
+        <b-form-textarea id="otrosServicios" v-model="inmueble.otrosServicios" rows="2" max-rows="4" type="text" required></b-form-textarea>
       </b-form-group>
 <!--
-      <b-button size="lg" @click="loguearServicios" variant="primary" class="float-right">Enviar</b-button>
--->
+      <b-button size="lg" @click="loguearServicios" variant="primary" class="float-right">Loguear</b-button>
+ -->
     </fieldset>
+    
       <b-form-group label="" label-for="espaciopublico" style="margin: 0px auto">
             <b-row>
               <b-col md="5">  
@@ -172,7 +177,7 @@
             </div>
           </b-row>
       </b-form-group>
-    <fieldset v-if="inmueble.espacioPublico">
+    <fieldset v-if="inmueble.espacioPublico === 'true'">
         <p>Indicá cuál de los siguientes ítems posee tu establecimiento:</p>
         <b-form-group label="" label-for="marquesina" style="margin-bottom: 0">
             <b-form-checkbox  id="marquesina" v-model="inmueble.marquesina" scale=1.5>Marquesina - Toldo</b-form-checkbox>
@@ -234,6 +239,7 @@
     </b-form-group>
     <fieldset>
       <input type="hidden" id="captchaResponse" name="captchaResponse" v-model="captchaResponse">
+      <b-button size="lg" @click="cancelForm" variant="danger" class="float-left">Cancelar</b-button>
       <b-button size="lg" @click="submitForm" variant="primary" class="float-right">Enviar</b-button>
     </fieldset>
   </b-card>
@@ -260,11 +266,16 @@
 <b-modal v-model="showPopupConstanciaIngresosBrutos" title="Constancia de Ingresos Brutos" :hide-footer="true" @click-outside="showPopupConstanciaIngresosBrutos = false" centered>
   <p>Lorem ipsum dolor </p>
 </b-modal>
-<b-modal v-model="showPopupConstanciaIngresosBrutos" title="Constancia de Ingresos Brutos" :hide-footer="true" @click-outside="showPopupConstanciaIngresosBrutos = false" centered>
-  <p>Lorem ipsum dolor </p>
-</b-modal>
-<b-modal v-model="showPopupFormOk" title="Formulario Enviado!" :hide-footer="true" @click-outside="showPopupFormOk = false" centered>
-  <p>Lorem ipsum dolor </p>
+<b-modal v-model="showPopupFormOk" title="" ok-only @click-outside="showPopupFormOk = false" centered>
+  <template #modal-header>
+    <div><h3>
+        <b-icon icon="trophy" scale="1.5" variant="warning" style="margin: 0 20px 0 10px"></b-icon>
+        <b>Formulario Enviado!</b>
+    </h3></div>
+  </template>
+  <p>Gracias por usar el sistema de habilitaiones online de la municipalidad de VG. Durante los proximos dias revisaremos tu solicitud y nos comunicaremos a traves del correo electronico que brindaste en el formulario: {{ solicitante.mail }}</p>
+</b-modal><b-modal v-model="showPopupFormError" title="Formulario Enviado!" @click-outside="showPopupFormOk = false" centered>
+  <p>Gracias por usar el sistema de habilitaiones online de la municipalidad de VG. Durante los proximos dias revisaremos tu solicitud y nos comunicaremos a traves del correo electronico que brindaste en el formulario: {{ solicitante.mail }}</p>
 </b-modal>
 
 
@@ -304,6 +315,7 @@ export default {
         mercaderia: false,
         mesas: false,
         carteles: false,
+        otrosServicios: '',
       },
       documentos: {
         planillaAutorizacion: null,
@@ -424,8 +436,6 @@ export default {
   }
 }
 </script>
-
-</template>
 
 <style>
   .btn{

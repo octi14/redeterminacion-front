@@ -114,28 +114,46 @@
               <div v-show="isCardExpanded(3)">
                 <p>Selecciona el rubro para consultar sus requisitos específicos y para ver en el mapa las zonas permitidas. Si no encontrás el rubro que querés consultar, es porque no tiene ningún requisito especial.</p>
                 <b-form-group label="Seleccione el Rubro" label-for="rubro">
-                  <b-form-select v-model="rubroSeleccionado" :options="filteredRubros" value-field="id" text-field="nombre" @change="handleRubroChange" style="margin:10px 0;"></b-form-select>
-                </b-form-group>                
-                <p v-if="descripcionSeleccionada">{{ descripcionSeleccionada }}</p>                
-                <br v-if="descripcionSeleccionada" />
-                <h4 v-if="rubroSeleccionado">Requisitos especiales para el rubro: {{ nombreRubroSeleccionado }}</h4>
-                <!--
-                <ul v-if="rubroSeleccionado">
-                  <li v-for="requisito in filteredRubros.find(rubro => rubro.id === rubroSeleccionado).requisitos" :key="requisito"><b-icon-check-circle-fill variant="info"></b-icon-check-circle-fill> {{ requisito }} </li>
-                </ul>
-                <br v-if="requisito in filteredRubros.find(rubro => rubro.id === rubroSeleccionado).requisitos" />
-                -->
-                <h4 v-if="rubroSeleccionado">Zonas permitidas para el rubro: {{ nombreRubroSeleccionado }}</h4>
-                <p v-if="rubroSeleccionado">Descarga el Mapa con las zonas permitidas para el rubro {{ nombreRubroSeleccionado }}
-                  <nuxt-link :to="`/static/PDFs/${filteredRubros.find(rubro => rubro.id === rubroSeleccionado).pom}.pdf`">AQUI</nuxt-link>
-                </p>
-                <br v-if="ordenanzasSeleccionadas.length" />
-                <h4 v-if="ordenanzasSeleccionadas.length">Ordenanzas relacionadas:</h4>
-                <ul v-if="ordenanzasSeleccionadas.length">
-                  <li v-for="(ordenanza, index) in ordenanzasSeleccionadas" :key="index">
-                    <b-icon-info-circle-fill font-scale="1.25" class="icon-orange"></b-icon-info-circle-fill><a :href="linksSeleccionados[index]"> {{ ordenanza }}</a>
-                  </li>
-                </ul>
+                  <b-form-select v-model="rubroSeleccionado.id" :options="filteredRubros" value-field="id" text-field="nombre" @change="handleRubroChange" style="margin:10px 0;"></b-form-select>
+                </b-form-group>    
+                <div v-if="rubroSeleccionado.id">            
+                  <p>{{ rubroSeleccionado.descripcion }}</p>       
+                  <h5 class="subtitle"><b-icon-card-checklist class="icon-orange" scale="1.5"></b-icon-card-checklist> <u>Requisitos especiales para el rubro: {{ rubroSeleccionado.nombre }}</u></h5>
+                  <ul v-if="rubroSeleccionado.requisitos.length">
+                    <li v-for="(req, index) in rubroSeleccionado.requisitos" :key="index">
+                      <b-icon-caret-right-fill class="icon-orange" font-scale="1.25"></b-icon-caret-right-fill> {{ req }}
+                    </li>
+                  </ul>
+                  <b-card v-if="rubroSeleccionado.inspeccion" border-variant="info" align="center" >
+                    <b-card-text>                              
+                      <b-row>
+                        <b-col md="1">
+                          <b-icon-calendar3 variant="info" font-scale="4"></b-icon-calendar3>
+                        </b-col>
+                        <b-col md="10">
+                          <p><u><b>Importante!</b></u> Para habilitar un comercio del rubro <b>{{ rubroSeleccionado.nombre }}</b> necesitás solicitar turno para que nuestros inspectores realicen una visita al establecimiento. Los turnos se dan con <b>15 días de anticipación</b> una vez aprobado el formulario de habilitación.</p>
+                        </b-col>
+                        <b-col md="1">
+                          <b-iconstack font-scale="4">
+                            <b-icon-person-badge stacked variant="info"></b-icon-person-badge>
+                            <b-icon-search stacked shift-h="-6" shift-v="-6" variant="danger" scale="0.5"></b-icon-search>
+                          </b-iconstack>
+                        </b-col>
+                      </b-row>
+                    </b-card-text>
+                  </b-card>
+                  <h5 class="subtitle"><b-icon-pin-map-fill class="icon-orange" scale="1.5"></b-icon-pin-map-fill> <u>Zonas permitidas para el rubro: {{ rubroSeleccionado.nombre }}</u></h5>
+                  <iframe v-if="rubroSeleccionado.pom" :src="`${rubroSeleccionado.pom}`" width="100%" height="800" allow="autoplay"></iframe>          
+                  <p v-if="rubroSeleccionado">Descarga el Mapa con las zonas permitidas para el rubro {{ rubroSeleccionado.nombre }}
+                    <a :href="`${rubroSeleccionado.pom}`">AQUI</a>+
+                  </p>
+                  <h5 class="subtitle" v-if="rubroSeleccionado.ordenanzas.length"><b-icon-search class="icon-orange" scale="1.5"></b-icon-search> <u>Ordenanzas relacionadas:</u></h5>
+                  <ul v-if="rubroSeleccionado.ordenanzas.length">
+                    <li v-for="(ordenanza, index) in rubroSeleccionado.ordenanzas" :key="index">
+                      <b-icon-info-circle-fill class="icon-orange" font-scale="1.25"></b-icon-info-circle-fill><a class="external-link" :href="rubroSeleccionado.links[index]"> {{ ordenanza }}</a>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </transition>
           </b-card>
@@ -195,11 +213,11 @@
             <transition name="expand">
               <p v-show="isCardExpanded(0)">
                 La habilitación de comercios/industrias o asimilables deberá adecuarse a lo determinado en concordancia con leyes nacionales, provinciales y la
-                <a href="https://hcdvillagesell.com.ar/3177-21-ordenanza-modificacion-ord-2156/" target="_blank" class="external-link">Ordenanza 2156/08 (TO 2023)</a>
+                <a href="https://arvige.gob.ar/legislacion/pdf/12" target="_blank" class="external-link">Ordenanza 2156/08 (TO 2023)</a>
                 y el 
                 <a href="/ordenanzas" target="_blank" class="external-link">Digesto Comercial Municipal</a>
                  (Creado por el
-                <span class="external-link">Decreto 1856/23</span>).
+                <b>Decreto 1856/23</b>).
               </p>
             </transition>
           </b-card>
@@ -210,7 +228,7 @@
     </b-container>
     
     <!-- Popups -->
-    <b-modal v-model="showPopupA" title="Información Adicional (A)" :hide-footer="true" @click-outside="showPopupA = false" centered>
+    <b-modal v-model="showPopupA" title="Información Adicional: Apoderado" :hide-footer="true" @click-outside="showPopupA = false" centered>
         <p>El apoderado del anterior con documentación que acredite el carácter de tal.</p>
         <p>Permite facultar a una persona para la realización de trámites, actos y gestiones, en representación del/la contribuyente o responsable solicitante.</p>
         <ol>
@@ -323,11 +341,16 @@ export default {
       showConfirmationPopup: false,
       showLibreDeudaPopup: false,
       documentCheckboxChecked: false,
-      rubroSeleccionado: null,
-      nombreRubroSeleccionado: "",      
-      descripcionSeleccionada:'',
-      ordenanzasSeleccionadas:[],
-      linksSeleccionados:[],
+      rubroSeleccionado: {
+                          id: null,
+                          nombre: null,
+                          descripcion: null,
+                          ordenanzas: [],
+                          links: [],
+                          requisitos: [],
+                          pom: null, 
+                          inspeccion: false,
+                        },
       solicitudLibreDeuda: {
         email: '',
         emailState: null,
@@ -381,29 +404,26 @@ export default {
       this.showConfirmationPopup = false;
     },
     handleRubroChange() {
-      console.log("this.rubroSeleccionado: ");
-      console.log(this.rubroSeleccionado );
-      this.nombreRubroSeleccionado = this.filteredRubros.find(rubro => rubro.id === this.rubroSeleccionado).nombre;
-      if (this.rubroSeleccionado) {
+      if (this.rubroSeleccionado.id != null) {
       // Obtener los datos correspondientes al rubro seleccionado
-      const i = this.filteredRubros.findIndex(rubro => rubro.id === this.rubroSeleccionado);
-      const descripcion = this.filteredRubros[i].descripcion;
-      const ordenanzas = this.filteredRubros[i].ordenanzas;
-      const links = this.filteredRubros[i].links;
-      console.log("this.filteredRubros[i].descripcion: ");
-      console.log(this.filteredRubros[i].descripcion );
-      // Actualizar las propiedades con los nuevos valores
-      this.descripcionSeleccionada = descripcion;
-      this.ordenanzasSeleccionadas = ordenanzas;
-      this.linksSeleccionados = links;
+      const i = this.filteredRubros.findIndex(rubro => rubro.id === this.rubroSeleccionado.id);
+      this.rubroSeleccionado.nombre = this.filteredRubros[i].nombre;
+      this.rubroSeleccionado.descripcion = this.filteredRubros[i].descripcion;
+      this.rubroSeleccionado.ordenanzas = this.filteredRubros[i].ordenanzas;
+      this.rubroSeleccionado.links = this.filteredRubros[i].links;
+      this.rubroSeleccionado.requisitos = this.filteredRubros[i].requisitos;
+      this.rubroSeleccionado.pom = this.filteredRubros[i].pom;
+      this.rubroSeleccionado.inspeccion = this.filteredRubros[i].inspeccion;
       } else {
-        // Si no se ha seleccionado ninguna opción, reiniciar las propiedades
-        this.descripcionSeleccionada = '';
-        this.ordenanzasSeleccionadas = [];
-        this.linksSeleccionados = [];
+        // Si no se ha seleccionado ninguna opción, reiniciar las propiedades        
+        this.rubroSeleccionado.nombre = null;
+        this.rubroSeleccionado.descripcion = null;
+        this.rubroSeleccionado.ordenanzas = [];
+        this.rubroSeleccionado.links = [];
+        this.rubroSeleccionado.requisitos = [];
+        this.rubroSeleccionado.pom = null;
+        this.rubroSeleccionado.inspeccion = false;
       }
-      console.log("this.descripcionSeleccionada: ");
-      console.log(this.descripcionSeleccionada );
     },
     resetForm() {
       // Lógica para resetear el formulario
@@ -511,6 +531,9 @@ export default {
 .icon-orange{
   color: #E27910;
 }
+.icon-green{
+  color: green;
+}
 .texto-introd{
   font-size: 1.3rem;
 }
@@ -548,6 +571,11 @@ export default {
 }
 .expanded h4{
   margin-bottom: 8px;
+}
+.subtitle{
+  color: green !important;
+  font-weight: bold;
+  margin: 10px 0;
 }
 .bi-chevron-compact-up, .bi-chevron-compact-down{
   position: absolute;

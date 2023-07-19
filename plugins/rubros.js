@@ -6,8 +6,8 @@ const rubros = [
     ordenanzas: ["12312/22", "6543213/18"],
     links: ["www.google.com.ar", "www.youtube.com"],
     requisitos: ["Lorem ipsum dolor sit amet, consectetur <a href='www.google.com.ar'>adipiscing elit</a>, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.", "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 2,
@@ -16,8 +16,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: ["Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.", "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 3,
@@ -26,8 +26,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: ["Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 4,
@@ -36,8 +36,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: ["Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.", "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 5,
@@ -46,8 +46,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 6,
@@ -56,8 +56,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 7,
@@ -66,8 +66,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 8,
@@ -76,8 +76,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 9,
@@ -86,8 +86,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 10,
@@ -96,8 +96,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 11,
@@ -106,7 +106,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -116,8 +116,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 13,
@@ -126,7 +126,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -136,8 +136,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 15,
@@ -146,7 +146,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -156,8 +156,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 18,
@@ -166,8 +166,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 19,
@@ -176,7 +176,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -186,7 +186,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -196,7 +196,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -206,7 +206,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -216,8 +216,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 24,
@@ -226,7 +226,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -236,7 +236,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -246,7 +246,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -256,7 +256,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -266,7 +266,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -276,7 +276,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -286,7 +286,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -296,7 +296,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -306,7 +306,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -316,8 +316,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 34,
@@ -326,7 +326,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -336,7 +336,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -346,7 +346,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -356,7 +356,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -366,7 +366,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -376,7 +376,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -386,7 +386,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -396,7 +396,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -406,7 +406,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -416,7 +416,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -426,8 +426,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 45,
@@ -436,7 +436,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -446,7 +446,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -456,8 +456,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 48,
@@ -466,7 +466,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -476,7 +476,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -486,7 +486,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -496,7 +496,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -506,7 +506,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -516,7 +516,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1acz-IQ_hEmat4pLSmnja_SG79PJo4Lfo/preview", 
     inspeccion: false,
   },
   {
@@ -526,7 +526,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1acz-IQ_hEmat4pLSmnja_SG79PJo4Lfo/preview", 
     inspeccion: false,
   },
   {
@@ -536,7 +536,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -546,8 +546,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 57,
@@ -556,8 +556,8 @@ const rubros = [
     ordenanzas: ["12312/22", "6543213/18"],
     links: ["www.google.com.ar", "www.youtube.com"],
     requisitos: ["Lorem ipsum dolor sit amet, consectetur <a href='www.google.com.ar'>adipiscing elit</a>, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.", "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."],
-    pom: ["POM001"], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 58,
@@ -566,7 +566,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -576,8 +576,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 60,
@@ -586,8 +586,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 61,
@@ -596,8 +596,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: ["POM052"], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 62,
@@ -606,8 +606,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: ["POM050"], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 63,
@@ -616,7 +616,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -626,7 +626,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -636,8 +636,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 66,
@@ -646,8 +646,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 67,
@@ -656,8 +656,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 68,
@@ -666,8 +666,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 69,
@@ -676,7 +676,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -686,7 +686,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -696,7 +696,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -706,7 +706,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -716,7 +716,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -726,7 +726,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -736,7 +736,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -746,7 +746,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -756,7 +756,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -766,7 +766,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -776,7 +776,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -786,7 +786,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -796,7 +796,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -806,7 +806,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -816,7 +816,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -826,7 +826,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -836,7 +836,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -846,7 +846,7 @@ const rubros = [
     ordenanzas: ["123123/23","123123/98","4332/23", "3324/45"],
     links: ["www.google.com.ar","google.com.ar","www.google.com","google.com"],
     requisitos: ["Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.", "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -856,7 +856,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -866,7 +866,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -876,7 +876,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -886,7 +886,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -896,7 +896,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -906,7 +906,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -916,8 +916,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 94,
@@ -926,7 +926,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -936,7 +936,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -946,7 +946,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -956,7 +956,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -966,7 +966,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -976,7 +976,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -986,7 +986,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -996,7 +996,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1006,7 +1006,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1016,7 +1016,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1026,7 +1026,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1036,7 +1036,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1046,7 +1046,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1056,7 +1056,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1acz-IQ_hEmat4pLSmnja_SG79PJo4Lfo/preview", 
     inspeccion: false,
   },
   {
@@ -1066,7 +1066,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1076,7 +1076,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1086,7 +1086,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1096,7 +1096,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1106,8 +1106,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 113,
@@ -1116,8 +1116,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 114,
@@ -1126,8 +1126,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 115,
@@ -1136,8 +1136,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 116,
@@ -1146,8 +1146,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 117,
@@ -1156,8 +1156,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 118,
@@ -1166,8 +1166,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 119,
@@ -1176,7 +1176,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1186,7 +1186,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1196,8 +1196,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 122,
@@ -1206,7 +1206,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1216,8 +1216,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 125,
@@ -1226,8 +1226,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 126,
@@ -1236,7 +1236,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1246,7 +1246,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1256,8 +1256,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   },
   {
     id: 129,
@@ -1266,7 +1266,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1276,7 +1276,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1286,7 +1286,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1296,7 +1296,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1306,7 +1306,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1316,7 +1316,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1326,7 +1326,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1336,7 +1336,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1346,7 +1346,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1356,7 +1356,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1366,7 +1366,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1376,7 +1376,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1386,7 +1386,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1396,7 +1396,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1406,7 +1406,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1416,7 +1416,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1426,7 +1426,7 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: false,
   },
   {
@@ -1436,8 +1436,8 @@ const rubros = [
     ordenanzas: [],
     links: [],
     requisitos: [],
-    pom: [], 
-    inspeccion: false,
+    pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
+    inspeccion: true,
   }
   ];
   

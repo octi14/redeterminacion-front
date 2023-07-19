@@ -2,13 +2,13 @@
   <div class="page">
     <Banner title="Comercio" subtitle="Sistema de turnos" />
     <div class="mx-auto">
-      <!-- <div class="text-center mt-3">
+      <div class="text-center mt-3">
         <h4 v-if="page === 1">Seleccione una fecha</h4>
         <h6 v-if="page === 1">Podrá seleccionar una fecha dentro de los próximos 15 días</h6>
         <h4 v-if="page === 2">Seleccione un horario</h4>
         <h4 v-if="page === 3">Complete los siguientes datos</h4>
       </div>
-      <div v-if="page === 0" class="col-8 mt-5 mx-auto">
+      <!-- <div v-if="page === 0" class="col-8 mt-5 mx-auto">
         <div class="text-center mt-4">
           <h5>Está a punto de solicitar un turno para que su comercio sea habilitado.</h5>
           <h5 class="mt-3">Recuerde ingresar su <b>número de trámite</b> asignado al haber completado el formulario de Solicitud de Habilitación.</h5>
@@ -18,11 +18,11 @@
           <b-button variant="success" class="mt-5 mr-1" @click="onNextPage">Aceptar</b-button>
           <b-button variant="danger" class="mt-5" @click="onResetParams">Salir</b-button>
         </div>
-      </div>
+      </div> -->
       <div class="text-center">
-        <b-form @submit="onSelectTurno"> -->
+        <b-form @submit="onSelectTurno">
           <!-- Página 1 -->
-          <!-- <b-calendar
+          <b-calendar
             class="col-3 mx-auto mt-3"
             block hide-header
             :date-format-options="{ year: 'numeric', day: '2-digit', weekday: 'short' }"
@@ -33,10 +33,10 @@
             :date-disabled-fn="dateDisabled"
             v-if="page === 1"
             v-model="date"
-          /> -->
+          />
 
           <!-- Página 2 -->
-          <!-- <b-form-select v-if="page === 2" v-model="time" class="mb-3 col-5">
+          <b-form-select v-if="page === 2" v-model="time" class="mb-3 col-5">
             <b-form-select-option
               v-for="horario in horariosDisponibles"
               :key="horario.id"
@@ -45,10 +45,10 @@
               Franja horaria: {{ horario }}
             </b-form-select-option>
           </b-form-select>
-          <br /> -->
+          <br />
 
           <!-- Página 3 -->
-          <!-- <div class="card col-5 mx-auto" v-if="page === 3">
+          <div class="card col-5 mx-auto" v-if="page === 3">
             <div>
               <h6>Nombre</h6>
               <b-form-input v-model="nombre" type="text" placeholder="Nombre"></b-form-input>
@@ -63,10 +63,10 @@
             </div>
           </div>
 
-        </b-form> -->
+        </b-form>
 
         <!-- Comprobante (página 4) -->
-          <!-- <b-card class="text-center shadow-lg col-8 mx-auto" v-if="page === 4">
+          <b-card class="text-center shadow-lg col-8 mx-auto" v-if="page === 4">
             <h1>Comprobante de turno</h1>
             <h4>Secretaría de Hacienda</h4>
             <h5>Día: {{ formattedDate }}</h5>
@@ -78,19 +78,19 @@
         <b-button variant="primary" v-if="page > 0 && page <= 2" @click="onNextPage" class="mt-3 mx-auto">Siguiente</b-button>
         <b-button variant="primary" type="submit" v-if="page === 3" @click="onSelectTurno" class="mt-3 mx-auto">Solicitar turno</b-button>
         <b-button variant="danger" class="mt-3" v-if="page > 0 && page < 4" @click="page-= 1"> Atrás </b-button>
-      </div> -->
+      </div>
 
       <!-- Modal -->
-      <!-- <b-modal v-model="solicitado" v-if="date && time && solicitado && !printing" hide-header hide-footer centered>
+      <b-modal v-model="solicitado" v-if="date && time && solicitado && !printing" hide-header hide-footer centered>
         <div class="text-center">
           <h5 class="landing-text"><b>{{ nombre }}</b>,</h5>
           <h5>Ha solicitado un turno para el día <b class="landing-text">{{ formattedDate }}</b>, en la franja horaria de las <b class="landing-text">{{ time }}hs</b>.</h5>
           <h5>El personal de inspección visitará el domicilio especificado: <b class="landing-text">{{ domicilio }}</b>, en un plazo máximo de <b class="landing-text">3 horas desde el horario solicitado</b>.</h5>
-          <h5>Su código de trámite es <b class="landing-text">{{ token }}</b></h5>
+          <!-- <h5>Su código de trámite es <b class="landing-text">{{ token }}</b></h5> -->
           <b-button variant="success" class="mt-3 mr-1" @click="onPrintTicket">Guardar comprobante</b-button>
           <b-button variant="danger" class="mt-3 ml-1" @click="onResetParams">Salir</b-button>
         </div>
-      </b-modal> -->
+      </b-modal>
     </div>
   </div>
 </template>
@@ -100,7 +100,7 @@ export default {
   data() {
     return {
       nroTramite: null,
-      page: 0,
+      page: 1,
       date: null,
       time: null,
       nombre: '',

@@ -5,7 +5,7 @@ const rubros = [
     descripcion: 'Establecimiento comercial dedicado pre eminentemente al fraccionamiento de cortes bovinos, ovinos, porcinos y caprinos en general, así como a sus menudencias y embutidos.',
     ordenanzas: ["12312/22", "6543213/18"],
     links: ["www.google.com.ar", "www.youtube.com"],
-    requisitos: ["Lorem ipsum dolor sit amet, consectetur <a href='www.google.com.ar'>adipiscing elit</a>, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.", "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."],
+    requisitos: ["Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.", "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."],
     pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
     inspeccion: true,
   },
@@ -127,7 +127,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
-    inspeccion: false,
+    inspeccion: true,
   },
   {
     id: 14,
@@ -1427,7 +1427,7 @@ const rubros = [
     links: [],
     requisitos: [],
     pom: "https://drive.google.com/file/d/1paqQSKWiRjP30lbF9rs80UJSgWkiD4qc/preview", 
-    inspeccion: false,
+    inspeccion: true,
   },
   {
     id: 146,

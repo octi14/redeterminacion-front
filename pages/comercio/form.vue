@@ -157,6 +157,9 @@
       <b-form-group v-if="inmueble.serviciosHoteleria[11].value === true" label="Contanos que otros servicios brinda tu establecimiento: " label-for="otrosServicios" >
         <b-form-textarea id="otrosServicios" v-model="inmueble.otrosServicios" rows="2" max-rows="4" type="text" required></b-form-textarea>
       </b-form-group>
+      <b-form-group label="Croquis" label-for="documentos.croquis" >
+        <b-form-file v-model="documentos.croquis" placeholder="No se seleccionó un archivo." browse-text="Examinar" required accept=".pdf, image/*" :state="getFormFieldState('croquis')" @input="clearFormFieldState('croquis')"></b-form-file>
+      </b-form-group>
 <!--
       <b-button size="lg" @click="loguearServicios" variant="primary" class="float-right">Loguear</b-button>
  -->
@@ -398,6 +401,7 @@ export default {
         tituloPropiedad: null,
         certificadoDomicilio: null,
         plano: null,
+        croquis: null,
       },
       formFieldStates: {
         planillaAutorizacion: null,
@@ -411,6 +415,7 @@ export default {
         tituloPropiedad: null,
         certificadoDomicilio: null,
         plano: null,
+        croquis: null,
       },
       captchaResponse: null,
       showPopupDatosDelSolicitante: false,
@@ -591,7 +596,7 @@ export default {
   font-size: 1.5rem;
 }
 .modal .modal-subtitle{
-  color: green !important;
+  color: #0c681a !important;
   font-size: 1.25rem;
   font-weight: bold;
   margin-bottom: 15px;
@@ -611,12 +616,12 @@ export default {
   }
   h3{
     font-weight: bold;
-    color: green !important;
+    color: #0c681a !important;
     margin: 15px 0;
   }
   h5{
     padding-top: 15px;
-    color: green !important;
+    color: #0c681a !important;
   }
   .modal-title{
     font-weight: bold;
@@ -637,7 +642,7 @@ export default {
   }
 
 .popup-link {
-  color: green;
+  color: #0c681a;
   font-weight: bold;
 }
 .rubro-label{

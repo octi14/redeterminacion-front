@@ -35,12 +35,13 @@
           </b-form-group>
         </b-col>
         <b-col md="6">
-          <b-form-group label="CUIT o CUIL *" label-for="cuit" >
+          <b-form-group label="CUIT *" label-for="cuit" >
             <b-form-input id="cuit" v-model="solicitante.cuit" required></b-form-input>
           </b-form-group>
         </b-col>
       </b-row>
-      <b-form-group label="Razón Social <i>(completar sólo si se trata de una Persona Jurídica)</i>" label-for="razon-social" >
+      <b-form-group>
+            <label for="razon-social">Razón Social <i>(completar sólo si se trata de una Persona Jurídica)</i></label>
         <b-form-input id="razon-social" v-model="solicitante.razonSocial" ></b-form-input>
       </b-form-group>
       <b-form-group label="Domicilio Real y/o Legal *" label-for="domicilio-real" >
@@ -78,7 +79,6 @@
       <b-col md="6">
         <h5>¿Sos representante o apoderado/a del solicitante? <b-icon-question-circle-fill @click="openPopup('ApoderadoRepresentante')" font-scale="1" variant="info"></b-icon-question-circle-fill></h5>
       </b-col>
-      <b-form-group label="" label-for="esApoderado" style="margin:auto 0">
         <div class="form-check-inline">
           <b-col md="3">
             <b-form-radio  id="esApoderado-no" v-model="solicitante.esApoderado" name="radio-esApoderado" checked="checked" value="false"> No</b-form-radio>
@@ -87,7 +87,6 @@
             <b-form-radio  id="esApoderado-si" v-model="solicitante.esApoderado" name="radio-esApoderado" value="true"> Sí</b-form-radio>
           </b-col>
         </div>
-      </b-form-group>
     </b-row>
     <!-- Sección: Datos del Apoderado -->
     <fieldset v-if="solicitante.esApoderado === 'true'">
@@ -157,6 +156,9 @@
       <b-form-group v-if="inmueble.serviciosHoteleria[11].value === true" label="Contanos que otros servicios brinda tu establecimiento: " label-for="otrosServicios" >
         <b-form-textarea id="otrosServicios" v-model="inmueble.otrosServicios" rows="2" max-rows="4" type="text" required></b-form-textarea>
       </b-form-group>
+      <b-form-group label="Croquis" label-for="documentos.croquis" >
+        <b-form-file v-model="documentos.croquis" placeholder="No se seleccionó un archivo." browse-text="Examinar" required accept=".pdf, image/*" :state="getFormFieldState('croquis')" @input="clearFormFieldState('croquis')"></b-form-file>
+      </b-form-group>
 <!--
       <b-button size="lg" @click="loguearServicios" variant="primary" class="float-right">Loguear</b-button>
  -->
@@ -221,12 +223,12 @@
         <b-form-file v-model="documentos.constanciaCuit" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('constanciaCuit')" @change="handleDocumentUpdate('constanciaCuit')" @input="clearFormFieldState('constanciaCuit')"></b-form-file>
       </b-form-group>
       <b-form-group>
-        <label for="constanciaIngresosBrutos" class="rubro-label">Constancia de inscripción a Ingresos Brutos * <b-icon-question-circle-fill @click="openPopup('ConstanciaIngresosBrutos')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
-        <b-form-file v-model="documentos.constanciaIngresosBrutos" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('constanciaIngresosBrutos')" @change="handleDocumentUpdate('constanciaIngresosBrutos')" @input="clearFormFieldState('constanciaIngresosBrutos')"></b-form-file>
+        <label for="constanciaIngresosBrutos" class="rubro-label">Constancia de inscripción a Ingresos Brutos <b-icon-question-circle-fill @click="openPopup('ConstanciaIngresosBrutos')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
+        <b-form-file v-model="documentos.constanciaIngresosBrutos" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('constanciaIngresosBrutos')" @change="handleDocumentUpdate('constanciaIngresosBrutos')" @input="clearFormFieldState('constanciaIngresosBrutos')"></b-form-file>
       </b-form-group>
       <b-form-group>
-        <label for="certificadoDomicilio" class="rubro-label">Certificado de domicilio Ingresos Brutos - Punto de venta Villa Gesell * </label>
-        <b-form-file v-model="documentos.certificadoDomicilio" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('certificadoDomicilio')" @change="handleDocumentUpdate('certificadoDomicilio')" @input="clearFormFieldState('certificadoDomicilio')"></b-form-file>
+        <label for="certificadoDomicilio" class="rubro-label">Certificado de domicilio Ingresos Brutos - Punto de venta Villa Gesell <b-icon-question-circle-fill @click="openPopup('certificadoDomicilio')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
+        <b-form-file v-model="documentos.certificadoDomicilio" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('certificadoDomicilio')" @change="handleDocumentUpdate('certificadoDomicilio')" @input="clearFormFieldState('certificadoDomicilio')"></b-form-file>
       </b-form-group>
       <b-form-group>
         <label for="libreDeudaUrbana" class="rubro-label">Libre Deuda de Tasa por Servicios Urbanos <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. * <b-icon-question-circle-fill @click="openPopup('ConstanciaLibreDeuda')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
@@ -235,12 +237,13 @@
       <b-form-group label="Escritura traslativa de Dominio del inmueble / Contrato de locación / Otro *" label-for="tituloPropiedad" >
         <b-form-file v-model="documentos.tituloPropiedad" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" multiple required :state="getFormFieldState('tituloPropiedad')" @change="handleDocumentUpdate('tituloPropiedad')" @input="clearFormFieldState('tituloPropiedad')"></b-form-file>
       </b-form-group>
-      <b-form-group label="Plano o Informe técnico *" label-for="plano" >
+      <b-form-group >
+        <label for="plano" class="rubro-label">Plano o Informe técnico * <b-icon-question-circle-fill @click="openPopup('plano')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
         <b-form-file v-model="documentos.plano" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('plano')" @change="handleDocumentUpdate('plano')" @input="clearFormFieldState('plano')"></b-form-file>
       </b-form-group>
       <b-row>
         <b-col md="6">
-          <h5>¿Persona Jurídica?</h5>
+          <h5>¿El iniciante es una Persona Jurídica?</h5>
         </b-col>
         <b-form-group label="" label-for="esPersonaJuridica" style="margin:auto 0">
           <div class="form-check-inline">
@@ -255,7 +258,7 @@
       </b-row>
       <!-- Sección: Datos del Apoderado -->
     <fieldset v-if="solicitante.esPersonaJuridica === 'true'">
-      <p>TEXTITO</p>
+      <p>A continuación deberás cargar la Escritura constitutiva de la Persona Jurídica y el Acta de Directorio actualizada.</p>
       <b-form-group label="Acta de Constitución de Persona Jurídica *" label-for="actaPersonaJuridica" >
         <b-form-file v-model="documentos.actaPersonaJuridica" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('actaPersonaJuridica')" @change="handleDocumentUpdate('actaPersonaJuridica')" @input="clearFormFieldState('actaPersonaJuridica')"></b-form-file>
       </b-form-group>
@@ -279,55 +282,167 @@
   </b-form>
 <!-- PopUps -->
 
-<b-modal v-model="showPopupDatosDelSolicitante" title="Datos del Solicitante" :hide-footer="true" @click-outside="showPopupDatosDelSolicitante = false" :header-bg-variant="'success'"  centered>
-  <ul>
-    <li>El interesado futuro comerciante / industrial o afín mayor de 18 años.</li>
-    <li>El representante o apoderado/a de la persona interesada con documentación que acredite el carácter de tal.</li>
-  </ul>
+<b-modal v-model="showPopupDatosDelSolicitante" title="" :hide-footer="true" @click-outside="showPopupDatosDelSolicitante = false" :header-bg-variant="'success'"  centered>
+  <template #modal-header>
+    <div class="modal-info">
+      <h5>
+          <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
+          Información Adicional
+      </h5>
+    </div>
+  </template>
+  <div class="modal-info">
+    <h3>Solicitante</h3>
+    <ul>
+      <li><b-icon-caret-right-fill ></b-icon-caret-right-fill><p>El interesado futuro comerciante / industrial o afín mayor de 18 años.</p></li>
+      <li><b-icon-caret-right-fill ></b-icon-caret-right-fill><p>El representante o apoderado/a de la persona interesada con documentación que acredite el carácter de tal.</p></li>
+    </ul>
+  </div>
 </b-modal>
-<b-modal v-model="showPopupApoderadoRepresentante" title="Representante o Apoderado/a:" :hide-footer="true" @click-outside="showPopupApoderadoRepresentante = false" :header-bg-variant="'success'"  centered>
-  <p>Esta figura permite facultar a una persona para la realización de trámites, actos y gestiones en representación del/la contribuyente o responsable solicitante.</p>
-  <h6 class="modal-subtitle">Casos de Representación:</h6>
-  <ol>
-    <li><b>REPRESENTANTE VOLUNTARIO:</b> Persona que actúa en nombre y por cuenta de otra, en virtud de la facultad que ella le confiere mediante un mandato (poder o autorización).</li>
-    <li><b>REPRESENTANTE LEGAL:</b> Persona que actúa en nombre y por cuenta de una Persona Jurídica en virtud del carácter que posee por integrar los órganos de mando. Asimismo, los padres que ejercen la patria potestad sobre sus hijos/as.</li>
-    <li><b>REPRESENTANTE JUDICIAL:</b> Persona que actúa en nombre y por cuenta de otra (Humana o Jurídica) en virtud de una designación judicial, debido a una incapacidad legal que recae sobre aquella.</li>
-    <li><b>SUCESIONES INDIVISAS:</b> Casos en que, existiendo varios/as herederos/as, todos/as son propietarios/as de los bienes, pero aún no se ha realizado la división de los mismos en la proporción que cada uno/a tiene derecho a heredar.</li>
-    <li><b>HEREDEROS/AS O LEGATARIOS/AS (Causahabientes):</b> Sucesor/a de una persona fallecida (actuación ante el Fisco previa al inicio de la sucesión o iniciada esta, previa a la declaratoria de herederos/as).</li>
-  </ol>
+<b-modal v-model="showPopupApoderadoRepresentante" title="" :hide-footer="true" @click-outside="showPopupApoderadoRepresentante = false" :header-bg-variant="'success'"  centered>
+  <template #modal-header>
+    <div class="modal-info">
+      <h5>
+          <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
+          Información Adicional
+      </h5>
+    </div>
+  </template>
+  <div class="modal-info">
+    <h3>Representante o Apoderado/a</h3>
+    <p class="destacado"><b-icon-caret-right-fill ></b-icon-caret-right-fill>Esta figura permite facultar a una persona para la realización de trámites, actos y gestiones en representación del/la contribuyente o responsable solicitante.</p>
+    <h6>Casos de Representación:</h6>
+    <ol>
+      <li><b>Representante Voluntario:</b> Persona que actúa en nombre y por cuenta de otra, en virtud de la facultad que ella le confiere mediante un mandato (poder o autorización).</li>
+      <li><b>Representante Legal:</b> Persona que actúa en nombre y por cuenta de una Persona Jurídica en virtud del carácter que posee por integrar los órganos de mando. Asimismo, los padres que ejercen la patria potestad sobre sus hijos/as.</li>
+      <li><b>Representante Judicial:</b> Persona que actúa en nombre y por cuenta de otra (Humana o Jurídica) en virtud de una designación judicial, debido a una incapacidad legal que recae sobre aquella.</li>
+      <li><b>Sucesiones Indivisas:</b> Casos en que, existiendo varios/as herederos/as, todos/as son propietarios/as de los bienes, pero aún no se ha realizado la división de los mismos en la proporción que cada uno/a tiene derecho a heredar.</li>
+      <li><b>Herederos/as o Legatarios/as (Causahabientes):</b> Sucesor/a de una persona fallecida (actuación ante el Fisco previa al inicio de la sucesión o iniciada ésta, previa a la declaratoria de herederos/as).</li>
+    </ol>
+  </div>
 </b-modal>
-<b-modal v-model="showPopupNroInmueble" title="Numeración del Inmueble" :hide-footer="true" @click-outside="showPopupNroInmueble = false" :header-bg-variant="'success'"  centered>
-  <p>Si no sabes el número de tu inmueble, contactate con la oficina de catastro.</p>
+<b-modal v-model="showPopupNroInmueble" title="" :hide-footer="true" @click-outside="showPopupNroInmueble = false" :header-bg-variant="'success'"  centered>
+  <template #modal-header>
+    <div class="modal-info">
+      <h5>
+          <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
+          Información Adicional
+      </h5>
+    </div>
+  </template>
+  <div class="modal-info">
+    <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>Podés consultar el número enviando un correo electrónico a <a href="mailto:catatro@gesell.gob.ar" target="_blank">catastro@gesell.gob.ar</a>, indicando nomenclatura catastral del bien que se encuentra en la escritura del mismo.</p>
+  </div>
 </b-modal>
 <b-modal v-model="showPopupConstanciaCUIT" title="Constancia de CUIT" :hide-footer="true" @click-outside="showPopupConstanciaCUIT = false" :header-bg-variant="'success'"  centered>
-  <p>Podes solicitar tu constancia de CUIT haciendo click <a href="https://seti.afip.gob.ar/padron-puc-constancia-internet/ConsultaConstanciaAction.do" target="_blank" class="external-link">aquí</a>.</p>
+  <template #modal-header>
+    <div class="modal-info">
+      <h5>
+          <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
+          Información Adicional
+      </h5>
+    </div>
+  </template>
+  <div class="modal-info">
+    <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>Podes solicitar tu constancia de CUIT haciendo <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" >click aquí</a>.</p>
+  </div>
 </b-modal>
 <b-modal v-model="showPopupConstanciaIngresosBrutos" title="Constancia de Ingresos Brutos" :hide-footer="true" @click-outside="showPopupConstanciaIngresosBrutos = false" :header-bg-variant="'success'"  centered>
-  <p>Podes solicitar tu constancia de Ingresos Brutos haciendo click <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" class="external-link">aquí</a>.</p>
+  <template #modal-header>
+    <div class="modal-info">
+      <h5>
+          <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
+          Información Adicional
+      </h5>
+    </div>
+  </template>
+  <div class="modal-info">
+    <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>Podes solicitar tu constancia de Ingresos Brutos haciendo <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" >click aquí</a>.</p>
+  </div>
 </b-modal>
 <b-modal v-model="showPopupConstanciaLibreDeuda" title="Libre Deuda de Tasa por Servicios Urbanos" :hide-footer="true" @click-outside="showPopupConstanciaLibreDeuda = false" :header-bg-variant="'success'"  centered>
-  <p>Podes solicitar tu constancia de Libre Deuda de Tasa por Servicios Urbanos haciendo click <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">aquí</a>.</p>
-</b-modal>
-<b-modal v-model="showPopupFormLoading" title="Enviando Solicitud!" @click-outside="showPopupFormLoading = false" :header-bg-variant="'success'" hide-footer  centered>
-  <div class="centeredContainer">
-    <p>Cargando la información</p>
-    <b-spinner variant="success" style="width: 3rem; height: 3rem;" label="Large Spinner" @click="showPopupFormLoading = false; openPopup('FormOk')"></b-spinner>
-    <p>No cerrar la pagina</p>
+  <template #modal-header>
+    <div class="modal-info">
+      <h5>
+          <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
+          Información Adicional
+      </h5>
+    </div>
+  </template>
+  <div class="modal-info">
+    <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>Podés descargar tu última factura haciendo <a href="https://arvige.gob.ar/lpagos" target="_blank" >click aquí</a>.</p>
   </div>
 </b-modal>
-<b-modal v-model="showPopupFormOk" title="" ok-only @click-outside="showPopupFormOk = false" :header-bg-variant="'success'"  centered>
+<b-modal v-model="showPopupCertificadoDomicilio" title="Certificado de domicilio Ingresos Brutos- Punto de Venta Villa Gesell" :hide-footer="true" @click-outside="showPopupCertificadoDomicilio = false" :header-bg-variant="'success'"  centered>
   <template #modal-header>
-    <div><h3>
-        <b-icon icon="trophy" scale="1.5" variant="warning" style="margin: 0 20px 0 10px" @click="showPopupFormOk = false; openPopup('FormError')"></b-icon>
-        <b>Formulario Enviado!</b>
+    <div class="modal-info">
+      <h5>
+          <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
+          Información Adicional
+      </h5>
+    </div>
+  </template>
+  <div class="modal-info">
+    <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>Podés solicitar tu Certificado de domicilio haciendo <a href="https://arvige.gob.ar/lpagos" target="_blank" >click aquí</a>.</p>
+  </div>
+</b-modal>
+<b-modal v-model="showPopupPlano" title="" :hide-footer="true" @click-outside="showPopupPlano = false" :header-bg-variant="'success'"  centered>
+  <template #modal-header>    
+    <div class="modal-info">
+      <h5>Plano o Informe técnico</h5>
+    </div>
+  </template>  
+  <div class="modal-info">
+    <p class="destacado">¿Cómo identificarlos? En cada uno de ellos verifica el sello impuesto en carátula, que dice: CONFORME A OBRA, APROBADO O REGISTRADO</p>
+    <ul>
+      <li><b-icon-caret-right-fill ></b-icon-caret-right-fill><p><b>Plano Aprobado:</b> Es el documento cartográfico que consta de "aprobación municipal para construir la obra de que se trate".</p></li>
+      <li><b-icon-caret-right-fill ></b-icon-caret-right-fill><p><b>Plano Conforme a Obra:</b> Documento cartográfico que refleja una obra que no se ha construido con aprobación municipal previa.</p></li>
+      <li><b-icon-caret-right-fill ></b-icon-caret-right-fill><p><b>Plano Registrado:</b> aun sin definición clara.</p></li>
+    </ul>
+  </div>
+</b-modal>
+<b-modal v-model="showPopupFormLoading" title="" @click-outside="showPopupFormLoading = false" :header-bg-variant="'success'" hide-footer  centered>
+  <template #modal-header>
+    <h5 class="centeredContainer">Solicitud en Proceso</h5>
+  </template>
+  <div class="centeredContainer">
+    <p class="popup-link">Tus archivos se están cargando.</p>    
+    <b-spinner variant="success" style="width: 3rem; height: 3rem;" label="Large Spinner" @click="showPopupFormLoading = false; openPopup('FormOk')"></b-spinner>
+    <p>No cierres esta página</p> 
+  </div>
+</b-modal>
+<b-modal v-model="showPopupFormOk" title="" ok-only @click-outside="showPopupFormOk = false" :header-bg-variant="'success'" centered>
+  <template #modal-header>
+    <div class="centeredContainer"><h3>
+        <b-icon icon="check-circle-fill" scale="1.5" variant="light" @click="showPopupFormOk = false; openPopup('FormError')"></b-icon>
     </h3></div>
   </template>
-  <p>Gracias por usar el sistema de habilitaiones online de la municipalidad de VG. Durante los proximos dias revisaremos tu solicitud y nos comunicaremos a traves del correo electronico que brindaste en el formulario: {{ solicitante.mail }}</p>
-</b-modal>
-<b-modal v-model="showPopupFormError" title="Error en el envío!" @click-outside="showPopupFormError = false" :header-bg-variant="'danger'" hide-footer  centered>
   <div class="centeredContainer">
-    <h4>ERROR!</h4><h4>/  \</h4><h4>||</h4><h4>O</h4>
+    <p class="modal-subtitle">¡Tu solicitud ha sido enviada exitosamente!</p>
+    <p class="">En los próximos días recibirás un correo electrónico del Departamento Comercio Municipal en el que te indicarán cómo continuar el trámite.</p>
   </div>
+  <template #modal-footer> 
+    <div class="" style="margin: auto">   
+      <b-button @click="showPopupFormOk = false" variant="success" >Aceptar</b-button>
+    </div>
+  </template>
+</b-modal>
+<b-modal v-model="showPopupFormError" title="Error en el envío!" @click-outside="showPopupFormError = false" :header-bg-variant="'danger'" centered>
+  <template #modal-header>
+    <div class="centeredContainer"><h3>
+        <b-icon icon="check-circle-fill" scale="1.5" variant="light"></b-icon>
+    </h3></div>
+  </template>
+  <div class="centeredContainer modal-error">
+    <p class="modal-subtitle">No hemos podido procesar tu solicitud</p>
+    <p class="">Por favor, verificá tu conexión a internet e intentalo nuevamente más tarde.</p>
+    <p class="minitext">Si el problema persiste, comunicate con <a target="_blank" href="mailto:arvige@gesell.gob.ar" class="external-link">arvige@gesell.gob.ar</a> para que podamos ayudarte.</p>
+  </div>
+  <template #modal-footer> 
+    <div class="" style="margin: auto">     
+      <b-button @click="showPopupFormError = false" variant="danger" class="btn-cancel" >Aceptar</b-button>
+    </div>
+  </template>
 </b-modal>
 
 
@@ -398,6 +513,7 @@ export default {
         tituloPropiedad: null,
         certificadoDomicilio: null,
         plano: null,
+        croquis: null,
       },
       formFieldStates: {
         planillaAutorizacion: null,
@@ -411,6 +527,7 @@ export default {
         tituloPropiedad: null,
         certificadoDomicilio: null,
         plano: null,
+        croquis: null,
       },
       captchaResponse: null,
       showPopupDatosDelSolicitante: false,
@@ -419,6 +536,8 @@ export default {
       showPopupConstanciaIngresosBrutos: false,
       showPopupConstanciaCUIT: false,
       showPopupConstanciaLibreDeuda: false,
+      showPopupCertificadoDomicilio: false,
+      showPopupPlano: false,
       showPopupFormOk: false,
       showPopupFormLoading: false,
       showPopupFormError: false,
@@ -473,6 +592,10 @@ export default {
         this.showPopupConstanciaCUIT = true;
       } else if (type === 'ConstanciaLibreDeuda') {
         this.showPopupConstanciaLibreDeuda = true;
+      } else if (type === 'certificadoDomicilio') {
+        this.showPopupCertificadoDomicilio = true;
+      } else if (type === 'plano') {
+        this.showPopupPlano = true;
       } else if (type === 'FormLoading') {
         this.showPopupFormLoading = true;
       } else if (type === 'FormOk') {
@@ -568,12 +691,28 @@ export default {
 </script>
 
 <style>
+ul{
+  list-style-type: none; /* Elimina los puntos por defecto */
+  padding: 0;
+}
+.btn{
+  background-color: #0c681a;
+  border-color: #0c681a;
+}
+.btn:hover{
+  background-color: green;
+  border-color: green;
+}
+.btn-cancel:hover{
+  background-color: #f09658;
+  border-color: #f09658;
+}
 .btn-cancel{
-  background-color: orangered;
-  border-color: orangered;
+  background-color: #e53749;
+  border-color: #e53749;
 }
 .centeredContainer{
-  width:auto;
+  width:  auto;
   margin: auto;
   text-align: center;
 }
@@ -583,59 +722,132 @@ export default {
   padding-right: 0;
   padding-left: 0;
 }
+.modal-dialog{
+  max-width: 600px;
+}
+.modal-body{
+  padding: 1.5rem 1rem;
+}
 .modal h5, .modal h3{
   color: white !important;
   font-weight: bold;
   font-size: 1.5rem;
 }
 .modal .modal-subtitle{
-  color: green !important;
+  color: #0c681a !important;
   font-size: 1.25rem;
   font-weight: bold;
   margin-bottom: 15px;
   padding-top: 0;
 }
-  .btn{
-    padding: 0.5rem 3rem;
-  }
-  form .card{
-    margin-top: 20px !important;
-    padding: 20px;
-    border-radius: 1rem;
-  }
-  form p{
-     font-weight: 600;
-     color: #666;
-  }
-  h3{
-    font-weight: bold;
-    color: green !important;
-    margin: 15px 0;
-  }
-  h5{
-    padding-top: 15px;
-    color: green !important;
-  }
-  .modal-title{
-    font-weight: bold;
-  }
-  /* Selector para ocultar las flechas en los inputs numéricos */
-  input[type="number"]::-webkit-inner-spin-button,
-  input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
+.modal-content .bg-danger{
+  background-color: #e53749 !important;
+}
+.modal-content .bg-success{
+  background-color: #0c681a !important;
+}
+.modal-error .modal-subtitle{
+  color: #e53749 !important;
+}
+.modal-error p{
+  color: black;
+  font-weight: 500;
+  padding: 0 1rem;
+}
+.modal-error .minitext{
+  font-size: 0.75rem;
+  font-weight: 100;
+}
+.modal-info h3{
+  color: #0c681a !important;
+  font-size: 2rem;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  border-bottom: #ccc 2px solid;
+  margin-top: 0;
+}
+.modal-info h5{
+  font-size: 1.5rem;
+  padding: 0.75rem 0;
+  margin: 0;
+}
+.modal-info h6{
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #0c681a;
+  margin: 1rem 0;
+}
+.modal-info .destacado{
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 1rem;
+  width: 100%;
+}
+.modal-info .bi-question-circle{
+  margin-right: 1rem;
+  padding-right: 0.5rem;
+  border-right: 1px solid #FFF;
+}
+.modal-info p, .modal-info .bi-caret-right-fill{
+  display: inline-block;
+}
+.modal-info .bi-caret-right-fill{
+  margin-right: 1rem;
+  color: #0c681a;
+  vertical-align: top;
+  margin-top: 0.35rem;
+  font-size: 1.05rem;
+}
+.modal-info p{
+  font-size: 1.05rem;
+  font-weight: 600;
+  width: 90%;
+  color: #666;
+}
+.modal-info ol b, .modal-info a, .modal-info ul b{
+  color: #0c681a;
+  font-weight: 700;
+}
+.btn{
+  padding: 0.5rem 3rem;
+  font-weight: 500;
+}
+form .card{
+  margin-top: 20px !important;
+  padding: 20px;
+  border-radius: 1rem;
+}
+form p{
+  font-weight: 600;
+  color: #666;
+}
+h3{
+  font-weight: bold;
+  color: #0c681a !important;
+  margin: 1rem 0;
+}
+h5{
+  margin: 1rem 0;
+  color: #0c681a !important;
+}
+.modal-title{
+  font-weight: bold;
+}
+/* Selector para ocultar las flechas en los inputs numéricos */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 
-  /* Opcional: Estilos adicionales para los inputs numéricos */
-  input[type="number"] {
-    -moz-appearance: textfield; /* Firefox */
-    appearance: textfield; /* Otros navegadores */
-    width: 100%; /* Ajusta el ancho según tus necesidades */
-    padding: 0.375rem 0.75rem; /* Ajusta el padding según tus necesidades */
-  }
-
+/* Opcional: Estilos adicionales para los inputs numéricos */
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+  appearance: textfield; /* Otros navegadores */
+  width: 100%; /* Ajusta el ancho según tus necesidades */
+  padding: 0.375rem 0.75rem; /* Ajusta el padding según tus necesidades */
+}
 .popup-link {
-  color: green;
+  color: #0c681a;
   font-weight: bold;
 }
 .rubro-label{

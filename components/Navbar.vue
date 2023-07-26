@@ -61,7 +61,16 @@
           </NuxtLink>
           </b-dropdown-item>
         </b-dropdown>
-        <b-navbar-nav>
+        <b-navbar-nav v-if="adminComercio">
+          <NuxtLink
+            class="nav-link"
+            active-class="active"
+            to="/comercio/solicitudes"
+          >
+              Habilitaciones
+          </NuxtLink>
+        </b-navbar-nav>
+        <!-- <b-navbar-nav>
           <NuxtLink
             v-if="isAuthenticated"
             class="nav-link"
@@ -70,7 +79,7 @@
           >
               Normativas
           </NuxtLink>
-        </b-navbar-nav>
+        </b-navbar-nav> -->
       </div>
       <div class="col-4 mr-auto">
         <b-input type="text"
@@ -124,6 +133,9 @@ export default {
     },
     adminHacienda(){
       return this.$store.state.user.admin == "hacienda"
+    },
+    adminComercio(){
+      return this.$store.state.user.admin == "comercio"
     },
     username() {
       return this.$store.state.user.username

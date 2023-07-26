@@ -7,7 +7,7 @@ export const state = () => ({
 
 export const actions = {
   async getAll({ commit, state }) {
-    const found = await HabilitacionService.getLatest(this.$axios, {
+    const found = await HabilitacionService.getAll(this.$axios, {
       // skip: state.latest.length,
     })
     commit('setAll', found)
@@ -17,17 +17,16 @@ export const actions = {
   //     search,
   //   })
   // },
-  // async getSingle({ commit, state }, { id }) {
-  //   commit('setSingle', null)
-  //   const found = await ObraService.getSingle(this.$axios, {
-  //     id,
-  //   })
-  //   commit('setSingle', found)
-  // },
-  async create({ commit, state }, { habilitacion, userToken }) {
+  async getSingle({ commit, state }, { id }) {
+    commit('setSingle', null)
+    const found = await HabilitacionService.getSingle(this.$axios, {
+      id,
+    })
+    commit('setSingle', found)
+  },
+  async create({ commit, state }, { habilitacion }) {
     const createdFile = await HabilitacionService.create(this.$axios, {
       habilitacion,
-      userToken,
     })
     return createdFile
   },

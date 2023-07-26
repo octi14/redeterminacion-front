@@ -1,24 +1,48 @@
 const formatFile = (FileResponse) => ({
   id: FileResponse._id,
-  // expediente: FileResponse.expediente,
-  // objeto: FileResponse.objeto,
-  // presup_oficial: FileResponse.presup_oficial,
-  // adjudicado: FileResponse.adjudicado,
-  // proveedor: FileResponse.proveedor,
-  // cotizacion: FileResponse.cotizacion,
-  // items: FileResponse.items,
-  // certificados: FileResponse.certificados,
-  // garantia_contrato: FileResponse.garantia_contrato,
-  // adjudicacion: FileResponse.adjudicacion,
-  // contrato: FileResponse.contrato,
+  tipoSolicitud: FileResponse.solicitante.tipoSolicitud,
+  dni: FileResponse.solicitante.DNI,
+  mail: FileResponse.solicitante.mail,
+  rubro: FileResponse.inmueble.rubro,
+  status: FileResponse.status,
   // fecha_contrato: FileResponse.fecha_contrato.substr(0, 10),
   // acta_inicio: FileResponse.acta_inicio.substr(0,10),
-  // ordenanza: FileResponse.ordenanza,
-  // decreto: FileResponse.decreto,
-  // plazo_habilitacion: FileResponse.plazo_habilitacion,
-  // anticipo_finan: FileResponse.anticipo_finan,
-  // ponderacion: FileResponse.ponderacion,
-  // createdAt: new Date(FileResponse.createdAt),
+  createdAt: new Date(FileResponse.createdAt),
+})
+
+const formatExtendedFile = (FileResponse) => ({
+  id: FileResponse._id,
+  tipoSolicitud: FileResponse.solicitante.tipoSolicitud,
+  nombre: FileResponse.solicitante.nombre,
+  apellido: FileResponse.solicitante.apellido,
+  dni: FileResponse.solicitante.DNI,
+  cuit: FileResponse.solicitante.cuit,
+  razonSocial: FileResponse.solicitante.razonSocial,
+  domicilioReal: FileResponse.solicitante.domicilioReal,
+  telefono: FileResponse.solicitante.telefono,
+  codigoPostal: FileResponse.solicitante.codigoPostal,
+  localidad: FileResponse.solicitante.localidad, //Preguntar a myriam
+  provincia: FileResponse.solicitante.provincia,
+  mail: FileResponse.solicitante.mail,
+  esApoderado: FileResponse.solicitante.esApoderado,
+
+  localidadInmueble: FileResponse.inmueble.localidad,
+  calleInmueble: FileResponse.inmueble.calle,
+  nro: FileResponse.inmueble.nro,
+  nroLocal: FileResponse.inmueble.nroLocal,
+  nombreFantasia: FileResponse.inmueble.nombreFantasia,
+  rubro: FileResponse.inmueble.rubro,
+  espacioPublico: FileResponse.inmueble.espacioPublico,
+  // serviciosHoteleria: [{ servicio: String, value: Boolean }],
+  // marquesina: { type: Boolean, default: false },
+  // mercaderia: { type: Boolean, default: false },
+  // mesas: { type: Boolean, default: false },
+  // carteles: { type: Boolean, default: false }
+  documentos: FileResponse.documentos,
+  status: FileResponse.status,
+  // fecha_contrato: FileResponse.fecha_contrato.substr(0, 10),
+  // acta_inicio: FileResponse.acta_inicio.substr(0,10),
+  createdAt: new Date(FileResponse.createdAt),
 })
 
 module.exports = {
@@ -33,18 +57,14 @@ module.exports = {
     })
     return filesResponse.data.map(formatFile)
   },
-  // getSingle: async (axios, { id }) => {
-  //   const fileResponse = await axios.$get(`/habilitaciones/${id}`)
-  //   return formatFile(fileResponse.data)
-  // },
-  create: async (axios, { habilitacion, userToken }) => {
-    console.log(habilitacion)
+  getSingle: async (axios, { id }) => {
+    const fileResponse = await axios.$get(`/habilitaciones/${id}`)
+    return formatExtendedFile(fileResponse.data)
+  },
+  create: async (axios, { habilitacion }) => {
     const createdFile = await axios.$post(
       '/habilitaciones',
       { habilitacion },
-      {
-        headers: { Authorization: `Bearer ${userToken}` },
-      }
     )
     return formatFile(createdFile.data)
   },

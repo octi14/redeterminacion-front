@@ -163,7 +163,7 @@
       <b-button size="lg" @click="loguearServicios" variant="primary" class="float-right">Loguear</b-button>
  -->
     </fieldset>
-    
+
       <b-form-group label="" label-for="espaciopublico" style="margin: 0px auto">
             <b-row>
               <b-col md="5">
@@ -240,7 +240,7 @@
       <b-form-group >
         <label for="plano" class="rubro-label">Plano o Informe técnico * <b-icon-question-circle-fill @click="openPopup('plano')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
         <b-form-file v-model="documentos.plano" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('plano')" @change="handleDocumentUpdate('plano')" @input="clearFormFieldState('plano')"></b-form-file>
-      </b-form-group>      
+      </b-form-group>
       <b-row>
         <b-col md="6">
           <h5>¿El iniciante es una Persona Jurídica?</h5>
@@ -262,8 +262,8 @@
       <b-form-group label="Acta de Constitución de Persona Jurídica *" label-for="actaPersonaJuridica" >
         <b-form-file v-model="documentos.actaPersonaJuridica" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('actaPersonaJuridica')" @change="handleDocumentUpdate('actaPersonaJuridica')" @input="clearFormFieldState('actaPersonaJuridica')"></b-form-file>
       </b-form-group>
-      <b-form-group label="" label-for="actaDirectorio" >      
-        <label for="actaDirectorio" class="actaDirectorio-label">Acta de Directorio Actualizada <i>(en caso que corresponda)</i> </label>
+      <b-form-group label="" label-for="actaDirectorio" >
+        <label for="actaDirectorio" class="actaDirectorio-label">Acta de Directorio Actualizada <i>(En caso que corresponda)</i> </label>
         <b-form-file v-model="documentos.actaDirectorio" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('actaDirectorio')" @change="handleDocumentUpdate('actaDirectorio')" @input="clearFormFieldState('actaDirectorio')"></b-form-file>
       </b-form-group>
     </fieldset>
@@ -609,7 +609,7 @@ export default {
     },
     async submitForm() {
       try {
-        
+
         this.openPopup('FormLoading');
         const documentosParaGuardar = {};
 
@@ -634,10 +634,8 @@ export default {
           solicitante: this.solicitante,
           inmueble: this.inmueble,
         };
-        const userToken = this.$store.state.user.token;
         await this.$store.dispatch('habilitaciones/create', {
           habilitacion,
-          userToken,
         });
         //this.openPopup('FormOk');
       } catch (e) {

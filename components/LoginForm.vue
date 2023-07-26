@@ -1,7 +1,7 @@
 <template>
   <div class="text-center">
     <ContainersForm>
-      <h5> Inicie sesión para continuar </h5>
+      <h5> Iniciá sesión para continuar </h5>
       <b-form @submit.stop.prevent="onSubmitLoginForm">
         <b-form-group
           class="my-3"

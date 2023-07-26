@@ -8,17 +8,18 @@
         <h4 v-if="page === 2">Seleccione un horario</h4>
         <h4 v-if="page === 3">Complete los siguientes datos</h4>
       </div>
-      <!-- <div v-if="page === 0" class="col-8 mt-5 mx-auto">
-        <div class="text-center mt-4">
-          <h5>Está a punto de solicitar un turno para que su comercio sea habilitado.</h5>
-          <h5 class="mt-3">Recuerde ingresar su <b>número de trámite</b> asignado al haber completado el formulario de Solicitud de Habilitación.</h5>
+      <b-card v-if="page === 0" class="shadow-sm col-md-8 mt-5 mx-auto">
+        <div class="text-center mt-3">
+          <b-icon-calendar-check variant="success" class="mt-1" style="margin-bottom: 30px" scale="3"/>
+          <h5>Estás a punto de solicitar un turno para que tu comercio sea inspeccionado.</h5>
+          <h5 class="mt-2">Ingresá el <b>número de trámite</b> asignado por correo electrónico al haber completado el<br> Formulario de Solicitud de Habilitación.</h5>
           <b-form>
-            <b-form-input type="number" size="lg" class="col-6 mt-4 mx-auto" placeholder="Número de trámite" no-wheel></b-form-input>
+            <b-form-input type="number" size="lg" class="col-md-6 col-sm-10 mt-4 mx-auto" placeholder="Número de trámite" no-wheel></b-form-input>
           </b-form>
           <b-button variant="success" class="mt-5 mr-1" @click="onNextPage">Aceptar</b-button>
           <b-button variant="danger" class="mt-5" @click="onResetParams">Salir</b-button>
         </div>
-      </div> -->
+      </b-card>
       <div class="text-center">
         <b-form @submit="onSelectTurno">
           <!-- Página 1 -->
@@ -66,12 +67,12 @@
         </b-form>
 
         <!-- Comprobante (página 4) -->
-          <b-card class="text-center shadow-lg col-8 mx-auto" v-if="page === 4">
+          <b-card class="text-center shadow-lg col-md-8 col-sm-12 mx-auto" v-if="page === 4">
             <h1>Comprobante de turno</h1>
-            <h4>Secretaría de Hacienda</h4>
+            <h4>Departamento de Comercio</h4>
             <h5>Día: {{ formattedDate }}</h5>
             <h5>Horario: {{ time }}</h5>
-            <h5>Código de trámite: {{ token }}</h5>
+            <!-- <h5>Código de trámite: {{ token }}</h5> -->
             <h5>Solicita el turno: {{ nombre }}</h5>
             <b-button @click="onResetParams" variant="primary"> Salir </b-button>
           </b-card>
@@ -100,7 +101,7 @@ export default {
   data() {
     return {
       nroTramite: null,
-      page: 1,
+      page: 0,
       date: null,
       time: null,
       nombre: '',
@@ -149,7 +150,7 @@ export default {
       // Return `true` if the date should be disabled
       return weekday === 0 || weekday === 6;
     },
-    onSelectTurno() {
+    async onSelectTurno() {
       if (!this.nombre || !this.dni || !this.domicilio) {
         this.$bvToast.toast('Existen datos incompletos', {
           title: 'Error',
@@ -158,7 +159,27 @@ export default {
           toaster: 'b-toaster-top-center',
         });
       } else {
-        this.token = Math.floor(Math.random() * (1000000 - 100000 + 1)) + 100000;
+        try{
+          const userToken = this.$store.state.user.token
+          const turno = {
+            fecha: this.fecha,
+            hora: this.hora,
+            nombre: this.nombre,
+            dni: this.dni,
+            domicilio: this.domicilio
+          }
+          await this.$store.dispatch('turnos/create',{
+            turno,
+            userToken,
+          })
+        }catch(e){
+          this.$bvToast.toast('No se pudo solicitar un turno. Intente nuevamente.', {
+            solid: true,
+            variant: 'danger',
+            appendToast: true
+          })
+        }
+        // this.token = Math.floor(Math.random() * (1000000 - 100000 + 1)) + 100000;
         this.solicitado = true;
       }
     },

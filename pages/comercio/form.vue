@@ -4,7 +4,7 @@
 
   <b-form @submit="submitForm" class="my-3" style="margin-left:10px;margin-right:10px">
 
-  <b-card no-body class="col-8 mt-1 shadow-lg "  style="margin: 0px auto">
+  <b-card no-body class="col-8 mt-1 section-card"  style="margin: 0px auto">
     <!-- Sección: Datos del solicitante -->
     <fieldset >
       <legend><h3>Datos del Solicitante <b-icon-question-circle-fill @click="openPopup('DatosDelSolicitante')" font-scale="1" variant="info"></b-icon-question-circle-fill></h3></legend>
@@ -97,7 +97,7 @@
       </b-form-group>
     </fieldset>
   </b-card>
-  <b-card no-body class="col-8 mt-1 shadow-lg "  style="margin: 0px auto">
+  <b-card no-body class="col-8 mt-1 section-card"  style="margin: 0px auto">
     <!-- Sección: Datos del inmueble -->
     <fieldset >
       <legend><h3>Datos del Inmueble</h3></legend>
@@ -197,7 +197,7 @@
     </fieldset>
 
   </b-card>
-  <b-card no-body class="col-8 mt-1 shadow-lg " style="margin: 0px auto">
+  <b-card no-body class="col-8 mt-1 section-card" style="margin: 0px auto">
     <fieldset >
       <legend><h3>Carga de Documentación</h3></legend>
       <p>Aquí deberás cargar los documentos requeridos previamente. Tené en cuenta que deben ser <u>legibles</u>, estar subidos en <u>formato de imagen ó pdf</u> y tener un <u>peso máximo de 15 mb</u>.</p>
@@ -274,14 +274,13 @@
       </b-form-group>
       <fieldset>
         <input type="hidden" id="captchaResponse" name="captchaResponse" v-model="captchaResponse">
-        <b-button size="lg" @click="cancelForm" variant="danger" class="float-left btn-cancel" >Cancelar</b-button>
-        <b-button size="lg" @click="submitForm" variant="success" class="float-right" >Enviar</b-button>
+        <b-button size="lg" @click="cancelForm" variant="danger" class="btn-cancel" >Cancelar</b-button>
+        <b-button size="lg" @click="submitForm" variant="success" class="" >Enviar</b-button>
       </fieldset>
     </div>
   </b-card>
   </b-form>
 <!-- PopUps -->
-
 <b-modal v-model="showPopupDatosDelSolicitante" title="" :hide-footer="true" @click-outside="showPopupDatosDelSolicitante = false" :header-bg-variant="'success'"  centered>
   <template #modal-header>
     <div class="modal-info">
@@ -292,7 +291,6 @@
     </div>
   </template>
   <div class="modal-info">
-    <h3>Solicitante</h3>
     <ul>
       <li><b-icon-caret-right-fill ></b-icon-caret-right-fill><p>El interesado futuro comerciante / industrial o afín mayor de 18 años.</p></li>
       <li><b-icon-caret-right-fill ></b-icon-caret-right-fill><p>El representante o apoderado/a de la persona interesada con documentación que acredite el carácter de tal.</p></li>
@@ -792,7 +790,7 @@ ul{
 }
 .modal-info .bi-caret-right-fill{
   margin-right: 1rem;
-  color: #0c681a;
+  color: #f09658;
   vertical-align: top;
   margin-top: 0.35rem;
   font-size: 1.05rem;
@@ -815,6 +813,11 @@ form .card{
   margin-top: 20px !important;
   padding: 20px;
   border-radius: 1rem;
+}
+.section-card{
+  box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
+  -webkit-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
 }
 form p{
   font-weight: 600;

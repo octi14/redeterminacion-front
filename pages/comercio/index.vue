@@ -81,13 +81,13 @@
               <ul>
                 <li><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> DNI del solicitante <i>(imagen del frente y dorso)</i>.</div></li>
                 <li><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Domicilio real y legal del establecimiento <i>(deberá constar calle y número)</i>. <b-icon-question-circle-fill @click="openPopup('B')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div></li>
-                <li><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Copia de plano (conforme a obra o aprobado o registrado). En caso de no poseerlo, se requerirá el Informe Técnico debidamente visado por el Colegio Profesional correspondiente. Allí deberás señalar con una cruz sobre el plano el espacio o unidad funcional donde se ubicará el establecimiento. <b-icon-question-circle-fill @click="openPopup('B')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div></li>
+                <li><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Copia de plano (en alguna de sus dos posibilidades: <i>1. Conforme a obra o Medición aprobado / 2. Conforme a obra o Medición registrado).</i> En caso de no poseerlo, se requerirá el Informe Técnico debidamente visado por el Colegio Profesional correspondiente. <b-icon-question-circle-fill @click="openPopup('B')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div></li>
                 <li><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Libre deuda de <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Tasa por Sevicios Urbanos</a> <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. </div></li>
                 <li><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Copia de la Escritura traslativa de Dominio del inmueble donde se desarrollará la actividad / Contrato de locación / Boleto de Compraventa o afín, con el correspondiente Impuesto de Sellos Provincial y firma certificada por Escribano Público, Entidad Bancaria o Autoridad Administrativa.</div></li>
                 <li><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> <a href="https://seti.afip.gob.ar/padron-puc-constancia-internet/ConsultaConstanciaAction.do" target="_blank" class="external-link">Constancia de CUIT</a> actualizada.</div></li>
                 <li><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" class="external-link">Constancia de Inscripción en Ingresos Brutos</a> (ARBA) actualizada al momento de la solicitud. Esta deberá mantenerse activa mientras el comercio, industria o asimilable esté habilitado, bajo pena de ser pasible de la clausura del establecimiento.</div></li>
                 <li><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Certificado de domicilio Ingresos Brutos - Punto de venta Villa Gesell.</div></li>
-                <li><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Planilla de Autorización de Trámite</a> o poder autorizado por escribano <i>(únicamente si el trámite es iniciado mediante representante o apoderado/a. No debe completarse en caso de que el iniciante sea una Persona Jurídica)</i>.</div></li>
+                <li><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> <a href="https://drive.google.com/file/d/1-ipJMlrR0wEA38MSykC5eZWfjVil3S6P/view?usp=sharing" target="_blank" class="external-link">Planilla de Autorización de Trámite</a> o poder autorizado por escribano <i>(únicamente si el trámite es iniciado mediante representante o apoderado/a)</i>.</div></li>
                 <li><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> <b>Personas Jurídicas:</b> Escritura constitutiva de la misma con designación actual de sus representantes.</div></li>
               </ul>
               <div class="separador-top">
@@ -196,7 +196,7 @@
                     <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> El rubro que se quiere habilitar.</div>
                     <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> La zona donde se encuentra el local.</div>
                     <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> La superficie total afectada a la actividad comercial (que implican el sector de atención al público, depósito, espacio de circulación, entrepiso, sanitarios, entre otros).</div>
-                    <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> La condición del plano de obra.</div>
+                    <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> La condición del plano de obra (aprobado o registrado).</div>
                   </div>
                 </li>
                 <li>
@@ -212,8 +212,8 @@
                 <li>
                   <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content li-title">¿Deben renovarse las habilitaciones comerciales?</div>
                   <div class="li-icon"></div><div class="li-content">                   
-                    <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"><u>En caso de contrato de locación:</u> Las habilitaciones se extienden por el período que abarca el contrato de locación y deben reempadronarse anualmente, según corresponda, teniendo en cuenta la normativa vigente.</div>
-                    <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"><u>En caso de ser propietario/a del inmueble:</u> Las habilitaciones no tienen caducidad si la titularidad o las condiciones acreditadas al momento de la entrega del certificado de habilitación no cambian.</div>
+                    <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"><b>En caso de contrato de locación:</b> Las habilitaciones se extienden por el período que abarca el contrato de locación y deben reempadronarse anualmente, según corresponda, teniendo en cuenta la normativa vigente.</div>
+                    <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"><b>En caso de ser propietario/a del inmueble:</b> Las habilitaciones no tienen caducidad si la titularidad o las condiciones acreditadas al momento de la entrega del certificado de habilitación no cambian.</div>
                   </div>
                 </li> 
                 <li>
@@ -222,7 +222,7 @@
                   <div class="li-icon"></div><div class="li-content">                  
                     <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">Para tramitarlo debés tener tu habilitación comercial vigente.</div>
                     <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">Su costo dependerá de la actividad comercial que se lleve a cabo.</div>
-                    <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">El trámite se lleva a cabo <u>personalmente</u> en la Municipalidad una vez iniciado el trámite online. </div>
+                    <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">El trámite se lleva a cabo <b>personalmente</b> en la Municipalidad una vez iniciado el trámite online. </div>
                   </div>
                   </li>
               </ul>
@@ -509,7 +509,7 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
 .importante-card li{
   text-align: left;
   margin-bottom: 1rem;
@@ -708,7 +708,7 @@ ul{
   display: inline-block;
 }
 .li-title{ 
-  margin-bottom: 1rem;
+  margin-bottom: 0.3rem;
 }
 .li-icon{
   width: 2%;

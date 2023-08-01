@@ -1,99 +1,185 @@
 <template>
   <div class="page">
-    <Banner title="Comercio" subtitle="Sistema de turnos" />
+    <Banner title="Inspección de Comercios" subtitle="Sistema de turnos" />
     <div class="mx-auto">
-      <div class="text-center mt-3">
-        <h4 v-if="page === 1">Seleccione una fecha</h4>
-        <h6 v-if="page === 1">Podrá seleccionar una fecha dentro de los próximos 15 días</h6>
-        <h4 v-if="page === 2">Seleccione un horario</h4>
-        <h4 v-if="page === 3">Complete los siguientes datos</h4>
-      </div>
-      <b-card v-if="page === 0" class="shadow-sm col-md-8 mt-5 mx-auto">
-        <div class="text-center mt-3">
-          <b-icon-calendar-check variant="success" class="mt-1" style="margin-bottom: 30px" scale="3"/>
-          <h5>Estás a punto de solicitar un turno para que tu comercio sea inspeccionado.</h5>
-          <h5 class="mt-2">Ingresá el <b>número de trámite</b> asignado por correo electrónico al haber completado el<br> Formulario de Solicitud de Habilitación.</h5>
-          <b-form>
-            <b-form-input type="number" size="lg" class="col-md-6 col-sm-10 mt-4 mx-auto" placeholder="Número de trámite" no-wheel></b-form-input>
-          </b-form>
-          <b-button variant="success" class="mt-5 mr-1" @click="onNextPage">Aceptar</b-button>
-          <b-button variant="danger" class="mt-5" @click="onResetParams">Salir</b-button>
+      <div v-if="page === 0">
+        <div class="row justify-content-center banner-container" style="width: 100%">
+          <img src="../assets/turnera-banner-1.png"/>
         </div>
-      </b-card>
-      <div class="text-center">
-        <b-form @submit="onSelectTurno">
-          <!-- Página 1 -->
-          <b-calendar
-            class="col-3 mx-auto mt-3"
-            block hide-header
-            :date-format-options="{ year: 'numeric', day: '2-digit', weekday: 'short' }"
-            :min="new Date()"
-            :max="daysFromNow()"
-            locale="es"
-            value-as-date
-            :date-disabled-fn="dateDisabled"
-            v-if="page === 1"
-            v-model="date"
-          />
-
-          <!-- Página 2 -->
-          <b-form-select v-if="page === 2" v-model="time" class="mb-3 col-5">
-            <b-form-select-option
-              v-for="horario in horariosDisponibles"
-              :key="horario.id"
-              :value="horario"
-            >
-              Franja horaria: {{ horario }}
-            </b-form-select-option>
-          </b-form-select>
-          <br />
-
-          <!-- Página 3 -->
-          <div class="card col-5 mx-auto" v-if="page === 3">
-            <div>
-              <h6>Nombre</h6>
-              <b-form-input v-model="nombre" type="text" placeholder="Nombre"></b-form-input>
+        <b-card class="section-card col-md-6 mx-auto">
+            <div class="li-row">
+              <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Estás a punto de seleccionar un turno de inspección para tu comercio.</p></div>
             </div>
-            <div class="mt-2">
-              <h6>Número de documento</h6>
-              <b-form-input v-model="dni" type="number" placeholder="Número de documento"></b-form-input>
+            <div class="li-row">
+              <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Para iniciar, ingresá el <b>número de trámite</b> que recibiste por mail luego de haber enviado el Formulario de Solicitud de Habilitaciones.</p></div>
             </div>
-            <div class="mt-2">
-              <h6>Domicilio del comercio</h6>
-              <b-form-input v-model="domicilio" type="text" placeholder="Domicilio del comercio"></b-form-input>
+            <b-form>
+              <b-form-input v-model="nroTramite" type="number" size="lg" class="col-md-6 col-sm-10 mt-4 mx-auto" placeholder="Número de trámite" no-wheel></b-form-input>
+            </b-form>
+            <div class="btn-container">
+              <!-- <b-button class="btn-cancel" @click="onResetParams">Cancelar</b-button> -->
+              <b-button class="btn-cancel" @click="showPopupFormError = true">Cancelar</b-button>
+              <b-button class="" @click="onNextPage">Aceptar</b-button>
             </div>
-          </div>
-
+        </b-card>
+      </div>   
+      <b-form @submit="onSelectTurno">   
+        <div v-if="page === 1">
+          <div class="row justify-content-center" style="width: 100%">
+            <img src="../assets/turnera-banner-2.png"/>
+          </div>  
+          <b-card class="section-card col-md-6 mx-auto">
+            <h5>
+              <b-icon-calendar-check class="icon-orange"></b-icon-calendar-check>
+              Selección de fecha
+            </h5>              
+            <div class="li-row">
+              <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Elegí una fecha dentro de los próximos 15 días hábiles.</p></div>
+            </div>
+            <div class="li-row">
+              <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Tené en cuenta que las inspecciones se llevan a cabo en diferentes días de la semana dependiendo del lugar donde se encuentre tu comercio. Por eso, sólo podrás elegir los días correspondientes a la localidad que informaste al iniciar el trámite de habilitación:</p></div>
+            </div>
+            <div class="col-md-10 mx-auto">
+              <div class="li-row">
+                <div class="li-icon"><b-icon-check font-scale="2" class="icon-green"></b-icon-check></div><div class="li-content sub-li"><p><b>Villa Gesell:</b> Lunes, Martes y Miércoles</p></div>
+              </div>
+              <div class="li-row">
+                <div class="li-icon"><b-icon-check font-scale="2" class="icon-green"></b-icon-check></div><div class="li-content sub-li"><p><b>Mar de Las Pampas / Colonia Marina / Las Gaviotas / Mar Azul:</b>  Jueves y Viernes.</p></div>
+              </div>            
+            </div>
+            <b-calendar
+              class="col-8 mx-auto mt-3"
+              block hide-header
+              :date-format-options="{ year: 'numeric', day: '2-digit', weekday: 'short' }"
+              :min="new Date()"
+              :max="daysFromNow()"
+              locale="es"
+              value-as-date
+              :date-disabled-fn="dateDisabled"
+              v-model="date"
+            />            
+            <div class="btn-container">
+              <b-button @click="page-= 1" class="btn-cancel">Volver</b-button>
+              <b-button @click="onNextPage">Continuar</b-button>
+            </div>
+          </b-card>          
+        </div>
+        <div v-if="page === 2">
+          <div class="row justify-content-center" style="width: 100%">
+            <img src="../assets/turnera-banner-3.png"/>
+          </div>  
+          <b-card class="section-card col-md-6 mx-auto">
+            <h5><b-icon-clock class="icon-orange"></b-icon-clock> Selección de horario</h5>
+            <div class="li-row">
+              <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Seleccioná una franja horaria para recibir la visita de inspección.</p></div>
+            </div>
+            <b-form-select v-model="time" class="col-11 mx-auto">
+              <b-form-select-option
+                v-for="horario in horariosDisponibles"
+                :key="horario.id"
+                :value="horario"
+              >
+                Franja horaria: {{ horario }} - <span class="icon-orange">{{ horario }}</span>
+              </b-form-select-option>
+          </b-form-select>        
+            <div class="btn-container">
+              <b-button @click="page-= 1" class="btn-cancel">Volver</b-button>
+              <b-button @click="onNextPage">Continuar</b-button>
+            </div>
+          </b-card>
+        </div>        
+        <div v-if="page === 3">
+          <div class="row justify-content-center" style="width: 100%">
+            <img src="../assets/turnera-banner-4.png"/>
+          </div>  
+          <b-card class="section-card col-md-6 mx-auto">
+            <h5><b-icon-clock class="icon-orange"></b-icon-clock> Confirmación de turno</h5>
+            <div class="li-row">
+              <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Completá los datos que te solicitamos a continuación.</p></div>
+            </div>
+            <div class="li-row">
+              <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p> Al finalizar se emitirá un comprobante que deberás mostrar el día de la inspección.</p></div>
+            </div>
+            <div class="col-10 mx-auto">
+               <b-form-group>
+                <label for="nombre">Nombre</label>
+                <b-form-input id="nombre" v-model="nombre" required></b-form-input>
+                <label for="dni">Nro. de documento</label>
+                <b-form-input id="dni" v-model="dni" type="number" required></b-form-input>
+                <label for="domicilio">Domicilio del comercio</label>
+                <b-form-input id="domicilio" v-model="domicilio" required></b-form-input>
+              </b-form-group>
+            </div>
+            <b-card border-variant="warning" align="center" class="importante-card" >
+              <b-card-text>
+                <b-row class="v-align">
+                  <b-col md="2">
+                    <b-icon-exclamation-triangle variant="warning" font-scale="4"></b-icon-exclamation-triangle>
+                    <p class="li-title"><u><b>¡Importante!</b></u></p>
+                  </b-col>
+                  <b-col  md="10">
+                    <p>Es importante que el día de la inspección haya alguien presente en el local. En caso contrario perderás el turno y deberás solicitar uno nuevo.</p>
+                  </b-col>
+                </b-row>
+              </b-card-text>
+            </b-card>              
+            <div class="btn-container">
+              <b-button @click="page-= 1" class="btn-cancel">Volver</b-button>
+              <b-button @click="onSelectTurno">Continuar</b-button>
+            </div>
+          </b-card>
+        </div>
         </b-form>
-
         <!-- Comprobante (página 4) -->
-          <b-card class="text-center shadow-lg col-md-8 col-sm-12 mx-auto" v-if="page === 4">
+        <div v-if="page === 4">
+          <b-card class="text-center shadow-lg col-md-8 col-sm-12 mx-auto">
             <h1>Comprobante de turno</h1>
             <h4>Departamento de Comercio</h4>
             <h5>Día: {{ formattedDate }}</h5>
             <h5>Horario: {{ time }}</h5>
-            <!-- <h5>Código de trámite: {{ token }}</h5> -->
+            <h5>Nro de trámite: 123456</h5>
             <h5>Solicita el turno: {{ nombre }}</h5>
-            <b-button @click="onResetParams" variant="primary"> Salir </b-button>
+            <b-button v-if="endButton === true" @click="onResetParams" class="btn-cancel">Volver</b-button>
           </b-card>
-        <b-button variant="primary" v-if="page > 0 && page <= 2" @click="onNextPage" class="mt-3 mx-auto">Siguiente</b-button>
-        <b-button variant="primary" type="submit" v-if="page === 3" @click="onSelectTurno" class="mt-3 mx-auto">Solicitar turno</b-button>
-        <b-button variant="danger" class="mt-3" v-if="page > 0 && page < 4" @click="page-= 1"> Atrás </b-button>
+        </div>
       </div>
 
+
       <!-- Modal -->
-      <b-modal v-model="solicitado" v-if="date && time && solicitado && !printing" hide-header hide-footer centered>
+      <b-modal v-model="solicitado" v-if="date && time && solicitado && !printing" :header-bg-variant="'success'" hide-footer centered>
+        <template #modal-header>
+          <div class="centeredContainer"><h3>
+              <b-icon icon="check-circle-fill" scale="1.5" variant="light"></b-icon>
+          </h3></div>
+        </template>
         <div class="text-center">
-          <h5 class="landing-text"><b>{{ nombre }}</b>,</h5>
-          <h5>Ha solicitado un turno para el día <b class="landing-text">{{ formattedDate }}</b>, en la franja horaria de las <b class="landing-text">{{ time }}hs</b>.</h5>
-          <h5>El personal de inspección visitará el domicilio especificado: <b class="landing-text">{{ domicilio }}</b>, en un plazo máximo de <b class="landing-text">3 horas desde el horario solicitado</b>.</h5>
-          <!-- <h5>Su código de trámite es <b class="landing-text">{{ token }}</b></h5> -->
-          <b-button variant="success" class="mt-3 mr-1" @click="onPrintTicket">Guardar comprobante</b-button>
-          <b-button variant="danger" class="mt-3 ml-1" @click="onResetParams">Salir</b-button>
+          <p><b>{{ nombre }}</b>, solicitaste un turno para el día <b>{{ formattedDate }}</b> para la dirección especificada: <b>{{ domicilio }}</b>, en la franja horaria de las <b>{{ time }}</b></p>
+          <p>Tu número de trámite es: {{nroTramite}}</p>
+          <div class="btn-container">
+            <b-button @click="onResetParams" class="btn-cancel">Volver</b-button>
+            <b-button @click="onPrintTicket">Imprimir</b-button>
+          </div>
         </div>
       </b-modal>
-    </div>
+      <b-modal v-model="showPopupFormError" @click-outside="showPopupFormError = false" :header-bg-variant="'danger'" centered>
+        <template #modal-header>
+          <div class="centeredContainer"><h3>
+              <b-icon-exclamation-octagon scale="1.5" variant="light"></b-icon-exclamation-octagon>
+          </h3></div>
+        </template>
+        <div class="centeredContainer modal-error">
+          <p class="modal-subtitle">No hemos podido encontrar tu número de trámite</p>
+          <p class="">Por favor, corroborá que los datos ingresados sean correctos.</p>
+          <p class="minitext">Si el problema persiste, envianos un correo a <a target="_blank" href="mailto:deptocomercio@gesell.gob.ar" class="icon-green">deptocomercio@gesell.gob.ar</a>.</p>
+        </div>
+        <template #modal-footer> 
+          <div class="" style="margin: auto">     
+            <b-button @click="showPopupFormError = false" variant="danger" class="btn-cancel" >Aceptar</b-button>
+          </div>
+        </template>
+      </b-modal>
   </div>
+
 </template>
 
 <script>
@@ -112,6 +198,8 @@ export default {
       horariosDisponibles: [],
       maxRange: 15,
       token: 0,
+      endButton: false,
+      showPopupFormError: false,
     };
   },
   mounted() {
@@ -188,6 +276,8 @@ export default {
       this.printing = true;
       await this.wait(500);
       print();
+      await this.wait(500);
+      this.endButton = true;
     },
     onNextPage() {
       if (this.page === 0 && !this.nroTramite) {
@@ -248,3 +338,177 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+  p{
+    font-family: Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #666;
+  }  
+  .modal-open .modal-dialog{
+    max-width: 600px;
+  }
+  .modal-body p{
+    text-align: center;
+  }
+  .modal-content .bg-danger{
+    background-color: #e53749 !important;
+  }
+  .modal-content .bg-success{
+    background-color: #0c681a !important;
+  } 
+  .modal-content .centeredContainer{
+    margin: 1rem auto;
+  }
+  .modal-content p{
+    padding: 1rem 2rem;
+    font-size: 1rem;
+  }
+  .modal .modal-subtitle{
+    color: #0c681a !important;
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    padding-top: 0;
+  }
+  .modal-error .modal-subtitle{
+    color: #e53749 !important;
+  }
+  .modal-error .centeredContainer{
+    text-align: center;
+  }
+  .modal-error p{
+    color: black;
+    font-weight: 500;
+    padding: 0 1rem;
+  }
+  .modal-error .minitext{
+    font-size: 0.8rem;
+    font-weight: 100;
+  }
+  .section-card{
+    margin: 2rem auto !important;
+    padding: 2rem 4rem;
+    border-radius: 1rem;
+    box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
+    -webkit-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
+  }
+  .section-card .btn-container{
+    width: fit-content;
+    margin: auto;
+    margin-top: 2rem;
+  }
+  .section-card .btn{
+    padding: 0.5rem 3rem;
+    font-weight: 500;
+    font-size: 1rem;
+    padding-right: 0;
+    padding-left: 0;
+    width: 10rem;
+  }  
+  .btn{
+    background-color: #0c681a;
+    border-color: #0c681a;
+  }
+  .btn:hover{
+    background-color: green;
+    border-color: green;
+  }
+  .btn-cancel:hover{
+    background-color: #f09658;
+    border-color: #f09658;
+  }
+  .btn-cancel{
+    background-color: #e53749;
+    border-color: #e53749;
+  }
+  .section-card h5{
+    font-size: 2rem;
+    font-weight: bold;
+    padding: 0.75rem 0;
+    margin: 0;
+    color: #0c681a;
+    border-bottom: 2px solid #CCC;
+    margin-bottom: 1rem;
+  }
+  .section-card h5 .bi-calendar-check{
+    font-size: 2.5rem;
+    margin-right: 0.5rem;
+    padding-right: 0.75rem;
+    border-right: 1px solid #999;
+  }
+  .icon-orange{
+    color: #E27910;
+  }   
+  .icon-green{
+    color: #0c681a;
+  }
+  .importante-card{
+    margin: 2rem auto;
+  }
+  .importante-card p{
+    color: #333;
+    font-size: 1.25rem;
+  }
+  .v-align {
+  display: flex;
+  align-items: center;
+  }
+  .b-row {
+    height: 100%; /* Asegúrate de que el b-row tenga una altura definida (puede ser 100% o cualquier otra altura que desees). */
+  }
+  .li-icon, .li-title, label{
+  font-weight: 600;
+  color: #0c681a;
+  font-size: 1rem !important;
+  }
+  label{
+    font-weight: bold;
+  }
+  .li-title{ 
+    margin-bottom: 0.3rem;
+  }
+  .li-icon{
+    margin-right: 1%;
+    vertical-align: top;
+  }
+  .li-row{
+    display: flex;
+    width: 100%;
+  }
+  .li-icon, .li-content{
+    display: inline-block;
+  }
+  .li-p{
+    margin-bottom: 1rem;
+  }
+  .sub-li p{
+    font-size: 1.3rem;
+  }
+  .bi-caret-right-fill, .bi-check{
+    display: inline-block;
+  }
+  .bi-caret-right-fill{
+    vertical-align: top;
+    margin-top: 0.5rem;
+    font-size: 1.05rem;
+  }  
+  .bi-check{    
+    vertical-align: top;
+  }
+  /* Selector para ocultar las flechas en los inputs numéricos */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  /* Opcional: Estilos adicionales para los inputs numéricos */
+  input[type="number"] {
+    -moz-appearance: textfield; /* Firefox */
+    appearance: textfield; /* Otros navegadores */
+    width: 100%; /* Ajusta el ancho según tus necesidades */
+    padding: 0.375rem 0.75rem; /* Ajusta el padding según tus necesidades */
+  }  
+</style>

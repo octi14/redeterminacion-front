@@ -7,7 +7,7 @@ const formatFile = (FileResponse) => ({
   status: FileResponse.status,
   // fecha_contrato: FileResponse.fecha_contrato.substr(0, 10),
   // acta_inicio: FileResponse.acta_inicio.substr(0,10),
-  createdAt: new Date(FileResponse.createdAt),
+  createdAt: new Date(FileResponse.createdAt).toLocaleDateString(),
 })
 
 const formatExtendedFile = (FileResponse) => ({
@@ -57,16 +57,23 @@ module.exports = {
     })
     return filesResponse.data.map(formatFile)
   },
+  getByNroTramite: async (axios, { nroTramite }) => {
+    const fileResponse = await axios.$post('/habilitaciones/nroTramite', {nroTramite})
+    if (fileResponse.data){
+      return formatFile(fileResponse.data)
+    }else{
+      return null
+    }
+  },
   getSingle: async (axios, { id }) => {
     const fileResponse = await axios.$get(`/habilitaciones/${id}`)
     return formatExtendedFile(fileResponse.data)
   },
   create: async (axios, { habilitacion }) => {
-    const createdFile = await axios.$post(
-      '/habilitaciones',
-      { habilitacion },
-    )
-    return formatFile(createdFile.data)
+
+    const createdFile = await axios.$post('/habilitaciones', { habilitacion });
+
+    return createdFile;
   },
   // update: async (axios, { habilitacion, userToken }) => {
   //   axios.setHeader('Access-Control-Allow-Origin', true)

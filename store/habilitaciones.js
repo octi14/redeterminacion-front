@@ -12,11 +12,13 @@ export const actions = {
     })
     commit('setAll', found)
   },
-  // async search({ commit, state }, { search }) {
-  //   const found = await ObraService.searchFiles(this.$axios, {
-  //     search,
-  //   })
-  // },
+  async getByNroTramite({ commit, state }, { nroTramite }) {
+    commit('setSingle', null)
+    const found = await HabilitacionService.getByNroTramite(this.$axios, {
+      nroTramite,
+    })
+    commit('setSingle', found)
+  },
   async getSingle({ commit, state }, { id }) {
     commit('setSingle', null)
     const found = await HabilitacionService.getSingle(this.$axios, {

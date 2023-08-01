@@ -14,7 +14,7 @@
           <h5>Estás a punto de solicitar un turno para que tu comercio sea inspeccionado.</h5>
           <h5 class="mt-2">Ingresá el <b>número de trámite</b> asignado por correo electrónico al haber completado el<br> Formulario de Solicitud de Habilitación.</h5>
           <b-form>
-            <b-form-input type="number" size="lg" class="col-md-6 col-sm-10 mt-4 mx-auto" placeholder="Número de trámite" no-wheel></b-form-input>
+            <b-form-input type="number" v-model="nroTramiteIngresado" size="lg" class="col-md-6 col-sm-10 mt-4 mx-auto" placeholder="Número de trámite" no-wheel></b-form-input>
           </b-form>
           <b-button variant="success" class="mt-5 mr-1" @click="onNextPage">Aceptar</b-button>
           <b-button variant="danger" class="mt-5" @click="onResetParams">Salir</b-button>
@@ -33,11 +33,11 @@
             value-as-date
             :date-disabled-fn="dateDisabled"
             v-if="page === 1"
-            v-model="date"
+            v-model="datePicked"
           />
 
           <!-- Página 2 -->
-          <b-form-select v-if="page === 2" v-model="time" class="mb-3 col-5">
+          <b-form-select v-if="page === 2" v-model="timePicked" class="mb-3 col-5">
             <b-form-select-option
               v-for="horario in horariosDisponibles"
               :key="horario.id"
@@ -82,7 +82,7 @@
       </div>
 
       <!-- Modal -->
-      <b-modal v-model="solicitado" v-if="date && time && solicitado && !printing" hide-header hide-footer centered>
+      <b-modal v-model="formOk" v-if="date && time && !printing" title="Turno reservado" title-class="text-white" hide-footer :header-bg-variant="'success'" centered>
         <div class="text-center">
           <h5 class="landing-text"><b>{{ nombre }}</b>,</h5>
           <h5>Ha solicitado un turno para el día <b class="landing-text">{{ formattedDate }}</b>, en la franja horaria de las <b class="landing-text">{{ time }}hs</b>.</h5>
@@ -101,13 +101,16 @@ export default {
   data() {
     return {
       nroTramite: null,
+      nroTramiteIngresado: null,
       page: 0,
       date: null,
+      datePicked: null,
       time: null,
+      timePicked: null,
       nombre: '',
       dni: '',
       domicilio: '',
-      solicitado: false,
+      formOk: false,
       printing: false,
       horariosDisponibles: [],
       maxRange: 15,
@@ -160,17 +163,16 @@ export default {
         });
       } else {
         try{
-          const userToken = this.$store.state.user.token
           const turno = {
-            fecha: this.fecha,
-            hora: this.hora,
+            dia: this.date,
+            horario: this.time,
             nombre: this.nombre,
             dni: this.dni,
-            domicilio: this.domicilio
+            domicilio: this.domicilio,
+            nroTramite: this.nroTramite,
           }
           await this.$store.dispatch('turnos/create',{
-            turno,
-            userToken,
+            turno
           })
         }catch(e){
           this.$bvToast.toast('No se pudo solicitar un turno. Intente nuevamente.', {
@@ -179,8 +181,7 @@ export default {
             appendToast: true
           })
         }
-        // this.token = Math.floor(Math.random() * (1000000 - 100000 + 1)) + 100000;
-        this.solicitado = true;
+        this.formOk = true;
       }
     },
     async onPrintTicket() {
@@ -189,27 +190,63 @@ export default {
       await this.wait(500);
       print();
     },
-    onNextPage() {
-      if (this.page === 0 && !this.nroTramite) {
-        // this.$bvToast.toast('No ha ingresado un número de trámite.', {
-        //   title: 'Error',
-        //   variant: 'danger',
-        //   appendToast: true,
-        //   solid: true,
-        //   toaster: 'b-toaster-top-center',
-        // });
-        this.page += 1
-      } else {
-        if (this.page === 1 && !this.date) {
-          this.$bvToast.toast('No ha seleccionado una fecha', {
-            title: 'Error',
-            variant: 'danger',
-            appendToast: true,
-            solid: true,
-            toaster: 'b-toaster-top-center',
-          });
-        } else {
-          if (this.page === 2 && !this.time) {
+    async onNextPage() {
+      switch (this.page) {
+        case 0:
+          if (!this.nroTramiteIngresado) {
+            this.$bvToast.toast('No ha ingresado un número de trámite.', {
+              title: 'Error',
+              variant: 'danger',
+              appendToast: true,
+              solid: true,
+              toaster: 'b-toaster-top-center',
+            });
+          } else {
+            try{
+              const nroTramite = this.nroTramiteIngresado
+              await this.$store.dispatch('habilitaciones/getByNroTramite',  { nroTramite })
+              if(this.$store.state.habilitaciones.single){
+                this.nroTramite = this.nroTramiteIngresado
+                this.page += 1
+              }else{
+                this.$bvToast.toast('No ha ingresado un número de trámite válido.', {
+                  title: 'Error',
+                  variant: 'danger',
+                  appendToast: true,
+                  solid: true,
+                  toaster: 'b-toaster-top-center',
+                });
+              }
+            }catch(e){
+              console.log(e)
+              this.$bvToast.toast('Algo salió mal buscando la habilitación.', {
+                title: 'Error',
+                variant: 'danger',
+                appendToast: true,
+                solid: true,
+                toaster: 'b-toaster-top-center',
+              });
+            }
+          }
+          break;
+
+        case 1:
+          if (!this.datePicked) {
+            this.$bvToast.toast('No ha seleccionado una fecha', {
+              title: 'Error',
+              variant: 'danger',
+              appendToast: true,
+              solid: true,
+              toaster: 'b-toaster-top-center',
+            });
+          } else {
+            this.date = this.datePicked
+            this.page += 1
+          }
+          break;
+
+        case 2:
+          if (!this.timePicked) {
             this.$bvToast.toast('No ha seleccionado un horario', {
               title: 'Error',
               variant: 'danger',
@@ -218,21 +255,29 @@ export default {
               toaster: 'b-toaster-top-center',
             });
           } else {
-            this.page += 1;
+            this.time = this.timePicked
+            this.page += 1
           }
-        }
+          break;
+
+        default:
+          // Por defecto, se incrementa la página en cualquier otro caso no especificado.
+          this.page += 1;
+          break;
       }
     },
     onResetParams() {
       this.date = null;
       this.time = null;
+      this.datePicked = null,
+      this.timePicked = null,
       this.$router.push('/');
       this.page = 0;
       this.nombre = null;
       this.domicilio = null;
       this.dni = null;
       this.printing = false;
-      this.solicitado = false;
+      this.formOk = false;
     },
   },
   computed: {

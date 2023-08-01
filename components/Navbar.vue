@@ -70,6 +70,15 @@
               Habilitaciones
           </NuxtLink>
         </b-navbar-nav>
+        <b-navbar-nav v-if="adminComercio || adminInspeccion">
+          <NuxtLink
+            class="nav-link"
+            active-class="active"
+            to="/turnos/reservas"
+          >
+              Turnos
+          </NuxtLink>
+        </b-navbar-nav>
         <!-- <b-navbar-nav>
           <NuxtLink
             v-if="isAuthenticated"
@@ -136,6 +145,9 @@ export default {
     },
     adminComercio(){
       return this.$store.state.user.admin == "comercio"
+    },
+    adminInspeccion(){
+      return this.$store.state.user.admin == "inspeccion"
     },
     username() {
       return this.$store.state.user.username

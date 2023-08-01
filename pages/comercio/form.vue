@@ -476,9 +476,11 @@ export default {
       } else if (type === 'FormLoading') {
         this.showPopupFormLoading = true;
       } else if (type === 'FormOk') {
-        this.showPopupFormOk = true;
+        this.showPopupFormLoading = false
+        this.showPopupFormOk = true
       } else if (type === 'FormError') {
-        this.showPopupFormError = true;
+        this.showPopupFormLoading = false
+        this.showPopupFormError = true
       }
     },
     cancelForm(){
@@ -514,14 +516,9 @@ export default {
         await this.$store.dispatch('habilitaciones/create', {
           habilitacion,
         });
-        //this.openPopup('FormOk');
+        this.openPopup('FormOk');
       } catch (e) {
-        this.$bvToast.toast('No se pudo procesar la solicitud.', {
-          solid: true,
-          variant: 'danger',
-          appendToast: true,
-          toaster: 'b-toaster-top-center',
-        });
+        this.openPopup('FormError');
       }
     },
     blobToBase64(blob) {

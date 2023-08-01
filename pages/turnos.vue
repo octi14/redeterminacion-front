@@ -407,7 +407,7 @@ export default {
     padding-right: 0;
     padding-left: 0;
     width: 10rem;
-  }
+  }  
   .btn{
     background-color: #0c681a;
     border-color: #0c681a;
@@ -510,5 +510,5 @@ export default {
     appearance: textfield; /* Otros navegadores */
     width: 100%; /* Ajusta el ancho según tus necesidades */
     padding: 0.375rem 0.75rem; /* Ajusta el padding según tus necesidades */
-  }
+  }  
 </style>

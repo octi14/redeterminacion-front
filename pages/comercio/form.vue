@@ -385,11 +385,11 @@
   </div>
 </b-modal>
 <b-modal v-model="showPopupPlano" title="" :hide-footer="true" @click-outside="showPopupPlano = false" :header-bg-variant="'success'"  centered>
-  <template #modal-header>    
+  <template #modal-header>
     <div class="modal-info">
       <h5>Plano o Informe técnico</h5>
     </div>
-  </template>  
+  </template>
   <div class="modal-info">
     <p class="destacado">¿Cómo identificarlos? En cada uno de ellos verifica el sello impuesto en carátula, que dice: CONFORME A OBRA, APROBADO O REGISTRADO</p>
     <ul>
@@ -404,9 +404,9 @@
     <h5 class="centeredContainer">Solicitud en Proceso</h5>
   </template>
   <div class="centeredContainer">
-    <p class="popup-link">Tus archivos se están cargando.</p>    
+    <p class="popup-link">Tus archivos se están cargando.</p>
     <b-spinner variant="success" style="width: 3rem; height: 3rem;" label="Large Spinner" @click="showPopupFormLoading = false; openPopup('FormOk')"></b-spinner>
-    <p>No cierres esta página</p> 
+    <p>No cierres esta página</p>
   </div>
 </b-modal>
 <b-modal v-model="showPopupFormOk" title="" ok-only @click-outside="showPopupFormOk = false" :header-bg-variant="'success'" centered>
@@ -419,8 +419,8 @@
     <p class="modal-subtitle">¡Tu solicitud ha sido enviada exitosamente!</p>
     <p class="">En los próximos días recibirás un correo electrónico del Departamento Comercio Municipal en el que te indicarán cómo continuar el trámite.</p>
   </div>
-  <template #modal-footer> 
-    <div class="" style="margin: auto">   
+  <template #modal-footer>
+    <div class="" style="margin: auto">
       <b-button @click="showPopupFormOk = false" variant="success" >Aceptar</b-button>
     </div>
   </template>
@@ -436,8 +436,8 @@
     <p class="">Por favor, verificá tu conexión a internet e intentalo nuevamente más tarde.</p>
     <p class="minitext">Si el problema persiste, comunicate con <a target="_blank" href="mailto:arvige@gesell.gob.ar" class="external-link">arvige@gesell.gob.ar</a> para que podamos ayudarte.</p>
   </div>
-  <template #modal-footer> 
-    <div class="" style="margin: auto">     
+  <template #modal-footer>
+    <div class="" style="margin: auto">
       <b-button @click="showPopupFormError = false" variant="danger" class="btn-cancel" >Aceptar</b-button>
     </div>
   </template>
@@ -685,7 +685,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 ul{
   list-style-type: none; /* Elimina los puntos por defecto */
   padding: 0;

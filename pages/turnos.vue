@@ -22,17 +22,17 @@
               <b-button class="" @click="onNextPage">Aceptar</b-button>
             </div>
         </b-card>
-      </div>   
-      <b-form @submit="onSelectTurno">   
+      </div>
+      <b-form @submit="onSelectTurno">
         <div v-if="page === 1">
           <div class="row justify-content-center" style="width: 100%">
             <img src="../assets/turnera-banner-2.png"/>
-          </div>  
+          </div>
           <b-card class="section-card col-md-6 mx-auto">
             <h5>
               <b-icon-calendar-check class="icon-orange"></b-icon-calendar-check>
               Selección de fecha
-            </h5>              
+            </h5>
             <div class="li-row">
               <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Elegí una fecha dentro de los próximos 15 días hábiles.</p></div>
             </div>
@@ -45,7 +45,7 @@
               </div>
               <div class="li-row">
                 <div class="li-icon"><b-icon-check font-scale="2" class="icon-green"></b-icon-check></div><div class="li-content sub-li"><p><b>Mar de Las Pampas / Colonia Marina / Las Gaviotas / Mar Azul:</b>  Jueves y Viernes.</p></div>
-              </div>            
+              </div>
             </div>
             <b-calendar
               class="col-8 mx-auto mt-3"
@@ -57,17 +57,17 @@
               value-as-date
               :date-disabled-fn="dateDisabled"
               v-model="date"
-            />            
+            />
             <div class="btn-container">
               <b-button @click="page-= 1" class="btn-cancel">Volver</b-button>
               <b-button @click="onNextPage">Continuar</b-button>
             </div>
-          </b-card>          
+          </b-card>
         </div>
         <div v-if="page === 2">
           <div class="row justify-content-center" style="width: 100%">
             <img src="../assets/turnera-banner-3.png"/>
-          </div>  
+          </div>
           <b-card class="section-card col-md-6 mx-auto">
             <h5><b-icon-clock class="icon-orange"></b-icon-clock> Selección de horario</h5>
             <div class="li-row">
@@ -81,17 +81,17 @@
               >
                 Franja horaria: {{ horario }} - <span class="icon-orange">{{ horario }}</span>
               </b-form-select-option>
-          </b-form-select>        
+          </b-form-select>
             <div class="btn-container">
               <b-button @click="page-= 1" class="btn-cancel">Volver</b-button>
               <b-button @click="onNextPage">Continuar</b-button>
             </div>
           </b-card>
-        </div>        
+        </div>
         <div v-if="page === 3">
           <div class="row justify-content-center" style="width: 100%">
             <img src="../assets/turnera-banner-4.png"/>
-          </div>  
+          </div>
           <b-card class="section-card col-md-6 mx-auto">
             <h5><b-icon-clock class="icon-orange"></b-icon-clock> Confirmación de turno</h5>
             <div class="li-row">
@@ -122,7 +122,7 @@
                   </b-col>
                 </b-row>
               </b-card-text>
-            </b-card>              
+            </b-card>
             <div class="btn-container">
               <b-button @click="page-= 1" class="btn-cancel">Volver</b-button>
               <b-button @click="onSelectTurno">Continuar</b-button>
@@ -172,8 +172,8 @@
           <p class="">Por favor, corroborá que los datos ingresados sean correctos.</p>
           <p class="minitext">Si el problema persiste, envianos un correo a <a target="_blank" href="mailto:deptocomercio@gesell.gob.ar" class="icon-green">deptocomercio@gesell.gob.ar</a>.</p>
         </div>
-        <template #modal-footer> 
-          <div class="" style="margin: auto">     
+        <template #modal-footer>
+          <div class="" style="margin: auto">
             <b-button @click="showPopupFormError = false" variant="danger" class="btn-cancel" >Aceptar</b-button>
           </div>
         </template>
@@ -345,7 +345,7 @@ export default {
     font-size: 1.5rem;
     font-weight: 500;
     color: #666;
-  }  
+  }
   .modal-open .modal-dialog{
     max-width: 600px;
   }
@@ -357,7 +357,7 @@ export default {
   }
   .modal-content .bg-success{
     background-color: #0c681a !important;
-  } 
+  }
   .modal-content .centeredContainer{
     margin: 1rem auto;
   }
@@ -441,7 +441,7 @@ export default {
   }
   .icon-orange{
     color: #E27910;
-  }   
+  }
   .icon-green{
     color: #0c681a;
   }
@@ -467,7 +467,7 @@ export default {
   label{
     font-weight: bold;
   }
-  .li-title{ 
+  .li-title{
     margin-bottom: 0.3rem;
   }
   .li-icon{
@@ -494,8 +494,8 @@ export default {
     vertical-align: top;
     margin-top: 0.5rem;
     font-size: 1.05rem;
-  }  
-  .bi-check{    
+  }
+  .bi-check{
     vertical-align: top;
   }
   /* Selector para ocultar las flechas en los inputs numéricos */

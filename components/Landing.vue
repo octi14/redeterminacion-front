@@ -34,7 +34,7 @@ export default {
           title: "Digesto comercial"
         },
         {
-          to: "/comercio/menu",
+          to: "/comercio",
           icon: "pen",
           title: "Habilitaciones comerciales"
         },

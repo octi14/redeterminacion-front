@@ -40,6 +40,7 @@ const formatExtendedFile = (FileResponse) => ({
   // carteles: { type: Boolean, default: false }
   documentos: FileResponse.documentos,
   status: FileResponse.status,
+  nroTramite: FileResponse.nroSolicitud,
   // fecha_contrato: FileResponse.fecha_contrato.substr(0, 10),
   // acta_inicio: FileResponse.acta_inicio.substr(0,10),
   createdAt: new Date(FileResponse.createdAt),
@@ -75,17 +76,17 @@ module.exports = {
 
     return createdFile;
   },
-  // update: async (axios, { habilitacion, userToken }) => {
-  //   axios.setHeader('Access-Control-Allow-Origin', true)
-  //   const updated = await axios.$put(
-  //     `/habilitaciones/${habilitacion.id}`,
-  //     { habilitacion },
-  //     {
-  //       headers: { Authorization: `Bearer ${userToken}` },
-  //     }
-  //   )
-  //   return formatFile(updated.data)
-  // },
+  update: async (axios, id, { habilitacion, userToken }) => {
+    axios.setHeader('Access-Control-Allow-Origin', true)
+    const updated = await axios.$put(
+      `/habilitaciones/${id}`,
+      { habilitacion },
+      {
+        headers: { Authorization: `Bearer ${userToken}` },
+      }
+    )
+    return formatFile(updated)
+  },
   delete: async (axios, { id, userToken }) => {
     return await axios.$delete(`/habilitaciones/${id}`, {
       headers: { Authorization: `Bearer ${userToken}` },

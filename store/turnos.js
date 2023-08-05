@@ -26,9 +26,16 @@ export const actions = {
   //   })
   //   commit('setSingle', found)
   // },
-  async getSingle({ commit, state }, { id }) {
+  async getSingle({ commit, state }, { nroTramite }) {
     commit('setSingle', null)
-    const found = await MultimediaService.getSingle(this.$axios, {
+    const found = await TurnoService.getSingle(this.$axios, {
+      nroTramite,
+    })
+    commit('setSingle', found)
+  },
+  async getById({ commit, state }, { id }) {
+    commit('setSingle', null)
+    const found = await TurnoService.getById(this.$axios, {
       id,
     })
     commit('setSingle', found)
@@ -39,9 +46,10 @@ export const actions = {
     })
     return createdFile
   },
-  async update({ commit }, { turno, userToken }) {
+  async update({ commit }, { id, turno, userToken }) {
     try {
       const updated = await TurnoService.update(this.$axios, {
+        id,
         turno,
         userToken,
       })

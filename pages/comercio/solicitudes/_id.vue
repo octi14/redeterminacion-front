@@ -7,6 +7,21 @@
     </div>
     <!-- Datos del solicitante -->
     <template v-if="habilitacion">
+      <div class="row justify-content-center mt-3">
+        <p class="h4">         Número de trámite: <b> {{ habilitacion.nroTramite }}  </b></p>
+      </div>
+      <div class="row justify-content-center mt-3">
+
+        <p class="h4"> Estado:
+          <h4 class="text-primary ml-1" v-if="habilitacion.status === 'En revisión'">{{ habilitacion.status }} </h4>
+          <h4 class="text-success ml-1" v-if="habilitacion.status === 'Aprobada'">{{ habilitacion.status }} </h4>
+          <h4 class="text-danger ml-1" v-if="habilitacion.status === 'Rechazada'">{{ habilitacion.status }} </h4>
+          <h4 class="text-secondary ml-1" v-if="habilitacion.status === 'Pendiente'">{{ habilitacion.status }} </h4>
+      </div>
+      <div class="row col-10 mx-auto justify-content-center">
+        <b-button @click="onAprobarSolicitud" variant="success" pill class="btn-4 mt-3 mx-1"> Aprobar solicitud </b-button>
+        <b-button @click="onRechazarSolicitud" variant="success" pill class="btn-3 mt-3 mx-1"> Rechazar solicitud </b-button>
+      </div>
       <div class="container col-md-6 col-sm-8 card shadow-lg mt-4 mx-auto">
           <div class="col mx-auto">
             <div class="container text-center mx-auto">
@@ -114,7 +129,7 @@
         </div>
     </template>
     <!-- Documentación -->
-    <template v-if="habilitacion && habilitacion.documentos">
+    <template v-if="habilitacion">
       <div class="container col-md-6 col-sm-8 card shadow-lg mt-4 mb-3 mx-auto">
         <!-- Resto del contenido del componente -->
         <div class="col mx-auto">
@@ -124,9 +139,9 @@
           </div>
         </div>
         <!-- Mostrar los enlaces a los documentos -->
-        <div class="container justify-content-center mx-auto">
-          <div v-for="(documento, nombreDocumento) in habilitacion.documentos" :key="nombreDocumento">
-            <div class="layout" v-if="habilitacion.documentos && documento != $store.state.habilitaciones.single.documentos._id">
+        <div class="container justify-content-center mx-auto" v-if="habilitacion">
+          <div v-for="(documento, nombreDocumento) in cleanDocumentos" :key="nombreDocumento">
+            <div class="layout" v-if="cleanDocumentos">
               <p class="col col-main">
                 <strong>{{ documentoNames[nombreDocumento] }}</strong><br>
               </p>
@@ -146,6 +161,64 @@
         </NuxtLink>
       </div>
     </template>
+
+    <!-- Modals -->
+    <b-modal v-model="showRejectPopup" hide-footer :header-bg-variant="'danger'" centered>
+        <template #modal-header>
+          <div class="confirmation-popup-header mx-auto">
+            <b-icon-exclamation-triangle scale="2" variant="light" />
+          </div>
+        </template>
+        <div class="confirmation-popup-body">
+          <h2 class="icon-orange text-center"><b>Rechazar solicitud</b></h2>
+          <p>La solicitud será rechazada. Se notificará al solicitante a través de su correo electrónico.</p>
+          <p>Observaciones:  </p>
+          <b-form-textarea v-model="observaciones" type="text" />
+          <div class="text-center mt-3">
+            <b-btn variant="primary" @click="onSendReject()" >
+                Enviar
+            </b-btn>
+          </div>
+        </div>
+    </b-modal>
+
+    <b-modal v-model="showPrevApprove" hide-footer :header-bg-variant="'secondary'" centered>
+      <template #modal-header>
+        <div class="confirmation-popup-header mx-auto">
+          <b-icon-exclamation-triangle scale="2" variant="light" />
+        </div>
+      </template>
+      <div class="confirmation-popup-body">
+        <h2 class="icon-orange text-center"><b>Aprobar solicitud</b></h2>
+        <p>La solicitud será aceptada. Debes indicar si el comercio requiere inspección, y notificar al solicitante a través de su correo electrónico.</p>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="documentCheckbox" v-model="inspeccion"/>
+            <label class="form-check-label" for="documentCheckbox">El comercio requiere inspección</label>
+        </div>
+        <div class="text-center mt-3">
+          <b-btn variant="primary" @click="onSendApprove()" >
+              Enviar
+          </b-btn>
+        </div>
+      </div>
+    </b-modal>
+
+    <b-modal v-model="showApprove" hide-footer :header-bg-variant="'success'" centered>
+      <template #modal-header>
+        <div class="confirmation-popup-header mx-auto">
+          <b-icon-check-circle scale="2" variant="light" />
+        </div>
+      </template>
+      <div class="confirmation-popup-body">
+        <h3 class="icon-orange text-center"><b>Aprobar solicitud</b></h3>
+        <p>La solicitud fue aprobada con éxito. Se deberá notificar al solicitante a través de su correo electrónico.</p>
+        <div class="text-center mt-3">
+          <b-btn variant="primary" @click="showApprove = false" >
+              Aceptar
+          </b-btn>
+        </div>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -154,7 +227,12 @@
 export default {
   data() {
     return {
+      inspeccion: false,
+      showPrevApprove: false,
+      showApprove: false,
+      showRejectPopup: false,
       habilitacion: null,
+      observaciones: '',
       documentoNames: {
         planillaAutorizacion: 'Planilla de Autorización',
         dniFrente: 'DNI Frente',
@@ -174,13 +252,15 @@ export default {
   },
   computed: {
     cleanDocumentos() {
-      // Filtrar los documentos para eliminar el campo "_id"
-      return Object.entries(this.habilitacion.documentos).reduce((acc, [key, value]) => {
-        if (key !== '_id') {
-          acc[key] = value;
-        }
-        return acc;
-      }, {});
+      if(this.habilitacion){
+        // Filtrar los documentos para eliminar el campo "_id"
+        return Object.entries(this.habilitacion.documentos).reduce((acc, [key, value]) => {
+          if (key !== '_id') {
+            acc[key] = value;
+          }
+          return acc;
+        }, {});
+      }
     },
   },
   async fetch() {
@@ -192,10 +272,54 @@ export default {
   },
   fetchOnServer: false,
   activated() {
-    this.habilitacion = null
     this.$fetch()
   },
   methods: {
+    wait(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    },
+    async onAprobarSolicitud(){
+      this.showPrevApprove = true
+    },
+    async onSendApprove(){
+      const habilitacion = {
+        status: 'Aprobada'
+      }
+      if(this.inspeccion){
+        habilitacion.status = "Pendiente"
+      }
+      const id = this.habilitacion.id
+      const userToken = this.$store.state.user.token
+      await this.$store.dispatch('habilitaciones/update', {
+        id,
+        habilitacion,
+        userToken,
+      })
+      this.wait(300)
+      this.showPrevApprove = false
+      this.$fetch()
+      this.showApprove = true
+    },
+    onRechazarSolicitud(){
+      this.showRejectPopup = true
+    },
+    async onSendReject(){
+      const habilitacion = {
+        observaciones: this.observaciones,
+        status: 'Rechazada'
+      }
+      const id = this.habilitacion.id
+      const userToken = this.$store.state.user.token
+      await this.$store.dispatch('habilitaciones/update', {
+        id,
+        habilitacion,
+        userToken,
+      })
+      this.wait(300)
+      this.observaciones = ''
+      this.$fetch()
+      this.showRejectPopup = false
+    },
     openDocumento(documento) {
       const arrayBufferView = new Uint8Array(documento.data.data);
       const blob = new Blob([arrayBufferView], { type: documento.contentType });

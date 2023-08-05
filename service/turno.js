@@ -37,7 +37,13 @@ module.exports = {
   //   })
   //   return formatTurno(filesResponse.data)
   // },
-  getSingle: async (axios, { id }) => {
+  getSingle: async (axios, { nroTramite }) => {
+    const turnoResponse = await axios.$get(`/turnos/nroTramite/${nroTramite}`)
+    if(turnoResponse.data.length > 0){
+      return formatTurno(turnoResponse.data[0])
+    }
+  },
+  getById: async (axios, { id }) => {
     const turnoResponse = await axios.$get(`/turnos/${id}`)
     return formatTurno(turnoResponse.data)
   },
@@ -48,10 +54,10 @@ module.exports = {
     )
     return formatTurno(createdTurno.data)
   },
-  update: async (axios, { turno, userToken }) => {
+  update: async (axios, { id, turno, userToken }) => {
     axios.setHeader('Access-Control-Allow-Origin', true)
     const updated = await axios.$put(
-      `/turnos/${turno.id}`,
+      `/turnos/${id}`,
       { turno },
       {
         headers: { Authorization: `Bearer ${userToken}` },

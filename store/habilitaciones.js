@@ -32,17 +32,17 @@ export const actions = {
     })
     return createdFile
   },
-  // async update({ commit }, { obra, userToken }) {
-  //   try {
-  //     const updated = await ObraService.update(this.$axios, {
-  //       obra,
-  //       userToken,
-  //     })
-  //     commit('setSingle', { updated })
-  //   } catch (e) {
-  //     throw new Error('Error actualizando')
-  //   }
-  // },
+  async update({ commit }, { id, habilitacion, userToken }) {
+    try {
+      const updated = await HabilitacionService.update(this.$axios, id, {
+        habilitacion,
+        userToken,
+      })
+      commit('setSingle', { updated })
+    } catch (e) {
+      throw new Error(e.message)
+    }
+  },
   async delete({ commit, state }, { id, userToken }) {
     const deleted = await HabilitacionService.delete(this.$axios, {
       id,

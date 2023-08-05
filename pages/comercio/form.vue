@@ -418,10 +418,13 @@
   <div class="centeredContainer">
     <p class="modal-subtitle">¡Tu solicitud ha sido enviada exitosamente!</p>
     <p class="">En los próximos días recibirás un correo electrónico del Departamento Comercio Municipal en el que te indicarán cómo continuar el trámite.</p>
+    <p class="">Su número de trámite es: </p>
+    <p class="h3"> <b> {{ nroTramite }} </b> </p>
+    <p class="">Por favor, conservá este número. Será solicitado más adelante. </p>
   </div>
   <template #modal-footer>
     <div class="" style="margin: auto">
-      <b-button @click="showPopupFormOk = false" variant="success" >Aceptar</b-button>
+      <b-button @click="onFinalizar" variant="success" >Aceptar</b-button>
     </div>
   </template>
 </b-modal>
@@ -454,7 +457,7 @@ export default {
   data:function() {
       return {
       listaRubros: rubros,
-
+      nroTramite: null,
       solicitante: {
         tipoSolicitud: 'habilitacion',
         nombre: '',
@@ -575,7 +578,6 @@ export default {
     },
     openPopup(type) {
       // Lógica para abrir el popup correspondiente según el tipo (A, B, C, D)else if (type === 'B')
-      console.log('openPopup');
       if (type === 'DatosDelSolicitante') {
         console.log("ShowPopup DatosDelSolicitante")
         this.showPopupDatosDelSolicitante = true;
@@ -634,13 +636,77 @@ export default {
           solicitante: this.solicitante,
           inmueble: this.inmueble,
         };
-        await this.$store.dispatch('habilitaciones/create', {
+        // const nroTramite = await this.$store.dispatch('tickets/getCurrent')
+        // habilitacion.nroTramite = nroTramite
+        const response = await this.$store.dispatch('habilitaciones/create', {
           habilitacion,
         });
+        console.log(response.data)
+        this.nroTramite = response.data
         this.openPopup('FormOk');
       } catch (e) {
         this.openPopup('FormError');
       }
+    },
+    onFinalizar(){
+      this.$router.push('/')
+      this.showPopupFormOk = false
+      this.onResetParams()
+    },
+    onResetParams(){
+      this.nroTramite = null
+      this.solicitante.tipoSolicitud = 'habilitacion'
+      this.solicitante.nombre = ''
+      this.solicitante.apellido = ''
+      this.solicitante.DNI = ''
+      this.solicitante.cuit = ''
+      this.solicitante.razonSocial = ''
+      this.solicitante.domicilioReal = ''
+      this.solicitante.telefono = ''
+      this.solicitante.codigoPostal = ''
+      this.solicitante.localidad = ''
+      this.solicitante.provincia = ''
+      this.solicitante.mail = ''
+      this.solicitante.esApoderado = false
+      this.solicitante.esPersonaJuridica = false
+
+      this.inmueble.localidad = ''
+      this.inmueble.calle = ''
+      this.inmueble.nro = null
+      this.inmueble.nroLocal = null
+      this.inmueble.nombreFantasia = ''
+      this.inmueble.rubro = null
+      this.inmueble.espacioPublico = false
+      this.inmueble.marquesina = false
+      this.inmueble.mercaderia = false
+      this.inmueble.mesas = false
+      this.inmueble.carteles = false
+      this.inmueble.otrosServicios = ''
+
+      this.documentos.planillaAutorizacion = null
+      this.documentos. dniFrente = null
+      this.documentos.dniDorso = null
+      this.documentos.constanciaCuit = null
+      this.documentos.constanciaIngresosBrutos = null
+      this.documentos.actaPersonaJuridica = null
+      this.documentos.actaDirectorio = null
+      this.documentos.libreDeudaUrbana = null
+      this.documentos.tituloPropiedad = null
+      this.documentos.certificadoDomicilio = null
+      this.documentos.plano = null
+      this.documentos.croquis = null
+
+      this.showPopupDatosDelSolicitante = false
+      this.showPopupApoderadoRepresentante = false
+      this.showPopupNroInmueble = false
+      this.showPopupConstanciaIngresosBrutos = false
+      this.showPopupConstanciaCUIT = false
+      this.showPopupConstanciaLibreDeuda = false
+      this.showPopupCertificadoDomicilio = false
+      this.showPopupPlano = false
+      shis.showPopupFormOk = false
+      this.showPopupFormLoading = false
+      this.showPopupFormError = false
     },
     blobToBase64(blob) {
       return new Promise((resolve, reject) => {

@@ -1,14 +1,12 @@
 <template>
   <div class="page">
     <Banner title="Obras" />
-    <div class="card mt-4 mb-4 feed shadow-lg col-md-9 col-sm-10 mx-auto">
-      <template v-if="!isAuthenticated">
-        <LoginForm />
-      </template>
-      <template v-else>
-        <ObraFeed />
-      </template>
-    </div>
+    <template v-if="!isAuthenticated">
+      <LoginForm />
+    </template>
+    <template v-if="adminHacienda">
+      <ObraFeed />
+    </template>
   </div>
 </template>
 
@@ -17,6 +15,9 @@ export default {
   computed: {
     isAuthenticated() {
       return Boolean(this.$store.state.user.token)
+    },
+    adminHacienda() {
+      return this.$store.state.user.admin == "hacienda"
     },
   }
 }

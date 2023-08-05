@@ -13,9 +13,6 @@
       </div>
     </div>
     <b-card class="shadow-lg mx-auto mt-4 col-md-8 col-sm-10" v-if="items.length > 0 && filteredItems.length == 0 && search == '' ">
-      <!-- <div class="mx-auto text-center">
-        <h4> Lista de archivos </h4>
-      </div> -->
       <div
         v-for="item in paginatedItems"
         :key="item.id"
@@ -134,7 +131,7 @@ export default {
       this.filteredItems = this.items.filter(item => {
         // Personaliza la lógica de filtrado según tus necesidades.
         // Por ejemplo, puedes buscar una palabra clave en una propiedad específica del objeto 'item'.
-        return item.nombre.toLowerCase().includes(terminoBusqueda);
+        return item.objeto.toLowerCase().includes(terminoBusqueda);
       });
 
       this.totalPages = Math.ceil(this.filteredItems.length / this.perPage);

@@ -7,7 +7,7 @@
     </div>
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
     <b-collapse id="nav-collapse" is-nav class="m-2" style="width:90%">
-      <div class="row col-4">
+      <div class="row col-10">
         <b-navbar-nav>
           <NuxtLink
             class="nav-link"
@@ -79,35 +79,10 @@
               Turnos
           </NuxtLink>
         </b-navbar-nav>
-        <!-- <b-navbar-nav>
-          <NuxtLink
-            v-if="isAuthenticated"
-            class="nav-link"
-            active-class="active"
-            to="/normativas"
-          >
-              Normativas
-          </NuxtLink>
-        </b-navbar-nav> -->
       </div>
-      <div class="col-4 mr-auto">
-        <b-input type="text"
-          v-if="adminHacienda"
-          v-model="search"
-          placeholder="Buscar obra"
-          @keypress="onSearchFileByName"/>
-      </div>
-      <b-navbar-nav>
+      <b-navbar-nav class="ml-auto">
         <template v-if="isAuthenticated">
           <b-nav-item-dropdown :text="username" right>
-            <!-- <b-dropdown-item>
-              <NuxtLink
-                v-if="isAuthenticated"
-                to="/obra/create"
-              >
-                Crear archivo
-              </NuxtLink>
-            </b-dropdown-item> -->
             <b-dropdown-item @click="onUserLogout">
               Cerrar Sesión
             </b-dropdown-item>
@@ -129,10 +104,6 @@
 
 <script>
 export default {
-  data: {
-    search: '',
-    result: [],
-  },
   computed: {
     isAuthenticated() {
       return Boolean(this.$store.state.user.token)
@@ -160,15 +131,6 @@ export default {
     onUserLogout() {
       this.$store.dispatch('user/logout')
     },
-    async onSearchFileByName(){
-      if (this.search){
-        this.result = await this.$store.dispatch('search/search', {
-          expediente: this.search,
-          objeto: this.search,
-          adjudicado: this.search,
-        })
-      }
-    }
   },
 }
 </script>

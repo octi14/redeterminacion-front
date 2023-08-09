@@ -9,13 +9,16 @@
       <div class="row justify-content-center mt-3">
 
         <p class="h4"> Estado:
-          <h4 class="text-primary ml-1" v-if="turno.status === 'Pendiente'">{{ turno.status }} </h4>
+          <h4 class="text-primary ml-1" v-if="turno.status === 'En revisión'">{{ turno.status }} </h4>
+          <h4 class="text-primary ml-1" v-if="turno.status === 'Pendiente de inspección'">{{ turno.status }} </h4>
           <h4 class="text-success ml-1" v-if="turno.status === 'Inspeccionado'">{{ turno.status }} </h4>
           <h4 class="text-danger ml-1" v-if="turno.status === 'Cancelado'">{{ turno.status }} </h4>
       </div>
       <div class="row col-10 mx-auto justify-content-center">
-        <b-button @click="onSendApprove" variant="success" pill class="btn-4 mt-3 mx-1"> Marcar como inspeccionado </b-button>
-        <b-button @click="onRechazarTurno" pill class="btn-3 mt-3 mx-1"> Cancelar turno </b-button>
+        <b-button @click="onSendApprove" variant="success" pill class="btn-4 mt-3 mx-1"> Aprobar inspección </b-button>
+        <b-button @click="onSendApprove" variant="secondary" pill class="btn-4 mt-3 mx-1"> Prórroga </b-button>
+        <!-- <b-button @click="onRechazarTurno" pill class="btn-3 mt-3 mx-1"> Cancelar turno </b-button> -->
+        <b-button @click="onRechazarTurno" pill class="btn-3 mt-3 mx-1"> Rechazar inspección </b-button>
       </div>
       <div class="container col-md-6 col-sm-8 card shadow-lg mt-4 mx-auto">
           <div class="col mx-auto">
@@ -32,6 +35,7 @@
               <p class="col col-complementary" role="complementary">
                 <a>{{ turno.dia + " " + turno.horario}}</a>
               </p>
+            <b-btn @click="onRechazarTurno" pill variant="outline-danger" class="mx-1"> Cancelar</b-btn>
             </div>
             <div class="layout">
               <p class="col col-main">

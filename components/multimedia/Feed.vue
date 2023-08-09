@@ -52,7 +52,7 @@
     <div class="mx-auto text-center mt-5" v-if="items.length == 0">
       <h5> Cargando... </h5>
     </div>
-    <div class="mx-auto text-center mt-5" v-if="filteredItems.length === 0 && !loading">
+    <div class="mx-auto text-center mt-5" v-if="filteredItems.length === 0 && search != ''">
       <h5> No se encontraron resultados para "{{ search }}" </h5>
     </div>
   </div>
@@ -131,7 +131,7 @@ export default {
       this.filteredItems = this.items.filter(item => {
         // Personaliza la lógica de filtrado según tus necesidades.
         // Por ejemplo, puedes buscar una palabra clave en una propiedad específica del objeto 'item'.
-        return item.objeto.toLowerCase().includes(terminoBusqueda);
+        return item.nombre.toLowerCase().includes(terminoBusqueda);
       });
 
       this.totalPages = Math.ceil(this.filteredItems.length / this.perPage);

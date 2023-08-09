@@ -5,10 +5,9 @@
       <div
         v-for="(_, index) in certificados"
         :key="index"
-        class="transition-col mx-auto mb-1"
       >
-      <strong class="row my-2 h6 justify-content-center"> Certificado {{index +1}} </strong>
-        <CertificadoCard :certificado="certificados[index]" :obra="obra" :redet="redets[index]" class="h-1 row" />
+      <strong class="row my-2 h6 justify-content-center"> Certificado {{index + 1}} </strong>
+        <CertificadoCard :certificado="certificados[index]" :obra="obra" :redet="redets[index]" class="row" />
       </div>
       <!-- <div class="table-responsive col-md-12" v-for="table in tables" :key="table.id">
         <b-table hover head-variant="dark" :items="items" :fields="fields"></b-table>

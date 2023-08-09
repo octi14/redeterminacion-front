@@ -63,7 +63,7 @@ export default{
     // Asignar el color adecuado según el estado
     this.items.forEach(item => {
       switch (item.status) {
-        case 'Pendiente':
+        case 'Pendiente de inspección':
           item.estadoColor = 'estado-secondary';
           break;
         case 'Cancelado':

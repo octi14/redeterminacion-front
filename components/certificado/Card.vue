@@ -11,7 +11,7 @@
         <NuxtLink v-if="!certificado.redeterminado && adminHacienda" class="text-center col" :to="{ name: 'redeterminaciones-id', params: { id: certificado.id } }">
           <b-button variant="success" class="my-1 col-sm-3" > Redeterminar  </b-button>
         </NuxtLink>
-        <strong v-if="certificado.redeterminado" class="text-center col"> Redeterminado el {{ formatDate(certificado.redeterminado.substr(0,10)) }} </strong>
+        <strong v-if="certificado.redeterminado" class="text-center col"> Redeterminado el {{ certificado.redeterminado }} </strong>
         <b-dropdown variant="outline-primary">
           <b-dropdown-item @click="eliminarRedet"> Eliminar redeterminación </b-dropdown-item>
           <b-dropdown-item @click="eliminarCert" variant="danger"> Eliminar certificado </b-dropdown-item>

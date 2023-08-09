@@ -636,7 +636,6 @@ export default {
           solicitante: this.solicitante,
           inmueble: this.inmueble,
         };
-        // const nroTramite = await this.$store.dispatch('tickets/getCurrent')
         // habilitacion.nroTramite = nroTramite
         const response = await this.$store.dispatch('habilitaciones/create', {
           habilitacion,

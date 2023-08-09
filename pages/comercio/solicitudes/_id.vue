@@ -16,10 +16,11 @@
           <h4 class="text-primary ml-1" v-if="habilitacion.status === 'En revisión'">{{ habilitacion.status }} </h4>
           <h4 class="text-success ml-1" v-if="habilitacion.status === 'Aprobada'">{{ habilitacion.status }} </h4>
           <h4 class="text-danger ml-1" v-if="habilitacion.status === 'Rechazada'">{{ habilitacion.status }} </h4>
-          <h4 class="text-secondary ml-1" v-if="habilitacion.status === 'Pendiente'">{{ habilitacion.status }} </h4>
+          <h4 class="text-secondary ml-1" v-if="habilitacion.status === 'Pendiente de inspección'">{{ habilitacion.status }} </h4>
       </div>
       <div class="row col-10 mx-auto justify-content-center">
         <b-button @click="onAprobarSolicitud" variant="success" pill class="btn-4 mt-3 mx-1"> Aprobar solicitud </b-button>
+        <b-button @click="onRechazarSolicitud" variant="success" pill class="btn-4 mt-3 mx-1"> Restablecer </b-button>
         <b-button @click="onRechazarSolicitud" variant="success" pill class="btn-3 mt-3 mx-1"> Rechazar solicitud </b-button>
       </div>
       <div class="container col-md-6 col-sm-8 card shadow-lg mt-4 mx-auto">
@@ -170,8 +171,8 @@
           </div>
         </template>
         <div class="confirmation-popup-body">
-          <h2 class="icon-orange text-center"><b>Rechazar solicitud</b></h2>
-          <p>La solicitud será rechazada. Se notificará al solicitante a través de su correo electrónico.</p>
+          <h2 class="icon-orange text-danger text-center"><b>Rechazar solicitud</b></h2>
+          <p>La solicitud será rechazada. Recordá notificar al solicitante a través de su correo electrónico.</p>
           <p>Observaciones:  </p>
           <b-form-textarea v-model="observaciones" type="text" />
           <div class="text-center mt-3">
@@ -189,8 +190,9 @@
         </div>
       </template>
       <div class="confirmation-popup-body">
-        <h2 class="icon-orange text-center"><b>Aprobar solicitud</b></h2>
-        <p>La solicitud será aceptada. Debes indicar si el comercio requiere inspección, y notificar al solicitante a través de su correo electrónico.</p>
+        <h2 class="icon-orange text-success text-center"><b>Aprobar solicitud</b></h2>
+        <p>La solicitud será aceptada. </p>
+        <p>Si indicás que el comercio requiere inspección, debes notificar al solicitante a través de su correo electrónico.</p>
         <div class="form-check">
             <input class="form-check-input" type="checkbox" id="documentCheckbox" v-model="inspeccion"/>
             <label class="form-check-label" for="documentCheckbox">El comercio requiere inspección</label>
@@ -286,7 +288,7 @@ export default {
         status: 'Aprobada'
       }
       if(this.inspeccion){
-        habilitacion.status = "Pendiente"
+        habilitacion.status = "Pendiente de inspección"
       }
       const id = this.habilitacion.id
       const userToken = this.$store.state.user.token

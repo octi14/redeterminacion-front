@@ -2,7 +2,7 @@ const formatCertif = (CertifResponse) => ({
   id: CertifResponse._id,
   obra: CertifResponse.obra,
   items: CertifResponse.items.map(formatItem),
-  redeterminado: CertifResponse.redeterminado,
+  redeterminado: new Date(CertifResponse.redeterminado).toLocaleDateString(),
 })
 
 const formatItem = (ItemsData) => ({

@@ -13,6 +13,13 @@
           </b-button>
         </NuxtLink>
       </template>
+      <template #cell(observaciones)="row">
+        <NuxtLink :to="{ name: 'comercio-solicitudes-id', params: { id: row.item.id } }">
+          <b-button variant="outline-primary" size="sm" title="Observaciones">
+            <b-icon-eye/>
+          </b-button>
+        </NuxtLink>
+      </template>
     </b-table>
   </div>
 </template>
@@ -50,6 +57,9 @@ export default{
         },
         {
           key: 'detalles',
+        },
+        {
+          key: 'observaciones'
         }
       ],
     }
@@ -64,7 +74,7 @@ export default{
         case 'En revisión':
           item.estadoColor = 'estado-primary';
           break;
-        case 'Pendiente':
+        case 'Pendiente de inspección':
           item.estadoColor = 'estado-secondary';
           break;
         case 'Rechazada':

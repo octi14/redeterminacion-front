@@ -351,7 +351,7 @@ export default {
               const nroTramite = this.nroTramiteIngresado
               await this.$store.dispatch('habilitaciones/getByNroTramite',  { nroTramite })
               if(this.$store.state.habilitaciones.single){
-                if(this.$store.state.habilitaciones.single.status != "Pendiente"){
+                if(this.$store.state.habilitaciones.single.status != "Pendiente de inspección"){
                   this.showPopupNotAllowed = true
                 }else{
                   await this.$store.dispatch('turnos/getSingle', { nroTramite })

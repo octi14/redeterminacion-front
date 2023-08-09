@@ -124,10 +124,10 @@
                 <p>Selecciona el rubro para consultar sus requisitos específicos y para ver en el mapa las zonas permitidas. Si no encontrás el rubro que querés consultar, es porque no tiene ningún requisito especial.</p>
                 <b-form-group label="Seleccione el Rubro" label-for="rubro">
                   <b-form-select v-model="rubroSeleccionado.id" :options="filteredRubros" value-field="id" text-field="nombre" @change="handleRubroChange" style="margin:10px 0;"></b-form-select>
-                </b-form-group>    
-                <div v-if="rubroSeleccionado.id">  
-                  <h5 class="subtitle"><u>¿A que nos referimos cuando hablamos de "{{ rubroSeleccionado.nombre }}"?</u></h5>          
-                  <p>{{ rubroSeleccionado.descripcion }}</p>       
+                </b-form-group>
+                <div v-if="rubroSeleccionado.id">
+                  <h5 class="subtitle"><u>¿A que nos referimos cuando hablamos de "{{ rubroSeleccionado.nombre }}"?</u></h5>
+                  <p>{{ rubroSeleccionado.descripcion }}</p>
                   <h5 v-if="rubroSeleccionado.requisitos.length" class="subtitle"><div class="li-icon"><b-icon-card-checklist class="icon-orange" scale="1.5"></b-icon-card-checklist></div><div class="li-content"> <u>Requisitos especiales para el rubro: {{ rubroSeleccionado.nombre }}</u></div></h5>
                   <ul v-if="rubroSeleccionado.requisitos.length">
                     <li v-for="(req, index) in rubroSeleccionado.requisitos" :key="index">
@@ -135,7 +135,7 @@
                     </li>
                   </ul>
                   <b-card v-if="rubroSeleccionado.inspeccion" border-variant="info" align="center" >
-                    <b-card-text>                              
+                    <b-card-text>
                       <b-row>
                         <b-col md="1">
                           <b-icon-calendar3 variant="info" font-scale="4"></b-icon-calendar3>
@@ -153,7 +153,7 @@
                     </b-card-text>
                   </b-card>
                   <h5 class="subtitle"><div class="li-icon"><b-icon-pin-map-fill class="icon-orange" scale="1.5"></b-icon-pin-map-fill></div> <div class="li-content"><u>Zonas permitidas para el rubro: {{ rubroSeleccionado.nombre }}</u></div></h5>
-                  <iframe v-if="rubroSeleccionado.pom" :src="`${rubroSeleccionado.pom}`" width="100%" height="800" allow="autoplay"></iframe>          
+                  <iframe v-if="rubroSeleccionado.pom" :src="`${rubroSeleccionado.pom}`" width="100%" height="800" allow="autoplay"></iframe>
                   <p v-if="rubroSeleccionado">Descarga el Mapa con las zonas permitidas para el rubro <b>{{ rubroSeleccionado.nombre }}</b>
                     <a class="external-link" :href="`${rubroSeleccionado.pom}`">AQUI</a>
                   </p>
@@ -190,9 +190,9 @@
                   <div class="li-icon"></div><div class="li-content">En este caso, el comercio anterior debe estar dado de baja. Dicho trámite se realiza personalmente en el Departamento de Comercio Municipal.</div>
                 </li>
                 <li>
-                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content li-title">¿Cómo se calcula la Tasa de Habilitación?</div>              
+                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content li-title">¿Cómo se calcula la Tasa de Habilitación?</div>
                   <div class="li-icon"></div><div class="li-content li-p">La Tasa de Habilitación depende de los siguientes factores:</div>
-                  <div class="li-icon"></div><div class="li-content">                  
+                  <div class="li-icon"></div><div class="li-content">
                     <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> El rubro que se quiere habilitar.</div>
                     <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> La zona donde se encuentra el local.</div>
                     <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> La superficie total afectada a la actividad comercial (que implican el sector de atención al público, depósito, espacio de circulación, entrepiso, sanitarios, entre otros).</div>
@@ -202,24 +202,24 @@
                 <li>
                   <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content li-title">Para facilitar la búsqueda de un local: ¿Dónde puedo consultar la Zona Comercial Apta para habilitar y los requisitos edilicios para su instalación y funcionamiento?</div>
                   <div class="li-icon"></div><div class="li-content li-p">Para realizar tu consulta, podés enviar un correo electrónico a: <a class="external-link" href="mailto:deptocomercio@gesell.gob.ar" target="_blank">deptocomercio@gesell.gob.ar</a> informando los siguientes datos:</div>
-                  <div class="li-icon"></div><div class="li-content">                  
+                  <div class="li-icon"></div><div class="li-content">
                     <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Rubro a habilitar.</div>
                     <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Domicilio real del local (Calle y Número).</div>
                     <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Localidad de ubicación en el Partido de Villa Gesell.</div>
                     <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Datos catastrales: Chacra- Quinta- Manzana - Parcela - Unidad Contributiva.</div>
-                  </div> 
+                  </div>
                 </li>
                 <li>
                   <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content li-title">¿Deben renovarse las habilitaciones comerciales?</div>
-                  <div class="li-icon"></div><div class="li-content">                   
+                  <div class="li-icon"></div><div class="li-content">
                     <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"><b>En caso de contrato de locación:</b> Las habilitaciones se extienden por el período que abarca el contrato de locación y deben reempadronarse anualmente, según corresponda, teniendo en cuenta la normativa vigente.</div>
                     <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"><b>En caso de ser propietario/a del inmueble:</b> Las habilitaciones no tienen caducidad si la titularidad o las condiciones acreditadas al momento de la entrega del certificado de habilitación no cambian.</div>
                   </div>
-                </li> 
+                </li>
                 <li>
                   <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content li-title">¿Cómo puedo obtener el Registro Provincial para la Comercialización de Bebidas Alcohólicas (REBA)?</div>
                   <div class="li-icon"></div><div class="li-content li-p">Las actividades que comercializan bebidas alcohólicas deben tramitar el certificado del REBA correspondiente.</div>
-                  <div class="li-icon"></div><div class="li-content">                  
+                  <div class="li-icon"></div><div class="li-content">
                     <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">Para tramitarlo debés tener tu habilitación comercial vigente.</div>
                     <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">Su costo dependerá de la actividad comercial que se lleve a cabo.</div>
                     <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">El trámite se lleva a cabo <b>personalmente</b> en la Municipalidad una vez iniciado el trámite online. </div>
@@ -239,7 +239,7 @@
               <p v-show="isCardExpanded(0)">
                 La habilitación de comercios/industrias o asimilables deberá adecuarse a lo determinado en concordancia con leyes nacionales, provinciales y la
                 <a href="https://arvige.gob.ar/legislacion/pdf/12" target="_blank" class="external-link">Ordenanza 2156/08 (TO 2023)</a>
-                y el 
+                y el
 
                 <a href="/ordenanzas" target="_blank" class="external-link">Digesto Comercial Municipal</a>
                  (creado por el
@@ -370,7 +370,7 @@ export default {
                           ordenanzas: [],
                           links: [],
                           requisitos: [],
-                          pom: null, 
+                          pom: null,
                           inspeccion: false,
                         },
 
@@ -438,7 +438,7 @@ export default {
       this.rubroSeleccionado.pom = this.filteredRubros[i].pom;
       this.rubroSeleccionado.inspeccion = this.filteredRubros[i].inspeccion;
       } else {
-        // Si no se ha seleccionado ninguna opción, reiniciar las propiedades        
+        // Si no se ha seleccionado ninguna opción, reiniciar las propiedades
         this.rubroSeleccionado.nombre = null;
         this.rubroSeleccionado.descripcion = null;
         this.rubroSeleccionado.ordenanzas = [];
@@ -707,7 +707,7 @@ ul{
 .li-icon, .li-content{
   display: inline-block;
 }
-.li-title{ 
+.li-title{
   margin-bottom: 0.3rem;
 }
 .li-icon{

@@ -1,20 +1,12 @@
 <template>
-  <b-card no-body class="obra-card mt-1">
-    <!-- <NuxtLink :to="{ name: 'obra-id', params: { id: obra.id } }">
-      <img :src="obra.image" class="card-img-top" :alt="obra.name" />
-    </NuxtLink> -->
+  <b-card no-body class="obra-card">
     <b-card-body>
       <NuxtLink :to="{ name: 'obra-id', params: { id: obra.id } }">
         <h5>{{ obra.objeto }}</h5>
       </NuxtLink>
-      <h6>{{ obra.adjudicado }}</h6>
+      <a>{{ obra.adjudicado }}</a> <br>
       <strong>{{ obra.fecha_contrato }}</strong>
     </b-card-body>
-      <NuxtLink class="col-md-2" :to="{ name: 'obra-id', params: { id: obra.id } }">
-        <!-- <b-button variant="success" class="col-sm-12 my-1"> Detalles </b-button> -->
-            <!-- <b-icon icon="arrow-up"></b-icon>
-            <b-icon icon="exclamation-triangle"></b-icon> -->
-      </NuxtLink>
   </b-card>
 </template>
 

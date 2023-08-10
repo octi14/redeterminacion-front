@@ -1,9 +1,6 @@
 <template>
-  <div class="page">
+  <div class="page feed">
     <Banner title="Obras" />
-    <template v-if="!isAuthenticated">
-      <LoginForm />
-    </template>
     <template v-if="adminHacienda">
       <ObraFeed />
     </template>
@@ -13,9 +10,6 @@
 <script>
 export default {
   computed: {
-    isAuthenticated() {
-      return Boolean(this.$store.state.user.token)
-    },
     adminHacienda() {
       return this.$store.state.user.admin == "hacienda"
     },
@@ -24,15 +18,7 @@ export default {
 </script>
 
 <style>
-.background {
-  padding: 0% 0;
-  height:100%;
-  background-size: cover;
-  object-fit: fill;
-  background-color: #f5f8f9;
-}
-
 .feed{
-  background-color: #ffffff78;
+  background-color: #ffffff;
 }
 </style>

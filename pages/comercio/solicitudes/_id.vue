@@ -15,15 +15,16 @@
         <p class="h4"> Estado:
           <h4 class="text-primary ml-1" v-if="habilitacion.status === 'En revisión'">{{ habilitacion.status }} </h4>
           <h4 class="text-success ml-1" v-if="habilitacion.status === 'Aprobada'">{{ habilitacion.status }} </h4>
+          <h4 class="text-success ml-1" v-if="habilitacion.status === 'Inspeccionada'">{{ habilitacion.status }} </h4>
           <h4 class="text-danger ml-1" v-if="habilitacion.status === 'Rechazada'">{{ habilitacion.status }} </h4>
           <h4 class="text-secondary ml-1" v-if="habilitacion.status === 'Pendiente de inspección'">{{ habilitacion.status }} </h4>
       </div>
       <div class="row col-10 mx-auto justify-content-center">
         <b-button @click="onAprobarSolicitud" variant="success" pill class="btn-4 mt-3 mx-1"> Aprobar solicitud </b-button>
-        <b-button @click="onRechazarSolicitud" variant="success" pill class="btn-4 mt-3 mx-1"> Restablecer </b-button>
+        <b-button @click="onRestablecer" variant="success" pill class="btn-4 mt-3 mx-1"> Restablecer </b-button>
         <b-button @click="onRechazarSolicitud" variant="success" pill class="btn-3 mt-3 mx-1"> Rechazar solicitud </b-button>
       </div>
-      <div class="container col-md-6 col-sm-8 card shadow-lg mt-4 mx-auto">
+      <b-card no-body class="container col-md-6 col-sm-8 shadow-lg mt-4 mx-auto">
           <div class="col mx-auto">
             <div class="container text-center mx-auto">
               <h2 class="text-success mt-2"><b> Datos del solicitante </b></h2>
@@ -81,7 +82,7 @@
             </div>
             <br>
           </div>
-        </div>
+      </b-card>
     </template>
     <!-- Datos del inmueble -->
     <template v-if="habilitacion">
@@ -174,7 +175,7 @@
           <h2 class="icon-orange text-danger text-center"><b>Rechazar solicitud</b></h2>
           <p>La solicitud será rechazada. Recordá notificar al solicitante a través de su correo electrónico.</p>
           <p>Observaciones:  </p>
-          <b-form-textarea v-model="observaciones" type="text" />
+          <b-form-textarea v-model="observaciones" required type="text" />
           <div class="text-center mt-3">
             <b-btn variant="primary" @click="onSendReject()" >
                 Enviar
@@ -191,8 +192,8 @@
       </template>
       <div class="confirmation-popup-body">
         <h2 class="icon-orange text-success text-center"><b>Aprobar solicitud</b></h2>
-        <p>La solicitud será aceptada. </p>
-        <p>Si indicás que el comercio requiere inspección, debes notificar al solicitante a través de su correo electrónico.</p>
+        <p><b>La solicitud será aceptada. </b> </p>
+        <p>¿Este comercio requiere inspección? Si es así, deberás notificar al solicitante a través de su correo electrónico.</p>
         <div class="form-check">
             <input class="form-check-input" type="checkbox" id="documentCheckbox" v-model="inspeccion"/>
             <label class="form-check-label" for="documentCheckbox">El comercio requiere inspección</label>
@@ -282,6 +283,19 @@ export default {
     },
     async onAprobarSolicitud(){
       this.showPrevApprove = true
+    },
+    async onRestablecer(){
+      const habilitacion = {
+        status: 'En revisión'
+      }
+      const id = this.habilitacion.id
+      const userToken = this.$store.state.user.token
+      await this.$store.dispatch('habilitaciones/update', {
+        id,
+        habilitacion,
+        userToken,
+      })
+      this.habilitacion.status = habilitacion.status
     },
     async onSendApprove(){
       const habilitacion = {

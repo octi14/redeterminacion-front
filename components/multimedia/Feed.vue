@@ -3,7 +3,7 @@
     <div class="row mt-3 justify-content-center text-center">
       <b-input
         type="text"
-        class="col-4"
+        class="col-6"
         v-model="search"
         @input="handleSearchInput"
         placeholder="Buscar..."

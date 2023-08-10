@@ -5,6 +5,7 @@ const formatFile = (FileResponse) => ({
   mail: FileResponse.solicitante.mail,
   rubro: FileResponse.inmueble.rubro,
   status: FileResponse.status,
+  observaciones: FileResponse.observaciones,
   // fecha_contrato: FileResponse.fecha_contrato.substr(0, 10),
   // acta_inicio: FileResponse.acta_inicio.substr(0,10),
   createdAt: new Date(FileResponse.createdAt).toLocaleDateString(),

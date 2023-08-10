@@ -1,7 +1,20 @@
 <template>
   <div class="page">
     <Banner title="Solicitudes de habilitación" subtitle="Uso interno" />
-    <b-table per-page="10" head-row-variant="success" class="col-10 mx-auto mt-4 shadow-lg" hover :items="items" :fields="fields">
+    <div class="row col-8 mx-auto">
+      <b-form-group class="col-4 mx-auto mt-3" horizontal label-class="text-success h6" label="Filtrar por Estado">
+        <b-form-select v-model="selectedEstado">
+          <option value="">Todos</option>
+          <option v-for="estado in estados" :value="estado" :key="estado">{{ estado }}</option>
+        </b-form-select>
+      </b-form-group>
+      <!-- <b-form-group class="col-4 mx-auto mt-4" horizontal label-class="text-success h6" label="Filtrar por DNI">
+        <b-icon-funnel-fill variant="success" />
+        <b-form-input v-model="selectedDocumento" @keypress="onSearchByDocumento">
+        </b-form-input>
+      </b-form-group> -->
+    </div>
+    <b-table per-page="10" head-row-variant="success" class="col-10 mx-auto mt-4 shadow-lg" :items="filteredItems" :fields="fields">
       <!-- Plantilla personalizada para la columna "detalles" -->
       <template #cell(status)="row">
         <div :class="row.item.estadoColor"><b>{{ row.value }}</b></div>
@@ -14,13 +27,15 @@
         </NuxtLink>
       </template>
       <template #cell(observaciones)="row">
-        <NuxtLink :to="{ name: 'comercio-solicitudes-id', params: { id: row.item.id } }">
-          <b-button variant="outline-primary" size="sm" title="Observaciones">
-            <b-icon-eye/>
-          </b-button>
-        </NuxtLink>
+        <b-button v-if="row.item.observaciones != ''" @click="onShowObservaciones(row.item.id)" variant="outline-primary" size="sm" title="Observaciones">
+          <b-icon-eye/>
+        </b-button>
       </template>
     </b-table>
+
+    <b-modal v-model="singleModal" header-bg-variant="primary" title="Observaciones" title-class="text-light" hide-footer centered>
+      <p> {{ singleContent }} </p>
+    </b-modal>
   </div>
 </template>
 
@@ -30,6 +45,9 @@ export default{
     return {
       lastLength: false,
       items: [],
+      selectedEstado: '',
+      singleModal: false,
+      singleContent: 'asdasd',
       currentPage: 1,
       perPage: 10,
       totalPages: 0,
@@ -62,6 +80,7 @@ export default{
           key: 'observaciones'
         }
       ],
+      estados: ['En revisión', 'Aprobada', 'Rechazada', 'Inspeccionada', 'Pendiente de inspección', 'Esperando documentación', 'Finalizada'],
     }
   },
   async fetch() {
@@ -83,6 +102,12 @@ export default{
         case 'Aprobada':
           item.estadoColor = 'estado-success';
           break;
+        case 'Inspeccionada':
+          item.estadoColor = 'estado-success';
+          break;
+        case 'Finalizada':
+          item.estadoColor = 'estado-success';
+          break;
         default:
           item.estadoColor = 'estado-primary';
       }
@@ -93,11 +118,24 @@ export default{
   computed: {
     habilitaciones(){
       return this.$store.state.habilitaciones.all
-    }
+    },
+    filteredItems() {
+      if (this.selectedEstado) {
+        return this.items.filter(item => item.status == this.selectedEstado);
+      } else {
+        return this.items; // Sin filtro, mostrar todos los elementos
+      }
+    },
   },
   methods: {
     loadMore() {
       this.$fetch()
+    },
+    async onShowObservaciones(id){
+      const habilitacion = this.$store.state.habilitaciones.all.filter(habilitacion => habilitacion.id === id)
+      this.singleContent = habilitacion[0].observaciones
+      this.$fetch()
+      this.singleModal = true
     },
     previousPage() {
       if (this.currentPage > 1) {

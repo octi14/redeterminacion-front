@@ -141,11 +141,24 @@ export default {
       const turno = {
         status: 'Inspeccionado'
       }
+      const habilitacion = {
+        status: 'Inspeccionada'
+      }
       const id = this.turno.id
       const userToken = this.$store.state.user.token
       await this.$store.dispatch('turnos/update', {
         id,
         turno,
+        userToken,
+      })
+      const nroTramite = this.turno.nroTramite
+      await this.$store.dispatch('habilitaciones/getByNroTramite',{
+        nroTramite
+      })
+      const habId = this.$store.state.habilitaciones.single.id
+      await this.$store.dispatch('habilitaciones/update', {
+        id: habId,
+        habilitacion,
         userToken,
       })
       this.wait(300)

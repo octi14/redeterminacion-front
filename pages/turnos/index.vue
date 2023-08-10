@@ -4,14 +4,14 @@
     <div class="mx-auto">
       <div v-if="page === 0">
         <div class="row justify-content-center banner-container" style="width: 100%">
-          <img src="../../assets/turnera-banner-1.png"/>
+          <img src="../../assets/turnera-banner-1.png" style="max-width: 100%"/>
         </div>
         <b-card class="section-card col-md-6 mx-auto">
           <div class="li-row">
             <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Estás a punto de seleccionar un turno de inspección para tu comercio.</p></div>
           </div>
           <div class="li-row">
-            <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Para iniciar, ingresá el <b>número de trámite</b> que recibiste por mail luego de haber enviado el Formulario de Solicitud de Habilitaciones.</p></div>
+            <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Para iniciar, ingresá el <b>número de trámite</b> que recibiste luego de haber enviado el Formulario de Solicitud de Habilitaciones.</p></div>
           </div>
           <b-form>
             <b-form-input v-model="nroTramiteIngresado" type="number" size="lg" class="col-md-6 col-sm-10 mt-4 mx-auto" placeholder="Número de trámite" no-wheel></b-form-input>

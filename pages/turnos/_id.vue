@@ -9,14 +9,13 @@
       <div class="row justify-content-center mt-3">
 
         <p class="h4"> Estado:
-          <h4 class="text-primary ml-1" v-if="turno.status === 'En revisión'">{{ turno.status }} </h4>
           <h4 class="text-primary ml-1" v-if="turno.status === 'Pendiente de inspección'">{{ turno.status }} </h4>
           <h4 class="text-success ml-1" v-if="turno.status === 'Inspeccionado'">{{ turno.status }} </h4>
           <h4 class="text-danger ml-1" v-if="turno.status === 'Cancelado'">{{ turno.status }} </h4>
       </div>
       <div class="row col-10 mx-auto justify-content-center">
-        <b-button @click="onSendApprove" variant="success" pill class="btn-4 mt-3 mx-1"> Aprobar inspección </b-button>
-        <b-button @click="onSendApprove" variant="secondary" pill class="btn-4 mt-3 mx-1"> Prórroga </b-button>
+        <b-button @click="onAprobar" variant="success" pill class="btn-4 mt-3 mx-1"> Aprobar inspección </b-button>
+        <b-button @click="onProrroga" variant="secondary" pill class="btn-4 mt-3 mx-1"> Prórroga </b-button>
         <!-- <b-button @click="onRechazarTurno" pill class="btn-3 mt-3 mx-1"> Cancelar turno </b-button> -->
         <b-button @click="onRechazarTurno" pill class="btn-3 mt-3 mx-1"> Rechazar inspección </b-button>
       </div>
@@ -73,8 +72,8 @@
           </div>
         </template>
         <div class="confirmation-popup-body">
-          <h2 class="icon-orange text-center"><b>Rechazar turno</b></h2>
-          <p>El turno será rechazado. Se debe notificar al solicitante a través de su correo electrónico.</p>
+          <h2 class="icon-orange text-center"><b>Rechazar inspección</b></h2>
+          <p>La inspección será rechazada. Se dará aviso inmediatamente al Departamento de Comercio.</p>
           <p>Observaciones:  </p>
           <b-form-textarea v-model="observaciones" type="text" />
           <div class="text-center mt-3">
@@ -85,6 +84,24 @@
         </div>
     </b-modal>
 
+    <b-modal v-model="showPrevApprove" hide-footer :header-bg-variant="'success'" centered>
+      <template #modal-header>
+        <div class="confirmation-popup-header mx-auto">
+          <b-icon-check-circle scale="2" variant="light" />
+        </div>
+      </template>
+      <div class="confirmation-popup-body">
+        <h4 class="text-success text-center"><b>Aprobar inspección</b></h4>
+        <p class="text-center">La inspección será marcada como realizada. </p>
+        <p class="text-center">Al seleccionar esta opción, el Departamento Comercio dará aviso al solicitante de los pasos para continuar el trámite. </p>
+        <div class="text-center mt-3">
+          <b-btn variant="success" @click="onSendApprove">
+              Aprobar
+          </b-btn>
+        </div>
+      </div>
+    </b-modal>
+
     <b-modal v-model="showApprove" hide-footer :header-bg-variant="'success'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
@@ -92,8 +109,26 @@
         </div>
       </template>
       <div class="confirmation-popup-body">
-        <h4 class="icon-orange text-center"><b>Comercio inspeccionado</b></h4>
+        <h4 class="text-success text-center"><b>Comercio inspeccionado</b></h4>
         <p class="text-center">El trámite ha finalizado.</p>
+        <div class="text-center mt-3">
+          <b-btn variant="primary" @click="showApprove = false">
+              Aceptar
+          </b-btn>
+        </div>
+      </div>
+    </b-modal>
+
+    <b-modal v-model="showProrroga" hide-footer :header-bg-variant="'success'" centered>
+      <template #modal-header>
+        <div class="confirmation-popup-header mx-auto">
+          <b-icon-check-circle scale="2" variant="light" />
+        </div>
+      </template>
+      <div class="confirmation-popup-body">
+        <h4 class="text-primary text-center"><b>Prórroga</b></h4>
+        <p class="text-center">Se concederá prórroga de<b> 7 días hábiles </b>para que el solicitante dé cumplimiento a los requerimientos. <p>
+        <p class="text-center">La cantidad total de prórrogas pasibles de conceder son dos (2) continuadas e ininterrumpidas.</p>
         <div class="text-center mt-3">
           <b-btn variant="primary" @click="showApprove = false">
               Aceptar
@@ -116,8 +151,10 @@ export default {
   data() {
     return {
       inspeccion: false,
+      showPrevApprove: false,
       showApprove: false,
       showRejectPopup: false,
+      showProrroga: false,
       turno: null,
       observaciones: ''
     }
@@ -137,12 +174,15 @@ export default {
     wait(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
     },
+    onAprobar(){
+      this.showPrevApprove = true
+    },
     async onSendApprove(){
       const turno = {
         status: 'Inspeccionado'
       }
       const habilitacion = {
-        status: 'Inspeccionada'
+        status: 'Inspeccionado'
       }
       const id = this.turno.id
       const userToken = this.$store.state.user.token
@@ -159,14 +199,17 @@ export default {
       await this.$store.dispatch('habilitaciones/update', {
         id: habId,
         habilitacion,
-        userToken,
       })
       this.wait(300)
       this.$fetch()
+      this.showPrevApprove = false
       this.showApprove = true
     },
     onRechazarTurno(){
       this.showRejectPopup = true
+    },
+    onProrroga(){
+      this.showProrroga = true
     },
     async onSendReject(){
       const turno = {

@@ -1,9 +1,9 @@
 <template>
   <div class="page">
     <Banner title="Solicitudes de habilitación" subtitle="Uso interno" />
-    <div class="row col-8 mx-auto">
+    <div class="row col-8 mx-auto" v-if="adminComercio">
       <b-form-group class="col-4 mx-auto mt-3" horizontal label-class="text-success h6" label="Filtrar por Estado">
-        <b-form-select v-model="selectedEstado">
+        <b-form-select plain v-model="selectedEstado">
           <option value="">Todos</option>
           <option v-for="estado in estados" :value="estado" :key="estado">{{ estado }}</option>
         </b-form-select>
@@ -14,7 +14,7 @@
         </b-form-input>
       </b-form-group> -->
     </div>
-    <b-table per-page="10" head-row-variant="success" class="col-10 mx-auto mt-4 shadow-lg" :items="filteredItems" :fields="fields">
+    <b-table per-page="11" head-row-variant="warning" class="col-10 mx-auto mt-4 shadow-lg" :items="filteredItems" :fields="fields">
       <!-- Plantilla personalizada para la columna "detalles" -->
       <template #cell(status)="row">
         <div :class="row.item.estadoColor"><b>{{ row.value }}</b></div>
@@ -80,7 +80,7 @@ export default{
           key: 'observaciones'
         }
       ],
-      estados: ['En revisión', 'Aprobada', 'Rechazada', 'Inspeccionada', 'Pendiente de inspección', 'Esperando documentación', 'Finalizada'],
+      estados: ['Rechazada','En revisión', 'Esperando turno','Esperando inspección','Inspeccionado', 'Esperando documentación', 'Finalizada'],
     }
   },
   async fetch() {
@@ -93,16 +93,19 @@ export default{
         case 'En revisión':
           item.estadoColor = 'estado-primary';
           break;
-        case 'Pendiente de inspección':
+        case 'Esperando inspección':
+          item.estadoColor = 'estado-secondary';
+          break;
+        case 'Esperando turno':
           item.estadoColor = 'estado-secondary';
           break;
         case 'Rechazada':
           item.estadoColor = 'estado-danger';
           break;
-        case 'Aprobada':
+        case 'Esperando documentación':
           item.estadoColor = 'estado-success';
           break;
-        case 'Inspeccionada':
+        case 'Inspeccionado':
           item.estadoColor = 'estado-success';
           break;
         case 'Finalizada':
@@ -126,6 +129,9 @@ export default{
         return this.items; // Sin filtro, mostrar todos los elementos
       }
     },
+    adminComercio() {
+      return this.$store.state.user.admin === "comercio"
+    }
   },
   methods: {
     loadMore() {

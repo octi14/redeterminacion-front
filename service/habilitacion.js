@@ -4,6 +4,7 @@ const formatFile = (FileResponse) => ({
   dni: FileResponse.solicitante.DNI,
   mail: FileResponse.solicitante.mail,
   rubro: FileResponse.inmueble.rubro,
+  localidad: FileResponse.inmueble.localidad,
   status: FileResponse.status,
   observaciones: FileResponse.observaciones,
   // fecha_contrato: FileResponse.fecha_contrato.substr(0, 10),
@@ -77,14 +78,11 @@ module.exports = {
 
     return createdFile;
   },
-  update: async (axios, id, { habilitacion, userToken }) => {
+  update: async (axios, id, { habilitacion }) => {
     axios.setHeader('Access-Control-Allow-Origin', true)
     const updated = await axios.$put(
       `/habilitaciones/${id}`,
       { habilitacion },
-      {
-        headers: { Authorization: `Bearer ${userToken}` },
-      }
     )
     return formatFile(updated)
   },

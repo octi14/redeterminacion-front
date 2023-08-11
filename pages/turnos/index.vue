@@ -51,7 +51,7 @@
               class="col-8 mx-auto mt-3"
               block hide-header
               :date-format-options="{ year: 'numeric', day: '2-digit', weekday: 'short' }"
-              :min="new Date()"
+              :min="addDays(new Date(),2)"
               :max="daysFromNow()"
               locale="es"
               value-as-date
@@ -153,7 +153,7 @@
           </h3></div>
         </template>
         <div class="text-center modal-success">
-          <p><b>{{ nombre }}</b>, solicitaste un turno para el día <b>{{ formattedDate }}</b> para la dirección especificada: <b>{{ domicilio }}</b>, en la franja horaria de las <b>{{ time }}</b></p>
+          <p><b>{{ nombre }}</b>, solicitaste un turno para el día <b>{{ formattedDate }}</b> para la dirección especificada: <b>{{ domicilio }}</b>, en la franja horaria de las <b>{{ time }}.</b></p>
           <p>Tu número de trámite es: <b>{{nroTramite}} </b></p>
           <div class="btn-container">
             <b-button @click="onResetParams" class="btn-cancel">Volver</b-button>
@@ -254,6 +254,7 @@ export default {
       nombre: '',
       dni: '',
       domicilio: '',
+      localidad: '',
       formOk: false,
       printing: false,
       horariosDisponibles: [],
@@ -300,7 +301,9 @@ export default {
       const weekday = date.getDay();
       const day = date.getDate();
       // Return `true` if the date should be disabled
-      return weekday === 0 || weekday === 6;
+      return weekday === 0 || weekday === 6 ||
+       (this.localidad == "villa-gesell" && weekday >= 4) ||
+       (this.localidad != "villa-gesell" && weekday < 4);
     },
     async onSelectTurno() {
       if (!this.nombre || !this.dni || !this.domicilio) {
@@ -330,6 +333,14 @@ export default {
             appendToast: true
           })
         }
+        const habilitacionId = this.$store.state.habilitaciones.single.id
+        const habilitacion = {
+          status: 'Esperando inspección'
+        }
+        await this.$store.dispatch('habilitaciones/update',{
+          id: habilitacionId,
+          habilitacion,
+        })
         this.formOk = true;
       }
     },
@@ -351,16 +362,17 @@ export default {
               const nroTramite = this.nroTramiteIngresado
               await this.$store.dispatch('habilitaciones/getByNroTramite',  { nroTramite })
               if(this.$store.state.habilitaciones.single){
-                if(this.$store.state.habilitaciones.single.status != "Pendiente de inspección"){
-                  this.showPopupNotAllowed = true
+                const status = this.$store.state.habilitaciones.single.status
+                if(status === "Esperando turno"){
+                  this.nroTramite = this.nroTramiteIngresado
+                  this.localidad = this.$store.state.habilitaciones.single.localidad
+                  this.page += 1
                 }else{
-                  await this.$store.dispatch('turnos/getSingle', { nroTramite })
-                  const turno = this.$store.state.turnos.single
-                  if(turno){
+                  if(status === "Esperando inspección"){
+                    await this.$store.dispatch('turnos/getSingle', { nroTramite })
                     this.showPopupAlready = true
                   }else{
-                    this.nroTramite = this.nroTramiteIngresado
-                    this.page += 1
+                    this.showPopupNotAllowed = true
                   }
                 }
               }else{

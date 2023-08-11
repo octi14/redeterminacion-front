@@ -14,15 +14,22 @@
 
         <p class="h4"> Estado:
           <h4 class="text-primary ml-1" v-if="habilitacion.status === 'En revisión'">{{ habilitacion.status }} </h4>
-          <h4 class="text-success ml-1" v-if="habilitacion.status === 'Aprobada'">{{ habilitacion.status }} </h4>
-          <h4 class="text-success ml-1" v-if="habilitacion.status === 'Inspeccionada'">{{ habilitacion.status }} </h4>
+          <h4 class="text-success ml-1" v-if="habilitacion.status === 'Esperando documentación'">{{ habilitacion.status }} </h4>
+          <h4 class="text-success ml-1" v-if="habilitacion.status === 'Inspeccionado'">{{ habilitacion.status }} </h4>
           <h4 class="text-danger ml-1" v-if="habilitacion.status === 'Rechazada'">{{ habilitacion.status }} </h4>
-          <h4 class="text-secondary ml-1" v-if="habilitacion.status === 'Pendiente de inspección'">{{ habilitacion.status }} </h4>
+          <h4 class="text-secondary ml-1" v-if="habilitacion.status === 'Esperando turno'">{{ habilitacion.status }} </h4>
+          <h4 class="text-secondary ml-1" v-if="habilitacion.status === 'Esperando inspección'">{{ habilitacion.status }} </h4>
+          <h4 class="text-success ml-1" v-if="habilitacion.status === 'Finalizada'">{{ habilitacion.status }} </h4>
       </div>
       <div class="row col-10 mx-auto justify-content-center">
-        <b-button @click="onAprobarSolicitud" variant="success" pill class="btn-4 mt-3 mx-1"> Aprobar solicitud </b-button>
-        <b-button @click="onRestablecer" variant="success" pill class="btn-4 mt-3 mx-1"> Restablecer </b-button>
+        <b-button @click="onSolicitarDocumentacion" variant="success" pill class="btn-4 mt-3 mx-1" v-if="habilitacion.status === 'Inspeccionado'"> Solicitar documentación </b-button>
+        <b-button @click="onAprobarSolicitud" variant="success" pill class="btn-4 mt-3 mx-1" v-if="habilitacion.status==='En revisión'"> Aprobar solicitud </b-button>
+        <b-button @click="onFinalizarSolicitud" variant="success" pill class="btn-4 mt-3 mx-1" v-if="habilitacion.status === 'Esperando documentación'"> Finalizar solicitud </b-button>
+        <b-button @click="onRestablecer" variant="secondary" pill class="btn-4 mt-3 mx-1" v-if="habilitacion.status != 'En revisión'"> Volver a estado En Revisión </b-button>
         <b-button @click="onRechazarSolicitud" variant="success" pill class="btn-3 mt-3 mx-1"> Rechazar solicitud </b-button>
+      </div>
+      <div v-if="habilitacion.observaciones">
+        <p> Observaciones: {{ habilitacion.observaciones }} </p>
       </div>
       <b-card no-body class="container col-md-6 col-sm-8 shadow-lg mt-4 mx-auto">
           <div class="col mx-auto">
@@ -157,12 +164,67 @@
           </div>
         </div>
       </div>
-      <div class="text-center mb-3">
-        <NuxtLink to="/comercio/solicitudes">
-          <b-button variant="primary">Volver</b-button>
-        </NuxtLink>
+    </template>
+
+    <template v-if="habilitacion && turno">
+      <div class="container col-md-6 col-sm-8 card shadow-lg mt-4 mb-3 mx-auto">
+        <!-- Resto del contenido del componente -->
+        <div class="col mx-auto">
+          <div class="container text-center mx-auto">
+            <h2 class="text-success mt-2"><b> Turno solicitado </b></h2>
+            <hr/>
+          </div>
+        </div>
+          <div class="container mb-3 mx-auto">
+            <div class="layout">
+              <p class="col col-main">
+                <strong>Fecha y hora del turno</strong><br>
+              </p>
+              <p class="col col-complementary" role="complementary">
+                <a>{{ turno.dia + " " + turno.horario}}</a>
+              </p>
+            </div>
+            <div class="layout">
+              <p class="col col-main">
+                <strong>Nombre del solicitante</strong><br>
+              </p>
+              <p class="col col-complementary" role="complementary">
+                <a>{{ turno.nombre}}</a>
+              </p>
+            </div>
+            <div class="layout">
+              <p class="col col-main">
+                <strong>Número de documento</strong><br>
+              </p>
+              <p class="col col-complementary" role="complementary">
+                <a>{{ turno.dni }}</a>
+              </p>
+            </div>
+            <div class="layout">
+              <p class="col col-main">
+                <strong>Domicilio a inspeccionar</strong><br>
+              </p>
+              <p class="col col-complementary" role="complementary">
+                <a>{{ turno.domicilio }}</a>
+              </p>
+            </div>
+            <div class="layout">
+              <p class="col col-main">
+                <strong>Estado</strong><br>
+              </p>
+              <p class="col col-complementary" role="complementary">
+                <a>{{ turno.status }}</a>
+              </p>
+            </div>
+          </div>
       </div>
     </template>
+
+    <div class="text-center mb-3">
+      <NuxtLink to="/comercio/solicitudes">
+        <b-button variant="primary">Volver</b-button>
+      </NuxtLink>
+    </div>
 
     <!-- Modals -->
     <b-modal v-model="showRejectPopup" hide-footer :header-bg-variant="'danger'" centered>
@@ -187,20 +249,19 @@
     <b-modal v-model="showPrevApprove" hide-footer :header-bg-variant="'secondary'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
-          <b-icon-exclamation-triangle scale="2" variant="light" />
+          <b-icon-check-circle scale="2" variant="light" />
         </div>
       </template>
       <div class="confirmation-popup-body">
-        <h2 class="icon-orange text-success text-center"><b>Aprobar solicitud</b></h2>
-        <p><b>La solicitud será aceptada. </b> </p>
-        <p>¿Este comercio requiere inspección? Si es así, deberás notificar al solicitante a través de su correo electrónico.</p>
+        <h2 class="icon-orange text-secondary text-center"><b>Aprobar solicitud</b></h2>
+        <h5 class="mb-3"> <b-icon-exclamation-octagon scale="1.2" variant="secondary"/><b> ¿El comercio requiere inspección? </b> </h5>
         <div class="form-check">
             <input class="form-check-input" type="checkbox" id="documentCheckbox" v-model="inspeccion"/>
-            <label class="form-check-label" for="documentCheckbox">El comercio requiere inspección</label>
+            <label class="form-check-label" for="documentCheckbox"><b> Si. </b> Enviar mail indicando <strong> solamente </strong> que se deberá realizar el Turno Web para Inspección Comercial.</label>
         </div>
         <div class="text-center mt-3">
           <b-btn variant="primary" @click="onSendApprove()" >
-              Enviar
+              Aceptar
           </b-btn>
         </div>
       </div>
@@ -213,15 +274,66 @@
         </div>
       </template>
       <div class="confirmation-popup-body">
-        <h3 class="icon-orange text-center"><b>Aprobar solicitud</b></h3>
-        <p>La solicitud fue aprobada con éxito. Se deberá notificar al solicitante a través de su correo electrónico.</p>
+        <h3 class="icon-orange text-success text-center"><b>Aprobar solicitud</b></h3>
+        <p>La solicitud fue aprobada con éxito. Se deberá  enviar un correo electrónico al solicitante para que:</p>
+        <ul>
+          <li>  En el plazo de 7 días hábiles concurra al Departamento de Comercio con la documentación original. </li>
+          <li>  Abone el canon de Habilitación Comercial previsto para el rubro.. </li>
+          <li>  Constituya el DFE. </li>
+        </ul>
         <div class="text-center mt-3">
-          <b-btn variant="primary" @click="showApprove = false" >
+          <b-btn variant="success" @click="showApprove = false" >
               Aceptar
           </b-btn>
         </div>
       </div>
     </b-modal>
+
+    <b-modal v-model="showSolicitarDoc" hide-footer :header-bg-variant="'success'" centered>
+      <template #modal-header>
+        <div class="confirmation-popup-header mx-auto">
+          <b-icon-check-circle scale="2" variant="light" />
+        </div>
+      </template>
+      <div class="confirmation-popup-body">
+        <h3 class="icon-orange text-success text-center"><b>Solicitar documentación</b></h3>
+        <p>La solicitud fue aprobada con éxito. Se deberá  enviar un correo electrónico al solicitante para que:</p>
+        <ul>
+          <li>  En el plazo de 7 días hábiles concurra al Departamento de Comercio con la documentación original. </li>
+          <li>  Abone el canon de Habilitación Comercial previsto para el rubro.. </li>
+          <li>  Constituya el DFE. </li>
+        </ul>
+        <div class="text-center mt-3">
+          <b-btn variant="success" @click="onSendSolicitar" >
+              Aceptar
+          </b-btn>
+        </div>
+      </div>
+    </b-modal>
+
+    <b-modal v-model="showFinalizar" hide-footer :header-bg-variant="'success'" centered>
+      <template #modal-header>
+        <div class="confirmation-popup-header mx-auto">
+          <b-icon-check-circle scale="2" variant="light" />
+        </div>
+      </template>
+      <div class="confirmation-popup-body">
+        <h3 class="text-success text-center"><b>Finalizar trámite</b></h3>
+        <p>El trámite será finalizado.</p>
+        <p> Ingresa el número de expediente asignado a este trámite: </p>
+        <div class="row mx-auto">
+        <p class="mr-2"> 4124 -</p>
+        <b-form-input class="col-3" size="sm" v-model="nroExpediente"/><a class="mx-3"> / </a> <b-form-input size="sm" class="col-3" v-model="nroExpediente"/>
+        </div>
+        <small> Recordá que podés consultar los datos proporcionados en la sección de búsqueda. </small>
+        <div class="text-center mt-3">
+          <b-btn variant="success" @click="onSendFinalizar" >
+              Aceptar
+          </b-btn>
+        </div>
+      </div>
+    </b-modal>
+
   </div>
 </template>
 
@@ -233,8 +345,11 @@ export default {
       inspeccion: false,
       showPrevApprove: false,
       showApprove: false,
+      showFinalizar: false,
       showRejectPopup: false,
+      showSolicitarDoc: false,
       habilitacion: null,
+      turno: null,
       observaciones: '',
       documentoNames: {
         planillaAutorizacion: 'Planilla de Autorización',
@@ -272,6 +387,10 @@ export default {
       id: habilitacionId,
     })
     this.habilitacion = this.$store.state.habilitaciones.single
+
+    const nroTramite = this.habilitacion.nroTramite
+    await this.$store.dispatch('turnos/getSingle', { nroTramite})
+    this.turno = this.$store.state.turnos.single
   },
   fetchOnServer: false,
   activated() {
@@ -281,8 +400,40 @@ export default {
     wait(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
     },
+    onSolicitarDocumentacion(){
+      this.showSolicitarDoc = true
+    },
     async onAprobarSolicitud(){
       this.showPrevApprove = true
+    },
+    onFinalizarSolicitud(){
+      this.showFinalizar = true
+    },
+    async onSendSolicitar(){
+      const habilitacion = {
+        status: 'Esperando documentación'
+      }
+      const id = this.habilitacion.id
+      const userToken = this.$store.state.user.token
+      await this.$store.dispatch('habilitaciones/update', {
+        id,
+        habilitacion,
+      })
+      this.habilitacion.status = habilitacion.status
+      this.showSolicitarDoc = false
+    },
+    async onSendFinalizar(){
+      const habilitacion = {
+        status: 'Finalizada'
+      }
+      const id = this.habilitacion.id
+      const userToken = this.$store.state.user.token
+      await this.$store.dispatch('habilitaciones/update', {
+        id,
+        habilitacion,
+      })
+      this.habilitacion.status = habilitacion.status
+      this.showFinalizar = false
     },
     async onRestablecer(){
       const habilitacion = {
@@ -293,23 +444,21 @@ export default {
       await this.$store.dispatch('habilitaciones/update', {
         id,
         habilitacion,
-        userToken,
       })
       this.habilitacion.status = habilitacion.status
     },
     async onSendApprove(){
       const habilitacion = {
-        status: 'Aprobada'
+        status: 'Esperando documentación'
       }
       if(this.inspeccion){
-        habilitacion.status = "Pendiente de inspección"
+        habilitacion.status = "Esperando turno"
       }
       const id = this.habilitacion.id
       const userToken = this.$store.state.user.token
       await this.$store.dispatch('habilitaciones/update', {
         id,
         habilitacion,
-        userToken,
       })
       this.wait(300)
       this.showPrevApprove = false
@@ -329,7 +478,6 @@ export default {
       await this.$store.dispatch('habilitaciones/update', {
         id,
         habilitacion,
-        userToken,
       })
       this.wait(300)
       this.observaciones = ''

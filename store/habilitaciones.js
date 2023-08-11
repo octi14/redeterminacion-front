@@ -32,11 +32,10 @@ export const actions = {
     })
     return createdFile
   },
-  async update({ commit }, { id, habilitacion, userToken }) {
+  async update({ commit }, { id, habilitacion}) {
     try {
       const updated = await HabilitacionService.update(this.$axios, id, {
         habilitacion,
-        userToken,
       })
       commit('setSingle', { updated })
     } catch (e) {

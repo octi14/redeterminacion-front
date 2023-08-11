@@ -448,7 +448,7 @@
     <p class="">Tu número de tramite es:</p>
     <p class="modal-subtitle">HAB001</p>
     <p class="">En los próximos días recibirás un correo electrónico del Departamento Comercio Municipal en el que te indicarán cómo continuar el trámite.</p>
-    <p class="">Su número de trámite es: </p>
+    <p class=""><b>Tu número de trámite es: </b> </p>
     <p class="h3"> <b> {{ nroTramite }} </b> </p>
     <p class="">Por favor, conservá este número. Será solicitado más adelante. </p>
   </div>

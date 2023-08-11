@@ -1,57 +1,11 @@
 <template>
   <div class="page">
     <Banner title="Habilitaciones comerciales" />
-    <div class="col-8" style="margin: auto">
-      <div class="row justify-content-center" style="width: 100%">
-        <img src="../../assets/Habilitá en simples pasos.png"/>
+    <div class="col-10" style="margin: auto">
+      <div class="row justify-content-center" >
+        <img width="100%" src="../../assets/Habilitá en simples pasos.png" />
       </div>
     </div>
-    <!-- <b-jumbotron bg-variant="#F8EFE5" text-variant="black" fluid >
-            <template #lead>
-              <b-row>
-                <b-col md="10">
-                  <b-row><b-col>
-                      <h4 class="icon-orange">¡Habilitá tu comercio en simples pasos!</h4>
-                  </b-col></b-row>
-                  <b-row>
-                    <b-col md="4" style="display:flex">
-                      <div>
-                        <p class="text-circle-border">1</p>
-                        <p>Leé la información y requisitos necesarios para iniciar el trámite.</p>
-                      </div>
-                      <div class="separador">
-                      </div>
-                    </b-col>
-                    <b-col md="4" style="display:flex">
-                      <div>
-                      <p class="text-circle-border">2</p>
-                      <p> Completá el formulario con los datos solicitados.</p>
-                      </div>
-                      <div class="separador">
-                      </div>
-                    </b-col>
-                    <b-col md="4">
-                      <p class="text-circle-border">3</p>
-                      <p>Esperá la confirmación de aprobación de la solicitud.</p>
-                    </b-col>
-                  </b-row>
-                </b-col>
-                <b-col md="2">
-                  <div class="banner-icon">
-                    <b-iconstack font-scale="5" shift-v="-7">
-                        <b-icon-list-nested stacked shift-h="-8" shift-v="-4" scale="1" flip-v variant="info"></b-icon-list-nested>
-                        <b-icon-list-nested stacked shift-h="-7" shift-v="4" scale="1" flip-v variant="info"></b-icon-list-nested>
-                        <b-icon-exclamation-lg stacked></b-icon-exclamation-lg>
-                        <b-icon-circle-fill stacked scale="1.25" variant="info" ></b-icon-circle-fill>
-                        <b-icon-circle-fill stacked style="color:#EC93B1" ></b-icon-circle-fill>
-                        <b-icon-pen-fill stacked scale="0.62" style="color:#000"></b-icon-pen-fill>
-                        <b-icon-pen-fill stacked scale="0.6" style="color:#EB9929"></b-icon-pen-fill>
-                    </b-iconstack>
-                  </div>
-                </b-col>
-              </b-row>
-            </template>
-          </b-jumbotron> -->
     <b-container class="col-8">
       <b-row>
         <b-col>
@@ -85,7 +39,7 @@
                 <div class="li-row first-li"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> DNI del solicitante <i>(imagen del frente y dorso)</i>.</div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Domicilio real y legal del establecimiento <i>(deberá constar calle y número)</i>. <b-icon-question-circle-fill @click="openPopup('B')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Copia de plano (en alguna de sus dos posibilidades: <i>1. Conforme a obra o Medición aprobado / 2. Conforme a obra o Medición registrado).</i> En caso de no poseerlo, se requerirá el Informe Técnico debidamente visado por el Colegio Profesional correspondiente. <b-icon-question-circle-fill @click="openPopup('B')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div></div>
-                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Libre deuda de <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Tasa por Sevicios Urbanos</a> <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. </div></div>
+                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Libre deuda de <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Tasa por Sevicios Urbanos</a> <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. <b-icon-question-circle-fill @click="openPopup('LibreDeuda')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Copia de la Escritura traslativa de Dominio del inmueble donde se desarrollará la actividad / Contrato de locación / Boleto de Compraventa o afín, con el correspondiente Impuesto de Sellos Provincial y firma certificada por Escribano Público, Entidad Bancaria o Autoridad Administrativa.</div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> <a href="https://seti.afip.gob.ar/padron-puc-constancia-internet/ConsultaConstanciaAction.do" target="_blank" class="external-link">Constancia de CUIT</a> actualizada.</div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" class="external-link">Constancia de Inscripción en Ingresos Brutos</a> (ARBA) actualizada al momento de la solicitud. Esta deberá mantenerse activa mientras el comercio, industria o asimilable esté habilitado, bajo pena de ser pasible de la clausura del establecimiento.</div></div>
@@ -125,7 +79,7 @@
                   <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                   <div class="li-content">
                     <p>Seleccioná el rubro de tu comercio para conocer los requisitos a los que se debe adecuar y el mapa de zonas permitidas donde se puede ubicar.</p>
-                    <b-form-group label="Seleccione el Rubro" label-for="rubro">
+                    <b-form-group label="" label-for="rubro">
                       <b-form-select v-model="rubroSeleccionado.id" :options="filteredRubros" value-field="id" text-field="nombre" @change="handleRubroChange" style="margin:10px 0;"></b-form-select>
                     </b-form-group>   
                   </div>
@@ -192,7 +146,7 @@
               </div>
             </transition>
           </b-card>
-          <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(4) }">
+          <b-card class="section-card FAQs-card" v-bind:class="{ 'expanded': isCardExpanded(4) }">
             <h4 class="section-title" @click="toggleCard(4)">Preguntas Frecuentes
               <b-icon-chevron-compact-down v-if="!isCardExpanded(4)"></b-icon-chevron-compact-down>
               <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
@@ -334,7 +288,7 @@
     </b-container>
 
     <!-- Popups -->
-    <b-modal v-model="showPopupA" title="" :hide-footer="true" @click-outside="showPopupA = false" :header-bg-variant="'success'" centered>
+    <b-modal v-model="showPopupA"  :hide-footer="true" @click-outside="showPopupA = false" :header-bg-variant="'success'" centered>
         <template #modal-header>
           <div class="modal-info">
             <h5>
@@ -343,30 +297,46 @@
             </h5>
           </div>
         </template>
-        <div class="modal-info">
+        <div class="modal-info popupApoderado">
           <h3>Representante o Apoderado/a</h3>
           <p class="destacado"><b-icon-caret-right-fill ></b-icon-caret-right-fill>Esta figura permite facultar a una persona para la realización de trámites, actos y gestiones en representación del/la contribuyente o responsable solicitante.</p>
           <h6>Casos de Representación:</h6>
-          <ol>
-            <li><b>Representante Voluntario:</b> Persona que actúa en nombre y por cuenta de otra, en virtud de la facultad que ella le confiere mediante un mandato (poder o autorización).</li>
-            <li><b>Representante Legal:</b> Persona que actúa en nombre y por cuenta de una Persona Jurídica en virtud del carácter que posee por integrar los órganos de mando. Asimismo, los padres que ejercen la patria potestad sobre sus hijos/as.</li>
-            <li><b>Representante Judicial:</b> Persona que actúa en nombre y por cuenta de otra (Humana o Jurídica) en virtud de una designación judicial, debido a una incapacidad legal que recae sobre aquella.</li>
-            <li><b>Sucesiones Indivisas:</b> Casos en que, existiendo varios/as herederos/as, todos/as son propietarios/as de los bienes, pero aún no se ha realizado la división de los mismos en la proporción que cada uno/a tiene derecho a heredar.</li>
-            <li><b>Herederos/as o Legatarios/as (Causahabientes):</b> Sucesor/a de una persona fallecida (actuación ante el Fisco previa al inicio de la sucesión o iniciada ésta, previa a la declaratoria de herederos/as).</li>
-          </ol>
+          <p><span class="icon-orange">1) </span><b>Representante Voluntario:</b> Persona que actúa en nombre y por cuenta de otra, en virtud de la facultad que ella le confiere mediante un mandato (poder o autorización).</p>
+          <p><span class="icon-orange">2) </span><b>Representante Legal:</b> Persona que actúa en nombre y por cuenta de una Persona Jurídica en virtud del carácter que posee por integrar los órganos de mando. Asimismo, los padres que ejercen la patria potestad sobre sus hijos/as.</p>
+          <p><span class="icon-orange">3) </span><b>Representante Judicial:</b> Persona que actúa en nombre y por cuenta de otra (Humana o Jurídica) en virtud de una designación judicial, debido a una incapacidad legal que recae sobre aquella.</p>
+          <p><span class="icon-orange">4) </span><b>Sucesiones Indivisas:</b> Casos en que, existiendo varios/as herederos/as, todos/as son propietarios/as de los bienes, pero aún no se ha realizado la división de los mismos en la proporción que cada uno/a tiene derecho a heredar.</p>
+          <p><span class="icon-orange">5) </span><b>Herederos/as o Legatarios/as (Causahabientes):</b> Sucesor/a de una persona fallecida (actuación ante el Fisco previa al inicio de la sucesión o iniciada ésta, previa a la declaratoria de herederos/as).</p>
         </div>
     </b-modal>
     <b-modal v-model="showPopupB" title="" :hide-footer="true" @click-outside="showPopupB = false" :header-bg-variant="'success'" centered>
-        <template #modal-header>
+        <template #modal-header>    
           <div class="modal-info">
             <h5>
                 <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
                 Información Adicional
             </h5>
           </div>
-        </template>
-        <div class="modal-info">
-          <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>En caso que el plano no se encuentre conforme a obra/aprobado o registrado iniciara via de excepcion.</p>
+        </template>  
+        <div class="modal-info modal-plano">
+          <div>
+            <h6>Tipos de Plano para cargar</h6>
+            <p><span class="icon-orange">1. </span>Plano Conforme a obra o Medición Aprobado.</p>
+            <p><span class="icon-orange">2. </span>Plano Conforme a obra o Medición Registrado.</p>
+          </div>
+          <div class="parrafo">
+            <h6>¿Cómo identificar los tipos de plano?</h6>
+            <p><b-icon-check scale="1.25" class="icon-orange"></b-icon-check>Verificá el sello impuesto en la carátula de tu plano. Esta puede indicar: <i class="icon-green">Conforme a obra o Medición Aprobado o Conforme a obra o Medición Registrado.</i></p>
+          </div>
+          <div class="parrafo">
+            <div style="width: 64%; display: inline-block; vertical-align:top;">
+            <h6>¿Cómo digitalizar el plano?</h6>
+              <p><b-icon-check scale="1.25" class="icon-orange"></b-icon-check>Sacá una <b>fotografía</b> de la <b>carátula</b>.</p>
+              <p><b-icon-check scale="1.25" class="icon-orange"></b-icon-check>Podés ver un ejemplo haciendo click en la imagen. <i>Ahí te indicamos cómo identificar qué tipo de plano tenés.</i></p>
+            </div>
+            <div style="width: 35%; display: inline-block; max-width:165px; margin-top:1rem">
+              <img src="../../assets/ej-plano.jpg" width="100%" height="fit-content" />
+            </div>
+          </div>
         </div>
         </b-modal>
     <b-modal v-model="showPopupD" title="" :hide-footer="true" @click-outside="showPopupD = false" :header-bg-variant="'success'" centered>
@@ -405,10 +375,12 @@
         <div class="confirmation-popup-body">
           <h2 class="icon-orange"><b>IMPORTANTE</b></h2>
           <p>Antes de continuar tené en cuenta lo siguiente:</p>
-          <ul>
-            <li><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Si no contás con toda la información requerida y/o digitalizada no podrás completar el proceso y deberás iniciarlo nuevamente una vez que cuentes con toda la documentación.</div></li>
-            <li><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Recordá que los documentos deben ser legibles, estar subidos en formato imagen o pdf y tener un peso máximo de 15 mb.</div></li>
-          </ul>
+          <div class="li-row">
+            <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Si no contás con toda la información requerida y/o digitalizada no podrás completar el proceso y deberás iniciarlo nuevamente una vez que cuentes con toda la documentación.</div>
+          </div>
+          <div class="li-row">
+            <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Recordá que los documentos deben ser legibles, estar subidos en formato imagen o pdf y tener un peso máximo de 15 mb.</div>
+          </div>
           <div class="form-check">
               <input class="form-check-input" type="checkbox" id="documentCheckbox" v-model="documentCheckboxChecked"/>
               <label class="form-check-label" for="documentCheckbox">Ya tengo todos los documentos digitalizados y la información requerida.</label>
@@ -423,8 +395,22 @@
         </div>
     </b-modal>
     <!-- Popup de solicitud de libredeuda -->
-    <b-modal v-model="showLibreDeudaPopup" title="SOLICITUD DE LIBRE DEUDA" @hide="resetForm" :header-bg-variant="'success'" hide-footer centered>
-      <p>Si no tienes el libre deuda, Puedes solicitarlo</p>
+    <b-modal v-model="showLibreDeudaPopup" title="" @hide="resetForm" :header-bg-variant="'success'" hide-footer centered>
+      <template #modal-header>
+        <div class="modal-info">
+          <h5>
+              <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
+              Información Adicional
+          </h5>
+        </div>
+      </template>
+      <div class="modal-info">
+        <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>Podés descargar tu última factura haciendo <a href="https://arvige.gob.ar/lpagos" target="_blank" >click aquí</a>.</p>
+        <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>En el encabezado de cada factura se indica si tu partida registra deuda o no lo hace. Hacé click en la imagen y verificá cómo se visualiza.</p>
+        <div style="width: 100%">
+          <img src="../../assets/ej-libredeuda.jpg" width="100%" height="fit-content" />
+        </div>
+      </div>
     </b-modal>
   </div>
 </template>
@@ -594,6 +580,9 @@ export default {
   text-align: left;
   margin-bottom: 1rem;
 }
+.importante-card .card-body{
+  padding-bottom: 0.25rem;
+}
 .separador-top{
   border-top: 1px solid #ccc;
   padding: 2rem 0;
@@ -609,7 +598,7 @@ export default {
 }
 .confirmation-popup-body h2{
   text-align: center;
-  font-size: 3rem;
+  font-size: 2.5rem;
 }
 .confirmation-popup-body h2 b{
   padding: 0 5%;
@@ -620,16 +609,11 @@ export default {
   font-size: 1.25rem;
   color: black;
 }
-.confirmation-popup-body ul{
-  width: 90%;
+.confirmation-popup-body .form-check{
   margin: auto;
-  margin-bottom: 1rem;
-}
-.confirmation-popup-body .li-icon{
-  margin-right: 2%;
+  margin-top: 1rem;
 }
 .confirmation-popup-body .li-content{
-  width: 95%;
   color: black;
 }
 .btn{
@@ -661,13 +645,14 @@ export default {
 .modal-content .bg-success{
   background-color: #0c681a !important;
 }
+.popupApoderado{
+  padding-left: 6%;
+}
 .modal-info h3{
   color: #0c681a !important;
   font-weight: bold;
-  font-size: 2rem;
+  font-size: 1.6rem;
   padding-bottom: 0.5rem;
-  margin-bottom: 1rem;
-  border-bottom: #ccc 2px solid;
   margin-top: 0;
 }
 .modal-info h5{
@@ -682,8 +667,12 @@ export default {
 }
 .modal-info .destacado{
   border-bottom: 2px solid #ccc;
+  border-top: 2px solid #ccc;
+  padding-top: 1rem;
   padding-bottom: 1rem;
-  width: 100%;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #666;
 }
 .modal-info .bi-question-circle{
   margin-right: 1rem;
@@ -698,16 +687,28 @@ export default {
   color: #0c681a;
   vertical-align: top;
   margin-top: 0.35rem;
-  font-size: 1.05rem;
+  font-size: 1rem;
+}
+.modal-info ol b, .modal-info a, .popupApoderado b{
+  color: #0c681a;
 }
 .modal-info p{
-  font-size: 1.05rem;
-  font-weight: 600;
-  width: 90%;
   color: #666;
 }
-.modal-info ol b, .modal-info a{
-  color: #0c681a;
+.modal-plano .parrafo{
+  border-top: #ccc 1px solid;
+  padding-top: 1rem;
+  margin-top: 1rem;
+}
+.modal-plano h6{
+  margin-top: 0;
+  font-size: 1.25rem;
+}
+.modal-plano p{
+  margin-bottom: 0;
+}
+.popupApoderado b{
+  font-weight: 600;
 }
 .banner-icon{
   width: 100%;
@@ -791,11 +792,14 @@ ul{
   display: flex;
   width: 100%;
 }
-.li-row:last-child{
-  margin-bottom:15px;
-}
 .first-li{
   margin-top: 1rem;
+}
+.FAQs-card .li-row{
+  margin-top: 1rem;
+}
+.li-content .li-row{
+  margin-top: 0;
 }
 .li-icon, .li-content{
   display: inline-block;

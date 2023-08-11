@@ -37,7 +37,7 @@
             <transition name="expand">
               <div v-show="isCardExpanded(2)">
                 <div class="li-row first-li"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> DNI del solicitante <i>(imagen del frente y dorso)</i>.</div></div>
-                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Domicilio real y legal del establecimiento <i>(deberá constar calle y número)</i>. <b-icon-question-circle-fill @click="openPopup('B')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div></div>
+                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Domicilio real y legal del establecimiento <i>(deberá constar calle y número)</i>. <b-icon-question-circle-fill @click="openPopup('NroInmueble')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Copia de plano (en alguna de sus dos posibilidades: <i>1. Conforme a obra o Medición aprobado / 2. Conforme a obra o Medición registrado).</i> En caso de no poseerlo, se requerirá el Informe Técnico debidamente visado por el Colegio Profesional correspondiente. <b-icon-question-circle-fill @click="openPopup('B')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Libre deuda de <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Tasa por Sevicios Urbanos</a> <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. <b-icon-question-circle-fill @click="openPopup('LibreDeuda')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Copia de la Escritura traslativa de Dominio del inmueble donde se desarrollará la actividad / Contrato de locación / Boleto de Compraventa o afín, con el correspondiente Impuesto de Sellos Provincial y firma certificada por Escribano Público, Entidad Bancaria o Autoridad Administrativa.</div></div>
@@ -334,7 +334,7 @@
               <p><b-icon-check scale="1.25" class="icon-orange"></b-icon-check>Podés ver un ejemplo haciendo click en la imagen. <i>Ahí te indicamos cómo identificar qué tipo de plano tenés.</i></p>
             </div>
             <div style="width: 35%; display: inline-block; max-width:165px; margin-top:1rem">
-              <img src="../../assets/ej-plano.jpg" width="100%" height="fit-content" />
+              <a href="../../_nuxt/assets/ej-plano.jpg" target="_blank"><img src="../../assets/ej-plano.jpg" width="100%" height="fit-content" /></a>
             </div>
           </div>
         </div>
@@ -408,8 +408,21 @@
         <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>Podés descargar tu última factura haciendo <a href="https://arvige.gob.ar/lpagos" target="_blank" >click aquí</a>.</p>
         <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>En el encabezado de cada factura se indica si tu partida registra deuda o no lo hace. Hacé click en la imagen y verificá cómo se visualiza.</p>
         <div style="width: 100%">
-          <img src="../../assets/ej-libredeuda.jpg" width="100%" height="fit-content" />
+          <a href="../../_nuxt/assets/ej-libredeuda.jpg" target="_blank"><img src="../../assets/ej-libredeuda.jpg" width="100%" height="fit-content" /></a>
         </div>
+      </div>
+    </b-modal>
+    <b-modal v-model="showPopupNroInmueble" title="" :hide-footer="true" @click-outside="showPopupNroInmueble = false" :header-bg-variant="'success'"  centered>
+      <template #modal-header>
+        <div class="modal-info">
+          <h5>
+              <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
+              Información Adicional
+          </h5>
+        </div>
+      </template>
+      <div class="modal-info">
+        <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>Podés consultar el número enviando un correo electrónico a <a href="mailto:catatro@gesell.gob.ar" target="_blank">catastro@gesell.gob.ar</a>, indicando nomenclatura catastral del bien que se encuentra en la escritura del mismo.</p>
       </div>
     </b-modal>
   </div>
@@ -428,6 +441,7 @@ export default {
       showPopupE: false,
       showConfirmationPopup: false,
       showLibreDeudaPopup: false,
+      showPopupNroInmueble: false,
       documentCheckboxChecked: false,
       rubroSeleccionado: {
                           id: null,
@@ -479,13 +493,9 @@ export default {
       } else if (type === 'Form') {
         this.showConfirmationPopup = true;
       } else if (type === 'LibreDeuda') {
-        //CAMBIAR EL SITEKEY POR UNO DE VERDAD
-        grecaptcha.ready(() => {
-        grecaptcha.render('captchaContainer', {
-          sitekey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
-          });
-        });
         this.showLibreDeudaPopup = true;
+      } else if (type === 'NroInmueble'){
+        this.showPopupNroInmueble = true;
       }
     },
     proceedToForm() {

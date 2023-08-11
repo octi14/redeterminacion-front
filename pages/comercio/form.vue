@@ -1,8 +1,20 @@
 <template>
 <div class="page">
-    <Banner title="Habilitaciones comerciales" />
-
-  <b-form @submit="submitForm" class="my-3" style="margin-left:10px;margin-right:10px">
+  <Banner title="Habilitaciones comerciales" />
+  <!-- Comprobante (página 4) -->
+  <div v-if="printing === true">
+    <b-card class="text-center shadow-lg col-md-8 col-sm-12 mx-auto">
+      <h1>Comprobante de Solicitud</h1>
+      <h4>Departamento de Comercio</h4>
+      <h5>Nro de trámite: HAB001</h5>
+      <h5>Solicita el turno: {{ solicitante.nombre }} {{ solicitante.apellido }}</h5>
+      <h5>CUIT: {{ solicitante.cuit }}</h5>
+      <h5>Tipo de Soolicitud: {{ solicitante.tipoSolicitud }}</h5>
+      <h5>Rubro: {{ inmueble.rubro }}</h5>
+      <b-button v-if="endButton === true" @click="onResetParams" class="btn-cancel">Volver</b-button>
+    </b-card>
+  </div>  
+  <b-form v-else @submit="submitForm" class="my-3" style="margin-left:10px;margin-right:10px">
 
   <b-card no-body class="col-8 mt-1 section-card"  style="margin: 0px auto">
     <!-- Sección: Datos del solicitante -->
@@ -10,7 +22,7 @@
       <legend><h3>Datos del Solicitante <b-icon-question-circle-fill @click="openPopup('DatosDelSolicitante')" font-scale="1" variant="info"></b-icon-question-circle-fill></h3></legend>
       <b-form-group label="Tipo de Solicitud *" label-for="tipo-solicitud" >
         <b-form-select title="Por el momento solo se pueden solicitar habilitaciones comerciales." id="tipo-solicitud" v-model="solicitante.tipoSolicitud" disabled required>
-            <b-form-select-option selected="selected" value="habilitacion">Habilitar nuevo comercio</b-form-select-option>
+            <b-form-select-option selected="selected" value="Habilitación">Habilitar nuevo comercio</b-form-select-option>
         </b-form-select>
       </b-form-group>
 
@@ -144,7 +156,7 @@
         <b-form-input id="nombre-fantasia" v-model="inmueble.nombreFantasia"></b-form-input>
       </b-form-group>
     <fieldset  v-if="inmueble.rubro === 'Hotelería'" key="rubro-146">
-      <h5>Servicios exclusivos del rubro HOTELERIA *</h5>
+      <h5>Servicios exclusivos del rubro {{inmueble.rubro}} *</h5>
       <p>Seleccioná los servicios que brinda tu establecimiento:</p>
 
         <b-form-group>
@@ -274,7 +286,7 @@
       </b-form-group>
       <fieldset>
         <input type="hidden" id="captchaResponse" name="captchaResponse" v-model="captchaResponse">
-        <b-button size="lg" @click="cancelForm" variant="danger" class="btn-cancel" >Cancelar</b-button>
+        <b-button size="lg" @click="onResetParams" variant="danger" class="btn-cancel" >Cancelar</b-button>
         <b-button size="lg" @click="submitForm" variant="success" class="" >Enviar</b-button>
       </fieldset>
     </div>
@@ -291,10 +303,8 @@
     </div>
   </template>
   <div class="modal-info">
-    <ul>
-      <li><b-icon-caret-right-fill ></b-icon-caret-right-fill><p>El interesado futuro comerciante / industrial o afín mayor de 18 años.</p></li>
-      <li><b-icon-caret-right-fill ></b-icon-caret-right-fill><p>El representante o apoderado/a de la persona interesada con documentación que acredite el carácter de tal.</p></li>
-    </ul>
+    <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>El interesado futuro comerciante / industrial o afín mayor de 18 años.</p>
+    <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>El representante o apoderado/a de la persona interesada con documentación que acredite el carácter de tal.</p>
   </div>
 </b-modal>
 <b-modal v-model="showPopupApoderadoRepresentante" title="" :hide-footer="true" @click-outside="showPopupApoderadoRepresentante = false" :header-bg-variant="'success'"  centered>
@@ -306,18 +316,16 @@
       </h5>
     </div>
   </template>
-  <div class="modal-info">
+  <div class="modal-info popupApoderado">
     <h3>Representante o Apoderado/a</h3>
     <p class="destacado"><b-icon-caret-right-fill ></b-icon-caret-right-fill>Esta figura permite facultar a una persona para la realización de trámites, actos y gestiones en representación del/la contribuyente o responsable solicitante.</p>
     <h6>Casos de Representación:</h6>
-    <ol>
-      <li><b>Representante Voluntario:</b> Persona que actúa en nombre y por cuenta de otra, en virtud de la facultad que ella le confiere mediante un mandato (poder o autorización).</li>
-      <li><b>Representante Legal:</b> Persona que actúa en nombre y por cuenta de una Persona Jurídica en virtud del carácter que posee por integrar los órganos de mando. Asimismo, los padres que ejercen la patria potestad sobre sus hijos/as.</li>
-      <li><b>Representante Judicial:</b> Persona que actúa en nombre y por cuenta de otra (Humana o Jurídica) en virtud de una designación judicial, debido a una incapacidad legal que recae sobre aquella.</li>
-      <li><b>Sucesiones Indivisas:</b> Casos en que, existiendo varios/as herederos/as, todos/as son propietarios/as de los bienes, pero aún no se ha realizado la división de los mismos en la proporción que cada uno/a tiene derecho a heredar.</li>
-      <li><b>Herederos/as o Legatarios/as (Causahabientes):</b> Sucesor/a de una persona fallecida (actuación ante el Fisco previa al inicio de la sucesión o iniciada ésta, previa a la declaratoria de herederos/as).</li>
-    </ol>
-  </div>
+    <p><span class="icon-orange">1) </span><b>Representante Voluntario:</b> Persona que actúa en nombre y por cuenta de otra, en virtud de la facultad que ella le confiere mediante un mandato (poder o autorización).</p>
+    <p><span class="icon-orange">2) </span><b>Representante Legal:</b> Persona que actúa en nombre y por cuenta de una Persona Jurídica en virtud del carácter que posee por integrar los órganos de mando. Asimismo, los padres que ejercen la patria potestad sobre sus hijos/as.</p>
+    <p><span class="icon-orange">3) </span><b>Representante Judicial:</b> Persona que actúa en nombre y por cuenta de otra (Humana o Jurídica) en virtud de una designación judicial, debido a una incapacidad legal que recae sobre aquella.</p>
+    <p><span class="icon-orange">4) </span><b>Sucesiones Indivisas:</b> Casos en que, existiendo varios/as herederos/as, todos/as son propietarios/as de los bienes, pero aún no se ha realizado la división de los mismos en la proporción que cada uno/a tiene derecho a heredar.</p>
+    <p><span class="icon-orange">5) </span><b>Herederos/as o Legatarios/as (Causahabientes):</b> Sucesor/a de una persona fallecida (actuación ante el Fisco previa al inicio de la sucesión o iniciada ésta, previa a la declaratoria de herederos/as).</p>
+    </div>
 </b-modal>
 <b-modal v-model="showPopupNroInmueble" title="" :hide-footer="true" @click-outside="showPopupNroInmueble = false" :header-bg-variant="'success'"  centered>
   <template #modal-header>
@@ -369,6 +377,10 @@
   </template>
   <div class="modal-info">
     <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>Podés descargar tu última factura haciendo <a href="https://arvige.gob.ar/lpagos" target="_blank" >click aquí</a>.</p>
+    <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>En el encabezado de cada factura se indica si tu partida registra deuda o no lo hace. Hacé click en la imagen y verificá cómo se visualiza.</p>
+    <div style="width: 100%">
+      <img src="../../assets/ej-libredeuda.jpg" width="100%" height="fit-content" />
+    </div>
   </div>
 </b-modal>
 <b-modal v-model="showPopupCertificadoDomicilio" title="Certificado de domicilio Ingresos Brutos- Punto de Venta Villa Gesell" :hide-footer="true" @click-outside="showPopupCertificadoDomicilio = false" :header-bg-variant="'success'"  centered>
@@ -387,16 +399,32 @@
 <b-modal v-model="showPopupPlano" title="" :hide-footer="true" @click-outside="showPopupPlano = false" :header-bg-variant="'success'"  centered>
   <template #modal-header>
     <div class="modal-info">
-      <h5>Plano o Informe técnico</h5>
+      <h5>
+          <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
+          Información Adicional
+      </h5>
     </div>
-  </template>
-  <div class="modal-info">
-    <p class="destacado">¿Cómo identificarlos? En cada uno de ellos verifica el sello impuesto en carátula, que dice: CONFORME A OBRA, APROBADO O REGISTRADO</p>
-    <ul>
-      <li><b-icon-caret-right-fill ></b-icon-caret-right-fill><p><b>Plano Aprobado:</b> Es el documento cartográfico que consta de "aprobación municipal para construir la obra de que se trate".</p></li>
-      <li><b-icon-caret-right-fill ></b-icon-caret-right-fill><p><b>Plano Conforme a Obra:</b> Documento cartográfico que refleja una obra que no se ha construido con aprobación municipal previa.</p></li>
-      <li><b-icon-caret-right-fill ></b-icon-caret-right-fill><p><b>Plano Registrado:</b> aun sin definición clara.</p></li>
-    </ul>
+  </template>  
+  <div class="modal-info modal-plano">
+    <div>
+      <h6>Tipos de Plano para cargar</h6>
+      <p><span class="icon-orange">1. </span>Plano Conforme a obra o Medición Aprobado.</p>
+      <p><span class="icon-orange">2. </span>Plano Conforme a obra o Medición Registrado.</p>
+    </div>
+    <div class="parrafo">
+      <h6>¿Cómo identificar los tipos de plano?</h6>
+      <p><b-icon-check scale="1.25" class="icon-orange"></b-icon-check>Verificá el sello impuesto en la carátula de tu plano. Esta puede indicar: <i class="icon-green">Conforme a obra o Medición Aprobado o Conforme a obra o Medición Registrado.</i></p>
+    </div>
+    <div class="parrafo">
+      <div style="width: 64%; display: inline-block; vertical-align:top;">
+      <h6>¿Cómo digitalizar el plano?</h6>
+        <p><b-icon-check scale="1.25" class="icon-orange"></b-icon-check>Sacá una <b>fotografía</b> de la <b>carátula</b>.</p>
+        <p><b-icon-check scale="1.25" class="icon-orange"></b-icon-check>Podés ver un ejemplo haciendo click en la imagen. <i>Ahí te indicamos cómo identificar qué tipo de plano tenés.</i></p>
+      </div>
+      <div style="width: 35%; display: inline-block; max-width:165px; margin-top:1rem">
+        <img src="../../assets/ej-plano.jpg" width="100%" height="fit-content" />
+      </div>
+    </div>
   </div>
 </b-modal>
 <b-modal v-model="showPopupFormLoading" title="" @click-outside="showPopupFormLoading = false" :header-bg-variant="'success'" hide-footer  centered>
@@ -417,21 +445,24 @@
   </template>
   <div class="centeredContainer">
     <p class="modal-subtitle">¡Tu solicitud ha sido enviada exitosamente!</p>
+    <p class="">Tu número de tramite es:</p>
+    <p class="modal-subtitle">HAB001</p>
     <p class="">En los próximos días recibirás un correo electrónico del Departamento Comercio Municipal en el que te indicarán cómo continuar el trámite.</p>
     <p class="">Su número de trámite es: </p>
     <p class="h3"> <b> {{ nroTramite }} </b> </p>
     <p class="">Por favor, conservá este número. Será solicitado más adelante. </p>
   </div>
-  <template #modal-footer>
-    <div class="" style="margin: auto">
-      <b-button @click="onFinalizar" variant="success" >Aceptar</b-button>
+  <template #modal-footer> 
+    <div class="" style="margin: auto">   
+      <b-button @click="cancelForm" class="btn-cancel">Volver</b-button>
+      <b-button @click="onPrintTicket">Imprimir</b-button>
     </div>
   </template>
 </b-modal>
 <b-modal v-model="showPopupFormError" title="Error en el envío!" @click-outside="showPopupFormError = false" :header-bg-variant="'danger'" centered>
   <template #modal-header>
     <div class="centeredContainer"><h3>
-        <b-icon icon="check-circle-fill" scale="1.5" variant="light"></b-icon>
+        <b-icon-exclamation-octagon scale="1.5" variant="light"></b-icon-exclamation-octagon>
     </h3></div>
   </template>
   <div class="centeredContainer modal-error">
@@ -459,18 +490,18 @@ export default {
       listaRubros: rubros,
       nroTramite: null,
       solicitante: {
-        tipoSolicitud: 'habilitacion',
-        nombre: '',
-        apellido: '',
-        DNI: '',
-        cuit: '',
-        razonSocial: '',
-        domicilioReal: '',
-        telefono: '',
-        codigoPostal: '',
-        localidad: '',
-        provincia: '',
-        mail: '',
+        tipoSolicitud: 'Habilitación',
+        nombre: 'Nico',
+        apellido: 'Confetto',
+        DNI: '34510212',
+        cuit: '2034510212',
+        razonSocial: 'Sr. Computación',
+        domicilioReal: 'Calle falsa 123',
+        telefono: '2255 456789',
+        codigoPostal: '7165',
+        localidad: 'Villa Gesell',
+        provincia: 'Buenos Aires',
+        mail: 'nicolasconfetto@gesell.gob.ar',
         esApoderado: false,
         esPersonaJuridica: false,
       },
@@ -542,6 +573,8 @@ export default {
       showPopupFormOk: false,
       showPopupFormLoading: false,
       showPopupFormError: false,
+      printing: false,
+      endButton: false,
       }
   },
   mounted() {
@@ -605,6 +638,13 @@ export default {
         this.showPopupFormLoading = false
         this.showPopupFormError = true
       }
+    },
+    onResetParams() {
+      this.solicitante = null;
+      this.inmueble = null;
+      this.documentos = null;
+      this.formFieldStates = null;
+      this.$router.push('/comercio/');
     },
     cancelForm(){
       console.log("CANCEL FORM");
@@ -746,11 +786,28 @@ export default {
     clearFormFieldState(fieldName) {
       this.formFieldStates[fieldName] = null;
     },
+    wait(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    },
+    async onPrintTicket() {
+      this.showPopupFormOk = false;
+      this.printing = true;
+      await this.wait(500);
+      print();
+      await this.wait(500);
+      this.endButton = true;
+    },
   }
 }
 </script>
 
 <style scoped>
+.icon-orange{
+  color: #E27910;
+}
+.icon-green{
+  color: #0c681a;
+}
 ul{
   list-style-type: none; /* Elimina los puntos por defecto */
   padding: 0;
@@ -818,12 +875,13 @@ ul{
   font-size: 0.75rem;
   font-weight: 100;
 }
+.popupApoderado{
+  padding-left: 6%;
+}
 .modal-info h3{
   color: #0c681a !important;
-  font-size: 2rem;
+  font-size: 1.6rem;
   padding-bottom: 0.5rem;
-  margin-bottom: 1rem;
-  border-bottom: #ccc 2px solid;
   margin-top: 0;
 }
 .modal-info h5{
@@ -832,15 +890,19 @@ ul{
   margin: 0;
 }
 .modal-info h6{
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: bold;
   color: #0c681a;
   margin: 1rem 0;
 }
 .modal-info .destacado{
   border-bottom: 2px solid #ccc;
+  border-top: 2px solid #ccc;
+  padding-top: 1rem;
   padding-bottom: 1rem;
-  width: 100%;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #666;
 }
 .modal-info .bi-question-circle{
   margin-right: 1rem;
@@ -857,15 +919,25 @@ ul{
   margin-top: 0.35rem;
   font-size: 1.05rem;
 }
+.modal-info ul b, .modal-info a, .popupApoderado b{
+  color: #0c681a;
+}
 .modal-info p{
-  font-size: 1.05rem;
-  font-weight: 600;
-  width: 90%;
   color: #666;
 }
-.modal-info ol b, .modal-info a, .modal-info ul b{
-  color: #0c681a;
-  font-weight: 700;
+.modal-plano .parrafo{
+  border-top: #ccc 1px solid;
+  padding-top: 1rem;
+  margin-top: 1rem;
+}
+.modal-plano h6{
+  margin-top: 0;
+}
+.modal-plano p{
+  margin-bottom: 0;
+}
+.popupApoderado b{
+  font-weight: 600;
 }
 .btn{
   padding: 0.5rem 3rem;

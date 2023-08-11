@@ -129,7 +129,7 @@
         <b-col md="6">
           <b-form-group label-for="rubro">
             <label for="rubro" class="rubro-label">Rubro *</label>
-            <b-form-select v-model="inmueble.rubro" :options="listaRubros" value-field="nombre" text-field="nombre" >
+            <b-form-select v-model="inmueble.rubro" :options="listaRubros" value-field="nombre" text-field="nombre" @change="handleRubroChange" >
             </b-form-select>
           </b-form-group>
         </b-col>
@@ -155,7 +155,7 @@
       <b-form-group label="Nombre de Fantasía (En caso de que lo posea)" label-for="nombre-fantasia" >
         <b-form-input id="nombre-fantasia" v-model="inmueble.nombreFantasia"></b-form-input>
       </b-form-group>
-    <fieldset  v-if="inmueble.rubro === 'Hotelería'" key="rubro-146">
+    <fieldset  v-if="isHoteleria" key="rubro-146">
       <h5>Servicios exclusivos del rubro {{inmueble.rubro}} *</h5>
       <p>Seleccioná los servicios que brinda tu establecimiento:</p>
 
@@ -168,14 +168,10 @@
       <b-form-group v-if="inmueble.serviciosHoteleria[11].value === true" label="Contanos que otros servicios brinda tu establecimiento: " label-for="otrosServicios" >
         <b-form-textarea id="otrosServicios" v-model="inmueble.otrosServicios" rows="2" max-rows="4" type="text" required></b-form-textarea>
       </b-form-group>
-      <b-form-group label="Croquis" label-for="documentos.croquis" >
+    </fieldset>
+      <b-form-group v-if="rubroSeleccionado.croquis === true" label="Croquis" label-for="documentos.croquis" >
         <b-form-file v-model="documentos.croquis" placeholder="No se seleccionó un archivo." browse-text="Examinar" required accept=".pdf, image/*" :state="getFormFieldState('croquis')" @input="clearFormFieldState('croquis')"></b-form-file>
       </b-form-group>
-<!--
-      <b-button size="lg" @click="loguearServicios" variant="primary" class="float-right">Loguear</b-button>
- -->
-    </fieldset>
-
       <b-form-group label="" label-for="espaciopublico" style="margin: 0px auto">
             <b-row>
               <b-col md="5">
@@ -488,6 +484,19 @@ export default {
   data:function() {
       return {
       listaRubros: rubros,
+      rubroSeleccionado: {
+        id: null,
+        nombre: null,
+        descripcion: null,
+        especiales: [],
+        links: [],
+        requisitos: [],
+        pom: null,
+        inspeccion: false,
+        croquis: false,
+      },
+      rubrosHoteleria:[136,137,138,139,140,141,142,143,144,145],
+      isHoteleria: false,    
       nroTramite: null,
       solicitante: {
         tipoSolicitud: 'Habilitación',
@@ -588,27 +597,6 @@ export default {
     });
   },
   methods: {
-    loguearServicios(){
-      console.log("Servicios Hoteleria");
-      console.log(this.inmueble.serviciosHoteleria[0].id + ": " + this.inmueble.serviciosHoteleria[0].value);
-      console.log(this.inmueble.serviciosHoteleria[1].id + ": " + this.inmueble.serviciosHoteleria[1].value);
-      console.log(this.inmueble.serviciosHoteleria[2].id + ": " + this.inmueble.serviciosHoteleria[2].value);
-      console.log(this.inmueble.serviciosHoteleria[3].id + ": " + this.inmueble.serviciosHoteleria[3].value);
-      console.log(this.inmueble.serviciosHoteleria[4].id + ": " + this.inmueble.serviciosHoteleria[4].value);
-      console.log(this.inmueble.serviciosHoteleria[5].id + ": " + this.inmueble.serviciosHoteleria[5].value);
-      console.log(this.inmueble.serviciosHoteleria[6].id + ": " + this.inmueble.serviciosHoteleria[6].value);
-      console.log(this.inmueble.serviciosHoteleria[7].id + ": " + this.inmueble.serviciosHoteleria[7].value);
-      console.log(this.inmueble.serviciosHoteleria[8].id + ": " + this.inmueble.serviciosHoteleria[8].value);
-      console.log(this.inmueble.serviciosHoteleria[9].id + ": " + this.inmueble.serviciosHoteleria[9].value);
-      console.log(this.inmueble.serviciosHoteleria[10].id + ": " + this.inmueble.serviciosHoteleria[10].value);
-      console.log(this.inmueble.serviciosHoteleria[11].id + ": " + this.inmueble.serviciosHoteleria[11].value);
-
-      console.log("this.inmueble.espacioPublico: " + this.inmueble.espacioPublico);
-      console.log("this.inmueble.marquesina: " + this.inmueble.marquesina);
-      console.log("this.inmueble.mercaderia: " + this.inmueble.mercaderia);
-      console.log("this.inmueble.mesas: " + this.inmueble.mesas);
-      console.log("this.inmueble.carteles: " + this.inmueble.carteles);
-    },
     openPopup(type) {
       // Lógica para abrir el popup correspondiente según el tipo (A, B, C, D)else if (type === 'B')
       if (type === 'DatosDelSolicitante') {
@@ -746,6 +734,34 @@ export default {
       shis.showPopupFormOk = false
       this.showPopupFormLoading = false
       this.showPopupFormError = false
+    },    
+    handleRubroChange() {
+      if (this.inmueble.rubro != null) {
+      // Obtener los datos correspondientes al rubro seleccionado
+      const i = this.listaRubros.findIndex(rubro => rubro.nombre === this.inmueble.rubro);
+      this.rubroSeleccionado.id = this.listaRubros[i].id;
+      this.rubroSeleccionado.nombre = this.listaRubros[i].nombre;
+      this.rubroSeleccionado.descripcion = this.listaRubros[i].descripcion;
+      this.rubroSeleccionado.especiales = this.listaRubros[i].especiales;
+      this.rubroSeleccionado.links = this.listaRubros[i].links;
+      this.rubroSeleccionado.requisitos = this.listaRubros[i].requisitos;
+      this.rubroSeleccionado.pom = this.listaRubros[i].pom;
+      this.rubroSeleccionado.inspeccion = this.listaRubros[i].inspeccion;
+      this.rubroSeleccionado.croquis = this.listaRubros[i].croquis;
+      this.isHoteleria = this.rubrosHoteleria.includes(this.rubroSeleccionado.id);
+      } else {
+        // Si no se ha seleccionado ninguna opción, reiniciar las propiedades
+        this.rubroSeleccionado.id = null;
+        this.rubroSeleccionado.nombre = null;
+        this.rubroSeleccionado.descripcion = null;
+        this.rubroSeleccionado.especiales = [];
+        this.rubroSeleccionado.links = [];
+        this.rubroSeleccionado.requisitos = [];
+        this.rubroSeleccionado.pom = null;
+        this.rubroSeleccionado.inspeccion = false;
+        this.rubroSeleccionado.croquis = false;
+        this.rubroSeleccionado.isHoteleria = false;
+      }
     },
     blobToBase64(blob) {
       return new Promise((resolve, reject) => {

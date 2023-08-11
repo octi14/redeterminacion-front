@@ -94,54 +94,130 @@
                         <p class="li-p">{{ rubroSeleccionado.descripcion }}</p>
                       </div>
                     </div> 
-                    <div class="li-row">
+                    <div v-if="rubroSeleccionado.requisitos.length" class="li-row">
                       <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
-                      <div class="li-content">
+                      <div class="li-content" style="width:inherit;">
                         <p class="li-title">Requisitos Generales  (Ord. 1958/04)</p>
-                        <p class="li-p">Artículo 6 de la <a href="https://drive.google.com/file/d/1I3BW2F16ZhW7tLqPU6qSmRYybkMKBTXS/view" target="_blank">Ordenanza 1958/04</a></p>
-                      </div>
-                    </div> 
-                    <div class="li-row">
-                      <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
-                      <div class="li-content">
-                        <p class="li-title">Requisitos específicos para el rubro</p>
-                        <ul v-if="rubroSeleccionado.requisitos.length">
-                          <div class="li-content" v-for="(req, index) in rubroSeleccionado.requisitos" :key="index">
-                            <p class="li-p"> {{ req }}</p>
+                        <div v-if="rubroSeleccionado.requisitos.length" class="li-p">
+                          <div class="li-row" v-for="(req, index) in rubroSeleccionado.requisitos" :key="index">
+                            <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                            <div class="li-content" >
+                              <p> {{ req }}</p>
+                            </div>
                           </div>
-                        </ul>
-                        <b-card v-if="rubroSeleccionado.inspeccion"  border-variant="warning" align="center" class="importante-card li-p" >
-                          <b-card-text>
-                            <b-row >
-                              <b-col md="2">
-                                <b-icon-exclamation-triangle variant="warning" font-scale="5"></b-icon-exclamation-triangle>
-                                <p class="li-title"><u><b>¡Importante!</b></u></p>
-                              </b-col>
-                              <b-col  md="10">
-                                  <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Para <b>habilitar un comercio del rubro {{ rubroSeleccionado.nombre }} necesitás solicitar turno para llevar a cabo la inspección correspondiente.</b> Allí se constatará el cumplimiento de los requisitos mencionados previamente.</div></div>
-                                  <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Los turnos de Inspección se solicitan luego de recibir el correo electrónico del Departamento Comercio autorizando el Formulario de Solicitud de Habilitación (donde te indicarán un número de trámite y los pasos a seguir para continuar).</div></div>
-                              </b-col>
-                            </b-row>
-                          </b-card-text>
-                        </b-card>
+                        </div></div>
+                    </div> 
+                    <div v-if="rubroSeleccionado.especiales.length" class="li-row">
+                      <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                      <div class="li-content" style="width:inherit;">
+                        <p class="li-title">Requisitos <span v-if="rubroSeleccionado.requisitos.length">específicos para el rubro</span><span v-else>Generales</span></p>
+                        <div v-if="rubroSeleccionado.especiales.length" class="li-p">
+                          <div class="li-row" v-for="(req, index) in rubroSeleccionado.especiales" :key="index">
+                            <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                            <div class="li-content" >
+                              <a v-if="rubroSeleccionado.links.length && rubroSeleccionado.links[index]!='' && rubroSeleccionado.links[index]!=null" :href="`${rubroSeleccionado.links[index]}`" target="_blank" class="external-link" > {{ req }}</a>
+                              <p v-else> {{ req }}</p>
+                            </div>
+                          </div>
+                        </div>                        
                       </div>
                     </div> 
-                    <div class="li-row">
+                    <b-card v-if="rubroSeleccionado.inspeccion"  border-variant="warning" align="center" class="importante-card li-p" >
+                      <b-card-text>
+                        <b-row >
+                          <b-col md="2">
+                            <b-icon-exclamation-triangle variant="warning" font-scale="5"></b-icon-exclamation-triangle>
+                            <p class="li-title"><u><b>¡Importante!</b></u></p>
+                          </b-col>
+                          <b-col  md="10">
+                              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Para <b>habilitar un comercio del rubro {{ rubroSeleccionado.nombre }} necesitás solicitar turno para llevar a cabo la inspección correspondiente.</b> Allí se constatará el cumplimiento de los requisitos mencionados previamente.</div></div>
+                              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Los turnos de Inspección se solicitan luego de recibir el correo electrónico del Departamento Comercio autorizando el Formulario de Solicitud de Habilitación (donde te indicarán un número de trámite y los pasos a seguir para continuar).</div></div>
+                          </b-col>
+                        </b-row>
+                      </b-card-text>
+                    </b-card>  
+                    <b-card v-else border-variant="info" align="center" class="importante-card li-p" >
+                      <b-card-text>
+                        <b-row >
+                          <b-col md="2">
+                            <b-icon-exclamation-triangle variant="info" font-scale="5"></b-icon-exclamation-triangle>
+                            <p class="li-title"><u><b>¡Importante!</b></u></p>
+                          </b-col>
+                          <b-col  md="10">
+                              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Los comercios del rubro {{ rubroSeleccionado.nombre }} no requieren inspección para llevar a cabo la habilitación.</div></div>
+                              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Los documentos originales se solicitan luego de recibir el correo electrónico del Departamento Comercio autorizando el Formulario de Solicitud de Habilitación (donde te indicarán un número de trámite y los pasos a seguir para continuar).</div></div>
+                          </b-col>
+                        </b-row>
+                      </b-card-text>
+                    </b-card>      
+                    <div v-if="rubroSeleccionado.croquisExpandido === true" class="li-row">
                       <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                       <div class="li-content">
-                        <p class="li-title">Zonas permitidas para el rubro: {{ rubroSeleccionado.nombre }}</p>
-                        <div class="li-row">
-                          <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                          <div class="li-content"><p class="li-p">En este mapa se indican las zonas permitidas para tu comercio de acuerdo a lo determinado por la Ordenanza 3069/21 Mod 3138/21 (Plan de Ordenamiento Municipal).</p></div>
-                        </div>
-                        <div class="li-row">
-                          <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                          <div class="li-content"><p class="li-p">La zona coloreada del mapa señala el espacio catastral donde es posible habilitar comercios de tu rubro <i>(no indica ubicaciones catastrales que se encuentren libres)</i>.</p></div>
+                        <p class="li-title">Requisitos especiales en casos en que hay más de una parcela para uso de la actividad comercial (y las mismas no se hallan reunidas por plano de mensura y unificación o reunidas de oficio)</p>
+                        <div class="li-p"><p><b>Deberá acreditar:</b> Croquis  del Establecimiento efectuado por profesional habilitante en escala 1:100 en donde debe indicarse:</p>
+                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                            <div class="li-content"><span class="icon-orange">a)</span> Acceso peatonal y vehicular;</div>
+                          </div>
+                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                            <div class="li-content"><span class="icon-orange">b)</span> Estacionamiento;</div>
+                          </div>
+                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                            <div class="li-content"><span class="icon-orange">c)</span> Pileta, espejo de agua, natatorio, destacando profundidad y cercado tipo y altura;</div>
+                          </div>
+                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                            <div class="li-content"><span class="icon-orange">d)</span> Cercado perimetral;</div>
+                          </div>
+                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                            <div class="li-content"><span class="icon-orange">e)</span> Forestación existente;</div>
+                          </div>
+                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                            <div class="li-content"><span class="icon-orange">f)</span> Juegos para niños;</div>
+                          </div>
+                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                            <div class="li-content"><span class="icon-orange">g)</span> Administración o recepción;</div>
+                          </div>
+                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                            <div class="li-content"><span class="icon-orange">h)</span> Depósito, guardarropas, vestuarios;</div>
+                          </div>
+                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                            <div class="li-content"><span class="icon-orange">i)</span> Zona de desayuno, comedores, cocinas;</div>
+                          </div>
+                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                            <div class="li-content"><span class="icon-orange">j)</span> Ubicación de matafuegos internos;</div>
+                          </div>
+                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                            <div class="li-content"><span class="icon-orange">k)</span> Carteles en el predio de “EVITE PROVOCAR INCENDIOS”;</div>
+                          </div>
+                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                            <div class="li-content"><span class="icon-orange">l)</span> Señalización con números o letras de las unidades de viviendas, cabañas, departamentos, bungalows, que se afectan al servicio del pasajero;</div>
+                          </div>
+                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                            <div class="li-content"><span class="icon-orange">ll)</span> Vivienda particular que no se afectaría al servicio, con nombre del destinatario y período de ocupación</div>
+                          </div>
+                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                            <div class="li-content"><span class="icon-orange">m)</span> Espacios con otros destinos ( spa, gimnasio, salón de usos múltiples, lavaderos, depósitos externos, etc).</div>
+                          </div>
                         </div>
                       </div>
-                    </div>        
-                  <iframe v-if="rubroSeleccionado.pom" :src="`${rubroSeleccionado.pom}`" width="100%" height="800" allow="autoplay" class="li-p"></iframe>          
-                  <p v-if="rubroSeleccionado" class="li-p">Descargá el mapa de zonas permitidas para tu rubro haciendo <a class="external-link" :href="`${rubroSeleccionado.pom}`">click aquí</a></p>
+                    </div> 
+                    <div v-if="rubroSeleccionado.pom" >
+                      <div class="li-row">
+                        <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                        <div class="li-content">
+                          <p class="li-title">Zonas permitidas para el rubro: {{ rubroSeleccionado.nombre }}</p>
+                          <div class="li-row">
+                            <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                            <div class="li-content"><p class="">En este mapa se indican las zonas permitidas para tu comercio de acuerdo a lo determinado por la Ordenanza 3069/21 Mod 3138/21 (Plan de Ordenamiento Municipal).</p></div>
+                          </div>
+                          <div class="li-row">
+                            <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                            <div class="li-content"><p class="li-p">La zona coloreada del mapa señala el espacio catastral donde es posible habilitar comercios de tu rubro <i>(no indica ubicaciones catastrales que se encuentren libres)</i>.</p></div>
+                          </div>
+                        </div>
+                      </div>        
+                      <iframe :src="`${rubroSeleccionado.pom}`" width="100%" height="800" allow="autoplay" class="li-p"></iframe>          
+                      <p v-if="rubroSeleccionado" class="li-p">Descargá el mapa de zonas permitidas para tu rubro haciendo <a class="external-link" :href="`${rubroSeleccionado.pom}`">click aquí</a></p>
+                    </div>
                 </div>
               </div>
             </transition>
@@ -447,13 +523,14 @@ export default {
                           id: null,
                           nombre: null,
                           descripcion: null,
-                          ordenanzas: [],
-                          links: [],
                           requisitos: [],
+                          especiales: [],
+                          links: [],
                           pom: null,
                           inspeccion: false,
+                          croquis: false,
+                          croquisExpandido: true,
                         },
-
       solicitudLibreDeuda: {
         email: '',
         emailState: null,
@@ -508,20 +585,24 @@ export default {
       const i = this.filteredRubros.findIndex(rubro => rubro.id === this.rubroSeleccionado.id);
       this.rubroSeleccionado.nombre = this.filteredRubros[i].nombre;
       this.rubroSeleccionado.descripcion = this.filteredRubros[i].descripcion;
-      this.rubroSeleccionado.ordenanzas = this.filteredRubros[i].ordenanzas;
       this.rubroSeleccionado.links = this.filteredRubros[i].links;
       this.rubroSeleccionado.requisitos = this.filteredRubros[i].requisitos;
+      this.rubroSeleccionado.especiales = this.filteredRubros[i].especiales;
       this.rubroSeleccionado.pom = this.filteredRubros[i].pom;
       this.rubroSeleccionado.inspeccion = this.filteredRubros[i].inspeccion;
+      this.rubroSeleccionado.croquis = this.filteredRubros[i].croquis;
+      this.rubroSeleccionado.croquisExpandido = this.filteredRubros[i].croquisExpandido;
       } else {
         // Si no se ha seleccionado ninguna opción, reiniciar las propiedades
         this.rubroSeleccionado.nombre = null;
         this.rubroSeleccionado.descripcion = null;
-        this.rubroSeleccionado.ordenanzas = [];
         this.rubroSeleccionado.links = [];
         this.rubroSeleccionado.requisitos = [];
+        this.rubroSeleccionado.especiales = [];
         this.rubroSeleccionado.pom = null;
         this.rubroSeleccionado.inspeccion = false;
+        this.rubroSeleccionado.croquis = false;
+        this.rubroSeleccionado.croquisExpandido = false;
       }
     },
     resetForm() {
@@ -563,25 +644,6 @@ export default {
   isCardExpanded(cardIndex) {
     return this.expandedCards.includes(cardIndex);
   },
-  updateRubroData() {
-    if (this.rubroSeleccionado) {
-      // Obtener los datos correspondientes al rubro seleccionado
-      const i = this.filteredRubros.findIndex(rubro => rubro.id === this.rubroSeleccionado);
-      this.rubroPrueba = this.filteredRubros.find(rubro => rubro.id === this.rubroSeleccionado);
-      const descripcion = this.filteredRubros[i].descripcion;
-      const ordenanzas = this.filteredRubros[i].ordenanzas;
-      const links = this.filteredRubros[i].links;
-      // Actualizar las propiedades con los nuevos valores
-      this.descripcionSeleccionada = descripcion;
-      this.ordenanzasSeleccionadas = ordenanzas;
-      this.linksSeleccionados = links;
-      } else {
-        // Si no se ha seleccionado ninguna opción, reiniciar las propiedades
-        this.descripcionSeleccionada = '';
-        this.ordenanzasSeleccionadas = [];
-        this.linksSeleccionados = [];
-      }
-    },
   }
 }
 </script>

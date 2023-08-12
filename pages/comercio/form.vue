@@ -375,7 +375,7 @@
     <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>Podés descargar tu última factura haciendo <a href="https://arvige.gob.ar/lpagos" target="_blank" >click aquí</a>.</p>
     <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>En el encabezado de cada factura se indica si tu partida registra deuda o no lo hace. Hacé click en la imagen y verificá cómo se visualiza.</p>
     <div style="width: 100%">
-      <img src="../../assets/ej-libredeuda.jpg" width="100%" height="fit-content" />
+      <a href="../../assets/ej-libredeuda.jpg" target="_blank"><img src="../../assets/ej-libredeuda.jpg" width="100%" height="fit-content" /></a>
     </div>
   </div>
 </b-modal>
@@ -418,7 +418,7 @@
         <p><b-icon-check scale="1.25" class="icon-orange"></b-icon-check>Podés ver un ejemplo haciendo click en la imagen. <i>Ahí te indicamos cómo identificar qué tipo de plano tenés.</i></p>
       </div>
       <div style="width: 35%; display: inline-block; max-width:165px; margin-top:1rem">
-        <img src="../../assets/ej-plano.jpg" width="100%" height="fit-content" />
+        <a href="../../assets/ej-plano.jpg" target="_blank"><img src="../../assets/ej-plano.jpg" width="100%" height="fit-content" /></a>
       </div>
     </div>
   </div>
@@ -500,17 +500,17 @@ export default {
       nroTramite: null,
       solicitante: {
         tipoSolicitud: 'Habilitación',
-        nombre: 'Nico',
-        apellido: 'Confetto',
-        DNI: '34510212',
-        cuit: '2034510212',
-        razonSocial: 'Sr. Computación',
-        domicilioReal: 'Calle falsa 123',
-        telefono: '2255 456789',
-        codigoPostal: '7165',
-        localidad: 'Villa Gesell',
-        provincia: 'Buenos Aires',
-        mail: 'nicolasconfetto@gesell.gob.ar',
+        nombre: '',
+        apellido: '',
+        DNI: '',
+        cuit: '',
+        razonSocial: '',
+        domicilioReal: '',
+        telefono: '',
+        codigoPostal: '',
+        localidad: '',
+        provincia: '',
+        mail: '',
         esApoderado: false,
         esPersonaJuridica: false,
       },

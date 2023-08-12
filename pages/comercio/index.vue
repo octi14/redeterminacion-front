@@ -410,7 +410,7 @@
               <p><b-icon-check scale="1.25" class="icon-orange"></b-icon-check>Podés ver un ejemplo haciendo click en la imagen. <i>Ahí te indicamos cómo identificar qué tipo de plano tenés.</i></p>
             </div>
             <div style="width: 35%; display: inline-block; max-width:165px; margin-top:1rem">
-              <a href="../../_nuxt/assets/ej-plano.jpg" target="_blank"><img src="../../assets/ej-plano.jpg" width="100%" height="fit-content" /></a>
+              <a href="../../assets/ej-plano.jpg" target="_blank"><img src="../../assets/ej-plano.jpg" width="100%" height="fit-content" /></a>
             </div>
           </div>
         </div>
@@ -484,7 +484,7 @@
         <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>Podés descargar tu última factura haciendo <a href="https://arvige.gob.ar/lpagos" target="_blank" >click aquí</a>.</p>
         <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>En el encabezado de cada factura se indica si tu partida registra deuda o no lo hace. Hacé click en la imagen y verificá cómo se visualiza.</p>
         <div style="width: 100%">
-          <a href="../../_nuxt/assets/ej-libredeuda.jpg" target="_blank"><img src="../../assets/ej-libredeuda.jpg" width="100%" height="fit-content" /></a>
+          <a href="../../assets/ej-libredeuda.jpg" target="_blank"><img src="../../assets/ej-libredeuda.jpg" width="100%" height="fit-content" /></a>
         </div>
       </div>
     </b-modal>

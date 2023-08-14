@@ -12,14 +12,16 @@
       </div>
       <div class="row justify-content-center mt-3">
 
-        <p class="h4"> Estado:
+        <div class="h4 row"> Estado:
           <h4 class="text-primary ml-1" v-if="habilitacion.status === 'En revisión'">{{ habilitacion.status }} </h4>
           <h4 class="text-success ml-1" v-if="habilitacion.status === 'Esperando documentación'">{{ habilitacion.status }} </h4>
           <h4 class="text-success ml-1" v-if="habilitacion.status === 'Inspeccionado'">{{ habilitacion.status }} </h4>
+          <h4 class="text-success ml-1" v-if="habilitacion.status === 'Aprobada'">{{ habilitacion.status }} </h4>
           <h4 class="text-danger ml-1" v-if="habilitacion.status === 'Rechazada'">{{ habilitacion.status }} </h4>
           <h4 class="text-secondary ml-1" v-if="habilitacion.status === 'Esperando turno'">{{ habilitacion.status }} </h4>
           <h4 class="text-secondary ml-1" v-if="habilitacion.status === 'Esperando inspección'">{{ habilitacion.status }} </h4>
           <h4 class="text-success ml-1" v-if="habilitacion.status === 'Finalizada'">{{ habilitacion.status }} </h4>
+        </div>
       </div>
       <div class="row col-10 mx-auto justify-content-center">
         <b-button @click="onSolicitarDocumentacion" variant="success" pill class="btn-4 mt-3 mx-1" v-if="habilitacion.status === 'Inspeccionado'"> Solicitar documentación </b-button>

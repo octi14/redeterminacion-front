@@ -7,7 +7,7 @@
         <option v-for="estado in estados" :value="estado" :key="estado">{{ estado }}</option>
       </b-form-select>
     </b-form-group>
-    <b-table per-page="10" head-row-variant="primary" class="col-md-10 col-sm-8 mx-auto mt-4 shadow-lg" hover :items="filteredItems" :fields="fields">
+    <b-table per-page="10" head-row-variant="primary" class="col-md-10 col-sm-8 mx-auto mt-4 shadow-lg" hover :items="paginatedItems" :fields="fields">
       <template #cell(status)="row">
         <div :class="row.item.estadoColor"><b>{{ row.value }}</b></div>
       </template>
@@ -26,6 +26,8 @@
       </template>
     </b-table>
 
+    <b-pagination :total-rows="items.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
+
     <b-modal v-model="singleModal" header-bg-variant="primary" title="Observaciones" title-class="text-light" hide-footer centered>
       <p> {{ singleContent }} </p>
     </b-modal>
@@ -43,7 +45,6 @@ export default{
       selectedEstado: '',
       currentPage: 1,
       perPage: 10,
-      totalPages: 0,
       fields: [
         {
           key: 'nroTramite',
@@ -99,11 +100,20 @@ export default{
       }
     });
     const perPage = 10;
-    this.totalPages = Math.ceil(this.items.length / perPage);
   },
   computed: {
     turnos(){
       return this.$store.state.turnos.all
+    },
+    paginatedItems() {
+      const startIndex = (this.currentPage - 1) * this.perPage;
+      const endIndex = startIndex + this.perPage;
+
+      if (this.selectedEstado) {
+        return this.items.filter(item => item.status === this.selectedEstado).slice(startIndex, endIndex);
+      } else {
+        return this.items.slice(startIndex, endIndex);
+      }
     },
     filteredItems() {
       if (this.selectedEstado) {
@@ -114,8 +124,8 @@ export default{
     },
   },
   methods: {
-    loadMore() {
-      this.$fetch()
+    onPageChange(newPage) {
+      this.currentPage = newPage;
     },
     previousPage() {
       if (this.currentPage > 1) {

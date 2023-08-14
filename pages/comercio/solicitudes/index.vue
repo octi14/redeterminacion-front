@@ -14,7 +14,7 @@
         </b-form-input>
       </b-form-group> -->
     </div>
-    <b-table per-page="11" head-row-variant="warning" class="col-10 mx-auto mt-4 shadow-lg" :items="filteredItems" :fields="fields">
+    <b-table per-page="10" head-row-variant="warning" class="col-md-10 col-sm-8 mx-auto mt-4 shadow-lg" :items="paginatedItems" :fields="fields">
       <!-- Plantilla personalizada para la columna "detalles" -->
       <template #cell(status)="row">
         <div :class="row.item.estadoColor"><b>{{ row.value }}</b></div>
@@ -27,11 +27,12 @@
         </NuxtLink>
       </template>
       <template #cell(observaciones)="row">
-        <b-button v-if="row.item.observaciones != ''" @click="onShowObservaciones(row.item.id)" variant="outline-primary" size="sm" title="Observaciones">
+        <b-button v-if="row.item.observaciones && row.item.observaciones != ''" @click="onShowObservaciones(row.item.id)" variant="outline-primary" size="sm" title="Observaciones">
           <b-icon-eye/>
         </b-button>
       </template>
     </b-table>
+    <b-pagination pills :total-rows="items.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
 
     <b-modal v-model="singleModal" header-bg-variant="primary" title="Observaciones" title-class="text-light" hide-footer centered>
       <p> {{ singleContent }} </p>
@@ -50,7 +51,6 @@ export default{
       singleContent: 'asdasd',
       currentPage: 1,
       perPage: 10,
-      totalPages: 0,
       fields: [
         {
           key: 'tipoSolicitud',
@@ -116,45 +116,47 @@ export default{
       }
     });
     const perPage = 10;
-    this.totalPages = Math.ceil(this.items.length / perPage);
   },
   computed: {
     habilitaciones(){
       return this.$store.state.habilitaciones.all
     },
-    filteredItems() {
+    paginatedItems() {
+      const startIndex = (this.currentPage - 1) * this.perPage;
+      const endIndex = startIndex + this.perPage;
+
       if (this.selectedEstado) {
-        return this.items.filter(item => item.status == this.selectedEstado);
+        return this.items.filter(item => item.status === this.selectedEstado).slice(startIndex, endIndex);
       } else {
-        return this.items; // Sin filtro, mostrar todos los elementos
+        return this.items.slice(startIndex, endIndex);
       }
+    },
+    filteredItems() {
+      const startIndex = (this.currentPage - 1) * this.perPage;
+      const endIndex = startIndex + this.perPage;
+
+      if (this.selectedEstado) {
+        return this.items.filter(item => item.status == this.selectedEstado).slice(startIndex, endIndex);
+      } else {
+        return this.items.slice(startIndex, endIndex); // Sin filtro, mostrar elementos paginados
+      }
+    },
+    totalPages() {
+      return Math.ceil(this.filteredItems.length / this.perPage);
     },
     adminComercio() {
       return this.$store.state.user.admin === "comercio"
     }
   },
   methods: {
-    loadMore() {
-      this.$fetch()
+    onPageChange(newPage) {
+      this.currentPage = newPage;
     },
     async onShowObservaciones(id){
       const habilitacion = this.$store.state.habilitaciones.all.filter(habilitacion => habilitacion.id === id)
       this.singleContent = habilitacion[0].observaciones
       this.$fetch()
       this.singleModal = true
-    },
-    previousPage() {
-      if (this.currentPage > 1) {
-        this.currentPage--;
-      }
-    },
-    nextPage() {
-      if (this.currentPage < this.totalPages) {
-        this.currentPage++;
-      }
-    },
-    verDetalles(name) {
-      console.log(name);
     },
   },
 }

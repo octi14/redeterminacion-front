@@ -8,10 +8,13 @@
       </div>
       <div class="row justify-content-center mt-3">
 
-        <p class="h4"> Estado:
+        <div class="h4 row"> Estado:
           <h4 class="text-primary ml-1" v-if="turno.status === 'Pendiente de inspección'">{{ turno.status }} </h4>
           <h4 class="text-success ml-1" v-if="turno.status === 'Inspeccionado'">{{ turno.status }} </h4>
+          <h4 class="text-secondary ml-1" v-if="turno.status === 'Prórroga 1'">{{ turno.status }} </h4>
+          <h4 class="text-secondary ml-1" v-if="turno.status === 'Prórroga 2'">{{ turno.status }} </h4>
           <h4 class="text-danger ml-1" v-if="turno.status === 'Cancelado'">{{ turno.status }} </h4>
+        </div>
       </div>
       <div class="row col-10 mx-auto justify-content-center">
         <b-button @click="onAprobar" variant="success" pill class="btn-4 mt-3 mx-1"> Aprobar inspección </b-button>
@@ -127,10 +130,10 @@
       </template>
       <div class="confirmation-popup-body">
         <h4 class="text-primary text-center"><b>Prórroga</b></h4>
-        <p class="text-center">Se concederá prórroga de<b> 7 días hábiles </b>para que el solicitante dé cumplimiento a los requerimientos. <p>
+        <p class="text-center">Se concederá prórroga de<b> 7 días hábiles </b>para que el solicitante dé cumplimiento a los requerimientos. </p>
         <p class="text-center">La cantidad total de prórrogas pasibles de conceder son dos (2) continuadas e ininterrumpidas.</p>
         <div class="text-center mt-3">
-          <b-btn variant="primary" @click="showApprove = false">
+          <b-btn variant="primary" @click="onSendProrroga">
               Aceptar
           </b-btn>
         </div>
@@ -210,6 +213,55 @@ export default {
     },
     onProrroga(){
       this.showProrroga = true
+    },
+    async onSendProrroga(){
+      var habilitacion = null
+      var turno = null
+      if(this.turno){
+        switch (this.turno.status){
+          case "Prórroga 1":
+            habilitacion = {
+              status: "Prórroga 2"
+            }
+            turno = {
+              status: "Prórroga 2",
+              observaciones: "Se otorga la prórroga 2"
+            }
+            break
+          case "Prórroga 2":
+            //Show modal No se pueden dar más prórrogas
+            break
+          case "Pendiente de inspección":
+            habilitacion = {
+              status: "Prórroga 1"
+            }
+            turno = {
+              status: "Prórroga 1",
+              observaciones: "Se otorga la prórroga 1"
+            }
+            break
+        }
+      }
+      const id = this.turno.id
+      const userToken = this.$store.state.user.token
+      await this.$store.dispatch('turnos/update', {
+        id,
+        turno,
+        userToken,
+      })
+      const nroTramite = this.turno.nroTramite
+      await this.$store.dispatch('habilitaciones/getByNroTramite',{
+        nroTramite
+      })
+      const habId = this.$store.state.habilitaciones.single.id
+      await this.$store.dispatch('habilitaciones/update', {
+        id: habId,
+        habilitacion,
+      })
+      this.wait(300)
+      this.$fetch()
+      this.showPrevApprove = false
+      this.showApprove = true
     },
     async onSendReject(){
       const turno = {

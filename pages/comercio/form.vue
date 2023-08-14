@@ -13,7 +13,7 @@
       <h5>Rubro: {{ inmueble.rubro }}</h5>
       <b-button v-if="endButton === true" @click="onResetParams" class="btn-cancel">Volver</b-button>
     </b-card>
-  </div>  
+  </div>
   <b-form v-else @submit="submitForm" class="my-3" style="margin-left:10px;margin-right:10px">
 
   <b-card no-body class="col-8 mt-1 section-card"  style="margin: 0px auto">
@@ -62,7 +62,7 @@
       <b-row>
         <b-col md="10">
           <b-form-group label="Teléfono *" label-for="telefonoTitular" >
-            <b-form-input id="telefonoTitular" v-model="solicitante.telefono"  type="tel" no-wheel ></b-form-input>
+            <b-form-input id="telefonoTitular" v-model="solicitante.telefono"  type="number" no-wheel ></b-form-input>
           </b-form-group>
         </b-col>
         <b-col md="2">
@@ -400,7 +400,7 @@
           Información Adicional
       </h5>
     </div>
-  </template>  
+  </template>
   <div class="modal-info modal-plano">
     <div>
       <h6>Tipos de Plano para cargar</h6>
@@ -448,8 +448,8 @@
     <p class="h3"> <b> {{ nroTramite }} </b> </p>
     <p class="">Por favor, conservá este número. Será solicitado más adelante. </p>
   </div>
-  <template #modal-footer> 
-    <div class="" style="margin: auto">   
+  <template #modal-footer>
+    <div class="" style="margin: auto">
       <b-button @click="cancelForm" class="btn-cancel">Volver</b-button>
       <b-button @click="onPrintTicket">Imprimir</b-button>
     </div>
@@ -496,7 +496,7 @@ export default {
         croquis: false,
       },
       rubrosHoteleria:[136,137,138,139,140,141,142,143,144,145],
-      isHoteleria: false,    
+      isHoteleria: false,
       nroTramite: null,
       solicitante: {
         tipoSolicitud: 'Habilitación',
@@ -731,10 +731,10 @@ export default {
       this.showPopupConstanciaLibreDeuda = false
       this.showPopupCertificadoDomicilio = false
       this.showPopupPlano = false
-      shis.showPopupFormOk = false
+      this.showPopupFormOk = false
       this.showPopupFormLoading = false
       this.showPopupFormError = false
-    },    
+    },
     handleRubroChange() {
       if (this.inmueble.rubro != null) {
       // Obtener los datos correspondientes al rubro seleccionado

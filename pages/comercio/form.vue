@@ -6,7 +6,7 @@
     <b-card class="text-center shadow-lg col-md-8 col-sm-12 mx-auto">
       <h1>Comprobante de Solicitud</h1>
       <h4>Departamento de Comercio</h4>
-      <h5>Nro de trámite: HAB001</h5>
+      <h5>Nro de trámite: {{ nroTramite }}</h5>
       <h5>Solicita el turno: {{ solicitante.nombre }} {{ solicitante.apellido }}</h5>
       <h5>CUIT: {{ solicitante.cuit }}</h5>
       <h5>Tipo de Soolicitud: {{ solicitante.tipoSolicitud }}</h5>
@@ -102,7 +102,7 @@
     </b-row>
     <!-- Sección: Datos del Apoderado -->
     <fieldset v-if="solicitante.esApoderado === 'true'">
-        <p>En este campo deberás cargar la <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Planilla de autorización de trámite</a> o el Poder autorizado por escribano que te indicamos que completes previamente.</p>
+        <p>En este campo deberás cargar la <a href="https://drive.google.com/file/d/1m5ouibBL4sWokhkSR5keTjbUVo-I4TOU/view" target="_blank" class="external-link">Planilla de autorización de trámite</a> o el Poder autorizado por escribano que te indicamos que completes previamente.</p>
 
       <b-form-group v-if="solicitante.esApoderado === 'true'" label="Planilla de autorización de trámite" label-for="documentos.planillaAutorizacion" >
         <b-form-file v-model="documentos.planillaAutorizacion" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('planillaAutorizacion')" @input="clearFormFieldState('planillaAutorizacion')"></b-form-file>
@@ -243,7 +243,7 @@
         <b-form-file v-model="documentos.libreDeudaUrbana" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('libreDeudaUrbana')" @change="handleDocumentUpdate('libreDeudaUrbana')" @input="clearFormFieldState('libreDeudaUrbana')"></b-form-file>
       </b-form-group>
       <b-form-group label="Escritura traslativa de Dominio del inmueble / Contrato de locación / Otro *" label-for="tituloPropiedad" >
-        <b-form-file v-model="documentos.tituloPropiedad" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" multiple required :state="getFormFieldState('tituloPropiedad')" @change="handleDocumentUpdate('tituloPropiedad')" @input="clearFormFieldState('tituloPropiedad')"></b-form-file>
+        <b-form-file v-model="documentos.tituloPropiedad" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('tituloPropiedad')" @change="handleDocumentUpdate('tituloPropiedad')" @input="clearFormFieldState('tituloPropiedad')"></b-form-file>
       </b-form-group>
       <b-form-group >
         <label for="plano" class="rubro-label">Plano o Informe técnico * <b-icon-question-circle-fill @click="openPopup('plano')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
@@ -375,7 +375,7 @@
     <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>Podés descargar tu última factura haciendo <a href="https://arvige.gob.ar/lpagos" target="_blank" >click aquí</a>.</p>
     <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>En el encabezado de cada factura se indica si tu partida registra deuda o no lo hace. Hacé click en la imagen y verificá cómo se visualiza.</p>
     <div style="width: 100%">
-      <a href="../../assets/ej-libredeuda.jpg" target="_blank"><img src="../../assets/ej-libredeuda.jpg" width="100%" height="fit-content" /></a>
+      <a href="http://haciendavgesell.gob.ar/_nuxt/img/ej-libredeuda.78769c7.jpg" target="_blank"><img src="../../assets/ej-libredeuda.jpg" width="100%" height="fit-content" /></a>
     </div>
   </div>
 </b-modal>
@@ -418,7 +418,7 @@
         <p><b-icon-check scale="1.25" class="icon-orange"></b-icon-check>Podés ver un ejemplo haciendo click en la imagen. <i>Ahí te indicamos cómo identificar qué tipo de plano tenés.</i></p>
       </div>
       <div style="width: 35%; display: inline-block; max-width:165px; margin-top:1rem">
-        <a href="../../assets/ej-plano.jpg" target="_blank"><img src="../../assets/ej-plano.jpg" width="100%" height="fit-content" /></a>
+        <a href="http://haciendavgesell.gob.ar/_nuxt/img/ej-plano.2ed6a37.jpg" target="_blank"><img src="../../assets/ej-plano.jpg" width="100%" height="fit-content" /></a>
       </div>
     </div>
   </div>
@@ -441,8 +441,6 @@
   </template>
   <div class="centeredContainer">
     <p class="modal-subtitle">¡Tu solicitud ha sido enviada exitosamente!</p>
-    <p class="">Tu número de tramite es:</p>
-    <p class="modal-subtitle">HAB001</p>
     <p class="">En los próximos días recibirás un correo electrónico del Departamento Comercio Municipal en el que te indicarán cómo continuar el trámite.</p>
     <p class=""><b>Tu número de trámite es: </b> </p>
     <p class="h3"> <b> {{ nroTramite }} </b> </p>
@@ -450,7 +448,7 @@
   </div>
   <template #modal-footer>
     <div class="" style="margin: auto">
-      <b-button @click="cancelForm" class="btn-cancel">Volver</b-button>
+      <b-button @click="onResetParams" class="btn-cancel">Volver</b-button>
       <b-button @click="onPrintTicket">Imprimir</b-button>
     </div>
   </template>

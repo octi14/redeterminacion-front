@@ -7,20 +7,22 @@
     </div>
     <!-- Datos del solicitante -->
     <template v-if="habilitacion">
-      <div class="row justify-content-center mt-3">
-        <p class="h4">         Número de trámite: <b> {{ habilitacion.nroTramite }}  </b></p>
-      </div>
-      <div class="row justify-content-center mt-3">
+      <div class="flex col" style="width: 96%">
+        <div class="row justify-content-center mt-3">
+          <p class="h4"> Número de trámite: <b> {{ habilitacion.nroTramite }}  </b></p>
+        </div>
+        <div class="row justify-content-center mt-3">
 
-        <div class="h4 row"> Estado:
-          <h4 class="text-primary ml-1" v-if="habilitacion.status === 'En revisión'">{{ habilitacion.status }} </h4>
-          <h4 class="text-success ml-1" v-if="habilitacion.status === 'Esperando documentación'">{{ habilitacion.status }} </h4>
-          <h4 class="text-success ml-1" v-if="habilitacion.status === 'Inspeccionado'">{{ habilitacion.status }} </h4>
-          <h4 class="text-success ml-1" v-if="habilitacion.status === 'Aprobada'">{{ habilitacion.status }} </h4>
-          <h4 class="text-danger ml-1" v-if="habilitacion.status === 'Rechazada'">{{ habilitacion.status }} </h4>
-          <h4 class="text-secondary ml-1" v-if="habilitacion.status === 'Esperando turno'">{{ habilitacion.status }} </h4>
-          <h4 class="text-secondary ml-1" v-if="habilitacion.status === 'Esperando inspección'">{{ habilitacion.status }} </h4>
-          <h4 class="text-success ml-1" v-if="habilitacion.status === 'Finalizada'">{{ habilitacion.status }} </h4>
+          <div class="h4 row"> Estado:
+            <h4 class="text-primary ml-1" v-if="habilitacion.status === 'En revisión'">{{ habilitacion.status }} </h4>
+            <h4 class="text-success ml-1" v-if="habilitacion.status === 'Esperando documentación'">{{ habilitacion.status }} </h4>
+            <h4 class="text-success ml-1" v-if="habilitacion.status === 'Inspeccionado'">{{ habilitacion.status }} </h4>
+            <h4 class="text-success ml-1" v-if="habilitacion.status === 'Aprobada'">{{ habilitacion.status }} </h4>
+            <h4 class="text-danger ml-1" v-if="habilitacion.status === 'Rechazada'">{{ habilitacion.status }} </h4>
+            <h4 class="text-secondary ml-1" v-if="habilitacion.status === 'Esperando turno'">{{ habilitacion.status }} </h4>
+            <h4 class="text-secondary ml-1" v-if="habilitacion.status === 'Esperando inspección'">{{ habilitacion.status }} </h4>
+            <h4 class="text-success ml-1" v-if="habilitacion.status === 'Finalizada'">{{ habilitacion.status }} </h4>
+          </div>
         </div>
       </div>
       <div class="row col-10 mx-auto justify-content-center">
@@ -133,6 +135,46 @@
               </p>
               <p class="col col-complementary" role="complementary">
                 <a>{{ habilitacion.espacioPublico ? 'Si' : 'No' }}</a>
+              </p>
+            </div>
+            <div class="layout" v-if="habilitacion.espacioPublico">
+              <p class="col col-main">
+                <strong>- Mesas y sillas</strong><br>
+              </p>
+              <p class="col col-complementary" role="complementary">
+                <a>{{ habilitacion.mesas ? 'Si' : 'No' }}</a>
+              </p>
+            </div>
+            <div class="layout" v-if="habilitacion.espacioPublico">
+              <p class="col col-main">
+                <strong>- Marquesina</strong><br>
+              </p>
+              <p class="col col-complementary" role="complementary">
+                <a>{{ habilitacion.marquesina ? 'Si' : 'No' }}</a>
+              </p>
+            </div>
+            <div class="layout" v-if="habilitacion.espacioPublico">
+              <p class="col col-main">
+                <strong>- Carteles</strong><br>
+              </p>
+              <p class="col col-complementary" role="complementary">
+                <a>{{ habilitacion.carteles ? 'Si' : 'No' }}</a>
+              </p>
+            </div>
+            <div class="layout" v-if="habilitacion.espacioPublico">
+              <p class="col col-main">
+                <strong>- Mercadería</strong><br>
+              </p>
+              <p class="col col-complementary" role="complementary">
+                <a>{{ habilitacion.mercaderia ? 'Si' : 'No' }}</a>
+              </p>
+            </div>
+            <div class="layout">
+              <strong class="col col-main" v-if="habilitacion.rubro === 'Apart-Hotel'">Servicios de hotelería:</strong>
+            </div>
+            <div class="layout" v-for="(item, index) in habilitacion.serviciosHoteleria" :key="index">
+              <p class="col col-main" v-if="item.value">
+                <strong class="text-primary">- {{ item.servicio }}</strong><br>
               </p>
             </div>
             <br>

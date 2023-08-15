@@ -161,7 +161,7 @@
 
         <b-form-group>
         <b-form-checkbox v-for="servicio in inmueble.serviciosHoteleria" :key="servicio.id" :id="`servicio${servicio.id}`" :name="`servicio${servicio.id}`" v-model="servicio.value" scale=1.5 >
-          {{ servicio.nombre }}
+          {{ servicio.servicio }}
         </b-form-checkbox>
 
       </b-form-group>
@@ -526,18 +526,18 @@ export default {
         carteles: false,
         otrosServicios: '',
         serviciosHoteleria: [
-          { id: "1", nombre: "Servicio de Mucama-Ropa Blanca", value: false},
-          { id: "2", nombre: "Desayuno", value: false},
-          { id: "3", nombre: "Restaurante - Bar", value: false},
-          { id: "4", nombre: "Gimnasio", value: false},
-          { id: "5", nombre: "Piletas de Natación", value: false},
-          { id: "6", nombre: "Spa", value: false},
-          { id: "7", nombre: "Estacionamiento dentro del predio", value: false},
-          { id: "8", nombre: "TV-Electrodomésticos", value: false},
-          { id: "9", nombre: "Ventiladores y/o Aire Acondicionado", value: false},
-          { id: "10", nombre: "Calefacción", value: false},
-          { id: "11", nombre: "WI FI y/o Internet", value: false},
-          { id: "12", nombre: "Otros", value: false}
+          { id: "1", servicio: "Servicio de Mucama-Ropa Blanca", value: false},
+          { id: "2", servicio: "Desayuno", value: false},
+          { id: "3", servicio: "Restaurante - Bar", value: false},
+          { id: "4", servicio: "Gimnasio", value: false},
+          { id: "5", servicio: "Piletas de Natación", value: false},
+          { id: "6", servicio: "Spa", value: false},
+          { id: "7", servicio: "Estacionamiento dentro del predio", value: false},
+          { id: "8", servicio: "TV-Electrodomésticos", value: false},
+          { id: "9", servicio: "Ventiladores y/o Aire Acondicionado", value: false},
+          { id: "10", servicio: "Calefacción", value: false},
+          { id: "11", servicio: "WI FI y/o Internet", value: false},
+          { id: "12", servicio: "Otros", value: false}
         ],
       },
       documentos: {
@@ -624,13 +624,6 @@ export default {
         this.showPopupFormLoading = false
         this.showPopupFormError = true
       }
-    },
-    onResetParams() {
-      this.solicitante = null;
-      this.inmueble = null;
-      this.documentos = null;
-      this.formFieldStates = null;
-      this.$router.push('/comercio/');
     },
     cancelForm(){
       console.log("CANCEL FORM");
@@ -732,6 +725,8 @@ export default {
       this.showPopupFormOk = false
       this.showPopupFormLoading = false
       this.showPopupFormError = false
+      this.printing= false
+      this.$router.push('/comercio')
     },
     handleRubroChange() {
       if (this.inmueble.rubro != null) {

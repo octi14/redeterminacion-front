@@ -28,7 +28,7 @@
 
     <b-pagination :total-rows="items.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
 
-    <b-modal v-model="singleModal" header-bg-variant="primary" title="Observaciones" title-class="text-light" hide-footer centered>
+    <b-modal v-model="singleModal" header-bg-variant="primary" :title="'Observaciones: Turno ' + nroObservaciones" title-class="text-light" hide-footer centered>
       <p> {{ singleContent }} </p>
     </b-modal>
   </div>
@@ -42,6 +42,7 @@ export default{
       singleContent: '',
       lastLength: false,
       items: [],
+      nroObservaciones: 0,
       selectedEstado: '',
       currentPage: 1,
       perPage: 10,
@@ -139,6 +140,7 @@ export default{
     },
     async onShowObservaciones(id){
       const turno = this.$store.state.turnos.all.filter(turno => turno.id === id)
+      this.nroObservaciones = turno[0].nroTramite
       this.singleContent = turno[0].observaciones
       this.$fetch()
       this.singleModal = true

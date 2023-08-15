@@ -8,6 +8,7 @@ const formatTurno = (TurnoResponse) => ({
   mail: TurnoResponse.mail,
   status: TurnoResponse.status,
   nroTramite: TurnoResponse.nroTramite,
+  observaciones: TurnoResponse.observaciones,
   createdAt: new Date(TurnoResponse.createdAt).toLocaleDateString(),
 })
 

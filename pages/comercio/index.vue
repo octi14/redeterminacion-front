@@ -87,7 +87,7 @@
                  
                 <div v-if="rubroSeleccionado.id">  
                     
-                    <div class="li-row">
+                    <div v-if="rubroSeleccionado.descripcion != ''" class="li-row">
                       <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                       <div class="li-content">
                         <p class="li-title">¿A qué nos referimos cuando hablamos de “{{ rubroSeleccionado.nombre }}”?</p>
@@ -97,7 +97,7 @@
                     <div v-if="rubroSeleccionado.requisitos.length" class="li-row">
                       <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                       <div class="li-content" style="width:inherit;">
-                        <p class="li-title">Requisitos Generales  (Ord. 1958/04)</p>
+                        <p class="li-title">Requisitos Generales  <a href="https://drive.google.com/file/d/1I3BW2F16ZhW7tLqPU6qSmRYybkMKBTXS/view" target="_blank" class="external-link" style="font-weight: 500">(Ord. 1958/04)</a></p>
                         <div v-if="rubroSeleccionado.requisitos.length" class="li-p">
                           <div class="li-row" v-for="(req, index) in rubroSeleccionado.requisitos" :key="index">
                             <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
@@ -130,8 +130,8 @@
                             <p class="li-title"><u><b>¡Importante!</b></u></p>
                           </b-col>
                           <b-col  md="10">
-                              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Para <b>habilitar un comercio del rubro {{ rubroSeleccionado.nombre }} necesitás solicitar turno para llevar a cabo la inspección correspondiente.</b> Allí se constatará el cumplimiento de los requisitos mencionados previamente.</div></div>
-                              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Los turnos de Inspección se solicitan luego de recibir el correo electrónico del Departamento Comercio autorizando el Formulario de Solicitud de Habilitación (donde te indicarán un número de trámite y los pasos a seguir para continuar).</div></div>
+                              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Para habilitar un comercio del rubro {{ rubroSeleccionado.nombre }} <b>necesitás solicitar turno para llevar a cabo la inspección</b> correspondiente. Allí se constatará el cumplimiento de los requisitos mencionados previamente.</div></div>
+                              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Los turnos de Inspección se solicitan <b>luego de recibir el correo electrónico del Departamento Comercio</b> autorizando el Formulario de Solicitud de Habilitación (donde te indicarán los pasos a seguir para continuar).</div></div>
                           </b-col>
                         </b-row>
                       </b-card-text>
@@ -145,7 +145,7 @@
                           </b-col>
                           <b-col  md="10">
                               <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Los comercios del rubro {{ rubroSeleccionado.nombre }} <b>no requieren inspección</b> para llevar a cabo la habilitación.</div></div>
-                              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Los documentos originales se solicitan luego de recibir el correo electrónico del Departamento Comercio autorizando el Formulario de Solicitud de Habilitación (donde te indicarán un número de trámite y los pasos a seguir para continuar).</div></div>
+                              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Los documentos originales se solicitan luego de recibir el correo electrónico del Departamento Comercio autorizando el Formulario de Solicitud de Habilitación (donde te indicarán los pasos a seguir para continuar).</div></div>
                           </b-col>
                         </b-row>
                       </b-card-text>
@@ -153,49 +153,49 @@
                     <div v-if="rubroSeleccionado.croquisExpandido === true" class="li-row">
                       <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                       <div class="li-content">
-                        <p class="li-title">Requisitos especiales en casos en que hay más de una parcela para uso de la actividad comercial (y las mismas no se hallan reunidas por plano de mensura y unificación o reunidas de oficio)</p>
+                        <p class="li-title">Requisitos especiales en casos en que haya más de una parcela para uso de la actividad comercial (y las mismas no se encuentren reunidas por plano de mensura y unificación o reunidas de oficio)</p>
                         <div class="li-p"><p><b>Deberá acreditar:</b> Croquis  del Establecimiento efectuado por profesional habilitante en escala 1:100 en donde debe indicarse:</p>
-                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                            <div class="li-content"><span class="icon-orange">a)</span> Acceso peatonal y vehicular;</div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">a)</span> Acceso peatonal y vehicular.</div>
                           </div>
-                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                            <div class="li-content"><span class="icon-orange">b)</span> Estacionamiento;</div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">b)</span> Estacionamiento.</div>
                           </div>
-                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                            <div class="li-content"><span class="icon-orange">c)</span> Pileta, espejo de agua, natatorio, destacando profundidad y cercado tipo y altura;</div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">c)</span> Pileta, espejo de agua, natatorio, destacando profundidad y cercado tipo y altura.</div>
                           </div>
-                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                            <div class="li-content"><span class="icon-orange">d)</span> Cercado perimetral;</div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">d)</span> Cercado perimetral.</div>
                           </div>
-                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                            <div class="li-content"><span class="icon-orange">e)</span> Forestación existente;</div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">e)</span> Forestación existente.</div>
                           </div>
-                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                            <div class="li-content"><span class="icon-orange">f)</span> Juegos para niños;</div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">f)</span> Juegos para niños.</div>
                           </div>
-                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                            <div class="li-content"><span class="icon-orange">g)</span> Administración o recepción;</div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">g)</span> Administración o recepción.</div>
                           </div>
-                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                            <div class="li-content"><span class="icon-orange">h)</span> Depósito, guardarropas, vestuarios;</div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">h)</span> Depósito, guardarropas, vestuarios.</div>
                           </div>
-                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                            <div class="li-content"><span class="icon-orange">i)</span> Zona de desayuno, comedores, cocinas;</div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">i)</span> Zona de desayuno, comedores, cocinas.</div>
                           </div>
-                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                            <div class="li-content"><span class="icon-orange">j)</span> Ubicación de matafuegos internos;</div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">j)</span> Ubicación de matafuegos internos.</div>
                           </div>
-                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                            <div class="li-content"><span class="icon-orange">k)</span> Carteles en el predio de “EVITE PROVOCAR INCENDIOS”;</div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">k)</span> Carteles en el predio de “EVITE PROVOCAR INCENDIOS”.</div>
                           </div>
-                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                            <div class="li-content"><span class="icon-orange">l)</span> Señalización con números o letras de las unidades de viviendas, cabañas, departamentos, bungalows, que se afectan al servicio del pasajero;</div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">l)</span> Señalización con números o letras de las unidades de viviendas, cabañas, departamentos, bungalows, que se afectan al servicio del pasajero.</div>
                           </div>
-                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                            <div class="li-content"><span class="icon-orange">ll)</span> Vivienda particular que no se afectaría al servicio, con nombre del destinatario y período de ocupación</div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">ll)</span> Vivienda particular que no se afectaría al servicio, con nombre del destinatario y período de ocupación.</div>
                           </div>
-                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                            <div class="li-content"><span class="icon-orange">m)</span> Espacios con otros destinos ( spa, gimnasio, salón de usos múltiples, lavaderos, depósitos externos, etc).</div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">m)</span> Espacios con otros destinos (spa, gimnasio, salón de usos múltiples, lavaderos, depósitos externos, etc).</div>
                           </div>
                         </div>
                       </div>

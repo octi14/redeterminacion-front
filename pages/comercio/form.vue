@@ -3,13 +3,13 @@
   <Banner title="Habilitaciones comerciales" />
   <!-- Comprobante (página 4) -->
   <div v-if="printing === true">
-    <b-card class="text-center shadow-lg col-md-8 col-sm-12 mx-auto">
+    <b-card class="text-center shadow-lg col-md-8 col-sm-12 mx-auto" >
       <h1>Comprobante de Solicitud</h1>
       <h4>Departamento de Comercio</h4>
       <h5>Nro de trámite: {{ nroTramite }}</h5>
       <h5>Solicita el turno: {{ solicitante.nombre }} {{ solicitante.apellido }}</h5>
       <h5>CUIT: {{ solicitante.cuit }}</h5>
-      <h5>Tipo de Soolicitud: {{ solicitante.tipoSolicitud }}</h5>
+      <h5>Tipo de Solicitud: {{ solicitante.tipoSolicitud }}</h5>
       <h5>Rubro: {{ inmueble.rubro }}</h5>
       <b-button v-if="endButton === true" @click="onResetParams" class="btn-cancel">Volver</b-button>
     </b-card>
@@ -283,7 +283,7 @@
       <fieldset>
         <input type="hidden" id="captchaResponse" name="captchaResponse" v-model="captchaResponse">
         <b-button size="lg" @click="onResetParams" variant="danger" class="btn-cancel" >Cancelar</b-button>
-        <b-button size="lg" @click="submitForm" variant="success" class="" >Enviar</b-button>
+        <b-button size="lg" type="submit"  variant="success" class="" >Enviar</b-button>
       </fieldset>
     </div>
   </b-card>
@@ -481,6 +481,7 @@
 export default {
   data:function() {
       return {
+        TEST_submit: false,
       listaRubros: rubros,
       rubroSeleccionado: {
         id: null,
@@ -590,7 +591,7 @@ export default {
     //CAMBIAR EL SITEKEY POR UNO DE VERDAD
     grecaptcha.ready(() => {
     grecaptcha.render('captchaContainer', {
-      sitekey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
+      sitekey: '6LcyCLMnAAAAABr9MthqcB8NdnCBYtWgVzxA-eDC'
       });
     });
   },
@@ -629,6 +630,9 @@ export default {
       console.log("CANCEL FORM");
     },
     async submitForm() {
+      if(this.TEST_submit){
+        console.log("SUBMIT FORM CALLED");
+      }else
       try {
 
         this.openPopup('FormLoading');
@@ -673,7 +677,6 @@ export default {
     },
     onResetParams(){
       this.nroTramite = null
-      this.solicitante.tipoSolicitud = 'habilitacion'
       this.solicitante.nombre = ''
       this.solicitante.apellido = ''
       this.solicitante.DNI = ''
@@ -769,7 +772,7 @@ export default {
       // Aquí puedes agregar la lógica para enviar el formulario
       // Hacer popup
       //CAMBIAR EL SITEKEY POR UNO DE VERDAD
-      //grecaptcha.execute('6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI', { action: 'submit' }).then((token) => {
+      //grecaptcha.execute('6LcyCLMnAAAAABr9MthqcB8NdnCBYtWgVzxA-eDC', { action: 'submit' }).then((token) => {
       // this.captchaResponse = token;
         // Lógica adicional para enviar el formulario
       //});

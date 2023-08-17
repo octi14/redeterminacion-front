@@ -93,7 +93,7 @@
             <img src="../../assets/turnera-banner-4.png"/>
           </div>
           <b-card class="section-card col-md-6 mx-auto">
-            <h5><b-icon-clock class="icon-orange"></b-icon-clock> Confirmación de turno</h5>
+            <h5><img src="../../assets/icon-num-rifa.png" width="3%" /> Confirmación de turno</h5>
             <div class="li-row">
               <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Completá los datos que te solicitamos a continuación.</p></div>
             </div>

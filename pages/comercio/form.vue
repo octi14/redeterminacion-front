@@ -31,24 +31,24 @@
       <b-row>
       <b-col md="6">
           <b-form-group label="Nombre *" label-for="nombreSolicitante" >
-            <b-form-input id="nombreSolicitante" v-model="solicitante.nombre" required></b-form-input>
+            <b-form-input id="nombreSolicitante" v-model="solicitante.nombre" type="text" required></b-form-input>
           </b-form-group>
         </b-col>
         <b-col md="6">
           <b-form-group label="Apellido *" label-for="apellidoSolicitante" >
-            <b-form-input id="apellidoSolicitante" v-model="solicitante.apellido" required></b-form-input>
+            <b-form-input id="apellidoSolicitante" v-model="solicitante.apellido" type="text" required></b-form-input>
           </b-form-group>
         </b-col>
       </b-row>
       <b-row>
         <b-col md="6">
-          <b-form-group label="DNI/Pasaporte *" label-for="DNISolicitante" >
-            <b-form-input id="DNISolicitante" v-model="solicitante.DNI" required></b-form-input>
+          <b-form-group label="DNI / Pasaporte *" label-for="DNISolicitante" >
+            <b-form-input id="DNISolicitante" v-model="solicitante.DNI" required type="number"></b-form-input>
           </b-form-group>
         </b-col>
         <b-col md="6">
           <b-form-group label="CUIT *" label-for="cuit" >
-            <b-form-input id="cuit" v-model="solicitante.cuit" required></b-form-input>
+            <b-form-input id="cuit" v-model="solicitante.cuit" required type="number"></b-form-input>
           </b-form-group>
         </b-col>
       </b-row>
@@ -62,7 +62,7 @@
       <b-row>
         <b-col md="10">
           <b-form-group label="Teléfono *" label-for="telefonoTitular" >
-            <b-form-input id="telefonoTitular" v-model="solicitante.telefono"  type="number" no-wheel ></b-form-input>
+            <b-form-input id="telefonoTitular" v-model="solicitante.telefono" required type="number" no-wheel ></b-form-input>
           </b-form-group>
         </b-col>
         <b-col md="2">
@@ -78,8 +78,13 @@
           </b-form-group>
         </b-col>
         <b-col md="6">
-          <b-form-group label="Provincia *" label-for="provincia" >
-            <b-form-input id="provincia" v-model="solicitante.provincia" required></b-form-input>
+          <b-form-group label="Provincia *" label-for="provincia">
+            <b-form-select id="provincia" v-model="solicitante.provincia" required>
+              <option value="" disabled>Selecciona una provincia</option>
+              <option v-for="(provincia, index) in provincias" :key="index" :value="provincia">
+                {{ provincia }}
+              </option>
+            </b-form-select>
           </b-form-group>
         </b-col>
       </b-row>
@@ -117,7 +122,7 @@
         <b-col md="6">
           <b-form-group label="Localidad *" label-for="localidad" >
             <b-form-select id="localidad" v-model="inmueble.localidad" required>
-              <option value="">Seleccione...</option>
+              <option value="" disabled>Seleccione...</option>
               <option value="villa-gesell">Villa Gesell</option>
               <option value="mar-de-las-pampas">Mar de las Pampas</option>
               <option value="mar-azul">Mar Azul</option>
@@ -129,7 +134,11 @@
         <b-col md="6">
           <b-form-group label-for="rubro">
             <label for="rubro" class="rubro-label">Rubro *</label>
-            <b-form-select v-model="inmueble.rubro" :options="listaRubros" value-field="nombre" text-field="nombre" @change="handleRubroChange" >
+            <b-form-select id="rubro" v-model="inmueble.rubro" required @change="handleRubroChange">
+              <option value="" disabled>Selecciona un Rubro</option>
+              <option v-for="(rubro, index) in listaRubros" :key="index" :value="rubro.nombre">
+                {{ rubro.nombre }}
+              </option>
             </b-form-select>
           </b-form-group>
         </b-col>
@@ -148,7 +157,7 @@
         </b-col>
         <b-col md="2">
           <b-form-group label="Nro. de Local" label-for="direccion-inmueble-calle2" >
-            <b-form-input id="direccion-inmueble-calle2" v-model="inmueble.nroLocal" placeholder="Ej. local 2/local A" required></b-form-input>
+            <b-form-input id="direccion-inmueble-calle2" v-model="inmueble.nroLocal" placeholder="Ej. local 2/local A" ></b-form-input>
           </b-form-group>
         </b-col>
       </b-row>
@@ -169,8 +178,13 @@
         <b-form-textarea id="otrosServicios" v-model="inmueble.otrosServicios" rows="2" max-rows="4" type="text" required></b-form-textarea>
       </b-form-group>
     </fieldset>
-      <b-form-group v-if="rubroSeleccionado.croquis === true" label="Croquis" label-for="documentos.croquis" >
+      <b-form-group v-if="rubroSeleccionado.croquis === true && isHoteleria" label-for="documentos.croquis" >
+        <label for="croquis">Croquis <i>(en casos en que hay más de una parcela para uso de la actividad comercial y las mismas no se hallan reunidas por plano de mensura y unificación o reunidas de oficio)</i></label>
         <b-form-file v-model="documentos.croquis" placeholder="No se seleccionó un archivo." browse-text="Examinar" required accept=".pdf, image/*" :state="getFormFieldState('croquis')" @input="clearFormFieldState('croquis')"></b-form-file>
+      </b-form-group>
+      <b-form-group v-if="rubroSeleccionado.croquis === true && !isHoteleria" label-for="documentos.croquis" >
+        <label for="croquis">Croquis </label>
+        <b-form-file v-model="documentos.croquis" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('croquis')" @input="clearFormFieldState('croquis')"></b-form-file>
       </b-form-group>
       <b-form-group label="" label-for="espaciopublico" style="margin: 0px auto">
             <b-row>
@@ -276,14 +290,14 @@
       </b-form-group>
     </fieldset>
     </fieldset>
-    <div class="centeredContainer">
+    <div class="centeredContainer" style="min-width: 304px;">
       <b-form-group>
         <div id="captchaContainer"></div>
       </b-form-group>
       <fieldset>
         <input type="hidden" id="captchaResponse" name="captchaResponse" v-model="captchaResponse">
         <b-button size="lg" @click="onResetParams" variant="danger" class="btn-cancel" >Cancelar</b-button>
-        <b-button size="lg" type="submit"  variant="success" class="" >Enviar</b-button>
+        <b-button size="lg" type="submit"  variant="success" :disabled="!areAllFieldsComplete" class="" >Enviar</b-button>
       </fieldset>
     </div>
   </b-card>
@@ -389,7 +403,7 @@
     </div>
   </template>
   <div class="modal-info">
-    <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>Podés solicitar tu Certificado de domicilio haciendo <a href="https://arvige.gob.ar/lpagos" target="_blank" >click aquí</a>.</p>
+    <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>Podés solicitar tu Certificado de domicilio haciendo <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" >click aquí</a>.</p>
   </div>
 </b-modal>
 <b-modal v-model="showPopupPlano" title="" :hide-footer="true" @click-outside="showPopupPlano = false" :header-bg-variant="'success'"  centered>
@@ -423,28 +437,28 @@
     </div>
   </div>
 </b-modal>
-<b-modal v-model="showPopupFormLoading" title="" @click-outside="showPopupFormLoading = false" :header-bg-variant="'success'" hide-footer  centered>
+<b-modal v-model="showPopupFormLoading" no-close-on-backdrop title="" :header-bg-variant="'success'" hide-footer centered>
   <template #modal-header>
     <h5 class="centeredContainer">Solicitud en Proceso</h5>
   </template>
   <div class="centeredContainer">
     <p class="popup-link">Tus archivos se están cargando.</p>
-    <b-spinner variant="success" style="width: 3rem; height: 3rem;" label="Large Spinner" @click="showPopupFormLoading = false; openPopup('FormOk')"></b-spinner>
+    <b-spinner variant="success" style="width: 3rem; height: 3rem;" label="Large Spinner"></b-spinner>
     <p>No cierres esta página</p>
   </div>
 </b-modal>
 <b-modal v-model="showPopupFormOk" title="" ok-only @click-outside="showPopupFormOk = false" :header-bg-variant="'success'" centered>
   <template #modal-header>
     <div class="centeredContainer"><h3>
-        <b-icon icon="check-circle-fill" scale="1.5" variant="light" @click="showPopupFormOk = false; openPopup('FormError')"></b-icon>
+        <b-icon icon="check-circle-fill" scale="1.5" variant="light"></b-icon>
     </h3></div>
   </template>
   <div class="centeredContainer">
     <p class="modal-subtitle">¡Tu solicitud ha sido enviada exitosamente!</p>
-    <p class="">En los próximos días recibirás un correo electrónico del Departamento Comercio Municipal en el que te indicarán cómo continuar el trámite.</p>
-    <p class=""><b>Tu número de trámite es: </b> </p>
-    <p class="h3"> <b> {{ nroTramite }} </b> </p>
-    <p class="">Por favor, conservá este número. Será solicitado más adelante. </p>
+    <p class="">En los próximos días recibirás un correo electrónico del Departamento Comercio Municipal en el que te indicarán cómo continuar. Asegurate de revisar la bandeja de correos no deseados (Spam).</p>
+    <p class=""><b>Tu número de trámite es: </b></p>
+    <p class="h3"><b> {{ nroTramite }} </b></p>
+    <p class="">Por favor, conservá este número. Será solicitado más adelante.</p>
   </div>
   <template #modal-footer>
     <div class="" style="margin: auto">
@@ -474,10 +488,8 @@
 
 </div>
 </template>
-
 <script>
-  import rubros from "@/plugins/rubros.js";
-
+import rubros from "@/plugins/rubros.js";
 export default {
   data:function() {
       return {
@@ -495,6 +507,11 @@ export default {
         croquis: false,
       },
       rubrosHoteleria:[136,137,138,139,140,141,142,143,144,145],
+      provincias: [
+        'CABA','Buenos Aires', 'Catamarca', 'Chaco', 'Chubut', 'Córdoba', 'Corrientes', 'Entre Ríos', 'Formosa', 'Jujuy',
+        'La Pampa', 'La Rioja', 'Mendoza', 'Misiones', 'Neuquén', 'Río Negro', 'Salta', 'San Juan', 'San Luis', 'Santa Cruz',
+        'Santa Fe', 'Santiago del Estero', 'Tierra del Fuego', 'Tucumán'
+      ],
       isHoteleria: false,
       nroTramite: null,
       solicitante: {
@@ -584,6 +601,20 @@ export default {
       printing: false,
       endButton: false,
       }
+  },
+  computed: {
+    areAllFieldsComplete() {
+      if (this.TEST_submit)
+        return true ;
+      else{
+        return this.solicitante.nombre && this.solicitante.apellido && this.solicitante.DNI && this.solicitante.cuit && this.solicitante.domicilioReal &&
+      this.solicitante.telefono && this.solicitante.codigoPostal && this.solicitante.localidad && this.solicitante.provincia && this.solicitante.mail &&
+      this.inmueble.localidad && this.inmueble.calle && this.inmueble.nro && this.inmueble.rubro && this.documentos.dniFrente && this.documentos.dniDorso &&
+      this.documentos.constanciaCuit && this.documentos.constanciaIngresosBrutos && this.documentos.libreDeudaUrbana && this.documentos.tituloPropiedad && 
+      this.documentos.plano      
+      ;
+      }
+    }
   },
   mounted() {
     //ORDENAR listaRubros antes de mostrarla.
@@ -831,6 +862,14 @@ ul{
 .btn:hover{
   background-color: green;
   border-color: green;
+}
+.btn.disabled{
+  background-color: #619D6A;
+  border-color: #619D6A;
+}
+.btn.disabled:hover{
+  background-color: #619D6A;
+  border-color: #619D6A;
 }
 .btn-cancel:hover{
   background-color: #f09658;

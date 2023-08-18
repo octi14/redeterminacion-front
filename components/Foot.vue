@@ -2,12 +2,11 @@
   <div class="footer bg-success text-light py-1">
     <div class="container">
       <div class="row">
-        <div class="flex row mx-auto">
+        <div class="mx-auto" style="text-align:center">
           <p>2023 - Municipalidad de Villa Gesell  </p>
-          <a class="ml-2" href="https://github.com/octi14/redeterminacion-front" target="_blank">
-            <b-icon-github style="color:black"/>
-          </a>
+          <p>Depto. Comercio: (02255) 478056 | Depto. Inspección: (02255) 478053</p>
         </div>
+        
       </div>
     </div>
   </div>

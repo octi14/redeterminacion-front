@@ -189,13 +189,11 @@ const rubros = [
     nombre: 'Venta de Artículos Regionales',
     descripcion: 'Local destinado a la venta de productos alimenticios preenvasados y de realización artesanal como mermeladas, licores tabla de fiambres o embutidos. Puede complementar con fiambrería. Sin consumo en el lugar.',
     requisitos: ["Art.6"],
-    especiales: ["Mesadas y Piletas: Art 7 Inc. d, f, y h",
-    "Croquis de Instalaciones visado por profesional habilitante, escala 1:50 con el siguiente detalle: a) Planta del local con medidas, ubicación de mesadas, tirajes, fogones, cocinas, freidoras, aberturas, paredes internas, y ventilaciones, depósitos, baños, salón de venta y/o consumición, vestuarios, entrepisos, ubicación de garrafas, etc; b) Detalle en corte transversal piso, cielorraso, alturas de tirajes con indicación de altura a 4 vientos; c) Marcar ubicación los matafuegos, clase y kg.",
-                ],
+    especiales: ["Mesadas y Piletas: Art 7 Inc. d, f, y h"],
     links: [],
     pom: "https://drive.google.com/file/d/1ZyCSI8sWJgJvv1-H5_eRuqOawMVAmspX/preview",
     inspeccion: true,
-    croquis: true,
+    croquis: false,
   },
   {
     id: 18,
@@ -771,7 +769,7 @@ const rubros = [
   },
   {
     id: 70,
-    nombre: 'Protegido de Producción y/o Terapéutico',
+    nombre: 'Entidad Protegida de Producción y/o Terapéutica',
     descripcion: 'Entidad estatal o privada bajo dependencia de asociaciones con personería jurídica y reconocidas como de bien público, que tenga por finalidad la producción de bienes o servicios, cuya planta esté integrada por trabajadores discapacidad preparados y entrenados para el trabajo, en edad laboral, y afectados de una incapacidad tal que les dificulte obtener y conservar un empleo competitivo, conforme a lo dispuesto por la Ley Nacional N° 26.816, su reglamentación y modificatorias.',
     requisitos: [],
     especiales: ["Ley Nacional N° 26.816"],
@@ -1437,7 +1435,7 @@ const rubros = [
   {
     id: 130,
     nombre: 'Granjas Avícolas y/o Cunícolas',
-    descripcion: 'Cría y faena de aves de corral.',
+    descripcion: 'Cría y faena de aves de corral y conejos.',
     requisitos: ["Art.6"],
     especiales: ["Deberá consultar a deptocomercio@gesell.gob.ar y presentar anteproyecto."],
     links: [],
@@ -1629,7 +1627,7 @@ const rubros = [
     links: ["https://hcdvillagesell.com.ar/3297-22-glamping-alojamiento/"],
     pom: "https://drive.google.com/file/d/1ZyCSI8sWJgJvv1-H5_eRuqOawMVAmspX/preview",
     inspeccion: true,
-    croquis: true,
+    croquis: false,
   },
   {
     id: 148,

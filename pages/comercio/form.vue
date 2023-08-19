@@ -420,13 +420,13 @@
         <input type="hidden" id="captchaResponse" name="captchaResponse" v-model="captchaResponse">
         <b-button size="lg" @click="onResetParams" variant="danger" class="btn-cancel" >Cancelar</b-button>
         <b-button size="lg" type="submit" variant="success" :disabled="!areAllFieldsComplete" class="" >Enviar</b-button>
+        <div v-if="!areAllFieldsComplete" class="validation-error">
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Completar todos los campos marcados con (*).
+        </div>
+        <div v-if="!areAllFieldsValid" class="validation-error">
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Por favor, revisa el formulario en busca de errores.
+        </div>
       </fieldset>
-      <div v-if="!areAllFieldsComplete" class="validation-error">
-        <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Para poder enviar el formulario deberás completar todos los campos marcados con un asterisco (*).
-      </div>
-      <div v-if="!areAllFieldsValid" class="validation-error">
-        <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Por favor, revisa el formulario en busca de errores.
-      </div>
     </div>
   </b-card>
   </b-form>
@@ -1000,7 +1000,9 @@ export default {
         this.inmueble.serviciosHoteleria.forEach(servicio => {
           servicio.value = false;
         });
+        this.inmueble.otrosServicios = ''
       }
+      
       } else {
         // Si no se ha seleccionado ninguna opción, reiniciar las propiedades
         this.rubroSeleccionado.id = null;

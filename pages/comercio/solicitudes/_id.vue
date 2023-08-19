@@ -21,6 +21,8 @@
             <h4 class="text-danger ml-1" v-if="habilitacion.status === 'Rechazada'">{{ habilitacion.status }} </h4>
             <h4 class="text-secondary ml-1" v-if="habilitacion.status === 'Esperando turno'">{{ habilitacion.status }} </h4>
             <h4 class="text-secondary ml-1" v-if="habilitacion.status === 'Esperando inspección'">{{ habilitacion.status }} </h4>
+            <h4 class="text-secondary ml-1" v-if="habilitacion.status === 'Prórroga 1'">{{ habilitacion.status }} </h4>
+            <h4 class="text-secondary ml-1" v-if="habilitacion.status === 'Prórroga 2'">{{ habilitacion.status }} </h4>
             <h4 class="text-success ml-1" v-if="habilitacion.status === 'Finalizada'">{{ habilitacion.status }} </h4>
           </div>
         </div>
@@ -177,6 +179,9 @@
                 <strong class="text-primary">- {{ item.servicio }}</strong><br>
               </p>
             </div>
+            <div class="layout" v-if="habilitacion.otrosServicios">
+              <p class="col col-main ml-5">  {{ habilitacion.otrosServicios }} </p>
+            </div>
             <br>
           </div>
         </div>
@@ -192,7 +197,7 @@
           </div>
         </div>
         <!-- Mostrar los enlaces a los documentos -->
-        <div class="container justify-content-center mx-auto" v-if="habilitacion">
+        <div class="container justify-content-center mx-auto" v-if="documentos">
           <div v-for="(documento, nombreDocumento) in cleanDocumentos" :key="nombreDocumento">
             <div class="layout" v-if="cleanDocumentos">
               <p class="col col-main">
@@ -206,6 +211,10 @@
               </p>
             </div>
           </div>
+        </div>
+        <div class="justify-content-center mx-auto" v-else>
+          <p class="h4 text-center"> Cargando... </p>
+          <b-spinner variant="success" style="width: 3rem; height: 3rem; margin:auto"></b-spinner>
         </div>
       </div>
     </template>
@@ -279,7 +288,7 @@
         </template>
         <div class="confirmation-popup-body">
           <h2 class="icon-orange text-danger text-center"><b>Rechazar solicitud</b></h2>
-          <p>La solicitud será rechazada. Recordá notificar al solicitante a través de su correo electrónico.</p>
+          <p>La solicitud será rechazada. Recordá notificar al solicitante a través de su correo electrónico indicando los motivos.</p>
           <p>Observaciones:  </p>
           <b-form-textarea v-model="observaciones" required type="text" />
           <div class="text-center mt-3">
@@ -298,10 +307,11 @@
       </template>
       <div class="confirmation-popup-body">
         <h2 class="icon-orange text-secondary text-center"><b>Aprobar solicitud</b></h2>
-        <h5 class="mb-3"> <b-icon-exclamation-octagon scale="1.2" variant="secondary"/><b> ¿El comercio requiere inspección? </b> </h5>
+        <hr/>
+        <h5 class="mb-3 text-center mr-3"> <b-icon-exclamation-octagon scale="0.8" variant="secondary"/><b> ¿El comercio requiere inspección? </b> </h5>
         <div class="form-check">
             <input class="form-check-input" type="checkbox" id="documentCheckbox" v-model="inspeccion"/>
-            <label class="form-check-label" for="documentCheckbox"><b> Si. </b> Enviar mail indicando <strong> solamente </strong> que se deberá realizar el Turno Web para Inspección Comercial.</label>
+            <label class="form-check-label" for="documentCheckbox"><b> Si. </b> Enviá un mail indicando que la persona deberá solamente pedir un Turno Web para Inspección Comercial.</label>
         </div>
         <div class="text-center mt-3">
           <b-btn variant="primary" @click="onSendApprove()" >
@@ -319,11 +329,11 @@
       </template>
       <div class="confirmation-popup-body">
         <h3 class="icon-orange text-success text-center"><b>Aprobar solicitud</b></h3>
-        <p>La solicitud fue aprobada con éxito. Se deberá  enviar un correo electrónico al solicitante para que:</p>
+        <p>La solicitud fue aprobada con éxito. Se deberá  enviar un correo electrónico al solicitante indicando que en el plazo de 7 días hábiles:</p>
         <ul>
-          <li>  En el plazo de 7 días hábiles concurra al Departamento de Comercio con la documentación original. </li>
-          <li>  Abone el canon de Habilitación Comercial previsto para el rubro.. </li>
-          <li>  Constituya el DFE. </li>
+          <li>  Abone el canon de Habilitación Comercial previsto para el rubro. </li>
+          <li>  Concurra al Departamento de Comercio con la documentación original y el Libro de Actas. </li>
+          <li>  Constituya el Domicilio Fiscal Electrónico (DFE). </li>
         </ul>
         <div class="text-center mt-3">
           <b-btn variant="success" @click="showApprove = false" >
@@ -341,11 +351,11 @@
       </template>
       <div class="confirmation-popup-body">
         <h3 class="icon-orange text-success text-center"><b>Solicitar documentación</b></h3>
-        <p>La solicitud fue aprobada con éxito. Se deberá  enviar un correo electrónico al solicitante para que:</p>
+        <p>La solicitud fue aprobada con éxito. Se deberá  enviar un correo electrónico al solicitante indicando que en el plazo de 7 días hábiles:</p>
         <ul>
-          <li>  En el plazo de 7 días hábiles concurra al Departamento de Comercio con la documentación original. </li>
-          <li>  Abone el canon de Habilitación Comercial previsto para el rubro.. </li>
-          <li>  Constituya el DFE. </li>
+          <li>  Abone el canon de Habilitación Comercial previsto para el rubro. </li>
+          <li>  Concurra al Departamento de Comercio con la documentación original. </li>
+          <li>  Constituya el Domicilio Fiscal Electrónico (DFE). </li>
         </ul>
         <div class="text-center mt-3">
           <b-btn variant="success" @click="onSendSolicitar" >
@@ -367,11 +377,11 @@
         <p> Ingresa el número de expediente asignado a este trámite: </p>
         <div class="row mx-auto">
         <p class="mr-2"> 4124 -</p>
-        <b-form-input class="col-3" size="sm" v-model="nroExpediente"/><a class="mx-3"> / </a> <b-form-input size="sm" class="col-3" v-model="nroExpediente"/>
+        <b-form-input class="col-3" type="number" size="sm" v-model="nroExpediente"/><a class="mx-3"> / </a> <b-form-input size="sm" class="col-3" v-model="nroExpediente"/>
         </div>
-        <small> Recordá que podés consultar los datos proporcionados en la sección de búsqueda. </small>
+        <small> Recordá que más adelante podrás consultar los datos proporcionados en la sección de búsqueda. </small>
         <div class="text-center mt-3">
-          <b-btn variant="success" @click="onSendFinalizar" >
+          <b-btn variant="success" :disabled="!nroExpediente" @click="onSendFinalizar" >
               Aceptar
           </b-btn>
         </div>
@@ -393,20 +403,22 @@ export default {
       showRejectPopup: false,
       showSolicitarDoc: false,
       habilitacion: null,
+      documentos: null,
       turno: null,
       observaciones: '',
+      nroExpediente: null,
       documentoNames: {
-        planillaAutorizacion: 'Planilla de Autorización',
+        planillaAutorizacion: 'Planilla de Autorización / Apoderamiento',
         dniFrente: 'DNI Frente',
         dniDorso: 'DNI Dorso',
         constanciaCuit: 'Constancia de CUIT',
         constanciaIngresosBrutos: 'Constancia de Ingresos Brutos',
         actaPersonaJuridica: 'Acta de Persona Jurídica',
         actaDirectorio: 'Acta de Directorio',
-        libreDeudaUrbana: 'Libre Deuda Urbana',
-        tituloPropiedad: 'Título de Propiedad',
-        plano: 'Plano',
-        certificadoDomicilio: 'Certificado de Domicilio',
+        libreDeudaUrbana: 'Libre Deuda Tasa Urbana',
+        tituloPropiedad: 'Título de Propiedad / Contrato de locación',
+        plano: 'Plano / Informe técnico',
+        certificadoDomicilio: 'Certificado de Domicilio Ingresos Brutos',
         croquis: 'Croquis',
         // Agrega los demás nombres de documentos aquí
       },
@@ -414,9 +426,9 @@ export default {
   },
   computed: {
     cleanDocumentos() {
-      if(this.habilitacion){
+      if(this.habilitacion && this.documentos){
         // Filtrar los documentos para eliminar el campo "_id"
-        return Object.entries(this.habilitacion.documentos).reduce((acc, [key, value]) => {
+        return Object.entries(this.documentos).reduce((acc, [key, value]) => {
           if (key !== '_id') {
             acc[key] = value;
           }
@@ -433,8 +445,13 @@ export default {
     this.habilitacion = this.$store.state.habilitaciones.single
 
     const nroTramite = this.habilitacion.nroTramite
-    await this.$store.dispatch('turnos/getSingle', { nroTramite})
+    await this.$store.dispatch('turnos/getSingle', { nroTramite })
     this.turno = this.$store.state.turnos.single
+
+    await this.$store.dispatch('documentos/getById', {
+      id: habilitacionId,
+    })
+    this.documentos = this.$store.state.documentos.all
   },
   fetchOnServer: false,
   activated() {
@@ -505,8 +522,8 @@ export default {
         habilitacion,
       })
       this.wait(300)
+      this.habilitacion.status = habilitacion.status
       this.showPrevApprove = false
-      this.$fetch()
       this.showApprove = true
     },
     onRechazarSolicitud(){
@@ -524,8 +541,8 @@ export default {
         habilitacion,
       })
       this.wait(300)
+      this.habilitacion.status = habilitacion.status
       this.observaciones = ''
-      this.$fetch()
       this.showRejectPopup = false
     },
     openDocumento(documento) {

@@ -14,11 +14,45 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
+
 export default {
   computed: {
     isAuthenticated() {
-      return Boolean(this.$store.state.user.token)
+      return Boolean(this.$store.state.user.token);
     },
-  }
-}
+  },
+  watch: {
+    '$store.state.user.token'(newToken) {
+      if (newToken) {
+        const validToken = this.checkTokenExpired(newToken);
+
+        if (!validToken) {
+          // Realiza el cierre de sesión
+          this.logout();
+        }else{
+          console.log("Usuario con token no expirado. Continuando...")
+        }
+      }
+    },
+  },
+  methods: {
+    async checkTokenExpired(token) {
+      try {
+        return await this.$store.dispatch('user/checkToken', {
+          token: token,
+        })
+      } catch (error) {
+        return false;
+      }
+    },
+    logout() {
+      // Elimina el token y realiza otras acciones de cierre de sesión si es necesario
+      this.$store.commit('user/logout');
+      Cookies.remove('token'); // Elimina la cookie del token si la estás usando
+      // Redirige al usuario a la página de inicio de sesión u otra página adecuada
+      this.$router.push('/login'); // Ajusta la ruta según tu aplicación
+    },
+  },
+};
 </script>

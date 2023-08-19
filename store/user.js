@@ -40,6 +40,13 @@ export const actions = {
     commit('logout')
     await this.$router.push('/')
   },
+  async checkToken( { commit }, { token }){
+    try{
+      return await UserService.checkToken(this.$axios, { token })
+    }catch(e){
+      console.log(e)
+    }
+  }
 }
 
 export const mutations = {

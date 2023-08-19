@@ -113,9 +113,27 @@
       </template>
       <div class="confirmation-popup-body">
         <h4 class="text-success text-center"><b>Comercio inspeccionado</b></h4>
-        <p class="text-center">El trámite ha finalizado.</p>
+        <p class="text-center">El trámite continuará desde el Departamento de Comercio.</p>
         <div class="text-center mt-3">
           <b-btn variant="primary" @click="showApprove = false">
+              Aceptar
+          </b-btn>
+        </div>
+      </div>
+    </b-modal>
+
+    <b-modal v-model="showPrevProrroga" hide-footer :header-bg-variant="'success'" centered>
+      <template #modal-header>
+        <div class="confirmation-popup-header mx-auto">
+          <b-icon-check-circle scale="2" variant="light" />
+        </div>
+      </template>
+      <div class="confirmation-popup-body">
+        <h4 class="text-primary text-center"><b>Prórroga</b></h4>
+        <p class="text-center">Se concederá prórroga de<b> 7 días hábiles </b>para que el solicitante dé cumplimiento a los requerimientos. </p>
+        <p class="text-center">La cantidad total de prórrogas pasibles de conceder son dos (2) continuadas e ininterrumpidas.</p>
+        <div class="text-center mt-3">
+          <b-btn variant="primary" @click="onSendProrroga">
               Aceptar
           </b-btn>
         </div>
@@ -129,11 +147,27 @@
         </div>
       </template>
       <div class="confirmation-popup-body">
-        <h4 class="text-primary text-center"><b>Prórroga</b></h4>
-        <p class="text-center">Se concederá prórroga de<b> 7 días hábiles </b>para que el solicitante dé cumplimiento a los requerimientos. </p>
-        <p class="text-center">La cantidad total de prórrogas pasibles de conceder son dos (2) continuadas e ininterrumpidas.</p>
+        <h4 class="text-success text-center"><b>Inspección prorrogada</b></h4>
+        <p class="text-center">El trámite ha sido prorrogado por 7 días hábiles a partir de la fecha en la que se efectuó la prórroga.</p>
         <div class="text-center mt-3">
-          <b-btn variant="primary" @click="onSendProrroga">
+          <b-btn variant="primary" @click="showProrroga = false">
+              Aceptar
+          </b-btn>
+        </div>
+      </div>
+    </b-modal>
+
+    <b-modal v-model="showNoMasProrrogas" hide-footer :header-bg-variant="'danger'" centered>
+      <template #modal-header>
+        <div class="confirmation-popup-header mx-auto">
+          <b-icon-check-circle scale="2" variant="light" />
+        </div>
+      </template>
+      <div class="confirmation-popup-body">
+        <h4 class="text-danger text-center"><b>No se pueden otorgar más prórrogas</b></h4>
+        <p class="text-center">Sólo pueden darse 2 prórrogas por turno. En caso de requerir un caso especial donde haya más de 2 prórrogas por favor comuníquese con Soporte Técnico. </p>
+        <div class="text-center mt-3">
+          <b-btn variant="primary" @click="showNoMasProrrogas = false">
               Aceptar
           </b-btn>
         </div>
@@ -157,7 +191,9 @@ export default {
       showPrevApprove: false,
       showApprove: false,
       showRejectPopup: false,
+      showPrevProrroga: false,
       showProrroga: false,
+      showNoMasProrrogas: false,
       turno: null,
       observaciones: ''
     }
@@ -212,7 +248,11 @@ export default {
       this.showRejectPopup = true
     },
     onProrroga(){
-      this.showProrroga = true
+      if(this.turno.status === "Prórroga 2"){
+        this.showNoMasProrrogas = true
+      }else{
+        this.showPrevProrroga = true
+      }
     },
     async onSendProrroga(){
       var habilitacion = null
@@ -225,19 +265,19 @@ export default {
             }
             turno = {
               status: "Prórroga 2",
-              observaciones: "Se otorga la prórroga 2"
+              observaciones: "Se otorga la prórroga 2 el " + new Date().toLocaleDateString()
             }
             break
           case "Prórroga 2":
             //Show modal No se pueden dar más prórrogas
             break
-          case "Pendiente de inspección":
+          default:
             habilitacion = {
               status: "Prórroga 1"
             }
             turno = {
               status: "Prórroga 1",
-              observaciones: "Se otorga la prórroga 1"
+              observaciones: "Se otorga la prórroga 1 el " + new Date().toLocaleDateString()
             }
             break
         }
@@ -260,8 +300,8 @@ export default {
       })
       this.wait(300)
       this.$fetch()
-      this.showPrevApprove = false
-      this.showApprove = true
+      this.showPrevProrroga = false
+      this.showProrroga = true
     },
     async onSendReject(){
       const turno = {

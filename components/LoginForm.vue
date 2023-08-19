@@ -31,7 +31,7 @@
             required
           ></b-form-input>
         </b-form-group>
-        <b-button type="submit" variant="primary"> Ingresar </b-button>
+        <b-button :disabled="loggingIn" type="submit" variant="primary"> Ingresar </b-button>
       </b-form>
     </ContainersForm>
   </div>
@@ -41,6 +41,7 @@
 export default {
   data() {
     return {
+      loggingIn: false,
       form: {
         username: 'admin',
         password: '',
@@ -49,6 +50,7 @@ export default {
   },
   methods: {
     async onSubmitLoginForm() {
+      this.loggingIn = true
       await this.$store.dispatch('user/authenticate', this.form)
     },
   },

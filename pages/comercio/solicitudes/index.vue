@@ -53,6 +53,10 @@ export default{
       perPage: 10,
       fields: [
         {
+          key: 'nroTramite',
+          label: 'Número de trámite'
+        },
+        {
           key: 'tipoSolicitud',
           label: 'Tipo de solicitud',
         },
@@ -80,7 +84,7 @@ export default{
           key: 'observaciones'
         }
       ],
-      estados: ['Rechazada','En revisión', 'Esperando turno','Esperando inspección','Inspeccionado', 'Esperando documentación', 'Finalizada'],
+      estados: ['Rechazada','En revisión', 'Esperando turno','Esperando inspección','Inspeccionado', 'Esperando documentación', 'Prórroga 1', 'Prórroga 2', 'Finalizada'],
     }
   },
   async fetch() {

@@ -14,12 +14,11 @@
             <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Para iniciar, ingresá el <b>número de trámite</b> que recibiste luego de haber enviado el Formulario de Solicitud de Habilitaciones.</p></div>
           </div>
           <b-form>
-            <b-form-input v-model="nroTramiteIngresado" type="number" size="lg" class="col-md-6 col-sm-10 mt-4 mx-auto" placeholder="Número de trámite" no-wheel></b-form-input>
+            <b-form-input @keydown.enter.native.prevent="onNextPage" v-model="nroTramiteIngresado" type="number" size="lg" class="col-md-6 col-sm-10 mt-4 mx-auto" placeholder="Número de trámite" no-wheel></b-form-input>
           </b-form>
           <div class="btn-container">
-            <!-- <b-button class="btn-cancel" @click="onResetParams">Cancelar</b-button> -->
             <b-button class="btn-cancel" @click="onResetParams">Cancelar</b-button>
-            <b-button  @click="onNextPage">Aceptar</b-button>
+            <b-button @click="onNextPage">Aceptar</b-button>
           </div>
         </b-card>
       </div>
@@ -74,12 +73,18 @@
               <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Seleccioná una franja horaria para recibir la visita de inspección.</p></div>
             </div>
             <b-form-select v-model="timePicked" class="col-11 mx-auto">
-              <b-form-select-option
-                v-for="horario in horariosDisponibles"
-                :key="horario.id"
+              <!-- <b-form-select-option
+                v-for="(_, index) in horariosDisponibles"
+                :key="index"
                 :value="horario"
               >
-                Franja horaria: {{ horario }} - <span class="icon-orange">{{ horario }}</span>
+                Franja horaria: {{ horariosDisponibles[index] }} - <span class="icon-orange">{{ horariosDisponibles[index]+ }}</span>
+              </b-form-select-option> -->
+              <b-form-select-option :value="horariosDisponibles[0]">
+                Franja horaria: {{ horariosDisponibles[0] }} - <span class="icon-orange">{{ horariosDisponibles[1] }}</span>
+              </b-form-select-option>
+              <b-form-select-option :value="horariosDisponibles[1]">
+                Franja horaria: {{ horariosDisponibles[1] }} - <span class="icon-orange"> 13:30 </span>
               </b-form-select-option>
           </b-form-select>
             <div class="btn-container">
@@ -125,28 +130,43 @@
             </b-card>
             <div class="btn-container">
               <b-button @click="page-= 1" class="btn-cancel">Volver</b-button>
-              <b-button @click="onSelectTurno">Continuar</b-button>
+              <b-button :disabled="sendingForm"  @click="onSelectTurno">Continuar</b-button>
             </div>
           </b-card>
         </div>
       </b-form>
         <!-- Comprobante (página 4) -->
         <div v-if="page === 4">
-          <b-card class="text-center shadow-lg col-md-8 col-sm-12 mx-auto">
-            <h1>Comprobante de turno</h1>
-            <h4>Departamento de Comercio</h4>
-            <h5>Día: {{ formattedDate }}</h5>
-            <h5>Horario: {{ time }}</h5>
-            <h5>Nro de trámite: {{ nroTramite }}</h5>
-            <h5>Solicita el turno: {{ nombre }}</h5>
-            <b-button v-if="endButton === true" @click="onResetParams" class="btn-cancel">Volver</b-button>
+          <b-card no-body border-variant="success" style="margin-top: 80px" class="shadow col-md-5 col-sm-8 mx-auto">
+            <b-card-header class="row" header-class="green text-light">
+              <h5><b>Comprobante de turno - </b> Inspección</h5>
+            </b-card-header>
+            <b-card-body class="text-center">
+              <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Día: </b> {{ formattedDate }}</h5> </div>
+              <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Horario: </b> {{ time }}</h5> </div>
+              <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Nro de trámite:</b> {{ nroTramite }}</h5> </div>
+              <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Solicitante: </b> {{ nombre }}</h5> </div>
+              <hr/>
+              <b-button class="mt-2 btn-orange" v-if="endButton === true" @click="onResetParams">Volver</b-button>
+            </b-card-body>
           </b-card>
         </div>
       </div>
 
+      <!-- Modal enviando turno -->
+      <b-modal v-model="sendingForm" title="" no-close-on-backdrop :header-bg-variant="'success'" hide-footer  centered>
+        <template #modal-header>
+          <h5 class="centeredContainer text-light"> <b>Solicitando turno</b></h5>
+        </template>
+        <div class="centeredContainer">
+          <p class="popup-link">Tu solicitud se está procesando.</p>
+          <b-spinner variant="success" style="width: 3rem; height: 3rem;" label="Large Spinner"></b-spinner>
+          <p>No cierres esta página</p>
+        </div>
+      </b-modal>
 
       <!-- Modal Solicitud exitosa -->
-      <b-modal v-model="formOk" v-if="date && time && formOk && !printing" :header-bg-variant="'success'" hide-footer centered>
+      <b-modal v-model="formOk" v-if="date && time && formOk && !printing" no-close-on-backdrop :header-bg-variant="'success'" hide-footer centered>
         <template #modal-header>
           <div class="centeredContainer"><h3>
               <b-icon icon="check-circle-fill" scale="1.5" variant="light"></b-icon>
@@ -171,7 +191,7 @@
         </template>
         <div class="centeredContainer modal-error">
           <p class="modal-subtitle">No hemos podido encontrar tu número de trámite</p>
-          <p class="">Por favor, corroborá que los datos ingresados sean correctos.</p>
+          <p class="">Por favor, corroborá que los datos ingresados sean correctos. Recordá que el número de trámite que te solicitamos fue enviado a tu correo electrónico.</p>
           <p class="minitext">Si el problema persiste, envianos un correo a <a target="_blank" href="mailto:deptocomercio@gesell.gob.ar" class="icon-green">deptocomercio@gesell.gob.ar</a>.</p>
         </div>
         <template #modal-footer>
@@ -191,6 +211,7 @@
         <div class="centeredContainer modal-warning">
           <p class="modal-subtitle text-secondary">Tu trámite no está habilitado para reservar un turno.</p>
           <p class="">Tu solicitud no ha sido aprobada o bien tu comercio no necesita inspección para ser habilitado.</p>
+          <p class="">Revisá tu correo electrónico para corroborar si tu solicitud fue aprobada sin necesitar inspección.</p>
           <p class="minitext">Si tenés dudas, envianos un correo a <a target="_blank" href="mailto:deptocomercio@gesell.gob.ar" class="icon-green">deptocomercio@gesell.gob.ar</a>.</p>
         </div>
         <template #modal-footer>
@@ -227,7 +248,7 @@
         </template>
         <div class="centeredContainer modal-error">
           <p class="modal-subtitle">Ya has solicitado un turno.</p>
-          <p class="">Si deseas cancelarlo o reprogramarlo, debes comunicarte con deptocomercio@gesell.gob.ar.</p>
+          <p class="">Si deseas cancelarlo o reprogramarlo, debes comunicarte con divinspectores@gesell.gob.ar.</p>
           <p class="">Recordá que podés cancelar el turno sólo hasta 5 días antes del momento de inspección. </p>
         </div>
         <template #modal-footer>
@@ -256,6 +277,7 @@ export default {
       domicilio: '',
       localidad: '',
       formOk: false,
+      sendingForm: false,
       printing: false,
       horariosDisponibles: [],
       maxRange: 15,
@@ -323,6 +345,7 @@ export default {
             domicilio: this.domicilio,
             nroTramite: this.nroTramite,
           }
+          this.sendingForm = true
           await this.$store.dispatch('turnos/create',{
             turno
           })
@@ -337,10 +360,11 @@ export default {
         const habilitacion = {
           status: 'Esperando inspección'
         }
-        await this.$store.dispatch('habilitaciones/update',{
+        await this.$store.dispatch('habilitaciones/updateLazy',{
           id: habilitacionId,
           habilitacion,
         })
+        this.sendingForm = false
         this.formOk = true;
       }
     },
@@ -457,6 +481,27 @@ export default {
 </script>
 
 <style scoped>
+  .green{
+    background-color:#0b6919;
+  }
+  .btn-orange{
+    background-color:#eb8a0a !important;
+    border: none;
+  }
+  .text-green{
+    color:#0c6919;
+  }
+  .centeredContainer{
+    width:  auto;
+    margin: auto;
+    text-align: center;
+  }
+  .centeredContainer button{
+    width: 40%;
+    font-size: 1rem;
+    padding-right: 0;
+    padding-left: 0;
+  }
   p{
     font-family: Calibri, 'Trebuchet MS', sans-serif;
     font-size: 1.5rem;

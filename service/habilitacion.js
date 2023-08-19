@@ -7,6 +7,7 @@ const formatFile = (FileResponse) => ({
   localidad: FileResponse.inmueble.localidad,
   status: FileResponse.status,
   observaciones: FileResponse.observaciones,
+  nroTramite: FileResponse.nroSolicitud,
   // fecha_contrato: FileResponse.fecha_contrato.substr(0, 10),
   // acta_inicio: FileResponse.acta_inicio.substr(0,10),
   createdAt: new Date(FileResponse.createdAt).toLocaleDateString(),
@@ -40,7 +41,8 @@ const formatExtendedFile = (FileResponse) => ({
   mercaderia: FileResponse.inmueble.mercaderia,
   mesas: FileResponse.inmueble.mesas,
   carteles: FileResponse.inmueble.carteles,
-  documentos: FileResponse.documentos,
+  otrosServicios: FileResponse.inmueble.otrosServicios,
+  // documentos: FileResponse.documentos,
   status: FileResponse.status,
   nroTramite: FileResponse.nroSolicitud,
   // fecha_contrato: FileResponse.fecha_contrato.substr(0, 10),
@@ -72,6 +74,7 @@ module.exports = {
     const fileResponse = await axios.$get(`/habilitaciones/${id}`)
     return formatExtendedFile(fileResponse.data)
   },
+
   create: async (axios, { habilitacion }) => {
 
     const createdFile = await axios.$post('/habilitaciones', { habilitacion });
@@ -85,6 +88,14 @@ module.exports = {
       { habilitacion },
     )
     return formatFile(updated)
+  },
+  updateLazy: async (axios, id, { habilitacion }) => {
+    axios.setHeader('Access-Control-Allow-Origin', true)
+    const updated = await axios.$put(
+      `/habilitaciones/lazy/${id}`,
+      { habilitacion },
+    )
+    // return formatFile(updated)
   },
   delete: async (axios, { id, userToken }) => {
     return await axios.$delete(`/habilitaciones/${id}`, {

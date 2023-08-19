@@ -20,7 +20,7 @@ export const actions = {
     commit('setSingle', found)
   },
   async getSingle({ commit, state }, { id }) {
-    commit('setSingle', null)
+    // commit('setSingle', null)
     const found = await HabilitacionService.getSingle(this.$axios, {
       id,
     })
@@ -38,6 +38,16 @@ export const actions = {
         habilitacion,
       })
       commit('setSingle', { updated })
+    } catch (e) {
+      throw new Error(e.message)
+    }
+  },
+  async updateLazy({ commit }, { id, habilitacion}) {
+    try {
+      const updated = await HabilitacionService.updateLazy(this.$axios, id, {
+        habilitacion,
+      })
+      // commit('setSingle', { updated })
     } catch (e) {
       throw new Error(e.message)
     }

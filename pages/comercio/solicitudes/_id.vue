@@ -26,6 +26,9 @@
             <h4 class="text-success ml-1" v-if="habilitacion.status === 'Finalizada'">{{ habilitacion.status }} </h4>
           </div>
         </div>
+        <div class="row justify-content-center" v-if="habilitacion.status === 'Finalizada'">
+          <div class="h5 row"> Número de expediente: <b class="text-success ml-1"> {{ habilitacion.nroExpediente }} </b> </div>
+        </div>
       </div>
       <div class="row col-10 mx-auto justify-content-center">
         <b-button @click="onSolicitarDocumentacion" variant="success" pill class="btn-4 mt-3 mx-1" v-if="habilitacion.status === 'Inspeccionado'"> Solicitar documentación </b-button>
@@ -213,8 +216,10 @@
           </div>
         </div>
         <div class="justify-content-center mx-auto" v-else>
-          <p class="h4 text-center"> Cargando... </p>
-          <b-spinner variant="success" style="width: 3rem; height: 3rem; margin:auto"></b-spinner>
+          <p class="h4 text-loading text-center"> Cargando... </p>
+          <div class="row justify-content-center mb-3">
+            <b-spinner variant="success"></b-spinner>
+          </div>
         </div>
       </div>
     </template>
@@ -377,11 +382,12 @@
         <p> Ingresa el número de expediente asignado a este trámite: </p>
         <div class="row mx-auto">
         <p class="mr-2"> 4124 -</p>
-        <b-form-input class="col-3" type="number" size="sm" v-model="nroExpediente"/><a class="mx-3"> / </a> <b-form-input size="sm" class="col-3" v-model="nroExpediente"/>
+        <b-form-input class="col-3" type="number" no-wheel size="sm" v-model="nroExpediente1"/><a class="mx-3"> / </a>
+        <b-form-input size="sm" type="number" no-wheel class="col-3" v-model="nroExpediente2"/>
         </div>
         <small> Recordá que más adelante podrás consultar los datos proporcionados en la sección de búsqueda. </small>
         <div class="text-center mt-3">
-          <b-btn variant="success" :disabled="!nroExpediente" @click="onSendFinalizar" >
+          <b-btn variant="success" :disabled="!nroExpediente1 || !nroExpediente2" @click="onSendFinalizar" >
               Aceptar
           </b-btn>
         </div>
@@ -406,7 +412,8 @@ export default {
       documentos: null,
       turno: null,
       observaciones: '',
-      nroExpediente: null,
+      nroExpediente1: null,
+      nroExpediente2: null,
       documentoNames: {
         planillaAutorizacion: 'Planilla de Autorización / Apoderamiento',
         dniFrente: 'DNI Frente',
@@ -484,8 +491,10 @@ export default {
       this.showSolicitarDoc = false
     },
     async onSendFinalizar(){
+      const nroExpediente = "4124-" + this.nroExpediente1 + "/" + this.nroExpediente2
       const habilitacion = {
-        status: 'Finalizada'
+        status: 'Finalizada',
+        nroExpediente: nroExpediente,
       }
       const id = this.habilitacion.id
       const userToken = this.$store.state.user.token
@@ -600,6 +609,10 @@ export default {
 }
 
 /* etc */
+
+.text-loading{
+  color: #0eb7b2ab;
+}
 
 /* body {
   margin: 1.5em;

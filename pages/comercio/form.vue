@@ -3,25 +3,25 @@
   <Banner title="Habilitaciones comerciales" />
   <!-- Comprobante (página 4) -->
   <div v-if="printing === true">
-    <b-card class="text-center shadow-lg col-md-8 col-sm-12 mx-auto">
+    <b-card class="text-center shadow-lg col-md-8 col-sm-12 mx-auto" >
       <h1>Comprobante de Solicitud</h1>
       <h4>Departamento de Comercio</h4>
       <h5>Nro de trámite: {{ nroTramite }}</h5>
       <h5>Solicita el turno: {{ solicitante.nombre }} {{ solicitante.apellido }}</h5>
       <h5>CUIT: {{ solicitante.cuit }}</h5>
-      <h5>Tipo de Soolicitud: {{ solicitante.tipoSolicitud }}</h5>
+      <h5>Tipo de Solicitud: {{ solicitante.tipoSolicitud }}</h5>
       <h5>Rubro: {{ inmueble.rubro }}</h5>
       <b-button v-if="endButton === true" @click="onResetParams" class="btn-cancel">Volver</b-button>
     </b-card>
   </div>
-  <b-form v-else @submit="submitForm" class="my-3" style="margin-left:10px;margin-right:10px">
+  <b-form v-else @submit="submitForm" @submit.prevent="submitForm" class="my-3" style="margin-left:10px;margin-right:10px">
 
   <b-card no-body class="col-8 mt-1 section-card"  style="margin: 0px auto">
     <!-- Sección: Datos del solicitante -->
     <fieldset >
       <legend><h3>Datos del Solicitante <b-icon-question-circle-fill @click="openPopup('DatosDelSolicitante')" font-scale="1" variant="info"></b-icon-question-circle-fill></h3></legend>
       <b-form-group label="Tipo de Solicitud *" label-for="tipo-solicitud" >
-        <b-form-select title="Por el momento solo se pueden solicitar habilitaciones comerciales." id="tipo-solicitud" v-model="solicitante.tipoSolicitud" disabled required>
+        <b-form-select title="Por el momento solo se pueden solicitar habilitaciones comerciales." id="tipo-solicitud" v-model="solicitante.tipoSolicitud" disabled >
             <b-form-select-option selected="selected" value="Habilitación">Habilitar nuevo comercio</b-form-select-option>
         </b-form-select>
       </b-form-group>
@@ -30,25 +30,37 @@
     <fieldset >
       <b-row>
       <b-col md="6">
-          <b-form-group label="Nombre *" label-for="nombreSolicitante" >
-            <b-form-input id="nombreSolicitante" v-model="solicitante.nombre" required></b-form-input>
+          <b-form-group label="Nombre *" label-for="nombreSolicitante">
+            <b-form-input id="nombreSolicitante" v-model="solicitante.nombre"></b-form-input>
+            <div v-if="$v.solicitante.nombre.$error" class="validation-error">
+              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El Nombre no puede estar vacio ni contener numeros ni caracteres especiales.
+            </div>
           </b-form-group>
         </b-col>
         <b-col md="6">
           <b-form-group label="Apellido *" label-for="apellidoSolicitante" >
-            <b-form-input id="apellidoSolicitante" v-model="solicitante.apellido" required></b-form-input>
+            <b-form-input id="apellidoSolicitante" v-model="solicitante.apellido"></b-form-input>            
+            <div v-if="$v.solicitante.apellido.$error" class="validation-error">
+              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El Apellido no puede estar vacio, contener numeros o caracteres especiales.
+            </div>
           </b-form-group>
         </b-col>
       </b-row>
       <b-row>
         <b-col md="6">
-          <b-form-group label="DNI/Pasaporte *" label-for="DNISolicitante" >
-            <b-form-input id="DNISolicitante" v-model="solicitante.DNI" required></b-form-input>
+          <b-form-group label="DNI / Pasaporte *" label-for="DNISolicitante" >
+            <b-form-input id="DNISolicitante" v-model="solicitante.dni"></b-form-input>
+            <div v-if="$v.solicitante.dni.$error" class="validation-error">
+              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Introduce un DNI válido.
+            </div>
           </b-form-group>
         </b-col>
         <b-col md="6">
           <b-form-group label="CUIT *" label-for="cuit" >
-            <b-form-input id="cuit" v-model="solicitante.cuit" required></b-form-input>
+            <b-form-input id="cuit" v-model="solicitante.cuit"></b-form-input>
+            <div v-if="$v.solicitante.cuit.$error" class="validation-error">
+              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Introduce un CUIT válido, sin guiones ni caracteres especiales.
+            </div>
           </b-form-group>
         </b-col>
       </b-row>
@@ -57,34 +69,61 @@
         <b-form-input id="razon-social" v-model="solicitante.razonSocial" ></b-form-input>
       </b-form-group>
       <b-form-group label="Domicilio Real y/o Legal *" label-for="domicilio-real" >
-        <b-form-input id="domicilio-real" v-model="solicitante.domicilioReal" required></b-form-input>
+        <b-form-input id="domicilio-real" v-model="solicitante.domicilioReal" ></b-form-input>
+        <div v-if="$v.solicitante.domicilioReal.$error" class="validation-error">
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El Domicilio Real y/o Legal no puede estar vacio.
+        </div>
       </b-form-group>
       <b-row>
-        <b-col md="10">
+        <b-col md="6">
           <b-form-group label="Teléfono *" label-for="telefonoTitular" >
-            <b-form-input id="telefonoTitular" v-model="solicitante.telefono"  type="number" no-wheel ></b-form-input>
+            <b-form-input id="telefonoTitular" v-model="solicitante.telefono" no-wheel ></b-form-input>
+            <div v-if="$v.solicitante.telefono.$error" class="validation-error">
+              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El teléfono no puede estar vacio, contener letras o caracteres especiales.
+            </div>
           </b-form-group>
         </b-col>
-        <b-col md="2">
+        <b-col md="6">
           <b-form-group label="Código Postal *" label-for="codigoPostal" >
-            <b-form-input id="codigoPostal" v-model="solicitante.codigoPostal" type="number" required></b-form-input>
+            <b-col md="4" style="padding-left: 0px;">
+              <b-form-input id="codigoPostal" v-model="solicitante.codigoPostal" ></b-form-input>
+            </b-col>
+            <b-col md="12" style="padding-left: 0px;">
+              <div v-if="$v.solicitante.codigoPostal.$error" class="validation-error">
+                <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El código postal no puede estar vacio, contener letras o caracteres especiales.
+              </div>
+            </b-col>
           </b-form-group>
         </b-col>
       </b-row>
       <b-row>
         <b-col md="6">
           <b-form-group label="Localidad *" label-for="localidadSolicitante" >
-            <b-form-input id="localidadSolicitante" v-model="solicitante.localidad" required></b-form-input>
+            <b-form-input id="localidadSolicitante" v-model="solicitante.localidad" ></b-form-input>
+            <div v-if="$v.solicitante.localidad.$error" class="validation-error">
+              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> La localidad no puede estar vacia.
+            </div>
           </b-form-group>
         </b-col>
         <b-col md="6">
-          <b-form-group label="Provincia *" label-for="provincia" >
-            <b-form-input id="provincia" v-model="solicitante.provincia" required></b-form-input>
+          <b-form-group label="Provincia *" label-for="provincia">
+            <b-form-select id="provincia" v-model="solicitante.provincia" >
+              <option value="" disabled>Selecciona una provincia</option>
+              <option v-for="(provincia, index) in provincias" :key="index" :value="provincia">
+                {{ provincia }}
+              </option>
+            </b-form-select>
+            <div v-if="$v.solicitante.provincia.$error" class="validation-error">
+              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe seleccionar una provincia.
+            </div>
           </b-form-group>
         </b-col>
       </b-row>
       <b-form-group label="Correo Electrónico *" label-for="mail" >
-        <b-form-input id="mail" v-model="solicitante.mail" type="email" required></b-form-input>
+        <b-form-input id="mail" v-model="solicitante.correoElectronico" ></b-form-input>
+        <div v-if="$v.solicitante.correoElectronico.$error" class="validation-error">
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe introducir un email válido. Ejemplo: nombre@dominio.com
+        </div>
       </b-form-group>
     </fieldset>
     <b-row>
@@ -103,10 +142,15 @@
     <!-- Sección: Datos del Apoderado -->
     <fieldset v-if="solicitante.esApoderado === 'true'">
         <p>En este campo deberás cargar la <a href="https://drive.google.com/file/d/1m5ouibBL4sWokhkSR5keTjbUVo-I4TOU/view" target="_blank" class="external-link">Planilla de autorización de trámite</a> o el Poder autorizado por escribano que te indicamos que completes previamente.</p>
-
-      <b-form-group v-if="solicitante.esApoderado === 'true'" label="Planilla de autorización de trámite" label-for="documentos.planillaAutorizacion" >
-        <b-form-file v-model="documentos.planillaAutorizacion" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('planillaAutorizacion')" @input="clearFormFieldState('planillaAutorizacion')"></b-form-file>
-      </b-form-group>
+      <b-form-group v-if="solicitante.esApoderado === 'true'" label="Planilla de autorización de trámite *" label-for="documentos.planillaAutorizacion" >
+        <b-form-file v-model="documentos.planillaAutorizacion" placeholder="No se seleccionó un archivo." browse-text="Examinar" 
+        accept=".pdf, image/*" :state="getFormFieldState('planillaAutorizacion')" 
+        @change="checkDocumentSize('planillaAutorizacion', $event)" 
+        @input="clearFormFieldState('planillaAutorizacion')"></b-form-file>
+        <div v-if="$v.documentos.planillaAutorizacion.$error || fileTooLargeError.planillaAutorizacion" class="validation-error">
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.planillaAutorizacion || 'Debe seleccionar un archivo.' }}
+        </div>
+      </b-form-group>      
     </fieldset>
   </b-card>
   <b-card no-body class="col-8 mt-1 section-card"  style="margin: 0px auto">
@@ -116,46 +160,62 @@
       <b-row>
         <b-col md="6">
           <b-form-group label="Localidad *" label-for="localidad" >
-            <b-form-select id="localidad" v-model="inmueble.localidad" required>
-              <option value="">Seleccione...</option>
+            <b-form-select id="localidad" v-model="inmueble.localidad" >
+              <option value="" disabled>Seleccione...</option>
               <option value="villa-gesell">Villa Gesell</option>
               <option value="mar-de-las-pampas">Mar de las Pampas</option>
               <option value="mar-azul">Mar Azul</option>
               <option value="las-gaviotas">Las Gaviotas</option>
               <option value="colonia-marina">Colonia Marina</option>
             </b-form-select>
+            <div v-if="$v.inmueble.localidad.$error" class="validation-error">
+              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe seleccionar una localidad.
+            </div>
           </b-form-group>
         </b-col>
         <b-col md="6">
           <b-form-group label-for="rubro">
             <label for="rubro" class="rubro-label">Rubro *</label>
-            <b-form-select v-model="inmueble.rubro" :options="listaRubros" value-field="nombre" text-field="nombre" @change="handleRubroChange" >
+            <b-form-select id="rubro" v-model="inmueble.rubro"  @change="handleRubroChange">
+              <option value="" disabled>Selecciona un Rubro</option>
+              <option v-for="(rubro, index) in listaRubros" :key="index" :value="rubro.nombre">
+                {{ rubro.nombre }}
+              </option>
             </b-form-select>
+            <div v-if="$v.inmueble.rubro.$error" class="validation-error">
+              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe seleccionar un rubro.
+            </div>
           </b-form-group>
         </b-col>
       </b-row>
       <b-row>
         <b-col md="8">
           <b-form-group label="Calle *" label-for="direccion-inmueble-calle" >
-            <b-form-input id="direccion-inmueble-calle" v-model="inmueble.calle" required></b-form-input>
+            <b-form-input id="direccion-inmueble-calle" v-model="inmueble.calle" ></b-form-input>
+            <div v-if="$v.inmueble.calle.$error" class="validation-error">
+              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> La calle no puede estar vacia.
+            </div>
           </b-form-group>
         </b-col>
         <b-col md="2">
           <b-form-group label="" label-for="direccion-inmbueble-nro" >
             <label for="direccion-inmbueble-nro" class="rubro-label">Número * <b-icon-question-circle-fill class="" @click="openPopup('NroInmueble')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
-            <b-form-input id="direccion-inmbueble-nro" v-model="inmueble.nro" type="number" required></b-form-input>
+            <b-form-input id="direccion-inmbueble-nro" v-model="inmueble.nro" ></b-form-input>
+            <div v-if="$v.inmueble.nro.$error" class="validation-error">
+              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El número no puede estar vacio, contener letras ni caracteres especiales.
+            </div>
           </b-form-group>
         </b-col>
         <b-col md="2">
           <b-form-group label="Nro. de Local" label-for="direccion-inmueble-calle2" >
-            <b-form-input id="direccion-inmueble-calle2" v-model="inmueble.nroLocal" placeholder="Ej. local 2/local A" required></b-form-input>
+            <b-form-input id="direccion-inmueble-calle2" v-model="inmueble.nroLocal" placeholder="Ej. local 2/local A" ></b-form-input>
           </b-form-group>
         </b-col>
       </b-row>
       <b-form-group label="Nombre de Fantasía (En caso de que lo posea)" label-for="nombre-fantasia" >
         <b-form-input id="nombre-fantasia" v-model="inmueble.nombreFantasia"></b-form-input>
       </b-form-group>
-    <fieldset  v-if="isHoteleria" key="rubro-146">
+    <fieldset  v-if="isHoteleria" key="rubro-h">
       <h5>Servicios exclusivos del rubro {{inmueble.rubro}} *</h5>
       <p>Seleccioná los servicios que brinda tu establecimiento:</p>
 
@@ -166,11 +226,31 @@
 
       </b-form-group>
       <b-form-group v-if="inmueble.serviciosHoteleria[11].value === true" label="Contanos que otros servicios brinda tu establecimiento: " label-for="otrosServicios" >
-        <b-form-textarea id="otrosServicios" v-model="inmueble.otrosServicios" rows="2" max-rows="4" type="text" required></b-form-textarea>
+        <b-form-textarea id="otrosServicios" v-model="inmueble.otrosServicios" rows="2" max-rows="4" ></b-form-textarea>
+        <div v-if="$v.inmueble.otrosServicios.$error" class="validation-error">
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe completar este campo, o desmarcar la casilla "Otros".
+        </div>
       </b-form-group>
     </fieldset>
-      <b-form-group v-if="rubroSeleccionado.croquis === true" label="Croquis" label-for="documentos.croquis" >
-        <b-form-file v-model="documentos.croquis" placeholder="No se seleccionó un archivo." browse-text="Examinar" required accept=".pdf, image/*" :state="getFormFieldState('croquis')" @input="clearFormFieldState('croquis')"></b-form-file>
+      <b-form-group v-if="rubroSeleccionado.croquis === true && isHoteleria" label-for="documentos.croquis" >
+        <label for="croquis">Croquis <i>(en casos en que hay más de una parcela para uso de la actividad comercial y las mismas no se hallan reunidas por plano de mensura y unificación o reunidas de oficio)</i></label>
+        <b-form-file v-model="documentos.croquis" placeholder="No se seleccionó un archivo." browse-text="Examinar"  
+        accept=".pdf, image/*" :state="getFormFieldState('croquis')" 
+        @change="checkDocumentSize('croquis', $event)" 
+        @input="clearFormFieldState('croquis')"></b-form-file>
+        <div v-if="fileTooLargeError.croquis" class="validation-error">
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.croquis }}
+        </div>
+      </b-form-group>
+      <b-form-group v-if="rubroSeleccionado.croquis === true && !isHoteleria" label-for="documentos.croquis" >
+        <label for="croquis">Croquis </label>
+        <b-form-file v-model="documentos.croquis" placeholder="No se seleccionó un archivo." browse-text="Examinar" 
+        accept=".pdf, image/*" :state="getFormFieldState('croquis')" 
+        @change="checkDocumentSize('croquis', $event)" 
+        @input="clearFormFieldState('croquis')"></b-form-file>
+        <div v-if="$v.documentos.croquis.$error || fileTooLargeError.croquis" class="validation-error">
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.croquis || 'Debe seleccionar un archivo.' }}
+        </div>
       </b-form-group>
       <b-form-group label="" label-for="espaciopublico" style="margin: 0px auto">
             <b-row>
@@ -213,41 +293,85 @@
         <b-col md="6">
           <b-form-group label="DNI (Frente) *" label-for="dniFrente">
             <b-form-file v-model="documentos.dniFrente" placeholder="No se seleccionó un archivo." browse-text="Examinar"
-              accept=".pdf, image/*" required
+              accept=".pdf, image/*" 
               :state="getFormFieldState('dniFrente')"
-              @change="handleDocumentUpdate('dniFrente')"
-              @input="clearFormFieldState('dniFrente')"
-            ></b-form-file>
+              @change="handleDocumentUpdate('dniFrente'); checkDocumentSize('dniFrente', $event)"
+              @input="clearFormFieldState('dniFrente')"></b-form-file>
+            <div v-if="$v.documentos.dniFrente.$error || fileTooLargeError.dniFrente" class="validation-error">
+              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.dniFrente || 'Debe seleccionar un archivo.' }}
+            </div>
           </b-form-group>
         </b-col>
         <b-col md="6">
           <b-form-group label="DNI (Dorso) *" label-for="dniDorso" >
-            <b-form-file v-model="documentos.dniDorso" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('dniDorso')" @change="handleDocumentUpdate('dniDorso')" @input="clearFormFieldState('dniDorso')"></b-form-file>
+            <b-form-file v-model="documentos.dniDorso" placeholder="No se seleccionó un archivo." browse-text="Examinar" 
+            accept=".pdf, image/*"  :state="getFormFieldState('dniDorso')" 
+            @change="handleDocumentUpdate('dniDorso'); checkDocumentSize('dniDorso', $event)" 
+            @input="clearFormFieldState('dniDorso')"></b-form-file>
+            <div v-if="$v.documentos.dniDorso.$error || fileTooLargeError.dniDorso" class="validation-error">
+              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.dniDorso || 'Debe seleccionar un archivo.' }}
+            </div>
           </b-form-group>
         </b-col>
       </b-row>
       <b-form-group>
         <label for="constanciaCuit" class="rubro-label">Constancia de CUIT * <b-icon-question-circle-fill @click="openPopup('ConstanciaCUIT')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
-        <b-form-file v-model="documentos.constanciaCuit" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('constanciaCuit')" @change="handleDocumentUpdate('constanciaCuit')" @input="clearFormFieldState('constanciaCuit')"></b-form-file>
+        <b-form-file v-model="documentos.constanciaCuit" placeholder="No se seleccionó un archivo." browse-text="Examinar" 
+        accept=".pdf, image/*"  :state="getFormFieldState('constanciaCuit')" 
+        @change="handleDocumentUpdate('constanciaCuit'); checkDocumentSize('constanciaCuit', $event)" 
+        @input="clearFormFieldState('constanciaCuit')"></b-form-file>
+        <div v-if="$v.documentos.constanciaCuit.$error || fileTooLargeError.constanciaCuit" class="validation-error">
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.constanciaCuit || 'Debe seleccionar un archivo.' }}
+        </div>
       </b-form-group>
       <b-form-group>
         <label for="constanciaIngresosBrutos" class="rubro-label">Constancia de inscripción a Ingresos Brutos <b-icon-question-circle-fill @click="openPopup('ConstanciaIngresosBrutos')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
-        <b-form-file v-model="documentos.constanciaIngresosBrutos" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('constanciaIngresosBrutos')" @change="handleDocumentUpdate('constanciaIngresosBrutos')" @input="clearFormFieldState('constanciaIngresosBrutos')"></b-form-file>
+        <b-form-file v-model="documentos.constanciaIngresosBrutos" placeholder="No se seleccionó un archivo." browse-text="Examinar" 
+        accept=".pdf, image/*" :state="getFormFieldState('constanciaIngresosBrutos')" 
+        @change="handleDocumentUpdate('constanciaIngresosBrutos'); checkDocumentSize('constanciaIngresosBrutos', $event)" 
+        @input="clearFormFieldState('constanciaIngresosBrutos')"></b-form-file>
+        <div v-if="fileTooLargeError.constanciaIngresosBrutos" class="validation-error">
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.constanciaIngresosBrutos }}
+        </div>
       </b-form-group>
       <b-form-group>
         <label for="certificadoDomicilio" class="rubro-label">Certificado de domicilio Ingresos Brutos - Punto de venta Villa Gesell <b-icon-question-circle-fill @click="openPopup('certificadoDomicilio')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
-        <b-form-file v-model="documentos.certificadoDomicilio" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('certificadoDomicilio')" @change="handleDocumentUpdate('certificadoDomicilio')" @input="clearFormFieldState('certificadoDomicilio')"></b-form-file>
+        <b-form-file v-model="documentos.certificadoDomicilio" placeholder="No se seleccionó un archivo." browse-text="Examinar" 
+        accept=".pdf, image/*" :state="getFormFieldState('certificadoDomicilio')" 
+        @change="handleDocumentUpdate('certificadoDomicilio'); checkDocumentSize('certificadoDomicilio', $event)" 
+        @input="clearFormFieldState('certificadoDomicilio')"></b-form-file>
+        <div v-if="fileTooLargeError.certificadoDomicilio" class="validation-error">
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.certificadoDomicilio }}
+        </div>
       </b-form-group>
       <b-form-group>
         <label for="libreDeudaUrbana" class="rubro-label">Libre Deuda de Tasa por Servicios Urbanos <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. * <b-icon-question-circle-fill @click="openPopup('ConstanciaLibreDeuda')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
-        <b-form-file v-model="documentos.libreDeudaUrbana" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('libreDeudaUrbana')" @change="handleDocumentUpdate('libreDeudaUrbana')" @input="clearFormFieldState('libreDeudaUrbana')"></b-form-file>
+        <b-form-file v-model="documentos.libreDeudaUrbana" placeholder="No se seleccionó un archivo." browse-text="Examinar" 
+        accept=".pdf, image/*"  :state="getFormFieldState('libreDeudaUrbana')" 
+        @change="handleDocumentUpdate('libreDeudaUrbana'); checkDocumentSize('libreDeudaUrbana', $event)" 
+        @input="clearFormFieldState('libreDeudaUrbana')"></b-form-file>
+        <div v-if="$v.documentos.libreDeudaUrbana.$error || fileTooLargeError.libreDeudaUrbana" class="validation-error">
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.libreDeudaUrbana || 'Debe seleccionar un archivo.' }}
+        </div>
       </b-form-group>
       <b-form-group label="Escritura traslativa de Dominio del inmueble / Contrato de locación / Otro *" label-for="tituloPropiedad" >
-        <b-form-file v-model="documentos.tituloPropiedad" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('tituloPropiedad')" @change="handleDocumentUpdate('tituloPropiedad')" @input="clearFormFieldState('tituloPropiedad')"></b-form-file>
+        <b-form-file v-model="documentos.tituloPropiedad" placeholder="No se seleccionó un archivo." browse-text="Examinar" 
+        accept=".pdf, image/*"  :state="getFormFieldState('tituloPropiedad')" 
+        @change="handleDocumentUpdate('tituloPropiedad'); checkDocumentSize('tituloPropiedad', $event)" 
+        @input="clearFormFieldState('tituloPropiedad')"></b-form-file>
+        <div v-if="$v.documentos.tituloPropiedad.$error || fileTooLargeError.tituloPropiedad" class="validation-error">
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.tituloPropiedad || 'Debe seleccionar un archivo.' }}
+        </div>
       </b-form-group>
       <b-form-group >
         <label for="plano" class="rubro-label">Plano o Informe técnico * <b-icon-question-circle-fill @click="openPopup('plano')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
-        <b-form-file v-model="documentos.plano" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('plano')" @change="handleDocumentUpdate('plano')" @input="clearFormFieldState('plano')"></b-form-file>
+        <b-form-file v-model="documentos.plano" placeholder="No se seleccionó un archivo." browse-text="Examinar" 
+        accept=".pdf, image/*"  :state="getFormFieldState('plano')" 
+        @change="handleDocumentUpdate('plano'); checkDocumentSize('plano', $event)" 
+        @input="clearFormFieldState('plano')"></b-form-file>
+        <div v-if="$v.documentos.plano.$error || fileTooLargeError.plano" class="validation-error">
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.plano || 'Debe seleccionar un archivo.' }}
+        </div>
       </b-form-group>
       <b-row>
         <b-col md="6">
@@ -268,22 +392,40 @@
     <fieldset v-if="solicitante.esPersonaJuridica === 'true'">
       <p>A continuación deberás cargar la Escritura constitutiva de la Persona Jurídica y el Acta de Directorio actualizada.</p>
       <b-form-group label="Acta de Constitución de Persona Jurídica *" label-for="actaPersonaJuridica" >
-        <b-form-file v-model="documentos.actaPersonaJuridica" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" required :state="getFormFieldState('actaPersonaJuridica')" @change="handleDocumentUpdate('actaPersonaJuridica')" @input="clearFormFieldState('actaPersonaJuridica')"></b-form-file>
+        <b-form-file v-model="documentos.actaPersonaJuridica" placeholder="No se seleccionó un archivo." browse-text="Examinar" 
+        accept=".pdf, image/*"  :state="getFormFieldState('actaPersonaJuridica')" 
+        @change="handleDocumentUpdate('actaPersonaJuridica'); checkDocumentSize('actaPersonaJuridica', $event)" 
+        @input="clearFormFieldState('actaPersonaJuridica')"></b-form-file>
+        <div v-if="$v.documentos.actaPersonaJuridica.$error || fileTooLargeError.actaPersonaJuridica" class="validation-error">
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.actaPersonaJuridica || 'Debe seleccionar un archivo.' }}
+        </div>
       </b-form-group>
       <b-form-group label="" label-for="actaDirectorio" >
         <label for="actaDirectorio" class="actaDirectorio-label">Acta de Directorio Actualizada <i>(En caso que corresponda)</i> </label>
-        <b-form-file v-model="documentos.actaDirectorio" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('actaDirectorio')" @change="handleDocumentUpdate('actaDirectorio')" @input="clearFormFieldState('actaDirectorio')"></b-form-file>
+        <b-form-file v-model="documentos.actaDirectorio" placeholder="No se seleccionó un archivo." browse-text="Examinar" 
+        accept=".pdf, image/*" :state="getFormFieldState('actaDirectorio')" 
+        @change="handleDocumentUpdate('actaDirectorio'); checkDocumentSize('actaDirectorio', $event)" 
+        @input="clearFormFieldState('actaDirectorio')"></b-form-file>
+        <div v-if="fileTooLargeError.actaDirectorio" class="validation-error">
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.actaDirectorio }}
+        </div>
       </b-form-group>
     </fieldset>
     </fieldset>
-    <div class="centeredContainer">
+    <div class="centeredContainer" style="min-width: 304px;">
       <b-form-group>
         <div id="captchaContainer"></div>
       </b-form-group>
       <fieldset>
         <input type="hidden" id="captchaResponse" name="captchaResponse" v-model="captchaResponse">
         <b-button size="lg" @click="onResetParams" variant="danger" class="btn-cancel" >Cancelar</b-button>
-        <b-button size="lg" @click="submitForm" variant="success" class="" >Enviar</b-button>
+        <b-button size="lg" type="submit" variant="success" :disabled="!areAllFieldsComplete" class="" >Enviar</b-button>
+        <div v-if="!areAllFieldsComplete" class="validation-error">
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Completar todos los campos marcados con (*).
+        </div>
+        <div v-if="!areAllFieldsValid" class="validation-error">
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Por favor, revisa el formulario en busca de errores.
+        </div>
       </fieldset>
     </div>
   </b-card>
@@ -389,7 +531,7 @@
     </div>
   </template>
   <div class="modal-info">
-    <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>Podés solicitar tu Certificado de domicilio haciendo <a href="https://arvige.gob.ar/lpagos" target="_blank" >click aquí</a>.</p>
+    <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>Podés solicitar tu Certificado de domicilio haciendo <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" >click aquí</a>.</p>
   </div>
 </b-modal>
 <b-modal v-model="showPopupPlano" title="" :hide-footer="true" @click-outside="showPopupPlano = false" :header-bg-variant="'success'"  centered>
@@ -423,28 +565,28 @@
     </div>
   </div>
 </b-modal>
-<b-modal v-model="showPopupFormLoading" title="" @click-outside="showPopupFormLoading = false" :header-bg-variant="'success'" hide-footer  centered>
+<b-modal v-model="showPopupFormLoading" no-close-on-backdrop title="" :header-bg-variant="'success'" hide-footer centered>
   <template #modal-header>
     <h5 class="centeredContainer">Solicitud en Proceso</h5>
   </template>
   <div class="centeredContainer">
     <p class="popup-link">Tus archivos se están cargando.</p>
-    <b-spinner variant="success" style="width: 3rem; height: 3rem;" label="Large Spinner" @click="showPopupFormLoading = false; openPopup('FormOk')"></b-spinner>
+    <b-spinner variant="success" style="width: 3rem; height: 3rem;" label="Large Spinner"></b-spinner>
     <p>No cierres esta página</p>
   </div>
 </b-modal>
 <b-modal v-model="showPopupFormOk" title="" ok-only @click-outside="showPopupFormOk = false" :header-bg-variant="'success'" centered>
   <template #modal-header>
     <div class="centeredContainer"><h3>
-        <b-icon icon="check-circle-fill" scale="1.5" variant="light" @click="showPopupFormOk = false; openPopup('FormError')"></b-icon>
+        <b-icon icon="check-circle-fill" scale="1.5" variant="light"></b-icon>
     </h3></div>
   </template>
   <div class="centeredContainer">
     <p class="modal-subtitle">¡Tu solicitud ha sido enviada exitosamente!</p>
-    <p class="">En los próximos días recibirás un correo electrónico del Departamento Comercio Municipal en el que te indicarán cómo continuar el trámite.</p>
-    <p class=""><b>Tu número de trámite es: </b> </p>
-    <p class="h3"> <b> {{ nroTramite }} </b> </p>
-    <p class="">Por favor, conservá este número. Será solicitado más adelante. </p>
+    <p class="">En los próximos días recibirás un correo electrónico del Departamento Comercio Municipal en el que te indicarán cómo continuar. Asegurate de revisar la bandeja de correos no deseados (Spam).</p>
+    <p class=""><b>Tu número de trámite es: </b></p>
+    <p class="h3"><b> {{ nroTramite }} </b></p>
+    <p class="">Por favor, conservá este número. Será solicitado más adelante.</p>
   </div>
   <template #modal-footer>
     <div class="" style="margin: auto">
@@ -474,13 +616,54 @@
 
 </div>
 </template>
-
 <script>
-  import rubros from "@/plugins/rubros.js";
-
+import rubros from "@/plugins/rubros.js";
+import { required, requiredIf, alpha, numeric, email, minLength, maxLength } from 'vuelidate/lib/validators';
 export default {
+  validations() {
+    return {
+      solicitante: {
+        nombre: { required, alpha },
+        apellido: { required, alpha },
+        dni: { required, numeric, maxLength: maxLength(9), minLength: minLength(7) },
+        cuit: { required, numeric, maxLength: maxLength(12), minLength: minLength(10) },
+        domicilioReal: { required },
+        telefono: { required, numeric },
+        codigoPostal: { required, numeric, maxLength: maxLength(4), minLength: minLength(4) },
+        localidad: { required },
+        provincia: { required },
+        correoElectronico: { required, email }
+      },
+      inmueble: {
+        localidad: { required },
+        rubro: { required },
+        calle: { required },
+        nro: { required, numeric },
+        otrosServicios: { requiredIf: requiredIf(function () {
+          return this.inmueble.serviciosHoteleria[11].value === true }) }
+      },
+      documentos: {
+        dniFrente: { required },
+        dniDorso: { required },
+        constanciaCuit: { required },
+        libreDeudaUrbana: { required },
+        tituloPropiedad: { required },
+        plano: { required },
+        planillaAutorizacion: { requiredIf: requiredIf(function () {
+          return this.solicitante.esApoderado === 'true' })},
+        croquis: {requiredIf: requiredIf(function () {
+          return this.rubroSeleccionado.croquis && !this.isHoteleria })},
+        actaPersonaJuridica: { requiredIf: requiredIf(function () {
+          return this.solicitante.esPersonaJuridica === 'true' })},
+      }
+    }
+    // Otras validaciones aquí...
+  },
   data:function() {
       return {
+      maxFileSize: 15 * 1024 * 1024, // 15MB in bytes,
+      fileTooLargeError: {},
+      TEST_submit: false,
       listaRubros: rubros,
       rubroSeleccionado: {
         id: null,
@@ -494,13 +677,18 @@ export default {
         croquis: false,
       },
       rubrosHoteleria:[136,137,138,139,140,141,142,143,144,145],
+      provincias: [
+        'CABA','Buenos Aires', 'Catamarca', 'Chaco', 'Chubut', 'Córdoba', 'Corrientes', 'Entre Ríos', 'Formosa', 'Jujuy',
+        'La Pampa', 'La Rioja', 'Mendoza', 'Misiones', 'Neuquén', 'Río Negro', 'Salta', 'San Juan', 'San Luis', 'Santa Cruz',
+        'Santa Fe', 'Santiago del Estero', 'Tierra del Fuego', 'Tucumán'
+      ],
       isHoteleria: false,
       nroTramite: null,
       solicitante: {
         tipoSolicitud: 'Habilitación',
         nombre: '',
         apellido: '',
-        DNI: '',
+        dni: '',
         cuit: '',
         razonSocial: '',
         domicilioReal: '',
@@ -584,13 +772,33 @@ export default {
       endButton: false,
       }
   },
+  computed: {
+    areAllFieldsComplete() {
+      if (this.TEST_submit){
+        
+        return true ;
+      }
+      else{
+        return this.solicitante.nombre && this.solicitante.apellido && this.solicitante.dni && this.solicitante.cuit && this.solicitante.domicilioReal &&
+      this.solicitante.telefono && this.solicitante.codigoPostal && this.solicitante.localidad && this.solicitante.provincia && this.solicitante.correoElectronico &&
+      this.inmueble.localidad && this.inmueble.calle && this.inmueble.nro && this.inmueble.rubro && this.documentos.dniFrente && this.documentos.dniDorso &&
+      this.documentos.constanciaCuit && this.documentos.libreDeudaUrbana && this.documentos.tituloPropiedad && 
+      this.documentos.plano;
+      }
+    },
+    areAllFieldsValid(){
+      if(this.areAllFieldsComplete)
+        return !this.$v.$invalid && !Object.values(this.fileTooLargeError).some(error => !!error)
+      return true;
+    }
+  },
   mounted() {
     //ORDENAR listaRubros antes de mostrarla.
     this.listaRubros.sort((a, b) => a.nombre.localeCompare(b.nombre));
     //CAMBIAR EL SITEKEY POR UNO DE VERDAD
     grecaptcha.ready(() => {
     grecaptcha.render('captchaContainer', {
-      sitekey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
+      sitekey: '6LcyCLMnAAAAABr9MthqcB8NdnCBYtWgVzxA-eDC'
       });
     });
   },
@@ -629,54 +837,100 @@ export default {
       console.log("CANCEL FORM");
     },
     async submitForm() {
-      try {
+      if(this.TEST_submit){
+        console.log("SUBMIT FORM CALLED");
+        if (this.solicitante.esApoderado)
+          console.log("solicitante.esApoderado: " + this.solicitante.esApoderado);
+        else
+          console.log("SUBMIT FORM CALLED");
+        this.$v.$touch(); // Marca los campos como tocados para mostrar los errores
+        console.log("!this.$v.$invalid && !Object.values(this.fileTooLargeError).some(error => !!error)");
+        console.log(!this.$v.$invalid && !Object.values(this.fileTooLargeError).some(error => !!error));
+        console.log("Object.values(this.fileTooLargeError).some(error => !!error)");
+        console.log(Object.values(this.fileTooLargeError).some(error => !!error));
+        
+      }else{
+        this.$v.$touch(); // Marca los campos como tocados para mostrar los errores
+        if (!this.$v.$invalid && !Object.values(this.fileTooLargeError).some(error => !!error)) {
+          // Si no hay errores, envía el formulario
+          console.log("FORMULARIO ENVIADO");
+          try {
 
-        this.openPopup('FormLoading');
-        const documentosParaGuardar = {};
+            this.openPopup('FormLoading');
+            const documentosParaGuardar = {};
 
-        // Recorrer los campos en this.documentos
-        for (const campo in this.documentos) {
-          const documento = this.documentos[campo];
+            // Recorrer los campos en this.documentos
+            for (const campo in this.documentos) {
+              const documento = this.documentos[campo];
 
-          if (documento instanceof Blob) {
-            // Verificar que el campo sea un Blob válido (archivo PDF seleccionado)
-            const fileBlob = new Blob([documento], { type: documento.type });
+              if (documento instanceof Blob) {
+                // Verificar que el campo sea un Blob válido (archivo PDF seleccionado)
+                const fileBlob = new Blob([documento], { type: documento.type });
 
-            // Agregar el archivo PDF a documentosParaGuardar
-            documentosParaGuardar[campo] = {
-              data: await this.blobToBase64(fileBlob),
-              contentType: documento.type,
+                // Agregar el archivo PDF a documentosParaGuardar
+                documentosParaGuardar[campo] = {
+                  data: await this.blobToBase64(fileBlob),
+                  contentType: documento.type,
+                };
+              }
+            }
+
+            const habilitacion = {
+              documentos: documentosParaGuardar,
+              solicitante: this.solicitante,
+              inmueble: this.inmueble,
             };
+            // habilitacion.nroTramite = nroTramite
+            const response = await this.$store.dispatch('habilitaciones/create', {
+              habilitacion,
+            });
+            console.log(response.data)
+            this.nroTramite = response.data
+            this.openPopup('FormOk');
+          } catch (e) {
+            this.openPopup('FormError');
           }
-        }
-
-        const habilitacion = {
-          documentos: documentosParaGuardar,
-          solicitante: this.solicitante,
-          inmueble: this.inmueble,
         };
-        // habilitacion.nroTramite = nroTramite
-        const response = await this.$store.dispatch('habilitaciones/create', {
-          habilitacion,
-        });
-        console.log(response.data)
-        this.nroTramite = response.data
-        this.openPopup('FormOk');
-      } catch (e) {
-        this.openPopup('FormError');
-      }
+        }
     },
     onFinalizar(){
       this.$router.push('/')
       this.showPopupFormOk = false
       this.onResetParams()
     },
+    resetFormFieldState(obj, field) {
+      //console.log("resetFormFieldState("+obj+", "+field+")");
+      this.fileTooLargeError[field] = null;
+      if(obj == `documentos` && this.$v.documentos[field])
+        this.$v.documentos[field].$reset();
+      if(obj == `inmueble` && this.$v.inmueble[field])
+        this.$v.inmueble[field].$reset();
+      if(obj == `solicitante` && this.$v.solicitante[field])
+        this.$v.solicitante[field].$reset();
+    },
+    resetAllVuelidations() {
+      for (const field in this.solicitante) {
+        if (this.solicitante.hasOwnProperty(field)) {
+          this.resetFormFieldState(`solicitante`, field);
+        }
+      }
+      for (const field in this.inmueble) {
+        if (this.inmueble.hasOwnProperty(field)) {
+          this.resetFormFieldState(`inmueble`, field);
+        }
+      }
+      for (const field in this.documentos) {
+        if (this.documentos.hasOwnProperty(field)) {
+          this.resetFormFieldState(`documentos`, field);
+        }
+      }
+    },
     onResetParams(){
+      this.resetAllVuelidations()
       this.nroTramite = null
-      this.solicitante.tipoSolicitud = 'habilitacion'
       this.solicitante.nombre = ''
       this.solicitante.apellido = ''
-      this.solicitante.DNI = ''
+      this.solicitante.dni = ''
       this.solicitante.cuit = ''
       this.solicitante.razonSocial = ''
       this.solicitante.domicilioReal = ''
@@ -684,7 +938,7 @@ export default {
       this.solicitante.codigoPostal = ''
       this.solicitante.localidad = ''
       this.solicitante.provincia = ''
-      this.solicitante.mail = ''
+      this.solicitante.correoElectronico = ''
       this.solicitante.esApoderado = false
       this.solicitante.esPersonaJuridica = false
 
@@ -702,7 +956,7 @@ export default {
       this.inmueble.otrosServicios = ''
 
       this.documentos.planillaAutorizacion = null
-      this.documentos. dniFrente = null
+      this.documentos.dniFrente = null
       this.documentos.dniDorso = null
       this.documentos.constanciaCuit = null
       this.documentos.constanciaIngresosBrutos = null
@@ -742,6 +996,13 @@ export default {
       this.rubroSeleccionado.inspeccion = this.listaRubros[i].inspeccion;
       this.rubroSeleccionado.croquis = this.listaRubros[i].croquis;
       this.isHoteleria = this.rubrosHoteleria.includes(this.rubroSeleccionado.id);
+      if(!this.isHoteleria){
+        this.inmueble.serviciosHoteleria.forEach(servicio => {
+          servicio.value = false;
+        });
+        this.inmueble.otrosServicios = ''
+      }
+      
       } else {
         // Si no se ha seleccionado ninguna opción, reiniciar las propiedades
         this.rubroSeleccionado.id = null;
@@ -769,7 +1030,7 @@ export default {
       // Aquí puedes agregar la lógica para enviar el formulario
       // Hacer popup
       //CAMBIAR EL SITEKEY POR UNO DE VERDAD
-      //grecaptcha.execute('6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI', { action: 'submit' }).then((token) => {
+      //grecaptcha.execute('6LcyCLMnAAAAABr9MthqcB8NdnCBYtWgVzxA-eDC', { action: 'submit' }).then((token) => {
       // this.captchaResponse = token;
         // Lógica adicional para enviar el formulario
       //});
@@ -777,17 +1038,32 @@ export default {
     handleDocumentUpdate(fieldName) {
       const documento = this.documentos[fieldName];
 
+     
       if (documento instanceof Blob) {
         // Verificar que el campo sea un Blob válido (archivo PDF o imagen seleccionado)
         const fileBlob = new Blob([documento], { type: documento.type });
 
         // Agregar el archivo PDF o imagen a documentosParaGuardar
-        this.documentosParaGuardar[fieldName] = {
+        this.documentos[fieldName] = {
           name: documento.name,
           contentType: documento.type,
           file: fileBlob,
         };
       }
+    },
+    checkDocumentSize(field, event){
+      console.log('checkDocumentSize CALLED');
+      const file = event.target.files[0];
+
+      console.log('event.target.files[0]: ' + event.target.files[0]);
+      
+      console.log('file.size: ' + file.size);
+       if (file && file.size > this.maxFileSize) {
+        // El archivo excede el tamaño máximo permitido
+        this.fileTooLargeError[field] = 'El archivo es demasiado grande.';
+        return;
+      }else
+      this.fileTooLargeError[field] = null
     },
      getFormFieldState(fieldName) {
       return this.formFieldStates[fieldName];
@@ -811,6 +1087,11 @@ export default {
 </script>
 
 <style scoped>
+.validation-error {
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+}
 .icon-orange{
   color: #E27910;
 }
@@ -828,6 +1109,14 @@ ul{
 .btn:hover{
   background-color: green;
   border-color: green;
+}
+.btn.disabled{
+  background-color: #619D6A;
+  border-color: #619D6A;
+}
+.btn.disabled:hover{
+  background-color: #619D6A;
+  border-color: #619D6A;
 }
 .btn-cancel:hover{
   background-color: #f09658;
@@ -992,9 +1281,8 @@ input[type="number"] {
   width: 100%; /* Ajusta el ancho según tus necesidades */
   padding: 0.375rem 0.75rem; /* Ajusta el padding según tus necesidades */
 }
-.popup-link {
+.popup-link, .external-link {
   color: #0c681a;
-  font-weight: bold;
 }
 .rubro-label{
   width: 98%;

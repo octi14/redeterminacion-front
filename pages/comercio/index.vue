@@ -43,7 +43,7 @@
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Copia de la Escritura traslativa de Dominio del inmueble donde se desarrollará la actividad / Contrato de locación / Boleto de Compraventa o afín, con el correspondiente Impuesto de Sellos Provincial y firma certificada por Escribano Público, Entidad Bancaria o Autoridad Administrativa.</div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> <a href="https://seti.afip.gob.ar/padron-puc-constancia-internet/ConsultaConstanciaAction.do" target="_blank" class="external-link">Constancia de CUIT</a> actualizada.</div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" class="external-link">Constancia de Inscripción en Ingresos Brutos</a> (ARBA) actualizada al momento de la solicitud. Esta deberá mantenerse activa mientras el comercio, industria o asimilable esté habilitado, bajo pena de ser pasible de la clausura del establecimiento.</div></div>
-                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Certificado de domicilio Ingresos Brutos - Punto de venta Villa Gesell.</div></div>
+                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" class="external-link">Certificado de domicilio Ingresos Brutos - Punto de venta Villa Gesell.</a></div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> <a href="https://drive.google.com/file/d/1m5ouibBL4sWokhkSR5keTjbUVo-I4TOU/view" target="_blank" class="external-link">Planilla de Autorización de Trámite</a> o poder autorizado por escribano <i>(únicamente si el trámite es iniciado mediante representante o apoderado/a)</i>.</div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> <b>Personas Jurídicas:</b> Escritura constitutiva de la misma con designación actual de sus representantes.</div></div>
               <div class="separador-top">
@@ -87,7 +87,7 @@
                  
                 <div v-if="rubroSeleccionado.id">  
                     
-                    <div class="li-row">
+                    <div v-if="rubroSeleccionado.descripcion != ''" class="li-row">
                       <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                       <div class="li-content">
                         <p class="li-title">¿A qué nos referimos cuando hablamos de “{{ rubroSeleccionado.nombre }}”?</p>
@@ -97,7 +97,7 @@
                     <div v-if="rubroSeleccionado.requisitos.length" class="li-row">
                       <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                       <div class="li-content" style="width:inherit;">
-                        <p class="li-title">Requisitos Generales  (Ord. 1958/04)</p>
+                        <p class="li-title">Requisitos Generales  <a href="https://drive.google.com/file/d/1I3BW2F16ZhW7tLqPU6qSmRYybkMKBTXS/view" target="_blank" class="external-link" style="font-weight: 500">(Ord. 1958/04)</a></p>
                         <div v-if="rubroSeleccionado.requisitos.length" class="li-p">
                           <div class="li-row" v-for="(req, index) in rubroSeleccionado.requisitos" :key="index">
                             <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
@@ -130,8 +130,8 @@
                             <p class="li-title"><u><b>¡Importante!</b></u></p>
                           </b-col>
                           <b-col  md="10">
-                              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Para <b>habilitar un comercio del rubro {{ rubroSeleccionado.nombre }} necesitás solicitar turno para llevar a cabo la inspección correspondiente.</b> Allí se constatará el cumplimiento de los requisitos mencionados previamente.</div></div>
-                              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Los turnos de Inspección se solicitan luego de recibir el correo electrónico del Departamento Comercio autorizando el Formulario de Solicitud de Habilitación (donde te indicarán un número de trámite y los pasos a seguir para continuar).</div></div>
+                              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Para habilitar un comercio del rubro {{ rubroSeleccionado.nombre }} <b>necesitás solicitar turno para llevar a cabo la inspección</b> correspondiente. Allí se constatará el cumplimiento de los requisitos mencionados previamente.</div></div>
+                              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Los turnos de Inspección se solicitan <b>luego de recibir el correo electrónico del Departamento Comercio</b> autorizando el Formulario de Solicitud de Habilitación (donde te indicarán los pasos a seguir para continuar).</div></div>
                           </b-col>
                         </b-row>
                       </b-card-text>
@@ -145,7 +145,7 @@
                           </b-col>
                           <b-col  md="10">
                               <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Los comercios del rubro {{ rubroSeleccionado.nombre }} <b>no requieren inspección</b> para llevar a cabo la habilitación.</div></div>
-                              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Los documentos originales se solicitan luego de recibir el correo electrónico del Departamento Comercio autorizando el Formulario de Solicitud de Habilitación (donde te indicarán un número de trámite y los pasos a seguir para continuar).</div></div>
+                              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Los documentos originales se solicitan luego de recibir el correo electrónico del Departamento Comercio autorizando el Formulario de Solicitud de Habilitación (donde te indicarán los pasos a seguir para continuar).</div></div>
                           </b-col>
                         </b-row>
                       </b-card-text>
@@ -153,49 +153,49 @@
                     <div v-if="rubroSeleccionado.croquisExpandido === true" class="li-row">
                       <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                       <div class="li-content">
-                        <p class="li-title">Requisitos especiales en casos en que hay más de una parcela para uso de la actividad comercial (y las mismas no se hallan reunidas por plano de mensura y unificación o reunidas de oficio)</p>
+                        <p class="li-title">Requisitos especiales en casos en que haya más de una parcela para uso de la actividad comercial (y las mismas no se encuentren reunidas por plano de mensura y unificación o reunidas de oficio)</p>
                         <div class="li-p"><p><b>Deberá acreditar:</b> Croquis  del Establecimiento efectuado por profesional habilitante en escala 1:100 en donde debe indicarse:</p>
-                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                            <div class="li-content"><span class="icon-orange">a)</span> Acceso peatonal y vehicular;</div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">a)</span> Acceso peatonal y vehicular.</div>
                           </div>
-                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                            <div class="li-content"><span class="icon-orange">b)</span> Estacionamiento;</div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">b)</span> Estacionamiento.</div>
                           </div>
-                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                            <div class="li-content"><span class="icon-orange">c)</span> Pileta, espejo de agua, natatorio, destacando profundidad y cercado tipo y altura;</div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">c)</span> Pileta, espejo de agua, natatorio, destacando profundidad y cercado tipo y altura.</div>
                           </div>
-                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                            <div class="li-content"><span class="icon-orange">d)</span> Cercado perimetral;</div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">d)</span> Cercado perimetral.</div>
                           </div>
-                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                            <div class="li-content"><span class="icon-orange">e)</span> Forestación existente;</div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">e)</span> Forestación existente.</div>
                           </div>
-                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                            <div class="li-content"><span class="icon-orange">f)</span> Juegos para niños;</div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">f)</span> Juegos para niños.</div>
                           </div>
-                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                            <div class="li-content"><span class="icon-orange">g)</span> Administración o recepción;</div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">g)</span> Administración o recepción.</div>
                           </div>
-                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                            <div class="li-content"><span class="icon-orange">h)</span> Depósito, guardarropas, vestuarios;</div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">h)</span> Depósito, guardarropas, vestuarios.</div>
                           </div>
-                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                            <div class="li-content"><span class="icon-orange">i)</span> Zona de desayuno, comedores, cocinas;</div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">i)</span> Zona de desayuno, comedores, cocinas.</div>
                           </div>
-                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                            <div class="li-content"><span class="icon-orange">j)</span> Ubicación de matafuegos internos;</div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">j)</span> Ubicación de matafuegos internos.</div>
                           </div>
-                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                            <div class="li-content"><span class="icon-orange">k)</span> Carteles en el predio de “EVITE PROVOCAR INCENDIOS”;</div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">k)</span> Carteles en el predio de “EVITE PROVOCAR INCENDIOS”.</div>
                           </div>
-                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                            <div class="li-content"><span class="icon-orange">l)</span> Señalización con números o letras de las unidades de viviendas, cabañas, departamentos, bungalows, que se afectan al servicio del pasajero;</div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">l)</span> Señalización con números o letras de las unidades de viviendas, cabañas, departamentos, bungalows, que se afectan al servicio del pasajero.</div>
                           </div>
-                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                            <div class="li-content"><span class="icon-orange">ll)</span> Vivienda particular que no se afectaría al servicio, con nombre del destinatario y período de ocupación</div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">ll)</span> Vivienda particular que no se afectaría al servicio, con nombre del destinatario y período de ocupación.</div>
                           </div>
-                          <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                            <div class="li-content"><span class="icon-orange">m)</span> Espacios con otros destinos ( spa, gimnasio, salón de usos múltiples, lavaderos, depósitos externos, etc).</div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">m)</span> Espacios con otros destinos (spa, gimnasio, salón de usos múltiples, lavaderos, depósitos externos, etc).</div>
                           </div>
                         </div>
                       </div>
@@ -334,6 +334,20 @@
                       <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
                       <div class="li-content"><p>El trámite se lleva a cabo <b>personalmente</b> en la Municipalidad una vez iniciado el trámite online.</p></div>
                     </div>
+                  </div>
+                </div>
+                <div class="li-row">
+                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-content">
+                    <p class="li-title">¿Por qué no cargan mis archivos?</p>
+                    <p>Puede ser que los archivos que quieras cargar superen el peso máximo soportado. En ese caso, te sugerimos reducirlos con alguna herramienta digital (por ejemplo: <a href="https://www.ilovepdf.com/es/comprimir_pdf" target="_blank" class="external-link">ilovepdf</a>). Si el problema persiste podés comunicarte con <a href="mailto:deptocomercio@gesell.gob.ar" target="_blank" class="external-link">deptocomercio@gesell.gob.ar</a></p>
+                  </div>
+                </div>
+                <div class="li-row first-li">
+                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-content">
+                    <p class="li-title">¿Cómo cargo varias imágenes en un campo único del formulario?</p>
+                    <p>En caso de que el archivo que vayas a subir tenga varias páginas (y, por ejemplo, vos las hayas fotografiado) deberás compilarlas en un único archivo pdf. Para ello existen diversas herramientas digitales (por ejemplo, <a href="https://www.ilovepdf.com/es/jpg_a_pdf" target="_blank" class="external-link">ilovepdf</a>) que te permiten hacerlo de manera sencilla y gratuita. </p>
                   </div>
                 </div>
               </div>
@@ -481,7 +495,6 @@
         </div>
       </template>
       <div class="modal-info">
-        <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>Podés descargar tu última factura haciendo <a href="https://arvige.gob.ar/lpagos" target="_blank" >click aquí</a>.</p>
         <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>En el encabezado de cada factura se indica si tu partida registra deuda o no lo hace. Hacé click en la imagen y verificá cómo se visualiza.</p>
         <div style="width: 100%">
           <a href="http://haciendavgesell.gob.ar/_nuxt/img/ej-libredeuda.78769c7.jpg" target="_blank"><img src="../../assets/ej-libredeuda.jpg" width="100%" height="fit-content" /></a>

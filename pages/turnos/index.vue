@@ -33,7 +33,7 @@
               Selección de fecha
             </h5>
             <div class="li-row">
-              <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Elegí una fecha dentro de los próximos 15 días hábiles.</p></div>
+              <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Elegí una fecha dentro de los próximos 7 días hábiles.</p></div>
             </div>
             <div class="li-row">
               <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Tené en cuenta que las inspecciones se llevan a cabo en diferentes días de la semana dependiendo del lugar donde se encuentre tu comercio. Por eso, sólo podrás elegir los días correspondientes a la localidad que informaste al iniciar el trámite de habilitación:</p></div>
@@ -98,7 +98,7 @@
             <img src="../../assets/turnera-banner-4.png"/>
           </div>
           <b-card class="section-card col-md-6 mx-auto">
-            <h5><b-icon-clock class="icon-orange"></b-icon-clock> Confirmación de turno</h5>
+            <h5><img src="../../assets/icon-num-rifa.png" width="3%" /> Confirmación de turno</h5>
             <div class="li-row">
               <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Completá los datos que te solicitamos a continuación.</p></div>
             </div>

@@ -1039,12 +1039,12 @@ export default {
       const documento = this.documentos[fieldName];
 
      
-      if (documento instanceof Blob && this.documentosParaGuardar) {
+      if (documento instanceof Blob) {
         // Verificar que el campo sea un Blob válido (archivo PDF o imagen seleccionado)
         const fileBlob = new Blob([documento], { type: documento.type });
 
         // Agregar el archivo PDF o imagen a documentosParaGuardar
-        this.documentosParaGuardar[fieldName] = {
+        this.documentos[fieldName] = {
           name: documento.name,
           contentType: documento.type,
           file: fileBlob,

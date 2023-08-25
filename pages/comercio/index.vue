@@ -382,14 +382,15 @@
         <template #modal-header>
           <div class="modal-info">
             <h5>
-                <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
+                <b-icon icon="question-circle" scale="1.25" variant="light" ></b-icon>
                 Información Adicional
             </h5>
           </div>
+            <button type="button" aria-label="Close" class="close" @click="showPopupA = false">×</button>
         </template>
         <div class="modal-info popupApoderado">
           <h3>Representante o Apoderado/a</h3>
-          <p class="destacado"><b-icon-caret-right-fill ></b-icon-caret-right-fill>Esta figura permite facultar a una persona para la realización de trámites, actos y gestiones en representación del/la contribuyente o responsable solicitante.</p>
+          <p class="destacado"><b-icon-caret-right-fill class="icon-orange"></b-icon-caret-right-fill >Esta figura permite facultar a una persona para la realización de trámites, actos y gestiones en representación del/la contribuyente o responsable solicitante.</p>
           <h6>Casos de Representación:</h6>
           <p><span class="icon-orange">1) </span><b>Representante Voluntario:</b> Persona que actúa en nombre y por cuenta de otra, en virtud de la facultad que ella le confiere mediante un mandato (poder o autorización).</p>
           <p><span class="icon-orange">2) </span><b>Representante Legal:</b> Persona que actúa en nombre y por cuenta de una Persona Jurídica en virtud del carácter que posee por integrar los órganos de mando. Asimismo, los padres que ejercen la patria potestad sobre sus hijos/as.</p>
@@ -406,6 +407,7 @@
                 Información Adicional
             </h5>
           </div>
+            <button type="button" aria-label="Close" class="close" @click="showPopupB = false">×</button>
         </template>  
         <div class="modal-info modal-plano">
           <div>
@@ -420,11 +422,12 @@
           <div class="parrafo">
             <div style="width: 64%; display: inline-block; vertical-align:top;">
             <h6>¿Cómo digitalizar el plano?</h6>
-              <p><b-icon-check scale="1.25" class="icon-orange"></b-icon-check>Sacá una <b>fotografía</b> de la <b>carátula</b>.</p>
-              <p><b-icon-check scale="1.25" class="icon-orange"></b-icon-check>Podés ver un ejemplo haciendo click en la imagen. <i>Ahí te indicamos cómo identificar qué tipo de plano tenés.</i></p>
+              <p><b-icon-check scale="1.25" class="icon-orange"></b-icon-check>Sacá una <b>fotografía</b> de la <b>carátula</b> y del <b>sector del plano donde se encuentra el local a habilitar</b>. Éste debe estar claramente <b>identificado</b> con una <b>cruz</b> en lápiz.</p>
+              <p><b-icon-check scale="1.25" class="icon-orange"></b-icon-check>Luego, uní las imagenes en un pdf con alguna herramienta digital (como <a href="" class="external-link" target="_blank">ilovepdf</a>).</p>
+              <p><b-icon-check scale="1.25" class="icon-orange"></b-icon-check>Podés ver un ejemplo haciendo click en la imagen. <i>Ahí te indicamos cómo identificar el tipo de plano y cómo señalar la unidad funcional donde se ubicará tu comercio.</i></p>
             </div>
             <div style="width: 35%; display: inline-block; max-width:165px; margin-top:1rem">
-              <a href="http://haciendavgesell.gob.ar/_nuxt/img/ej-plano.2ed6a37.jpg" target="_blank"><img src="../../assets/ej-plano.jpg" width="100%" height="fit-content" /></a>
+              <a href="https://drive.google.com/file/d/16sXdLRDbHy-GwIhM4Er-EftM9-QpSGcy/view" target="_blank"><img src="../../assets/ej-plano.jpg" width="100%" height="fit-content" /></a>
             </div>
           </div>
         </div>
@@ -437,6 +440,7 @@
                 Información Adicional
             </h5>
           </div>
+            <button type="button" aria-label="Close" class="close" @click="showPopupD = false">×</button>
       </template>
       <div class="modal-info">
         <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>En caso de ser positiva la inspección correspondiente deberá constituir domicilio fiscal electrónico de quien ejerza la actividad donde serán válidas las notificaciones efectuadas.</p>
@@ -450,6 +454,7 @@
                 Información Adicional
             </h5>
           </div>
+            <button type="button" aria-label="Close" class="close" @click="showPopupE = false">×</button>
       </template>
       <div class="modal-info">
         <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>Ingrese aqui.</p>
@@ -493,6 +498,7 @@
               Información Adicional
           </h5>
         </div>
+            <button type="button" aria-label="Close" class="close" @click="showLibreDeudaPopup = false">×</button>
       </template>
       <div class="modal-info">
         <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>En el encabezado de cada factura se indica si tu partida registra deuda o no lo hace. Hacé click en la imagen y verificá cómo se visualiza.</p>
@@ -509,6 +515,7 @@
               Información Adicional
           </h5>
         </div>
+            <button type="button" aria-label="Close" class="close" @click="showPopupNroInmueble = false">×</button>
       </template>
       <div class="modal-info">
         <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>Podés consultar el número enviando un correo electrónico a <a href="mailto:catatro@gesell.gob.ar" target="_blank">catastro@gesell.gob.ar</a>, indicando nomenclatura catastral del bien que se encuentra en la escritura del mismo.</p>
@@ -661,6 +668,9 @@ export default {
 }
 </script>
 <style scoped>
+  p, .li-content{
+    font-family: Calibri, 'Trebuchet MS', sans-serif;
+  }
 .importante-card .li-content{
   text-align: left;
   margin-bottom: 1rem;
@@ -769,7 +779,7 @@ export default {
 }
 .modal-info .bi-caret-right-fill{
   margin-right: 1rem;
-  color: #0c681a;
+  color: #E27910;
   vertical-align: top;
   margin-top: 0.35rem;
   font-size: 1rem;
@@ -784,6 +794,14 @@ export default {
   border-top: #ccc 1px solid;
   padding-top: 1rem;
   margin-top: 1rem;
+}
+.modal-plano .parrafo{
+  border-top: #ccc 1px solid;
+  padding-top: 1rem;
+  margin-top: 1rem;
+}
+.modal-plano .parrafo p{
+  margin-bottom: 0.5rem;
 }
 .modal-plano h6{
   margin-top: 0;

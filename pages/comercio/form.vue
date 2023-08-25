@@ -3,15 +3,19 @@
   <Banner title="Habilitaciones comerciales" />
   <!-- Comprobante (página 4) -->
   <div v-if="printing === true">
-    <b-card class="text-center shadow-lg col-md-8 col-sm-12 mx-auto" >
-      <h1>Comprobante de Solicitud</h1>
-      <h4>Departamento de Comercio</h4>
-      <h5>Nro de trámite: {{ nroTramite }}</h5>
-      <h5>Solicita el turno: {{ solicitante.nombre }} {{ solicitante.apellido }}</h5>
-      <h5>CUIT: {{ solicitante.cuit }}</h5>
-      <h5>Tipo de Solicitud: {{ solicitante.tipoSolicitud }}</h5>
-      <h5>Rubro: {{ inmueble.rubro }}</h5>
-      <b-button v-if="endButton === true" @click="onResetParams" class="btn-cancel">Volver</b-button>
+    <b-card no-body border-variant="success" style="margin-top: 80px" class="printing-modal shadow col-md-5 col-sm-8 mx-auto">
+      <b-card-header class="row" header-class="green text-light">
+        <h5><b>Comprobante de Solicitud - </b> Comercio</h5>
+      </b-card-header>
+      <b-card-body class="text-center">
+        <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Día: </b> {{ formattedDate }}</h5> </div>
+        <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Tipo de Solicitud: </b> {{ solicitante.tipoSolicitud }}</h5> </div>
+        <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Rubro: </b> {{ inmueble.rubro }}</h5> </div>
+        <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Nro de trámite:</b> {{ nroTramite }}</h5> </div>
+        <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Solicitante: </b> {{ solicitante.nombre }}  {{ solicitante.apellido }}</h5> </div>
+        <hr/>
+        <b-button class="mt-2 btn-orange" v-if="endButton === true" @click="onResetParams">Volver</b-button>
+      </b-card-body>
     </b-card>
   </div>
   <b-form v-else @submit="submitForm" @submit.prevent="submitForm" class="my-3" style="margin-left:10px;margin-right:10px">
@@ -33,7 +37,7 @@
           <b-form-group label="Nombre *" label-for="nombreSolicitante">
             <b-form-input id="nombreSolicitante" v-model="solicitante.nombre"></b-form-input>
             <div v-if="$v.solicitante.nombre.$error" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El Nombre no puede estar vacio ni contener numeros ni caracteres especiales.
+              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El Nombre no puede estar vacío.
             </div>
           </b-form-group>
         </b-col>
@@ -41,7 +45,7 @@
           <b-form-group label="Apellido *" label-for="apellidoSolicitante" >
             <b-form-input id="apellidoSolicitante" v-model="solicitante.apellido"></b-form-input>            
             <div v-if="$v.solicitante.apellido.$error" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El Apellido no puede estar vacio, contener numeros o caracteres especiales.
+              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El Apellido no puede estar vacío.
             </div>
           </b-form-group>
         </b-col>
@@ -71,7 +75,7 @@
       <b-form-group label="Domicilio Real y/o Legal *" label-for="domicilio-real" >
         <b-form-input id="domicilio-real" v-model="solicitante.domicilioReal" ></b-form-input>
         <div v-if="$v.solicitante.domicilioReal.$error" class="validation-error">
-          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El Domicilio Real y/o Legal no puede estar vacio.
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El Domicilio Real y/o Legal no puede estar vacío.
         </div>
       </b-form-group>
       <b-row>
@@ -79,7 +83,7 @@
           <b-form-group label="Teléfono *" label-for="telefonoTitular" >
             <b-form-input id="telefonoTitular" v-model="solicitante.telefono" no-wheel ></b-form-input>
             <div v-if="$v.solicitante.telefono.$error" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El teléfono no puede estar vacio, contener letras o caracteres especiales.
+              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El teléfono no puede estar vacío, contener letras o caracteres especiales.
             </div>
           </b-form-group>
         </b-col>
@@ -90,7 +94,7 @@
             </b-col>
             <b-col md="12" style="padding-left: 0px;">
               <div v-if="$v.solicitante.codigoPostal.$error" class="validation-error">
-                <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El código postal no puede estar vacio, contener letras o caracteres especiales.
+                <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El código postal no puede estar vacío, contener letras o caracteres especiales.
               </div>
             </b-col>
           </b-form-group>
@@ -101,7 +105,7 @@
           <b-form-group label="Localidad *" label-for="localidadSolicitante" >
             <b-form-input id="localidadSolicitante" v-model="solicitante.localidad" ></b-form-input>
             <div v-if="$v.solicitante.localidad.$error" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> La localidad no puede estar vacia.
+              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> La localidad no puede estar vacía.
             </div>
           </b-form-group>
         </b-col>
@@ -193,7 +197,7 @@
           <b-form-group label="Calle *" label-for="direccion-inmueble-calle" >
             <b-form-input id="direccion-inmueble-calle" v-model="inmueble.calle" ></b-form-input>
             <div v-if="$v.inmueble.calle.$error" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> La calle no puede estar vacia.
+              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> La calle no puede estar vacía.
             </div>
           </b-form-group>
         </b-col>
@@ -202,7 +206,7 @@
             <label for="direccion-inmbueble-nro" class="rubro-label">Número * <b-icon-question-circle-fill class="" @click="openPopup('NroInmueble')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
             <b-form-input id="direccion-inmbueble-nro" v-model="inmueble.nro" ></b-form-input>
             <div v-if="$v.inmueble.nro.$error" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El número no puede estar vacio, contener letras ni caracteres especiales.
+              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El número no puede estar vacío, contener letras ni caracteres especiales.
             </div>
           </b-form-group>
         </b-col>
@@ -439,6 +443,7 @@
           Información Adicional
       </h5>
     </div>
+    <button type="button" aria-label="Close" class="close" @click="showPopupDatosDelSolicitante = false">×</button>
   </template>
   <div class="modal-info">
     <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>El interesado futuro comerciante / industrial o afín mayor de 18 años.</p>
@@ -453,6 +458,7 @@
           Información Adicional
       </h5>
     </div>
+    <button type="button" aria-label="Close" class="close" @click="showPopupApoderadoRepresentante = false">×</button>
   </template>
   <div class="modal-info popupApoderado">
     <h3>Representante o Apoderado/a</h3>
@@ -473,6 +479,7 @@
           Información Adicional
       </h5>
     </div>
+    <button type="button" aria-label="Close" class="close" @click="showPopupNroInmueble = false">×</button>
   </template>
   <div class="modal-info">
     <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>Podés consultar el número enviando un correo electrónico a <a href="mailto:catatro@gesell.gob.ar" target="_blank">catastro@gesell.gob.ar</a>, indicando nomenclatura catastral del bien que se encuentra en la escritura del mismo.</p>
@@ -486,6 +493,7 @@
           Información Adicional
       </h5>
     </div>
+    <button type="button" aria-label="Close" class="close" @click="showPopupConstanciaCUIT = false">×</button>
   </template>
   <div class="modal-info">
     <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>Podes solicitar tu constancia de CUIT haciendo <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" >click aquí</a>.</p>
@@ -499,6 +507,7 @@
           Información Adicional
       </h5>
     </div>
+    <button type="button" aria-label="Close" class="close" @click="showPopupConstanciaIngresosBrutos = false">×</button>
   </template>
   <div class="modal-info">
     <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>Podes solicitar tu constancia de Ingresos Brutos haciendo <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" >click aquí</a>.</p>
@@ -512,6 +521,7 @@
           Información Adicional
       </h5>
     </div>
+    <button type="button" aria-label="Close" class="close" @click="showPopupConstanciaLibreDeuda = false">×</button>
   </template>
   <div class="modal-info">
     <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>Podés descargar tu última factura haciendo <a href="https://arvige.gob.ar/lpagos" target="_blank" >click aquí</a>.</p>
@@ -529,6 +539,7 @@
           Información Adicional
       </h5>
     </div>
+    <button type="button" aria-label="Close" class="close" @click="showPopupCertificadoDomicilio = false">×</button>
   </template>
   <div class="modal-info">
     <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>Podés solicitar tu Certificado de domicilio haciendo <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" >click aquí</a>.</p>
@@ -542,6 +553,7 @@
           Información Adicional
       </h5>
     </div>
+    <button type="button" aria-label="Close" class="close" @click="showPopupPlano = false">×</button>
   </template>
   <div class="modal-info modal-plano">
     <div>
@@ -556,11 +568,12 @@
     <div class="parrafo">
       <div style="width: 64%; display: inline-block; vertical-align:top;">
       <h6>¿Cómo digitalizar el plano?</h6>
-        <p><b-icon-check scale="1.25" class="icon-orange"></b-icon-check>Sacá una <b>fotografía</b> de la <b>carátula</b>.</p>
-        <p><b-icon-check scale="1.25" class="icon-orange"></b-icon-check>Podés ver un ejemplo haciendo click en la imagen. <i>Ahí te indicamos cómo identificar qué tipo de plano tenés.</i></p>
+        <p><b-icon-check scale="1.25" class="icon-orange"></b-icon-check>Sacá una <b>fotografía</b> de la <b>carátula</b> y del <b>sector del plano donde se encuentra el local a habilitar</b>. Éste debe estar claramente <b>identificado</b> con una <b>cruz</b> en lápiz.</p>
+        <p><b-icon-check scale="1.25" class="icon-orange"></b-icon-check>Luego, uní las imagenes en un pdf con alguna herramienta digital (como <a href="" class="external-link" target="_blank">ilovepdf</a>).</p>
+        <p><b-icon-check scale="1.25" class="icon-orange"></b-icon-check>Podés ver un ejemplo haciendo click en la imagen. <i>Ahí te indicamos cómo identificar el tipo de plano y cómo señalar la unidad funcional donde se ubicará tu comercio.</i></p>
       </div>
       <div style="width: 35%; display: inline-block; max-width:165px; margin-top:1rem">
-        <a href="http://haciendavgesell.gob.ar/_nuxt/img/ej-plano.2ed6a37.jpg" target="_blank"><img src="../../assets/ej-plano.jpg" width="100%" height="fit-content" /></a>
+        <a href="https://drive.google.com/file/d/16sXdLRDbHy-GwIhM4Er-EftM9-QpSGcy/view" target="_blank"><img src="../../assets/ej-plano.jpg" width="100%" height="fit-content" /></a>
       </div>
     </div>
   </div>
@@ -580,6 +593,7 @@
     <div class="centeredContainer"><h3>
         <b-icon icon="check-circle-fill" scale="1.5" variant="light"></b-icon>
     </h3></div>
+    <button type="button" aria-label="Close" class="close" @click="showPopupFormOk = false">×</button>
   </template>
   <div class="centeredContainer">
     <p class="modal-subtitle">¡Tu solicitud ha sido enviada exitosamente!</p>
@@ -600,6 +614,7 @@
     <div class="centeredContainer"><h3>
         <b-icon-exclamation-octagon scale="1.5" variant="light"></b-icon-exclamation-octagon>
     </h3></div>
+    <button type="button" aria-label="Close" class="close" @click="showPopupFormError = false">×</button>
   </template>
   <div class="centeredContainer modal-error">
     <p class="modal-subtitle">No hemos podido procesar tu solicitud</p>
@@ -623,8 +638,8 @@ export default {
   validations() {
     return {
       solicitante: {
-        nombre: { required, alpha },
-        apellido: { required, alpha },
+        nombre: { required },
+        apellido: { required },
         dni: { required, numeric, maxLength: maxLength(9), minLength: minLength(7) },
         cuit: { required, numeric, maxLength: maxLength(12), minLength: minLength(10) },
         domicilioReal: { required },
@@ -773,6 +788,15 @@ export default {
       }
   },
   computed: {
+    formattedDate() {
+      if (this.date) {
+        const day = this.date.getDate();
+        const month = this.date.getMonth() + 1;
+        const year = this.date.getFullYear();
+        return `${day}/${month}/${year}`;
+      }
+      return '';
+    },
     areAllFieldsComplete() {
       if (this.TEST_submit){
         
@@ -1060,7 +1084,7 @@ export default {
       console.log('file.size: ' + file.size);
        if (file && file.size > this.maxFileSize) {
         // El archivo excede el tamaño máximo permitido
-        this.fileTooLargeError[field] = 'El archivo es demasiado grande.';
+        this.fileTooLargeError[field] = 'El archivo debe pesar menos de '+this.maxFileSize/1024/1024+'MB.';
         return;
       }else
       this.fileTooLargeError[field] = null
@@ -1087,6 +1111,36 @@ export default {
 </script>
 
 <style scoped>
+.printing-modal .card-header h5{
+  color: white !important;
+}
+.printing-modal h5{
+  margin: 0 0 0.5rem;
+}
+.green{
+    background-color:#0b6919;
+  }
+.btn-orange{
+  background-color:#eb8a0a !important;
+  border: none;
+}
+.text-green{
+  color:#0c6919;
+}
+.centeredContainer{
+  width:  auto;
+  margin: auto;
+  text-align: center;
+}
+.centeredContainer button{
+  width: 40%;
+  font-size: 1rem;
+  padding-right: 0;
+  padding-left: 0;
+}
+p, .li-content{
+  font-family: Calibri, 'Trebuchet MS', sans-serif;
+}
 .validation-error {
   color: red;
   font-size: 14px;
@@ -1228,6 +1282,9 @@ ul{
   padding-top: 1rem;
   margin-top: 1rem;
 }
+.modal-plano .parrafo p{
+  margin-bottom: 0.5rem;
+}
 .modal-plano h6{
   margin-top: 0;
 }
@@ -1262,7 +1319,7 @@ h3{
 }
 h5{
   margin: 1rem 0;
-  color: #0c681a !important;
+  color: #0c681a ;
 }
 .modal-title{
   font-weight: bold;

@@ -10,7 +10,7 @@ export const actions = {
     const found = await DocumentoService.getById(this.$axios, {
       id,
     })
-    commit('setAll', found.documentos)
+    commit('setAll', found)
   },
 }
 

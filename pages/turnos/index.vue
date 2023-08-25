@@ -143,10 +143,12 @@
             </b-card-header>
             <b-card-body class="text-center">
               <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Día: </b> {{ formattedDate }}</h5> </div>
-              <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Horario: </b> {{ time }}</h5> </div>
+              <div class="row" v-if="time === '08.30'"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Horario: </b> {{ time }} - 11.30 </h5> </div>
+              <div class="row" v-if="time === '11.30'"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Horario: </b> {{ time }} - 13.30 </h5> </div>
               <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Nro de trámite:</b> {{ nroTramite }}</h5> </div>
               <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Solicitante: </b> {{ nombre }}</h5> </div>
               <hr/>
+              <p style="font-size: 1.3rem"><small>Podés cancelar tu turno enviando un correo a divinspectores@gesell.gob.ar </small></p>
               <b-button class="mt-2 btn-orange" v-if="endButton === true" @click="onResetParams">Volver</b-button>
             </b-card-body>
           </b-card>

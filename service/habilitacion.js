@@ -45,6 +45,7 @@ const formatExtendedFile = (FileResponse) => ({
   // documentos: FileResponse.documentos,
   status: FileResponse.status,
   nroTramite: FileResponse.nroSolicitud,
+  nroExpediente: FileResponse.nroExpediente,
   // fecha_contrato: FileResponse.fecha_contrato.substr(0, 10),
   // acta_inicio: FileResponse.acta_inicio.substr(0,10),
   createdAt: new Date(FileResponse.createdAt),

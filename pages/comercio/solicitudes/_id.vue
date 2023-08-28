@@ -202,13 +202,13 @@
         <!-- Mostrar los enlaces a los documentos -->
         <div class="container justify-content-center mx-auto" v-if="documentos">
           <div v-for="(documento, nombreDocumento) in cleanDocumentos" :key="nombreDocumento">
-            <div class="layout" v-if="cleanDocumentos">
+            <div class="layout" v-if="cleanDocumentos && documento">
               <p class="col col-main">
                 <strong>{{ documentoNames[nombreDocumento] }}</strong><br>
               </p>
               <p class="col col-complementary" role="complementary">
-                <b-button @click="openDocumento(documento)" variant="outline-primary" pill>
-                  <b-icon icon="eye"></b-icon>
+                <b-button size="sm" @click="openDocumento(documento)" variant="outline-primary" pill>
+                  <b-icon icon="eye" scale="1.2"></b-icon>
                   Ver
                 </b-button>
               </p>
@@ -555,19 +555,46 @@ export default {
       this.showRejectPopup = false
     },
     openDocumento(documento) {
-      const arrayBufferView = new Uint8Array(documento.data.data);
-      const blob = new Blob([arrayBufferView], { type: documento.contentType });
+      const decodedData = atob(documento.data); // Decodificar la data de Base64
+
+      const arrayBuffer = new ArrayBuffer(decodedData.length);
+      const arrayBufferView = new Uint8Array(arrayBuffer);
+
+      for (let i = 0; i < decodedData.length; i++) {
+        arrayBufferView[i] = decodedData.charCodeAt(i);
+      }
+
+      const blob = new Blob([arrayBuffer], { type: documento.contentType });
       const fileURL = URL.createObjectURL(blob);
 
-      // Abrir el PDF en una nueva pestaña utilizando <embed>
-      const embed = document.createElement('embed');
-      embed.setAttribute('type', 'application/pdf');
-      embed.setAttribute('src', fileURL);
-      embed.setAttribute('width', '100%');
-      embed.setAttribute('height', '120%');
-
       const newWindow = window.open('', '_blank');
-      newWindow.document.body.appendChild(embed);
+
+      let newWindowTitle = "Documento"; // Título predeterminado
+
+      if (documento.filename) {
+        newWindowTitle = documento.filename; // Usar el nombre del archivo si está disponible
+      }
+
+      newWindow.document.title = newWindowTitle; // Establecer el título de la pestaña
+
+      if (documento.contentType === 'application/pdf') {
+        // Abrir el PDF en una nueva pestaña utilizando <embed>
+        const embed = document.createElement('embed');
+        embed.setAttribute('type', 'application/pdf');
+        embed.setAttribute('src', fileURL);
+        embed.setAttribute('width', '100%');
+        embed.setAttribute('height', '100%');
+        newWindow.document.body.appendChild(embed);
+      } else if (documento.contentType.startsWith('image/')) {
+        // Abrir la imagen en una nueva pestaña utilizando <img>
+        const img = document.createElement('img');
+        img.setAttribute('src', fileURL);
+        img.setAttribute('width', 'auto');
+        img.setAttribute('height', 'auto');
+        newWindow.document.body.appendChild(img);
+      } else {
+        console.log('Formato de contenido no compatible');
+      }
     },
     onResetEdit() {
       this.editing = false

@@ -4,9 +4,9 @@
       <div class="row">
         <div class="mx-auto" style="text-align:center">
           <p>2023 - Municipalidad de Villa Gesell  </p>
-          <p>Depto. Comercio: (02255) 478056 | Depto. Inspección: (02255) 478053</p>
+          <p> <b-icon-telephone scale="0.9"/> Depto. Comercio: (02255) 478056 | Depto. Inspección: (02255) 478053</p>
         </div>
-        
+
       </div>
     </div>
   </div>

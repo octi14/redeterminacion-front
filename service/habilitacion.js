@@ -1,7 +1,7 @@
 const formatFile = (FileResponse) => ({
   id: FileResponse._id,
   tipoSolicitud: FileResponse.solicitante.tipoSolicitud,
-  dni: FileResponse.solicitante.DNI,
+  dni: FileResponse.solicitante.dni,
   mail: FileResponse.solicitante.mail,
   rubro: FileResponse.inmueble.rubro,
   localidad: FileResponse.inmueble.localidad,
@@ -18,7 +18,7 @@ const formatExtendedFile = (FileResponse) => ({
   tipoSolicitud: FileResponse.solicitante.tipoSolicitud,
   nombre: FileResponse.solicitante.nombre,
   apellido: FileResponse.solicitante.apellido,
-  dni: FileResponse.solicitante.DNI,
+  dni: FileResponse.solicitante.dni,
   cuit: FileResponse.solicitante.cuit,
   razonSocial: FileResponse.solicitante.razonSocial,
   domicilioReal: FileResponse.solicitante.domicilioReal,

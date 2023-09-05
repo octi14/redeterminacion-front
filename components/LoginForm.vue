@@ -52,6 +52,7 @@ export default {
     async onSubmitLoginForm() {
       this.loggingIn = true
       await this.$store.dispatch('user/authenticate', this.form)
+      this.loggingIn = false
     },
   },
 }

@@ -9,21 +9,14 @@
     <template v-if="habilitacion">
       <div class="flex col" style="width: 96%">
         <div class="row justify-content-center mt-3">
-          <p class="h4"> Número de trámite: <b> {{ habilitacion.nroTramite }}  </b></p>
+          <p class="h5"> Número de trámite: <b> {{ habilitacion.nroTramite }}  </b></p>
         </div>
         <div class="row justify-content-center mt-3">
-
-          <div class="h4 row"> Estado:
-            <h4 class="text-primary ml-1" v-if="habilitacion.status === 'En revisión'">{{ habilitacion.status }} </h4>
-            <h4 class="text-success ml-1" v-if="habilitacion.status === 'Esperando documentación'">{{ habilitacion.status }} </h4>
-            <h4 class="text-success ml-1" v-if="habilitacion.status === 'Inspeccionado'">{{ habilitacion.status }} </h4>
-            <h4 class="text-success ml-1" v-if="habilitacion.status === 'Aprobada'">{{ habilitacion.status }} </h4>
-            <h4 class="text-danger ml-1" v-if="habilitacion.status === 'Rechazada'">{{ habilitacion.status }} </h4>
-            <h4 class="text-secondary ml-1" v-if="habilitacion.status === 'Esperando turno'">{{ habilitacion.status }} </h4>
-            <h4 class="text-secondary ml-1" v-if="habilitacion.status === 'Esperando inspección'">{{ habilitacion.status }} </h4>
-            <h4 class="text-secondary ml-1" v-if="habilitacion.status === 'Prórroga 1'">{{ habilitacion.status }} </h4>
-            <h4 class="text-secondary ml-1" v-if="habilitacion.status === 'Prórroga 2'">{{ habilitacion.status }} </h4>
-            <h4 class="text-success ml-1" v-if="habilitacion.status === 'Finalizada'">{{ habilitacion.status }} </h4>
+          <p class="h5"> Tipo de trámite: <b> {{ habilitacion.tipoSolicitud }}  </b></p>
+        </div>
+        <div class="row justify-content-center mt-3">
+          <div class="h5 row"> Estado:
+            <h5 :class="getStatusClass(habilitacion.status)"> {{ habilitacion.status }}</h5>
           </div>
         </div>
         <div class="row justify-content-center" v-if="habilitacion.status === 'Finalizada'">
@@ -94,6 +87,14 @@
               </p>
               <p class="col col-complementary" role="complementary">
                 <a>{{ habilitacion.telefono }}</a>
+              </p>
+            </div>
+            <div class="layout">
+              <p class="col col-main">
+                <strong>Mail</strong><br>
+              </p>
+              <p class="col col-complementary" role="complementary">
+                <a>{{ habilitacion.mail }}</a>
               </p>
             </div>
             <br>
@@ -402,6 +403,18 @@
 export default {
   data() {
     return {
+      statusClasses: {
+        'En revisión': 'text-primary',
+        'Esperando documentación': 'text-success',
+        'Inspeccionado': 'text-success',
+        'Aprobada': 'text-success',
+        'Rechazada': 'text-danger',
+        'Esperando turno': 'text-secondary',
+        'Esperando inspección': 'text-secondary',
+        'Prórroga 1': 'text-secondary',
+        'Prórroga 2': 'text-secondary',
+        'Finalizada': 'text-success'
+      },
       inspeccion: false,
       showPrevApprove: false,
       showApprove: false,
@@ -465,6 +478,9 @@ export default {
     this.$fetch()
   },
   methods: {
+    getStatusClass(status) {
+      return this.statusClasses[status] || '';
+    },
     wait(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
     },

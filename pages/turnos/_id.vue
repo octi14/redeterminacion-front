@@ -14,13 +14,14 @@
           <h4 class="text-secondary ml-1" v-if="turno.status === 'Prórroga 1'">{{ turno.status }} </h4>
           <h4 class="text-secondary ml-1" v-if="turno.status === 'Prórroga 2'">{{ turno.status }} </h4>
           <h4 class="text-danger ml-1" v-if="turno.status === 'Cancelado'">{{ turno.status }} </h4>
+          <h4 class="text-danger ml-1" v-if="turno.status === 'Inspección rechazada'">{{ turno.status }} </h4>
         </div>
       </div>
       <div class="row col-10 mx-auto justify-content-center">
         <b-button @click="onAprobar" variant="success" pill class="btn-4 mt-3 mx-1"> Aprobar inspección </b-button>
         <b-button @click="onProrroga" variant="secondary" pill class="btn-4 mt-3 mx-1"> Prórroga </b-button>
         <!-- <b-button @click="onRechazarTurno" pill class="btn-3 mt-3 mx-1"> Cancelar turno </b-button> -->
-        <b-button @click="onRechazarTurno" pill class="btn-3 mt-3 mx-1"> Rechazar inspección </b-button>
+        <b-button @click="onRechazarInsp" pill class="btn-3 mt-3 mx-1"> Rechazar inspección </b-button>
       </div>
       <div class="container col-md-6 col-sm-8 card shadow-lg mt-4 mx-auto">
           <div class="col mx-auto">
@@ -81,6 +82,25 @@
           <b-form-textarea v-model="observaciones" type="text" />
           <div class="text-center mt-3">
             <b-btn variant="primary" @click="onSendReject()" >
+                Enviar
+            </b-btn>
+          </div>
+        </div>
+    </b-modal>
+
+    <b-modal v-model="showCancelPopup" hide-footer :header-bg-variant="'danger'" centered>
+        <template #modal-header>
+          <div class="confirmation-popup-header mx-auto">
+            <b-icon-exclamation-triangle scale="2" variant="light" />
+          </div>
+        </template>
+        <div class="confirmation-popup-body">
+          <h2 class="icon-orange text-center"><b>Cancelar turno</b></h2>
+          <p>El turno será cancelado. Se dará aviso inmediatamente al Departamento de Comercio.</p>
+          <p>Observaciones:  </p>
+          <b-form-textarea v-model="observaciones" type="text" />
+          <div class="text-center mt-3">
+            <b-btn variant="primary" @click="onSendCancel()" >
                 Enviar
             </b-btn>
           </div>
@@ -191,6 +211,7 @@ export default {
       showPrevApprove: false,
       showApprove: false,
       showRejectPopup: false,
+      showCancelPopup: false,
       showPrevProrroga: false,
       showProrroga: false,
       showNoMasProrrogas: false,
@@ -245,6 +266,9 @@ export default {
       this.showApprove = true
     },
     onRechazarTurno(){
+      this.showCancelPopup = true
+    },
+    onRechazarInsp(){
       this.showRejectPopup = true
     },
     onProrroga(){
@@ -304,6 +328,23 @@ export default {
       this.showProrroga = true
     },
     async onSendReject(){
+      const turno = {
+        observaciones: this.observaciones,
+        status: 'Inspección rechazada'
+      }
+      const id = this.turno.id
+      const userToken = this.$store.state.user.token
+      await this.$store.dispatch('turnos/update', {
+        id,
+        turno,
+        userToken,
+      })
+      this.wait(300)
+      this.observaciones = ''
+      this.$fetch()
+      this.showRejectPopup = false
+    },
+    async onSendCancel(){
       const turno = {
         observaciones: this.observaciones,
         status: 'Cancelado'

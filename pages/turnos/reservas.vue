@@ -78,7 +78,7 @@ export default{
           key: 'observaciones',
         },
       ],
-      estados: ['Pendiente de inspección','Cancelado', 'Inspeccionado','Prórroga 1','Prórroga 2'],
+      estados: ['Pendiente de inspección','Cancelado', 'Inspeccionado','Prórroga 1','Prórroga 2', 'Inspección rechazada'],
     }
   },
   async fetch() {
@@ -95,6 +95,9 @@ export default{
           break;
         case 'Inspeccionado':
           item.estadoColor = 'estado-success';
+          break;
+        case 'Inspección rechazada':
+          item.estadoColor = 'estado-danger';
           break;
         default:
           item.estadoColor = 'estado-primary';

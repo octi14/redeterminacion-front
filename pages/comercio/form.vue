@@ -8,7 +8,7 @@
         <h5><b>Comprobante de Solicitud - </b> Comercio</h5>
       </b-card-header>
       <b-card-body class="text-center">
-        <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Día: </b> {{ formattedDate }}</h5> </div>
+        <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Día: </b> {{ new Date().toLocaleDateString() }}</h5> </div>
         <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Tipo de Solicitud: </b> {{ solicitante.tipoSolicitud }}</h5> </div>
         <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Rubro: </b> {{ inmueble.rubro }}</h5> </div>
         <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Nro de trámite:</b> {{ nroTramite }}</h5> </div>
@@ -127,6 +127,12 @@
         <b-form-input id="mail" v-model="solicitante.mail" ></b-form-input>
         <div v-if="$v.solicitante.mail.$error" class="validation-error">
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe introducir un email válido. Ejemplo: nombre@dominio.com
+        </div>
+      </b-form-group>
+      <b-form-group label="Repita el Correo Electrónico *" label-for="mail" >
+        <b-form-input id="mail" v-model="solicitante.mail2" ></b-form-input>
+        <div v-if="$v.solicitante.mail2.$error" class="validation-error">
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Los correos deben coincidir.
         </div>
       </b-form-group>
     </fieldset>
@@ -633,7 +639,7 @@
 </template>
 <script>
 import rubros from "@/plugins/rubros.js";
-import { required, requiredIf, alpha, numeric, email, minLength, maxLength } from 'vuelidate/lib/validators';
+import { required, requiredIf, alpha, numeric, email, minLength, maxLength, sameAs } from 'vuelidate/lib/validators';
 export default {
   validations() {
     return {
@@ -647,7 +653,8 @@ export default {
         codigoPostal: { required, numeric, maxLength: maxLength(4), minLength: minLength(4) },
         localidad: { required },
         provincia: { required },
-        mail: { required, email }
+        mail: { required, email },
+        mail2: { required, email, sameAs: sameAs( function(){return this.solicitante.mail } ) }
       },
       inmueble: {
         localidad: { required },

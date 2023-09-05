@@ -13,27 +13,28 @@ export const actions = {
       const authUser = await UserService.authenticate(this.$axios, {
         username,
         password,
-      })
-      const { id, token, admin } = authUser
+      });
+      const { id, token, admin } = authUser;
       // guardo el token y el username en state
-      commit('setAuthenticated', { id, username, token, admin })
+      commit('setAuthenticated', { id, username, token, admin });
       window &&
         window.$nuxt.$bvToast.toast('Ingreso exitoso.', {
           // title: '',
           variant: 'success',
           appendToast: true,
           solid: true,
-        })
-        await this.$router.push('/')
+        });
+      await this.$router.push('/');
     } catch (e) {
+      // Muestra el mensaje de error en el Toast
       window &&
-        window.$nuxt.$bvToast.toast('Error iniciando sesión', {
+        window.$nuxt.$bvToast.toast(`Error iniciando sesión: ${e.message}`, {
           title: 'Error',
           variant: 'danger',
           appendToast: true,
           solid: true,
-        })
-      commit('logout')
+        });
+      commit('logout');
     }
   },
   async logout({ commit }) {

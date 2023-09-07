@@ -35,7 +35,7 @@
     <b-pagination pills :total-rows="items.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
 
     <b-modal v-model="singleModal" header-bg-variant="primary" title="Observaciones" title-class="text-light" hide-footer centered>
-      <p> {{ singleContent }} </p>
+      <p v-html="singleContent"></p>
     </b-modal>
   </div>
 </template>
@@ -156,11 +156,14 @@ export default{
     onPageChange(newPage) {
       this.currentPage = newPage;
     },
-    async onShowObservaciones(id){
-      const habilitacion = this.$store.state.habilitaciones.all.filter(habilitacion => habilitacion.id === id)
-      this.singleContent = habilitacion[0].observaciones
-      this.$fetch()
-      this.singleModal = true
+    async onShowObservaciones(id) {
+      const habilitacion = this.$store.state.habilitaciones.all.find(habilitacion => habilitacion.id === id);
+
+      // Dividir el texto en líneas en función del guión medio "-" y unirlo con etiquetas <br>
+      const observacionesDivididas = habilitacion.observaciones.split('-').join('<br>');
+
+      this.singleContent = observacionesDivididas;
+      this.singleModal = true;
     },
   },
 }

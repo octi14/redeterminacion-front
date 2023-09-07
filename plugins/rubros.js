@@ -114,7 +114,7 @@ const rubros = [
     nombre: 'Elaboración y Venta de Alfajores, Chocolates y Dulces',
     descripcion: 'Podrán expender además de los productos mencionados como anexo los siguientes usos compatibles cafetería, venta de licores artesanales y repostería. Puede incluir consumo en el lugar.',
     requisitos: ["Art.6"],
-    especiales: [ "Art 7 Inc. d y f (venta)", 
+    especiales: [ "Art 7 Inc. d y f (venta)",
                   "Art 7 Inc. a, b, c, d, f, y h (elaboración y venta)",
                   "Croquis de Instalaciones visado por profesional habilitante, escala 1:50 con el siguiente detalle: a) Planta del local con medidas, ubicación de mesadas, tirajes, fogones, cocinas, freidoras, aberturas, paredes internas, y ventilaciones, depósitos, baños, salón de venta y/o consumición, vestuarios, entrepisos, ubicación de garrafas, etc; b) Detalle en corte transversal piso, cielorraso, alturas de tirajes con indicación de altura a 4 vientos; c) Marcar ubicación los matafuegos, clase y kg.",
                 ],
@@ -942,7 +942,7 @@ const rubros = [
     pom: "https://drive.google.com/file/d/1ZyKnB2Yrc9sCba-hg1JmgIjPy9lixYBM/preview",
     inspeccion: true,
     croquis: false,
-  },  
+  },
   {
     id: 86,
     nombre: 'Natatorio',
@@ -1100,9 +1100,9 @@ const rubros = [
   {
     id: 100,
     nombre: 'Restaurante',
-    descripcion: 'Establecimientos destinados al servicio de platos fríos o calientes en salón comedor propio, elaborados de variada composición, en una cocina ubicada en el mismo lugar, en sus diferentes variantes y menús: Restaurantes, parrillas, Múnich, pizzerías, pescados, pastas, hamburgueserías, etc.). Anexo Compatible: Pizzería, Comidas para llevar',
+    descripcion: 'Establecimientos destinados al servicio de platos fríos o calientes en salón comedor propio, elaborados de variada composición, en una cocina ubicada en el mismo lugar, en sus diferentes variantes y menús: Restaurantes, parrillas, pizzerías, pescados, pastas, hamburgueserías, etc.). Anexo Compatible: Pizzería, Comidas para llevar',
     requisitos: ["Art.6"],
-    especiales: ["Art. 7 inc. a, b, c, e, f, y h", 
+    especiales: ["Art. 7 inc. a, b, c, e, f, y h",
     "Croquis de Instalaciones visado por profesional habilitante, escala 1:50 con el siguiente detalle: a) Planta del local con medidas, ubicación de mesadas, tirajes, fogones, cocinas, freidoras, aberturas, paredes internas, y ventilaciones, depósitos, baños, salón de venta y/o consumición, vestuarios, entrepisos, ubicación de garrafas, etc; b) Detalle en corte transversal piso, cielorraso, alturas de tirajes con indicación de altura a 4 vientos; c) Marcar ubicación del matafuegos, clase y kg."],
     links: [],
     pom: "https://drive.google.com/file/d/1N0XSQ_OxmNYzLv7yMNu06Q63hOsy-EuF/preview",
@@ -1126,7 +1126,7 @@ const rubros = [
     nombre: 'Cafetería / Bar',
     descripcion: 'Establecimiento donde se sirven aperitivos y comidas, generalmente platos combinados, pero no menúes o cartas. Incluye expendio de bebidas alcohólicas para consumo en el lugar. Anexo Compatible Pastelería.',
     requisitos: ["Art.6"],
-    especiales: ["Art 7 inc. a, b, c, e y f",     
+    especiales: ["Art 7 inc. a, b, c, e y f",
     "Croquis de Instalaciones visado por profesional habilitante, escala 1:50 con el siguiente detalle: a) Planta del local con medidas, ubicación de mesadas, tirajes, fogones, cocinas, freidoras, aberturas, paredes internas, y ventilaciones, depósitos, baños, salón de venta y/o consumición, vestuarios, entrepisos, ubicación de garrafas, etc; b) Detalle en corte transversal piso, cielorraso, alturas de tirajes con indicación de altura a 4 vientos; c) Marcar ubicación del matafuegos, clase y kg."],
     links: [],
     pom: "https://drive.google.com/file/d/1LK3ZirzC1n6wFdEWvtX97WY_KkCW0Go0/preview",
@@ -1138,7 +1138,7 @@ const rubros = [
     nombre: 'Café-Concert',
     descripcion: 'Local donde además de una consumición (bebida y comida) el público presencia espectáculos musicales, teatrales o mixtos.',
     requisitos: ["Art.6"],
-    especiales: ["Art 7 inc. a, b, c, e y f", 
+    especiales: ["Art 7 inc. a, b, c, e y f",
     "Croquis de Instalaciones visado por profesional habilitante, escala 1:50 con el siguiente detalle: a) Planta del local con medidas, ubicación de mesadas, tirajes, fogones, cocinas, freidoras, aberturas, paredes internas, y ventilaciones, depósitos, baños, salón de venta y/o consumición, vestuarios, entrepisos, ubicación de garrafas, etc; b) Detalle en corte transversal piso, cielorraso, alturas de tirajes con indicación de altura a 4 vientos; c) Marcar ubicación del matafuegos, clase y kg.",
     "Certificado Anti siniestral - Ministerio de Seguridad - Bomberos de Costa del Este - Ministerio de Seguridad de la Provincia de Buenos Aires.", "Seguro Responsabilidad Civil y otros."],
     links: [],
@@ -1634,7 +1634,7 @@ const rubros = [
     nombre: 'Elaboración y Venta de Churros',
     descripcion: 'Podrán expender además de los productos mencionados como anexo los siguientes usos compatibles: galletitas, pan y repostería.',
     requisitos: ["Art. 6"],
-    especiales: ["Venta: Art. 7 inc. d y f", "Elaboración y Venta: Art. 7 inc. b, d y f", 
+    especiales: ["Venta: Art. 7 inc. d y f", "Elaboración y Venta: Art. 7 inc. b, d y f",
     "Croquis de Instalaciones visado por profesional habilitante, escala 1:50 con el siguiente detalle: a) Planta del local con medidas, ubicación de mesadas, tirajes, fogones, cocinas, freidoras, aberturas, paredes internas, y ventilaciones, depósitos, baños, salón de venta y/o consumición, vestuarios, entrepisos, ubicación de garrafas, etc; b) Detalle en corte transversal piso, cielorraso, alturas de tirajes con indicación de altura a 4 vientos; c) Marcar ubicación los matafuegos, clase y kg."],
     links: [],
     pom: "",
@@ -1646,7 +1646,7 @@ const rubros = [
     nombre: 'Elaboración y Venta de Pastas Frescas',
     descripcion: 'Podrán vender pastas secas en envase original y productos alimenticios enlatados.',
     requisitos: ["Art. 6"],
-    especiales: ["Venta: Art. 7 inc. d y f", "Elaboración y Venta: Art. 7 inc. b, d y f", 
+    especiales: ["Venta: Art. 7 inc. d y f", "Elaboración y Venta: Art. 7 inc. b, d y f",
     "Croquis de Instalaciones visado por profesional habilitante, escala 1:50 con el siguiente detalle: a) Planta del local con medidas, ubicación de mesadas, tirajes, fogones, cocinas, freidoras, aberturas, paredes internas, y ventilaciones, depósitos, baños, salón de venta y/o consumición, vestuarios, entrepisos, ubicación de garrafas, etc; b) Detalle en corte transversal piso, cielorraso, alturas de tirajes con indicación de altura a 4 vientos; c) Marcar ubicación los matafuegos, clase y kg."],
     links: [],
     pom: "",
@@ -1720,5 +1720,5 @@ const rubros = [
     croquis: false,
   }
   ];
-  
+
   export default rubros;

@@ -3,11 +3,14 @@
     <Banner title="Modernización" />
     <div class="col text-center" v-if="adminModernizacion">
       <b-button  class="mt-4" variant="secondary" @click="onShowModal"> Agregar archivo </b-button>
-      <b-modal v-model="isAdding" hide-header hide-footer centered>
+      <b-modal v-model="isAdding" title="Agregar archivo" hide-header-close title-class="h6 mx-auto text-light" header-bg-variant="secondary" hide-footer centered>
         <MultimediaForm @submit="onSubmit" @reset="onHideModal"/>
       </b-modal>
     </div>
-    <div class="row justify-content-center" style="height: 40%">
+    <div>
+      <p class="h5 text-center my-5" v-if="!adminModernizacion"> Esta página sólo está disponible para uso interno del personal Municipal. </p>
+    </div>
+    <div class="row justify-content-center" style="height: 40%" v-if="adminModernizacion">
       <div class="text-center mx-5 my-auto" v-if="adminModernizacion">
         <NuxtLink to="/procedimientos">
           <b-button variant="outline" class="mt-5">

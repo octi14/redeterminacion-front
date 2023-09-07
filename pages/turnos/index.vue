@@ -359,8 +359,11 @@ export default {
           })
         }
         const habilitacionId = this.$store.state.habilitaciones.single.id
+        const observaciones = this.$store.state.habilitaciones.single.observaciones
         const habilitacion = {
-          status: 'Esperando inspección'
+          status: 'Esperando inspección',
+          observaciones: observaciones + " - " + "Turno solicitado el día " + new Date().toLocaleDateString()
+           + " - " + "Se debe inspeccionar el comercio el día " + this.date.toLocaleDateString() + " a las " + this.time
         }
         await this.$store.dispatch('habilitaciones/updateLazy',{
           id: habilitacionId,

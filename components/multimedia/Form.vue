@@ -1,16 +1,11 @@
 <template>
   <div class="multimedia-form form">
-    <h4 class="text-center mb-3">
-      {{ create ? 'Crear' : 'Editar' }} archivo
-    </h4>
     <b-form class="col-md-10 mx-auto justify-content-center" @submit.stop.prevent="onSubmit" @reset="volver">
-      <b-form-group>
-          <b-form-group label="Título">
-            <b-form-input v-model="nombre" type="text" />
-          </b-form-group>
-          <b-form-group label="Link">
-            <b-form-input v-model="link" type="text" />
-          </b-form-group>
+      <b-form-group label="Título">
+        <b-form-input v-model="nombre" type="text" />
+      </b-form-group>
+      <b-form-group label="Link">
+        <b-form-input v-model="link" type="text" />
       </b-form-group>
       <b-form-text class="h6"> Categoría </b-form-text>
       <b-form-select v-model="categoria" class="mb-3">
@@ -161,9 +156,6 @@ export default {
 
 .form {
   text-align: center;
-  background-color: white;
-  height: auto;
-  width: auto;
   margin-bottom: 40px;
   border-radius: 12%;
   overflow: visible;

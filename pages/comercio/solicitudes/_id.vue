@@ -30,9 +30,9 @@
         <b-button @click="onRestablecer" variant="secondary" pill class="btn-4 mt-3 mx-1" v-if="habilitacion.status != 'En revisión'"> Volver a estado En Revisión </b-button>
         <b-button @click="onRechazarSolicitud" variant="success" pill class="btn-3 mt-3 mx-1"> Rechazar solicitud </b-button>
       </div>
-      <div v-if="habilitacion.observaciones">
+      <!-- <div v-if="habilitacion.observaciones">
         <p> Observaciones: {{ habilitacion.observaciones }} </p>
-      </div>
+      </div> -->
       <b-card no-body class="container col-md-6 col-sm-8 shadow-lg mt-4 mx-auto">
           <div class="col mx-auto">
             <div class="container text-center mx-auto">
@@ -176,7 +176,7 @@
               </p>
             </div>
             <div class="layout">
-              <strong class="col col-main" v-if="habilitacion.rubro === 'Apart-Hotel'">Servicios de hotelería:</strong>
+              <strong class="col col-main">Servicios de hotelería:</strong>
             </div>
             <div class="layout" v-for="(item, index) in habilitacion.serviciosHoteleria" :key="index">
               <p class="col col-main" v-if="item.value">
@@ -508,9 +508,11 @@ export default {
     },
     async onSendFinalizar(){
       const nroExpediente = "4124-" + this.nroExpediente1 + "/" + this.nroExpediente2
+      const observaciones = this.habilitacion.observaciones || ""
       const habilitacion = {
         status: 'Finalizada',
         nroExpediente: nroExpediente,
+        observaciones: observaciones + " - " + "Se finaliza el trámite el día " + new Date().toLocaleDateString()
       }
       const id = this.habilitacion.id
       const userToken = this.$store.state.user.token
@@ -534,8 +536,10 @@ export default {
       this.habilitacion.status = habilitacion.status
     },
     async onSendApprove(){
+      const observaciones = this.habilitacion.observaciones || " "
       const habilitacion = {
-        status: 'Esperando documentación'
+        status: 'Esperando documentación',
+        observaciones: observaciones + " - " + "Se aprueba la solicitud el " + new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString()
       }
       if(this.inspeccion){
         habilitacion.status = "Esperando turno"
@@ -555,8 +559,9 @@ export default {
       this.showRejectPopup = true
     },
     async onSendReject(){
+      const observaciones = this.habilitacion.observaciones || " "
       const habilitacion = {
-        observaciones: this.observaciones,
+        observaciones: observaciones + " - " + "Solicitud rechazada: " + this.observaciones + " " + new Date().toLocaleDateString(),
         status: 'Rechazada'
       }
       const id = this.habilitacion.id

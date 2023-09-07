@@ -17,7 +17,7 @@
       </div>
     </div>
     <!-- Modal editar archivo -->
-    <b-modal v-model="editing" hide-header hide-footer centered>
+    <b-modal hide-header-close v-model="editing" header-bg-variant="secondary" title="Editar archivo" title-class="h6 text-light" hide-footer centered>
       <MultimediaForm
         v-if="editing"
         v-on:show="fetch"

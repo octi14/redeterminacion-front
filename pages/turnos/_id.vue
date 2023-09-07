@@ -23,49 +23,50 @@
         <!-- <b-button @click="onRechazarTurno" pill class="btn-3 mt-3 mx-1"> Cancelar turno </b-button> -->
         <b-button @click="onRechazarInsp" pill class="btn-3 mt-3 mx-1"> Rechazar inspección </b-button>
       </div>
+      <!-- datos del turno -->
       <div class="container col-md-6 col-sm-8 card shadow-lg mt-4 mx-auto">
-          <div class="col mx-auto">
-            <div class="container text-center mx-auto">
-              <h2 class="text-success mt-2"><b> Datos del turno </b></h2>
-              <hr/>
-            </div>
-          </div>
-          <div class="container mb-3 mx-auto">
-            <div class="layout">
-              <p class="col col-main">
-                <strong>Fecha y hora del turno</strong><br>
-              </p>
-              <p class="col col-complementary" role="complementary">
-                <a>{{ turno.dia + " " + turno.horario}}</a>
-              </p>
-            <b-btn @click="onRechazarTurno" pill variant="outline-danger" class="mx-1"> Cancelar</b-btn>
-            </div>
-            <div class="layout">
-              <p class="col col-main">
-                <strong>Nombre del solicitante</strong><br>
-              </p>
-              <p class="col col-complementary" role="complementary">
-                <a>{{ turno.nombre}}</a>
-              </p>
-            </div>
-            <div class="layout">
-              <p class="col col-main">
-                <strong>Número de documento</strong><br>
-              </p>
-              <p class="col col-complementary" role="complementary">
-                <a>{{ turno.dni }}</a>
-              </p>
-            </div>
-            <div class="layout">
-              <p class="col col-main">
-                <strong>Domicilio a inspeccionar</strong><br>
-              </p>
-              <p class="col col-complementary" role="complementary">
-                <a>{{ turno.domicilio }}</a>
-              </p>
-            </div>
+        <div class="col mx-auto">
+          <div class="container text-center mx-auto">
+            <h2 class="text-success mt-2"><b> Datos del turno </b></h2>
+            <hr/>
           </div>
         </div>
+        <div class="container mb-3 mx-auto">
+          <div class="layout">
+            <p class="col col-main">
+              <strong>Fecha y hora del turno</strong><br>
+            </p>
+            <p class="col col-complementary" role="complementary">
+              <a>{{ turno.dia + " " + turno.horario}}</a>
+            </p>
+          <b-btn v-if="turno.status != 'Cancelado'" @click="onRechazarTurno" style="height: 30px; width:85px" size="sm" pill variant="danger" class="mx-1"><b> Cancelar</b></b-btn>
+          </div>
+          <div class="layout">
+            <p class="col col-main">
+              <strong>Nombre del solicitante</strong><br>
+            </p>
+            <p class="col col-complementary" role="complementary">
+              <a>{{ turno.nombre}}</a>
+            </p>
+          </div>
+          <div class="layout">
+            <p class="col col-main">
+              <strong>Número de documento</strong><br>
+            </p>
+            <p class="col col-complementary" role="complementary">
+              <a>{{ turno.dni }}</a>
+            </p>
+          </div>
+          <div class="layout">
+            <p class="col col-main">
+              <strong>Domicilio a inspeccionar</strong><br>
+            </p>
+            <p class="col col-complementary" role="complementary">
+              <a>{{ turno.domicilio }}</a>
+            </p>
+          </div>
+        </div>
+      </div>
     </template>
 
     <!-- Modals -->
@@ -88,6 +89,7 @@
         </div>
     </b-modal>
 
+    <!-- cancelar turno-->
     <b-modal v-model="showCancelPopup" hide-footer :header-bg-variant="'danger'" centered>
         <template #modal-header>
           <div class="confirmation-popup-header mx-auto">
@@ -107,6 +109,7 @@
         </div>
     </b-modal>
 
+    <!-- chequeo aprobar inspección-->
     <b-modal v-model="showPrevApprove" hide-footer :header-bg-variant="'success'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
@@ -125,6 +128,7 @@
       </div>
     </b-modal>
 
+    <!-- inspección aprobada-->
     <b-modal v-model="showApprove" hide-footer :header-bg-variant="'success'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
@@ -142,6 +146,7 @@
       </div>
     </b-modal>
 
+    <!-- chequeo prorroga-->
     <b-modal v-model="showPrevProrroga" hide-footer :header-bg-variant="'success'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
@@ -160,6 +165,7 @@
       </div>
     </b-modal>
 
+    <!-- prórroga exitosa-->
     <b-modal v-model="showProrroga" hide-footer :header-bg-variant="'success'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
@@ -177,6 +183,7 @@
       </div>
     </b-modal>
 
+    <!-- no se pueden dar más prórrogas-->
     <b-modal v-model="showNoMasProrrogas" hide-footer :header-bg-variant="'danger'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
@@ -237,6 +244,19 @@ export default {
     onAprobar(){
       this.showPrevApprove = true
     },
+    onRechazarTurno(){
+      this.showCancelPopup = true
+    },
+    onRechazarInsp(){
+      this.showRejectPopup = true
+    },
+    onProrroga(){
+      if(this.turno.status === "Prórroga 2"){
+        this.showNoMasProrrogas = true
+      }else{
+        this.showPrevProrroga = true
+      }
+    },
     async onSendApprove(){
       const turno = {
         status: 'Inspeccionado'
@@ -264,19 +284,6 @@ export default {
       this.$fetch()
       this.showPrevApprove = false
       this.showApprove = true
-    },
-    onRechazarTurno(){
-      this.showCancelPopup = true
-    },
-    onRechazarInsp(){
-      this.showRejectPopup = true
-    },
-    onProrroga(){
-      if(this.turno.status === "Prórroga 2"){
-        this.showNoMasProrrogas = true
-      }else{
-        this.showPrevProrroga = true
-      }
     },
     async onSendProrroga(){
       var habilitacion = null
@@ -339,6 +346,20 @@ export default {
         turno,
         userToken,
       })
+      const nroTramite = this.turno.nroTramite
+      await this.$store.dispatch('habilitaciones/getByNroTramite',{
+        nroTramite
+      })
+      const observaciones = this.$store.state.habilitaciones.single.observaciones
+      const habilitacion = {
+        status: 'Rechazada',
+        observaciones: observaciones + " - " + 'Se rechaza la inspección el día ' + new Date().toLocaleDateString() + " " + this.observaciones
+      }
+      const habId = this.$store.state.habilitaciones.single.id
+      await this.$store.dispatch('habilitaciones/update', {
+        id: habId,
+        habilitacion,
+      })
       this.wait(300)
       this.observaciones = ''
       this.$fetch()
@@ -356,10 +377,23 @@ export default {
         turno,
         userToken,
       })
+      const nroTramite = this.turno.nroTramite
+      await this.$store.dispatch('habilitaciones/getByNroTramite',{
+        nroTramite
+      })
+      const observaciones = this.$store.state.habilitaciones.single.observaciones
+      const habilitacion = {
+        observaciones: observaciones + " - " + "Se canceló el turno el día " + new Date().toLocaleDateString()
+      }
+      const habId = this.$store.state.habilitaciones.single.id
+      await this.$store.dispatch('habilitaciones/update', {
+        id: habId,
+        habilitacion,
+      })
       this.wait(300)
       this.observaciones = ''
       this.$fetch()
-      this.showRejectPopup = false
+      this.showCancelPopup = false
     },
     onResetEdit() {
       this.editing = false

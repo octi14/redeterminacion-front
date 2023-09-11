@@ -4,6 +4,7 @@
       <a href="https://gesell.gob.ar/">
         <img src="https://arvige.gob.ar/assets/img/header.png" style="height: 58px; width: 42px">
       </a>
+      <a class="ml-2"  style="color:white; font-size: 35px; opacity:0.3"> | </a>
     </div>
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
     <b-collapse id="nav-collapse" is-nav class="m-2" style="width:90%">

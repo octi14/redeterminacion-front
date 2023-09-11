@@ -206,9 +206,9 @@
       <!-- Modal No estás habilitado a sacar turno todavía -->
       <b-modal v-model="showPopupNotAllowed" @click-outside="showPopupNotAllowed = false" :header-bg-variant="'secondary'" centered>
         <template #modal-header>
-          <div class="centeredContainer"><h3>
-              <b-icon-exclamation-octagon scale="1.5" variant="light"></b-icon-exclamation-octagon>
-          </h3></div>
+          <div class="centeredContainer">
+            <b-icon-exclamation-octagon scale="3" variant="light"></b-icon-exclamation-octagon>
+          </div>
         </template>
         <div class="centeredContainer modal-warning">
           <p class="modal-subtitle text-secondary">Tu trámite no está habilitado para reservar un turno.</p>
@@ -217,7 +217,7 @@
           <p class="minitext">Si tenés dudas, envianos un correo a <a target="_blank" href="mailto:deptocomercio@gesell.gob.ar" class="icon-green">deptocomercio@gesell.gob.ar</a>.</p>
         </div>
         <template #modal-footer>
-          <div class="" style="margin: auto">
+          <div style="margin: auto">
             <b-button @click="showPopupNotAllowed = false" variant="primary">Aceptar</b-button>
           </div>
         </template>

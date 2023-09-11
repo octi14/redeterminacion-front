@@ -1,5 +1,5 @@
 <template>
-  <div class="page feed">
+  <div class="page">
     <Banner title="Obras" />
     <template v-if="adminHacienda">
       <ObraFeed />
@@ -16,9 +16,3 @@ export default {
   }
 }
 </script>
-
-<style>
-.feed{
-  background-color: #ffffff;
-}
-</style>

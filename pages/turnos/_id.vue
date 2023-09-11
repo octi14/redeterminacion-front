@@ -59,6 +59,14 @@
           </div>
           <div class="layout">
             <p class="col col-main">
+              <strong>Número de teléfono</strong><br>
+            </p>
+            <p class="col col-complementary" role="complementary">
+              <a>{{ telefono }}</a>
+            </p>
+          </div>
+          <div class="layout">
+            <p class="col col-main">
               <strong>Domicilio a inspeccionar</strong><br>
             </p>
             <p class="col col-complementary" role="complementary">
@@ -223,7 +231,8 @@ export default {
       showProrroga: false,
       showNoMasProrrogas: false,
       turno: null,
-      observaciones: ''
+      observaciones: '',
+      telefono: null,
     }
   },
   async fetch() {
@@ -232,6 +241,11 @@ export default {
       id: id,
     })
     this.turno = this.$store.state.turnos.single
+    const nroTramite = this.turno.nroTramite
+    await this.$store.dispatch('habilitaciones/getByNroTramite',{
+      nroTramite
+    })
+    this.telefono = this.$store.state.habilitaciones.single.telefono
   },
   fetchOnServer: false,
   activated() {

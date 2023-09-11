@@ -2,7 +2,7 @@
   <b-card no-body class="obra-card">
     <b-card-body>
       <NuxtLink :to="{ name: 'obra-id', params: { id: obra.id } }">
-        <h5>{{ obra.objeto }}</h5>
+        <h5 class="text-success">{{ obra.objeto }}</h5>
       </NuxtLink>
       <a>{{ obra.adjudicado }}</a> <br>
       <strong>{{ obra.fecha_contrato }}</strong>

@@ -1,6 +1,6 @@
 <template>
   <div class="obra-feed">
-    <div class="row mt-3 justify-content-center text-center">
+    <div class="row mt-5 justify-content-center text-center">
       <b-input
         type="text"
         class="col-4"
@@ -12,7 +12,7 @@
         <b-button @click="clearSearch">Limpiar</b-button>
       </div>
     </div>
-    <b-card class="shadow-lg mx-auto mt-4 col-md-8 col-sm-10" v-if="items.length > 0 && filteredItems.length === 0 && search === '' ">
+    <b-card class="shadow-lg mx-auto mt-5 col-md-8 col-sm-10" v-if="items.length > 0 && filteredItems.length === 0 && search === '' ">
       <div
         v-for="item in paginatedItems"
         :key="item.id"
@@ -21,7 +21,7 @@
         <ObraCard :obra="item" />
       </div>
     </b-card>
-    <b-card class="shadow-lg mx-auto mt-4 col-md-8 col-sm-10" v-if="filteredItems.length > 0">
+    <b-card class="shadow-lg mx-auto mt-5 col-md-8 col-sm-10" v-if="filteredItems.length > 0">
       <div
         v-for="item in filteredPaginatedItems"
         :key="item.id"
@@ -34,7 +34,7 @@
       <b-button size="sm" class="float-left mx-1 my-1 pagination-button" variant="outline-success" @click="previousPage" :disabled="currentPage === 1">
         <b-icon-arrow-left />
       </b-button>
-      <h5 class="text-center mt-2">{{ currentPage }} / {{ totalPages }}</h5>
+      <h5 class="text-center mt-2 mb-4">{{ currentPage }} / {{ totalPages }}</h5>
       <b-button size="sm" class="float-right mx-1 my-1 pagination-button" variant="outline-success" @click="nextPage" :disabled="currentPage === totalPages">
         <b-icon-arrow-right />
       </b-button>

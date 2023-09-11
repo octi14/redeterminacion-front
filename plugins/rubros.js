@@ -1100,7 +1100,7 @@ const rubros = [
   {
     id: 100,
     nombre: 'Restaurante',
-    descripcion: 'Establecimientos destinados al servicio de platos fríos o calientes en salón comedor propio, elaborados de variada composición, en una cocina ubicada en el mismo lugar, en sus diferentes variantes y menús: Restaurantes, parrillas, Múnich, pizzerías, pescados, pastas, hamburgueserías, etc.). Anexo Compatible: Pizzería, Comidas para llevar',
+    descripcion: 'Establecimientos destinados al servicio de platos fríos o calientes en salón comedor propio, elaborados de variada composición, en una cocina ubicada en el mismo lugar, en sus diferentes variantes y menús: Restaurantes, parrillas, pizzerías, pescados, pastas, hamburgueserías, etc.). Anexo Compatible: Pizzería, Comidas para llevar',
     requisitos: ["Art.6"],
     especiales: ["Art. 7 inc. a, b, c, e, f, y h", 
     "Croquis de Instalaciones visado por profesional habilitante, escala 1:50 con el siguiente detalle: a) Planta del local con medidas, ubicación de mesadas, tirajes, fogones, cocinas, freidoras, aberturas, paredes internas, y ventilaciones, depósitos, baños, salón de venta y/o consumición, vestuarios, entrepisos, ubicación de garrafas, etc; b) Detalle en corte transversal piso, cielorraso, alturas de tirajes con indicación de altura a 4 vientos; c) Marcar ubicación del matafuegos, clase y kg."],

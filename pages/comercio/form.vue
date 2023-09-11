@@ -424,10 +424,12 @@
     </fieldset>
     <div class="centeredContainer" style="min-width: 304px;">
       <b-form-group>
-        <div id="captchaContainer"></div>
+        <div id="captchaContainer" class="g-recaptcha" :data-sitekey="recaptchaSiteKey"></div>
+        <div v-if="captchaError" class="validation-error">
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Por favor completa la verificación para continuar.
+        </div>
       </b-form-group>
       <fieldset>
-        <input type="hidden" id="captchaResponse" name="captchaResponse" v-model="captchaResponse">
         <b-button size="lg" @click="onResetParams" variant="danger" class="btn-cancel" >Cancelar</b-button>
         <b-button size="lg" type="submit" variant="success" :disabled="!areAllFieldsComplete" class="" >Enviar</b-button>
         <div v-if="!areAllFieldsComplete" class="validation-error">
@@ -575,7 +577,7 @@
       <div style="width: 64%; display: inline-block; vertical-align:top;">
       <h6>¿Cómo digitalizar el plano?</h6>
         <p><b-icon-check scale="1.25" class="icon-orange"></b-icon-check>Sacá una <b>fotografía</b> de la <b>carátula</b> y del <b>sector del plano donde se encuentra el local a habilitar</b>. Éste debe estar claramente <b>identificado</b> con una <b>cruz</b> en lápiz.</p>
-        <p><b-icon-check scale="1.25" class="icon-orange"></b-icon-check>Luego, uní las imagenes en un pdf con alguna herramienta digital (como <a href="" class="external-link" target="_blank">ilovepdf</a>).</p>
+        <p><b-icon-check scale="1.25" class="icon-orange"></b-icon-check>Luego, uní las imagenes en un pdf con alguna herramienta digital (como <a href="https://www.ilovepdf.com/es/jpg_a_pdf" class="external-link" target="_blank">ilovepdf</a>).</p>
         <p><b-icon-check scale="1.25" class="icon-orange"></b-icon-check>Podés ver un ejemplo haciendo click en la imagen. <i>Ahí te indicamos cómo identificar el tipo de plano y cómo señalar la unidad funcional donde se ubicará tu comercio.</i></p>
       </div>
       <div style="width: 35%; display: inline-block; max-width:165px; margin-top:1rem">
@@ -683,6 +685,9 @@ export default {
   },
   data:function() {
       return {
+      recaptchaSiteKey: "6LfNxggoAAAAANyfZ5a2Lg_Rx28HX_lINDYX7AU-",
+      captchaResponse: null,
+      captchaError: false,
       maxFileSize: 15 * 1024 * 1024, // 15MB in bytes,
       fileTooLargeError: {},
       TEST_submit: false,
@@ -778,7 +783,6 @@ export default {
         plano: null,
         croquis: null,
       },
-      captchaResponse: null,
       showPopupDatosDelSolicitante: false,
       showPopupApoderadoRepresentante: false,
       showPopupNroInmueble: false,
@@ -794,7 +798,7 @@ export default {
       endButton: false,
       }
   },
-  computed: {
+  computed: {    
     formattedDate() {
       if (this.date) {
         const day = this.date.getDate();
@@ -805,16 +809,16 @@ export default {
       return '';
     },
     areAllFieldsComplete() {
-      if (this.TEST_submit){
-
-        return true ;
+      if (this.TEST_submit){       
+          return true; 
       }
       else{
         return this.solicitante.nombre && this.solicitante.apellido && this.solicitante.dni && this.solicitante.cuit && this.solicitante.domicilioReal &&
-      this.solicitante.telefono && this.solicitante.codigoPostal && this.solicitante.localidad && this.solicitante.provincia && this.solicitante.mail &&
-      this.inmueble.localidad && this.inmueble.calle && this.inmueble.nro && this.inmueble.rubro && this.documentos.dniFrente && this.documentos.dniDorso &&
-      this.documentos.constanciaCuit && this.documentos.libreDeudaUrbana && this.documentos.tituloPropiedad &&
-      this.documentos.plano;
+              this.solicitante.telefono && this.solicitante.codigoPostal && this.solicitante.localidad && this.solicitante.provincia && this.solicitante.mail &&
+              this.inmueble.localidad && this.inmueble.calle && this.inmueble.nro && this.inmueble.rubro && this.documentos.dniFrente && this.documentos.dniDorso &&
+              this.documentos.constanciaCuit && this.documentos.libreDeudaUrbana && this.documentos.tituloPropiedad &&
+              this.documentos.plano
+        
       }
     },
     areAllFieldsValid(){
@@ -829,11 +833,16 @@ export default {
     //CAMBIAR EL SITEKEY POR UNO DE VERDAD
     grecaptcha.ready(() => {
     grecaptcha.render('captchaContainer', {
-      sitekey: '6LcyCLMnAAAAABr9MthqcB8NdnCBYtWgVzxA-eDC'
+      sitekey: this.recaptchaSiteKey,
       });
     });
   },
-  methods: {
+  methods: {    
+    isCaptchaOK(){
+        //console.log("isCAPTCHAOK?? = " + (typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0));
+        this.captchaError = !(typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0);
+        return !this.captchaError;
+    },
     openPopup(type) {
       // Lógica para abrir el popup correspondiente según el tipo (A, B, C, D)else if (type === 'B')
       if (type === 'DatosDelSolicitante') {
@@ -879,10 +888,11 @@ export default {
         console.log(!this.$v.$invalid && !Object.values(this.fileTooLargeError).some(error => !!error));
         console.log("Object.values(this.fileTooLargeError).some(error => !!error)");
         console.log(Object.values(this.fileTooLargeError).some(error => !!error));
-
+        this.isCaptchaOK();
+        
       }else{
         this.$v.$touch(); // Marca los campos como tocados para mostrar los errores
-        if (!this.$v.$invalid && !Object.values(this.fileTooLargeError).some(error => !!error)) {
+        if (!this.$v.$invalid && !Object.values(this.fileTooLargeError).some(error => !!error) && this.isCaptchaOK()) {
           // Si no hay errores, envía el formulario
           console.log("FORMULARIO ENVIADO");
           try {
@@ -1058,14 +1068,6 @@ export default {
         reader.onerror = (error) => reject(error);
       });
     },
-      // Aquí puedes agregar la lógica para enviar el formulario
-      // Hacer popup
-      //CAMBIAR EL SITEKEY POR UNO DE VERDAD
-      //grecaptcha.execute('6LcyCLMnAAAAABr9MthqcB8NdnCBYtWgVzxA-eDC', { action: 'submit' }).then((token) => {
-      // this.captchaResponse = token;
-        // Lógica adicional para enviar el formulario
-      //});
-    // Función para manejar la actualización de documentos genéricamente
     handleDocumentUpdate(fieldName) {
       const documento = this.documentos[fieldName];
 
@@ -1114,6 +1116,7 @@ export default {
       this.endButton = true;
     },
   }
+  
 }
 </script>
 

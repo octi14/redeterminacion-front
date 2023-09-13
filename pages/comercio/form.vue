@@ -218,7 +218,7 @@
         </b-col>
         <b-col md="2">
           <b-form-group label="Nro. de Local" label-for="direccion-inmueble-calle2" >
-            <b-form-input id="direccion-inmueble-calle2" v-model="inmueble.nroLocal" placeholder="Ej. local 2/local A" ></b-form-input>
+            <b-form-input id="direccion-inmueble-calle2" v-model="inmueble.nroLocal" placeholder="Ej. 2/A" ></b-form-input>
           </b-form-group>
         </b-col>
       </b-row>
@@ -599,9 +599,8 @@
 <b-modal v-model="showPopupFormOk" title="" ok-only @click-outside="showPopupFormOk = false" :header-bg-variant="'success'" centered>
   <template #modal-header>
     <div class="centeredContainer"><h3>
-        <b-icon icon="check-circle-fill" scale="1.5" variant="light"></b-icon>
+      <b-icon icon="check-circle-fill" scale="1.5" variant="light"></b-icon>
     </h3></div>
-    <button type="button" aria-label="Close" class="close" @click="showPopupFormOk = false">×</button>
   </template>
   <div class="centeredContainer">
     <p class="modal-subtitle">¡Tu solicitud ha sido enviada exitosamente!</p>

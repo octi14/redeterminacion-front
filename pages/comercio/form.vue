@@ -8,7 +8,7 @@
         <h5><b>Comprobante de Solicitud - </b> Comercio</h5>
       </b-card-header>
       <b-card-body class="text-center">
-        <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Día: </b> {{ new Date().toLocaleDateString() }}</h5> </div>
+        <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Día: </b> {{ new Date().toLocaleDateString('es-AR') }}</h5> </div>
         <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Tipo de Solicitud: </b> {{ solicitante.tipoSolicitud }}</h5> </div>
         <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Rubro: </b> {{ inmueble.rubro }}</h5> </div>
         <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Nro de trámite:</b> {{ nroTramite }}</h5> </div>
@@ -798,7 +798,7 @@ export default {
       endButton: false,
       }
   },
-  computed: {    
+  computed: {
     formattedDate() {
       if (this.date) {
         const day = this.date.getDate();
@@ -809,8 +809,8 @@ export default {
       return '';
     },
     areAllFieldsComplete() {
-      if (this.TEST_submit){       
-          return true; 
+      if (this.TEST_submit){
+          return true;
       }
       else{
         return this.solicitante.nombre && this.solicitante.apellido && this.solicitante.dni && this.solicitante.cuit && this.solicitante.domicilioReal &&
@@ -818,7 +818,7 @@ export default {
               this.inmueble.localidad && this.inmueble.calle && this.inmueble.nro && this.inmueble.rubro && this.documentos.dniFrente && this.documentos.dniDorso &&
               this.documentos.constanciaCuit && this.documentos.libreDeudaUrbana && this.documentos.tituloPropiedad &&
               this.documentos.plano
-        
+
       }
     },
     areAllFieldsValid(){
@@ -837,7 +837,7 @@ export default {
       });
     });
   },
-  methods: {    
+  methods: {
     isCaptchaOK(){
         //console.log("isCAPTCHAOK?? = " + (typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0));
         this.captchaError = !(typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0);
@@ -889,7 +889,7 @@ export default {
         console.log("Object.values(this.fileTooLargeError).some(error => !!error)");
         console.log(Object.values(this.fileTooLargeError).some(error => !!error));
         this.isCaptchaOK();
-        
+
       }else{
         this.$v.$touch(); // Marca los campos como tocados para mostrar los errores
         if (!this.$v.$invalid && !Object.values(this.fileTooLargeError).some(error => !!error) && this.isCaptchaOK()) {
@@ -1116,7 +1116,7 @@ export default {
       this.endButton = true;
     },
   }
-  
+
 }
 </script>
 

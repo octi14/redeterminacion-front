@@ -310,7 +310,7 @@ export default {
             }
             turno = {
               status: "Prórroga 2",
-              observaciones: "Se otorga la prórroga 2 el " + new Date().toLocaleDateString()
+              observaciones: "Se otorga la prórroga 2 el " + new Date().toLocaleDateString('es-AR')
             }
             break
           case "Prórroga 2":
@@ -322,7 +322,7 @@ export default {
             }
             turno = {
               status: "Prórroga 1",
-              observaciones: "Se otorga la prórroga 1 el " + new Date().toLocaleDateString()
+              observaciones: "Se otorga la prórroga 1 el " + new Date().toLocaleDateString('es-AR')
             }
             break
         }
@@ -367,7 +367,7 @@ export default {
       const observaciones = this.$store.state.habilitaciones.single.observaciones
       const habilitacion = {
         status: 'Rechazada',
-        observaciones: observaciones + " - " + 'Se rechaza la inspección el día ' + new Date().toLocaleDateString() + " " + this.observaciones
+        observaciones: observaciones + " - " + 'Se rechaza la inspección el día ' + new Date().toLocaleDateString('es-AR') + " " + this.observaciones
       }
       const habId = this.$store.state.habilitaciones.single.id
       await this.$store.dispatch('habilitaciones/update', {
@@ -397,7 +397,7 @@ export default {
       })
       const observaciones = this.$store.state.habilitaciones.single.observaciones
       const habilitacion = {
-        observaciones: observaciones + " - " + "Se canceló el turno el día " + new Date().toLocaleDateString()
+        observaciones: observaciones + " - " + "Se canceló el turno el día " + new Date().toLocaleDateString('es-AR')
       }
       const habId = this.$store.state.habilitaciones.single.id
       await this.$store.dispatch('habilitaciones/update', {

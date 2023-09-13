@@ -1,6 +1,6 @@
 const formatTurno = (TurnoResponse) => ({
   id: TurnoResponse._id,
-  dia: new Date(TurnoResponse.dia).toLocaleDateString(),
+  dia: new Date(TurnoResponse.dia).toLocaleDateString('es-AR'),
   horario: TurnoResponse.horario,
   nombre: TurnoResponse.nombre,
   dni: TurnoResponse.dni,
@@ -9,7 +9,7 @@ const formatTurno = (TurnoResponse) => ({
   status: TurnoResponse.status,
   nroTramite: TurnoResponse.nroTramite,
   observaciones: TurnoResponse.observaciones,
-  createdAt: new Date(TurnoResponse.createdAt).toLocaleDateString(),
+  createdAt: new Date(TurnoResponse.createdAt).toLocaleDateString('es-AR'),
 })
 
 module.exports = {

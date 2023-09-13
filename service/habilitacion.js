@@ -11,7 +11,7 @@ const formatFile = (FileResponse) => ({
   nroTramite: FileResponse.nroSolicitud,
   // fecha_contrato: FileResponse.fecha_contrato.substr(0, 10),
   // acta_inicio: FileResponse.acta_inicio.substr(0,10),
-  createdAt: new Date(FileResponse.createdAt).toLocaleDateString(),
+  createdAt: new Date(FileResponse.createdAt).toLocaleDateString('es-AR'),
 })
 
 const formatExtendedFile = (FileResponse) => ({

@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <Banner title="Habilitaciones comerciales" />
-    <div class="col-10" style="margin: auto">
+    <div class="col-10" style="margin: auto; margin-top: 2rem">
       <div class="row justify-content-center" >
         <img width="100%" src="../../assets/Habilitá en simples pasos.png" />
       </div>
@@ -348,6 +348,13 @@
                   <div class="li-content">
                     <p class="li-title">¿Cómo cargo varias imágenes en un campo único del formulario?</p>
                     <p>En caso de que el archivo que vayas a subir tenga varias páginas (y, por ejemplo, vos las hayas fotografiado) deberás compilarlas en un único archivo pdf. Para ello existen diversas herramientas digitales (por ejemplo, <a href="https://www.ilovepdf.com/es/jpg_a_pdf" target="_blank" class="external-link">ilovepdf</a>) que te permiten hacerlo de manera sencilla y gratuita. </p>
+                  </div>
+                </div>
+                <div class="li-row first-li">
+                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-content">
+                    <p class="li-title">Para visualizar como realizar tu trámite, podés mirar este video tutorial</p>
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/HJwZkfxsnOw?si=EszZ_Byjmv2-ysF8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                   </div>
                 </div>
               </div>

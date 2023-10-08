@@ -9,7 +9,7 @@
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
     <b-collapse id="nav-collapse" is-nav class="m-2" style="width:90%">
       <div class="row col-10">
-        <b-navbar-nav>
+        <b-navbar-nav class="mr-2">
           <NuxtLink
             class="nav-link"
             active-class="active"
@@ -62,7 +62,7 @@
           </NuxtLink>
           </b-dropdown-item>
         </b-dropdown>
-        <b-navbar-nav v-if="adminComercio">
+        <b-navbar-nav v-if="adminComercio" class="mr-2">
           <NuxtLink
             class="nav-link"
             active-class="active"

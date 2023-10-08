@@ -1,5 +1,6 @@
 <template>
   <div class="page background-2">
+    <Banner title="Detalle de obra"/>
     <div v-if="obra">
       <div class="container my-3 col-sm-12">
         <div class="row">

@@ -1,6 +1,6 @@
 <template>
   <div class="multimedia-feed">
-    <div class="row mt-3 justify-content-center text-center">
+    <div class="row col-11 mx-auto mt-3 justify-content-center text-center">
       <b-input
         type="text"
         class="col-6"

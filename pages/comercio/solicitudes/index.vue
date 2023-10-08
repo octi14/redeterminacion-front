@@ -2,7 +2,7 @@
   <div class="page">
     <Banner title="Solicitudes de habilitación" subtitle="Uso interno" />
     <div class="row col-8 mx-auto" v-if="adminComercio">
-      <b-form-group class="col-4 mx-auto mt-3" horizontal label-class="text-success h6" label="Filtrar por Estado">
+      <b-form-group class="col-8 mx-auto mt-3" horizontal label-class="text-success h6" label="Filtrar por Estado">
         <b-form-select plain v-model="selectedEstado">
           <option value="">Todos</option>
           <option v-for="estado in estados" :value="estado" :key="estado">{{ estado }}</option>

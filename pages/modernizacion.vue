@@ -10,7 +10,7 @@
     <div>
       <p class="h5 text-center my-5" v-if="!adminModernizacion"> Esta página sólo está disponible para uso interno del personal Municipal. </p>
     </div>
-    <div class="row justify-content-center" style="height: 40%" v-if="adminModernizacion">
+    <div class="row justify-content-center" style="height: 40%; width: 99%" v-if="adminModernizacion">
       <div class="text-center mx-5 my-auto" v-if="adminModernizacion">
         <NuxtLink to="/procedimientos">
           <b-button variant="outline" class="mt-5">

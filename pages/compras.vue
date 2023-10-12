@@ -1,5 +1,5 @@
 <template>
-  <div class="page mt-3">
+  <div class="page main-background mt-3">
     <Banner title="Compras" />
     <div class="mt-5">
       <h1 class="text-title banner-title">Inscripción de proveedores</h1>

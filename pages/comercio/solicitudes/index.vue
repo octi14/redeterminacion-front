@@ -8,7 +8,7 @@
           <option v-for="estado in estados" :value="estado" :key="estado">{{ estado }}</option>
         </b-form-select>
       </b-form-group>
-      <b-form-checkbox class="text-center" v-model="hideFinalizados">Ocultar Finalizados</b-form-checkbox>
+      <b-form-checkbox class="text-center" v-model="hideFinalizados">Ocultar Finalizados/Rechazados</b-form-checkbox>
       <!-- <b-form-group class="col-4 mx-auto mt-4" horizontal label-class="text-success h6" label="Filtrar por DNI">
         <b-icon-funnel-fill variant="success" />
         <b-form-input v-model="selectedDocumento" @keypress="onSearchByDocumento">

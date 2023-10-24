@@ -77,5 +77,15 @@ export const mutations = {
   },
   delete(state, fileId) {
     state.multimedias = state.multimedias.filter(file => file.id !== fileId);
-  }
+  },
+  sortItemsByName(state) {
+    state.multimedias.sort((a, b) => {
+      const nameA = a.nombre.toLowerCase();
+      const nameB = b.nombre.toLowerCase();
+
+      if (nameA < nameB) return -1;
+      if (nameA > nameB) return 1;
+      return 0;
+    });
+  },
 }

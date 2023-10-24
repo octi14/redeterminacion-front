@@ -23,7 +23,7 @@
           <div class="h5 row"> Número de expediente: <b class="text-success ml-1"> {{ habilitacion.nroExpediente }} </b> </div>
         </div>
       </div>
-      <div class="row col-10 mx-auto justify-content-center">
+      <div class="row col-10 mx-auto justify-content-center" v-if="jefeComercio">
         <b-button @click="onSolicitarDocumentacion" variant="success" pill class="btn-4 mt-3 mx-1" v-if="habilitacion.status === 'Inspeccionado'"> Solicitar documentación </b-button>
         <b-button @click="onAprobarSolicitud" variant="success" pill class="btn-4 mt-3 mx-1" v-if="habilitacion.status==='En revisión'"> Aprobar solicitud </b-button>
         <b-button @click="onFinalizarSolicitud" variant="success" pill class="btn-4 mt-3 mx-1" v-if="habilitacion.status === 'Esperando documentación'"> Finalizar solicitud </b-button>
@@ -225,6 +225,7 @@
       </div>
     </template>
 
+    <!-- Turno (de existir) -->
     <template v-if="habilitacion && turno">
       <div class="container col-md-6 col-sm-8 card shadow-lg mt-4 mb-3 mx-auto">
         <!-- Resto del contenido del componente -->
@@ -455,6 +456,14 @@ export default {
           return acc;
         }, {});
       }
+    },
+    adminComercio(){
+      return this.$store.state.user.admin == "comercio"
+    },
+    jefeComercio(){
+      return (this.$store.state.user.username === "myriamalonso@gesell.gob.ar"
+              || this.$store.state.user.username === "mariaelisabetbahlcke@gesell.gob.ar"
+              || this.$store.state.user.username === "lujanperez@gesell.gob.ar")
     },
   },
   async fetch() {

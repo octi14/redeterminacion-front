@@ -79,10 +79,20 @@ export default {
     }
   },
   async fetch() {
-    await this.$store.dispatch('multimedias/search',{
-      categoria: this.keyword,
-    })
+    // Usar una promesa para esperar a que la acción se complete
+    await new Promise((resolve) => {
+      this.$store.dispatch('multimedias/search', {
+        categoria: this.keyword,
+      }).then(() => {
+        resolve();
+      });
+    });
     this.items = this.multimedias
+    if (this.items) {
+      // Llama a la mutación para ordenar los elementos
+      this.$store.commit('multimedias/sortItemsByName');
+    }
+
     const perPage = 10; // Number of items per page
     this.totalPages = Math.ceil(this.items.length / perPage);
 
@@ -125,6 +135,17 @@ export default {
   methods: {
     loadMore() {
       this.$fetch()
+    },
+    sortItems() {
+      this.items.sort((a, b) => {
+        // Comparar los nombres de los elementos
+        const nameA = a.nombre.toLowerCase();
+        const nameB = b.nombre.toLowerCase();
+
+        if (nameA < nameB) return -1;
+        if (nameA > nameB) return 1;
+        return 0;
+      });
     },
     filterItems(palabraClave = this.search) {
       const terminoBusqueda = palabraClave.trim().toLowerCase();

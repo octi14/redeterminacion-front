@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page main-background">
     <Banner title="Inspección de Comercios"/>
     <div class="mx-auto">
       <div v-if="page === 0">

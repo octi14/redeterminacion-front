@@ -1,6 +1,6 @@
 <template>
   <div class="multimedia-feed">
-    <div class="row mt-3 justify-content-center text-center">
+    <div class="row col-11 mx-auto mt-3 justify-content-center text-center">
       <b-input
         type="text"
         class="col-6"
@@ -12,7 +12,7 @@
         <b-button @click="clearSearch">Limpiar</b-button>
       </div>
     </div>
-    <b-card class="shadow-lg mx-auto mt-4 col-md-8 col-sm-10" v-if="items.length > 0 && filteredItems.length == 0 && search == '' ">
+    <b-card class="shadow mx-auto mt-4 col-md-8 col-sm-10" v-if="items.length > 0 && filteredItems.length == 0 && search == '' ">
       <div
         v-for="item in paginatedItems"
         :key="item.id"
@@ -29,7 +29,7 @@
       </b-button>
     </div>
     </b-card>
-    <b-card class="shadow-lg mx-auto mt-4 col-md-8 col-sm-10" v-if="filteredItems.length > 0">
+    <b-card class="shadow mx-auto mt-4 col-md-8 col-sm-10" v-if="filteredItems.length > 0">
       <!-- <div class="mx-auto text-center">
         <h4> Lista de archivos </h4>
       </div> -->
@@ -79,10 +79,20 @@ export default {
     }
   },
   async fetch() {
-    await this.$store.dispatch('multimedias/search',{
-      categoria: this.keyword,
-    })
+    // Usar una promesa para esperar a que la acción se complete
+    await new Promise((resolve) => {
+      this.$store.dispatch('multimedias/search', {
+        categoria: this.keyword,
+      }).then(() => {
+        resolve();
+      });
+    });
     this.items = this.multimedias
+    if (this.items) {
+      // Llama a la mutación para ordenar los elementos
+      this.$store.commit('multimedias/sortItemsByName');
+    }
+
     const perPage = 10; // Number of items per page
     this.totalPages = Math.ceil(this.items.length / perPage);
 
@@ -125,6 +135,17 @@ export default {
   methods: {
     loadMore() {
       this.$fetch()
+    },
+    sortItems() {
+      this.items.sort((a, b) => {
+        // Comparar los nombres de los elementos
+        const nameA = a.nombre.toLowerCase();
+        const nameB = b.nombre.toLowerCase();
+
+        if (nameA < nameB) return -1;
+        if (nameA > nameB) return 1;
+        return 0;
+      });
     },
     filterItems(palabraClave = this.search) {
       const terminoBusqueda = palabraClave.trim().toLowerCase();

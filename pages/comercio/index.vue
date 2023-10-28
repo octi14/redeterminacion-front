@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page main-background">
     <Banner title="Habilitaciones comerciales" />
     <div class="col-10" style="margin: auto; margin-top: 2rem">
       <div class="row justify-content-center" >
@@ -81,19 +81,19 @@
                     <p>Seleccioná el rubro de tu comercio para conocer los requisitos a los que se debe adecuar y el mapa de zonas permitidas donde se puede ubicar.</p>
                     <b-form-group label="" label-for="rubro">
                       <b-form-select v-model="rubroSeleccionado.id" :options="filteredRubros" value-field="id" text-field="nombre" @change="handleRubroChange" style="margin:10px 0;"></b-form-select>
-                    </b-form-group>   
+                    </b-form-group>
                   </div>
                 </div>
-                 
-                <div v-if="rubroSeleccionado.id">  
-                    
+
+                <div v-if="rubroSeleccionado.id">
+
                     <div v-if="rubroSeleccionado.descripcion != ''" class="li-row">
                       <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                       <div class="li-content">
                         <p class="li-title">¿A qué nos referimos cuando hablamos de “{{ rubroSeleccionado.nombre }}”?</p>
                         <p class="li-p">{{ rubroSeleccionado.descripcion }}</p>
                       </div>
-                    </div> 
+                    </div>
                     <div v-if="rubroSeleccionado.requisitos.length" class="li-row">
                       <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                       <div class="li-content" style="width:inherit;">
@@ -106,7 +106,7 @@
                             </div>
                           </div>
                         </div></div>
-                    </div> 
+                    </div>
                     <div v-if="rubroSeleccionado.especiales.length" class="li-row">
                       <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                       <div class="li-content" style="width:inherit;">
@@ -119,9 +119,9 @@
                               <p v-else> {{ req }}</p>
                             </div>
                           </div>
-                        </div>                        
+                        </div>
                       </div>
-                    </div> 
+                    </div>
                     <b-card v-if="rubroSeleccionado.inspeccion"  border-variant="warning" align="center" class="importante-card li-p" >
                       <b-card-text>
                         <b-row >
@@ -135,7 +135,7 @@
                           </b-col>
                         </b-row>
                       </b-card-text>
-                    </b-card>  
+                    </b-card>
                     <b-card v-else border-variant="info" align="center" class="importante-card li-p" >
                       <b-card-text>
                         <b-row >
@@ -149,7 +149,7 @@
                           </b-col>
                         </b-row>
                       </b-card-text>
-                    </b-card>      
+                    </b-card>
                     <div v-if="rubroSeleccionado.croquisExpandido === true" class="li-row">
                       <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                       <div class="li-content">
@@ -199,7 +199,7 @@
                           </div>
                         </div>
                       </div>
-                    </div> 
+                    </div>
                     <div v-if="rubroSeleccionado.pom" >
                       <div class="li-row">
                         <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
@@ -214,8 +214,8 @@
                             <div class="li-content"><p class="li-p">La zona coloreada del mapa señala el espacio catastral donde es posible habilitar comercios de tu rubro <i>(no indica ubicaciones catastrales que se encuentren libres)</i>.</p></div>
                           </div>
                         </div>
-                      </div>        
-                      <iframe :src="`${rubroSeleccionado.pom}`" width="100%" height="800" allow="autoplay" class="li-p"></iframe>          
+                      </div>
+                      <iframe :src="`${rubroSeleccionado.pom}`" width="100%" height="800" allow="autoplay" class="li-p"></iframe>
                       <p v-if="rubroSeleccionado" class="li-p">Descargá el mapa de zonas permitidas para tu rubro haciendo <a class="external-link" target="_blank" :href="`${rubroSeleccionado.pom}`">click aquí</a></p>
                     </div>
                 </div>
@@ -249,7 +249,7 @@
                       <div class="li-content"><p>El establecimiento deberá permanecer cerrado hasta tanto regularice su trámite de habilitación.</p></div>
                     </div>
                   </div>
-                </div>           
+                </div>
                 <div class="li-row">
                   <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                   <div class="li-content">
@@ -278,8 +278,8 @@
                       <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
                       <div class="li-content"><p>La condición del plano de obra (aprobado o registrado).</p></div>
                     </div>
-                  </div>              
-                </div>       
+                  </div>
+                </div>
                 <div class="li-row">
                   <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                   <div class="li-content">
@@ -354,6 +354,7 @@
                   <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                   <div class="li-content">
                     <p class="li-title">Para visualizar como realizar tu trámite, podés mirar este video tutorial</p>
+
                     <iframe class="videoTuto" width="560" height="315" src="https://www.youtube.com/embed/HJwZkfxsnOw?si=EszZ_Byjmv2-ysF8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                   </div>
                 </div>
@@ -407,7 +408,7 @@
         </div>
     </b-modal>
     <b-modal v-model="showPopupB" title="" :hide-footer="true" @click-outside="showPopupB = false" :header-bg-variant="'success'" centered>
-        <template #modal-header>    
+        <template #modal-header>
           <div class="modal-info">
             <h5>
                 <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
@@ -415,7 +416,7 @@
             </h5>
           </div>
             <button type="button" aria-label="Close" class="close" @click="showPopupB = false">×</button>
-        </template>  
+        </template>
         <div class="modal-info modal-plano">
           <div>
             <h6>Tipos de Plano para cargar</h6>
@@ -913,7 +914,7 @@ ul{
 .li-icon, .li-content{
   display: inline-block;
 }
-.li-title{ 
+.li-title{
   margin-bottom: 0.3rem;
 }
 .li-icon{

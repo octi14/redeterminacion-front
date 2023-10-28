@@ -397,6 +397,7 @@ export default {
       })
       const observaciones = this.$store.state.habilitaciones.single.observaciones
       const habilitacion = {
+        status: "Esperando turno",
         observaciones: observaciones + " - " + "Se canceló el turno el día " + new Date().toLocaleDateString('es-AR')
       }
       const habId = this.$store.state.habilitaciones.single.id

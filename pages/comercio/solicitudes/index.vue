@@ -1,19 +1,21 @@
 <template>
   <div class="page">
     <Banner title="Solicitudes de habilitación" subtitle="Uso interno" />
-    <div class="row col-8 mx-auto" v-if="adminComercio">
-      <b-form-group class="col-4 mx-auto mt-3" horizontal label-class="text-success h6" label="Filtrar por Estado">
+    <div class="col-8 mx-auto" v-if="adminComercio">
+      <b-form-group class="col-8 mx-auto mt-3" horizontal label-class="text-success h6" label="Filtrar por Estado">
         <b-form-select plain v-model="selectedEstado">
           <option value="">Todos</option>
           <option v-for="estado in estados" :value="estado" :key="estado">{{ estado }}</option>
         </b-form-select>
       </b-form-group>
+      <b-form-checkbox class="text-center" v-model="hideFinalizados">Ocultar Finalizados/Rechazados</b-form-checkbox>
       <!-- <b-form-group class="col-4 mx-auto mt-4" horizontal label-class="text-success h6" label="Filtrar por DNI">
         <b-icon-funnel-fill variant="success" />
         <b-form-input v-model="selectedDocumento" @keypress="onSearchByDocumento">
         </b-form-input>
       </b-form-group> -->
     </div>
+
     <b-table per-page="10" head-row-variant="warning" class="col-md-10 col-sm-8 mx-auto mt-4 shadow-lg" :items="paginatedItems" :fields="fields">
       <!-- Plantilla personalizada para la columna "detalles" -->
       <template #cell(status)="row">
@@ -44,6 +46,7 @@
 export default{
   data() {
     return {
+      hideFinalizados: false,
       lastLength: false,
       items: [],
       selectedEstado: '',
@@ -130,9 +133,21 @@ export default{
       const endIndex = startIndex + this.perPage;
 
       if (this.selectedEstado) {
-        return this.items.filter(item => item.status === this.selectedEstado).slice(startIndex, endIndex);
+        return this.items.filter((item) => {
+          if (this.hideFinalizados) {
+            return item.status === this.selectedEstado && !["Rechazada", "Finalizada"].includes(item.status);
+          } else {
+            return item.status === this.selectedEstado;
+          }
+        }).slice(startIndex, endIndex);
       } else {
-        return this.items.slice(startIndex, endIndex);
+        return this.items.filter((item) => {
+          if (this.hideFinalizados) {
+            return !["Rechazada", "Finalizada"].includes(item.status);
+          } else {
+            return true;
+          }
+        }).slice(startIndex, endIndex);
       }
     },
     filteredItems() {

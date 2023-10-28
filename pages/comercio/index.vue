@@ -354,7 +354,7 @@
                   <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                   <div class="li-content">
                     <p class="li-title">Para visualizar como realizar tu trámite, podés mirar este video tutorial</p>
-                    <iframe width="560" height="315" src="https://www.youtube.com/embed/HJwZkfxsnOw?si=EszZ_Byjmv2-ysF8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    <iframe class="videoTuto" width="560" height="315" src="https://www.youtube.com/embed/HJwZkfxsnOw?si=EszZ_Byjmv2-ysF8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                   </div>
                 </div>
               </div>
@@ -675,9 +675,28 @@ export default {
 }
 </script>
 <style scoped>
-  p, .li-content{
-    font-family: Calibri, 'Trebuchet MS', sans-serif;
+@media (max-width: 1200px) {
+  .col-8{
+    max-width: 80%;
   }
+  .importante-card p{
+    font-size: 0.8rem;
+  }
+  .importante-card .col-md-2{
+    padding: 0;
+  }
+  .videoTuto{
+    width: 100%;
+  }
+}
+@media (max-width: 720px){
+  .col-8{
+    max-width: 90%;
+  }
+}
+p, .li-content{
+  font-family: Calibri, 'Trebuchet MS', sans-serif;
+}
 .importante-card .li-content{
   text-align: left;
   margin-bottom: 1rem;
@@ -922,7 +941,7 @@ ul{
 }
 /* Estilos para Animaciones de Expansión/Contracción  */
 .expanded {
-  max-height: 2000px; /* Altura máxima cuando está expandido */
+  max-height: 3000px; /* Altura máxima cuando está expandido */
 }
 
 .expand-enter-active,

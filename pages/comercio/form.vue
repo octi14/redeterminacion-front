@@ -33,7 +33,7 @@
     </fieldset>
     <fieldset >
       <b-row>
-      <b-col md="6">
+      <b-col lg="6">
           <b-form-group label="Nombre *" label-for="nombreSolicitante">
             <b-form-input id="nombreSolicitante" v-model="solicitante.nombre"></b-form-input>
             <div v-if="$v.solicitante.nombre.$error" class="validation-error">
@@ -41,7 +41,7 @@
             </div>
           </b-form-group>
         </b-col>
-        <b-col md="6">
+        <b-col lg="6">
           <b-form-group label="Apellido *" label-for="apellidoSolicitante" >
             <b-form-input id="apellidoSolicitante" v-model="solicitante.apellido"></b-form-input>
             <div v-if="$v.solicitante.apellido.$error" class="validation-error">
@@ -51,7 +51,7 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-col md="6">
+        <b-col lg="6">
           <b-form-group label="DNI / Pasaporte *" label-for="DNISolicitante" >
             <b-form-input id="DNISolicitante" v-model="solicitante.dni"></b-form-input>
             <div v-if="$v.solicitante.dni.$error" class="validation-error">
@@ -59,7 +59,7 @@
             </div>
           </b-form-group>
         </b-col>
-        <b-col md="6">
+        <b-col lg="6">
           <b-form-group label="CUIT *" label-for="cuit" >
             <b-form-input id="cuit" v-model="solicitante.cuit"></b-form-input>
             <div v-if="$v.solicitante.cuit.$error" class="validation-error">
@@ -79,7 +79,7 @@
         </div>
       </b-form-group>
       <b-row>
-        <b-col md="6">
+        <b-col lg="6">
           <b-form-group label="Teléfono *" label-for="telefonoTitular" >
             <b-form-input id="telefonoTitular" v-model="solicitante.telefono" no-wheel ></b-form-input>
             <div v-if="$v.solicitante.telefono.$error" class="validation-error">
@@ -87,12 +87,12 @@
             </div>
           </b-form-group>
         </b-col>
-        <b-col md="6">
+        <b-col lg="6">
           <b-form-group label="Código Postal *" label-for="codigoPostal" >
-            <b-col md="4" style="padding-left: 0px;">
+            <b-col lg="4" style="padding-left: 0px;">
               <b-form-input id="codigoPostal" v-model="solicitante.codigoPostal" ></b-form-input>
             </b-col>
-            <b-col md="12" style="padding-left: 0px;">
+            <b-col lg="12" style="padding-left: 0px;">
               <div v-if="$v.solicitante.codigoPostal.$error" class="validation-error">
                 <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El código postal no puede estar vacío, contener letras o caracteres especiales.
               </div>
@@ -101,7 +101,7 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-col md="6">
+        <b-col lg="6">
           <b-form-group label="Localidad *" label-for="localidadSolicitante" >
             <b-form-input id="localidadSolicitante" v-model="solicitante.localidad" ></b-form-input>
             <div v-if="$v.solicitante.localidad.$error" class="validation-error">
@@ -109,7 +109,7 @@
             </div>
           </b-form-group>
         </b-col>
-        <b-col md="6">
+        <b-col lg="6">
           <b-form-group label="Provincia *" label-for="provincia">
             <b-form-select id="provincia" v-model="solicitante.provincia" >
               <option value="" disabled>Selecciona una provincia</option>
@@ -137,17 +137,17 @@
       </b-form-group>
     </fieldset>
     <b-row>
-      <b-col md="6">
+      <b-col lg="6" md="8" sm="8">
         <h5>¿Sos representante o apoderado/a del solicitante? <b-icon-question-circle-fill @click="openPopup('ApoderadoRepresentante')" font-scale="1" variant="info"></b-icon-question-circle-fill></h5>
       </b-col>
-        <div class="form-check-inline">
-          <b-col md="3">
-            <b-form-radio  id="esApoderado-no" v-model="solicitante.esApoderado" name="radio-esApoderado" checked="checked" value="false"> No</b-form-radio>
-          </b-col>
-          <b-col md="3">
-            <b-form-radio  id="esApoderado-si" v-model="solicitante.esApoderado" name="radio-esApoderado" value="true"> Sí</b-form-radio>
-          </b-col>
-        </div>
+      <b-col class="form-check-inline" sm="4">
+        <b-col lg="3" sm="3">
+          <b-form-radio  id="esApoderado-no" v-model="solicitante.esApoderado" name="radio-esApoderado" checked="checked" value="false"> No</b-form-radio>
+        </b-col>
+        <b-col lg="3" sm="1">
+          <b-form-radio  id="esApoderado-si" v-model="solicitante.esApoderado" name="radio-esApoderado" value="true"> Sí</b-form-radio>
+        </b-col>
+      </b-col>
     </b-row>
     <!-- Sección: Datos del Apoderado -->
     <fieldset v-if="solicitante.esApoderado === 'true'">
@@ -168,7 +168,7 @@
     <fieldset >
       <legend><h3>Datos del Inmueble</h3></legend>
       <b-row>
-        <b-col md="6">
+        <b-col lg="6" md="12">
           <b-form-group label="Localidad *" label-for="localidad" >
             <b-form-select id="localidad" v-model="inmueble.localidad" >
               <option value="" disabled>Seleccione...</option>
@@ -183,7 +183,7 @@
             </div>
           </b-form-group>
         </b-col>
-        <b-col md="6">
+        <b-col lg="6" md="12">
           <b-form-group label-for="rubro">
             <label for="rubro" class="rubro-label">Rubro *</label>
             <b-form-select id="rubro" v-model="inmueble.rubro"  @change="handleRubroChange">
@@ -199,7 +199,7 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-col md="8">
+        <b-col lg="8" md="12">
           <b-form-group label="Calle *" label-for="direccion-inmueble-calle" >
             <b-form-input id="direccion-inmueble-calle" v-model="inmueble.calle" ></b-form-input>
             <div v-if="$v.inmueble.calle.$error" class="validation-error">
@@ -207,7 +207,7 @@
             </div>
           </b-form-group>
         </b-col>
-        <b-col md="2">
+        <b-col lg="2" md="6">
           <b-form-group label="" label-for="direccion-inmbueble-nro" >
             <label for="direccion-inmbueble-nro" class="rubro-label">Número * <b-icon-question-circle-fill class="" @click="openPopup('NroInmueble')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
             <b-form-input id="direccion-inmbueble-nro" v-model="inmueble.nro" ></b-form-input>
@@ -216,7 +216,7 @@
             </div>
           </b-form-group>
         </b-col>
-        <b-col md="2">
+        <b-col lg="2" md="6">
           <b-form-group label="Nro. de Local" label-for="direccion-inmueble-calle2" >
             <b-form-input id="direccion-inmueble-calle2" v-model="inmueble.nroLocal" placeholder="Ej. 2/A" ></b-form-input>
           </b-form-group>
@@ -264,20 +264,22 @@
       </b-form-group>
       <b-form-group label="" label-for="espaciopublico" style="margin: 0px auto">
             <b-row>
-              <b-col md="5">
-                <h5>¿Hará uso del espacio público? *</h5>
+              <b-col lg="5" md="8" sm="7">
+                <h5>Uso de espacio público</h5>
               </b-col>
+              <!-- 
               <div class="form-check-inline">
-                <b-col md="3">
+                <b-col lg="3" sm="3">
                   <b-form-radio  id="espaciopublico-no" v-model="inmueble.espacioPublico" name="radio-espacio" checked="checked" value="false"> No</b-form-radio>
                 </b-col>
-                <b-col md="3">
+                <b-col lg="3" sm="2">
                   <b-form-radio  id="espaciopublico-si" v-model="inmueble.espacioPublico" name="radio-espacio" value="true"> Sí</b-form-radio>
                 </b-col>
-            </div>
+              </div>
+              -->
           </b-row>
       </b-form-group>
-    <fieldset v-if="inmueble.espacioPublico === 'true'">
+    <fieldset>
         <p>Indicá cuál de los siguientes ítems posee tu establecimiento:</p>
         <b-form-group label="" label-for="marquesina" style="margin-bottom: 0">
             <b-form-checkbox  id="marquesina" v-model="inmueble.marquesina" scale=1.5>Marquesina - Toldo</b-form-checkbox>
@@ -291,7 +293,10 @@
         <b-form-group label="" label-for="mesas" style="margin-bottom: 0">
             <b-form-checkbox  id="mesas" v-model="inmueble.mesas" scale=1.5>Mesas y Sillas</b-form-checkbox>
         </b-form-group>
-      </fieldset>
+    </fieldset>
+    <div v-if="$v.inmueble.marquesina.$error || $v.inmueble.mercaderia.$error || $v.inmueble.carteles.$error || $v.inmueble.mesas.$error" class="validation-error">
+      <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Selecciona al menos una opción.
+    </div>
     </fieldset>
 
   </b-card>
@@ -300,7 +305,7 @@
       <legend><h3>Carga de Documentación</h3></legend>
       <p>Aquí deberás cargar los documentos requeridos previamente. Tené en cuenta que deben ser <u>legibles</u>, estar subidos en <u>formato de imagen ó pdf</u> y tener un <u>peso máximo de 15 mb</u>.</p>
       <b-row>
-        <b-col md="6">
+        <b-col lg="6">
           <b-form-group label="DNI (Frente) *" label-for="dniFrente">
             <b-form-file v-model="documentos.dniFrente" placeholder="No se seleccionó un archivo." browse-text="Examinar"
               accept=".pdf, image/*"
@@ -312,7 +317,7 @@
             </div>
           </b-form-group>
         </b-col>
-        <b-col md="6">
+        <b-col lg="6">
           <b-form-group label="DNI (Dorso) *" label-for="dniDorso" >
             <b-form-file v-model="documentos.dniDorso" placeholder="No se seleccionó un archivo." browse-text="Examinar"
             accept=".pdf, image/*"  :state="getFormFieldState('dniDorso')"
@@ -384,15 +389,15 @@
         </div>
       </b-form-group>
       <b-row>
-        <b-col md="6">
+        <b-col lg="6" md="8" sm="7">
           <h5>¿El iniciante es una Persona Jurídica?</h5>
         </b-col>
         <b-form-group label="" label-for="esPersonaJuridica" style="margin:auto 0">
           <div class="form-check-inline">
-            <b-col md="3">
+            <b-col lg="3" sm="3">
               <b-form-radio  id="esPersonaJuridica-no" v-model="solicitante.esPersonaJuridica" name="radio-esPersonaJuridica" checked="checked" value="false"> No</b-form-radio>
             </b-col>
-            <b-col md="3">
+            <b-col lg="3" sm="2">
               <b-form-radio  id="esPersonaJuridica-si" v-model="solicitante.esPersonaJuridica" name="radio-esPersonaJuridica" value="true"> Sí</b-form-radio>
             </b-col>
           </div>
@@ -663,7 +668,28 @@ export default {
         calle: { required },
         nro: { required, numeric },
         otrosServicios: { requiredIf: requiredIf(function () {
-          return this.inmueble.serviciosHoteleria[11].value === true }) }
+          return this.inmueble.serviciosHoteleria[11].value === true }) 
+        },
+        marquesina: {
+          requiredIfAtLeastOneChecked: (value) => {
+            return value || this.inmueble.mercaderia || this.inmueble.carteles || this.inmueble.mesas;
+          }
+        },
+        mercaderia: {
+          requiredIfAtLeastOneChecked: (value) => {
+            return value || this.inmueble.marquesina || this.inmueble.carteles || this.inmueble.mesas;
+          }
+        },
+        carteles: {
+          requiredIfAtLeastOneChecked: (value) => {
+            return value || this.inmueble.marquesina || this.inmueble.mercaderia || this.inmueble.mesas;
+          }
+        },
+        mesas: {
+          requiredIfAtLeastOneChecked: (value) => {
+            return value || this.inmueble.marquesina || this.inmueble.mercaderia || this.inmueble.carteles;
+          }
+        }
       },
       documentos: {
         dniFrente: { required },
@@ -674,7 +700,7 @@ export default {
         plano: { required },
         planillaAutorizacion: { requiredIf: requiredIf(function () {
           return this.solicitante.esApoderado === 'true' })},
-        croquis: {requiredIf: requiredIf(function () {
+        croquis: { requiredIf: requiredIf(function () {
           return this.rubroSeleccionado.croquis && !this.isHoteleria })},
         actaPersonaJuridica: { requiredIf: requiredIf(function () {
           return this.solicitante.esPersonaJuridica === 'true' })},
@@ -733,7 +759,7 @@ export default {
         nroLocal: null,
         nombreFantasia: '',
         rubro: null,
-        espacioPublico: false,
+        espacioPublico: true,
         marquesina: false,
         mercaderia: false,
         mesas: false,
@@ -988,7 +1014,7 @@ export default {
       this.inmueble.nroLocal = null
       this.inmueble.nombreFantasia = ''
       this.inmueble.rubro = null
-      this.inmueble.espacioPublico = false
+      this.inmueble.espacioPublico = true
       this.inmueble.marquesina = false
       this.inmueble.mercaderia = false
       this.inmueble.mesas = false
@@ -1120,6 +1146,24 @@ export default {
 </script>
 
 <style scoped>
+@media (max-width: 1200px) {
+  .col-8{
+    max-width: 80%;
+  }
+}
+@media (max-width: 720px) {
+  h5{
+    font-size: 1.15rem;
+  }
+  .form-check-inline{
+    margin-right: 0;
+  }
+}
+@media (max-width: 480px) {
+  .col-8{
+    max-width: 90%;
+  }
+}
 .printing-modal .card-header h5{
   color: white !important;
 }

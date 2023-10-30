@@ -109,9 +109,6 @@ export default {
     isAuthenticated() {
       return Boolean(this.$store.state.user.token)
     },
-    isAdmin(){
-      return Boolean(this.$store.state.user.admin == "true")
-    },
     adminHacienda(){
       return this.$store.state.user.admin == "hacienda"
     },

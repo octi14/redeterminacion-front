@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page main-background">
     <Banner title="Detalles de solicitud"/>
     <div v-if="!habilitacion" class="text-center mt-3">
       <h2> Cargando </h2>
@@ -23,16 +23,15 @@
           <div class="h5 row"> Número de expediente: <b class="text-success ml-1"> {{ habilitacion.nroExpediente }} </b> </div>
         </div>
       </div>
+      <!--Botones-->
       <div class="row col-10 mx-auto justify-content-center" v-if="jefeComercio">
         <b-button @click="onSolicitarDocumentacion" variant="success" pill class="btn-4 mt-3 mx-1" v-if="habilitacion.status === 'Inspeccionado'"> Solicitar documentación </b-button>
         <b-button @click="onAprobarSolicitud" variant="success" pill class="btn-4 mt-3 mx-1" v-if="habilitacion.status==='En revisión'"> Aprobar solicitud </b-button>
         <b-button @click="onFinalizarSolicitud" variant="success" pill class="btn-4 mt-3 mx-1" v-if="habilitacion.status === 'Esperando documentación'"> Finalizar solicitud </b-button>
         <b-button @click="onRestablecer" variant="secondary" pill class="btn-4 mt-3 mx-1" v-if="habilitacion.status != 'En revisión'"> Volver a estado En Revisión </b-button>
         <b-button @click="onRechazarSolicitud" variant="success" pill class="btn-3 mt-3 mx-1"> Rechazar solicitud </b-button>
+        <b-button @click="onShowObservaciones" variant="primary" pill class="btn-2 mt-3 mx-1"> Ver observaciones </b-button>
       </div>
-      <!-- <div v-if="habilitacion.observaciones">
-        <p> Observaciones: {{ habilitacion.observaciones }} </p>
-      </div> -->
       <b-card no-body class="container col-md-6 col-sm-8 shadow-lg mt-4 mx-auto">
           <div class="col mx-auto">
             <div class="container text-center mx-auto">
@@ -137,10 +136,7 @@
             </div>
             <div class="layout">
               <p class="col col-main">
-                <strong>Desea ocupar espacio público</strong><br>
-              </p>
-              <p class="col col-complementary" role="complementary">
-                <a>{{ habilitacion.espacioPublico ? 'Si' : 'No' }}</a>
+                <strong class="text-primary"><b>Uso de espacio público</b></strong><br>
               </p>
             </div>
             <div class="layout" v-if="habilitacion.espacioPublico">
@@ -396,6 +392,9 @@
       </div>
     </b-modal>
 
+    <b-modal v-model="showObservaciones" header-bg-variant="primary" title="Observaciones" title-class="text-light" hide-footer centered>
+      <p v-html="observaciones"></p>
+    </b-modal>
   </div>
 </template>
 
@@ -406,7 +405,7 @@ export default {
     return {
       statusClasses: {
         'En revisión': 'text-primary',
-        'Esperando documentación': 'text-success',
+        'Esperando documentación': 'text-lightgreen',
         'Inspeccionado': 'text-success',
         'Aprobada': 'text-success',
         'Rechazada': 'text-danger',
@@ -422,6 +421,7 @@ export default {
       showFinalizar: false,
       showRejectPopup: false,
       showSolicitarDoc: false,
+      showObservaciones: false,
       habilitacion: null,
       documentos: null,
       turno: null,
@@ -501,6 +501,14 @@ export default {
     },
     onFinalizarSolicitud(){
       this.showFinalizar = true
+    },
+    onShowObservaciones(){
+      if(this.habilitacion.observaciones){
+        this.observaciones = this.habilitacion.observaciones.split('-').join('<br>')
+      }else{
+        this.observaciones = "No hay observaciones para mostrar."
+      }
+      this.showObservaciones = true
     },
     async onSendSolicitar(){
       const habilitacion = {

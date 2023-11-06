@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page main-background">
     <Banner title="Detalles de turno"/>
     <!-- Datos del solicitante -->
     <template v-if="turno">

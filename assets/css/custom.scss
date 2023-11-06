@@ -111,6 +111,14 @@ html, body, div#__nuxt, div#__layout {
   transition: all 500ms cubic-bezier(0.19, 1, 0.2, 1.25);
 }
 
+.btn-2 {
+  background-color: rgba(65, 10, 244, 0.848);
+  box-shadow: inset 0 0 0 0 rgba(69, 6, 6, 0.575), 0 1px 1px 1px rgba(1, 23, 121, 0.331);
+  outline-color: rgba(10, 14, 126, 0.38);
+  border: 1px;
+  transition: all 500ms cubic-bezier(0.19, 1, 0.2, 1.25);
+}
+
 .btn-3:hover {
   // border: 1px solid;
   // border-radius: 12%;
@@ -120,6 +128,19 @@ html, body, div#__nuxt, div#__layout {
   text-shadow: 2px 5px 12px #034c578b;
 }
 
+.btn-2:hover {
+  // border: 1px solid;
+  // border-radius: 12%;
+  background-color: #04047d;
+  box-shadow: inset 0 0 7px 4px rgba(9, 1, 73, 0.2), 0 2px 6px 4px rgba(16, 6, 94, 0.331);
+  outline-offset: 15px;
+  text-shadow: 2px 5px 12px #034c578b;
+}
+
 .a:hover {
   text-decoration: underline;
+}
+
+.text-lightgreen{
+  color: #00dc0f;
 }

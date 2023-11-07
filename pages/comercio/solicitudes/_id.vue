@@ -32,7 +32,7 @@
         <b-button @click="onRechazarSolicitud" variant="success" pill class="btn-3 mt-3 mx-1"> Rechazar solicitud </b-button>
         <b-button @click="onShowObservaciones" variant="primary" pill class="btn-2 mt-3 mx-1"> Ver observaciones </b-button>
       </div>
-      <b-card no-body class="container col-md-6 col-sm-8 shadow-lg mt-4 mx-auto">
+      <b-card no-body class="container col-md-6 col-sm-8 shadow-card mt-4 mx-auto">
           <div class="col mx-auto">
             <div class="container text-center mx-auto">
               <h2 class="text-success mt-2"><b> Datos del solicitante </b></h2>
@@ -102,7 +102,7 @@
     </template>
     <!-- Datos del inmueble -->
     <template v-if="habilitacion">
-      <div class="container col-md-6 col-sm-8 card shadow-lg mt-4 mx-auto">
+      <div class="container col-md-6 col-sm-8 card shadow-card mt-4 mx-auto">
           <div class="col mx-auto">
             <div class="container text-center mx-auto">
               <h2 class="text-success mt-2"><b> Datos del inmueble </b></h2>
@@ -188,7 +188,7 @@
     </template>
     <!-- Documentación -->
     <template v-if="habilitacion">
-      <div class="container col-md-6 col-sm-8 card shadow-lg mt-4 mb-3 mx-auto">
+      <div class="container col-md-6 col-sm-8 card shadow-card mt-4 mb-3 mx-auto">
         <!-- Resto del contenido del componente -->
         <div class="col mx-auto">
           <div class="container text-center mx-auto">
@@ -223,7 +223,7 @@
 
     <!-- Turno (de existir) -->
     <template v-if="habilitacion && turno">
-      <div class="container col-md-6 col-sm-8 card shadow-lg mt-4 mb-3 mx-auto">
+      <div class="container col-md-6 col-sm-8 card shadow-card mt-4 mb-3 mx-auto">
         <!-- Resto del contenido del componente -->
         <div class="col mx-auto">
           <div class="container text-center mx-auto">

@@ -24,7 +24,7 @@
         <b-button @click="onRechazarInsp" pill class="btn-3 mt-3 mx-1"> Rechazar inspección </b-button>
       </div>
       <!-- datos del turno -->
-      <div class="container col-md-6 col-sm-8 card shadow-lg mt-4 mx-auto">
+      <div class="container col-md-6 col-sm-8 card shadow-card mt-4 mx-auto">
         <div class="col mx-auto">
           <div class="container text-center mx-auto">
             <h2 class="text-success mt-2"><b> Datos del turno </b></h2>

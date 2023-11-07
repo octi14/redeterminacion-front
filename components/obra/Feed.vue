@@ -12,7 +12,7 @@
         <b-button @click="clearSearch">Limpiar</b-button>
       </div>
     </div>
-    <b-card class="shadow-lg mx-auto mt-5 col-md-8 col-sm-10" v-if="items.length > 0 && filteredItems.length === 0 && search === '' ">
+    <b-card class="shadow-card mx-auto mt-5 col-md-8 col-sm-10" v-if="items.length > 0 && filteredItems.length === 0 && search === '' ">
       <div
         v-for="item in paginatedItems"
         :key="item.id"
@@ -21,7 +21,7 @@
         <ObraCard :obra="item" />
       </div>
     </b-card>
-    <b-card class="shadow-lg mx-auto mt-5 col-md-8 col-sm-10" v-if="filteredItems.length > 0">
+    <b-card class="shadow-card mx-auto mt-5 col-md-8 col-sm-10" v-if="filteredItems.length > 0">
       <div
         v-for="item in filteredPaginatedItems"
         :key="item.id"

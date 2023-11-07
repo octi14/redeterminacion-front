@@ -49,7 +49,7 @@
               </div>
             </div>
             <!-- Body -->
-            <div class="card shadow-lg col-lg-6 col-sm-12 mx-auto" v-if="!adding && !editing">
+            <div class="card shadow-card col-lg-6 col-sm-12 mx-auto" v-if="!adding && !editing">
               <div class="obra-content col-12 mx-auto mb-4">
                 <div class="layout">
                   <p class="col col-main">

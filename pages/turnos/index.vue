@@ -2,7 +2,7 @@
   <div class="page main-background">
     <Banner title="Inspección de Comercios"/>
     <div class="mx-auto">
-      <div v-if="page === 0">
+      <div class="mt-3" v-if="page === 0">
         <div class="row justify-content-center banner-container" style="width: 100%">
           <img src="../../assets/turnera-banner-1.png" style="max-width: 100%"/>
         </div>
@@ -306,9 +306,9 @@ export default {
       return this.addDays(new Date(), this.maxRange);
     },
     generateTimeOptions() {
-      const startTime = 510; // 8:30 (in minutes)
+      const startTime = 570; // 9:30 (in minutes)
       const endTime = 700; // 11:30 (in minutes)
-      const interval = 180;
+      const interval = 120;
       const options = [];
 
       for (let minutes = startTime; minutes <= endTime; minutes += interval) {

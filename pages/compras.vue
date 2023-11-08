@@ -3,7 +3,7 @@
     <Banner title="Compras" />
     <div class="mt-5">
       <h1 class="text-title banner-title">Inscripción de proveedores</h1>
-      <b-card class="m-4 mt-5 col-md-11 col-sm-8 shadow" style="width:auto">
+      <b-card class="m-4 mt-5 col-md-11 col-sm-8 shadow-card" style="width:auto">
         <h4 class="section-title mt-4"> ¿Qué documentación necesito para registrarme como Proveedor Municipal? </h4>
         <div class="li-row ml-3 mt-3 mb-3">
           <div class="row">

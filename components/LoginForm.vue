@@ -10,7 +10,7 @@
           label-for="input-email"
         >
           <b-form-input
-            class="col-md-5 mx-auto"
+            class="col-md-8 col-sm-10 mx-auto"
             id="input-username"
             v-model="form.username"
             type="username"
@@ -24,7 +24,7 @@
           label-for="input-password"
         >
           <b-form-input
-            class="col-md-5 mx-auto"
+            class="col-md-8 col-sm-10 mx-auto"
             id="input-password"
             v-model="form.password"
             type="password"

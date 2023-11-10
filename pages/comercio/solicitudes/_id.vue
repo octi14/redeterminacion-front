@@ -136,7 +136,7 @@
             </div>
             <div class="layout">
               <p class="col col-main">
-                <strong class="text-primary"><b>Uso de espacio público</b></strong><br>
+                <strong class="text-primary" v-if="habilitacion.espacioPublico"><b>Uso de espacio público</b></strong><br>
               </p>
             </div>
             <div class="layout" v-if="habilitacion.espacioPublico">
@@ -172,11 +172,13 @@
               </p>
             </div>
             <div class="layout">
-              <strong class="col col-main">Servicios de hotelería:</strong>
+              <strong v-if="habilitacion.serviciosHoteleria[0].value" class="col col-main">Servicios de hotelería:</strong>
             </div>
             <div class="layout" v-for="(item, index) in habilitacion.serviciosHoteleria" :key="index">
-              <p class="col col-main" v-if="item.value">
-                <strong class="text-primary">- {{ item.servicio }}</strong><br>
+              <p class="col col-main">
+                <strong class="text-primary">- {{ item.servicio }}</strong>
+                <b-icon-check-circle-fill variant="info" v-if="item.value"></b-icon-check-circle-fill>
+                <b-icon-x-circle-fill variant="danger" v-else></b-icon-x-circle-fill>
               </p>
             </div>
             <div class="layout" v-if="habilitacion.otrosServicios">
@@ -204,7 +206,7 @@
                 <strong>{{ documentoNames[nombreDocumento] }}</strong><br>
               </p>
               <p class="col col-complementary" role="complementary">
-                <b-button size="sm" @click="openDocumento(documento)" variant="outline-primary" pill>
+                <b-button size="sm" @click="openDocumento(documento, documentoNames[nombreDocumento])" variant="outline-primary" pill>
                   <b-icon icon="eye" scale="1.2"></b-icon>
                   Ver
                 </b-button>
@@ -286,7 +288,7 @@
     <b-modal v-model="showRejectPopup" hide-footer :header-bg-variant="'danger'" centered>
         <template #modal-header>
           <div class="confirmation-popup-header mx-auto">
-            <b-icon-exclamation-triangle scale="2" variant="light" />
+            <b-icon-envelope scale="2" variant="light" />
           </div>
         </template>
         <div class="confirmation-popup-body">
@@ -305,7 +307,7 @@
     <b-modal v-model="showPrevApprove" hide-footer :header-bg-variant="'secondary'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
-          <b-icon-check-circle scale="2" variant="light" />
+          <b-icon-envelope scale="2" variant="light" />
         </div>
       </template>
       <div class="confirmation-popup-body">
@@ -327,7 +329,7 @@
     <b-modal v-model="showApprove" hide-footer :header-bg-variant="'success'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
-          <b-icon-check-circle scale="2" variant="light" />
+          <b-icon-envelope scale="2" variant="light" />
         </div>
       </template>
       <div class="confirmation-popup-body">
@@ -349,7 +351,7 @@
     <b-modal v-model="showSolicitarDoc" hide-footer :header-bg-variant="'success'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
-          <b-icon-check-circle scale="2" variant="light" />
+          <b-icon-envelope scale="2" variant="light" />
         </div>
       </template>
       <div class="confirmation-popup-body">
@@ -395,6 +397,16 @@
     <b-modal v-model="showObservaciones" header-bg-variant="primary" title="Observaciones" title-class="text-light" hide-footer centered>
       <p v-html="observaciones"></p>
     </b-modal>
+
+    <b-modal v-model="showDocumentoModal" id="documento-modal" hide-footer centered>
+      <template #modal-header>
+        <h3 class="icon-orange text-primary text-center"><b>{{ DocumentoModalTitle }}</b></h3>
+      </template>
+      <div class="modal-body">
+        
+      </div>
+    </b-modal>
+
   </div>
 </template>
 
@@ -443,6 +455,8 @@ export default {
         croquis: 'Croquis',
         // Agrega los demás nombres de documentos aquí
       },
+      showDocumentoModal: false,
+      DocumentoModalTitle: "",
     }
   },
   computed: {
@@ -592,9 +606,8 @@ export default {
       this.observaciones = ''
       this.showRejectPopup = false
     },
-    openDocumento(documento) {
-      const decodedData = atob(documento.data); // Decodificar la data de Base64
-
+    openDocumento(documento, nombreDocumento) {
+      const decodedData = atob(documento.data);
       const arrayBuffer = new ArrayBuffer(decodedData.length);
       const arrayBufferView = new Uint8Array(arrayBuffer);
 
@@ -605,34 +618,36 @@ export default {
       const blob = new Blob([arrayBuffer], { type: documento.contentType });
       const fileURL = URL.createObjectURL(blob);
 
-      const newWindow = window.open('', '_blank');
+      this.$bvModal.show('documento-modal'); // Abre el modal
+      this.DocumentoModalTitle = nombreDocumento;
 
-      let newWindowTitle = "Documento"; // Título predeterminado
+      // Utiliza $nextTick para esperar hasta que el componente esté completamente montado
+      this.$nextTick(() => {
+        const modalContent = document.querySelector('#documento-modal .modal-body'); // Obtén el elemento modal-body
 
-      if (documento.filename) {
-        newWindowTitle = documento.filename; // Usar el nombre del archivo si está disponible
-      }
-
-      newWindow.document.title = newWindowTitle; // Establecer el título de la pestaña
-
-      if (documento.contentType === 'application/pdf') {
-        // Abrir el PDF en una nueva pestaña utilizando <embed>
-        const embed = document.createElement('embed');
-        embed.setAttribute('type', 'application/pdf');
-        embed.setAttribute('src', fileURL);
-        embed.setAttribute('width', '100%');
-        embed.setAttribute('height', '100%');
-        newWindow.document.body.appendChild(embed);
-      } else if (documento.contentType.startsWith('image/')) {
-        // Abrir la imagen en una nueva pestaña utilizando <img>
-        const img = document.createElement('img');
-        img.setAttribute('src', fileURL);
-        img.setAttribute('width', 'auto');
-        img.setAttribute('height', 'auto');
-        newWindow.document.body.appendChild(img);
-      } else {
-        console.log('Formato de contenido no compatible');
-      }
+        if (modalContent) {
+          if (documento.contentType === 'application/pdf') {
+            const embed = document.createElement('iframe');
+            embed.setAttribute('type', 'application/pdf');
+            embed.setAttribute('src', fileURL);
+            embed.setAttribute('width', '100%');
+            embed.setAttribute('height', '100%');
+            modalContent.appendChild(embed);
+          } else if (documento.contentType.startsWith('image/')) {
+            const img = document.createElement('img');
+            img.setAttribute('src', fileURL);
+            img.style.maxWidth = '100%';
+            img.style.maxHeight = '100%';
+            img.style.display = 'block';
+            img.style.margin = 'auto';
+            modalContent.appendChild(img);
+          } else {
+            console.log('Formato de contenido no compatible');
+          }
+        } else {
+          console.log('No se encontró modalContent en el DOM');
+        }
+      });
     },
     onResetEdit() {
       this.editing = false
@@ -649,8 +664,10 @@ export default {
 }
 </script>
 
-<style type="text/css">
-/* Layout: */
+<style scoped>
+.modal-dialog {
+  max-width: 80% !important;
+}
 
 .col-main {
   flex: 1;

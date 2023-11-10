@@ -17,7 +17,7 @@
       </b-form-group> -->
     </div>
 
-    <b-table per-page="10" head-row-variant="warning" class="col-md-10 col-sm-8 mx-auto mt-4 shadow-card" :items="paginatedItems" :fields="fields">
+    <b-table per-page="10" head-row-variant="warning" class="col-md-10 white col-sm-8 mx-auto mt-4 shadow-card" :items="paginatedItems" :fields="fields">
       <!-- Plantilla personalizada para la columna "detalles" -->
       <template #cell(status)="row">
         <div :class="row.item.estadoColor"><b>{{ row.value }}</b></div>

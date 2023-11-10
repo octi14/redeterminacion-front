@@ -22,14 +22,14 @@
           </div>
         </b-card>
       </div>
-      <b-form @submit="onSelectTurno">
+      <b-form class="mt-3" @submit="onSelectTurno">
         <div v-if="page === 1">
           <div class="row justify-content-center" style="width: 100%">
             <img src="../../assets/turnera-banner-2.png"/>
           </div>
           <b-card class="section-card col-md-6 mx-auto">
             <h5>
-              <b-icon-calendar-check class="icon-orange"></b-icon-calendar-check>
+              <b-icon-calendar-check class="icon-orange" />
               Selección de fecha
             </h5>
             <div class="li-row">

@@ -37,7 +37,7 @@
     <div class="mx-auto text-center mt-5" v-if="filteredItems.length === 0 && search != ''">
       <h5> No se encontraron resultados para "{{ search }}" </h5>
     </div>
-    <b-pagination class="mt-5" v-if="filteredItems.length" :total-rows="items.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
+    <b-pagination class="mt-4" v-if="filteredItems.length" :total-rows="items.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
   </div>
 </template>
 

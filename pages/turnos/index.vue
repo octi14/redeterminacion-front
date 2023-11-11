@@ -2,7 +2,7 @@
   <div class="page main-background">
     <Banner title="Inspección de Comercios"/>
     <div class="mx-auto">
-      <div v-if="page === 0">
+      <div class="mt-3" v-if="page === 0">
         <div class="row justify-content-center banner-container" style="width: 100%">
           <img src="../../assets/turnera-banner-1.png" style="max-width: 100%"/>
         </div>
@@ -22,14 +22,14 @@
           </div>
         </b-card>
       </div>
-      <b-form @submit="onSelectTurno">
+      <b-form class="mt-3" @submit="onSelectTurno">
         <div v-if="page === 1">
           <div class="row justify-content-center" style="width: 100%">
             <img src="../../assets/turnera-banner-2.png"/>
           </div>
           <b-card class="section-card col-md-6 mx-auto">
             <h5>
-              <b-icon-calendar-check class="icon-orange"></b-icon-calendar-check>
+              <b-icon-calendar-check class="icon-orange" />
               Selección de fecha
             </h5>
             <div class="li-row">
@@ -306,9 +306,9 @@ export default {
       return this.addDays(new Date(), this.maxRange);
     },
     generateTimeOptions() {
-      const startTime = 510; // 8:30 (in minutes)
+      const startTime = 570; // 9:30 (in minutes)
       const endTime = 700; // 11:30 (in minutes)
-      const interval = 180;
+      const interval = 120;
       const options = [];
 
       for (let minutes = startTime; minutes <= endTime; minutes += interval) {

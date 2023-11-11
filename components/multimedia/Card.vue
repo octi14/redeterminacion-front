@@ -1,7 +1,7 @@
 <template>
   <div class="multimedia-card">
     <div class="multimedia-card mx-auto">
-      <div class="mt-3">
+      <div class="my-3">
         <b-icon-link45deg style="color:green; width:15px; height: 15px"/>
         <a class="link" :href="item.link" target="blank">
           {{item.nombre}}

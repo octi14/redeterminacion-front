@@ -80,13 +80,15 @@
               >
                 Franja horaria: {{ horariosDisponibles[index] }} - <span class="icon-orange">{{ horariosDisponibles[index]+ }}</span>
               </b-form-select-option> -->
-              <b-form-select-option :value="horariosDisponibles[0]">
+              <b-form-select-option :value="horariosDisponibles[0]" :disabled="timeDisabled(horariosDisponibles[0])" 
+                :class="{ 'disabled-option': timeDisabled(horariosDisponibles[0]) }">
                 Franja horaria: {{ horariosDisponibles[0] }} - <span class="icon-orange">{{ horariosDisponibles[1] }}</span>
               </b-form-select-option>
-              <b-form-select-option :value="horariosDisponibles[1]">
+              <b-form-select-option :value="horariosDisponibles[1]" :disabled="timeDisabled(horariosDisponibles[1])" 
+                :class="{ 'disabled-option': timeDisabled(horariosDisponibles[1]) }">
                 Franja horaria: {{ horariosDisponibles[1] }} - <span class="icon-orange"> 13:30 </span>
               </b-form-select-option>
-          </b-form-select>
+            </b-form-select>
             <div class="btn-container">
               <b-button @click="page-= 1" class="btn-cancel">Volver</b-button>
               <b-button @click="onNextPage">Continuar</b-button>
@@ -324,10 +326,24 @@ export default {
       // Disable weekends (Sunday = `0`, Saturday = `6`)
       const weekday = date.getDay();
       const day = date.getDate();
-      // Return `true` if the date should be disabled
-      return weekday === 0 || weekday === 6 ||
-       (this.localidad == "villa-gesell" && weekday >= 4) ||
-       (this.localidad != "villa-gesell" && weekday < 4);
+
+      // Verificar si la fecha tiene 6 turnos pedidos
+      const turnos = this.$store.state.turnos.all;
+      const turnosParaFecha = turnos.filter(turno => turno.dia === new Date(date).toLocaleDateString('es-AR'));
+      const seisTurnosPedidos = turnosParaFecha.length >= 6;
+
+      // Deshabilitar la fecha si es fin de semana o ya hay 6 turnos pedidos, y según la localidad
+      return weekday === 0 || weekday === 6 || seisTurnosPedidos ||
+        (this.localidad == "villa-gesell" && weekday >= 4) ||
+        (this.localidad != "villa-gesell" && weekday < 4);
+    },
+    timeDisabled(time) {
+      // Obtener la cantidad de turnos reservados para la franja horaria específica
+      const turnos = this.$store.state.turnos.all;
+      const turnosParaFranja = turnos.filter(turno => turno.dia === new Date(this.date).toLocaleDateString('es-AR') && turno.horario === time);
+      const tresTurnosPedidos = turnosParaFranja.length >= 3; // Suponiendo que 3 es el límite de turnos por franja horaria
+
+      return tresTurnosPedidos;
     },
     async onSelectTurno() {
       if (!this.nombre || !this.dni || !this.domicilio) {
@@ -396,6 +412,7 @@ export default {
                   this.nroTramite = this.nroTramiteIngresado
                   this.localidad = this.$store.state.habilitaciones.single.localidad
                   this.page += 1
+                  await this.$store.dispatch('turnos/getAll')
                 }else{
                   if(status === "Esperando inspección"){
                     await this.$store.dispatch('turnos/getSingle', { nroTramite })
@@ -488,6 +505,9 @@ export default {
 <style scoped>
   .green{
     background-color:#0b6919;
+  }
+  .disabled-option {
+    color: rgb(164, 163, 163);
   }
   .btn-orange{
     background-color:#eb8a0a !important;

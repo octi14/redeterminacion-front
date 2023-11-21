@@ -1,17 +1,17 @@
 <template>
   <div class="text-center">
     <ContainersForm>
-      <h5> Iniciá sesión para continuar </h5>
       <b-form @submit.stop.prevent="onSubmitLoginForm">
         <b-form-group
           class="my-3"
           id="input-group-username"
-          label="Usuario"
           label-for="input-email"
         >
           <b-form-input
-            class="col-md-8 col-sm-10 mx-auto"
+            size="lg"
+            class="col-11 mx-auto"
             id="input-username"
+            placeholder="Nombre de usuario"
             v-model="form.username"
             type="username"
             required
@@ -20,18 +20,20 @@
 
         <b-form-group
           id="input-group-password"
-          label="Contraseña"
           label-for="input-password"
         >
           <b-form-input
-            class="col-md-8 col-sm-10 mx-auto"
+            size="lg"
+            class="col-11 mx-auto"
             id="input-password"
+            placeholder="Contraseña"
             v-model="form.password"
             type="password"
             required
           ></b-form-input>
         </b-form-group>
-        <b-button :disabled="loggingIn" type="submit" variant="primary"> Ingresar </b-button>
+        <b-button class="col-11" size="lg" :disabled="loggingIn" type="submit" style="background-color: #ef8918"><b>Acceder</b></b-button>
+        <h6 class="mt-4 mb-4" style="color:#07691c"><b>Cambiar mi contraseña </b></h6>
       </b-form>
     </ContainersForm>
   </div>
@@ -43,7 +45,7 @@ export default {
     return {
       loggingIn: false,
       form: {
-        username: 'admin',
+        username: '',
         password: '',
       },
     }

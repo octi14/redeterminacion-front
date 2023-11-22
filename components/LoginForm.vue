@@ -34,7 +34,7 @@
           style="text-align: center;"
         ></b-form-input>
       </b-form-group>
-      <b-button class="col-10 mb-5" size="lg" :disabled="loggingIn" type="submit" style="background-color: #ef8918"><b>Acceder</b></b-button>
+      <b-button class="col-10 mb-6" size="lg" :disabled="loggingIn" type="submit" style="background-color: #ef8918"><b>Acceder</b></b-button>
     </b-form>
   </div>
 </template>

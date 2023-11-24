@@ -1,8 +1,8 @@
 <template>
-  <div class="page">
+  <div class="page main-background">
     <Banner title="Solicitudes de habilitación" subtitle="Uso interno" />
     <div class="col-8 mx-auto" v-if="adminComercio">
-      <b-form-group class="col-8 mx-auto mt-3" horizontal label-class="text-success h6" label="Filtrar por Estado">
+      <b-form-group class="col-8 mx-auto mt-4" label-class="text-success h6" label="Filtrar por Estado">
         <b-form-select plain v-model="selectedEstado">
           <option value="">Todos</option>
           <option v-for="estado in estados" :value="estado" :key="estado">{{ estado }}</option>
@@ -16,7 +16,7 @@
       </b-form-group> -->
     </div>
 
-    <b-table per-page="10" head-row-variant="warning" class="col-md-10 col-sm-8 mx-auto mt-4 shadow-lg" :items="paginatedItems" :fields="fields">
+    <b-table per-page="10" head-row-variant="warning" class="col-md-10 white col-sm-8 mx-auto mt-4 shadow-card" :items="paginatedItems" :fields="fields">
       <!-- Plantilla personalizada para la columna "detalles" -->
       <template #cell(status)="row">
         <div :class="row.item.estadoColor"><b>{{ row.value }}</b></div>
@@ -34,7 +34,7 @@
         </b-button>
       </template>
     </b-table>
-    <b-pagination pills :total-rows="items.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
+    <b-pagination class="mt-4" :total-rows="items.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
 
     <b-modal v-model="singleModal" header-bg-variant="primary" title="Observaciones" title-class="text-light" hide-footer centered>
       <p v-html="singleContent"></p>
@@ -87,7 +87,7 @@ export default{
           key: 'observaciones'
         }
       ],
-      estados: ['Rechazada','En revisión', 'Esperando turno','Esperando inspección','Inspeccionado', 'Esperando documentación', 'Prórroga 1', 'Prórroga 2', 'Finalizada'],
+      estados: ['Rechazada','En revisión', 'Rectificación', 'Esperando turno','Esperando inspección','Inspeccionado', 'Esperando documentación', 'Prórroga 1', 'Prórroga 2', 'Finalizada'],
     }
   },
   async fetch() {
@@ -98,30 +98,41 @@ export default{
     this.items.forEach(item => {
       switch (item.status) {
         case 'En revisión':
-          item.estadoColor = 'estado-primary';
+          item.estadoColor = 'text-primary';
           break;
-        case 'Esperando inspección':
-          item.estadoColor = 'estado-secondary';
+        case 'Rectificación':
+          item.estadoColor = 'text-lightblue';
           break;
         case 'Esperando turno':
-          item.estadoColor = 'estado-secondary';
+          item.estadoColor = 'text-secondary';
           break;
-        case 'Rechazada':
-          item.estadoColor = 'estado-danger';
+        case 'Esperando inspección':
+          item.estadoColor = 'text-secondary';
           break;
-        case 'Esperando documentación':
-          item.estadoColor = 'estado-success';
+        case 'Prórroga 1':
+          item.estadoColor = 'text-secondary';
+          break;
+        case 'Prórroga 2':
+          item.estadoColor = 'text-secondary';
           break;
         case 'Inspeccionado':
-          item.estadoColor = 'estado-success';
+          item.estadoColor = 'text-lightgreen';
+          break;
+        case 'Rechazada':
+          item.estadoColor = 'text-danger';
+          break;
+        case 'Esperando documentación':
+          item.estadoColor = 'text-success';
           break;
         case 'Finalizada':
-          item.estadoColor = 'estado-success';
+          item.estadoColor = 'text-darkgreen';
           break;
         default:
-          item.estadoColor = 'estado-primary';
+          item.estadoColor = 'text-primary';
       }
     });
+    this.$store.commit('habilitaciones/ordenarHabilitaciones')
+
     const perPage = 10;
   },
   computed: {

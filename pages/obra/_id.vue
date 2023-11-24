@@ -1,5 +1,5 @@
 <template>
-  <div class="page background-2">
+  <div class="page main-background">
     <Banner title="Detalle de obra"/>
     <div v-if="obra">
       <div class="container my-3 col-sm-12">
@@ -49,8 +49,8 @@
               </div>
             </div>
             <!-- Body -->
-            <div class="card shadow-lg col-lg-6 col-sm-12 mx-auto" v-if="!adding && !editing">
-              <div class="obra-content col-12 mx-auto mb-4">
+            <div class="card shadow-card col-lg-6 col-sm-12 mx-auto" v-if="!adding && !editing">
+              <div class="obra-content col-12 mx-auto mt-3 mb-4">
                 <div class="layout">
                   <p class="col col-main">
                     <strong style="color:green">Expediente</strong>

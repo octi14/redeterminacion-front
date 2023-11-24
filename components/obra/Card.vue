@@ -5,7 +5,7 @@
         <h5 class="text-success">{{ obra.objeto }}</h5>
       </NuxtLink>
       <a>{{ obra.adjudicado }}</a> <br>
-      <strong>{{ obra.fecha_contrato }}</strong>
+      <strong>{{ new Date(obra.fecha_contrato).toLocaleDateString('es-AR') }}</strong>
     </b-card-body>
   </b-card>
 </template>

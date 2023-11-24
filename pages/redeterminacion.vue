@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page main-background">
     <Banner title="Obras" />
     <template v-if="adminHacienda">
       <ObraFeed />

@@ -1,39 +1,41 @@
 <template>
   <div class="text-center">
-    <ContainersForm>
-      <h5> Iniciá sesión para continuar </h5>
-      <b-form @submit.stop.prevent="onSubmitLoginForm">
-        <b-form-group
-          class="my-3"
-          id="input-group-username"
-          label="Usuario"
-          label-for="input-email"
-        >
-          <b-form-input
-            class="col-md-5 mx-auto"
-            id="input-username"
-            v-model="form.username"
-            type="username"
-            required
-          ></b-form-input>
-        </b-form-group>
+    <b-form @submit.stop.prevent="onSubmitLoginForm">
+      <b-form-group
+        class="my-3 text-left"
+        id="input-group-username"
+        label-for="input-email"
+      >
+        <b-form-input
+          size="lg"
+          class="col-10 mx-auto"
+          id="input-username"
+          placeholder="Nombre de usuario"
+          v-model="form.username"
+          type="username"
+          required
+          style="text-align: center;"
+        ></b-form-input>
+      </b-form-group>
 
-        <b-form-group
-          id="input-group-password"
-          label="Contraseña"
-          label-for="input-password"
-        >
-          <b-form-input
-            class="col-md-5 mx-auto"
-            id="input-password"
-            v-model="form.password"
-            type="password"
-            required
-          ></b-form-input>
-        </b-form-group>
-        <b-button :disabled="loggingIn" type="submit" variant="primary"> Ingresar </b-button>
-      </b-form>
-    </ContainersForm>
+      <b-form-group
+        class="text-left"
+        id="input-group-password"
+        label-for="input-password"
+      >
+        <b-form-input
+          size="lg"
+          class="col-10 mx-auto"
+          id="input-password"
+          placeholder="Contraseña"
+          v-model="form.password"
+          type="password"
+          required
+          style="text-align: center;"
+        ></b-form-input>
+      </b-form-group>
+      <b-button class="col-10 mb-6" size="lg" :disabled="loggingIn" type="submit" style="background-color: #ef8918"><b>Acceder</b></b-button>
+    </b-form>
   </div>
 </template>
 
@@ -43,7 +45,7 @@ export default {
     return {
       loggingIn: false,
       form: {
-        username: 'admin',
+        username: '',
         password: '',
       },
     }
@@ -57,4 +59,3 @@ export default {
   },
 }
 </script>
-

@@ -7,7 +7,7 @@
         <option v-for="estado in estados" :value="estado" :key="estado">{{ estado }}</option>
       </b-form-select>
     </b-form-group>
-    <b-table per-page="10" head-row-variant="primary" class="col-md-10 col-sm-8 mx-auto mt-4 shadow-lg" hover :items="paginatedItems" :fields="fields">
+    <b-table per-page="10" head-row-variant="primary" class="col-md-10 col-sm-8 mx-auto mt-4 shadow-card" hover :items="paginatedItems" :fields="fields">
       <template #cell(status)="row">
         <div :class="row.item.estadoColor"><b>{{ row.value }}</b></div>
       </template>
@@ -88,19 +88,19 @@ export default{
     this.items.forEach(item => {
       switch (item.status) {
         case 'Pendiente de inspección':
-          item.estadoColor = 'estado-secondary';
+          item.estadoColor = 'text-secondary';
           break;
         case 'Cancelado':
           item.estadoColor = 'estado-danger';
           break;
         case 'Inspeccionado':
-          item.estadoColor = 'estado-success';
+          item.estadoColor = 'text-success';
           break;
         case 'Inspección rechazada':
           item.estadoColor = 'estado-danger';
           break;
         default:
-          item.estadoColor = 'estado-primary';
+          item.estadoColor = 'text-primary';
       }
     });
     const perPage = 10;

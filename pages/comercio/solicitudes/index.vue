@@ -87,7 +87,7 @@ export default{
           key: 'observaciones'
         }
       ],
-      estados: ['Rechazada','En revisión', 'Esperando turno','Esperando inspección','Inspeccionado', 'Esperando documentación', 'Prórroga 1', 'Prórroga 2', 'Finalizada'],
+      estados: ['Rechazada','En revisión', 'Rectificación', 'Esperando turno','Esperando inspección','Inspeccionado', 'Esperando documentación', 'Prórroga 1', 'Prórroga 2', 'Finalizada'],
     }
   },
   async fetch() {
@@ -111,7 +111,7 @@ export default{
           break;
         case 'Prórroga 1':
           item.estadoColor = 'text-secondary';
-          break;          
+          break;
         case 'Prórroga 2':
           item.estadoColor = 'text-secondary';
           break;

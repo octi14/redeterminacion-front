@@ -88,19 +88,19 @@ export default{
     this.items.forEach(item => {
       switch (item.status) {
         case 'Pendiente de inspección':
-          item.estadoColor = 'estado-secondary';
+          item.estadoColor = 'text-secondary';
           break;
         case 'Cancelado':
           item.estadoColor = 'estado-danger';
           break;
         case 'Inspeccionado':
-          item.estadoColor = 'estado-success';
+          item.estadoColor = 'text-success';
           break;
         case 'Inspección rechazada':
           item.estadoColor = 'estado-danger';
           break;
         default:
-          item.estadoColor = 'estado-primary';
+          item.estadoColor = 'text-primary';
       }
     });
     const perPage = 10;

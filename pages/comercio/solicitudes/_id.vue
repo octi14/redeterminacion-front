@@ -27,11 +27,13 @@
       <div class="row col-10 mx-auto justify-content-center" v-if="jefeComercio">
         <b-button @click="onSolicitarDocumentacion" variant="success" pill class="btn-4 mt-3 mx-1" v-if="habilitacion.status === 'Inspeccionado'"> Solicitar documentación </b-button>
         <b-button @click="onAprobarSolicitud" variant="success" pill class="btn-4 mt-3 mx-1" v-if="habilitacion.status==='En revisión'"> Aprobar solicitud </b-button>
+        <b-button @click="onRectificacion" variant="secondary " pill class="btn-4 mt-3 mx-1" v-if="habilitacion.status === 'En revisión'"> Rectificación </b-button>
         <b-button @click="onFinalizarSolicitud" variant="success" pill class="btn-4 mt-3 mx-1" v-if="habilitacion.status === 'Esperando documentación'"> Finalizar solicitud </b-button>
         <b-button @click="onRestablecer" variant="secondary" pill class="btn-4 mt-3 mx-1" v-if="habilitacion.status != 'En revisión'"> Volver a estado En Revisión </b-button>
         <b-button @click="onRechazarSolicitud" variant="success" pill class="btn-3 mt-3 mx-1"> Rechazar solicitud </b-button>
         <b-button @click="onShowObservaciones" variant="primary" pill class="btn-2 mt-3 mx-1"> Ver observaciones </b-button>
       </div>
+      <!--Datos del solicitante-->
       <b-card no-body class="container col-md-6 col-sm-8 shadow-card mt-4 mx-auto">
           <div class="col mx-auto">
             <div class="container text-center mx-auto">
@@ -283,6 +285,7 @@
     </div>
 
     <!-- Modals -->
+    <!--Modal previo a rechazar el turno-->
     <b-modal v-model="showRejectPopup" hide-footer :header-bg-variant="'danger'" centered>
         <template #modal-header>
           <div class="confirmation-popup-header mx-auto">
@@ -302,6 +305,26 @@
         </div>
     </b-modal>
 
+    <!--Modal solicitar rectificación de datos-->
+    <b-modal v-model="showRectificacion" hide-footer :header-bg-variant="'secondary'" centered>
+      <template #modal-header>
+        <div class="confirmation-popup-header mx-auto">
+          <b-icon-exclamation-octagon scale="2" variant="light" />
+        </div>
+      </template>
+      <div class="confirmation-popup-body">
+        <h2 class="icon-orange text-secondary text-center"><b>Rectificación de datos</b></h2>
+        <hr/>
+        <p>Se solicitará una rectificación de datos o de documentación. Recordá notificar al solicitante a través de su correo electrónico indicando los motivos.</p>
+        <div class="text-center mt-3">
+          <b-btn variant="primary" @click="onSendRectificacion()" >
+              Aceptar
+          </b-btn>
+        </div>
+      </div>
+    </b-modal>
+
+    <!--Modal previo a aprobar(con y sin inspección)-->
     <b-modal v-model="showPrevApprove" hide-footer :header-bg-variant="'secondary'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
@@ -324,6 +347,7 @@
       </div>
     </b-modal>
 
+    <!--Modal solicitud aprobada-->
     <b-modal v-model="showApprove" hide-footer :header-bg-variant="'success'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
@@ -346,6 +370,7 @@
       </div>
     </b-modal>
 
+    <!--Modal solicitar documentación(inspección aprobada)-->
     <b-modal v-model="showSolicitarDoc" hide-footer :header-bg-variant="'success'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
@@ -368,6 +393,7 @@
       </div>
     </b-modal>
 
+    <!--Modal finalizar trámite y colocar el número de expediente-->
     <b-modal v-model="showFinalizar" hide-footer :header-bg-variant="'success'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
@@ -405,17 +431,18 @@ export default {
     return {
       statusClasses: {
         'En revisión': 'text-primary',
-        'Esperando documentación': 'text-lightgreen',
-        'Inspeccionado': 'text-success',
-        'Aprobada': 'text-success',
-        'Rechazada': 'text-danger',
+        'Rectificación': 'text-lightblue',
         'Esperando turno': 'text-secondary',
         'Esperando inspección': 'text-secondary',
         'Prórroga 1': 'text-secondary',
         'Prórroga 2': 'text-secondary',
-        'Finalizada': 'text-success'
+        'Inspeccionado': 'text-lightgreen',
+        'Esperando documentación': 'text-success',
+        'Rechazada': 'text-danger',
+        'Finalizada': 'text-darkgreen'
       },
       inspeccion: false,
+      showRectificacion: false,
       showPrevApprove: false,
       showApprove: false,
       showFinalizar: false,
@@ -493,6 +520,9 @@ export default {
     wait(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
     },
+    onRectificacion(){
+      this.showRectificacion = true
+    },
     onSolicitarDocumentacion(){
       this.showSolicitarDoc = true
     },
@@ -509,6 +539,19 @@ export default {
         this.observaciones = "No hay observaciones para mostrar."
       }
       this.showObservaciones = true
+    },
+    async onSendRectificacion(){
+      const habilitacion = {
+        status: 'Rectificación'
+      }
+      const id = this.habilitacion.id
+      const userToken = this.$store.state.user.token
+      await this.$store.dispatch('habilitaciones/update', {
+        id,
+        habilitacion,
+      })
+      this.habilitacion.status = habilitacion.status
+      this.showRectificacion = false
     },
     async onSendSolicitar(){
       const habilitacion = {

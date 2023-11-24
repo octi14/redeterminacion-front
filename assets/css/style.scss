@@ -7,24 +7,8 @@ $danger: #cc0025;
 $warning: #cbc508;
 
 // Clases para el color de estado
-.estado-secondary {
-  color: $secondary; // Ajusta el color del texto según tu diseño
-}
-
-.estado-primary {
-  color: $primary; // Ajusta el color del texto según tu diseño
-}
-
-.estado-warning {
-  color: $warning; // Ajusta el color del texto según tu diseño
-}
-
 .estado-danger {
   color: $danger; // Ajusta el color del texto según tu diseño
-}
-
-.estado-success {
-  color: $success; // Ajusta el color del texto según tu diseño
 }
 
 $navbar-dark-color: rgba($white, .8);

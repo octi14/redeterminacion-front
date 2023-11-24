@@ -87,7 +87,7 @@ export default{
           key: 'observaciones'
         }
       ],
-      estados: ['Rechazada','En revisión', 'Esperando turno','Esperando inspección','Inspeccionado', 'Esperando documentación', 'Prórroga 1', 'Prórroga 2', 'Finalizada'],
+      estados: ['Rechazada','En revisión', 'Rectificación', 'Esperando turno','Esperando inspección','Inspeccionado', 'Esperando documentación', 'Prórroga 1', 'Prórroga 2', 'Finalizada'],
     }
   },
   async fetch() {
@@ -98,28 +98,37 @@ export default{
     this.items.forEach(item => {
       switch (item.status) {
         case 'En revisión':
-          item.estadoColor = 'estado-primary';
+          item.estadoColor = 'text-primary';
           break;
-        case 'Esperando inspección':
-          item.estadoColor = 'estado-secondary';
+        case 'Rectificación':
+          item.estadoColor = 'text-lightblue';
           break;
         case 'Esperando turno':
-          item.estadoColor = 'estado-secondary';
+          item.estadoColor = 'text-secondary';
           break;
-        case 'Rechazada':
-          item.estadoColor = 'estado-danger';
+        case 'Esperando inspección':
+          item.estadoColor = 'text-secondary';
           break;
-        case 'Esperando documentación':
-          item.estadoColor = 'text-lightgreen';
+        case 'Prórroga 1':
+          item.estadoColor = 'text-secondary';
+          break;
+        case 'Prórroga 2':
+          item.estadoColor = 'text-secondary';
           break;
         case 'Inspeccionado':
-          item.estadoColor = 'estado-success';
+          item.estadoColor = 'text-lightgreen';
+          break;
+        case 'Rechazada':
+          item.estadoColor = 'text-danger';
+          break;
+        case 'Esperando documentación':
+          item.estadoColor = 'text-success';
           break;
         case 'Finalizada':
-          item.estadoColor = 'estado-success';
+          item.estadoColor = 'text-darkgreen';
           break;
         default:
-          item.estadoColor = 'estado-primary';
+          item.estadoColor = 'text-primary';
       }
     });
     this.$store.commit('habilitaciones/ordenarHabilitaciones')

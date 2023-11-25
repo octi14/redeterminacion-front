@@ -10,13 +10,17 @@
       <div class="flex col" style="width: 96%">
         <div class="row justify-content-center mt-3">
           <p class="h5"> Número de trámite: <b> {{ habilitacion.nroTramite }}  </b></p>
+          <span v-if="mostrarIconoAdvertencia" class="iconoAdvertencia">
+            <b-icon-exclamation-circle-fill scale="1.3" class="text-secondary ml-3" v-on:mouseover="showAdvertencia = true" v-on:mouseleave="showAdvertencia = false" />
+            <span v-if="showAdvertencia" class="textoHover">El plazo administrativo del trámite está por vencer o se encuentra vencido.</span>
+          </span>
         </div>
         <div class="row justify-content-center mt-3">
           <p class="h5"> Tipo de trámite: <b> {{ habilitacion.tipoSolicitud }}  </b></p>
         </div>
         <div class="row justify-content-center mt-3">
           <div class="h5 row"> Estado:
-            <h5 :class="getStatusClass(habilitacion.status)"> {{ habilitacion.status }}</h5>
+            <h5 :class="getStatusClass(habilitacion.status)" class="ml-2"> {{ habilitacion.status }}</h5>
           </div>
         </div>
         <div class="row justify-content-center" v-if="habilitacion.status === 'Finalizada'">
@@ -442,6 +446,7 @@ export default {
         'Finalizada': 'text-darkgreen'
       },
       inspeccion: false,
+      showAdvertencia: false,
       showRectificacion: false,
       showPrevApprove: false,
       showApprove: false,
@@ -473,6 +478,17 @@ export default {
     }
   },
   computed: {
+    mostrarIconoAdvertencia() {
+      if(this.habilitacion){
+        const fechaCreacion = this.habilitacion.createdAt;
+        const fechaActual = new Date();
+        const diferenciaDias = Math.floor((fechaActual - fechaCreacion) / (1000 * 60 * 60 * 24)); // Diferencia en días
+        
+        return diferenciaDias >= 25 && this.habilitacion.status !== 'Finalizada' && this.habilitacion.status !== 'Rechazada'
+      }else{
+        return false
+      }
+    },
     cleanDocumentos() {
       if(this.habilitacion && this.documentos){
         // Filtrar los documentos para eliminar el campo "_id"
@@ -717,6 +733,24 @@ export default {
 }
 
 /* etc */
+.iconoAdvertencia {
+  position: relative;
+  display: inline-block;
+}
+
+/* Estilo del texto de advertencia */
+.textoHover {
+  position: absolute;
+  top: -60px; /* Ajusta la posición vertical del texto */
+  left: 20px; /* Ajusta la posición horizontal del texto */
+  background-color: #fff;
+  color: #000;
+  padding: 5px;
+  width: 450px;
+  border-radius: 5px;
+  z-index: 1; /* Asegura que esté encima del ícono */
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3); /* Agrega una sombra */
+}
 
 .text-loading{
   color: #0eb7b2ab;

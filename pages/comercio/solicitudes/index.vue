@@ -36,7 +36,7 @@
     </b-table>
     <b-pagination class="mt-4" :total-rows="items.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
 
-    <b-modal v-model="singleModal" header-bg-variant="primary" title="Observaciones" title-class="text-light" hide-footer centered>
+    <b-modal v-model="observacionesModal" header-bg-variant="primary" title="Observaciones" title-class="text-light" hide-footer centered>
       <p v-html="singleContent"></p>
     </b-modal>
   </div>
@@ -50,7 +50,7 @@ export default{
       lastLength: false,
       items: [],
       selectedEstado: '',
-      singleModal: false,
+      observacionesModal: false,
       singleContent: 'asdasd',
       currentPage: 1,
       perPage: 10,
@@ -189,7 +189,7 @@ export default{
       const observacionesDivididas = habilitacion.observaciones.split('-').join('<br>');
 
       this.singleContent = observacionesDivididas;
-      this.singleModal = true;
+      this.observacionesModal = true;
     },
   },
 }

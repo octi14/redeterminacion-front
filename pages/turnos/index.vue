@@ -14,7 +14,7 @@
             <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Para iniciar, ingresá el <b>número de trámite</b> que recibiste luego de haber enviado el Formulario de Solicitud de Habilitaciones.</p></div>
           </div>
           <b-form>
-            <b-form-input @keydown.enter.native.prevent="onNextPage" v-model="nroTramiteIngresado" type="number" size="lg" class="col-md-6 col-sm-10 mt-4 mx-auto" placeholder="Número de trámite" no-wheel></b-form-input>
+            <b-form-input :disabled="enterKeyPressed" @keydown.enter.native="onNextPage" v-model="nroTramiteIngresado" type="number" size="lg" class="col-md-6 col-sm-10 mt-4 mx-auto" placeholder="Número de trámite" no-wheel></b-form-input>
           </b-form>
           <div class="btn-container">
             <b-button class="btn-cancel" @click="onResetParams">Cancelar</b-button>
@@ -286,6 +286,7 @@ export default {
       horariosDisponibles: [],
       maxRange: 15,
       token: 0,
+      enterKeyPressed: false,
       endButton: false,
       showPopupFormError: false,
       showPopupNoEntry: false,
@@ -379,7 +380,7 @@ export default {
         const habilitacion = {
           status: 'Esperando inspección',
           observaciones: observaciones + " - " + "Turno solicitado el día " + new Date().toLocaleDateString('es-AR')
-           + " - " + "Se debe inspeccionar el comercio el día " + this.date.toLocaleDateString('es-AR') + " a las " + this.time
+           + " - " + "Se debe inspeccionar el comercio el día " + new Date(this.date).toLocaleDateString('es-AR') + " a las " + this.time
         }
         await this.$store.dispatch('habilitaciones/updateLazy',{
           id: habilitacionId,
@@ -400,6 +401,7 @@ export default {
     async onNextPage() {
       switch (this.page) {
         case 0:
+          this.enterKeyPressed = true
           if (!this.nroTramiteIngresado) {
             this.showPopupNoEntry = true
           } else {
@@ -414,7 +416,7 @@ export default {
                   this.page += 1
                   await this.$store.dispatch('turnos/getAll')
                 }else{
-                  if(status === "Esperando inspección"){
+                  if(status === "Esperando inspección" || status === "Prórroga 1" || status === "Prórroga 2" || status === "Inspeccionado"){
                     await this.$store.dispatch('turnos/getSingle', { nroTramite })
                     this.showPopupAlready = true
                   }else{
@@ -435,6 +437,7 @@ export default {
               });
             }
           }
+          this.enterKeyPressed = false
           break;
 
         case 1:

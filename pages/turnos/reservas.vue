@@ -7,6 +7,8 @@
         <option v-for="estado in estados" :value="estado" :key="estado">{{ estado }}</option>
       </b-form-select>
     </b-form-group>
+    <b-form-checkbox class="text-center" v-model="hideFinalizados">Ocultar Inspeccionados/Cancelados</b-form-checkbox>
+
     <b-table per-page="10" head-row-variant="primary" class="col-md-10 col-sm-8 mx-auto mt-4 shadow-card" hover :items="paginatedItems" :fields="fields">
       <template #cell(status)="row">
         <div :class="row.item.estadoColor"><b>{{ row.value }}</b></div>
@@ -38,6 +40,7 @@
 export default{
   data() {
     return {
+      hideFinalizados: false,
       singleModal: false,
       singleContent: '',
       lastLength: false,
@@ -114,9 +117,21 @@ export default{
       const endIndex = startIndex + this.perPage;
 
       if (this.selectedEstado) {
-        return this.items.filter(item => item.status === this.selectedEstado).slice(startIndex, endIndex);
+        return this.items.filter((item) => {
+          if (this.hideFinalizados) {
+            return item.status === this.selectedEstado && !["Cancelado", "Inspeccionado"].includes(item.status);
+          } else {
+            return item.status === this.selectedEstado;
+          }
+        }).slice(startIndex, endIndex);
       } else {
-        return this.items.slice(startIndex, endIndex);
+        return this.items.filter((item) => {
+          if (this.hideFinalizados) {
+            return !["Cancelado", "Inspeccionado"].includes(item.status);
+          } else {
+            return true;
+          }
+        }).slice(startIndex, endIndex);
       }
     },
     filteredItems() {

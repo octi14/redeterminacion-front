@@ -429,7 +429,7 @@
 </template>
 
 <script>
-
+import heic2any from 'heic2any';
 export default {
   data() {
     return {
@@ -501,12 +501,12 @@ export default {
       }
     },
     adminComercio(){
-      return this.$store.state.user.admin == "comercio"
+      return this.$store.state.user.admin == "comercio" || this.$store.state.user.admin == "master"
     },
     jefeComercio(){
       return (this.$store.state.user.username === "myriamalonso@gesell.gob.ar"
               || this.$store.state.user.username === "mariaelisabetbahlcke@gesell.gob.ar"
-              || this.$store.state.user.username === "lujanperez@gesell.gob.ar")
+              || this.$store.state.user.username === "lujanperez@gesell.gob.ar") || this.$store.state.user.admin == "master"
     },
   },
   async fetch() {
@@ -665,7 +665,6 @@ export default {
       const fileURL = URL.createObjectURL(blob);
 
       const newWindow = window.open('', '_blank');
-
       let newWindowTitle = "Documento"; // Título predeterminado
 
       if (documento.filename) {
@@ -675,7 +674,7 @@ export default {
       newWindow.document.title = newWindowTitle; // Establecer el título de la pestaña
 
       if (documento.contentType === 'application/pdf') {
-        // Abrir el PDF en una nueva pestaña utilizando <embed>
+        // Código existente para abrir PDF
         const embed = document.createElement('embed');
         embed.setAttribute('type', 'application/pdf');
         embed.setAttribute('src', fileURL);
@@ -683,12 +682,30 @@ export default {
         embed.setAttribute('height', '100%');
         newWindow.document.body.appendChild(embed);
       } else if (documento.contentType.startsWith('image/')) {
-        // Abrir la imagen en una nueva pestaña utilizando <img>
-        const img = document.createElement('img');
-        img.setAttribute('src', fileURL);
-        img.setAttribute('width', 'auto');
-        img.setAttribute('height', 'auto');
-        newWindow.document.body.appendChild(img);
+        if (documento.contentType === 'image/heic') {
+          // Si es un HEIC, convertirlo a JPEG usando heic2any
+          heic2any({
+            blob,
+            toType: 'image/jpeg', // Especificar el tipo de salida
+            quality: 0.7 // Ajustar la calidad de salida (opcional)
+          }).then((convertedBlob) => {
+            const convertedFileURL = URL.createObjectURL(convertedBlob);
+            const img = document.createElement('img');
+            img.setAttribute('src', convertedFileURL);
+            img.setAttribute('width', 'auto');
+            img.setAttribute('height', 'auto');
+            newWindow.document.body.appendChild(img);
+          }).catch((error) => {
+            console.error('Error al convertir HEIC a JPEG:', error);
+          });
+        } else {
+          // Si es cualquier otra imagen, mostrarla directamente
+          const img = document.createElement('img');
+          img.setAttribute('src', fileURL);
+          img.setAttribute('width', 'auto');
+          img.setAttribute('height', 'auto');
+          newWindow.document.body.appendChild(img);
+        }
       } else {
         console.log('Formato de contenido no compatible');
       }

@@ -1,8 +1,9 @@
 <template>
-  <div class="page">
-    <div class="container text-center my-5 mx-auto">
-      <h4> Buscar índice </h4>
-      <b-form class="col-md-4 mx-auto" @submit.stop.prevent="onSearchIndex">
+  <div class="page main-background">
+    <Banner title="Índices"/>
+    <h4 class="col-md-5 col-sm-10 mx-auto mt-5"> Buscar índice </h4>
+    <div class="container col-md-5 col-sm-10 card shadow-card text-center my-5 mx-auto">
+      <b-form class="col-md-10 my-5 mx-auto" @submit.stop.prevent="onSearchIndex">
         <b-text class="h6"> Mes </b-text>
         <b-form-input type="number" v-model="mes"> </b-form-input>
         <b-text class="h6"> Año </b-text>

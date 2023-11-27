@@ -175,7 +175,7 @@ export default{
       return Math.ceil(this.filteredItems.length / this.perPage);
     },
     adminComercio() {
-      return this.$store.state.user.admin === "comercio"
+      return this.$store.state.user.admin === "comercio" || this.$store.state.user.admin == "master"
     }
   },
   methods: {

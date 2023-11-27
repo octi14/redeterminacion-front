@@ -11,7 +11,7 @@
 export default {
   computed: {
     adminHacienda() {
-      return this.$store.state.user.admin == "hacienda"
+      return this.$store.state.user.admin == "hacienda" ||  this.$store.state.user.admin == "master"
     },
   }
 }

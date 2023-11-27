@@ -110,10 +110,10 @@ export default {
       return Boolean(this.$store.state.user.token)
     },
     adminHacienda(){
-      return this.$store.state.user.admin == "hacienda"
+      return this.$store.state.user.admin == "hacienda" || this.$store.state.user.admin == "master"
     },
     adminComercio(){
-      return this.$store.state.user.admin == "comercio"
+      return this.$store.state.user.admin == "comercio" || this.$store.state.user.admin =="master"
     },
     adminInspeccion(){
       return this.$store.state.user.admin == "inspeccion"

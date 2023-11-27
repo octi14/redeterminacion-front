@@ -61,7 +61,7 @@ export default {
       return Boolean(this.$store.state.user.admin == "true")
     },
     adminHacienda(){
-      return this.$store.state.user.admin == "hacienda"
+      return this.$store.state.user.admin == "hacienda" || this.$store.state.user.admin == "master"
     }
   }
 }

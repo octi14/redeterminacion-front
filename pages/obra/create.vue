@@ -1,9 +1,9 @@
 <template>
-  <div class="page background mt-2">
+  <div class="page main-background mt-2">
     <Banner title="Crear nueva obra" />
     <div class="container my-4">
       <!-- <p>Agrega una nueva obra con sus características</p> -->
-      <b-form class=" card my-4 col-md-9 mx-auto" @submit.stop.prevent="onSubmitCreateFile">
+      <b-form class="card shadow-card my-4 col-md-9 mx-auto" @submit.stop.prevent="onSubmitCreateFile">
         <b-form-group class="mt-3">
             <b-form-group label="Expediente">
               <b-form-input v-model="expediente" type="text" />

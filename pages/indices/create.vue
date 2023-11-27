@@ -1,8 +1,11 @@
 <template>
-  <div class="page">
-    <div class="container my-5">
-      <h4 class="text-center">Crear índice</h4>
-      <b-form class="my-3 col-md-5 mx-auto justify-content-center" @submit.stop.prevent="onSubmitCreateFile">
+  <div class="page main-background">
+    <Banner title="Índices"></Banner>
+    <div class="col-6 mx-auto mt-5">
+      <p style="font-size: 2rem"><b>Crear índice</b></p>
+    </div>
+    <div class="container col-6 card shadow-card my-5">
+      <b-form class="my-3 col-md-10 mx-auto justify-content-center" @submit.stop.prevent="onSubmitCreateFile">
         <b-form-group>
             <b-form-group label="Año">
               <b-form-input v-model="año" type="text" />
@@ -90,5 +93,3 @@ export default {
   },
 }
 </script>
-
-<style type="text/css"></style>

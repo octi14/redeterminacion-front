@@ -370,10 +370,7 @@ export default {
     format(value) {
         let val = (value/1).toFixed(2).replace('.', ',')
         return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-    },
-    isAdmin(){
-      return (this.$store.state.user.admin == true) || (this.$store.state.user.admin == "true")
-    },
+    }
   },
 }
 </script>

@@ -4,7 +4,7 @@
     <div v-if="obra">
       <div class="container my-3 col-sm-12">
         <div class="row">
-          <div class="col mt-4">
+          <div class="col">
             <h1 class="h2 text-center">{{ obra.objeto }}</h1>
             <h4 class="h4 text-center">Adjudicado: {{ obra.adjudicado }}</h4>
             <div class="container my-1">

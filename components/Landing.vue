@@ -49,6 +49,11 @@ export default {
           title: "Modernización"
         },
         {
+          to: "/consulta_tramite",
+          icon: "search",
+          title: "Consulta Estado de trámite"
+        },
+        {
           to: "/compras",
           icon: "briefcase",
           title: "Compras"
@@ -72,7 +77,7 @@ export default {
   margin-top: 20px;
   width: 80px;
   height: 80px;
-  color:#d88d00;
+  color:#ef8918;
   transition: transform 0.2s ease; /* Cambia la duración a medio segundo (0.5s) */
 }
 /* Aplicar escala al hacer hover en el ícono */

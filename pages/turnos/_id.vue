@@ -85,12 +85,12 @@
           </div>
         </template>
         <div class="confirmation-popup-body">
-          <h2 class="icon-orange text-center"><b>Rechazar inspección</b></h2>
+          <h2 class="icon-orange text-danger text-center"><b>Rechazar inspección</b></h2>
           <p>La inspección será rechazada. Se dará aviso inmediatamente al Departamento de Comercio.</p>
           <p>Observaciones:  </p>
           <b-form-textarea v-model="observaciones" type="text" />
           <div class="text-center mt-3">
-            <b-btn variant="primary" @click="onSendReject()" >
+            <b-btn variant="danger" @click="onSendReject()" >
                 Enviar
             </b-btn>
           </div>
@@ -105,12 +105,12 @@
           </div>
         </template>
         <div class="confirmation-popup-body">
-          <h2 class="icon-orange text-center"><b>Cancelar turno</b></h2>
+          <h2 class="icon-orange text-center text-danger"><b>Cancelar turno</b></h2>
           <p>El turno será cancelado. Se dará aviso inmediatamente al Departamento de Comercio.</p>
           <p>Observaciones:  </p>
           <b-form-textarea v-model="observaciones" type="text" />
           <div class="text-center mt-3">
-            <b-btn variant="primary" @click="onSendCancel()" >
+            <b-btn variant="danger" @click="onSendCancel()" >
                 Enviar
             </b-btn>
           </div>
@@ -147,7 +147,7 @@
         <h4 class="text-success text-center"><b>Comercio inspeccionado</b></h4>
         <p class="text-center">El trámite continuará desde el Departamento de Comercio.</p>
         <div class="text-center mt-3">
-          <b-btn variant="primary" @click="showApprove = false">
+          <b-btn variant="success" @click="showApprove = false">
               Aceptar
           </b-btn>
         </div>
@@ -155,18 +155,18 @@
     </b-modal>
 
     <!-- chequeo prorroga-->
-    <b-modal v-model="showPrevProrroga" hide-footer :header-bg-variant="'success'" centered>
+    <b-modal v-model="showPrevProrroga" hide-footer :header-bg-variant="'secondary'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
           <b-icon-check-circle scale="2" variant="light" />
         </div>
       </template>
       <div class="confirmation-popup-body">
-        <h4 class="text-primary text-center"><b>Prórroga</b></h4>
+        <h4 class="text-primary text-center text-secondary"><b>Prórroga</b></h4>
         <p class="text-center">Se concederá prórroga de<b> 7 días hábiles </b>para que el solicitante dé cumplimiento a los requerimientos. </p>
         <p class="text-center">La cantidad total de prórrogas pasibles de conceder son dos (2) continuadas e ininterrumpidas.</p>
         <div class="text-center mt-3">
-          <b-btn variant="primary" @click="onSendProrroga">
+          <b-btn variant="secondary" @click="onSendProrroga">
               Aceptar
           </b-btn>
         </div>
@@ -184,7 +184,7 @@
         <h4 class="text-success text-center"><b>Inspección prorrogada</b></h4>
         <p class="text-center">El trámite ha sido prorrogado por 7 días hábiles a partir de la fecha en la que se efectuó la prórroga.</p>
         <div class="text-center mt-3">
-          <b-btn variant="primary" @click="showProrroga = false">
+          <b-btn variant="success" @click="showProrroga = false">
               Aceptar
           </b-btn>
         </div>
@@ -195,14 +195,14 @@
     <b-modal v-model="showNoMasProrrogas" hide-footer :header-bg-variant="'danger'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
-          <b-icon-check-circle scale="2" variant="light" />
+          <b-icon-exclamation-circle scale="2" variant="light" />
         </div>
       </template>
       <div class="confirmation-popup-body">
         <h4 class="text-danger text-center"><b>No se pueden otorgar más prórrogas</b></h4>
         <p class="text-center">Sólo pueden darse 2 prórrogas por turno. En caso de requerir un caso especial donde haya más de 2 prórrogas por favor comuníquese con Soporte Técnico. </p>
         <div class="text-center mt-3">
-          <b-btn variant="primary" @click="showNoMasProrrogas = false">
+          <b-btn variant="danger" @click="showNoMasProrrogas = false">
               Aceptar
           </b-btn>
         </div>

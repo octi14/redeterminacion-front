@@ -51,7 +51,7 @@ export default {
         {
           to: "/consulta_tramite",
           icon: "search",
-          title: "Consulta Estado de trámite"
+          title: "Consulta estado de trámite"
         },
         {
           to: "/compras",
@@ -62,9 +62,6 @@ export default {
     };
   },
   computed: {
-    isAdmin(){
-      return Boolean(this.$store.state.user.admin == "true")
-    },
     adminHacienda(){
       return this.$store.state.user.admin == "hacienda" || this.$store.state.user.admin == "master"
     }

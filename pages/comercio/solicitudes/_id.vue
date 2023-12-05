@@ -34,7 +34,7 @@
         <b-button @click="onRectificacion" variant="secondary " pill class="btn-4 mt-3 mx-1" v-if="habilitacion.status === 'En revisión'"> Rectificación </b-button>
         <b-button @click="onFinalizarSolicitud" variant="success" pill class="btn-4 mt-3 mx-1" v-if="habilitacion.status === 'Esperando documentación'"> Finalizar solicitud </b-button>
         <b-button @click="onRestablecer" variant="secondary" pill class="btn-4 mt-3 mx-1" v-if="habilitacion.status != 'En revisión'"> Volver a estado En Revisión </b-button>
-        <b-button @click="onRechazarSolicitud" variant="success" pill class="btn-3 mt-3 mx-1"> Rechazar solicitud </b-button>
+        <b-button @click="onRechazarSolicitud" pill class="btn-3 mt-3 mx-1"> Rechazar solicitud </b-button>
         <b-button @click="onShowObservaciones" variant="primary" pill class="btn-2 mt-3 mx-1"> Ver observaciones </b-button>
       </div>
       <!--Datos del solicitante-->
@@ -302,7 +302,7 @@
           <p>Observaciones:  </p>
           <b-form-textarea v-model="observaciones" required type="text" />
           <div class="text-center mt-3">
-            <b-btn variant="primary" @click="onSendReject()" >
+            <b-btn variant="danger" @click="onSendReject()" >
                 Enviar
             </b-btn>
           </div>
@@ -321,7 +321,7 @@
         <hr/>
         <p>Se solicitará una rectificación de datos o de documentación. Recordá notificar al solicitante a través de su correo electrónico indicando los motivos.</p>
         <div class="text-center mt-3">
-          <b-btn variant="primary" @click="onSendRectificacion()" >
+          <b-btn variant="secondary" @click="onSendRectificacion()" >
               Aceptar
           </b-btn>
         </div>

@@ -22,7 +22,7 @@
           </div>
         </b-card>
       </div>
-      <b-form class="mt-3" @submit="onSelectTurno">
+      <b-form class="mt-3">
         <div v-if="page === 1">
           <div class="row justify-content-center" style="width: 100%">
             <img src="../../assets/turnera-banner-2.png"/>
@@ -135,7 +135,10 @@
             </b-card>
             <div class="btn-container">
               <b-button @click="page-= 1" class="btn-cancel">Volver</b-button>
-              <b-button :disabled="sendingForm"  @click="onSelectTurno">Continuar</b-button>
+              <b-button :disabled="sendingForm || !areAllFieldsComplete"  @click="onSelectTurno">Continuar</b-button>
+            </div>            
+            <div v-if="!areAllFieldsComplete" class="validation-error">
+              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Falta completar información.
             </div>
           </b-card>
         </div>
@@ -504,11 +507,21 @@ export default {
       }
       return '';
     },
+    areAllFieldsComplete(){
+        return (this.date && this.time && this.nroTramite && this.nombre && this.dni && this.domicilio)
+    }
   },
 };
 </script>
 
 <style scoped>
+
+  .validation-error {
+    text-align: center;
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+  }
   .green{
     background-color:#0b6919;
   }

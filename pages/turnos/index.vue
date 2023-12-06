@@ -22,7 +22,7 @@
           </div>
         </b-card>
       </div>
-      <b-form class="mt-3" @submit="onSelectTurno">
+      <b-form class="mt-3">
         <div v-if="page === 1">
           <div class="row justify-content-center" style="width: 100%">
             <img src="../../assets/turnera-banner-2.png"/>
@@ -67,8 +67,11 @@
           <div class="row justify-content-center" style="width: 100%">
             <img src="../../assets/turnera-banner-3.png"/>
           </div>
-          <b-card class="section-card col-md-6 mx-auto">
-            <h5><b-icon-clock class="icon-orange"></b-icon-clock> Selección de horario</h5>
+          <b-card class="section-card col-md-6 mx-auto">            
+            <h5>
+              <b-icon-clock class="icon-orange"></b-icon-clock>
+              Selección de horario
+            </h5>
             <div class="li-row">
               <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Seleccioná una franja horaria para recibir la visita de inspección.</p></div>
             </div>
@@ -100,7 +103,7 @@
             <img src="../../assets/turnera-banner-4.png"/>
           </div>
           <b-card class="section-card col-md-6 mx-auto">
-            <h5><img src="../../assets/icon-num-rifa.png" width="3%" /> Confirmación de turno</h5>
+            <h5><img class="bi-ticket" src="../../assets/icon-num-rifa.png" /> Confirmación de turno</h5>
             <div class="li-row">
               <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Completá los datos que te solicitamos a continuación.</p></div>
             </div>
@@ -132,7 +135,10 @@
             </b-card>
             <div class="btn-container">
               <b-button @click="page-= 1" class="btn-cancel">Volver</b-button>
-              <b-button :disabled="sendingForm"  @click="onSelectTurno">Continuar</b-button>
+              <b-button :disabled="sendingForm || !areAllFieldsComplete"  @click="onSelectTurno">Continuar</b-button>
+            </div>            
+            <div v-if="!areAllFieldsComplete" class="validation-error">
+              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Falta completar información.
             </div>
           </b-card>
         </div>
@@ -501,11 +507,21 @@ export default {
       }
       return '';
     },
+    areAllFieldsComplete(){
+        return (this.date && this.time && this.nroTramite && this.nombre && this.dni && this.domicilio)
+    }
   },
 };
 </script>
 
 <style scoped>
+
+  .validation-error {
+    text-align: center;
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+  }
   .green{
     background-color:#0b6919;
   }
@@ -651,11 +667,14 @@ export default {
     border-bottom: 2px solid #CCC;
     margin-bottom: 1rem;
   }
-  .section-card h5 .bi-calendar-check{
-    font-size: 2.5rem;
+  .section-card h5 .bi-calendar-check, .section-card h5 .bi-clock, .section-card h5 .bi-ticket{
     margin-right: 0.5rem;
-    padding-right: 0.75rem;
     border-right: 1px solid #999;
+    font-size: 2.5rem;
+    padding-right: 0.75rem;
+  }
+  .section-card h5 .bi-ticket{
+    width: 5%;
   }
   .icon-orange{
     color: #E27910;

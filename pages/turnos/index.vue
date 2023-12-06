@@ -14,7 +14,7 @@
             <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Para iniciar, ingresá el <b>número de trámite</b> que recibiste luego de haber enviado el Formulario de Solicitud de Habilitaciones.</p></div>
           </div>
           <b-form>
-            <b-form-input @keydown.enter.native.prevent="onNextPage" v-model="nroTramiteIngresado" type="number" size="lg" class="col-md-6 col-sm-10 mt-4 mx-auto" placeholder="Número de trámite" no-wheel></b-form-input>
+            <b-form-input :disabled="enterKeyPressed" @keydown.enter.native="onNextPage" v-model="nroTramiteIngresado" type="number" size="lg" class="col-md-6 col-sm-10 mt-4 mx-auto" placeholder="Número de trámite" no-wheel></b-form-input>
           </b-form>
           <div class="btn-container">
             <b-button class="btn-cancel" @click="onResetParams">Cancelar</b-button>
@@ -83,13 +83,15 @@
               >
                 Franja horaria: {{ horariosDisponibles[index] }} - <span class="icon-orange">{{ horariosDisponibles[index]+ }}</span>
               </b-form-select-option> -->
-              <b-form-select-option :value="horariosDisponibles[0]">
+              <b-form-select-option :value="horariosDisponibles[0]" :disabled="timeDisabled(horariosDisponibles[0])" 
+                :class="{ 'disabled-option': timeDisabled(horariosDisponibles[0]) }">
                 Franja horaria: {{ horariosDisponibles[0] }} - <span class="icon-orange">{{ horariosDisponibles[1] }}</span>
               </b-form-select-option>
-              <b-form-select-option :value="horariosDisponibles[1]">
+              <b-form-select-option :value="horariosDisponibles[1]" :disabled="timeDisabled(horariosDisponibles[1])" 
+                :class="{ 'disabled-option': timeDisabled(horariosDisponibles[1]) }">
                 Franja horaria: {{ horariosDisponibles[1] }} - <span class="icon-orange"> 13:30 </span>
               </b-form-select-option>
-          </b-form-select>
+            </b-form-select>
             <div class="btn-container">
               <b-button @click="page-= 1" class="btn-cancel">Volver</b-button>
               <b-button @click="onNextPage">Continuar</b-button>
@@ -287,6 +289,7 @@ export default {
       horariosDisponibles: [],
       maxRange: 15,
       token: 0,
+      enterKeyPressed: false,
       endButton: false,
       showPopupFormError: false,
       showPopupNoEntry: false,
@@ -327,10 +330,24 @@ export default {
       // Disable weekends (Sunday = `0`, Saturday = `6`)
       const weekday = date.getDay();
       const day = date.getDate();
-      // Return `true` if the date should be disabled
-      return weekday === 0 || weekday === 6 ||
-       (this.localidad == "villa-gesell" && weekday >= 4) ||
-       (this.localidad != "villa-gesell" && weekday < 4);
+
+      // Verificar si la fecha tiene 6 turnos pedidos
+      const turnos = this.$store.state.turnos.all;
+      const turnosParaFecha = turnos.filter(turno => turno.dia === new Date(date).toLocaleDateString('es-AR'));
+      const seisTurnosPedidos = turnosParaFecha.length >= 6;
+
+      // Deshabilitar la fecha si es fin de semana o ya hay 6 turnos pedidos, y según la localidad
+      return weekday === 0 || weekday === 6 || seisTurnosPedidos ||
+        (this.localidad == "villa-gesell" && weekday >= 4) ||
+        (this.localidad != "villa-gesell" && weekday < 4);
+    },
+    timeDisabled(time) {
+      // Obtener la cantidad de turnos reservados para la franja horaria específica
+      const turnos = this.$store.state.turnos.all;
+      const turnosParaFranja = turnos.filter(turno => turno.dia === new Date(this.date).toLocaleDateString('es-AR') && turno.horario === time);
+      const tresTurnosPedidos = turnosParaFranja.length >= 3; // Suponiendo que 3 es el límite de turnos por franja horaria
+
+      return tresTurnosPedidos;
     },
     async onSelectTurno() {
       if (!this.nombre || !this.dni || !this.domicilio) {
@@ -366,7 +383,7 @@ export default {
         const habilitacion = {
           status: 'Esperando inspección',
           observaciones: observaciones + " - " + "Turno solicitado el día " + new Date().toLocaleDateString('es-AR')
-           + " - " + "Se debe inspeccionar el comercio el día " + this.date.toLocaleDateString('es-AR') + " a las " + this.time
+           + " - " + "Se debe inspeccionar el comercio el día " + new Date(this.date).toLocaleDateString('es-AR') + " a las " + this.time
         }
         await this.$store.dispatch('habilitaciones/updateLazy',{
           id: habilitacionId,
@@ -387,6 +404,7 @@ export default {
     async onNextPage() {
       switch (this.page) {
         case 0:
+          this.enterKeyPressed = true
           if (!this.nroTramiteIngresado) {
             this.showPopupNoEntry = true
           } else {
@@ -399,8 +417,9 @@ export default {
                   this.nroTramite = this.nroTramiteIngresado
                   this.localidad = this.$store.state.habilitaciones.single.localidad
                   this.page += 1
+                  await this.$store.dispatch('turnos/getAll')
                 }else{
-                  if(status === "Esperando inspección"){
+                  if(status === "Esperando inspección" || status === "Prórroga 1" || status === "Prórroga 2" || status === "Inspeccionado"){
                     await this.$store.dispatch('turnos/getSingle', { nroTramite })
                     this.showPopupAlready = true
                   }else{
@@ -421,6 +440,7 @@ export default {
               });
             }
           }
+          this.enterKeyPressed = false
           break;
 
         case 1:
@@ -491,6 +511,9 @@ export default {
 <style scoped>
   .green{
     background-color:#0b6919;
+  }
+  .disabled-option {
+    color: rgb(164, 163, 163);
   }
   .btn-orange{
     background-color:#eb8a0a !important;

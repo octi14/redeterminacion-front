@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page main-background">
     <Banner title="Solicitudes de turnos" subtitle="Uso interno" />
     <b-form-group class="col-4 mx-auto mt-3" horizontal label-class="text-success">
       <label for="selectedEstado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><b-icon-funnel-fill></b-icon-funnel-fill> Filtrar por Estado</label>
@@ -8,7 +8,9 @@
         <option v-for="estado in estados" :value="estado" :key="estado">{{ estado }}</option>
       </b-form-select>
     </b-form-group>
-    <b-table per-page="10" head-row-variant="primary" class="col-md-10 col-sm-8 mx-auto mt-4 shadow-card" hover :items="paginatedItems" :fields="fields">
+    <b-form-checkbox class="text-center" v-model="hideFinalizados">Ocultar Inspeccionados/Cancelados</b-form-checkbox>
+
+    <b-table per-page="10" head-row-variant="primary" class="col-md-10 col-sm-8 mx-auto mt-4 shadow-card white" hover :items="paginatedItems" :fields="fields">
       <template #cell(status)="row">
         <div :class="row.item.estadoColor"><b>{{ row.value }}</b></div>
       </template>
@@ -39,6 +41,7 @@
 export default{
   data() {
     return {
+      hideFinalizados: false,
       singleModal: false,
       singleContent: '',
       lastLength: false,
@@ -89,21 +92,22 @@ export default{
     this.items.forEach(item => {
       switch (item.status) {
         case 'Pendiente de inspección':
-          item.estadoColor = 'estado-secondary';
+          item.estadoColor = 'text-secondary';
           break;
         case 'Cancelado':
           item.estadoColor = 'estado-danger';
           break;
         case 'Inspeccionado':
-          item.estadoColor = 'estado-success';
+          item.estadoColor = 'text-success';
           break;
         case 'Inspección rechazada':
           item.estadoColor = 'estado-danger';
           break;
         default:
-          item.estadoColor = 'estado-primary';
+          item.estadoColor = 'text-primary';
       }
     });
+    await this.$store.commit('turnos/ordenar')
     const perPage = 10;
   },
   computed: {
@@ -115,9 +119,21 @@ export default{
       const endIndex = startIndex + this.perPage;
 
       if (this.selectedEstado) {
-        return this.items.filter(item => item.status === this.selectedEstado).slice(startIndex, endIndex);
+        return this.items.filter((item) => {
+          if (this.hideFinalizados) {
+            return item.status === this.selectedEstado && !["Cancelado", "Inspeccionado"].includes(item.status);
+          } else {
+            return item.status === this.selectedEstado;
+          }
+        }).slice(startIndex, endIndex);
       } else {
-        return this.items.slice(startIndex, endIndex);
+        return this.items.filter((item) => {
+          if (this.hideFinalizados) {
+            return !["Cancelado", "Inspeccionado"].includes(item.status);
+          } else {
+            return true;
+          }
+        }).slice(startIndex, endIndex);
       }
     },
     filteredItems() {

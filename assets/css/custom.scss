@@ -142,7 +142,16 @@ html, body, div#__nuxt, div#__layout {
 }
 
 .text-lightgreen{
-  color: #00dc0f;
+  color: #24ce3d;
+}
+
+.text-darkgreen{
+  color: #15571f;
+}
+
+
+.text-lightblue{
+  color: #5473ea;
 }
 
 .shadow-card{
@@ -151,4 +160,9 @@ html, body, div#__nuxt, div#__layout {
 
 .white{
   background-color: #ffffff;
+}
+
+.banner{
+  border: #f8f5f5;
+  border-color: #f8f5f5;
 }

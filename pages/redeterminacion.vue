@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page main-background">
     <Banner title="Obras" />
     <template v-if="adminHacienda">
       <ObraFeed />
@@ -11,7 +11,7 @@
 export default {
   computed: {
     adminHacienda() {
-      return this.$store.state.user.admin == "hacienda"
+      return this.$store.state.user.admin == "hacienda" ||  this.$store.state.user.admin == "master"
     },
   }
 }

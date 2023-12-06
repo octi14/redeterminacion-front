@@ -1,10 +1,10 @@
 <template>
-  <div class="page background-2">
+  <div class="page main-background">
     <Banner title="Detalle de obra"/>
     <div v-if="obra">
       <div class="container my-3 col-sm-12">
         <div class="row">
-          <div class="col mt-4">
+          <div class="col">
             <h1 class="h2 text-center">{{ obra.objeto }}</h1>
             <h4 class="h4 text-center">Adjudicado: {{ obra.adjudicado }}</h4>
             <div class="container my-1">
@@ -50,7 +50,7 @@
             </div>
             <!-- Body -->
             <div class="card shadow-card col-lg-6 col-sm-12 mx-auto" v-if="!adding && !editing">
-              <div class="obra-content col-12 mx-auto mb-4">
+              <div class="obra-content col-12 mx-auto mt-3 mb-4">
                 <div class="layout">
                   <p class="col col-main">
                     <strong style="color:green">Expediente</strong>
@@ -370,10 +370,7 @@ export default {
     format(value) {
         let val = (value/1).toFixed(2).replace('.', ',')
         return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-    },
-    isAdmin(){
-      return (this.$store.state.user.admin == true) || (this.$store.state.user.admin == "true")
-    },
+    }
   },
 }
 </script>

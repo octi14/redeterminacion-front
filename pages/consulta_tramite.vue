@@ -120,7 +120,7 @@
         <div class="centeredContainer modal-primary">
           <p class="modal-subtitle">Tu trámite se encuentra esperando turno de inspección.</p>
           <p> El departamento Comercio se comunicará por correo electrónico para indicarte que debés sacar turno para inspeccionar tu local.</p>
-          <small style="color:black">No olvides revisar la carpeta de “spam” o “no deseados”. </small>
+          <small>No olvides revisar la carpeta de “spam” o “no deseados”. </small>
         </div>
         <template #modal-footer>
           <div class="" style="margin: auto">

@@ -3,7 +3,7 @@
     <b-button class="mx-auto my-2 justify-content-center" variant="info" @click="toggleShow">
       {{ visible ? "Ocultar" : "Mostrar"}}
     </b-button>
-    <b-card no-body class="certificado-card col-md-12 text-center" v-if="visible">
+    <b-card no-body class="certificado-card shadow-card mb-4 col-md-12 text-center" v-if="visible">
       <div class="row">
         <!-- <NuxtLink :to="{ name: 'certificado-id', params: { id: certificado.id } }">
           <img :src="certificado.image" class="card-img-top" :alt="certificado.name" />

@@ -1,6 +1,6 @@
 <template>
-  <div class="card shadow-card my-3">
-    <h4 class="mx-auto mt-3"> Avance de obra por item </h4>
+  <div class="card col-md-6 col-sm-10 shadow-card my-3">
+    <h4 class="mx-auto mt-3 text-primary"><b> Avance de obra por item </b></h4>
     <div class="row">
       <div class="col ml-4">
         <br/>

@@ -65,7 +65,6 @@ module.exports = {
     const response = await axios.$post('/users/verify', {
       token,
     })
-    console.log(response.data)
     return response.data
   },
   // register: async (axios, { username, password }) => {

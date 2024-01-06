@@ -5,18 +5,48 @@
       <p class="h4 text-success"><b>Cambiar contraseña</b></p>
     </div>
     <div class="text-center col-md-4 col-sm-8 card shadow-card mt-6 mx-auto">
-      <b-form class="mt-4" @submit.prevent="onResetPassword" @reset="onCancel">
+      <b-form class="mt-5" @submit.prevent="onResetPassword" @reset="onCancel">
         <h6> Contraseña anterior </h6>
-        <b-form-input class="col-10 mb-3 mx-auto" v-model="oldPassword"></b-form-input>
+        <div class="col-10 mx-auto mb-3 position-relative">
+          <b-form-input v-model="oldPassword" :type="visibleOldPass ? 'text' : 'password'"
+                        class="position-relative">
+          </b-form-input>
+          <div class="position-absolute end-0 top-50 translate-middle-y"
+               @mousedown="showOldPassword" @mouseup="hideOldPassword" @mouseleave="hideOldPassword"
+               style="cursor: pointer; right: 25px; top: 5px">
+            <i v-if="visibleOldPass" class="far fa-eye-slash"></i>
+            <i v-else class="far fa-eye"></i>
+          </div>
+        </div>
         <h6> Nueva contraseña </h6>
-        <b-form-input class="col-10 mb-3 mx-auto" v-model="newPassword"></b-form-input>
+        <div class="col-10 mx-auto mb-3 position-relative">
+          <b-form-input v-model="newPassword" :type="visibleNewPass ? 'text' : 'password'"
+                        class="position-relative">
+          </b-form-input>
+          <div class="position-absolute end-0 top-50 translate-middle-y"
+               @mousedown="showNewPassword" @mouseup="hideNewPassword" @mouseleave="hideNewPassword"
+               style="cursor: pointer; right: 25px; top: 5px">
+            <i v-if="visibleNewPass" class="far fa-eye-slash"></i>
+            <i v-else class="far fa-eye"></i>
+          </div>
+        </div>
         <h6> Repetir contraseña </h6>
-        <b-form-input class="col-10 mx-auto" v-model="repeatNewPassword"></b-form-input>
+        <div class="col-10 mx-auto mb-3 position-relative">
+          <b-form-input v-model="repeatNewPassword" :type="visibleRepeat ? 'text' : 'password'"
+                        class="position-relative">
+          </b-form-input>
+          <div class="position-absolute end-0 top-50 translate-middle-y"
+               @mousedown="showRepeatNewPassword" @mouseup="hideRepeatNewPassword" @mouseleave="hideRepeatNewPassword"
+               style="cursor: pointer; right: 25px; top: 5px">
+            <i v-if="visibleRepeat" class="far fa-eye-slash"></i>
+            <i v-else class="far fa-eye"></i>
+          </div>
+        </div>
       </b-form>
       <div class="row mb-3 mx-auto">
-        <b-button pill class="mt-5 mr-1" variant="success" @click="onResetPassword">Cambiar</b-button>
+        <b-button pill class="mt-4 mr-1" variant="success" @click="onResetPassword">Cambiar</b-button>
         <NuxtLink to="/">
-          <b-button pill class="mt-5" variant="danger" type="reset">Salir</b-button>
+          <b-button pill class="mt-4" variant="danger" type="reset">Salir</b-button>
         </NuxtLink>
       </div>
     </div>
@@ -46,6 +76,9 @@ export default{
   data(){
     return{
       oldPassword: '',
+      visibleOldPass: false,
+      visibleNewPass: false,
+      visibleRepeat: false,
       newPassword: '',
       repeatNewPassword: '',
       showPopupChanged: false,
@@ -80,7 +113,30 @@ export default{
     },
     async onCancel(){
       await this.$router.push('/')
-    }
+    },
+    showOldPassword() {
+      this.visibleOldPass = true;
+    },
+    hideOldPassword() {
+      this.visibleOldPass = false;
+    },
+    showNewPassword() {
+      this.visibleNewPass = true;
+    },
+    hideNewPassword() {
+      this.visibleNewPass = false;
+    },
+    showRepeatNewPassword() {
+      this.visibleRepeat = true;
+    },
+    hideRepeatNewPassword() {
+      this.visibleRepeat = false;
+    },
   }
 }
 </script>
+
+<style scoped>
+ @import "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css";
+
+</style>

@@ -84,6 +84,9 @@
       <b-navbar-nav class="ml-auto">
         <template v-if="isAuthenticated">
           <b-nav-item-dropdown :text="username" right>
+            <b-dropdown-item @click="onMyAccount">
+              Mi cuenta
+            </b-dropdown-item>
             <b-dropdown-item @click="onUserLogout">
               Cerrar Sesión
             </b-dropdown-item>
@@ -129,6 +132,9 @@ export default {
     onUserLogout() {
       this.$store.dispatch('user/logout')
     },
+    onMyAccount(){
+      this.$router.push('/account')
+    }
   },
 }
 </script>

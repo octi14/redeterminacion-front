@@ -10,7 +10,7 @@
             </b-button>
           </NuxtLink>
         </div>
-        <div v-if="adminHacienda" class="col-lg-4 col-md-6 my-4 col-sm-12 mb-4">
+        <div v-if="adminHacienda" class="col-lg-4 col-md-6 mx-auto my-4 col-sm-12 mb-4">
           <NuxtLink to="/redeterminacion" class="d-block">
             <b-button variant="outline" class="btn-5">
               <b-icon-calculator class="mb-4 landing-icon" />
@@ -49,6 +49,11 @@ export default {
           title: "Modernización"
         },
         {
+          to: "/consulta_tramite",
+          icon: "search",
+          title: "Consulta estado de trámite"
+        },
+        {
           to: "/compras",
           icon: "briefcase",
           title: "Compras"
@@ -57,9 +62,6 @@ export default {
     };
   },
   computed: {
-    isAdmin(){
-      return Boolean(this.$store.state.user.admin == "true")
-    },
     adminHacienda(){
       return this.$store.state.user.admin == "hacienda" || this.$store.state.user.admin == "master"
     }
@@ -72,7 +74,7 @@ export default {
   margin-top: 20px;
   width: 80px;
   height: 80px;
-  color:#d88d00;
+  color:#ef8918;
   transition: transform 0.2s ease; /* Cambia la duración a medio segundo (0.5s) */
 }
 /* Aplicar escala al hacer hover en el ícono */

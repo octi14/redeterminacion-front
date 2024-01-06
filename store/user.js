@@ -37,6 +37,36 @@ export const actions = {
       commit('logout');
     }
   },
+  async changePassword({ commit }, { userId, oldPassword, newPassword }) {
+    try {
+      const response = await UserService.changePassword(this.$axios, {
+        userId,
+        oldPassword,
+        newPassword,
+      });
+  
+      if (response) {
+        window &&
+          window.$nuxt.$bvToast.toast('Contraseña cambiada con éxito.', {
+            variant: 'success',
+            appendToast: true,
+            solid: true,
+          });
+        return true;
+      } else {
+        window &&
+          window.$nuxt.$bvToast.toast('Error al cambiar la contraseña.', {
+            variant: 'danger',
+            appendToast: true,
+            solid: true,
+          });
+        return false;
+      }
+    } catch (error) {
+      console.error('Error al cambiar la contraseña:', error);
+      return false;
+    }
+  },  
   async logout({ commit }) {
     commit('logout')
     await this.$router.push('/')

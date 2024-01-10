@@ -142,53 +142,47 @@
             </div>
             <div class="layout">
               <p class="col col-main">
-                <strong class="text-primary" v-if="habilitacion.espacioPublico"><b>Uso de espacio público</b></strong><br>
+                <strong v-if="habilitacion.espacioPublico">Uso de espacio público: </strong><br>
               </p>
             </div>
             <div class="layout" v-if="habilitacion.espacioPublico">
               <p class="col col-main">
-                <strong>- Mesas y sillas</strong><br>
-              </p>
-              <p class="col col-complementary" role="complementary">
-                <a>{{ habilitacion.mesas ? 'Si' : 'No' }}</a>
+                <strong class="text-primary">- Mesas y sillas: </strong> <b-icon-check-circle-fill variant="info" v-if="habilitacion.mesas"></b-icon-check-circle-fill>
+                  <b-icon-x-circle-fill variant="danger" v-else></b-icon-x-circle-fill><br>
               </p>
             </div>
             <div class="layout" v-if="habilitacion.espacioPublico">
               <p class="col col-main">
-                <strong>- Marquesina</strong><br>
-              </p>
-              <p class="col col-complementary" role="complementary">
-                <a>{{ habilitacion.marquesina ? 'Si' : 'No' }}</a>
+                <strong class="text-primary">- Marquesina: </strong> <b-icon-check-circle-fill variant="info" v-if="habilitacion.marquesina"></b-icon-check-circle-fill>
+                  <b-icon-x-circle-fill variant="danger" v-else></b-icon-x-circle-fill><br>
               </p>
             </div>
             <div class="layout" v-if="habilitacion.espacioPublico">
               <p class="col col-main">
-                <strong>- Carteles</strong><br>
-              </p>
-              <p class="col col-complementary" role="complementary">
-                <a>{{ habilitacion.carteles ? 'Si' : 'No' }}</a>
+                <strong class="text-primary">- Carteles: </strong> <b-icon-check-circle-fill variant="info" v-if="habilitacion.carteles"></b-icon-check-circle-fill>
+                  <b-icon-x-circle-fill variant="danger" v-else></b-icon-x-circle-fill><br>
               </p>
             </div>
             <div class="layout" v-if="habilitacion.espacioPublico">
               <p class="col col-main">
-                <strong>- Mercadería</strong><br>
-              </p>
-              <p class="col col-complementary" role="complementary">
-                <a>{{ habilitacion.mercaderia ? 'Si' : 'No' }}</a>
+                <strong class="text-primary">- Mercadería: </strong> <b-icon-check-circle-fill variant="info" v-if="habilitacion.espacioPublico"></b-icon-check-circle-fill>
+                  <b-icon-x-circle-fill variant="danger" v-else></b-icon-x-circle-fill><br>
               </p>
             </div>
-            <div class="layout">
-              <strong v-if="habilitacion.serviciosHoteleria[0].value" class="col col-main">Servicios de hotelería:</strong>
-            </div>
-            <div class="layout" v-for="(item, index) in habilitacion.serviciosHoteleria" :key="index">
-              <p class="col col-main">
-                <strong class="text-primary">- {{ item.servicio }}</strong>
-                <b-icon-check-circle-fill variant="info" v-if="item.value"></b-icon-check-circle-fill>
-                <b-icon-x-circle-fill variant="danger" v-else></b-icon-x-circle-fill>
-              </p>
-            </div>
-            <div class="layout" v-if="habilitacion.otrosServicios">
-              <p class="col col-main ml-5">  {{ habilitacion.otrosServicios }} </p>
+            <div  v-if="habilitacion.serviciosHoteleria">
+              <div class="layout">
+                <strong class="col col-main">Servicios de hotelería:</strong>
+              </div>
+              <div class="layout" v-for="(item, index) in habilitacion.serviciosHoteleria" :key="index">
+                <p class="col col-main">
+                  <strong class="text-primary">- {{ item.servicio }}</strong>
+                  <b-icon-check-circle-fill variant="info" v-if="item.value"></b-icon-check-circle-fill>
+                  <b-icon-x-circle-fill variant="danger" v-else></b-icon-x-circle-fill>
+                </p>
+              </div>
+              <div class="layout" v-if="habilitacion.otrosServicios" style="border:1px solid #CCC">
+                <p class="col col-main ml-5">"<i>{{ habilitacion.otrosServicios }}</i>"</p>
+              </div>
             </div>
             <br>
           </div>

@@ -1,7 +1,4 @@
 export default {
-  server: {
-    host: '0.0.0.0', // Permite que otros dispositivos de la red accedan al servidor
-  },
   target: 'server',
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -48,8 +45,8 @@ export default {
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    //baseURL: 'https://redeterminacion-back.herokuapp.com/',
-     baseURL: 'http://10.0.0.18:5000/',  // Used as fallback if no runtime config is provided
+    baseURL: 'https://redeterminacion-back.herokuapp.com/',
+    // baseURL: 'http://localhost:5000/',  // Used as fallback if no runtime config is provided
   },
 
 

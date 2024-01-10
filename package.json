@@ -6,9 +6,9 @@
     "node": "16.x"
   },
   "scripts": {
-    "dev": "SET NODE_OPTIONS=--openssl-legacy-provider && nuxt",
-    "build": "SET NODE_OPTIONS=--openssl-legacy-provider && nuxt build",
-    "start": "SET NODE_OPTIONS=--openssl-legacy-provider && nuxt start",
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
     "export": "nuxt export",
     "serve": "nuxt serve",
     "generate": "nuxt generate",

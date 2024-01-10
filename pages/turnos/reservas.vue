@@ -1,8 +1,9 @@
 <template>
   <div class="page main-background">
     <Banner title="Solicitudes de turnos" subtitle="Uso interno" />
-    <b-form-group class="col-4 mx-auto mt-3" horizontal label-class="text-success h6" label="Filtrar por Estado">
-      <b-form-select plain v-model="selectedEstado">
+    <b-form-group class="col-4 mx-auto mt-3" horizontal label-class="text-success">
+      <label for="selectedEstado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><b-icon-funnel-fill></b-icon-funnel-fill> Filtrar por Estado</label>
+        <b-form-select plain v-model="selectedEstado">
         <option value="">Todos</option>
         <option v-for="estado in estados" :value="estado" :key="estado">{{ estado }}</option>
       </b-form-select>

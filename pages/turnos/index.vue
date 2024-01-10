@@ -25,7 +25,7 @@
       <b-form class="mt-3">
         <div v-if="page === 1">
           <div class="row justify-content-center" style="width: 100%">
-            <img src="../../assets/turnera-banner-2.png"/>
+            <img src="../../assets/turnera-banner-2.png" style="max-width: 100%"/>
           </div>
           <b-card class="section-card col-md-6 mx-auto">
             <h5>
@@ -65,7 +65,7 @@
         </div>
         <div v-if="page === 2">
           <div class="row justify-content-center" style="width: 100%">
-            <img src="../../assets/turnera-banner-3.png"/>
+            <img src="../../assets/turnera-banner-3.png" style="max-width: 100%"/>
           </div>
           <b-card class="section-card col-md-6 mx-auto">            
             <h5>
@@ -100,7 +100,7 @@
         </div>
         <div v-if="page === 3">
           <div class="row justify-content-center" style="width: 100%">
-            <img src="../../assets/turnera-banner-4.png"/>
+            <img src="../../assets/turnera-banner-4.png" style="max-width: 100%"/>
           </div>
           <b-card class="section-card col-md-6 mx-auto">
             <h5><img class="bi-ticket" src="../../assets/icon-num-rifa.png" /> Confirmación de turno</h5>
@@ -383,11 +383,13 @@ export default {
             domicilio: this.domicilio,
             nroTramite: this.nroTramite,
           }
-          this.sendingForm = true;
-          await this.$store.dispatch('turnos/create', { turno });
+          this.sendingForm = true
+          await this.$store.dispatch('turnos/create',{
+            turno
+          })
           success = true; // Cambia la bandera a true si el try se ejecutó correctamente
-        } catch (e) {
-          this.$bvToast.toast('No se pudo solicitar un turno. Intente nuevamente.', {
+        }catch(e){
+          this.$bvToast.toast('No se pudo solicitar un turno por un error desconocido. Recargue la pagina e intente nuevamente más tarde.', {
             solid: true,
             variant: 'danger',
             appendToast: true,
@@ -531,6 +533,36 @@ export default {
 </script>
 
 <style scoped>
+@media (max-width: 720px){
+  .b-calendar{
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 0 !important;
+  }
+  .banner-container{
+    margin:auto;
+  }
+  .section-card{
+    padding: 1rem 1rem !important;
+  }
+  .card{
+    width: 90% !important;
+    margin-left: 5% !important;
+    margin-right: 5% !important; 
+  }
+  .btn{
+    width: 9rem !important;
+  }
+  .bi-ticket{
+    width: 10% !important;
+  }
+  .modal-dialog{
+    max-width: 100px !important;
+  }
+  .justify-content-center{
+    margin: auto;
+  }
+}
 
   .validation-error {
     text-align: center;

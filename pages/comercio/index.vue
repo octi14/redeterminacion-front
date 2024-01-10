@@ -353,6 +353,13 @@
                 <div class="li-row first-li">
                   <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                   <div class="li-content">
+                    <p class="li-title">¿Cómo puedo saber en qué estado se encuentra mi trámite?</p>
+                    <p>Hacé click en el botón <a class="external-link" href="/consulta_tramite">consulta de trámites</a> que se encuentra en la página de inicio y escribí el número de trámite que te dio el sistema cuando completaste tu solicitud.</p>
+                  </div>
+                </div>
+                <div class="li-row first-li">
+                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-content">
                     <p class="li-title">Para visualizar como realizar tu trámite, podés mirar este video tutorial</p>
 
                     <iframe class="videoTuto" width="560" height="315" src="https://www.youtube.com/embed/HJwZkfxsnOw?si=EszZ_Byjmv2-ysF8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>

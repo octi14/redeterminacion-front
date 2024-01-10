@@ -383,10 +383,11 @@ export default {
             domicilio: this.domicilio,
             nroTramite: this.nroTramite,
           }
-          this.sendingForm = true;
+          this.sendingForm = true
           await this.$store.dispatch('turnos/create',{
             turno
           })
+          success = true; // Cambia la bandera a true si el try se ejecutó correctamente
         }catch(e){
           this.$bvToast.toast('No se pudo solicitar un turno por un error desconocido. Recargue la pagina e intente nuevamente más tarde.', {
             solid: true,
@@ -562,6 +563,7 @@ export default {
     margin: auto;
   }
 }
+
   .validation-error {
     text-align: center;
     color: red;

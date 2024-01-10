@@ -174,8 +174,8 @@
                   <b-icon-x-circle-fill variant="danger" v-else></b-icon-x-circle-fill><br>
               </p>
             </div>
-            <div  v-if="habilitacion.serviciosHoteleria && !baja">
-              <div class="layout">
+            <div  v-if="habilitacion.serviciosHoteleria">
+              <div class="layout" v-if="!baja">
                 <strong class="col col-main">Servicios de hotelería:</strong>
               </div>
               <div class="layout" v-for="(item, index) in habilitacion.serviciosHoteleria" :key="index">
@@ -188,7 +188,6 @@
               <div class="layout" v-if="habilitacion.otrosServicios" style="border:1px solid #CCC">
                 <p class="col col-main ml-5">"<i>{{ habilitacion.otrosServicios }}</i>"</p>
               </div>
-            </div>
             <br>
           </div>
         </div>

@@ -1,8 +1,9 @@
 <template>
-  <div class="obra-form">
-    <div class="card shadow-lg" style="color: black">
-      <strong class="h4 text-center my-3"> Editar obra </strong>
-      <!-- <b-button align-center variant="danger" class="my-3 col-md-5 text-center" @click="onSolicitarRedet"> Solicitar redeterminación </b-button> -->
+  <div>
+    <div class="card shadow-card col-md-8 col-sm-12 mx-auto" style="color: black">
+      <div class="text-center mt-3">
+        <strong class="h4 text-center my-3 text-primary"><b> Editar obra </b></strong>
+      </div>
       <b-form
         class="my-4" style="margin-left:10px;margin-right:10px"
         @submit.stop.prevent="onSubmit"
@@ -90,14 +91,16 @@
                 </div>
               </div>
             </b-list-group-item>
-            <b-btn class="col-md-3 my-2" @click="addItem">Agregar Item</b-btn>
+            <b-btn class="col-md-2 col-sm-4 my-2" @click="addItem">Agregar Item</b-btn>
           </b-list-group>
           <hr />
         <!-- <hr /> -->
-        <b-button type="submit" variant="success">
+      <div class="row justify-content-center">
+        <b-button class="mx-2" type="submit" variant="success">
           {{ create ? 'Crear' : 'Editar' }} Obra
         </b-button>
-        <b-button type="reset" variant="dark">Cancelar</b-button>
+        <b-button class="mx-2" type="reset" variant="danger">Cancelar</b-button>
+      </div>
       </b-form>
     </div>
   </div>
@@ -183,16 +186,6 @@ export default {
     deleteItem(index) {
       this.items.splice(index, 1)
     },
-    // addInstruction() {
-    //   this.instructions.push({
-    //     title: null,
-    //     description: null,
-    //     image: null,
-    //   })
-    // },
-    // deleteInstruction(index) {
-    //   this.instructions.splice(index, 1)
-    // },
     initialize() {
       const {
         expediente = '',
@@ -211,34 +204,7 @@ export default {
         ordenanza = '',
         decreto = '',
         garantia_contrato = '',
-        // tags = [],
-        // ingredients = [
-        //   {
-        //     quantity: '',
-        //     ingredient: null,
-        //   },
-        // ],
-        // instructions = [
-        //   {
-        //     title: null,
-        //     description: null,
-        //     image: null,
-        //   },
-        // ],
       } = this.obra
-
-      // const formattedIngredients = ingredients.map(
-      //   ({ quantity, ingredient }) => {
-      //     const ingredientName =
-      //       this.$store.getters['ingredients/getIngredientById'](
-      //         ingredient
-      //       )?.name
-      //     return {
-      //       quantity,
-      //       ingredient: ingredientName,
-      //     }
-      //   }
-      // )
 
       this.expediente = expediente
       this.objeto = objeto
@@ -256,9 +222,6 @@ export default {
       this.decreto = decreto
       this.plazo_obra = plazo_obra
       this.anticipo_finan = anticipo_finan
-      // this.tags = JSON.parse(JSON.stringify(tags))
-      // this.ingredients = JSON.parse(JSON.stringify(formattedIngredients))
-      // this.instructions = JSON.parse(JSON.stringify(instructions))
     },
   },
 }

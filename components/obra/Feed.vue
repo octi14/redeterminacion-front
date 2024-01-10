@@ -1,5 +1,6 @@
 <template>
   <div class="obra-feed">
+    <!--Buscador-->
     <div class="row mt-5 justify-content-center text-center">
       <b-input
         type="text"
@@ -12,7 +13,8 @@
         <b-button @click="clearSearch">Limpiar</b-button>
       </div>
     </div>
-    <b-card class="shadow-card mx-auto mt-5 col-md-8 col-sm-10" v-if="items.length > 0 && filteredItems.length === 0 && search === '' ">
+    <!--Feed buscador vacío-->
+    <div class="mx-auto mt-5 col-md-8 col-sm-10" v-if="items.length > 0 && filteredItems.length === 0 && search === '' ">
       <div
         v-for="item in paginatedItems"
         :key="item.id"
@@ -20,8 +22,9 @@
       >
         <ObraCard :obra="item" />
       </div>
-    </b-card>
-    <b-card class="shadow-card mx-auto mt-5 col-md-8 col-sm-10" v-if="filteredItems.length > 0">
+    </div>
+    <!--Feed de la búsqueda-->
+    <div class="mx-auto mt-5 col-md-8 col-sm-10" v-if="filteredItems.length > 0">
       <div
         v-for="item in filteredPaginatedItems"
         :key="item.id"
@@ -29,7 +32,8 @@
       >
         <ObraCard :obra="item" />
       </div>
-    </b-card>
+    </div>
+    <!--Paginación-->
     <div class="text-center justify-content-center mx-auto mt-3 row">
       <b-button size="sm" class="float-left mx-1 my-1 pagination-button" variant="outline-success" @click="previousPage" :disabled="currentPage === 1">
         <b-icon-arrow-left />
@@ -39,6 +43,7 @@
         <b-icon-arrow-right />
       </b-button>
     </div>
+    <!--Div No hay obras para mostrar-->
     <div class="mx-auto text-center mt-5" v-if="filteredItems.length === 0 && search != ''">
       <h5> No se encontraron resultados para "{{ search }}" </h5>
     </div>

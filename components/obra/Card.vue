@@ -1,11 +1,11 @@
 <template>
-  <b-card no-body class="obra-card">
+  <b-card no-body class="shadow-card">
     <b-card-body>
       <NuxtLink :to="{ name: 'obra-id', params: { id: obra.id } }">
-        <h5 class="text-success">{{ obra.objeto }}</h5>
+        <h5 class="text-success"><b>{{ obra.objeto }}</b></h5>
       </NuxtLink>
-      <a>{{ obra.adjudicado }}</a> <br>
-      <strong>{{ new Date(obra.fecha_contrato).toLocaleDateString('es-AR') }}</strong>
+      <p style="margin-bottom: 1%">{{ obra.adjudicado }}</p>
+      <strong>{{ obra.fecha_contrato }}</strong>
     </b-card-body>
   </b-card>
 </template>
@@ -18,10 +18,6 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {}
-  },
-  computed: {},
   methods: {
     tag(id) {
       return this.$store.getters['tags/getTagById'](id)

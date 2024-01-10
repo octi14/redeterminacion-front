@@ -45,12 +45,26 @@ module.exports = {
     }
   },
 
+  changePassword: async (axios, { userId,oldPassword, newPassword }) => {
+    try {
+      const response = await axios.$post('/users/changePassword', {
+        userId,
+        oldPassword,
+        newPassword,
+      });
+
+      return true
+    } catch (error) {
+      console.error('Error al cambiar la contraseña:', error);
+      return false
+    }
+  },
+
   checkToken: async (axios, { token }) => {
     axios.setHeader('Access-Control-Allow-Origin', true)
     const response = await axios.$post('/users/verify', {
       token,
     })
-    console.log(response.data)
     return response.data
   },
   // register: async (axios, { username, password }) => {

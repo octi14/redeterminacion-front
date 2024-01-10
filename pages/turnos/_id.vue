@@ -17,7 +17,7 @@
           <h4 class="text-danger ml-1" v-if="turno.status === 'Inspección rechazada'">{{ turno.status }} </h4>
         </div>
       </div>
-      <div class="row col-10 mx-auto justify-content-center">
+      <div class="row col-10 mx-auto justify-content-center" v-if="adminInspeccion">
         <b-button @click="onAprobar" variant="success" pill class="btn-4 mt-3 mx-1"> Aprobar inspección </b-button>
         <b-button @click="onProrroga" variant="secondary" pill class="btn-4 mt-3 mx-1"> Prórroga </b-button>
         <!-- <b-button @click="onRechazarTurno" pill class="btn-3 mt-3 mx-1"> Cancelar turno </b-button> -->
@@ -250,6 +250,11 @@ export default {
   fetchOnServer: false,
   activated() {
     this.$fetch()
+  },
+  computed: {
+    adminInspeccion(){
+      return this.$store.state.user.admin === "inspeccion"
+    }
   },
   methods: {
     wait(ms) {

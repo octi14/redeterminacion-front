@@ -10,7 +10,7 @@
             </b-button>
           </NuxtLink>
         </div>
-        <div v-if="adminHacienda" class="col-lg-4 col-md-6 my-4 col-sm-12 mb-4">
+        <div v-if="adminHacienda" class="col-lg-4 col-md-6 mx-auto my-4 col-sm-12 mb-4">
           <NuxtLink to="/redeterminacion" class="d-block">
             <b-button variant="outline" class="btn-5">
               <b-icon-calculator class="mb-4 landing-icon" />

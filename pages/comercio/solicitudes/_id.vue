@@ -23,17 +23,18 @@
             <h5 :class="getStatusClass(habilitacion.status)" class="ml-2"> {{ habilitacion.status }}</h5>
           </div>
         </div>
-        <div class="row justify-content-center" v-if="habilitacion.status === 'Finalizada'">
+        <div class="row justify-content-center" v-if="habilitacion.status === 'Finalizada' || habilitacion.tipoSolicitud === 'Baja'">
           <div class="h5 row"> Número de expediente: <b class="text-success ml-1"> {{ habilitacion.nroExpediente }} </b> </div>
         </div>
       </div>
       <!--Botones-->
       <div class="row col-10 mx-auto justify-content-center" v-if="jefeComercio">
         <b-button @click="onSolicitarDocumentacion" variant="success" pill class="btn-4 mt-3 mx-1" v-if="habilitacion.status === 'Inspeccionado'"> Solicitar documentación </b-button>
-        <b-button @click="onAprobarSolicitud" variant="success" pill class="btn-4 mt-3 mx-1" v-if="habilitacion.status==='En revisión'"> Aprobar solicitud </b-button>
+        <b-button @click="onAprobarBaja" variant="success" pill class="btn-4 mt-3 mx-1" v-if="baja && (habilitacion.status === 'En revisión' || habilitacion.status === 'Rectificación')"> Aprobar solicitud </b-button>
+        <b-button @click="onAprobarSolicitud" variant="success" pill class="btn-4 mt-3 mx-1" v-if="!baja && habilitacion.status==='En revisión'"> Aprobar solicitud </b-button>
         <b-button @click="onRectificacion" variant="secondary " pill class="btn-4 mt-3 mx-1" v-if="habilitacion.status === 'En revisión'"> Rectificación </b-button>
         <b-button @click="onFinalizarSolicitud" variant="success" pill class="btn-4 mt-3 mx-1" v-if="habilitacion.status === 'Esperando documentación'"> Finalizar solicitud </b-button>
-        <b-button @click="onRestablecer" variant="secondary" pill class="btn-4 mt-3 mx-1" v-if="habilitacion.status != 'En revisión'"> Volver a estado En Revisión </b-button>
+        <b-button @click="onRestablecer" variant="secondary" pill class="btn-4 mt-3 mx-1" v-if="habilitacion.status != 'En revisión' && habilitacion.status != 'Rectificación'"> Volver a estado En Revisión </b-button>
         <b-button @click="onRechazarSolicitud" pill class="btn-3 mt-3 mx-1"> Rechazar solicitud </b-button>
         <b-button @click="onShowObservaciones" variant="primary" pill class="btn-2 mt-3 mx-1"> Ver observaciones </b-button>
       </div>
@@ -121,7 +122,11 @@
                 <strong>Domicilio solicitado</strong><br>
               </p>
               <p class="col col-complementary" role="complementary">
-                <a>{{ habilitacion.calleInmueble + " " + habilitacion.nro + ", " + habilitacion.localidadInmueble}}</a>
+                <a>
+                  {{ habilitacion.calleInmueble }} {{ habilitacion.nro }}
+                  {{ habilitacion.nroLocal ? " , local " + habilitacion.nroLocal : "" }}
+                  {{ ", " + habilitacion.localidadInmueble}}
+                </a>
               </p>
             </div>
             <div class="layout">
@@ -140,37 +145,37 @@
                 <a>{{ habilitacion.rubro }}</a>
               </p>
             </div>
-            <div class="layout">
+            <div class="layout" v-if="!baja">
               <p class="col col-main">
                 <strong v-if="habilitacion.espacioPublico">Uso de espacio público: </strong><br>
               </p>
             </div>
-            <div class="layout" v-if="habilitacion.espacioPublico">
+            <div class="layout" v-if="!baja">
               <p class="col col-main">
                 <strong class="text-primary">- Mesas y sillas: </strong> <b-icon-check-circle-fill variant="info" v-if="habilitacion.mesas"></b-icon-check-circle-fill>
                   <b-icon-x-circle-fill variant="danger" v-else></b-icon-x-circle-fill><br>
               </p>
             </div>
-            <div class="layout" v-if="habilitacion.espacioPublico">
+            <div class="layout" v-if="!baja">
               <p class="col col-main">
                 <strong class="text-primary">- Marquesina: </strong> <b-icon-check-circle-fill variant="info" v-if="habilitacion.marquesina"></b-icon-check-circle-fill>
                   <b-icon-x-circle-fill variant="danger" v-else></b-icon-x-circle-fill><br>
               </p>
             </div>
-            <div class="layout" v-if="habilitacion.espacioPublico">
+            <div class="layout" v-if="!baja">
               <p class="col col-main">
                 <strong class="text-primary">- Carteles: </strong> <b-icon-check-circle-fill variant="info" v-if="habilitacion.carteles"></b-icon-check-circle-fill>
                   <b-icon-x-circle-fill variant="danger" v-else></b-icon-x-circle-fill><br>
               </p>
             </div>
-            <div class="layout" v-if="habilitacion.espacioPublico">
+            <div class="layout" v-if="!baja">
               <p class="col col-main">
                 <strong class="text-primary">- Mercadería: </strong> <b-icon-check-circle-fill variant="info" v-if="habilitacion.espacioPublico"></b-icon-check-circle-fill>
                   <b-icon-x-circle-fill variant="danger" v-else></b-icon-x-circle-fill><br>
               </p>
             </div>
             <div  v-if="habilitacion.serviciosHoteleria">
-              <div class="layout">
+              <div class="layout" v-if="!baja">
                 <strong class="col col-main">Servicios de hotelería:</strong>
               </div>
               <div class="layout" v-for="(item, index) in habilitacion.serviciosHoteleria" :key="index">
@@ -183,7 +188,6 @@
               <div class="layout" v-if="habilitacion.otrosServicios" style="border:1px solid #CCC">
                 <p class="col col-main ml-5">"<i>{{ habilitacion.otrosServicios }}</i>"</p>
               </div>
-            </div>
             <br>
           </div>
         </div>
@@ -347,6 +351,29 @@
       </div>
     </b-modal>
 
+    <!--Modal previo a aprobar una baja-->
+    <b-modal v-model="showAprobarBaja" hide-footer :header-bg-variant="'secondary'" centered>
+      <template #modal-header>
+        <div class="confirmation-popup-header mx-auto">
+          <b-icon-check-circle scale="2" variant="light" class="my-2" />
+        </div>
+      </template>
+      <div class="confirmation-popup-body">
+        <h2 class="icon-orange text-secondary text-center"><b>Aprobar solicitud</b></h2>
+        <p style="margin: 3%"> Se aprobará la solicitud. Se deberá  enviar un mail al solicitante indicando que en el plazo de 7 días hábiles:</p>
+        <ul>
+          <li>  Abone el canon previsto para el rubro. </li>
+          <li>  Concurra al Departamento de Comercio con la documentación original y el libro de actas. </li>
+        </ul>
+        <hr/>
+        <div class="text-center mt-3">
+          <b-btn variant="primary" @click="onSendApprove()" >
+              Aceptar
+          </b-btn>
+        </div>
+      </div>
+    </b-modal>
+
     <!--Modal solicitud aprobada-->
     <b-modal v-model="showApprove" hide-footer :header-bg-variant="'success'" centered>
       <template #modal-header>
@@ -358,9 +385,10 @@
         <h3 class="icon-orange text-success text-center"><b>Aprobar solicitud</b></h3>
         <p>La solicitud fue aprobada con éxito. Se deberá  enviar un correo electrónico al solicitante indicando que en el plazo de 7 días hábiles:</p>
         <ul>
-          <li>  Abone el canon de Habilitación Comercial previsto para el rubro. </li>
+          <li v-if="!baja">  Abone el canon de Habilitación Comercial previsto para el rubro. </li>
+          <li v-if="baja"> Abone el canon previsto para el rubro.</li>
           <li>  Concurra al Departamento de Comercio con la documentación original y el Libro de Actas. </li>
-          <li>  Constituya el Domicilio Fiscal Electrónico (DFE). </li>
+          <li v-if="!baja">  Constituya el Domicilio Fiscal Electrónico (DFE). </li>
         </ul>
         <div class="text-center mt-3">
           <b-btn variant="success" @click="showApprove = false" >
@@ -400,7 +428,7 @@
           <b-icon-check-circle scale="2" variant="light" />
         </div>
       </template>
-      <div class="confirmation-popup-body">
+      <div class="confirmation-popup-body" v-if="!baja">
         <h3 class="text-success text-center"><b>Finalizar trámite</b></h3>
         <p>El trámite será finalizado.</p>
         <p> Ingresa el número de expediente asignado a este trámite: </p>
@@ -412,6 +440,16 @@
         <small> Recordá que más adelante podrás consultar los datos proporcionados en la sección de búsqueda. </small>
         <div class="text-center mt-3">
           <b-btn variant="success" :disabled="!nroExpediente1 || !nroExpediente2" @click="onSendFinalizar" >
+              Aceptar
+          </b-btn>
+        </div>
+      </div>
+      <div v-else>
+        <h3 class="text-success text-center"><b>Finalizar trámite</b></h3>
+        <p>El trámite será finalizado. El comercio será dado de baja, y se agregarán los documentos al expediente original. </p>
+        <small> Recordá que más adelante podrás consultar los datos proporcionados en la sección de búsqueda. </small>
+        <div class="text-center mt-3">
+          <b-btn variant="success" @click="onSendFinalizar" >
               Aceptar
           </b-btn>
         </div>
@@ -455,6 +493,7 @@ export default {
       showRectificacion: false,
       showPrevApprove: false,
       showApprove: false,
+      showAprobarBaja: false,
       showFinalizar: false,
       showRejectPopup: false,
       showSolicitarDoc: false,
@@ -495,6 +534,9 @@ export default {
       }else{
         return false
       }
+    },
+    baja(){
+      return this.habilitacion && this.habilitacion.tipoSolicitud === "Baja"
     },
     cleanDocumentos() {
       if(this.habilitacion && this.documentos){
@@ -549,6 +591,9 @@ export default {
     onSolicitarDocumentacion(){
       this.showSolicitarDoc = true
     },
+    onAprobarBaja(){
+      this.showAprobarBaja = true
+    },
     async onAprobarSolicitud(){
       this.showPrevApprove = true
     },
@@ -564,8 +609,10 @@ export default {
       this.showObservaciones = true
     },
     async onSendRectificacion(){
+      const observaciones = this.habilitacion.observaciones
       const habilitacion = {
-        status: 'Rectificación'
+        status: 'Rectificación',
+        observaciones: observaciones + " - " + "Solicita rectificación el día " + new Date().toLocaleDateString('es-AR')
       }
       const id = this.habilitacion.id
       const userToken = this.$store.state.user.token
@@ -590,12 +637,17 @@ export default {
       this.showSolicitarDoc = false
     },
     async onSendFinalizar(){
-      const nroExpediente = "4124-" + this.nroExpediente1 + "/" + this.nroExpediente2
+      var nroExpediente = ''
+      if(!this.baja){
+        nroExpediente = "4124-" + this.nroExpediente1 + "/" + this.nroExpediente2
+      }else{
+        nroExpediente = this.habilitacion.nroExpediente
+      }
       const observaciones = this.habilitacion.observaciones || ""
       const habilitacion = {
         status: 'Finalizada',
         nroExpediente: nroExpediente,
-        observaciones: observaciones + " - " + "Se finaliza el trámite el día " + new Date().toLocaleDateString()
+        observaciones: observaciones + " - " + "Se finaliza el trámite el día " + new Date().toLocaleDateString('es-AR')
       }
       const id = this.habilitacion.id
       const userToken = this.$store.state.user.token
@@ -622,7 +674,7 @@ export default {
       const observaciones = this.habilitacion.observaciones || " "
       const habilitacion = {
         status: 'Esperando documentación',
-        observaciones: observaciones + " - " + "Se aprueba la solicitud el " + new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString()
+        observaciones: observaciones + " - " + "Se aprueba la solicitud el " + new Date().toLocaleDateString('es-AR') + " " + new Date().toLocaleTimeString()
       }
       if(this.inspeccion){
         habilitacion.status = "Esperando turno"
@@ -636,6 +688,9 @@ export default {
       this.wait(300)
       this.habilitacion.status = habilitacion.status
       this.showPrevApprove = false
+      if(this.baja){
+        this.showAprobarBaja = false
+      }
       this.showApprove = true
     },
     onRechazarSolicitud(){

@@ -3,9 +3,9 @@
     <Banner title="Consulta de trámites"/>
     <div class="mx-auto">
       <div class="mt-3">
-        <!-- <div class="row justify-content-center banner-container" style="width: 100%">
-          <img src="../assets/turnera-banner-1.png" style="max-width: 100%"/>
-        </div> -->
+        <div class="row justify-content-center banner-container" style="width: 100%">
+          <img src="../assets/consulta.png" style="max-width: 100%"/>
+        </div>
         <b-card class="section-card col-md-6 mx-auto">
           <div class="li-row">
             <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">
@@ -60,9 +60,11 @@
       </b-modal>
 
       <!-- Modal Tu trámite fue rechazado -->
-      <b-modal v-model="showPopupRejected" @click-outside="showPopupRejected = false" header-bg-variant="primary" centered>
+      <b-modal v-model="showPopupRejected" @click-outside="showPopupRejected = false" header-class="lightblue" centered>
         <template #modal-header>
-          <div class="centeredContainer"></div>
+          <div class="centeredContainer">
+            <b-icon-info-circle scale="2" variant="light"/>
+          </div>
         </template>
         <div class="centeredContainer modal-primary">
           <p class="modal-subtitle">Tu trámite se encuentra<b class="modal-subtitle"> rechazado.</b></p>
@@ -78,9 +80,11 @@
       </b-modal>
 
       <!-- Modal Tu trámite está en revisión -->
-      <b-modal v-model="showPopupInit" @click-outside="showPopupInit = false" header-bg-variant="primary" centered>
+      <b-modal v-model="showPopupInit" @click-outside="showPopupInit = false" header-class="lightblue" centered>
         <template #modal-header>
-          <div class="centeredContainer"></div>
+          <div class="centeredContainer">
+            <b-icon-info-circle scale="2" variant="light"/>
+          </div>
         </template>
         <div class="centeredContainer modal-primary">
           <p class="modal-subtitle">Tu trámite se encuentra<b class="modal-subtitle"> en revisión.</b></p>
@@ -95,9 +99,11 @@
       </b-modal>
 
       <!-- Modal Tu trámite está en rectificación -->
-      <b-modal v-model="showPopupResend" @click-outside="showPopupResend = false" header-bg-variant="primary" centered>
+      <b-modal v-model="showPopupResend" @click-outside="showPopupResend = false" header-class="lightblue" centered>
         <template #modal-header>
-          <div class="centeredContainer"></div>
+          <div class="centeredContainer">
+            <b-icon-info-circle scale="2" variant="light"/>
+          </div>
         </template>
         <div class="centeredContainer modal-primary">
           <p class="modal-subtitle">Tu trámite se encuentra en estado de <b class="modal-subtitle"> rectificación.</b></p>
@@ -113,14 +119,16 @@
       </b-modal>
       
       <!-- Modal El sistema espera que usted saque un turno -->
-      <b-modal v-model="showPopupWaiting" @click-outside="showPopupWaiting = false" header-bg-variant="primary" centered>
+      <b-modal v-model="showPopupWaiting" @click-outside="showPopupWaiting = false" header-class="lightblue" centered>
         <template #modal-header>
-          <div class="centeredContainer"></div>
+          <div class="centeredContainer">
+            <b-icon-info-circle scale="2" variant="light"/>
+          </div>
         </template>
         <div class="centeredContainer modal-primary">
           <p class="modal-subtitle">Tu trámite se encuentra esperando turno de inspección.</p>
           <p> El departamento Comercio se comunicará por correo electrónico para indicarte que debés sacar turno para inspeccionar tu local.</p>
-          <small style="color:black">No olvides revisar la carpeta de “spam” o “no deseados”. </small>
+          <small>No olvides revisar la carpeta de “spam” o “no deseados”. </small>
         </div>
         <template #modal-footer>
           <div class="" style="margin: auto">
@@ -130,9 +138,11 @@
       </b-modal>
 
       <!-- Modal Usted ya ha solicitado un turno -->
-      <b-modal v-model="showPopupAlready" @click-outside="showPopupAlready = false" header-bg-variant="primary" centered>
+      <b-modal v-model="showPopupAlready" @click-outside="showPopupAlready = false" header-class="lightblue" centered>
         <template #modal-header>
-          <div class="centeredContainer"></div>
+          <div class="centeredContainer">
+            <b-icon-info-circle scale="2" variant="light"/>
+          </div>
         </template>
         <div class="centeredContainer modal-primary">
           <p class="modal-subtitle">Tu trámite se encuentra <b class="modal-subtitle">pendiente de inspección.</b></p>
@@ -148,9 +158,11 @@
       </b-modal>
 
       <!-- Modal Prórrogas -->
-      <b-modal v-model="showPopupProrroga" @click-outside="showPopupProrroga = false" header-bg-variant="primary" centered>
+      <b-modal v-model="showPopupProrroga" @click-outside="showPopupProrroga = false" header-class="lightblue" centered>
         <template #modal-header>
-          <div class="centeredContainer"></div>
+          <div class="centeredContainer">
+            <b-icon-info-circle scale="2" variant="light"/>
+          </div>
         </template>
         <div class="centeredContainer modal-primary">
           <p class="modal-subtitle">Tu trámite se encuentra en prórroga de inspección.</p>
@@ -165,9 +177,11 @@
       </b-modal>
 
       <!-- Modal su comercio fue inspeccionado  -->
-      <b-modal v-model="showPopupInspected" @click-outside="showPopupInspected = false" header-bg-variant="primary" centered>
+      <b-modal v-model="showPopupInspected" @click-outside="showPopupInspected = false" header-class="lightblue" centered>
         <template #modal-header>
-          <div class="centeredContainer"></div>
+          <div class="centeredContainer">
+            <b-icon-info-circle scale="2" variant="light"/>
+          </div>
         </template>
         <div class="centeredContainer modal-success">
           <p class="modal-subtitle">Tu comercio ha sido inspeccionado.</p>
@@ -183,9 +197,11 @@
       </b-modal>
 
       <!-- Modal Su trámite está esperando documentación -->
-      <b-modal v-model="showPopupWaitingDoc" @click-outside="showPopupWaitingDoc = false" header-bg-variant="primary" centered>
+      <b-modal v-model="showPopupWaitingDoc" @click-outside="showPopupWaitingDoc = false" header-class="lightblue" centered>
         <template #modal-header>
-          <div class="centeredContainer"></div>
+          <div class="centeredContainer">
+            <b-icon-info-circle scale="2" variant="light"/>
+          </div>
         </template>
         <div class="centeredContainer modal-primary">
           <p class="modal-subtitle">Tu trámite se encuentra esperando documentación.</p>
@@ -200,9 +216,11 @@
       </b-modal>
 
       <!-- Modal Su trámite fue finalizado -->
-      <b-modal v-model="showPopupFinished" @click-outside="showPopupFinished = false" header-bg-variant="primary" centered>
+      <b-modal v-model="showPopupFinished" @click-outside="showPopupFinished = false" header-class="lightblue" centered>
         <template #modal-header>
-          <div class="centeredContainer"></div>
+          <div class="centeredContainer">
+            <b-icon-info-circle scale="2" variant="light"/>
+          </div>
         </template>
         <div class="centeredContainer modal-success">
           <p class="modal-subtitle">Tu trámite ha sido finalizado.</p>
@@ -386,7 +404,7 @@ export default {
   }
 
   .modal-primary .modal-subtitle{
-    color: #2A43A1 !important;
+    color: #1d96fe !important;
   }
 
   .modal-error .centeredContainer{

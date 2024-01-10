@@ -2,55 +2,39 @@
   <div class="page main-background">
     <Banner title="Detalle de obra"/>
     <div v-if="obra">
-      <div class="container my-3 col-sm-12">
+      <div class="my-3 col-sm-12">
         <div class="row">
           <div class="col">
             <h1 class="h2 text-center">{{ obra.objeto }}</h1>
             <h4 class="h4 text-center">Adjudicado: {{ obra.adjudicado }}</h4>
-            <div class="container my-1">
-              <!-- Edit -->
-              <ObraForm
-                v-show="editing"
-                :obra="obra"
-                @submit="onSubmitEditObra"
-                @reset="editing = false"
-              ></ObraForm>
-              <CertificadoForm
-              v-show="adding"
-              :obra="obra"
-              @submit="onSubmitCreateCertif">
-              </CertificadoForm>
-              <CertificadoFeed
-              v-show="watchingCertif"
-              :obra="obra">
-              </CertificadoFeed>
-              <ObraProgress
-              v-show="watchingProgress"
-              :obra="obra">
-              </ObraProgress>
-              <!-- Buttons -->
-              <div v-show="!editing" class="row mt-4 mb-4 justify-content-center">
+            <!-- Buttons -->
+            <div class="my-1">
+              <div v-show="!editing && adminHacienda" class="row mt-4 mb-4 justify-content-center">
                 <div class="col-12 d-flex flex-wrap justify-content-center">
                   <b-button pill class="fixed-size-button btn-4 mb-2 mx-2" :variant="button.variant" v-for="(button, index) in filteredButtons" :key="index" @click="button.action">
                     <b>{{ button.label }}</b>
                   </b-button>
                 </div>
-                <b-modal id="bv-modal-example" hide-footer>
-                  <template #modal-title>
-                    Eliminar archivo
-                  </template>
-                  <div class="d-block text-center">
-                    <h4>Está seguro de que desea eliminar este archivo?</h4>
-                    <h6>Al eliminar un archivo, se eliminarán todos sus certificados y redeterminaciones. </h6>
-                  </div>
-                  <b-button class="mt-3" variant="danger" block @click="onSubmitDelete(); $bvModal.hide('bv-modal-example')">Si</b-button>
-                  <b-button class="mt-3" variant="secondary" block @click="$bvModal.hide('bv-modal-example')">No</b-button>
-                </b-modal>
               </div>
             </div>
+            <ObraForm
+              v-show="editing"
+              :obra="obra"
+              @submit="onSubmitEditObra"
+              @reset="editing = false"/>
+              <CertificadoForm
+                v-show="adding"
+                :obra="obra"
+                @submit="onSubmitCreateCertif"/>
+              <CertificadoFeed
+                v-show="watchingCertif"
+                :obra="obra"/>
+              <ObraProgress class="mx-auto"
+                v-show="watchingProgress"
+                :obra="obra"/>
             <!-- Body -->
-            <div class="card shadow-card col-lg-6 col-sm-12 mx-auto" v-if="!adding && !editing">
-              <div class="obra-content col-12 mx-auto mt-3 mb-4">
+            <div class="card shadow-card col-md-6 col-sm-12 mx-auto" v-if="!adding && !editing">
+              <div class="col-12 mx-auto mt-3 mb-4">
                 <div class="layout">
                   <p class="col col-main">
                     <strong style="color:green">Expediente</strong>
@@ -84,20 +68,20 @@
                   </p>
                 </div>
 
-                  <div v-if="watchItems">
-                    <b-button variant="outline-dark" class="my-3" @click="watchItems = !watchItems"> Ocultar Items </b-button>
-                    <div class="layout" v-for="(_,index) in obra.items" :key="index">
-                      <p class="col col-main">
-                        <strong style="color:green" class="h6"> - {{index +1}}. {{obra.items[index].item}} </strong>
-                      </p>
-                      <p class="col col-complementary" role="complementary">
-                        <a> ${{ format(obra.items[index].monto) }} </a>
-                      </p>
-                    </div>
+                <div v-if="watchItems">
+                  <b-button variant="outline-dark" class="my-3" @click="watchItems = !watchItems"> Ocultar Items </b-button>
+                  <div class="layout" v-for="(_,index) in obra.items" :key="index">
+                    <p class="col col-main">
+                      <strong style="color:green" class="h6"> - {{index +1}}. {{obra.items[index].item}} </strong>
+                    </p>
+                    <p class="col col-complementary" role="complementary">
+                      <a> ${{ format(obra.items[index].monto) }} </a>
+                    </p>
                   </div>
-                  <div v-else class="my-1 ml-3 mt-3">
-                    <b-button variant="outline-dark" @click="watchItems = !watchItems"> Ver Items </b-button>
-                  </div>
+                </div>
+                <div v-else class="my-1 ml-3 mt-3">
+                  <b-button variant="outline-dark" @click="watchItems = !watchItems"> Ver Items </b-button>
+                </div>
 
                 <div class="layout">
                   <p class="col col-main">
@@ -173,6 +157,25 @@
                 </div>
               </div>
             </div>
+            <!--Modal Eliminar archivo-->
+            <b-modal id="modal-delete" centered header-bg-variant="danger">
+              <template #modal-header>
+                <div class="centeredContainer mx-auto my-2">
+                  <b-icon-trash-fill scale="3" variant="light"/>
+                </div>
+              </template>
+              <div class="d-block text-center">
+                <h4 class="text-danger"><b> Eliminar obra </b></h4>
+                <h5>Está seguro de que desea eliminar esta obra?</h5>
+                <p class="small">Al eliminar una obra, se eliminarán todos sus certificados y redeterminaciones. </p>
+              </div>
+              <template #modal-footer>
+                <div class="row mx-auto">
+                  <b-button pill class="mt-2 mx-1" variant="success" @click="onSubmitDelete(); $bvModal.hide('modal-delete')">Eliminar</b-button>
+                  <b-button pill class="mt-2" variant="danger" @click="$bvModal.hide('modal-delete')">Cancelar</b-button>
+                </div>
+              </template>
+            </b-modal>
           </div>
         </div>
       </div>
@@ -181,8 +184,6 @@
 </template>
 
 <script>
-import ObraService from '~/service/obra'
-
 export default {
   middleware: ['authenticated'],
   data() {
@@ -192,17 +193,19 @@ export default {
       watchItems: false,
       editing: false,
       adding: false,
-      obra: null,
     }
   },
   async fetch() {
     const obraId = this.$route.params.id
-    this.obra = await ObraService.getSingle(this.$axios, {
+    await this.$store.dispatch('obras/getSingle',{
       id: obraId,
     })
   },
   fetchOnServer: false,
   computed: {
+    obra(){
+      return this.$store.state.obras.single
+    },
     // formattedDate() {
     //   const formatter = new Intl.DateTimeFormat('es-AR', {
     //     dateStyle: 'full',
@@ -235,7 +238,7 @@ export default {
         {
           variant: "danger",
           label: "Eliminar",
-          action: () => this.$bvModal.show("bv-modal-example")
+          action: () => this.$bvModal.show("modal-delete")
         }
       ].filter(button => this.shouldShowButton(button));
     },
@@ -243,7 +246,7 @@ export default {
       return Boolean(this.$store.state.user.admin == "true")
     },
     adminHacienda(){
-      return this.$store.state.user.admin == "hacienda"
+      return this.$store.state.user.admin == "hacienda" || this.$store.state.user.admin == "master"
     },
   },
   activated() {
@@ -384,6 +387,12 @@ export default {
 
 .col-complementary {
   flex: 1;
+}
+
+.centeredContainer{
+    width:  auto;
+    margin: auto;
+    text-align: center;
 }
 
 /* Responsive: */

@@ -80,5 +80,8 @@ export const mutations = {
   },
   delete(state, fileId) {
     state.all = state.all.filter(file => file.id !== fileId);
-  }
+  },
+  ordenar(state) {
+    state.all.sort((a, b) => b.nroTramite - a.nroTramite);
+  },
 }

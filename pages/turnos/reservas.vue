@@ -1,15 +1,16 @@
 <template>
-  <div class="page">
+  <div class="page main-background">
     <Banner title="Solicitudes de turnos" subtitle="Uso interno" />
-    <b-form-group class="col-4 mx-auto mt-3" horizontal label-class="text-success h6" label="Filtrar por Estado">
-      <b-form-select plain v-model="selectedEstado">
+    <b-form-group class="col-4 mx-auto mt-3" horizontal label-class="text-success">
+      <label for="selectedEstado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><b-icon-funnel-fill></b-icon-funnel-fill> Filtrar por Estado</label>
+        <b-form-select plain v-model="selectedEstado">
         <option value="">Todos</option>
         <option v-for="estado in estados" :value="estado" :key="estado">{{ estado }}</option>
       </b-form-select>
     </b-form-group>
     <b-form-checkbox class="text-center" v-model="hideFinalizados">Ocultar Inspeccionados/Cancelados</b-form-checkbox>
 
-    <b-table per-page="10" head-row-variant="primary" class="col-md-10 col-sm-8 mx-auto mt-4 shadow-card" hover :items="paginatedItems" :fields="fields">
+    <b-table per-page="10" head-row-variant="primary" class="col-md-10 col-sm-8 mx-auto mt-4 shadow-card white" hover :items="paginatedItems" :fields="fields">
       <template #cell(status)="row">
         <div :class="row.item.estadoColor"><b>{{ row.value }}</b></div>
       </template>
@@ -106,6 +107,7 @@ export default{
           item.estadoColor = 'text-primary';
       }
     });
+    await this.$store.commit('turnos/ordenar')
     const perPage = 10;
   },
   computed: {

@@ -14,6 +14,9 @@
         <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Nro de trámite:</b> {{ nroTramite }}</h5> </div>
         <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Solicitante: </b> {{ solicitante.nombre }}  {{ solicitante.apellido }}</h5> </div>
         <hr/>
+        <p class="" style="text-align: justify"><b-icon-caret-right-fill variant="success"></b-icon-caret-right-fill> Tené en cuenta que el Departamento Comercio puede solicitarte documentación adicional vía correo electrónico.</p>
+        <p class="" style="text-align: justify"><b-icon-caret-right-fill variant="success"></b-icon-caret-right-fill> Para consultar el estado de tu trámite ingresá en <a class="external-link" href="https://haciendavgesell.gob.ar/">haciendavgesell.gob.ar</a>, hacé click en el ícono correspondiente y escribí el número asignado en este comprobante.</p>
+        <hr/>
         <b-button class="mt-2 btn-orange" v-if="endButton === true" @click="onResetParams">Volver</b-button>
       </b-card-body>
     </b-card>
@@ -25,8 +28,9 @@
     <fieldset >
       <legend><h3>Datos del Solicitante <b-icon-question-circle-fill @click="openPopup('DatosDelSolicitante')" font-scale="1" variant="info"></b-icon-question-circle-fill></h3></legend>
       <b-form-group label="Tipo de Solicitud *" label-for="tipo-solicitud" >
-        <b-form-select title="Por el momento solo se pueden solicitar habilitaciones comerciales." id="tipo-solicitud" v-model="solicitante.tipoSolicitud" disabled >
+        <b-form-select title="Por el momento solo se pueden solicitar habilitaciones comerciales." id="tipo-solicitud" v-model="solicitante.tipoSolicitud" >
             <b-form-select-option selected="selected" value="Habilitación">Habilitar nuevo comercio</b-form-select-option>
+            <!-- <b-form-select-option selected="selected" value="Baja" >Baja de comercio</b-form-select-option> -->
         </b-form-select>
       </b-form-group>
 
@@ -167,6 +171,25 @@
     <!-- Sección: Datos del inmueble -->
     <fieldset >
       <legend><h3>Datos del Inmueble</h3></legend>
+      <b-row v-if="solicitante.tipoSolicitud == 'Baja'">
+        <b-col lg="12" md="12">
+          <b-form-group label="Nro de Expediente *" label-for="nroExpediente" >
+            <div class="input-group"> <!-- Utilizamos la clase input-group -->
+              <div class="input-group-prepend">
+                <span class="input-group-text">(4124)</span> <!-- Prefijo fijo -->
+              </div>
+              <b-form-input id="nroExpedienteNro" v-model="nroExpedienteNro" no-wheel class="text-right" ></b-form-input>
+              <div class="input-group-prepend">
+                <span class="input-group-text">/</span> <!-- Prefijo fijo -->
+              </div>
+              <b-form-input id="nroExpedienteAnio" v-model="nroExpedienteAnio" class="col-2 text-left" no-wheel ></b-form-input>
+            </div>
+            <div v-if="$v.nroExpedienteNro.$error || $v.nroExpedienteAnio.$error" class="validation-error">
+              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El nro de expediente no puede estar vacío, contener letras o caracteres especiales.
+            </div>
+          </b-form-group>
+        </b-col>
+      </b-row>
       <b-row>
         <b-col lg="6" md="12">
           <b-form-group label="Localidad *" label-for="localidad" >
@@ -225,7 +248,7 @@
       <b-form-group label="Nombre de Fantasía (En caso de que lo posea)" label-for="nombre-fantasia" >
         <b-form-input id="nombre-fantasia" v-model="inmueble.nombreFantasia"></b-form-input>
       </b-form-group>
-    <fieldset  v-if="isHoteleria" key="rubro-h">
+    <fieldset  v-if="isHoteleria && solicitante.tipoSolicitud=='Habilitación'" key="rubro-h">
       <h5>Servicios exclusivos del rubro {{inmueble.rubro}} *</h5>
       <p>Seleccioná los servicios que brinda tu establecimiento:</p>
 
@@ -242,7 +265,7 @@
         </div>
       </b-form-group>
     </fieldset>
-      <b-form-group v-if="rubroSeleccionado.croquis === true && isHoteleria" label-for="documentos.croquis" >
+      <b-form-group v-if="rubroSeleccionado.croquis === true && isHoteleria && solicitante.tipoSolicitud=='Habilitación'" label-for="documentos.croquis" >
         <label for="croquis">Croquis <i>(en casos en que hay más de una parcela para uso de la actividad comercial y las mismas no se hallan reunidas por plano de mensura y unificación o reunidas de oficio)</i></label>
         <b-form-file v-model="documentos.croquis" placeholder="No se seleccionó un archivo." browse-text="Examinar"
         accept=".pdf, image/*" :state="getFormFieldState('croquis')"
@@ -252,7 +275,7 @@
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.croquis }}
         </div>
       </b-form-group>
-      <b-form-group v-if="rubroSeleccionado.croquis === true && !isHoteleria" label-for="documentos.croquis" >
+      <b-form-group v-if="rubroSeleccionado.croquis === true && !isHoteleria && solicitante.tipoSolicitud=='Habilitación'" label-for="documentos.croquis" >
         <label for="croquis">Croquis </label>
         <b-form-file v-model="documentos.croquis" placeholder="No se seleccionó un archivo." browse-text="Examinar"
         accept=".pdf, image/*" :state="getFormFieldState('croquis')"
@@ -262,24 +285,12 @@
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.croquis || 'Debe seleccionar un archivo.' }}
         </div>
       </b-form-group>
-      <b-form-group label="" label-for="espaciopublico" style="margin: 0px auto">
-            <b-row>
+    <fieldset  v-if="solicitante.tipoSolicitud=='Habilitación'">
+       <b-row>
               <b-col lg="5" md="8" sm="7">
                 <h5>Uso de espacio público</h5>
               </b-col>
-              <!-- 
-              <div class="form-check-inline">
-                <b-col lg="3" sm="3">
-                  <b-form-radio  id="espaciopublico-no" v-model="inmueble.espacioPublico" name="radio-espacio" checked="checked" value="false"> No</b-form-radio>
-                </b-col>
-                <b-col lg="3" sm="2">
-                  <b-form-radio  id="espaciopublico-si" v-model="inmueble.espacioPublico" name="radio-espacio" value="true"> Sí</b-form-radio>
-                </b-col>
-              </div>
-              -->
-          </b-row>
-      </b-form-group>
-    <fieldset>
+       </b-row>
         <p>Indicá cuál de los siguientes ítems posee tu establecimiento:</p>
         <b-form-group label="" label-for="marquesina" style="margin-bottom: 0">
             <b-form-checkbox  id="marquesina" v-model="inmueble.marquesina" scale=1.5>Marquesina - Toldo</b-form-checkbox>
@@ -329,7 +340,7 @@
           </b-form-group>
         </b-col>
       </b-row>
-      <b-form-group>
+      <b-form-group v-if="solicitante.tipoSolicitud=='Habilitación'"> 
         <label for="constanciaCuit" class="rubro-label">Constancia de CUIT * <b-icon-question-circle-fill @click="openPopup('ConstanciaCUIT')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
         <b-form-file v-model="documentos.constanciaCuit" placeholder="No se seleccionó un archivo." browse-text="Examinar"
         accept=".pdf, image/*"  :state="getFormFieldState('constanciaCuit')"
@@ -339,7 +350,7 @@
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.constanciaCuit || 'Debe seleccionar un archivo.' }}
         </div>
       </b-form-group>
-      <b-form-group>
+      <b-form-group v-if="solicitante.tipoSolicitud=='Habilitación'">
         <label for="constanciaIngresosBrutos" class="rubro-label">Constancia de inscripción a Ingresos Brutos <b-icon-question-circle-fill @click="openPopup('ConstanciaIngresosBrutos')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
         <b-form-file v-model="documentos.constanciaIngresosBrutos" placeholder="No se seleccionó un archivo." browse-text="Examinar"
         accept=".pdf, image/*" :state="getFormFieldState('constanciaIngresosBrutos')"
@@ -349,7 +360,7 @@
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.constanciaIngresosBrutos }}
         </div>
       </b-form-group>
-      <b-form-group>
+      <b-form-group v-if="solicitante.tipoSolicitud=='Habilitación'">
         <label for="certificadoDomicilio" class="rubro-label">Certificado de domicilio Ingresos Brutos - Punto de venta Villa Gesell <b-icon-question-circle-fill @click="openPopup('certificadoDomicilio')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
         <b-form-file v-model="documentos.certificadoDomicilio" placeholder="No se seleccionó un archivo." browse-text="Examinar"
         accept=".pdf, image/*" :state="getFormFieldState('certificadoDomicilio')"
@@ -357,6 +368,25 @@
         @input="clearFormFieldState('certificadoDomicilio')"></b-form-file>
         <div v-if="fileTooLargeError.certificadoDomicilio" class="validation-error">
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.certificadoDomicilio }}
+        </div>
+      </b-form-group>
+      <b-form-group v-if="solicitante.tipoSolicitud=='Baja'">
+        <label for="libreDeudaIB" class="rubro-label">Libre Deuda de Ingresos Brutos * <b-icon-question-circle-fill @click="openPopup('ConstanciaLibreDeudaIB')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
+        <b-form-file v-model="documentos.constanciaIngresosBrutos" placeholder="No se seleccionó un archivo." browse-text="Examinar"
+        accept=".pdf, image/*"  :state="getFormFieldState('constanciaIngresosBrutos')"
+        @change="handleDocumentUpdate('constanciaIngresosBrutos'); checkDocumentSize('constanciaIngresosBrutos', $event)"
+        @input="clearFormFieldState('constanciaIngresosBrutos')"></b-form-file>
+        <div v-if="$v.documentos.constanciaIngresosBrutos.$error || fileTooLargeError.constanciaIngresosBrutos" class="validation-error">
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.constanciaIngresosBrutos || 'Debe seleccionar un archivo.' }}
+        </div>
+      </b-form-group><b-form-group v-if="solicitante.tipoSolicitud=='Baja'">
+        <label for="libreDeudaComercial" class="rubro-label">Libre Deuda de Tasa Comercial <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. * <b-icon-question-circle-fill @click="openPopup('ConstanciaLibreDeuda')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
+        <b-form-file v-model="documentos.constanciaCuit" placeholder="No se seleccionó un archivo." browse-text="Examinar"
+        accept=".pdf, image/*"  :state="getFormFieldState('constanciaCuit')"
+        @change="handleDocumentUpdate('constanciaCuit'); checkDocumentSize('constanciaCuit', $event)"
+        @input="clearFormFieldState('constanciaCuit')"></b-form-file>
+        <div v-if="$v.documentos.constanciaCuit.$error || fileTooLargeError.constanciaCuit" class="validation-error">
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.constanciaCuit || 'Debe seleccionar un archivo.' }}
         </div>
       </b-form-group>
       <b-form-group>
@@ -369,7 +399,9 @@
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.libreDeudaUrbana || 'Debe seleccionar un archivo.' }}
         </div>
       </b-form-group>
-      <b-form-group label="Escritura traslativa de Dominio del inmueble / Contrato de locación / Otro *" label-for="tituloPropiedad" >
+      <b-form-group >
+        <label v-if="solicitante.tipoSolicitud=='Habilitación'" for="tituloPropiedad">Escritura traslativa de Dominio del inmueble / Contrato de locación / Otro *</label>
+        <label v-if="solicitante.tipoSolicitud=='Baja'" for="tituloPropiedad">Escritura traslativa de Dominio del inmueble (En caso que la baja la solicita un nuevo propietario que no está registrado.)</label>
         <b-form-file v-model="documentos.tituloPropiedad" placeholder="No se seleccionó un archivo." browse-text="Examinar"
         accept=".pdf, image/*"  :state="getFormFieldState('tituloPropiedad')"
         @change="handleDocumentUpdate('tituloPropiedad'); checkDocumentSize('tituloPropiedad', $event)"
@@ -378,7 +410,7 @@
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.tituloPropiedad || 'Debe seleccionar un archivo.' }}
         </div>
       </b-form-group>
-      <b-form-group >
+      <b-form-group v-if="solicitante.tipoSolicitud=='Habilitación'">
         <label for="plano" class="rubro-label">Plano o Informe técnico * <b-icon-question-circle-fill @click="openPopup('plano')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
         <b-form-file v-model="documentos.plano" placeholder="No se seleccionó un archivo." browse-text="Examinar"
         accept=".pdf, image/*"  :state="getFormFieldState('plano')"
@@ -614,6 +646,10 @@
     <p class="h3"><b> {{ nroTramite }} </b></p>
     <p class="">Por favor, conservá este número. Será solicitado más adelante.</p>
   </div>
+    <div class="centeredContainer" style="padding:0 1rem; padding-top: 1rem; border-top:1px solid #CCC; ">
+      <p class="" style="text-align: justify; margin-bottom:0; font-size: 0.75rem "><b-icon-caret-right-fill variant="success"></b-icon-caret-right-fill> Tené en cuenta que el Departamento Comercio puede solicitarte documentación adicional vía correo electrónico.</p>
+      <p class="" style="text-align: justify; font-size: 0.75rem; margin-bottom:0; "><b-icon-caret-right-fill variant="success"></b-icon-caret-right-fill> Para consultar el estado de tu trámite ingresá en <a class="external-link" href="https://haciendavgesell.gob.ar/">haciendavgesell.gob.ar</a>, hacé click en el ícono correspondiente y escribí el número asignado en este comprobante.</p>
+    </div>
   <template #modal-footer>
     <div class="" style="margin: auto">
       <b-button @click="onResetParams" class="btn-cancel">Volver</b-button>
@@ -649,6 +685,10 @@ import { required, requiredIf, alpha, numeric, email, minLength, maxLength, same
 export default {
   validations() {
     return {
+      nroExpedienteNro: { requiredIf: requiredIf(function () {
+        return this.solicitante.tipoSolicitud == 'Baja' }) , numeric },
+      nroExpedienteAnio: { requiredIf: requiredIf(function () {
+        return this.solicitante.tipoSolicitud == 'Baja' }) , numeric },
       solicitante: {
         nombre: { required },
         apellido: { required },
@@ -672,22 +712,22 @@ export default {
         },
         marquesina: {
           requiredIfAtLeastOneChecked: (value) => {
-            return value || this.inmueble.mercaderia || this.inmueble.carteles || this.inmueble.mesas;
+            return value || this.inmueble.mercaderia || this.inmueble.carteles || this.inmueble.mesas || this.solicitante.tipoSolicitud == 'Baja';
           }
         },
         mercaderia: {
           requiredIfAtLeastOneChecked: (value) => {
-            return value || this.inmueble.marquesina || this.inmueble.carteles || this.inmueble.mesas;
+            return value || this.inmueble.marquesina || this.inmueble.carteles || this.inmueble.mesas || this.solicitante.tipoSolicitud == 'Baja';
           }
         },
         carteles: {
           requiredIfAtLeastOneChecked: (value) => {
-            return value || this.inmueble.marquesina || this.inmueble.mercaderia || this.inmueble.mesas;
+            return value || this.inmueble.marquesina || this.inmueble.mercaderia || this.inmueble.mesas || this.solicitante.tipoSolicitud == 'Baja';
           }
         },
         mesas: {
           requiredIfAtLeastOneChecked: (value) => {
-            return value || this.inmueble.marquesina || this.inmueble.mercaderia || this.inmueble.carteles;
+            return value || this.inmueble.marquesina || this.inmueble.mercaderia || this.inmueble.carteles || this.solicitante.tipoSolicitud == 'Baja';
           }
         }
       },
@@ -695,9 +735,12 @@ export default {
         dniFrente: { required },
         dniDorso: { required },
         constanciaCuit: { required },
+        constanciaIngresosBrutos: { required },
         libreDeudaUrbana: { required },
-        tituloPropiedad: { required },
-        plano: { required },
+        tituloPropiedad: { requiredIf: requiredIf(function () {
+          return this.solicitante.tipoSolicitud === 'Habilitación' }) },
+        plano: { requiredIf: requiredIf(function () {
+          return this.solicitante.tipoSolicitud === 'Habilitación' }) },
         planillaAutorizacion: { requiredIf: requiredIf(function () {
           return this.solicitante.esApoderado === 'true' })},
         croquis: { requiredIf: requiredIf(function () {
@@ -735,7 +778,10 @@ export default {
         'Santa Fe', 'Santiago del Estero', 'Tierra del Fuego', 'Tucumán'
       ],
       isHoteleria: false,
-      nroTramite: null,
+      nroTramite: null,      
+      nroExpediente: '',
+      nroExpedienteAnio: '',
+      nroExpedienteNro: '',
       solicitante: {
         tipoSolicitud: 'Habilitación',
         nombre: '',
@@ -789,6 +835,8 @@ export default {
         actaPersonaJuridica: null,
         actaDirectorio: null,
         libreDeudaUrbana: null,
+        libreDeudaComercial: null,
+        libreDeudaIB: null,
         tituloPropiedad: null,
         certificadoDomicilio: null,
         plano: null,
@@ -841,8 +889,12 @@ export default {
         return this.solicitante.nombre && this.solicitante.apellido && this.solicitante.dni && this.solicitante.cuit && this.solicitante.domicilioReal &&
               this.solicitante.telefono && this.solicitante.codigoPostal && this.solicitante.localidad && this.solicitante.provincia && this.solicitante.mail &&
               this.inmueble.localidad && this.inmueble.calle && this.inmueble.nro && this.inmueble.rubro && this.documentos.dniFrente && this.documentos.dniDorso &&
-              this.documentos.constanciaCuit && this.documentos.libreDeudaUrbana && this.documentos.tituloPropiedad &&
-              this.documentos.plano
+              (this.documentos.constanciaCuit || this.solicitante.tipoSolicitud!='Habilitación') && 
+              this.documentos.libreDeudaUrbana && 
+              (this.documentos.libreDeudaComercial || this.solicitante.tipoSolicitud!='Baja') && 
+              (this.documentos.libreDeudaIB || this.solicitante.tipoSolicitud!='Baja') && 
+              (this.documentos.tituloPropiedad || this.solicitante.tipoSolicitud!='Habilitación') &&
+              (this.documentos.plano || this.solicitante.tipoSolicitud!='Habilitación')
 
       }
     },
@@ -866,6 +918,7 @@ export default {
     isCaptchaOK(){
         //console.log("isCAPTCHAOK?? = " + (typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0));
         this.captchaError = !(typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0);
+        if(this.TEST_submit) return true;
         return !this.captchaError;
     },
     openPopup(type) {
@@ -902,7 +955,7 @@ export default {
       console.log("CANCEL FORM");
     },
     async submitForm() {
-      if(this.TEST_submit){
+      if(false){
         console.log("SUBMIT FORM CALLED");
         if (this.solicitante.esApoderado)
           console.log("solicitante.esApoderado: " + this.solicitante.esApoderado);
@@ -924,7 +977,9 @@ export default {
 
             this.openPopup('FormLoading');
             const documentosParaGuardar = {};
-
+            this.nroExpediente = "4124-" + this.nroExpedienteNro + "/" + this.nroExpedienteAnio;
+            if (this.tipoSolicitud="Baja")
+              this.espacioPublico = false;
             // Recorrer los campos en this.documentos
             for (const campo in this.documentos) {
               const documento = this.documentos[campo];
@@ -945,6 +1000,7 @@ export default {
               documentos: documentosParaGuardar,
               solicitante: this.solicitante,
               inmueble: this.inmueble,
+              nroExpediente: this.nroExpediente,
             };
             // habilitacion.nroTramite = nroTramite
             const response = await this.$store.dispatch('habilitaciones/create', {
@@ -1008,6 +1064,9 @@ export default {
       this.solicitante.esApoderado = false
       this.solicitante.esPersonaJuridica = false
 
+      this.nroExpediente = ''
+      this.nroExpedienteNro = ''
+      this.nroExpedienteAnio = ''
       this.inmueble.localidad = ''
       this.inmueble.calle = ''
       this.inmueble.nro = null
@@ -1029,6 +1088,8 @@ export default {
       this.documentos.actaPersonaJuridica = null
       this.documentos.actaDirectorio = null
       this.documentos.libreDeudaUrbana = null
+      this.documentos.libreDeudaComercial = null
+      this.documentos.libreDeudaIB = null
       this.documentos.tituloPropiedad = null
       this.documentos.certificadoDomicilio = null
       this.documentos.plano = null

@@ -25,7 +25,7 @@
       <b-form class="mt-3">
         <div v-if="page === 1">
           <div class="row justify-content-center" style="width: 100%">
-            <img src="../../assets/turnera-banner-2.png"/>
+            <img src="../../assets/turnera-banner-2.png" style="max-width: 100%"/>
           </div>
           <b-card class="section-card col-md-6 mx-auto">
             <h5>
@@ -65,7 +65,7 @@
         </div>
         <div v-if="page === 2">
           <div class="row justify-content-center" style="width: 100%">
-            <img src="../../assets/turnera-banner-3.png"/>
+            <img src="../../assets/turnera-banner-3.png" style="max-width: 100%"/>
           </div>
           <b-card class="section-card col-md-6 mx-auto">            
             <h5>
@@ -100,7 +100,7 @@
         </div>
         <div v-if="page === 3">
           <div class="row justify-content-center" style="width: 100%">
-            <img src="../../assets/turnera-banner-4.png"/>
+            <img src="../../assets/turnera-banner-4.png" style="max-width: 100%"/>
           </div>
           <b-card class="section-card col-md-6 mx-auto">
             <h5><img class="bi-ticket" src="../../assets/icon-num-rifa.png" /> Confirmación de turno</h5>
@@ -156,8 +156,19 @@
               <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Nro de trámite:</b> {{ nroTramite }}</h5> </div>
               <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Solicitante: </b> {{ nombre }}</h5> </div>
               <hr/>
-              <p style="font-size: 1.3rem"><small>Podés cancelar tu turno enviando un correo a divinspectores@gesell.gob.ar </small></p>
+             <div class="text-left">
+              <div class="row">
+                <b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill>          
+                <p class="small"><small>Para consultar el estado de tu trámite ingresá en <a class="text-success">haciendavgesell.gob.ar</a>, hacé click en el ícono
+                  correspondiente y escribí <br/>el número asignado en este comprobante. </small></p>
+              </div>
+              <div class="row">
+                <b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill>          
+                <p class="small"><small>Podés cancelar tu turno enviando un correo a divinspectores@gesell.gob.ar. </small></p>
+              </div>
+
               <b-button class="mt-2 btn-orange" v-if="endButton === true" @click="onResetParams">Volver</b-button>
+            </div>
             </b-card-body>
           </b-card>
         </div>
@@ -353,6 +364,8 @@ export default {
       return tresTurnosPedidos;
     },
     async onSelectTurno() {
+      let success = false; // Bandera para verificar si el try se ejecutó con éxito
+
       if (!this.nombre || !this.dni || !this.domicilio) {
         this.$bvToast.toast('Existen datos incompletos', {
           title: 'Error',
@@ -361,7 +374,7 @@ export default {
           toaster: 'b-toaster-top-center',
         });
       } else {
-        try{
+        try {
           const turno = {
             dia: this.date,
             horario: this.time,
@@ -374,26 +387,31 @@ export default {
           await this.$store.dispatch('turnos/create',{
             turno
           })
+          success = true; // Cambia la bandera a true si el try se ejecutó correctamente
         }catch(e){
-          this.$bvToast.toast('No se pudo solicitar un turno. Intente nuevamente.', {
+          this.$bvToast.toast('No se pudo solicitar un turno por un error desconocido. Recargue la pagina e intente nuevamente más tarde.', {
             solid: true,
             variant: 'danger',
-            appendToast: true
-          })
+            appendToast: true,
+          });
         }
-        const habilitacionId = this.$store.state.habilitaciones.single.id
-        const observaciones = this.$store.state.habilitaciones.single.observaciones
-        const habilitacion = {
-          status: 'Esperando inspección',
-          observaciones: observaciones + " - " + "Turno solicitado el día " + new Date().toLocaleDateString('es-AR')
-           + " - " + "Se debe inspeccionar el comercio el día " + new Date(this.date).toLocaleDateString('es-AR') + " a las " + this.time
+
+        // Verifica la bandera 'success' para ejecutar el código después del try...catch
+        if (success) {
+          const habilitacionId = this.$store.state.habilitaciones.single.id;
+          const observaciones = this.$store.state.habilitaciones.single.observaciones;
+          const habilitacion = {
+            status: 'Esperando inspección',
+            observaciones: observaciones + " - " + "Turno solicitado el día " + new Date().toLocaleDateString('es-AR') +
+              " - " + "Se debe inspeccionar el comercio el día " + new Date(this.date).toLocaleDateString('es-AR') + " a las " + this.time
+          };
+          await this.$store.dispatch('habilitaciones/updateLazy', {
+            id: habilitacionId,
+            habilitacion,
+          });
+          this.sendingForm = false;
+          this.formOk = true;
         }
-        await this.$store.dispatch('habilitaciones/updateLazy',{
-          id: habilitacionId,
-          habilitacion,
-        })
-        this.sendingForm = false
-        this.formOk = true;
       }
     },
     async onPrintTicket() {
@@ -515,6 +533,36 @@ export default {
 </script>
 
 <style scoped>
+@media (max-width: 720px){
+  .b-calendar{
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 0 !important;
+  }
+  .banner-container{
+    margin:auto;
+  }
+  .section-card{
+    padding: 1rem 1rem !important;
+  }
+  .card{
+    width: 90% !important;
+    margin-left: 5% !important;
+    margin-right: 5% !important; 
+  }
+  .btn{
+    width: 9rem !important;
+  }
+  .bi-ticket{
+    width: 10% !important;
+  }
+  .modal-dialog{
+    max-width: 100px !important;
+  }
+  .justify-content-center{
+    margin: auto;
+  }
+}
 
   .validation-error {
     text-align: center;
@@ -619,6 +667,12 @@ export default {
   .modal-warning .minitext{
     font-size: 0.9rem;
     font-weight: 100;
+  }
+
+  .small{
+    font-size: 1rem;
+    margin-left: 3px;
+    margin-top: 4px;
   }
 
   .section-card{

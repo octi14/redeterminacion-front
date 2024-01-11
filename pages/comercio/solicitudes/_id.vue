@@ -174,7 +174,7 @@
                   <b-icon-x-circle-fill variant="danger" v-else></b-icon-x-circle-fill><br>
               </p>
             </div>
-            <div  v-if="habilitacion.serviciosHoteleria">
+            <div v-if="!baja && hoteleria">
               <div class="layout" v-if="!baja">
                 <strong class="col col-main">Servicios de hotelería:</strong>
               </div>
@@ -558,6 +558,14 @@ export default {
               || this.$store.state.user.username === "mariaelisabetbahlcke@gesell.gob.ar"
               || this.$store.state.user.username === "lujanperez@gesell.gob.ar") || this.$store.state.user.admin == "master"
     },
+    hoteleria(){
+      for (const item of this.habilitacion.serviciosHoteleria) {
+        if (item.value !== false) {
+          return true;
+        }
+      }
+      return false;
+    }
   },
   async fetch() {
     const habilitacionId = this.$route.params.id

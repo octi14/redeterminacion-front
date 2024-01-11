@@ -191,6 +191,7 @@
             <br>
           </div>
         </div>
+      </div>
     </template>
     <!-- Documentación -->
     <template v-if="habilitacion">
@@ -462,7 +463,7 @@
 
     <b-modal v-model="showDocumentoModal" id="documento-modal" hide-footer centered>
       <template #modal-header>
-        <h3 class="icon-orange text-primary text-center"><b>{{ DocumentoModalTitle }}</b></h3>
+        <h3 class="icon-orange text-primary text-center"><b>{{ DocumentoModalTitle + " - " + habilitacion.nroTramite }}</b></h3>
       </template>
       <div class="modal-body">
         

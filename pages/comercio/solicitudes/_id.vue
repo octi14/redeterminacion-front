@@ -722,7 +722,8 @@ export default {
       this.observaciones = ''
       this.showRejectPopup = false
     },
-    openDocumento(documento, nombreDocumento) {
+    //ESTE openDocumento es la prueba fallida de Nico para abrir los docs como modales dentro de la misma pagina
+    /*openDocumento(documento, nombreDocumento) {
       const decodedData = atob(documento.data);
       const arrayBuffer = new ArrayBuffer(decodedData.length);
       const arrayBufferView = new Uint8Array(arrayBuffer);
@@ -764,6 +765,48 @@ export default {
           console.log('No se encontró modalContent en el DOM');
         }
       });
+    },*/
+    openDocumento(documento, nombreDocumento) {
+      const decodedData = atob(documento.data); // Decodificar la data de Base64
+
+      const arrayBuffer = new ArrayBuffer(decodedData.length);
+      const arrayBufferView = new Uint8Array(arrayBuffer);
+
+      for (let i = 0; i < decodedData.length; i++) {
+        arrayBufferView[i] = decodedData.charCodeAt(i);
+      }
+
+      const blob = new Blob([arrayBuffer], { type: documento.contentType });
+      const fileURL = URL.createObjectURL(blob);
+
+      const newWindow = window.open('', '_blank');
+
+      let newWindowTitle = "Documento: " + nombreDocumento; // Título predeterminado
+
+      if (documento.filename) {
+        newWindowTitle = documento.filename; // Usar el nombre del archivo si está disponible
+      }
+
+      newWindow.document.title = newWindowTitle; // Establecer el título de la pestaña
+
+      if (documento.contentType === 'application/pdf') {
+        // Abrir el PDF en una nueva pestaña utilizando <embed>
+        const embed = document.createElement('embed');
+        embed.setAttribute('type', 'application/pdf');
+        embed.setAttribute('src', fileURL);
+        embed.setAttribute('width', '100%');
+        embed.setAttribute('height', '100%');
+        newWindow.document.body.appendChild(embed);
+      } else if (documento.contentType.startsWith('image/')) {
+        // Abrir la imagen en una nueva pestaña utilizando <img>
+        const img = document.createElement('img');
+        img.setAttribute('src', fileURL);
+        img.setAttribute('width', 'auto');
+        img.setAttribute('height', 'auto');
+        newWindow.document.body.appendChild(img);
+      } else {
+        console.log('Formato de contenido no compatible');
+      }
     },
     onResetEdit() {
       this.editing = false

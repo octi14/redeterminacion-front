@@ -9,32 +9,23 @@
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
     <b-collapse id="nav-collapse" is-nav class="m-2" style="width:90%">
       <div class="row col-10">
-        <b-navbar-nav class="mr-2">
-          <NuxtLink
-            class="nav-link"
-            active-class="active"
-            to="/"
-          >
-              Inicio
-          </NuxtLink>
-        </b-navbar-nav>
         <b-dropdown v-if="adminHacienda" text="Obras" variant="success">
           <b-dropdown-item>
             <NuxtLink
-              style="color:black"
+              style="color:white"
               class="nav-link"
               v-if="isAuthenticated"
-              to="/redeterminacion"
+              to="/obras"
             >
               Lista de obras
             </NuxtLink>
           </b-dropdown-item>
           <b-dropdown-item v-if="isAuthenticated && adminHacienda">
             <NuxtLink
-            style="color:black"
+            style="color:white"
             class="nav-link"
             active-class="active"
-            to="/obra/create"
+            to="/obras/create"
           >
               Nueva obra
           </NuxtLink>
@@ -43,7 +34,7 @@
         <b-dropdown v-if="adminHacienda" text="Índices" variant="success">
           <b-dropdown-item v-if="isAuthenticated && adminHacienda">
             <NuxtLink
-              style="color:black"
+              style="color:white"
               class="nav-link"
               to="/indices/create"
             >
@@ -52,7 +43,7 @@
           </b-dropdown-item>
           <b-dropdown-item>
             <NuxtLink
-            style="color:black"
+            style="color:white"
             v-if="isAuthenticated && adminHacienda"
             class="nav-link"
             active-class="active"

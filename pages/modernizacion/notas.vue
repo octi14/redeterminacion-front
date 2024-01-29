@@ -1,5 +1,5 @@
 <template>
-  <div class="tutoriales-feed mt-4">
+  <div class="page main-background">
     <Banner title="Formularios / Notas tipo" />
     <MultimediaFeed keyword="Notas" />
     <div class="text-center m-5 float-lg-end">

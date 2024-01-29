@@ -215,10 +215,8 @@ export default {
       this.items.splice(index, 1)
     },
     async onReturn(){
-      await this.$router.push('/redeterminacion')
+      await this.$router.push('/obras')
     },
   },
 }
 </script>
-
-<style type="text/css"></style>

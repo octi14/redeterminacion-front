@@ -8,8 +8,42 @@
     </div>
     <b-container class="col-8">
       <b-row>
-        <b-col>
+        <b-col class="botonera">
+          <h2><b-icon-question-octagon-fill></b-icon-question-octagon-fill> ¿Qué trámite estás buscando?</h2>
+          <div class="botonera-container">
+            <b-row>
+              <b-col lg="3" md="4" sm="6"><img id="btn-Habilitación" width="100%" src="../../assets/btn/btn_habilitacion.png" @click="seleccionarTramite('Habilitación')"></b-col>
+              <b-col lg="3" md="4" sm="6"><img id="btn-Baja" width="100%" src="../../assets/btn/btn_baja.png" @click="seleccionarTramite('Baja')"></b-col>
+              <b-col lg="3" md="4" sm="6"><img id="btn-Cambio-Titular" class="disabled" width="100%" src="../../assets/btn/btn_cambio_titular.png" @click="seleccionarTramite('Cambio-Titular')"></b-col>
+              <b-col lg="3" md="4" sm="6"><img id="btn-Cambio-Domicilio" class="disabled" width="100%" src="../../assets/btn/btn_cambio_domicilio.png" @click="seleccionarTramite('Cambio-Domicilio')"></b-col>
+              <b-col lg="3" md="4" sm="6"><img id="btn-Renovacion" class="disabled" width="100%" src="../../assets/btn/btn_renovacion.png" @click="seleccionarTramite('Renovacion')"></b-col>
+              <b-col lg="3" md="4" sm="6"><img id="btn-Anexo" class="disabled" width="100%" src="../../assets/btn/btn_anexo.png" @click="seleccionarTramite('Anexo')"></b-col>
+              <b-col lg="3" md="4" sm="6"><img id="btn-Reempadronamiento" class="disabled" width="100%" src="../../assets/btn/btn_reempadronamiento.png" @click="seleccionarTramite('Reempadronamiento')"></b-col>
+              <b-col lg="3" md="4" sm="6"><img id="btn-Anexo-Cambio" class="disabled" width="100%" src="../../assets/btn/btn_anexo_cambio.png" @click="seleccionarTramite('Anexo-Cambio')"></b-col>
+            </b-row>
+          </div>
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col v-if="tramiteSeleccionado=='Baja'">
           <br />
+          <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(0) }">
+            <h4 class="section-title" @click="toggleCard(0)">
+              ¿Qué significa realizar una Baja Comercial?
+              <b-icon-chevron-compact-down v-if="!isCardExpanded(0)"></b-icon-chevron-compact-down>
+              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
+            </h4>
+            <transition name="expand">
+              <div v-show="isCardExpanded(0)">
+                <div class="li-row first-li">
+                  <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> El trámite de Baja Comercial implica finalizar una Habilitación Comercial. Mediante este trámite el Municipio verificará que la documentación solicitada y el pago de tasas correspondientes estén cumplimentadas.</div>
+                </div>
+                <div class="li-row">
+                  <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Una vez confirmada esta información se extiende al solicitante un certificado de Baja Comercial donde consta la desvinculación comercial con este Municipio.</div>
+                </div>
+              </div>
+            </transition>
+          </b-card>
           <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(1) }">
             <h4 class="section-title" @click="toggleCard(1)">
               ¿Quién puede iniciar el trámite?
@@ -18,6 +52,133 @@
             </h4>
             <transition name="expand">
               <div v-show="isCardExpanded(1)">
+                <div class="li-row first-li">
+                  <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> El <b>Titular de la Habilitación Comercial</b>.</div>
+                </div>
+                <div class="li-row">
+                  <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> El <b>Propietario/a del Inmueble</b> en el cual se encuentre situado el comercio habilitado. <i>En este último caso el contrato entre las partes debe estar finalizado y debe haber cesado la actividad comercial.</i></div>
+                </div>
+                <div class="li-row">
+                  <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> En ambos casos podrá actuar un/a representante o apoderado/a de la persona interesada con documentación que acredite el carácter de tal. <b-icon-question-circle-fill @click="openPopup('A')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div>
+                </div>
+              </div>
+            </transition>
+          </b-card>
+          <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(2) }">
+            <h4 class="section-title" @click="toggleCard(2)">
+              ¿Qué necesito para iniciar el trámite?
+              <b-icon-chevron-compact-down v-if="!isCardExpanded(2)"></b-icon-chevron-compact-down>
+              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
+            </h4>
+            <transition name="expand">
+              <div v-show="isCardExpanded(2)">
+                <div class="li-row first-li"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> DNI del solicitante <i>(imagen del frente y dorso)</i>.</div></div>
+                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Libre deuda Tasa Comercial.</div></div>
+                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Libre deuda de <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Tasa por Sevicios Urbanos</a> <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. <b-icon-question-circle-fill @click="openPopup('LibreDeuda')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div></div>
+                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Libre deuda Ingresos Brutos <i>(Solo si la baja la solicita el titular de la habilitación)</i>.</div></div>
+                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Escritura traslativa de Dominio del Inmueble/ Contrato de locación / Boleto de Compraventa o afín, con el correspondiente Impuesto de Sellos Provincial y firma certificada por Escribano Público, Entidad Bancaria o Autoridad Administrativa <i>(en el caso que la Baja la solicite un nuevo propietario que no está registrado).</i></div></div>
+                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> <a href="https://drive.google.com/file/d/1m5ouibBL4sWokhkSR5keTjbUVo-I4TOU/view" target="_blank" class="external-link">Planilla de Autorización de Trámite</a> o poder autorizado por escribano <i>(únicamente si el trámite es iniciado mediante representante o apoderado/a)</i>.</div></div>
+                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> <b>Personas Jurídicas:</b> Escritura constitutiva de la misma con designación actual de sus representantes.</div></div>
+              </div>
+            </transition>
+          </b-card>          
+          <b-card class="section-card FAQs-card" v-bind:class="{ 'expanded': isCardExpanded(3) }">
+            <h4 class="section-title" @click="toggleCard(3)">Preguntas Frecuentes (Reescribir Todo!)
+              <b-icon-chevron-compact-down v-if="!isCardExpanded(3)"></b-icon-chevron-compact-down>
+              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
+            </h4>
+            <transition name="expand">
+              <div v-show="isCardExpanded(3)">
+                <div class="li-row first-li">
+                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-content">
+                    <p class="li-title">¿A partir de que momento la baja es efectiva?</p>
+                    <p>La baja será efectiva previa intervención del departamento de inspección.</p>
+                  </div>
+                </div>
+                <div class="li-row">
+                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-content">
+                    <p class="li-title">¿Qué sucede si el titular se encuentra fallecido?</p>
+                    <p>En caso de titular fallecido realizar la consulta correspondiente en <a href="mailto:deptocomercio@gesell.gob.ar" target="_blank" class="external-link">deptocomercio@gesell.gob.ar</a></p>
+                  </div>
+                </div>
+                <div class="li-row">
+                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-content">
+                    <p class="li-title">¿Cómo se paga?</p>
+                    <p>No tiene cuotas para darlo de baja.</p>
+                  </div>
+                </div>
+                <div class="li-row">
+                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-content">
+                    <p class="li-title">¿que pregunta va aca?</p>
+                    <p class="li-p">El envio del certificado se hace por correo electrónico luego de pagarlo.</p>
+                  </div>
+                </div>
+                <div class="li-row">
+                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-content">
+                    <p class="li-title">¿Por qué no cargan mis archivos?</p>
+                    <p>Puede ser que los archivos que quieras cargar superen el peso máximo soportado. En ese caso, te sugerimos reducirlos con alguna herramienta digital (por ejemplo: <a href="https://www.ilovepdf.com/es/comprimir_pdf" target="_blank" class="external-link">ilovepdf</a>). Si el problema persiste podés comunicarte con <a href="mailto:deptocomercio@gesell.gob.ar" target="_blank" class="external-link">deptocomercio@gesell.gob.ar</a></p>
+                  </div>
+                </div>
+                <div class="li-row first-li">
+                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-content">
+                    <p class="li-title">¿Cómo cargo varias imágenes en un campo único del formulario?</p>
+                    <p>En caso de que el archivo que vayas a subir tenga varias páginas (y, por ejemplo, vos las hayas fotografiado) deberás compilarlas en un único archivo pdf. Para ello existen diversas herramientas digitales (por ejemplo, <a href="https://www.ilovepdf.com/es/jpg_a_pdf" target="_blank" class="external-link">ilovepdf</a>) que te permiten hacerlo de manera sencilla y gratuita. </p>
+                  </div>
+                </div>
+                <div class="li-row first-li">
+                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-content">
+                    <p class="li-title">¿Cómo puedo saber en qué estado se encuentra mi trámite?</p>
+                    <p>Hacé click en el botón <a class="external-link" href="/consulta_tramite">consulta de trámites</a> que se encuentra en la página de inicio y escribí el número de trámite que te dio el sistema cuando completaste tu solicitud.</p>
+                  </div>
+                </div>
+                <div class="li-row first-li">
+                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-content">
+                    <p class="li-title">Para visualizar como realizar tu trámite, podés mirar este video tutorial</p>
+                    <iframe class="videoTuto" width="560" height="315" src="https://www.youtube.com/embed/HJwZkfxsnOw?si=EszZ_Byjmv2-ysF8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                  </div>
+                </div>
+              </div>
+            </transition>
+          </b-card>
+
+          <b-card id="normas" class="section-card" v-bind:class="{ 'expanded': isCardExpanded(4) }">
+            <h4 class="section-title" @click="toggleCard(4)">
+              Condiciones legales
+              <b-icon-chevron-compact-down v-if="!isCardExpanded(4)"></b-icon-chevron-compact-down>
+              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
+            </h4>
+            <transition name="expand">
+              <div v-show="isCardExpanded(4)">
+                <p class="first-li">
+                  La habilitación de comercios/industrias o asimilables deberá adecuarse a lo determinado en concordancia con leyes nacionales, provinciales y la
+                  <a href="https://arvige.gob.ar/legislacion/pdf/12" target="_blank" class="external-link">Ordenanza 2156/08 (TO 2023)</a>
+                  y el <a href="/ordenanzas" target="_blank" class="external-link">Digesto Comercial Municipal</a>
+                  (creado por el Decreto 1856/23).
+                </p>
+              </div>
+            </transition>
+          </b-card>
+        <b-button variant="success" class="float-right btn-form" @click="openPopup('Form')">Iniciar Trámite</b-button>
+        <br />
+        </b-col>
+        <b-col v-if="tramiteSeleccionado=='Habilitación'">
+          <br />
+          <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(5) }">
+            <h4 class="section-title" @click="toggleCard(5)">
+              ¿Quién puede iniciar el trámite?
+              <b-icon-chevron-compact-down v-if="!isCardExpanded(5)"></b-icon-chevron-compact-down>
+              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
+            </h4>
+            <transition name="expand">
+              <div v-show="isCardExpanded(5)">
                 <div class="li-row first-li">
                   <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> El interesado futuro comerciante/industrial o afin mayor de 18 años.</div>
                 </div>
@@ -28,14 +189,14 @@
             </transition>
           </b-card>
 
-          <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(2) }">
-            <h4 class="section-title" @click="toggleCard(2)">
+          <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(6) }">
+            <h4 class="section-title" @click="toggleCard(6)">
               ¿Qué necesito para iniciar el trámite?
-              <b-icon-chevron-compact-down v-if="!isCardExpanded(2)"></b-icon-chevron-compact-down>
+              <b-icon-chevron-compact-down v-if="!isCardExpanded(6)"></b-icon-chevron-compact-down>
               <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
             </h4>
             <transition name="expand">
-              <div v-show="isCardExpanded(2)">
+              <div v-show="isCardExpanded(6)">
                 <div class="li-row first-li"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> DNI del solicitante <i>(imagen del frente y dorso)</i>.</div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Domicilio real y legal del establecimiento <i>(deberá constar calle y número)</i>. <b-icon-question-circle-fill @click="openPopup('NroInmueble')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Copia de plano (en alguna de sus dos posibilidades: <i>1. Conforme a obra o Medición aprobado / 2. Conforme a obra o Medición registrado).</i> En caso de no poseerlo, se requerirá el Informe Técnico debidamente visado por el Colegio Profesional correspondiente. <b-icon-question-circle-fill @click="openPopup('B')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div></div>
@@ -67,14 +228,14 @@
             </transition>
           </b-card>
 
-          <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(3) }">
-            <h4 class="section-title" @click="toggleCard(3)">
+          <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(7) }">
+            <h4 class="section-title" @click="toggleCard(7)">
               Requisitos por rubros comerciales
-              <b-icon-chevron-compact-down v-if="!isCardExpanded(3)"></b-icon-chevron-compact-down>
+              <b-icon-chevron-compact-down v-if="!isCardExpanded(7)"></b-icon-chevron-compact-down>
               <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
             </h4>
             <transition name="expand">
-              <div v-show="isCardExpanded(3)">
+              <div v-show="isCardExpanded(7)">
                 <div class="li-row first-li">
                   <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                   <div class="li-content">
@@ -222,13 +383,13 @@
               </div>
             </transition>
           </b-card>
-          <b-card class="section-card FAQs-card" v-bind:class="{ 'expanded': isCardExpanded(4) }">
-            <h4 class="section-title" @click="toggleCard(4)">Preguntas Frecuentes
-              <b-icon-chevron-compact-down v-if="!isCardExpanded(4)"></b-icon-chevron-compact-down>
+          <b-card class="section-card FAQs-card" v-bind:class="{ 'expanded': isCardExpanded(8) }">
+            <h4 class="section-title" @click="toggleCard(8)">Preguntas Frecuentes
+              <b-icon-chevron-compact-down v-if="!isCardExpanded(8)"></b-icon-chevron-compact-down>
               <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
             </h4>
             <transition name="expand">
-              <div v-show="isCardExpanded(4)">
+              <div v-show="isCardExpanded(8)">
                 <div class="li-row first-li">
                   <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                   <div class="li-content">
@@ -369,14 +530,14 @@
             </transition>
           </b-card>
 
-          <b-card id="normas" class="section-card" v-bind:class="{ 'expanded': isCardExpanded(0) }">
-            <h4 class="section-title" @click="toggleCard(0)">
+          <b-card id="normas" class="section-card" v-bind:class="{ 'expanded': isCardExpanded(9) }">
+            <h4 class="section-title" @click="toggleCard(9)">
               Condiciones legales
-              <b-icon-chevron-compact-down v-if="!isCardExpanded(0)"></b-icon-chevron-compact-down>
+              <b-icon-chevron-compact-down v-if="!isCardExpanded(9)"></b-icon-chevron-compact-down>
               <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
             </h4>
             <transition name="expand">
-              <div v-show="isCardExpanded(0)">
+              <div v-show="isCardExpanded(9)">
                 <p class="first-li">
                   La habilitación de comercios/industrias o asimilables deberá adecuarse a lo determinado en concordancia con leyes nacionales, provinciales y la
                   <a href="https://arvige.gob.ar/legislacion/pdf/12" target="_blank" class="external-link">Ordenanza 2156/08 (TO 2023)</a>
@@ -496,7 +657,7 @@
               <label class="form-check-label" for="documentCheckbox">Ya tengo todos los documentos digitalizados y la información requerida.</label>
           </div>
           <div class="text-center mt-3">
-              <nuxt-link :class="{ 'disabled': !documentCheckboxChecked }" to="/comercio/form">
+              <nuxt-link :class="{ 'disabled': !documentCheckboxChecked }" :to="{path: '/comercio/form', query: { tramite: tramiteSeleccionado } }">
               <b-btn variant="success" :disabled="!documentCheckboxChecked" @click="proceedToForm()" >
                   Aceptar
               </b-btn>
@@ -554,6 +715,7 @@ export default {
       showLibreDeudaPopup: false,
       showPopupNroInmueble: false,
       documentCheckboxChecked: false,
+      tramiteSeleccionado: '',
       rubroSeleccionado: {
                           id: null,
                           nombre: null,
@@ -679,7 +841,27 @@ export default {
   isCardExpanded(cardIndex) {
     return this.expandedCards.includes(cardIndex);
   },
+  seleccionarTramite(tramite){
+    this.tramiteSeleccionado = tramite;
+    // Obtener todas las imágenes de la botonera
+    const imagenes = document.querySelectorAll('.botonera-container img');
+
+    // Iterar sobre cada imagen
+    imagenes.forEach((imagen) => {
+      // Verificar si la imagen actual es la que se ha clickeado
+      if (imagen.id === `btn-${tramite}`) {
+        // Agregar la clase 'selected' a la imagen clickeada
+        imagen.classList.add('selected');
+      } else {
+        // Eliminar la clase 'selected' de las demás imágenes
+        imagen.classList.remove('selected');
+      }
+    });
+    this.expandedCards.forEach((card) => {
+      if( this.isCardExpanded(card)) this.toggleCard(card);
+    });
   }
+},
 }
 </script>
 <style scoped>
@@ -961,5 +1143,28 @@ ul{
 .expand-leave-to {
   max-height: 0; /* Altura inicial y final de la animación */
   overflow: hidden;
+}
+.botonera h2{
+  font-weight: bold;
+  margin: 0.5rem 0;
+  padding-bottom: 1rem;
+  border-bottom: 1px #666 solid;
+}
+.botonera{
+  margin-top: 2rem;
+}
+.botonera-container .row div img{
+  margin: 1rem 0.5rem;
+  cursor: pointer;
+}
+.botonera-container .row div .selected{
+  border: #0c681a 2px solid;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 15px;
+  cursor: auto;
+}
+.botonera-container .row div .disabled{
+  opacity: 0.5;
 }
 </style>

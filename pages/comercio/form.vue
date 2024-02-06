@@ -29,8 +29,10 @@
       <legend><h3>Datos del Solicitante <b-icon-question-circle-fill @click="openPopup('DatosDelSolicitante')" font-scale="1" variant="info"></b-icon-question-circle-fill></h3></legend>
       <b-form-group label="Tipo de Solicitud *" label-for="tipo-solicitud" >
         <b-form-select title="Por el momento solo se pueden solicitar habilitaciones comerciales." id="tipo-solicitud" v-model="solicitante.tipoSolicitud" >
-            <b-form-select-option selected="selected" value="Habilitación">Habilitar nuevo comercio</b-form-select-option>
-            <!-- <b-form-select-option selected="selected" value="Baja" >Baja de comercio</b-form-select-option> -->
+            <b-form-select-option v-if="solicitante.tipoSolicitud=='Habilitación'" selected="selected" value="Habilitación">Habilitar nuevo comercio</b-form-select-option>
+            <b-form-select-option v-else value="Habilitación">Habilitar nuevo comercio</b-form-select-option>
+            <b-form-select-option v-if="solicitante.tipoSolicitud=='Baja'" value="Baja" >Baja de comercio</b-form-select-option>
+            <b-form-select-option v-else value="Baja" >Baja de comercio</b-form-select-option>
         </b-form-select>
       </b-form-group>
 
@@ -783,7 +785,7 @@ export default {
       nroExpedienteAnio: '',
       nroExpedienteNro: '',
       solicitante: {
-        tipoSolicitud: 'Habilitación',
+        tipoSolicitud: this.$route.query.tramite,
         nombre: '',
         apellido: '',
         dni: '',

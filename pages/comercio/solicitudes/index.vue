@@ -1,6 +1,6 @@
 <template>
   <div class="page main-background">
-    <Banner title="Solicitudes de habilitación" subtitle="Uso interno" />
+    <Banner title="Solicitudes de trámite" subtitle="Uso interno" />
     <div class="col-8 mx-auto" v-if="adminComercio">
       <b-form-group class="col-8 mx-auto mt-4" label-class="text-success h6">
         <label for="selectedEstado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><b-icon-funnel-fill></b-icon-funnel-fill> Filtrar por Estado</label>
@@ -104,18 +104,6 @@ export default{
         case 'Rectificación':
           item.estadoColor = 'text-lightblue';
           break;
-        case 'Esperando turno':
-          item.estadoColor = 'text-secondary';
-          break;
-        case 'Esperando inspección':
-          item.estadoColor = 'text-secondary';
-          break;
-        case 'Prórroga 1':
-          item.estadoColor = 'text-secondary';
-          break;
-        case 'Prórroga 2':
-          item.estadoColor = 'text-secondary';
-          break;
         case 'Inspeccionado':
           item.estadoColor = 'text-lightgreen';
           break;
@@ -129,7 +117,7 @@ export default{
           item.estadoColor = 'text-darkgreen';
           break;
         default:
-          item.estadoColor = 'text-primary';
+          item.estadoColor = 'text-secondary';
       }
     });
     this.$store.commit('habilitaciones/ordenarHabilitaciones')

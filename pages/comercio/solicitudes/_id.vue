@@ -361,14 +361,11 @@
       </template>
       <div class="confirmation-popup-body">
         <h2 class="icon-orange text-secondary text-center"><b>Aprobar solicitud</b></h2>
-        <p style="margin: 3%"> Se aprobará la solicitud. Se deberá  enviar un mail al solicitante indicando que en el plazo de 7 días hábiles:</p>
-        <ul>
-          <li>  Abone el canon previsto para el rubro. </li>
-          <li>  Concurra al Departamento de Comercio con la documentación original y el libro de actas. </li>
-        </ul>
+        <p style="margin: 3%"> Se aprobará la solicitud. Se deberá enviar un mail al solicitante indicando que el
+           trámite está completo y adjuntar el certificado de baja. </p>
         <hr/>
         <div class="text-center mt-3">
-          <b-btn variant="primary" @click="onSendApprove()" >
+          <b-btn variant="primary" @click="onSendAprobarBaja()" >
               Aceptar
           </b-btn>
         </div>
@@ -383,16 +380,19 @@
         </div>
       </template>
       <div class="confirmation-popup-body">
-        <h3 class="icon-orange text-success text-center"><b>Aprobar solicitud</b></h3>
-        <p>La solicitud fue aprobada con éxito. Se deberá  enviar un correo electrónico al solicitante indicando que en el plazo de 7 días hábiles:</p>
+        <h3 class="icon-orange text-success text-center" v-if="!baja"><b>Aprobar solicitud</b></h3>
+        <h3 class="icon-orange text-success text-center" v-else><b>Trámite finalizado</b></h3>
+
+        <p v-if="!baja">La solicitud fue aprobada con éxito. Se deberá  enviar un correo electrónico al solicitante indicando que en el plazo de 7 días hábiles:</p>
+        <p style="text-align: center" v-else>Recordá enviar un correo electrónico al solicitante indicando que el trámite ha sido finalizado.</p>
         <ul>
           <li v-if="!baja">  Abone el canon de Habilitación Comercial previsto para el rubro. </li>
-          <li v-if="baja"> Abone el canon previsto para el rubro.</li>
-          <li>  Concurra al Departamento de Comercio con la documentación original y el Libro de Actas. </li>
+          <li v-if="!baja"> Abone el canon previsto para el rubro.</li>
+          <li v-if="!baja">  Concurra al Departamento de Comercio con la documentación original y el Libro de Actas. </li>
           <li v-if="!baja">  Constituya el Domicilio Fiscal Electrónico (DFE). </li>
         </ul>
         <div class="text-center mt-3">
-          <b-btn variant="success" @click="showApprove = false" >
+          <b-btn variant="success" @click="showApprove = false">
               Aceptar
           </b-btn>
         </div>
@@ -618,7 +618,7 @@ export default {
       this.showObservaciones = true
     },
     async onSendRectificacion(){
-      const observaciones = this.habilitacion.observaciones
+      const observaciones = this.habilitacion.observaciones || ""
       const habilitacion = {
         status: 'Rectificación',
         observaciones: observaciones + " - " + "Solicita rectificación el día " + new Date().toLocaleDateString('es-AR')
@@ -687,6 +687,23 @@ export default {
       }
       if(this.inspeccion){
         habilitacion.status = "Esperando turno"
+      }
+      const id = this.habilitacion.id
+      const userToken = this.$store.state.user.token
+      await this.$store.dispatch('habilitaciones/update', {
+        id,
+        habilitacion,
+      })
+      this.wait(300)
+      this.habilitacion.status = habilitacion.status
+      this.showPrevApprove = false
+      this.showApprove = true
+    },
+    async onSendAprobarBaja(){
+      const observaciones = this.habilitacion.observaciones || " "
+      const habilitacion = {
+        status: 'Finalizada',
+        observaciones: observaciones + " - " + "Se finaliza la solicitud el " + new Date().toLocaleDateString('es-AR') + " " + new Date().toLocaleTimeString()
       }
       const id = this.habilitacion.id
       const userToken = this.$store.state.user.token

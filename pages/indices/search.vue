@@ -17,7 +17,7 @@
         </b-form-select>
         <b-button type="submit" variant="primary"> Buscar </b-button>
         <b-button variant="warning">
-          <NuxtLink style="color: black" to="/redeterminacion"> Volver </NuxtLink>
+          <NuxtLink style="color: black" to="/obras"> Volver </NuxtLink>
         </b-button>
       </b-form>
       <div class="container my-5" v-if="result">

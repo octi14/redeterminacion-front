@@ -1,12 +1,12 @@
 <template>
   <div class="page main-background">
     <Banner title="Mi cuenta"/>
-    <div class="text-center my-4">
-      <p class="h4 text-success"><b>Cambiar contraseña</b></p>
-    </div>
-    <div class="text-center col-md-4 col-sm-8 card shadow-card mt-6 mx-auto">
-      <b-form class="mt-5" @submit.prevent="onResetPassword" @reset="onCancel">
-        <h6> Contraseña anterior </h6>
+    <div class="text-center col-md-4 col-sm-8 card shadow-card mt-4 mx-auto">
+      <div class="text-center mt-5">
+        <p class="h4" style="color:#07691c"><b>Cambiar contraseña</b></p>
+      </div> <hr/>
+      <b-form class="mt-4" @submit.prevent="onResetPassword" @reset="onCancel">
+        <h6 style="color:#07691c"><b> Contraseña anterior </b></h6>
         <div class="col-10 mx-auto mb-3 position-relative">
           <b-form-input v-model="oldPassword" :type="visibleOldPass ? 'text' : 'password'"
                         class="position-relative">
@@ -18,7 +18,7 @@
             <i v-else class="far fa-eye"></i>
           </div>
         </div>
-        <h6> Nueva contraseña </h6>
+        <h6 style="color:#07691c"><b> Nueva contraseña </b></h6>
         <div class="col-10 mx-auto mb-3 position-relative">
           <b-form-input v-model="newPassword" :type="visibleNewPass ? 'text' : 'password'"
                         class="position-relative">
@@ -30,7 +30,7 @@
             <i v-else class="far fa-eye"></i>
           </div>
         </div>
-        <h6> Repetir contraseña </h6>
+        <h6 style="color:#07691c"><b> Repetir contraseña </b></h6>
         <div class="col-10 mx-auto mb-3 position-relative">
           <b-form-input v-model="repeatNewPassword" :type="visibleRepeat ? 'text' : 'password'"
                         class="position-relative">
@@ -44,9 +44,9 @@
         </div>
       </b-form>
       <div class="row mb-3 mx-auto">
-        <b-button pill class="mt-4 mr-1" variant="success" @click="onResetPassword">Cambiar</b-button>
+        <b-button class="mt-4 mr-1" variant="success" @click="onResetPassword">Cambiar</b-button>
         <NuxtLink to="/">
-          <b-button pill class="mt-4" variant="danger" type="reset">Salir</b-button>
+          <b-button class="mt-4" variant="danger" type="reset">Salir</b-button>
         </NuxtLink>
       </div>
     </div>
@@ -136,7 +136,7 @@ export default{
 }
 </script>
 
-<style scoped>
+<style>
  @import "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css";
 
 </style>

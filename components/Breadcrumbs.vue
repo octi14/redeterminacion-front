@@ -1,5 +1,5 @@
 <template>
-  <nav class="breadcrumbs">
+  <nav v-if="$route.path !== '/'" class="breadcrumbs">
     <b-breadcrumb :items="breadcrumbs" />
   </nav>
 </template>
@@ -22,7 +22,7 @@ export default {
           to: `/${routeSegments.slice(0, index + 1).join('/')}`,
         };
       });
-
+      
       return [
         {
           text: 'Inicio',

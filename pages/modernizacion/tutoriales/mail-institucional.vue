@@ -1,9 +1,9 @@
 <template>
-  <div class="page">
+  <div class="page main-background">
     <Banner title="Mail institucional" />
     <MultimediaFeed keyword="Mail Institucional" />
     <div class="text-center m-5 float-lg-end">
-      <NuxtLink to="/tutoriales">
+      <NuxtLink to="/modernizacion/tutoriales">
         <b-button variant="success"> Volver </b-button>
       </NuxtLink>
     </div>

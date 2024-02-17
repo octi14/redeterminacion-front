@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page main-background">
     <Banner title="Procedimientos" />
     <MultimediaFeed keyword="Procedimientos" />
     <div class="text-center mt-5 float-lg-end">

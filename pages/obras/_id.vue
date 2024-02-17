@@ -22,16 +22,16 @@
               :obra="obra"
               @submit="onSubmitEditObra"
               @reset="editing = false"/>
-              <CertificadoForm
-                v-show="adding"
-                :obra="obra"
-                @submit="onSubmitCreateCertif"/>
-              <CertificadoFeed
-                v-show="watchingCertif"
-                :obra="obra"/>
-              <ObraProgress class="mx-auto"
-                v-show="watchingProgress"
-                :obra="obra"/>
+            <CertificadoForm
+              v-show="adding"
+              :obra="obra"
+              @submit="onSubmitCreateCertif"/>
+            <CertificadoFeed
+              v-show="watchingCertif"
+              :obra="obra"/>
+            <ObraProgress class="mx-auto"
+              v-show="watchingProgress"
+              :obra="obra"/>
             <!-- Body -->
             <div class="card shadow-card col-md-6 col-sm-12 mx-auto" v-if="!adding && !editing">
               <div class="col-12 mx-auto mt-3 mb-4">

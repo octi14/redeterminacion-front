@@ -22,7 +22,7 @@
           <h6>Avance: {{ certificado.items[index].avance }}%</h6>
           <h6 v-if="!obraUvi">Saldo: ${{ format(redondear(certificado.items[index].saldo)) }}</h6>
           <h6 v-else>Saldo: ${{ format(redondear((certificado.items[index].contratado - certificado.items[index].anticipo) * (certificado.items[index].avance/100))) }}</h6>
-          <strong v-if="certificado.redeterminado && redet && redet.items && redet.items[index]">
+          <strong v-if="certificado.redeterminado && redet && redet.items && redet.items[index] !== undefined">
             Saldo redeterminado: ${{ format(redondear(totalRedet(redet.items[index]))) }}
           </strong>
         </b-form-group>

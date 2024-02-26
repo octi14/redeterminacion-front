@@ -84,39 +84,48 @@ export default {
 
       return materiales + generales + manoObra + equipos + uvi;
     },
-    async eliminarCert(){
+    async eliminarCert() {
       try {
-        const userToken = this.$store.state.user.token
-        const certificado = this.certificado
-        const obra = this.obra
-        for(var i=0; i< obra.certificados.length; i++){
-          if(obra.certificados[i] == certificado.id){
-            obra.certificados.splice(i, 1)
-            i = 0
-          }
-        }
-        await this.$store.dispatch('obras/update',{
-          obra,
+        const userToken = this.$store.state.user.token;
+        const certificado = this.certificado;
+        const obra = this.obra;
+
+        // Filtrar los certificados de la obra para mantener solo los que no coinciden con el ID del certificado a eliminar
+        const certificadosActualizados = obra.certificados.filter((cert) => cert.toString() !== certificado.id);
+
+        // Crear una copia de la obra excluyendo los campos de tipo Date
+        const obraSinFechas = { ...obra, fecha_contrato: undefined, acta_inicio: undefined /* excluye el campo fecha_contrato */ };
+
+        // Llamar a una acción de Vuex para actualizar los certificados de la obra en el estado
+        await this.$store.dispatch('obras/actualizarCertificados', certificadosActualizados);
+
+        // Llamar a una acción de Vuex para actualizar la obra en la base de datos
+        await this.$store.dispatch('obras/update', {
+          obra: obraSinFechas,
           userToken
-        })
+        });
+
+        // Llamar a una acción de Vuex para eliminar el certificado
         await this.$store.dispatch('certificados/delete', {
-          certificado
-        })
+          certificado,
+          userToken
+        });
+
         this.$bvToast.toast('Eliminada correctamente', {
           title: '',
           variant: 'success',
           appendToast: true,
           solid: true,
-        })
-        await this.$router.push('/')
-        // this.editing = false
+        });
+
+        await this.$router.push('/');
       } catch (e) {
         this.$bvToast.toast('Error eliminando', {
           title: 'Error',
           variant: 'danger',
           appendToast: true,
           solid: true,
-        })
+        });
       }
     },
     async eliminarRedet(){

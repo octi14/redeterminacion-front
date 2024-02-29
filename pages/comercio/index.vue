@@ -9,7 +9,7 @@
     <b-container class="col-8">
       <b-row>
         <b-col class="botonera">
-          <h2><b-icon-question-octagon-fill></b-icon-question-octagon-fill> ¿Qué trámite estás buscando?</h2>
+          <h2 class="icon-green"><b-icon-question-octagon-fill class="icon-orange" scale="0.75"></b-icon-question-octagon-fill> ¿Qué trámite estás buscando?</h2>
           <div class="botonera-container">
             <b-row>
               <b-col lg="3" md="4" sm="6"><img id="btn-Habilitación" width="100%" src="../../assets/btn/btn_habilitacion.png" @click="seleccionarTramite('Habilitación')"></b-col>
@@ -46,14 +46,14 @@
           </b-card>
           <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(1) }">
             <h4 class="section-title" @click="toggleCard(1)">
-              ¿Quién puede iniciar el trámite?
+              ¿Quién puede realizar una Baja Comercial?
               <b-icon-chevron-compact-down v-if="!isCardExpanded(1)"></b-icon-chevron-compact-down>
               <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
             </h4>
             <transition name="expand">
               <div v-show="isCardExpanded(1)">
                 <div class="li-row first-li">
-                  <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> El <b>Titular de la Habilitación Comercial</b>.</div>
+                  <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> El <b>Titular de la Habilitación Comercial</b> ó</div>
                 </div>
                 <div class="li-row">
                   <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> El <b>Propietario/a del Inmueble</b> en el cual se encuentre situado el comercio habilitado. <i>En este último caso el contrato entre las partes debe estar finalizado y debe haber cesado la actividad comercial.</i></div>
@@ -66,24 +66,41 @@
           </b-card>
           <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(2) }">
             <h4 class="section-title" @click="toggleCard(2)">
-              ¿Qué necesito para iniciar el trámite?
+              ¿Qué documentación necesito para iniciar el trámite?
               <b-icon-chevron-compact-down v-if="!isCardExpanded(2)"></b-icon-chevron-compact-down>
               <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
             </h4>
             <transition name="expand">
               <div v-show="isCardExpanded(2)">
-                <div class="li-row first-li"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> DNI del solicitante <i>(imagen del frente y dorso)</i>.</div></div>
-                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Libre deuda Tasa Comercial.</div></div>
-                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Libre deuda de <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Tasa por Sevicios Urbanos</a> <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. <b-icon-question-circle-fill @click="openPopup('LibreDeuda')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div></div>
-                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Libre deuda Ingresos Brutos <i>(Solo si la baja la solicita el titular de la habilitación)</i>.</div></div>
-                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Escritura traslativa de Dominio del Inmueble/ Contrato de locación / Boleto de Compraventa o afín, con el correspondiente Impuesto de Sellos Provincial y firma certificada por Escribano Público, Entidad Bancaria o Autoridad Administrativa <i>(en el caso que la Baja la solicite un nuevo propietario que no está registrado).</i></div></div>
+                <div class="li-row first-li"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> DNI del solicitante <i>(imagen del frente y dorso)</i>. </div></div>
+                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Libre deuda de Tasa de Inspección de Seguridad e Higiene. <b-icon-question-circle-fill @click="openPopup('ConstanciaLibreDeudaSegHig')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div></div>
+                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Libre deuda de <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Tasa por Servicios Urbanos</a> que afectan al local <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. <b-icon-question-circle-fill @click="openPopup('LibreDeuda')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div></div>
+                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Libre deuda de <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=266&categ=34" target="_blank" class="external-link">Ingresos Brutos</a> <i>(Solo si la baja la solicita el titular de la habilitación)</i>. </div></div>
+                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Escritura traslativa de Dominio del Inmueble/ Contrato de locación / Boleto de Compraventa o afín, con el correspondiente Impuesto de Sellos Provincial y firma certificada por Escribano Público, Entidad Bancaria o Autoridad Administrativa (en caso de corresponder).</div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> <a href="https://drive.google.com/file/d/1m5ouibBL4sWokhkSR5keTjbUVo-I4TOU/view" target="_blank" class="external-link">Planilla de Autorización de Trámite</a> o poder autorizado por escribano <i>(únicamente si el trámite es iniciado mediante representante o apoderado/a)</i>.</div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> <b>Personas Jurídicas:</b> Escritura constitutiva de la misma con designación actual de sus representantes.</div></div>
+              <div class="separador-top">
+                <p>Los <b>documentos</b> deberán encontrarse <b>digitalizados</b> (podés escanearlos o sacarles una foto) y deben <b>ser legibles</b>. Pueden encontrarse <b>en formato pdf o imagen</b> y tener un <b>peso máximo de 15 Mb</b>.</p>
+              </div>
+              <b-card border-variant="warning" align="center" class="importante-card" >
+                <b-card-text>
+                  <b-row >
+                    <b-col md="2">
+                      <b-icon-exclamation-triangle variant="warning" font-scale="5"></b-icon-exclamation-triangle>
+                      <p class="li-title"><u><b>¡Importante!</b></u></p>
+                    </b-col>
+                    <b-col  md="10">
+                        <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Una vez iniciado el trámite, recibirás un correo electrónico del Departamento Comercio (deptocomercio@gesell.gob.ar), indicandote los pasos para continuar.</div></div>
+                        <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Tené en cuenta que la Baja será efectiva una vez que el Departamento Comercio haya verificado la documentación presentada.</div></div>
+                    </b-col>
+                  </b-row>
+                </b-card-text>
+              </b-card>
               </div>
             </transition>
           </b-card>          
           <b-card class="section-card FAQs-card" v-bind:class="{ 'expanded': isCardExpanded(3) }">
-            <h4 class="section-title" @click="toggleCard(3)">Preguntas Frecuentes (Reescribir Todo!)
+            <h4 class="section-title" @click="toggleCard(3)">Preguntas Frecuentes
               <b-icon-chevron-compact-down v-if="!isCardExpanded(3)"></b-icon-chevron-compact-down>
               <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
             </h4>
@@ -92,29 +109,25 @@
                 <div class="li-row first-li">
                   <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                   <div class="li-content">
-                    <p class="li-title">¿A partir de que momento la baja es efectiva?</p>
-                    <p>La baja será efectiva previa intervención del departamento de inspección.</p>
+                    <p class="li-title">¿Qué sucede si el/la titular de la baja se encuentra fallecido/a?</p>
+                    <p>En ese caso, deberás eviar un correo electrónico a: <a class="external-link" href="mailto:deptocomercio@gesell.gob.ar">deptocomercio@gesell.gob.ar</a>, informando los siguientes datos:</p>
+                    
                   </div>
                 </div>
                 <div class="li-row">
                   <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                   <div class="li-content">
                     <p class="li-title">¿Qué sucede si el titular se encuentra fallecido?</p>
-                    <p>En caso de titular fallecido realizar la consulta correspondiente en <a href="mailto:deptocomercio@gesell.gob.ar" target="_blank" class="external-link">deptocomercio@gesell.gob.ar</a></p>
+                    <p class="li-p">En caso de titular fallecido realizar la consulta correspondiente en <a href="mailto:deptocomercio@gesell.gob.ar" target="_blank" class="external-link">deptocomercio@gesell.gob.ar</a></p>
+                    <p class="li-p">- Apellido y nombre del/la titular de la habilitación</p>
+                    <p class="li-p">- Nro. de Expediente.</p>
                   </div>
                 </div>
                 <div class="li-row">
                   <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                   <div class="li-content">
-                    <p class="li-title">¿Cómo se paga?</p>
-                    <p>No tiene cuotas para darlo de baja.</p>
-                  </div>
-                </div>
-                <div class="li-row">
-                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
-                  <div class="li-content">
-                    <p class="li-title">¿que pregunta va aca?</p>
-                    <p class="li-p">El envio del certificado se hace por correo electrónico luego de pagarlo.</p>
+                    <p class="li-title">¿Qué sucede si el/la titular del inmueble que iniciará el trámite no estaba registrado/a previamente?</p>
+                    <p>En ese caso, deberás enviar un correo electrónico a: <a href="mailto:deptocomercio@gesell.gob.ar" target="_blank" class="external-link">deptocomercio@gesell.gob.ar</a></p>
                   </div>
                 </div>
                 <div class="li-row">
@@ -128,7 +141,7 @@
                   <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                   <div class="li-content">
                     <p class="li-title">¿Cómo cargo varias imágenes en un campo único del formulario?</p>
-                    <p>En caso de que el archivo que vayas a subir tenga varias páginas (y, por ejemplo, vos las hayas fotografiado) deberás compilarlas en un único archivo pdf. Para ello existen diversas herramientas digitales (por ejemplo, <a href="https://www.ilovepdf.com/es/jpg_a_pdf" target="_blank" class="external-link">ilovepdf</a>) que te permiten hacerlo de manera sencilla y gratuita. </p>
+                    <p>En caso de que el documento que vayas a subir tenga varias páginas (y, por ejemplo, las hayas fotografiado) deberás compilarlas en un único archivo pdf. Para ello existen diversas herramientas digitales (por ejemplo, <a href="https://www.ilovepdf.com/es/jpg_a_pdf" target="_blank" class="external-link">ilovepdf</a>) que te permiten hacerlo de manera sencilla y gratuita. </p>
                   </div>
                 </div>
                 <div class="li-row first-li">
@@ -159,9 +172,8 @@
               <div v-show="isCardExpanded(4)">
                 <p class="first-li">
                   La habilitación de comercios/industrias o asimilables deberá adecuarse a lo determinado en concordancia con leyes nacionales, provinciales y la
-                  <a href="https://arvige.gob.ar/legislacion/pdf/12" target="_blank" class="external-link">Ordenanza 2156/08 (TO 2023)</a>
-                  y el <a href="/ordenanzas" target="_blank" class="external-link">Digesto Comercial Municipal</a>
-                  (creado por el Decreto 1856/23).
+                  <a href="https://arvige.gob.ar/legislacion/pdf/12" target="_blank" class="external-link">Ordenanza 2156/08 (TO 2023)</a>.
+                  
                 </p>
               </div>
             </transition>
@@ -540,9 +552,7 @@
               <div v-show="isCardExpanded(9)">
                 <p class="first-li">
                   La habilitación de comercios/industrias o asimilables deberá adecuarse a lo determinado en concordancia con leyes nacionales, provinciales y la
-                  <a href="https://arvige.gob.ar/legislacion/pdf/12" target="_blank" class="external-link">Ordenanza 2156/08 (TO 2023)</a>
-                  y el <a href="/ordenanzas" target="_blank" class="external-link">Digesto Comercial Municipal</a>
-                  (creado por el Decreto 1856/23).
+                  <a href="https://arvige.gob.ar/legislacion/pdf/12" target="_blank" class="external-link">Ordenanza 2156/08 (TO 2023)</a>.
                 </p>
               </div>
             </transition>
@@ -636,6 +646,20 @@
         <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>Ingrese aqui.</p>
       </div>
     </b-modal>
+    <b-modal v-model="showPopupConstanciaLibreDeudaSegHig" title="Libre deuda de Tasa de Inspección de Seguridad e Higiene" :hide-footer="true" @click-outside="showPopupConstanciaLibreDeudaSegHig = false" :header-bg-variant="'success'"  centered>
+      <template #modal-header>
+        <div class="modal-info">
+          <h5>
+              <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
+              Información Adicional
+          </h5>
+        </div>
+        <button type="button" aria-label="Close" class="close" @click="showPopupConstanciaLibreDeudaSegHig = false">×</button>
+      </template>
+      <div class="modal-info">
+        <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>Podés solicitarlo enviando un correo electrónico a <a href="mailto:deptocomercio@gesell.gob.ar" target="_blank" >deptocomercio@gesell.gob.ar</a>, indicando <b>número de legajo comercial</b> y <b>nombre del titular de la habilitación</b>.</p>
+      </div>
+    </b-modal>
     <!-- Popup de advertencia -->
     <b-modal v-model="showConfirmationPopup" hide-footer :header-bg-variant="'success'" centered>
         <template #modal-header>
@@ -713,7 +737,8 @@ export default {
       showPopupE: false,
       showConfirmationPopup: false,
       showLibreDeudaPopup: false,
-      showPopupNroInmueble: false,
+      showPopupNroInmueble: false,      
+      showPopupConstanciaLibreDeudaSegHig: false,
       documentCheckboxChecked: false,
       tramiteSeleccionado: '',
       rubroSeleccionado: {
@@ -770,6 +795,8 @@ export default {
         this.showLibreDeudaPopup = true;
       } else if (type === 'NroInmueble'){
         this.showPopupNroInmueble = true;
+      }else if (type === 'ConstanciaLibreDeudaSegHig'){
+        this.showPopupConstanciaLibreDeudaSegHig = true;
       }
     },
     proceedToForm() {
@@ -893,6 +920,9 @@ p, .li-content{
 }
 .importante-card .card-body{
   padding-bottom: 0.25rem;
+}
+.importante-card .col-md-2 .li-title{
+    margin-bottom: 1rem;
 }
 .separador-top{
   border-top: 1px solid #ccc;

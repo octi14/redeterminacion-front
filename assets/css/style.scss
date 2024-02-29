@@ -11,13 +11,21 @@ $warning: #cbc508;
   color: $danger; // Ajusta el color del texto según tu diseño
 }
 
-$navbar-dark-color: rgba($white, .8);
-$navbar-dark-hover-color: rgba($white, .9);
-$navbar-dark-disabled-color: rgba($white, .5);
+// $navbar-dark-color: rgba($white, .8);
+// $navbar-dark-hover-color: rgba($white, .9);
+// $navbar-dark-disabled-color: rgba($white, .5);
+
+$pagination-bg: $success;
+$pagination-disabled-bg: rgba($success, .5);
+$pagination-border-color: $success;
+$pagination-hover-bg: rgba($secondary, .5);
+$pagination-active-bg: $secondary;
+
+$dropdown-bg: $success;
+$dropdown-link-color: $white;
 
 @import '~bootstrap/scss/bootstrap.scss';
 @import "~bootswatch/dist/minty/bootswatch";
-@import '~bootstrap-vue/src/icons.scss';
 
 @import '~bootstrap-vue/src/index.scss';
 

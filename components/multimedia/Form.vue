@@ -1,7 +1,7 @@
 <template>
   <div class="multimedia-form form">
     <b-form class="col-md-10 mx-auto justify-content-center" @submit.stop.prevent="onSubmit" @reset="volver">
-      <b-form-group label="Título">
+      <b-form-group label="Nombre del archivo">
         <b-form-input v-model="nombre" type="text" />
       </b-form-group>
       <b-form-group label="Link">

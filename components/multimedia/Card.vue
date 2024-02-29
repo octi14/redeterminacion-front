@@ -2,7 +2,7 @@
   <div class="multimedia-card">
     <div class="multimedia-card mx-auto">
       <div class="my-3">
-        <b-icon-link45deg style="color:green; width:15px; height: 15px"/>
+        <b-icon-link45deg class="link" scale="0.95"/>
         <a class="link" :href="item.link" target="blank">
           {{item.nombre}}
         </a>
@@ -17,7 +17,7 @@
       </div>
     </div>
     <!-- Modal editar archivo -->
-    <b-modal hide-header-close v-model="editing" header-bg-variant="secondary" title="Editar archivo" title-class="h6 text-light" hide-footer centered>
+    <b-modal hide-header-close v-model="editing" header-bg-variant="secondary" title="Editar archivo" title-class="h5 text-light mx-auto" hide-footer centered>
       <MultimediaForm
         v-if="editing"
         v-on:show="fetch"
@@ -44,9 +44,6 @@ export default {
     }
   },
   computed: {
-    isAdmin(){
-      return Boolean(this.$store.state.user.admin == "true")
-    },
     adminModernizacion(){
       return this.$store.state.user.admin == "modernizacion"
     }

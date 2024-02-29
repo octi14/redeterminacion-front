@@ -49,7 +49,13 @@ export const actions = {
     })
     return deleted
   },
-
+  async actualizarCertificados({ commit }, certificados) {
+    try {
+      commit('actualizarCertificadosEnObra', certificados);
+    } catch (e) {
+      throw new Error('Error actualizando certificados');
+    }
+  },
 }
 
 export const mutations = {
@@ -59,5 +65,8 @@ export const mutations = {
   },
   setSingle(state, singleFile) {
     state.single = singleFile
+  },
+  actualizarCertificadosEnObra(state, certificados) {
+    state.single.certificados = certificados;
   },
 }

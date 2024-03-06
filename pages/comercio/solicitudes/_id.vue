@@ -205,13 +205,13 @@
         </div>
         <!-- Mostrar los enlaces a los documentos -->
         <div class="container justify-content-center mx-auto" v-if="documentos">
-          <div v-for="(documento, nombreDocumento) in cleanDocumentos" :key="nombreDocumento">
-            <div class="layout" v-if="cleanDocumentos && documento">
+          <div v-for="(documento, nombreDocumento) in documentos" :key="nombreDocumento">
+            <div class="layout" v-if="documento">
               <p class="col col-main">
-                <strong>{{ documentoNames[nombreDocumento] }}</strong><br>
+                <strong>{{ nombreDocumento }}</strong><br>
               </p>
               <p class="col col-complementary" role="complementary">
-                <b-button size="sm" @click="openDocumento(documento, documentoNames[nombreDocumento])" variant="outline-primary" pill>
+                <b-button size="sm" @click="openDocumento(documento, nombreDocumento)" variant="outline-primary" pill>
                   <b-icon icon="eye" scale="1.2"></b-icon>
                   Ver
                 </b-button>
@@ -466,7 +466,7 @@
         <h3 class="icon-orange text-primary text-center"><b>{{ DocumentoModalTitle + " - " + habilitacion.nroTramite }}</b></h3>
       </template>
       <div class="modal-body">
-        
+
       </div>
     </b-modal>
 
@@ -500,26 +500,10 @@ export default {
       showSolicitarDoc: false,
       showObservaciones: false,
       habilitacion: null,
-      documentos: null,
       turno: null,
       observaciones: '',
       nroExpediente1: null,
       nroExpediente2: null,
-      documentoNames: {
-        planillaAutorizacion: 'Planilla de Autorización / Apoderamiento',
-        dniFrente: 'DNI Frente',
-        dniDorso: 'DNI Dorso',
-        constanciaCuit: 'Constancia de CUIT',
-        constanciaIngresosBrutos: 'Constancia de Ingresos Brutos',
-        actaPersonaJuridica: 'Acta de Persona Jurídica',
-        actaDirectorio: 'Acta de Directorio',
-        libreDeudaUrbana: 'Libre Deuda Tasa Urbana',
-        tituloPropiedad: 'Título de Propiedad / Contrato de locación',
-        plano: 'Plano / Informe técnico',
-        certificadoDomicilio: 'Certificado de Domicilio Ingresos Brutos',
-        croquis: 'Croquis',
-        // Agrega los demás nombres de documentos aquí
-      },
       showDocumentoModal: false,
       DocumentoModalTitle: "",
     }
@@ -530,7 +514,7 @@ export default {
         const fechaCreacion = this.habilitacion.createdAt;
         const fechaActual = new Date();
         const diferenciaDias = Math.floor((fechaActual - fechaCreacion) / (1000 * 60 * 60 * 24)); // Diferencia en días
-        
+
         return diferenciaDias >= 25 && this.habilitacion.status !== 'Finalizada' && this.habilitacion.status !== 'Rechazada'
       }else{
         return false
@@ -538,17 +522,6 @@ export default {
     },
     baja(){
       return this.habilitacion && this.habilitacion.tipoSolicitud === "Baja"
-    },
-    cleanDocumentos() {
-      if(this.habilitacion && this.documentos){
-        // Filtrar los documentos para eliminar el campo "_id"
-        return Object.entries(this.documentos).reduce((acc, [key, value]) => {
-          if (key !== '_id') {
-            acc[key] = value;
-          }
-          return acc;
-        }, {});
-      }
     },
     adminComercio(){
       return this.$store.state.user.admin == "comercio" || this.$store.state.user.admin == "master"
@@ -565,6 +538,9 @@ export default {
         }
       }
       return false;
+    },
+    documentos(){
+      return this.$store.state.documentos.all
     }
   },
   async fetch() {
@@ -581,7 +557,6 @@ export default {
     await this.$store.dispatch('documentos/getById', {
       id: habilitacionId,
     })
-    this.documentos = this.$store.state.documentos.all
   },
   fetchOnServer: false,
   activated() {

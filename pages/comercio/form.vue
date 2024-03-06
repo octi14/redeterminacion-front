@@ -143,7 +143,7 @@
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Los correos deben coincidir.
         </div>
       </b-form-group>
-      <b-form-group label="Seleccione en caso de corresponder *" label-for="esPropietario" v-if="solicitante.tipoSolicitud=='Baja'">
+      <b-form-group label="Seleccioná el caso que corresponda *" label-for="esPropietario" v-if="solicitante.tipoSolicitud=='Baja'">
         <b-form-checkbox v-model="solicitante.esTitular" name="esTitular" >
           <span>Soy o represento al titular de habilitación</span></b-form-checkbox>       
         <b-form-checkbox v-model="solicitante.esPropietario" name="esPropietario" >
@@ -166,8 +166,11 @@
     </b-row>
     <!-- Sección: Datos del Apoderado -->
     <fieldset v-if="solicitante.esApoderado === 'true'">
-        <p>En este campo deberás cargar la <a href="https://drive.google.com/file/d/1m5ouibBL4sWokhkSR5keTjbUVo-I4TOU/view" target="_blank" class="external-link">Planilla de autorización de trámite</a> o el Poder autorizado por escribano que te indicamos que completes previamente.</p>
-      <b-form-group v-if="solicitante.esApoderado === 'true'" label="Planilla de autorización de trámite *" label-for="documentos.planillaAutorizacion" >
+        <p>En este campo deberás cargar <span v-if="solicitante.tipoSolicitud == 'Habilitación'">la <a href="https://drive.google.com/file/d/1m5ouibBL4sWokhkSR5keTjbUVo-I4TOU/view" target="_blank" class="external-link">Planilla de autorización de trámite</a> o </span>el Poder autorizado por escribano que te indicamos que completes previamente.</p>
+        <b-form-group v-if="solicitante.esApoderado === 'true'" >
+          <label for="documentos.planillaAutorizacion.contenido" v-if="solicitante.tipoSolicitud == 'Habilitación'">Planilla de autorización de trámite *</label>
+          <label for="documentos.planillaAutorizacion.contenido" v-else>Poder Autorizado por Escribano *</label>
+          
         <b-form-file v-model="documentos.planillaAutorizacion.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
         accept=".pdf, image/*" :state="getFormFieldState('planillaAutorizacion')"
         @change="checkDocumentSize('planillaAutorizacion', $event)"
@@ -184,19 +187,10 @@
       <legend><h3>Datos del Inmueble</h3></legend>
       <b-row v-if="solicitante.tipoSolicitud == 'Baja'">
         <b-col lg="12" md="12">
-          <b-form-group label="Nro de Expediente *" label-for="nroExpediente" >
-            <div class="input-group"> <!-- Utilizamos la clase input-group -->
-              <div class="input-group-prepend">
-                <span class="input-group-text">(4124)</span> <!-- Prefijo fijo -->
-              </div>
-              <b-form-input id="nroExpedienteNro" v-model="nroExpedienteNro" no-wheel class="text-right" ></b-form-input>
-              <div class="input-group-prepend">
-                <span class="input-group-text">/</span> <!-- Prefijo fijo -->
-              </div>
-              <b-form-input id="nroExpedienteAnio" v-model="nroExpedienteAnio" class="col-2 text-left" no-wheel ></b-form-input>
-            </div>
-            <div v-if="$v.nroExpedienteNro.$error || $v.nroExpedienteAnio.$error" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El nro de expediente no puede estar vacío, contener letras o caracteres especiales.
+          <b-form-group label="Nro de Legajo *" label-for="nroLegajo" >
+              <b-form-input id="nroLegajo" v-model="nroLegajo" no-wheel class="text-right" ></b-form-input>
+            <div v-if="$v.nroLegajo.$error" class="validation-error">
+              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El nro de legajo no puede estar vacío, contener letras o caracteres especiales.
             </div>
           </b-form-group>
         </b-col>
@@ -205,7 +199,7 @@
         <b-col lg="6" md="12">
           <b-form-group label="Localidad *" label-for="localidad" >
             <b-form-select id="localidad" v-model="inmueble.localidad" >
-              <option value="" disabled>Seleccione...</option>
+              <option value="" disabled>Seleccioná...</option>
               <option value="villa-gesell">Villa Gesell</option>
               <option value="mar-de-las-pampas">Mar de las Pampas</option>
               <option value="mar-azul">Mar Azul</option>
@@ -232,13 +226,14 @@
           </b-form-group>
         </b-col>
       </b-row>
-      <b-row>
-        <b-col lg="12" md="12">          
+      <b-row >
+        <b-col lg="12" md="12">      
+        <div v-if="solicitante.tipoSolicitud == 'Habilitación'">    
           <b-form-group label="Describí brevemente la actividad a realizar (En caso de no encontrar un rubro que represente con precisión la misma)" label-for="nombre-fantasia" >
             <b-form-textarea id="actividad" v-model="inmueble.actividad">
             </b-form-textarea>
           </b-form-group>
-        </b-col>
+        </div></b-col>
       </b-row>
       <b-row>
         <b-col lg="8" md="12">
@@ -360,7 +355,7 @@
         </b-col>
       </b-row>
       <b-form-group v-if="solicitante.tipoSolicitud=='Habilitación'"> 
-        <label for="constanciaCuit" class="rubro-label">Constancia de CUIT * <b-icon-question-circle-fill @click="openPopup('ConstanciaCUIT')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
+        <label for="constanciaCuit" class="rubro-label">Constancia de CUIT actualizada * <b-icon-question-circle-fill @click="openPopup('ConstanciaCUIT')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
         <b-form-file v-model="documentos.constanciaCuit.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
         accept=".pdf, image/*"  :state="getFormFieldState('constanciaCuit')"
         @change="handleDocumentUpdate('constanciaCuit'); checkDocumentSize('constanciaCuit', $event)"
@@ -732,9 +727,7 @@ import { required, requiredIf, alpha, numeric, email, minLength, maxLength, same
 export default {
   validations() {
     return {
-      nroExpedienteNro: { requiredIf: requiredIf(function () {
-        return this.solicitante.tipoSolicitud == 'Baja' }) , numeric },
-      nroExpedienteAnio: { requiredIf: requiredIf(function () {
+      nroLegajo: { requiredIf: requiredIf(function () {
         return this.solicitante.tipoSolicitud == 'Baja' }) , numeric },
       solicitante: {
         nombre: { required },
@@ -832,9 +825,7 @@ export default {
       ],
       isHoteleria: false,
       nroTramite: null,      
-      nroExpediente: '',
-      nroExpedienteAnio: '',
-      nroExpedienteNro: '',
+      nroLegajo: '',
       solicitante: {
         tipoSolicitud: this.$route.query.tramite,
         nombre: '',
@@ -1087,7 +1078,6 @@ export default {
 
             this.openPopup('FormLoading');
             const documentosParaGuardar = {};
-            this.nroExpediente = "4124-" + this.nroExpedienteNro + "/" + this.nroExpedienteAnio;
             if (this.tipoSolicitud="Baja")
               this.espacioPublico = false;
             // Recorrer los campos en this.documentos
@@ -1112,7 +1102,7 @@ export default {
               documentos: documentosParaGuardar,
               solicitante: this.solicitante,
               inmueble: this.inmueble,
-              nroExpediente: this.nroExpediente,
+              nroLegajo: this.nroLegajo,
             };
             // habilitacion.nroTramite = nroTramite
             const response = await this.$store.dispatch('habilitaciones/create', {
@@ -1176,9 +1166,7 @@ export default {
       this.solicitante.esApoderado = false
       this.solicitante.esPersonaJuridica = false
 
-      this.nroExpediente = ''
-      this.nroExpedienteNro = ''
-      this.nroExpedienteAnio = ''
+      this.nroLegajo = ''
       this.inmueble.localidad = ''
       this.inmueble.calle = ''
       this.inmueble.nro = null

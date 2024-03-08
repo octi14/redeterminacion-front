@@ -363,6 +363,18 @@
         <h2 class="icon-orange text-secondary text-center"><b>Aprobar solicitud</b></h2>
         <p style="margin: 3%"> Se aprobará la solicitud. Se deberá enviar un mail al solicitante indicando que el
            trámite está completo y adjuntar el certificado de baja. </p>
+        <p style="margin: 3%"> Ingresá el número de expediente asignado al expediente actual y su alcance. </p>
+        <div class="mx-auto">
+        <p style="margin: 3%"><b-icon-caret-right-fill class="icon-orange"/><b>Número de expediente:</b></p>
+        <p class="row mr-2" style="margin: 3%"> 4124 -
+          <b-form-input class="col-3 ml-2" type="number" no-wheel size="sm" v-model="nroExpediente1"/><a class="mx-3"> / </a>
+          <b-form-input size="sm" type="number" no-wheel class="col-3" v-model="nroExpediente2"/>
+        </p>
+        <p style="margin: 3%" class="row">
+          <b-icon-caret-right-fill class="icon-orange mt-1"/><b>Alcance:</b>
+          <b-form-input class="col-3 ml-2" type="number" no-wheel size="sm" v-model="alcance"/>
+        </p>
+        </div>
         <hr/>
         <div class="text-center mt-3">
           <b-btn variant="primary" @click="onSendAprobarBaja()" >
@@ -504,6 +516,7 @@ export default {
       observaciones: '',
       nroExpediente1: null,
       nroExpediente2: null,
+      alcance: null,
       showDocumentoModal: false,
       DocumentoModalTitle: "",
     }
@@ -676,8 +689,12 @@ export default {
     },
     async onSendAprobarBaja(){
       const observaciones = this.habilitacion.observaciones || " "
+      const nroExpediente = "4124 - " + this.nroExpediente1 + "/" + this.nroExpediente2
+      const alcance = this.alcance
       const habilitacion = {
         status: 'Finalizada',
+        nroExpediente: nroExpediente,
+        alcance: alcance,
         observaciones: observaciones + " - " + "Se finaliza la solicitud el " + new Date().toLocaleDateString('es-AR') + " " + new Date().toLocaleTimeString()
       }
       const id = this.habilitacion.id
@@ -826,6 +843,10 @@ export default {
 
 .col-complementary {
   flex: 1;
+}
+
+.icon-orange{
+  color: #E27910;
 }
 
 .col strong{

@@ -171,10 +171,7 @@
           <label for="documentos.planillaAutorizacion.contenido" v-if="solicitante.tipoSolicitud == 'Habilitación'">Planilla de autorización de trámite *</label>
           <label for="documentos.planillaAutorizacion.contenido" v-else>Poder Autorizado por Escribano *</label>
           
-        <b-form-file v-model="documentos.planillaAutorizacion.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
-        accept=".pdf, image/*" :state="getFormFieldState('planillaAutorizacion')"
-        @change="checkDocumentSize('planillaAutorizacion', $event)"
-        @input="clearFormFieldState('planillaAutorizacion')"></b-form-file>
+        <b-form-file v-model="documentos.planillaAutorizacion.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('planillaAutorizacion')" @change="checkDocumentSize('planillaAutorizacion', $event)" @input="clearFormFieldState('planillaAutorizacion')"></b-form-file>
         <div v-if="$v.documentos.planillaAutorizacion.contenido.$error || fileTooLargeError.planillaAutorizacion" class="validation-error">
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.planillaAutorizacion || 'Debe seleccionar un archivo.' }}
         </div>
@@ -281,9 +278,7 @@
     </fieldset>
       <b-form-group v-if="rubroSeleccionado.croquis === true && isHoteleria && solicitante.tipoSolicitud=='Habilitación'" label-for="documentos.croquis" >
         <label for="croquis">Croquis <i>(en casos en que hay más de una parcela para uso de la actividad comercial y las mismas no se hallan reunidas por plano de mensura y unificación o reunidas de oficio)</i></label>
-        <b-form-file v-model="documentos.croquis.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
-        <b-form-file v-model="documentos.croquis.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
-        accept=".pdf, image/*" :state="getFormFieldState('croquis')"
+        <b-form-file v-model="documentos.croquis.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('croquis')"
         @change="checkDocumentSize('croquis', $event)"
         @input="clearFormFieldState('croquis')"></b-form-file>
         <div v-if="fileTooLargeError.croquis" class="validation-error">
@@ -292,9 +287,7 @@
       </b-form-group>
       <b-form-group v-if="rubroSeleccionado.croquis === true && !isHoteleria && solicitante.tipoSolicitud=='Habilitación'" label-for="documentos.croquis" >
         <label for="croquis">Croquis </label>
-        <b-form-file v-model="documentos.croquis.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
-        <b-form-file v-model="documentos.croquis.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
-        accept=".pdf, image/*" :state="getFormFieldState('croquis')"
+        <b-form-file v-model="documentos.croquis.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('croquis')"
         @change="checkDocumentSize('croquis', $event)"
         @input="clearFormFieldState('croquis')"></b-form-file>
         <div v-if="$v.documentos.croquis.contenido.$error || fileTooLargeError.croquis" class="validation-error">
@@ -334,9 +327,7 @@
       <b-row>
         <b-col lg="6">
           <b-form-group label="DNI (Frente) *" label-for="dniFrente">
-            <b-form-file v-model="documentos.dniFrente.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
-            <b-form-file v-model="documentos.dniFrente.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
-              accept=".pdf, image/*"
+            <b-form-file v-model="documentos.dniFrente.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*"
               :state="getFormFieldState('dniFrente')"
               @change="handleDocumentUpdate('dniFrente'); checkDocumentSize('dniFrente', $event)"
               @input="clearFormFieldState('dniFrente')"></b-form-file>
@@ -369,9 +360,7 @@
       </b-form-group>
       <b-form-group v-if="solicitante.tipoSolicitud=='Habilitación'">
         <label for="constanciaIngresosBrutos" class="rubro-label">Constancia de inscripción a Ingresos Brutos <b-icon-question-circle-fill @click="openPopup('ConstanciaIngresosBrutos')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
-        <b-form-file v-model="documentos.constanciaIngresosBrutos.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
-        <b-form-file v-model="documentos.constanciaIngresosBrutos.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
-        accept=".pdf, image/*" :state="getFormFieldState('constanciaIngresosBrutos')"
+        <b-form-file v-model="documentos.constanciaIngresosBrutos.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('constanciaIngresosBrutos')"
         @change="handleDocumentUpdate('constanciaIngresosBrutos'); checkDocumentSize('constanciaIngresosBrutos', $event)"
         @input="clearFormFieldState('constanciaIngresosBrutos')"></b-form-file>
         <div v-if="fileTooLargeError.constanciaIngresosBrutos" class="validation-error">
@@ -380,9 +369,7 @@
       </b-form-group>
       <b-form-group v-if="solicitante.tipoSolicitud=='Habilitación'">
         <label for="certificadoDomicilio" class="rubro-label">Certificado de domicilio Ingresos Brutos - Punto de venta Villa Gesell <b-icon-question-circle-fill @click="openPopup('certificadoDomicilio')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
-        <b-form-file v-model="documentos.certificadoDomicilio.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
-        <b-form-file v-model="documentos.certificadoDomicilio.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
-        accept=".pdf, image/*" :state="getFormFieldState('certificadoDomicilio')"
+        <b-form-file v-model="documentos.certificadoDomicilio.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('certificadoDomicilio')"
         @change="handleDocumentUpdate('certificadoDomicilio'); checkDocumentSize('certificadoDomicilio', $event)"
         @input="clearFormFieldState('certificadoDomicilio')"></b-form-file>
         <div v-if="fileTooLargeError.certificadoDomicilio" class="validation-error">
@@ -410,9 +397,7 @@
       </b-form-group>
       <b-form-group>
         <label for="libreDeudaUrbana" class="rubro-label">Libre Deuda de Tasa por Servicios Urbanos <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. * <b-icon-question-circle-fill @click="openPopup('ConstanciaLibreDeuda')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
-        <b-form-file v-model="documentos.libreDeudaUrbana.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
-        <b-form-file v-model="documentos.libreDeudaUrbana.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
-        accept=".pdf, image/*"  :state="getFormFieldState('libreDeudaUrbana')"
+        <b-form-file v-model="documentos.libreDeudaUrbana.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*"  :state="getFormFieldState('libreDeudaUrbana')"
         @change="handleDocumentUpdate('libreDeudaUrbana'); checkDocumentSize('libreDeudaUrbana', $event)"
         @input="clearFormFieldState('libreDeudaUrbana')"></b-form-file>
         <div v-if="$v.documentos.libreDeudaUrbana.contenido.$error || fileTooLargeError.libreDeudaUrbana" class="validation-error">
@@ -432,9 +417,7 @@
       </b-form-group>
       <b-form-group v-if="solicitante.tipoSolicitud=='Habilitación'">
         <label for="plano" class="rubro-label">Plano o Informe técnico * <b-icon-question-circle-fill @click="openPopup('plano')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
-        <b-form-file v-model="documentos.plano.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
-        <b-form-file v-model="documentos.plano.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
-        accept=".pdf, image/*"  :state="getFormFieldState('plano')"
+        <b-form-file v-model="documentos.plano.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*"  :state="getFormFieldState('plano')"
         @change="handleDocumentUpdate('plano'); checkDocumentSize('plano', $event)"
         @input="clearFormFieldState('plano')"></b-form-file>
         <div v-if="$v.documentos.plano.contenido.$error || fileTooLargeError.plano" class="validation-error">
@@ -460,20 +443,14 @@
     <fieldset v-if="solicitante.esPersonaJuridica === 'true'">
       <p>A continuación deberás cargar la Escritura constitutiva de la Persona Jurídica y el Acta de Directorio actualizada.</p>
       <b-form-group label="Acta de Constitución de Persona Jurídica *" label-for="actaPersonaJuridica" >
-        <b-form-file v-model="documentos.actaPersonaJuridica.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
-        <b-form-file v-model="documentos.actaPersonaJuridica.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
-        accept=".pdf, image/*"  :state="getFormFieldState('actaPersonaJuridica')"
-        @change="handleDocumentUpdate('actaPersonaJuridica'); checkDocumentSize('actaPersonaJuridica', $event)"
-        @input="clearFormFieldState('actaPersonaJuridica')"></b-form-file>
+        <b-form-file v-model="documentos.actaPersonaJuridica.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*"  :state="getFormFieldState('actaPersonaJuridica')" @change="handleDocumentUpdate('actaPersonaJuridica'); checkDocumentSize('actaPersonaJuridica', $event)" @input="clearFormFieldState('actaPersonaJuridica')"></b-form-file>
         <div v-if="$v.documentos.actaPersonaJuridica.contenido.$error || fileTooLargeError.actaPersonaJuridica" class="validation-error">
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.actaPersonaJuridica || 'Debe seleccionar un archivo.' }}
         </div>
       </b-form-group>
       <b-form-group label="" label-for="actaDirectorio" >
         <label for="actaDirectorio" class="actaDirectorio-label">Acta de Directorio Actualizada <i>(En caso que corresponda)</i> </label>
-        <b-form-file v-model="documentos.actaDirectorio.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
-        <b-form-file v-model="documentos.actaDirectorio.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
-        accept=".pdf, image/*" :state="getFormFieldState('actaDirectorio')"
+        <b-form-file v-model="documentos.actaDirectorio.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('actaDirectorio')"
         @change="handleDocumentUpdate('actaDirectorio'); checkDocumentSize('actaDirectorio', $event)"
         @input="clearFormFieldState('actaDirectorio')"></b-form-file>
         <div v-if="fileTooLargeError.actaDirectorio" class="validation-error">
@@ -737,7 +714,7 @@ export default {
   validations() {
     return {
       nroLegajo: { requiredIf: requiredIf(function () {
-        return this.solicitante.tipoSolicitud == 'Baja' }) , numeric },
+        return this.solicitante.tipoSolicitud == 'Baja' }) , numeric, maxLength: maxLength(6) },
       solicitante: {
         nombre: { required },
         apellido: { required },

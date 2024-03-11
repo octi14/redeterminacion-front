@@ -269,7 +269,9 @@
         <b-form-checkbox v-for="servicio in inmueble.serviciosHoteleria" :key="servicio.id" :id="`servicio${servicio.id}`" :name="`servicio${servicio.id}`" v-model="servicio.value" scale=1.5 >
           {{ servicio.servicio }}
         </b-form-checkbox>
-
+        <div v-if="$v.inmueble.serviciosHoteleria.$error" class="validation-error">
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Selecciona al menos una opción.
+        </div>
       </b-form-group>
       <b-form-group v-if="inmueble.serviciosHoteleria[11].value === true" label="Contanos que otros servicios brinda tu establecimiento: " label-for="otrosServicios" >
         <b-form-textarea id="otrosServicios" v-model="inmueble.otrosServicios" rows="2" max-rows="4" ></b-form-textarea>
@@ -758,6 +760,19 @@ export default {
         rubro: { required },
         calle: { required },
         nro: { required, numeric },
+        serviciosHoteleria: { 
+          requiredIfAtLeastOneChecked: function() {
+            let alMenosUnoSeleccionado = false;
+
+            for (let servicio of this.inmueble.serviciosHoteleria) {
+              if (servicio.value === true) {
+                alMenosUnoSeleccionado = true;
+                break; // Termina la iteración si encuentra al menos uno seleccionado
+              }
+            }
+            return alMenosUnoSeleccionado || !this.isHoteleria || !(this.solicitante.tipoSolicitud === 'Habilitación');
+          }
+        },
         otrosServicios: { requiredIf: requiredIf(function () {
           return this.inmueble.serviciosHoteleria[11].value === true })
         },
@@ -1078,6 +1093,7 @@ export default {
           console.log("this.$v.documentos.actaPersonaJuridica.contenido.$error: " + this.$v.documentos.actaPersonaJuridica.contenido.$error);          
           console.log("-*-*Validaciones exclusivas de Habilitación*-*-");
           console.log("this.$v.documentos.constanciaCuit.contenido.$error: " + this.$v.documentos.constanciaCuit.contenido.$error);
+          console.log("this.$v.inmueble.serviciosHoteleria.$error: " + this.$v.inmueble.serviciosHoteleria.$error);
           console.log("this.$v.inmueble.otrosServicios.$error: " + this.$v.inmueble.otrosServicios.$error);
           console.log("this.$v.inmueble.marquesina.$error: " + this.$v.inmueble.marquesina.$error);
           console.log("this.$v.inmueble.mercaderia.$error: " + this.$v.inmueble.mercaderia.$error);

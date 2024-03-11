@@ -144,15 +144,15 @@
       </b-form-group>
       <b-form-group label="Seleccioná el caso que corresponda *" label-for="esPropietario" v-if="solicitante.tipoSolicitud=='Baja'">
         <b-form-checkbox v-model="solicitante.esTitular" name="esTitular" >
-          <span>Soy o represento al titular de habilitación</span></b-form-checkbox>       
+          <span>Soy o represento al titular de habilitación</span></b-form-checkbox>
         <b-form-checkbox v-model="solicitante.esPropietario" name="esPropietario" >
-          <span>Soy o represento al propietario del inmueble</span></b-form-checkbox> 
+          <span>Soy o represento al propietario del inmueble</span></b-form-checkbox>
         <div v-if="$v.solicitante.esTitular.$error || $v.solicitante.esPropietario.$error" class="validation-error">
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe seleccionar por lo menos una opción.
-        </div>  
+        </div>
       </b-form-group>
     </fieldset>
-      
+
     <b-row>
       <b-col lg="6" md="8" sm="8">
         <h5>¿Sos representante o apoderado/a del solicitante? <b-icon-question-circle-fill @click="openPopup('ApoderadoRepresentante')" font-scale="1" variant="info"></b-icon-question-circle-fill></h5>
@@ -172,7 +172,7 @@
         <b-form-group v-if="solicitante.esApoderado === 'true'" >
           <label for="documentos.planillaAutorizacion.contenido" v-if="solicitante.tipoSolicitud == 'Habilitación'">Planilla de autorización de trámite *</label>
           <label for="documentos.planillaAutorizacion.contenido" v-else>Poder Autorizado por Escribano *</label>
-          
+
         <b-form-file v-model="documentos.planillaAutorizacion.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('planillaAutorizacion')" @change="checkDocumentSize('planillaAutorizacion', $event)" @input="clearFormFieldState('planillaAutorizacion')"></b-form-file>
         <div v-if="$v.documentos.planillaAutorizacion.contenido.$error || fileTooLargeError.planillaAutorizacion" class="validation-error">
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.planillaAutorizacion || 'Debe seleccionar un archivo.' }}
@@ -226,8 +226,8 @@
         </b-col>
       </b-row>
       <b-row >
-        <b-col lg="12" md="12">      
-        <div v-if="solicitante.tipoSolicitud == 'Habilitación'">    
+        <b-col lg="12" md="12">
+        <div v-if="solicitante.tipoSolicitud == 'Habilitación'">
           <b-form-group label="Describí brevemente la actividad a realizar (En caso de no encontrar un rubro que represente con precisión la misma)" label-for="nombre-fantasia" >
             <b-form-textarea id="actividad" v-model="inmueble.actividad">
             </b-form-textarea>
@@ -350,7 +350,7 @@
           </b-form-group>
         </b-col>
       </b-row>
-      <b-form-group v-if="solicitante.tipoSolicitud=='Habilitación'"> 
+      <b-form-group v-if="solicitante.tipoSolicitud=='Habilitación'">
         <label for="constanciaCuit" class="rubro-label">Constancia de CUIT actualizada * <b-icon-question-circle-fill @click="openPopup('ConstanciaCUIT')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
         <b-form-file v-model="documentos.constanciaCuit.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
         accept=".pdf, image/*"  :state="getFormFieldState('constanciaCuit')"
@@ -467,7 +467,7 @@
         <div v-if="captchaError" class="validation-error">
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Por favor completa la verificación para continuar.
         </div>
-      </b-form-group>  
+      </b-form-group>
     </div>
     <b-card v-if="solicitante.tipoSolicitud=='Baja'" border-variant="warning" align="center" class="importante-card" >
       <b-card-text>
@@ -483,8 +483,8 @@
         </b-row>
       </b-card-text>
     </b-card>
-    <div class="centeredContainer">        
-      <fieldset>        
+    <div class="centeredContainer">
+      <fieldset>
         <b-button size="lg" @click="onResetParams" variant="danger" class="btn-cancel" >Cancelar</b-button>
         <b-button size="lg" type="submit" variant="success" :disabled="!areAllFieldsComplete" class="" >Enviar</b-button>        
       </fieldset>
@@ -841,7 +841,7 @@ export default {
         'Santa Fe', 'Santiago del Estero', 'Tierra del Fuego', 'Tucumán'
       ],
       isHoteleria: false,
-      nroTramite: null,      
+      nroTramite: null,
       nroLegajo: '',
       solicitante: {
         tipoSolicitud: '',
@@ -889,7 +889,7 @@ export default {
           { id: "11", servicio: "WI FI y/o Internet", value: false},
           { id: "12", servicio: "Otros", value: false}
         ],
-      },      
+      },
       documentos: {
         planillaAutorizacion: {
           nombreDocumento: 'Planilla de autorización de trámite',

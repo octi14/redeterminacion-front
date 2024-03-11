@@ -34,15 +34,7 @@
       </div>
     </div>
     <!--Paginación-->
-    <div class="text-center justify-content-center mx-auto mt-3 row">
-      <b-button size="sm" class="float-left mx-1 my-1 pagination-button" variant="outline-success" @click="previousPage" :disabled="currentPage === 1">
-        <b-icon-arrow-left />
-      </b-button>
-      <h5 class="text-center mt-2 mb-4">{{ currentPage }} / {{ totalPages }}</h5>
-      <b-button size="sm" class="float-right mx-1 my-1 pagination-button" variant="outline-success" @click="nextPage" :disabled="currentPage === totalPages">
-        <b-icon-arrow-right />
-      </b-button>
-    </div>
+    <b-pagination class="mt-4" v-if="filteredItems.length || filteredPaginatedItems.length" :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
     <!--Div No hay obras para mostrar-->
     <div class="mx-auto text-center mt-5" v-if="filteredItems.length === 0 && search != ''">
       <h5> No se encontraron resultados para "{{ search }}" </h5>

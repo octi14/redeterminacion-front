@@ -2,13 +2,24 @@
   <div class="page main-background">
     <Banner title="Solicitudes de trámite" subtitle="Uso interno" />
     <div class="col-8 mx-auto" v-if="adminComercio">
-      <b-form-group class="col-8 mx-auto mt-4" label-class="text-success h6">
-        <label for="selectedEstado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><b-icon-funnel-fill></b-icon-funnel-fill> Filtrar por Estado</label>
-        <b-form-select plain v-model="selectedEstado">
-          <option value="">Todos</option>
-          <option v-for="estado in estados" :value="estado" :key="estado">{{ estado }}</option>
-        </b-form-select>
-      </b-form-group>
+      <!-- Filtrar por estado -->
+      <b-row>
+        <b-form-group class="col-5 mx-6 mx-auto mt-4" label-class="text-success h6">
+          <label for="selectedEstado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><b-icon-funnel-fill></b-icon-funnel-fill> Filtrar por Estado</label>
+          <b-form-select plain v-model="selectedEstado">
+            <option value="">Todos</option>
+            <option v-for="estado in estados" :value="estado" :key="estado">{{ estado }}</option>
+          </b-form-select>
+        </b-form-group>
+        <!-- filtrar por tipo de trámite -->
+        <b-form-group class="col-5 mx-auto mt-4" label-class="text-success h6">
+          <label for="selectedEstado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><b-icon-funnel-fill></b-icon-funnel-fill> Filtrar por tipo de trámite</label>
+          <b-form-select plain v-model="selectedTipo">
+            <option value="">Todos</option>
+            <option v-for="tipoTramite in tiposTramite" :value="tipoTramite" :key="tipoTramite">{{ tipoTramite }}</option>
+          </b-form-select>
+        </b-form-group>
+      </b-row>
       <b-form-checkbox class="text-center" v-model="hideFinalizados">Ocultar Finalizados/Rechazados</b-form-checkbox>
       <!-- <b-form-group class="col-4 mx-auto mt-4" horizontal label-class="text-success h6" label="Filtrar por DNI">
         <b-icon-funnel-fill variant="success" />
@@ -51,6 +62,7 @@ export default{
       lastLength: false,
       items: [],
       selectedEstado: '',
+      selectedTipo: '',
       observacionesModal: false,
       singleContent: 'asdasd',
       currentPage: 1,
@@ -89,7 +101,9 @@ export default{
         }
       ],
       estados: ['Rechazada','En revisión', 'Rectificación', 'Esperando turno','Esperando inspección','Inspeccionado', 'Esperando documentación', 'Prórroga 1', 'Prórroga 2', 'Finalizada'],
-    }
+      tiposTramite: ['Habilitación','Baja'],
+
+}
   },
   async fetch() {
     await this.$store.dispatch('habilitaciones/getAll')
@@ -132,33 +146,25 @@ export default{
       const startIndex = (this.currentPage - 1) * this.perPage;
       const endIndex = startIndex + this.perPage;
 
-      if (this.selectedEstado) {
-        return this.items.filter((item) => {
-          if (this.hideFinalizados) {
-            return item.status === this.selectedEstado && !["Rechazada", "Finalizada"].includes(item.status);
-          } else {
-            return item.status === this.selectedEstado;
-          }
-        }).slice(startIndex, endIndex);
-      } else {
-        return this.items.filter((item) => {
-          if (this.hideFinalizados) {
-            return !["Rechazada", "Finalizada"].includes(item.status);
-          } else {
-            return true;
-          }
-        }).slice(startIndex, endIndex);
-      }
+      return this.items.filter((item) => {
+        const estadoCondition = !this.selectedEstado || item.status === this.selectedEstado;
+        const tipoCondition = !this.selectedTipo || item.tipoSolicitud === this.selectedTipo;
+        const finalizadosCondition = !this.hideFinalizados || !["Rechazada", "Finalizada"].includes(item.status);
+
+        return estadoCondition && tipoCondition && finalizadosCondition;
+      }).slice(startIndex, endIndex);
     },
     filteredItems() {
       const startIndex = (this.currentPage - 1) * this.perPage;
       const endIndex = startIndex + this.perPage;
 
-      if (this.selectedEstado) {
-        return this.items.filter(item => item.status == this.selectedEstado).slice(startIndex, endIndex);
-      } else {
-        return this.items.slice(startIndex, endIndex); // Sin filtro, mostrar elementos paginados
-      }
+      return this.items.filter((item) => {
+        const estadoCondition = !this.selectedEstado || item.status === this.selectedEstado;
+        const tipoCondition = !this.selectedTipo || item.tipoSolicitud === this.selectedTipo;
+        const finalizadosCondition = !this.hideFinalizados || !["Rechazada", "Finalizada"].includes(item.status);
+
+        return estadoCondition && tipoCondition && finalizadosCondition;
+      }).slice(startIndex, endIndex);
     },
     totalPages() {
       return Math.ceil(this.filteredItems.length / this.perPage);

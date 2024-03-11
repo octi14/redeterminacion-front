@@ -747,10 +747,10 @@ export default {
         mail: { required, email },
         mail2: { required, email, sameAs: sameAs( function(){return this.solicitante.mail } ) },
         esPropietario: { requiredIfAtLeastOneChecked: (value) => {
-            return value || this.solicitante.esPropietario || this.solicitante.esTitular;
+            return (value || this.solicitante.esPropietario || this.solicitante.esTitular) && this.solicitante.tipoSolicitud == 'Baja';
           } },
         esTitular: { requiredIfAtLeastOneChecked: (value) => {
-            return value || this.solicitante.esPropietario || this.solicitante.esTitular;
+            return (value || this.solicitante.esPropietario || this.solicitante.esTitular) && this.solicitante.tipoSolicitud == 'Baja';
           } },
       },
       inmueble: {
@@ -982,7 +982,7 @@ export default {
   computed: {
     tipoSolicitudSeleccionada: {
       get() {
-        console.log("tipoSolicitudSeleccionada: " + this.$route.query.tramite);
+        //console.log("tipoSolicitudSeleccionada: " + this.$route.query.tramite);
         this.tipoSolicitud = this.$route.query.tramite;
         this.solicitante.tipoSolicitud = this.tipoSolicitud;
         return this.tipoSolicitud;
@@ -1004,6 +1004,7 @@ export default {
       return '';
     },
     areAllFieldsComplete() {
+      //console.log("areAllFieldsComplete() CALLED");
       if (this.TEST_submit){
           return true;
       }
@@ -1021,8 +1022,11 @@ export default {
       }
     },
     areAllFieldsValid(){
-      if(this.areAllFieldsComplete)
-        return !this.$v.$invalid && !Object.values(this.fileTooLargeError).some(error => !!error)
+      //console.log("areAllFieldsValid() CALLED");
+
+      if(this.areAllFieldsComplete){
+        //console.log("areAllFieldsValid(): this.$v.$invalid: " + this.$v.$invalid + " Object.values(this.fileTooLargeError).some(error => !!error): " + Object.values(this.fileTooLargeError).some(error => !!error));
+        return !this.$v.$invalid && !Object.values(this.fileTooLargeError).some(error => !!error)}
       return true;
     }
   },
@@ -1042,7 +1046,6 @@ export default {
     },
     isCaptchaOK(){
         //console.log("isCAPTCHAOK?? = " + (typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0));
-        return true;
         this.captchaError = !(typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0);
         if(this.TEST_submit) return true;
         return !this.captchaError;
@@ -1050,10 +1053,10 @@ export default {
     openPopup(type) {
       // Lógica para abrir el popup correspondiente según el tipo (A, B, C, D)else if (type === 'B')
       if (type === 'DatosDelSolicitante') {
-        console.log("ShowPopup DatosDelSolicitante")
+        //console.log("ShowPopup DatosDelSolicitante")
         this.showPopupDatosDelSolicitante = true;
       } else if (type === 'ApoderadoRepresentante') {
-        console.log("ShowPopup ApoderadoRepresentante")
+        //console.log("ShowPopup ApoderadoRepresentante")
         this.showPopupApoderadoRepresentante = true;
       } else if (type === 'NroInmueble') {
         this.showPopupNroInmueble = true;
@@ -1082,7 +1085,7 @@ export default {
       }
     },
     cancelForm(){
-      console.log("CANCEL FORM");
+      //console.log("CANCEL FORM");
     },
     documentos: {
         planillaAutorizacion: {
@@ -1161,10 +1164,19 @@ export default {
           this.isCaptchaOK();
 
         }else{
+          //console.log("SUBMIT FORM CALLED");
+          for (let key in this.$v) {
+            // Verificar si la propiedad tiene errores
+            if (this.$v[key].$error) {
+              // Si tiene errores, imprimir el nombre de la propiedad
+              //console.log(`La validación ${key} está invalidando el formulario`);
+            }
+          }
           this.$v.$touch(); // Marca los campos como tocados para mostrar los errores
+
           if (!this.$v.$invalid && !Object.values(this.fileTooLargeError).some(error => !!error) && this.isCaptchaOK()) {
             // Si no hay errores, envía el formulario
-            console.log("FORMULARIO ENVIADO");
+            //console.log("FORMULARIO ENVIADO");
             try {
 
             this.openPopup('FormLoading');
@@ -1201,7 +1213,7 @@ export default {
             const response = await this.$store.dispatch('habilitaciones/create', {
               habilitacion,
             });
-            console.log(response.data)
+            //console.log(response.data)
             this.nroTramite = response.data
             this.openPopup('FormOk');
           } catch (e) {
@@ -1364,12 +1376,12 @@ export default {
       }
     },
     checkDocumentSize(field, event){
-      console.log('checkDocumentSize CALLED');
+      //console.log('checkDocumentSize CALLED');
       const file = event.target.files[0];
 
-      console.log('event.target.files[0]: ' + event.target.files[0]);
+      //console.log('event.target.files[0]: ' + event.target.files[0]);
 
-      console.log('file.size: ' + file.size + '> this.maxFileSize: ' + this.maxFileSize);
+      //console.log('file.size: ' + file.size + '> this.maxFileSize: ' + this.maxFileSize);
        if (file && file.size > this.maxFileSize) {
         // El archivo excede el tamaño máximo permitido
         this.fileTooLargeError[field] = 'El archivo debe pesar menos de '+this.maxFileSize/1024/1024+'MB.';

@@ -288,7 +288,7 @@
         </div>
       </b-form-group>
       <b-form-group v-if="rubroSeleccionado.croquis === true && !isHoteleria && solicitante.tipoSolicitud=='Habilitación'" label-for="documentos.croquis" >
-        <label for="croquis">Croquis </label>
+        <label for="croquis">Croquis *</label>
         <b-form-file v-model="documentos.croquis.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('croquis')"
         @change="checkDocumentSize('croquis', $event)"
         @input="clearFormFieldState('croquis')"></b-form-file>
@@ -366,7 +366,7 @@
         @change="handleDocumentUpdate('constanciaIngresosBrutos'); checkDocumentSize('constanciaIngresosBrutos', $event)"
         @input="clearFormFieldState('constanciaIngresosBrutos')"></b-form-file>
         <div v-if="fileTooLargeError.constanciaIngresosBrutos" class="validation-error">
-          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.constanciaIngresosBrutos }}
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.constanciaIngresosBrutos || 'Debe seleccionar un archivo.' }}
         </div>
       </b-form-group>
       <b-form-group v-if="solicitante.tipoSolicitud=='Habilitación'">
@@ -486,14 +486,14 @@
     <div class="centeredContainer">        
       <fieldset>        
         <b-button size="lg" @click="onResetParams" variant="danger" class="btn-cancel" >Cancelar</b-button>
-        <b-button size="lg" type="submit" variant="success" :disabled="!areAllFieldsComplete" class="" >Enviar</b-button>
+        <b-button size="lg" type="submit" variant="success" :disabled="!areAllFieldsComplete" class="" >Enviar</b-button>        
+      </fieldset>
         <div v-if="!areAllFieldsComplete" class="validation-error">
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Completar todos los campos marcados con (*).
         </div>
         <div v-if="!areAllFieldsValid" class="validation-error">
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Por favor, revisa el formulario en busca de errores.
         </div>
-      </fieldset>
     </div>
   </b-card>
   </b-form>
@@ -747,10 +747,10 @@ export default {
         mail: { required, email },
         mail2: { required, email, sameAs: sameAs( function(){return this.solicitante.mail } ) },
         esPropietario: { requiredIfAtLeastOneChecked: (value) => {
-            return (value || this.solicitante.esPropietario || this.solicitante.esTitular) && this.solicitante.tipoSolicitud == 'Baja';
+            return value || this.solicitante.esTitular || this.solicitante.tipoSolicitud === 'Habilitación';
           } },
         esTitular: { requiredIfAtLeastOneChecked: (value) => {
-            return (value || this.solicitante.esPropietario || this.solicitante.esTitular) && this.solicitante.tipoSolicitud == 'Baja';
+            return value || this.solicitante.esPropietario || this.solicitante.tipoSolicitud === 'Habilitación';
           } },
       },
       inmueble: {
@@ -763,7 +763,7 @@ export default {
         },
         marquesina: {
           requiredIfAtLeastOneChecked: (value) => {
-            return value || this.inmueble.mercaderia || this.inmueble.carteles || this.inmueble.mesas || this.solicitante.tipoSolicitud == 'Baja';
+            return value || this.inmueble.mercaderia || this.inmueble.carteles || this.inmueble.mesas || this.solicitante.tipoSolicitud === 'Baja';
           }
         },
         mercaderia: {
@@ -773,37 +773,43 @@ export default {
         },
         carteles: {
           requiredIfAtLeastOneChecked: (value) => {
-            return value || this.inmueble.marquesina || this.inmueble.mercaderia || this.inmueble.mesas || this.solicitante.tipoSolicitud == 'Baja';
+            return value || this.inmueble.mercaderia || this.inmueble.marquesina || this.inmueble.mesas || this.solicitante.tipoSolicitud === 'Baja';
           }
         },
         mesas: {
           requiredIfAtLeastOneChecked: (value) => {
-            return value || this.inmueble.marquesina || this.inmueble.mercaderia || this.inmueble.carteles || this.solicitante.tipoSolicitud == 'Baja';
+            return value || this.inmueble.mercaderia || this.inmueble.carteles || this.inmueble.marquesina || this.solicitante.tipoSolicitud === 'Baja';
           }
         }
       },
       documentos: {
+        //Validaciones compartidas
         dniFrente: { contenido:{ required} },
         dniDorso: { contenido:{ required} },
-        constanciaCuit: { contenido:{ required} },
-        constanciaIngresosBrutos: { contenido:{ required} },
         libreDeudaUrbana: { contenido:{ required} },
+        planillaAutorizacion: { contenido:{requiredIf: requiredIf(function () {
+          return this.solicitante.esApoderado === 'true' })}},
+        actaPersonaJuridica: { contenido:{requiredIf: requiredIf(function () {
+          return this.solicitante.esPersonaJuridica === 'true' })}},
+        //Validaciones exclusivas de Habilitación
+        constanciaCuit: { contenido:{requiredIf: requiredIf(function () {
+          return this.solicitante.tipoSolicitud === 'Habilitación' }) } },        
+        plano: { contenido:{requiredIf: requiredIf(function () {
+          return this.solicitante.tipoSolicitud === 'Habilitación' }) }},
+        croquis: { contenido:{requiredIf: requiredIf(function () {
+          return this.rubroSeleccionado.croquis && !this.isHoteleria && (this.solicitante.tipoSolicitud === 'Habilitación') })}},
+
+        //Validaciones exclusivas de Baja
         libreDeudaIB: { contenido:{ requiredIf: requiredIf(function () {
           return (this.solicitante.tipoSolicitud === 'Baja' && this.solicitante.esTitular == true) }) }},
         libreDeudaSegHig: { contenido:{ requiredIf: requiredIf(function () {
           return this.solicitante.tipoSolicitud === 'Baja' }) }},
+
+        //Validaciones con varias condiciones
         tituloPropiedad: { contenido:{ requiredIf: requiredIf(function () {
           return this.solicitante.tipoSolicitud === 'Habilitación' || (
             this.solicitante.tipoSolicitud === 'Baja' && this.solicitante.esPropietario && !this.solicitante.esTitular)
           }) }},
-        plano: { contenido:{requiredIf: requiredIf(function () {
-          return this.solicitante.tipoSolicitud === 'Habilitación' }) }},
-        planillaAutorizacion: { contenido:{requiredIf: requiredIf(function () {
-          return this.solicitante.esApoderado === 'true' })}},
-        croquis: { contenido:{requiredIf: requiredIf(function () {
-          return this.rubroSeleccionado.croquis && !this.isHoteleria })}},
-        actaPersonaJuridica: { contenido:{requiredIf: requiredIf(function () {
-          return this.solicitante.esPersonaJuridica === 'true' })}},
       }
     }
     // Otras validaciones aquí...
@@ -815,7 +821,7 @@ export default {
       captchaError: false,
       maxFileSize: 15 * 1024 * 1024, // 15MB in bytes,
       fileTooLargeError: {},
-      TEST_submit: true,
+      TEST_submit: false,
       listaRubros: rubros,
       rubroSeleccionado: {
         id: null,
@@ -1023,10 +1029,10 @@ export default {
     },
     areAllFieldsValid(){
       //console.log("areAllFieldsValid() CALLED");
-
       if(this.areAllFieldsComplete){
         //console.log("areAllFieldsValid(): this.$v.$invalid: " + this.$v.$invalid + " Object.values(this.fileTooLargeError).some(error => !!error): " + Object.values(this.fileTooLargeError).some(error => !!error));
-        return !this.$v.$invalid && !Object.values(this.fileTooLargeError).some(error => !!error)}
+        return !this.$v.$invalid && !Object.values(this.fileTooLargeError).some(error => !!error)
+      }
       return true;
     }
   },
@@ -1041,14 +1047,52 @@ export default {
     });
   },
   methods: {
-    atLeastOneChecked(value) {
-      return this.solicitante.esTitular || this.solicitante.esPropietario;
-    },
     isCaptchaOK(){
-        //console.log("isCAPTCHAOK?? = " + (typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0));
+        console.log("isCAPTCHAOK?? = " + (typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0));
         this.captchaError = !(typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0);
         if(this.TEST_submit) return true;
         return !this.captchaError;
+    },
+    LoguearValidaciones(){
+          console.log("this.solicitante.tipoSolicitud: " + this.solicitante.tipoSolicitud);
+          console.log("VAlidaciones compartidas ");
+          console.log("this.$v.solicitante.nombre.$error: " + this.$v.solicitante.nombre.$error);
+          console.log("this.$v.solicitante.apellido.$error: " + this.$v.solicitante.apellido.$error);
+          console.log("this.$v.solicitante.dni.$error: " + this.$v.solicitante.dni.$error);
+          console.log("this.$v.solicitante.cuit.$error: " + this.$v.solicitante.cuit.$error);
+          console.log("this.$v.solicitante.domicilioReal.$error: " + this.$v.solicitante.domicilioReal.$error);
+          console.log("this.$v.solicitante.telefono.$error: " + this.$v.solicitante.telefono.$error);
+          console.log("this.$v.solicitante.codigoPostal.$error: " + this.$v.solicitante.codigoPostal.$error);
+          console.log("this.$v.solicitante.localidad.$error: " + this.$v.solicitante.localidad.$error);
+          console.log("this.$v.solicitante.provincia.$error: " + this.$v.solicitante.provincia.$error);
+          console.log("this.$v.solicitante.mail.$error: " + this.$v.solicitante.mail.$error);
+          console.log("this.$v.solicitante.mail2.$error: " + this.$v.solicitante.mail2.$error);
+          console.log("this.$v.inmueble.localidad.$error: " + this.$v.inmueble.localidad.$error);
+          console.log("this.$v.inmueble.rubro.$error: " + this.$v.inmueble.rubro.$error);
+          console.log("this.$v.inmueble.calle.$error: " + this.$v.inmueble.calle.$error);
+          console.log("this.$v.inmueble.nro.$error: " + this.$v.inmueble.nro.$error);
+          console.log("this.$v.documentos.dniFrente.contenido.$error: " + this.$v.documentos.dniFrente.contenido.$error);
+          console.log("this.$v.documentos.dniDorso.contenido.$error: " + this.$v.documentos.dniDorso.contenido.$error);
+          console.log("this.$v.documentos.libreDeudaUrbana.contenido.$error: " + this.$v.documentos.libreDeudaUrbana.contenido.$error);
+          console.log("this.$v.documentos.planillaAutorizacion.contenido.$error: " + this.$v.documentos.planillaAutorizacion.contenido.$error);
+          console.log("this.$v.documentos.actaPersonaJuridica.contenido.$error: " + this.$v.documentos.actaPersonaJuridica.contenido.$error);          
+          console.log("-*-*Validaciones exclusivas de Habilitación*-*-");
+          console.log("this.$v.documentos.constanciaCuit.contenido.$error: " + this.$v.documentos.constanciaCuit.contenido.$error);
+          console.log("this.$v.inmueble.otrosServicios.$error: " + this.$v.inmueble.otrosServicios.$error);
+          console.log("this.$v.inmueble.marquesina.$error: " + this.$v.inmueble.marquesina.$error);
+          console.log("this.$v.inmueble.mercaderia.$error: " + this.$v.inmueble.mercaderia.$error);
+          console.log("this.$v.inmueble.carteles.$error: " + this.$v.inmueble.carteles.$error);
+          console.log("this.$v.inmueble.mesas.$error: " + this.$v.inmueble.mesas.$error);
+          console.log("this.$v.documentos.plano.contenido.$error: " + this.$v.documentos.plano.contenido.$error);
+          console.log("this.$v.documentos.croquis.contenido.$error: " + this.$v.documentos.croquis.contenido.$error);
+          console.log("-*-*Validaciones exclusivas de Baja*-*-");
+          console.log("this.$v.nroLegajo.$error: " + this.$v.nroLegajo.$error);
+          console.log("this.$v.solicitante.esPropietario.$error: " + this.$v.solicitante.esPropietario.$error);
+          console.log("this.$v.solicitante.esTitular.$error: " + this.$v.solicitante.esTitular.$error);
+          console.log("this.$v.documentos.libreDeudaIB.contenido.$error: " + this.$v.documentos.libreDeudaIB.contenido.$error);
+          console.log("this.$v.documentos.libreDeudaSegHig.contenido.$error: " + this.$v.documentos.libreDeudaSegHig.contenido.$error);
+          console.log("-*-*Validaciones raras*-*-");
+          console.log("this.$v.documentos.tituloPropiedad.contenido.$error: " + this.$v.documentos.tituloPropiedad.contenido.$error);
     },
     openPopup(type) {
       // Lógica para abrir el popup correspondiente según el tipo (A, B, C, D)else if (type === 'B')
@@ -1164,19 +1208,13 @@ export default {
           this.isCaptchaOK();
 
         }else{
-          //console.log("SUBMIT FORM CALLED");
-          for (let key in this.$v) {
-            // Verificar si la propiedad tiene errores
-            if (this.$v[key].$error) {
-              // Si tiene errores, imprimir el nombre de la propiedad
-              //console.log(`La validación ${key} está invalidando el formulario`);
-            }
-          }
+          console.log("SUBMIT FORM CALLED:");          
+          
           this.$v.$touch(); // Marca los campos como tocados para mostrar los errores
-
+          //this.LoguearValidaciones();
           if (!this.$v.$invalid && !Object.values(this.fileTooLargeError).some(error => !!error) && this.isCaptchaOK()) {
             // Si no hay errores, envía el formulario
-            //console.log("FORMULARIO ENVIADO");
+            console.log("ENVIANDO FORMULARIO ");
             try {
 
             this.openPopup('FormLoading');
@@ -1459,6 +1497,7 @@ export default {
 }
 .centeredContainer fieldset{
   margin: 0 auto;
+  width: 20rem;
 }
 p, .li-content{
   font-family: Calibri, 'Trebuchet MS', sans-serif;

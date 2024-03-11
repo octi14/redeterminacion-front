@@ -1,11 +1,24 @@
 <template>
   <div class="page main-background">
     <Banner title="Habilitaciones comerciales" />
+    
     <div class="col-10" style="margin: auto; margin-top: 2rem">
-      <div class="row justify-content-center" >
-        <img width="100%" src="../../assets/Habilitá en simples pasos.png" />
-      </div>
+      <b-carousel
+        id="mainCarousel"
+        v-model="slide"
+        :interval="4000"
+        controls
+        indicators
+        img-width="100%"
+        style="text-shadow: 1px 1px 2px #333;"
+        @sliding-start="onSlideStart"
+        @sliding-end="onSlideEnd"
+      >
+        <b-carousel-slide img-src="../../assets/habilita-en-simples-pasos.png"></b-carousel-slide>
+        <b-carousel-slide img-src="../../assets/habilita-en-simples-pasos-2.png"></b-carousel-slide>
+      </b-carousel>
     </div>
+
     <b-container class="col-8">
       <b-row>
         <b-col class="botonera">
@@ -742,6 +755,8 @@ import rubros from "@/plugins/rubros.js";
 export default {
   data:function() {
     return {
+      slide: 0,
+      sliding: null,
       filteredRubros: rubros,//.filter(rubro => rubro.requisitos.length > 0),
       showPopupA: false,
       showPopupB: false,
@@ -789,6 +804,12 @@ export default {
     this.filteredRubros.sort((a, b) => a.nombre.localeCompare(b.nombre));
   },
   methods: {
+    onSlideStart(slide) {
+      this.sliding = true
+    },
+    onSlideEnd(slide) {
+      this.sliding = false
+    },
     openPopup(type) {
       // Lógica para abrir el popup correspondiente según el tipo (A, B, C, D)
       if (type === 'A') {
@@ -901,9 +922,48 @@ export default {
       if( this.isCardExpanded(card)) this.toggleCard(card);
     });
   }
-},
+}
 }
 </script>
+<style lang="sass">
+#mainCarousel
+  .carousel-control-prev-icon,
+  .carousel-control-next-icon
+    background-image: none
+    background-size: 100%, 100%
+    border-radius: 50%
+    height: 100px
+    width: 100px
+  .carousel-control-next-icon::after
+    color: #0c681a
+    content: '>'
+    font-size: 40px
+  .carousel-control-prev-icon::after
+    color: #0c681a
+    content: '<'
+    font-size: 40px
+  .carousel-indicators li
+    background-color: transparent
+    height: 6px
+    margin: 0 20px
+    opacity: 1
+    padding: 3px
+    position: relative
+    width: 6px
+  .carousel-indicators li::after
+    border: 3px solid #0c681a
+    border-radius: 50%
+    bottom: -7px
+    content: ""
+    left: -7px
+    padding: 10px
+    position: absolute
+    right: -7px
+    top: -7px
+  .carousel-indicators li.active
+    background-color: green
+    border-radius: 50%
+</style>
 <style scoped>
 @media (max-width: 1200px) {
   .col-8{
@@ -924,6 +984,7 @@ export default {
     max-width: 90%;
   }
 }
+
 p, .li-content{
   font-family: Calibri, 'Trebuchet MS', sans-serif;
 }

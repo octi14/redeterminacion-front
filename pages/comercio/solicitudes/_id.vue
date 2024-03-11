@@ -25,6 +25,8 @@
         </div>
         <div class="row justify-content-center" v-if="habilitacion.status === 'Finalizada' || habilitacion.tipoSolicitud === 'Baja'">
           <div class="h5 row"> Número de expediente: <b class="text-success ml-1"> {{ habilitacion.nroExpediente }} </b> </div>
+          <div class="h5 row" v-if="baja"> Alcance: <b class="text-success ml-1"> {{ habilitacion.alcance }} </b> </div>
+          <div class="h5 row" v-if="baja"> Legajo: <b class="text-success ml-1"> {{ habilitacion.nroLegajo }} </b> </div>
         </div>
       </div>
       <!--Botones-->

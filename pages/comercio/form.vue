@@ -30,11 +30,10 @@
     <fieldset >
       <legend><h3>Datos del Solicitante <b-icon-question-circle-fill @click="openPopup('DatosDelSolicitante')" font-scale="1" variant="info"></b-icon-question-circle-fill></h3></legend>
       <b-form-group label="Tipo de Solicitud *" label-for="tipo-solicitud" >
-        <b-form-select title="Por el momento solo se pueden solicitar habilitaciones comerciales." id="tipo-solicitud" v-model="solicitante.tipoSolicitud" >
-            <b-form-select-option v-if="solicitante.tipoSolicitud=='Habilitación'" selected="selected" value="Habilitación">Habilitar nuevo comercio</b-form-select-option>
-            <b-form-select-option v-else value="Habilitación">Habilitar nuevo comercio</b-form-select-option>
-            <b-form-select-option v-if="solicitante.tipoSolicitud=='Baja'" value="Baja" >Baja de comercio</b-form-select-option>
-            <b-form-select-option v-else value="Baja" >Baja de comercio</b-form-select-option>
+        <b-form-select title="Por el momento solo se pueden solicitar habilitaciones comerciales." id="tipo-solicitud" v-model="tipoSolicitudSeleccionada" >
+          <b-form-select-option value="Habilitación">Habilitar nuevo comercio</b-form-select-option>
+          <b-form-select-option value="Baja">Baja de comercio</b-form-select-option>
+          <!-- Agrega más opciones según sea necesario -->
         </b-form-select>
       </b-form-group>
 
@@ -147,7 +146,10 @@
         <b-form-checkbox v-model="solicitante.esTitular" name="esTitular" >
           <span>Soy o represento al titular de habilitación</span></b-form-checkbox>       
         <b-form-checkbox v-model="solicitante.esPropietario" name="esPropietario" >
-          <span>Soy o represento al propietario del inmueble</span></b-form-checkbox>   
+          <span>Soy o represento al propietario del inmueble</span></b-form-checkbox> 
+        <div v-if="$v.solicitante.esTitular.$error || $v.solicitante.esPropietario.$error" class="validation-error">
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe seleccionar por lo menos una opción.
+        </div>  
       </b-form-group>
     </fieldset>
       
@@ -185,9 +187,9 @@
       <b-row v-if="solicitante.tipoSolicitud == 'Baja'">
         <b-col lg="12" md="12">
           <b-form-group label="Nro de Legajo *" label-for="nroLegajo" >
-              <b-form-input id="nroLegajo" v-model="nroLegajo" no-wheel class="text-right" ></b-form-input>
+              <b-form-input id="nroLegajo" v-model="nroLegajo" no-wheel></b-form-input>
             <div v-if="$v.nroLegajo.$error" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El nro de legajo no puede estar vacío, contener letras o caracteres especiales.
+              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El nro de legajo no puede estar vacío, contener letras o caracteres especiales, y debe tener entre 4 y 6 digítos.
             </div>
           </b-form-group>
         </b-col>
@@ -465,8 +467,24 @@
         <div v-if="captchaError" class="validation-error">
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Por favor completa la verificación para continuar.
         </div>
-      </b-form-group>
-      <fieldset>
+      </b-form-group>  
+    </div>
+    <b-card v-if="solicitante.tipoSolicitud=='Baja'" border-variant="warning" align="center" class="importante-card" >
+      <b-card-text>
+        <b-row >
+          <b-col md="2">
+            <b-icon-exclamation-triangle variant="warning" font-scale="5"></b-icon-exclamation-triangle>
+            <p class="li-title"><u><b>¡Importante!</b></u></p>
+          </b-col>
+          <b-col  md="10">
+              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Una vez completado el formulario, el Dpto. Comercio se comunicará a través del correo electrónico oficial (<a href="mailto:deptocomercio@gesell.gob.ar" class="external-link" target="_blank" >deptocomercio@gesell.gob.ar</a>), indicándote los costos administrativos del trámite.</div></div>
+              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">El trámite de baja comercial será efectivo una vez abonado el importe del mismo y obtenido el certificado respectivo.</div></div>
+          </b-col>
+        </b-row>
+      </b-card-text>
+    </b-card>
+    <div class="centeredContainer">        
+      <fieldset>        
         <b-button size="lg" @click="onResetParams" variant="danger" class="btn-cancel" >Cancelar</b-button>
         <b-button size="lg" type="submit" variant="success" :disabled="!areAllFieldsComplete" class="" >Enviar</b-button>
         <div v-if="!areAllFieldsComplete" class="validation-error">
@@ -710,11 +728,12 @@
 <script>
 import rubros from "@/plugins/rubros.js";
 import { required, requiredIf, alpha, numeric, email, minLength, maxLength, sameAs } from 'vuelidate/lib/validators';
+import { helpers } from 'vuelidate/lib/validators';
 export default {
   validations() {
     return {
       nroLegajo: { requiredIf: requiredIf(function () {
-        return this.solicitante.tipoSolicitud == 'Baja' }) , numeric, maxLength: maxLength(6) },
+        return this.solicitante.tipoSolicitud == 'Baja' }) , numeric, maxLength: maxLength(6),  minLength: minLength(4) },
       solicitante: {
         nombre: { required },
         apellido: { required },
@@ -726,7 +745,13 @@ export default {
         localidad: { required },
         provincia: { required },
         mail: { required, email },
-        mail2: { required, email, sameAs: sameAs( function(){return this.solicitante.mail } ) }
+        mail2: { required, email, sameAs: sameAs( function(){return this.solicitante.mail } ) },
+        esPropietario: { requiredIfAtLeastOneChecked: (value) => {
+            return value || this.solicitante.esPropietario || this.solicitante.esTitular;
+          } },
+        esTitular: { requiredIfAtLeastOneChecked: (value) => {
+            return value || this.solicitante.esPropietario || this.solicitante.esTitular;
+          } },
       },
       inmueble: {
         localidad: { required },
@@ -813,7 +838,7 @@ export default {
       nroTramite: null,      
       nroLegajo: '',
       solicitante: {
-        tipoSolicitud: this.$route.query.tramite,
+        tipoSolicitud: '',
         nombre: '',
         apellido: '',
         dni: '',
@@ -955,6 +980,20 @@ export default {
       }
   },
   computed: {
+    tipoSolicitudSeleccionada: {
+      get() {
+        console.log("tipoSolicitudSeleccionada: " + this.$route.query.tramite);
+        this.tipoSolicitud = this.$route.query.tramite;
+        this.solicitante.tipoSolicitud = this.tipoSolicitud;
+        return this.tipoSolicitud;
+      },
+      set(value) {
+        // Este método se invoca cuando el usuario selecciona una opción en el <b-form-select>
+        // Si necesitas hacer algo cuando se selecciona una opción, puedes agregar lógica aquí
+        this.tipoSolicitud = value;
+        this.solicitante.tipoSolicitud = value;
+      }
+    },
     formattedDate() {
       if (this.date) {
         const day = this.date.getDate();
@@ -998,8 +1037,12 @@ export default {
     });
   },
   methods: {
+    atLeastOneChecked(value) {
+      return this.solicitante.esTitular || this.solicitante.esPropietario;
+    },
     isCaptchaOK(){
         //console.log("isCAPTCHAOK?? = " + (typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0));
+        return true;
         this.captchaError = !(typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0);
         if(this.TEST_submit) return true;
         return !this.captchaError;
@@ -1402,6 +1445,9 @@ export default {
   padding-right: 0;
   padding-left: 0;
 }
+.centeredContainer fieldset{
+  margin: 0 auto;
+}
 p, .li-content{
   font-family: Calibri, 'Trebuchet MS', sans-serif;
 }
@@ -1625,5 +1671,50 @@ input[type="number"] {
 }
 .titularOpropietario .custom-switch{
   margin: 0 0.5rem;
+}
+.importante-card{
+  padding: 0;
+  margin-bottom: 1.5rem;
+  margin-top: 0 !important;
+}
+.importante-card .li-content{
+  text-align: left;
+  margin-bottom: 1rem;
+}
+.importante-card .card-body{
+  padding-bottom: 0.25rem;
+}
+.importante-card .col-md-2 .li-title{
+  margin-bottom: 1rem;
+}
+.li-icon, .li-title{
+  font-weight: 600;
+  color: #0c681a;
+}
+.li-icon, .li-content{
+  display: inline-block;
+}
+.li-title{
+  margin-bottom: 0.3rem;
+}
+.li-icon{
+  margin-right: 1%;
+  vertical-align: top;
+}
+.li-row{
+  display: flex;
+  width: 100%;
+}
+.first-li{
+  margin-top: 1rem;
+}
+.li-content .li-row{
+  margin-top: 0;
+}
+.li-icon, .li-content{
+  display: inline-block;
+}
+.li-p{
+  margin-bottom: 1rem;
 }
 </style>

@@ -91,7 +91,7 @@
                     </b-col>
                     <b-col  md="10">
                         <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Una vez iniciado el trámite, recibirás un correo electrónico del Departamento Comercio (deptocomercio@gesell.gob.ar), indicandote los pasos para continuar.</div></div>
-                        <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Tené en cuenta que la Baja será efectiva una vez que el Departamento Comercio haya verificado la documentación presentada.</div></div>
+                        <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Tené en cuenta que la Baja será efectiva una vez que el Departamento Comercio haya verificado la documentación presentada, se haya abonado el valor del trámite y hayas obtenido el certificado respectivo.</div></div>
                     </b-col>
                   </b-row>
                 </b-card-text>
@@ -128,6 +128,20 @@
                   <div class="li-content">
                     <p class="li-title">¿Qué sucede si el/la titular del inmueble que iniciará el trámite no estaba registrado/a previamente?</p>
                     <p>En ese caso, deberás enviar un correo electrónico a: <a href="mailto:deptocomercio@gesell.gob.ar" target="_blank" class="external-link">deptocomercio@gesell.gob.ar</a></p>
+                  </div>
+                </div>
+                <div class="li-row">
+                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-content">
+                    <p class="li-title">¿Cómo finaliza el trámite?</p>
+                    <p>Una vez completado el formulario, el Dpto. Comercio se comunicará a través del correo electrónico oficial (<a href="mailto:deptocomercio@gesell.gob.ar" target="_blank" class="external-link">deptocomercio@gesell.gob.ar</a>), indicándote los costos administrativos del trámite. Una vez abonado, se te informará como obtener el certificado de baja comercial.</p>
+                  </div>
+                </div>
+                <div class="li-row">
+                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-content">
+                    <p class="li-title">¿Cuál es el costo del trámite?</p>
+                    <p>El costo del trámite se encuentra determinado en la Ordenanza 2156/08 (TO 2023).</p>
                   </div>
                 </div>
                 <div class="li-row">

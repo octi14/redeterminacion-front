@@ -1,5 +1,12 @@
 <template>
   <div class="obra-feed">
+    <b-form-group class="col-3 mx-auto mt-4" label-class="text-success h6">
+      <label for="selectedAdjudicado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><b-icon-funnel-fill></b-icon-funnel-fill> Filtrar por empresa</label>
+      <b-form-select plain v-model="selectedAdjudicado" @change="filterItems()">
+        <option value="">Todos</option>
+        <option v-for="adjudicado in adjudicados" :value="adjudicado" :key="adjudicado">{{ adjudicado }}</option>
+      </b-form-select>
+    </b-form-group>
     <!--Buscador-->
     <div class="row mt-5 justify-content-center text-center">
       <b-input
@@ -50,6 +57,8 @@ export default {
       items: [],
       filteredItems: [], // Nueva propiedad de datos para los elementos filtrados
       search: '', // Nueva variable para la búsqueda
+      adjudicadoFilter: '', // Nuevo filtro por el campo "adjudicado"
+      selectedAdjudicado: '', // Nuevo filtro por "adjudicado"
       currentPage: 1,
       perPage: 5,
       totalPages: 0,
@@ -100,6 +109,10 @@ export default {
     obras() {
       return this.$store.state.obras.latest
     },
+    adjudicados() {
+      const adjudicados = new Set(this.items.map(item => item.adjudicado));
+      return Array.from(adjudicados);
+    },
     paginatedItems() {
       const start = (this.currentPage - 1) * this.perPage;
       const end = start + this.perPage;
@@ -118,9 +131,9 @@ export default {
     filterItems(palabraClave = this.search) {
       const terminoBusqueda = palabraClave.trim().toLowerCase();
       this.filteredItems = this.items.filter(item => {
-        // Personaliza la lógica de filtrado según tus necesidades.
-        // Por ejemplo, puedes buscar una palabra clave en una propiedad específica del objeto 'item'.
-        return item.objeto.toLowerCase().includes(terminoBusqueda);
+        const objetoIncluyeTermino = item.objeto.toLowerCase().includes(terminoBusqueda);
+        const adjudicadoCoincide = this.selectedAdjudicado === '' || item.adjudicado === this.selectedAdjudicado;
+        return objetoIncluyeTermino && adjudicadoCoincide;
       });
 
       this.totalPages = Math.ceil(this.filteredItems.length / this.perPage);

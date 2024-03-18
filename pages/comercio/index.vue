@@ -1,25 +1,53 @@
 <template>
   <div class="page main-background">
     <Banner title="Habilitaciones comerciales" />
-    <div class="col-10" style="margin: auto; margin-top: 2rem">
-      <div class="row justify-content-center" >
-        <img width="100%" src="../../assets/Habilitá en simples pasos.png" />
-      </div>
+    
+    <div class="col-10 mainCarrousel" style="margin: auto; margin-top: 2rem">
+      <b-carousel
+        id="mainCarousel"
+        v-model="slide"
+        :interval="4000"
+        controls
+        indicators
+        img-width="100%"
+        style="text-shadow: 1px 1px 2px #333;"
+        @sliding-start="onSlideStart"
+        @sliding-end="onSlideEnd"
+      >
+        <b-carousel-slide img-src="../../assets/habilita-en-simples-pasos.png"></b-carousel-slide>
+        <b-carousel-slide img-src="../../assets/habilita-en-simples-pasos-2.png"></b-carousel-slide>
+      </b-carousel>
     </div>
+    <div class="col-12 moblieCarrousel" style="padding: 0 10%; margin-top: 0; background-color: #FFFEF7;">
+      <b-carousel
+        id="moblieCarousel"
+        v-model="slide"
+        :interval="4000"
+        controls
+        indicators
+        img-width="100%"
+        style="text-shadow: 1px 1px 2px #333;"
+        @sliding-start="onSlideStart"
+        @sliding-end="onSlideEnd"
+      >
+        <b-carousel-slide img-src="../../assets/habilita-en-simples-pasos-mobile.png"></b-carousel-slide>
+      </b-carousel>
+    </div>
+
     <b-container class="col-8">
       <b-row>
         <b-col class="botonera">
           <h2 class="icon-green"><b-icon-question-octagon-fill class="icon-orange" scale="0.75"></b-icon-question-octagon-fill> ¿Qué trámite estás buscando?</h2>
           <div class="botonera-container">
-            <b-row>
-              <b-col lg="3" md="4" sm="6"><img id="btn-Habilitación" width="100%" src="../../assets/btn/btn_habilitacion.png" @click="seleccionarTramite('Habilitación')"></b-col>
-              <b-col lg="3" md="4" sm="6"><img id="btn-Baja" width="100%" src="../../assets/btn/btn_baja.png" @click="seleccionarTramite('Baja')"></b-col>
+            <b-row>                            
+              <b-col lg="3" md="4" sm="6"><a href="#card-habilitacion" id="btnH"><img id="btn-Habilitación" width="100%" src="../../assets/btn/btn_habilitacion.png" @click="seleccionarTramite('Habilitación')"></a></b-col>
+              <b-col lg="3" md="4" sm="6"><a href="#card-baja" id="btnB"><img id="btn-Baja" width="100%" src="../../assets/btn/btn_baja.png" @click="seleccionarTramite('Baja')"></a></b-col>
               <b-col lg="3" md="4" sm="6"><img id="btn-Cambio-Titular" class="disabled" width="100%" src="../../assets/btn/btn_cambio_titular.png" @click="seleccionarTramite('Cambio-Titular')"></b-col>
               <b-col lg="3" md="4" sm="6"><img id="btn-Cambio-Domicilio" class="disabled" width="100%" src="../../assets/btn/btn_cambio_domicilio.png" @click="seleccionarTramite('Cambio-Domicilio')"></b-col>
-              <b-col lg="3" md="4" sm="6"><img id="btn-Renovacion" class="disabled" width="100%" src="../../assets/btn/btn_renovacion.png" @click="seleccionarTramite('Renovacion')"></b-col>
-              <b-col lg="3" md="4" sm="6"><img id="btn-Anexo" class="disabled" width="100%" src="../../assets/btn/btn_anexo.png" @click="seleccionarTramite('Anexo')"></b-col>
-              <b-col lg="3" md="4" sm="6"><img id="btn-Reempadronamiento" class="disabled" width="100%" src="../../assets/btn/btn_reempadronamiento.png" @click="seleccionarTramite('Reempadronamiento')"></b-col>
-              <b-col lg="3" md="4" sm="6"><img id="btn-Anexo-Cambio" class="disabled" width="100%" src="../../assets/btn/btn_anexo_cambio.png" @click="seleccionarTramite('Anexo-Cambio')"></b-col>
+              <b-col lg="3" md="4" sm="12"><img id="btn-Renovacion" class="disabled" width="100%" src="../../assets/btn/btn_renovacion.png" @click="seleccionarTramite('Renovacion')"></b-col>
+              <b-col lg="3" md="4" sm="12"><img id="btn-Anexo" class="disabled" width="100%" src="../../assets/btn/btn_anexo.png" @click="seleccionarTramite('Anexo')"></b-col>
+              <b-col lg="3" md="4" sm="12"><img id="btn-Reempadronamiento" class="disabled" width="100%" src="../../assets/btn/btn_reempadronamiento.png" @click="seleccionarTramite('Reempadronamiento')"></b-col>
+              <b-col lg="3" md="4" sm="12"><img id="btn-Anexo-Cambio" class="disabled" width="100%" src="../../assets/btn/btn_anexo_cambio.png" @click="seleccionarTramite('Anexo-Cambio')"></b-col>
             </b-row>
           </div>
         </b-col>
@@ -27,7 +55,7 @@
       <b-row>
         <b-col v-if="tramiteSeleccionado=='Baja'">
           <br />
-          <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(0) }">
+          <b-card class="section-card" id="card-baja" v-bind:class="{ 'expanded': isCardExpanded(0) }">
             <h4 class="section-title" @click="toggleCard(0)">
               ¿Qué significa realizar una Baja Comercial?
               <b-icon-chevron-compact-down v-if="!isCardExpanded(0)"></b-icon-chevron-compact-down>
@@ -66,7 +94,7 @@
           </b-card>
           <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(2) }">
             <h4 class="section-title" @click="toggleCard(2)">
-              ¿Qué documentación necesito para iniciar el trámite?
+              ¿Qué documentación necesito para iniciar una Baja Comercial?
               <b-icon-chevron-compact-down v-if="!isCardExpanded(2)"></b-icon-chevron-compact-down>
               <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
             </h4>
@@ -195,14 +223,42 @@
         </b-col>
         <b-col v-if="tramiteSeleccionado=='Habilitación'">
           <br />
-          <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(5) }">
+          <b-card class="section-card" id="card-baja" v-bind:class="{ 'expanded': isCardExpanded(5) }">
             <h4 class="section-title" @click="toggleCard(5)">
-              ¿Quién puede iniciar el trámite?
+              ¿Qué significa realizar una Habilitacion Comercial?
               <b-icon-chevron-compact-down v-if="!isCardExpanded(5)"></b-icon-chevron-compact-down>
               <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
             </h4>
             <transition name="expand">
               <div v-show="isCardExpanded(5)">
+                <div class="li-row first-li">
+                  <p class="first-li">La Municipalidad de Villa Gesell dispone que toda persona humana o jurídica que pretenda ejercer el comercio, industria o actividad asimilable deberá, previo a su desarrollo dentro del Partido, solicitar la habilitación pertinente.</p>
+                </div>
+                <div class="li-row">
+                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-content">
+                    <p class="li-title">¿Qué sucede si abro un local comercial sin realizar la habilitación correspondiente?</p>
+                    <div class="li-row">
+                      <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                      <div class="li-content"><p>La omisión de la habilitación determinará la inmediata clausura del establecimiento, debiendo abonar la multa correspondiente para quienes cometieran tal infracción.</p></div>
+                    </div>
+                    <div class="li-row">
+                      <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                      <div class="li-content"><p>El establecimiento deberá permanecer cerrado hasta tanto regularice su trámite de habilitación.</p></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </transition>
+          </b-card>
+          <b-card class="section-card" id="card-habilitacion" v-bind:class="{ 'expanded': isCardExpanded(6) }">
+            <h4 class="section-title" @click="toggleCard(6)">
+              ¿Quién puede iniciar una Habilitación Comercial?
+              <b-icon-chevron-compact-down v-if="!isCardExpanded(6)"></b-icon-chevron-compact-down>
+              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
+            </h4>
+            <transition name="expand">
+              <div v-show="isCardExpanded(6)">
                 <div class="li-row first-li">
                   <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> El interesado futuro comerciante/industrial o afin mayor de 18 años.</div>
                 </div>
@@ -213,14 +269,14 @@
             </transition>
           </b-card>
 
-          <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(6) }">
-            <h4 class="section-title" @click="toggleCard(6)">
-              ¿Qué necesito para iniciar el trámite?
-              <b-icon-chevron-compact-down v-if="!isCardExpanded(6)"></b-icon-chevron-compact-down>
+          <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(7) }">
+            <h4 class="section-title" @click="toggleCard(7)">
+              ¿Qué documentación necesito para iniciar una Habilitación Comercial?
+              <b-icon-chevron-compact-down v-if="!isCardExpanded(7)"></b-icon-chevron-compact-down>
               <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
             </h4>
             <transition name="expand">
-              <div v-show="isCardExpanded(6)">
+              <div v-show="isCardExpanded(7)">
                 <div class="li-row first-li"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> DNI del solicitante <i>(imagen del frente y dorso)</i>.</div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Domicilio real y legal del establecimiento <i>(deberá constar calle y número)</i>. <b-icon-question-circle-fill @click="openPopup('NroInmueble')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Copia de plano (en alguna de sus dos posibilidades: <i>1. Conforme a obra o Medición aprobado / 2. Conforme a obra o Medición registrado).</i> En caso de no poseerlo, se requerirá el Informe Técnico debidamente visado por el Colegio Profesional correspondiente. <b-icon-question-circle-fill @click="openPopup('B')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div></div>
@@ -242,7 +298,7 @@
                       <p class="li-title"><u><b>¡Importante!</b></u></p>
                     </b-col>
                     <b-col  md="10">
-                        <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Si en el lugar <b>donde vas a habilitar tu comercio existía otro antes, este último debe estar dado de baja. En caso contrario</b>, deberás concurrir personalmente al <b>Departamento Comercio Municipal</b> para <b>regularizar la situación</b> y poder iniciar el trámite de habilitación.</div></div>
+                        <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Si en el lugar <b>donde vas a habilitar tu comercio existía otro antes, este último debe estar dado de baja.</b> En caso de que aún no se haya regularizado esta situación,  deberás realizar el <a href="#card-baja" id="btnB" class="external-link" @click="seleccionarTramite('Baja')">Trámite de Baja Comercial</a> para poder iniciar el trámite de habilitación.</div></div>
                         <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Tené en cuenta que <b>la iniciación y pago del trámite no implican la habilitación tácita</b>, ya que <b>la misma está sujeta a la entrega de la documentación original y al retiro del certificado de habilitación</b>. <u>Mientras tanto el local deberá permanecer cerrado.</u></div></div>
                     </b-col>
                   </b-row>
@@ -252,14 +308,14 @@
             </transition>
           </b-card>
 
-          <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(7) }">
-            <h4 class="section-title" @click="toggleCard(7)">
+          <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(8) }">
+            <h4 class="section-title" @click="toggleCard(8)">
               Requisitos por rubros comerciales
-              <b-icon-chevron-compact-down v-if="!isCardExpanded(7)"></b-icon-chevron-compact-down>
+              <b-icon-chevron-compact-down v-if="!isCardExpanded(8)"></b-icon-chevron-compact-down>
               <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
             </h4>
             <transition name="expand">
-              <div v-show="isCardExpanded(7)">
+              <div v-show="isCardExpanded(8)">
                 <div class="li-row first-li">
                   <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                   <div class="li-content">
@@ -407,39 +463,18 @@
               </div>
             </transition>
           </b-card>
-          <b-card class="section-card FAQs-card" v-bind:class="{ 'expanded': isCardExpanded(8) }">
-            <h4 class="section-title" @click="toggleCard(8)">Preguntas Frecuentes
-              <b-icon-chevron-compact-down v-if="!isCardExpanded(8)"></b-icon-chevron-compact-down>
+          <b-card class="section-card FAQs-card" v-bind:class="{ 'expanded': isCardExpanded(9) }">
+            <h4 class="section-title" @click="toggleCard(9)">Preguntas Frecuentes
+              <b-icon-chevron-compact-down v-if="!isCardExpanded(9)"></b-icon-chevron-compact-down>
               <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
             </h4>
             <transition name="expand">
-              <div v-show="isCardExpanded(8)">
+              <div v-show="isCardExpanded(9)">
                 <div class="li-row first-li">
                   <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                   <div class="li-content">
-                    <p class="li-title">¿Por qué tengo que habilitar mi local?</p>
-                    <p>La Municipalidad de Villa Gesell dispone que toda persona humana o jurídica que pretenda ejercer el comercio, industria o actividad asimilable deberá, previo a su desarrollo dentro del Partido, solicitar la habilitación pertinente.</p>
-                  </div>
-                </div>
-                <div class="li-row">
-                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
-                  <div class="li-content">
-                    <p class="li-title">¿Qué sucede si abro un local comercial sin realizar la habilitación correspondiente?</p>
-                    <div class="li-row">
-                      <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                      <div class="li-content"><p>La omisión de la habilitación determinará la inmediata clausura del establecimiento, debiendo abonar la multa correspondiente para quienes cometieran tal infracción.</p></div>
-                    </div>
-                    <div class="li-row">
-                      <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                      <div class="li-content"><p>El establecimiento deberá permanecer cerrado hasta tanto regularice su trámite de habilitación.</p></div>
-                    </div>
-                  </div>
-                </div>
-                <div class="li-row">
-                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
-                  <div class="li-content">
                     <p class="li-title">¿Qué sucede si en el local donde voy a habilitar mi comercio existía otro antes?</p>
-                    <p>En este caso, el comercio anterior debe estar dado de baja. Dicho trámite se realiza personalmente en el Departamento de Comercio Municipal.</p>
+                    <p>En este caso, el comercio anterior debe estar dado de baja. Dicho trámite se realiza de manera virtual haciendo <a href="#card-baja" id="btnB" class="external-link" @click="seleccionarTramite('Baja')">click aquí</a>.</p>
                   </div>
                 </div>
                 <div class="li-row">
@@ -552,14 +587,14 @@
               </div>
             </transition>
           </b-card>
-          <b-card id="normas" class="section-card" v-bind:class="{ 'expanded': isCardExpanded(9) }">
-            <h4 class="section-title" @click="toggleCard(9)">
+          <b-card id="normas" class="section-card" v-bind:class="{ 'expanded': isCardExpanded(10) }">
+            <h4 class="section-title" @click="toggleCard(10)">
               Condiciones legales
-              <b-icon-chevron-compact-down v-if="!isCardExpanded(9)"></b-icon-chevron-compact-down>
+              <b-icon-chevron-compact-down v-if="!isCardExpanded(10)"></b-icon-chevron-compact-down>
               <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
             </h4>
             <transition name="expand">
-              <div v-show="isCardExpanded(9)">
+              <div v-show="isCardExpanded(10)">
                 <p class="first-li">
                   La habilitación de comercios/industrias o asimilables deberá adecuarse a lo determinado en concordancia con leyes nacionales, provinciales y
                   <a href="https://arvige.gob.ar/legislacion/pdf/12" target="_blank" class="external-link">el Digesto de Habilitaciones Comerciales (Ord.1958/04 (TO2024)</a>.
@@ -681,9 +716,6 @@
           <h2 class="icon-orange"><b>IMPORTANTE</b></h2>
           <p>Antes de continuar tené en cuenta lo siguiente:</p>
           <div class="li-row">
-            <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Si no contás con toda la información requerida y/o digitalizada no podrás completar el proceso y deberás iniciarlo nuevamente una vez que cuentes con toda la documentación.</div>
-          </div>
-          <div class="li-row">
             <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">La documentación presentada (certificaciones y libre deuda) deberá encontrarse actualizada, es decir que debe haber sido expedida dentro del plazo de los últimos 30 días.</div>
           </div>
           <div class="li-row">
@@ -742,6 +774,8 @@ import rubros from "@/plugins/rubros.js";
 export default {
   data:function() {
     return {
+      slide: 0,
+      sliding: null,
       filteredRubros: rubros,//.filter(rubro => rubro.requisitos.length > 0),
       showPopupA: false,
       showPopupB: false,
@@ -789,6 +823,12 @@ export default {
     this.filteredRubros.sort((a, b) => a.nombre.localeCompare(b.nombre));
   },
   methods: {
+    onSlideStart(slide) {
+      this.sliding = true
+    },
+    onSlideEnd(slide) {
+      this.sliding = false
+    },
     openPopup(type) {
       // Lógica para abrir el popup correspondiente según el tipo (A, B, C, D)
       if (type === 'A') {
@@ -901,10 +941,100 @@ export default {
       if( this.isCardExpanded(card)) this.toggleCard(card);
     });
   }
-},
+}
 }
 </script>
+<style lang="sass">
+#mainCarousel
+  .carousel-control-prev-icon,
+  .carousel-control-next-icon
+    background-image: none
+    background-size: 100%, 100%
+    border-radius: 50%
+    height: 100px
+    width: 100px
+  .carousel-control-next-icon::after
+    color: #0c681a
+    content: '>'
+    font-size: 40px
+    left: 10px
+  .carousel-control-prev
+    text-align: left
+    background: rgba(#CCC, 0.3)
+    width: 5%
+  .carousel-control-next
+    text-align: right
+    background: rgba(#CCC, 0.3)
+    width: 5%
+  .carousel-control-prev-icon::after
+    color: #0c681a
+    content: '<'
+    font-size: 40px
+  .carousel-indicators
+    bottom: -25px
+  .carousel-indicators li
+    background-color: #999999
+    height: 6px
+    margin: 0 5px
+    opacity: 1
+    padding: 3px
+    position: relative
+    width: 6px
+    border-radius: 50%
+  .carousel-indicators li::after
+    bottom: -7px
+    content: ""
+    left: -7px
+    padding: 5px
+    position: absolute
+    right: -7px
+    top: -7px
+  .carousel-indicators li.active
+    background-color: 999999
+    border: 3px solid #999999
+    top: 6px
+    border-radius: 50%
+@media (max-width: 1200px)  
+  #mainCarousel
+    .carousel-control-prev-icon::after,
+    .carousel-control-next-icon::after
+      font-size: 30px
+    .carousel-indicators li
+      background-color: #999999
+      height: 3px
+      margin: 0 5px
+      opacity: 1
+      padding: 3px
+      position: relative
+      width: 3px
+      border-radius: 50%
+    .carousel-indicators li::after
+      bottom: -7px
+      content: ""
+      left: -7px
+      padding: 5px
+      position: absolute
+      right: -7px
+      top: -7px
+    .carousel-indicators li.active
+      background-color: 999999
+      border: 3px solid #999999
+      top: 6px
+      border-radius: 50%
+@media (max-width: 720px)
+  #mainCarousel
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon,
+    .carousel-indicators li
+      display: none
+</style>
 <style scoped>
+.mainCarrousel{
+    display: block;
+  }
+  .moblieCarrousel{
+    display: none;
+  }
 @media (max-width: 1200px) {
   .col-8{
     max-width: 80%;
@@ -918,11 +1048,52 @@ export default {
   .videoTuto{
     width: 100%;
   }
+  .botonera-container .row div .selected{
+    border: #0c681a 2px solid;
+    -webkit-border-radius: 00px;
+    -moz-border-radius: 00px;
+    border-radius: 00px;
+    cursor: auto;
+  }
+  .mainCarrousel{
+    display: block;
+  }
+  .moblieCarrousel{
+    display: none;
+  }
+  .botonera-container .row div{
+    /*Opcion 1. 2 botones por fila*/
+  width: 50%;
+  margin: 0.5rem auto;
+    /* Opcion 2. 1 boton por fila
+  width: 100%;
+  margin: 0.5rem 10%;
+    */
+  }
 }
 @media (max-width: 720px){
+  h1
+  .mainCarrousel{
+    display: none;
+  }
+  .moblieCarrousel{
+    display: block;
+  }
   .col-8{
     max-width: 90%;
   }
+  .botonera-container .row div{
+    /*Opcion 1. 2 botones por fila*/
+  width: 50%;
+  margin: 0.5rem auto;
+    /* Opcion 2. 1 boton por fila
+  width: 100%;
+  margin: 0.5rem 10%;
+    */
+  }
+  .botonera-container .row div img{
+    margin: 0 !important;
+  }  
 }
 p, .li-content{
   font-family: Calibri, 'Trebuchet MS', sans-serif;
@@ -1196,6 +1367,32 @@ ul{
 .botonera{
   margin-top: 2rem;
 }
+.botonera-container .btn-container{
+  width: 100%;
+  height: 80%;
+  border: 1px solid grey;
+  padding: 1rem;
+  margin: 1rem 0.5rem;
+  cursor: pointer;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 15px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.botonera-container .btn-container p{
+  width: 55%;
+  color: green;
+  margin-left: 1rem;
+  padding-left: 1rem;
+  border-left: 1px solid grey;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.5rem;
+}
+.botonera-container .btn-container .b-icon{
+  width: 2rem;
+}
 .botonera-container .row div img{
   margin: 1rem 0.5rem;
   cursor: pointer;
@@ -1209,5 +1406,8 @@ ul{
 }
 .botonera-container .row div .disabled{
   opacity: 0.5;
+}
+#btnB, #btnH {
+  scroll-behavior: smooth;
 }
 </style>

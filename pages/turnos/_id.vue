@@ -3,8 +3,9 @@
     <Banner title="Detalles de turno"/>
     <!-- Datos del solicitante -->
     <template v-if="turno">
-      <div class="row justify-content-center mt-3">
-        <p class="h4"> Número de trámite: <b> {{ turno.nroTramite }}  </b></p>
+      <div class="text-center mt-3">
+        <p class="h4"> Número de trámite: <b> {{ turno.nroTramite }}  </b>
+        <h5> Tipo de trámite: <b> {{ tipoSolicitud }} </b></h5>
       </div>
       <div class="row justify-content-center mt-3">
 
@@ -233,6 +234,7 @@ export default {
       turno: null,
       observaciones: '',
       telefono: null,
+      tipoSolicitud: '',
     }
   },
   async fetch() {
@@ -246,6 +248,7 @@ export default {
       nroTramite
     })
     this.telefono = this.$store.state.habilitaciones.single.telefono
+    this.tipoSolicitud = this.$store.state.habilitaciones.single.tipoSolicitud
   },
   fetchOnServer: false,
   activated() {

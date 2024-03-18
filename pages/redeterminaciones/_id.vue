@@ -1,11 +1,12 @@
 <template>
-  <div class="page my-4">
+  <div class="page main-background">
+    <Banner title="Obras"/>
     <template v-if="certificado">
       <div class="container mx-auto">
         <div class="row mx-auto" v-if="obra">
           <div class="col mx-auto">
             <div class="container mx-auto">
-          <!-- View -->
+            <!-- View -->
               <h2 class="mx-auto text-center"> Redeterminar certificado </h2>
 
               <b-form class="col mx-auto" v-if="!obraUvi">
@@ -199,32 +200,6 @@ export default {
     this.$fetch()
   },
   methods: {
-    async onSubmitDelete() {
-      try {
-        const userToken = this.$store.state.user.token
-        const id = this.$route.params.id
-
-        await this.$store.dispatch('obras/delete', {
-          id: id,
-          userToken,
-        })
-        this.$bvToast.toast('Eliminada correctamente', {
-          title: '',
-          variant: 'success',
-          appendToast: true,
-          solid: true,
-        })
-        await this.$router.push('/')
-      } catch (e) {
-        this.$bvToast.toast('Error Editando. Intente cerrar sesión e iniciar nuevamente.', {
-          title: '',
-          variant: 'danger',
-          appendToast: true,
-          solid: true,
-        })
-      }
-      this.$set(this, 'editing', false)
-    },
     onResetEdit() {
       this.editing = false
     },

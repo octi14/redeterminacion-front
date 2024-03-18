@@ -24,3 +24,11 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+  @media (max-width: 720px){
+    .banner .card-body{
+      padding-bottom: 0;
+    }
+  }
+</style>

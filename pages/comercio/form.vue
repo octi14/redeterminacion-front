@@ -463,14 +463,7 @@
       </b-form-group>
     </fieldset>
     </fieldset>
-    <div class="centeredContainer" style="min-width: 304px;">
-      <b-form-group>
-        <div id="captchaContainer" class="g-recaptcha" :data-sitekey="recaptchaSiteKey"></div>
-        <div v-if="captchaError" class="validation-error">
-          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Por favor completa la verificación para continuar.
-        </div>
-      </b-form-group>
-    </div>
+    
     <b-card v-if="solicitante.tipoSolicitud=='Baja'" border-variant="warning" align="center" class="importante-card" >
       <b-card-text>
         <b-row >
@@ -479,12 +472,20 @@
             <p class="li-title"><u><b>¡Importante!</b></u></p>
           </b-col>
           <b-col  md="10">
-              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Una vez completado el formulario, el Dpto. Comercio se comunicará a través del correo electrónico oficial (<a href="mailto:deptocomercio@gesell.gob.ar" class="external-link" target="_blank" >deptocomercio@gesell.gob.ar</a>), indicándote los costos administrativos del trámite.</div></div>
-              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">El trámite de baja comercial será efectivo una vez abonado el importe del mismo y obtenido el certificado respectivo.</div></div>
+              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content"><span>Una vez completado el formulario, el Dpto. Comercio se comunicará a través del correo electrónico oficial (<a href="mailto:deptocomercio@gesell.gob.ar" class="external-link" target="_blank" >deptocomercio@gesell.gob.ar</a>), indicándote los costos administrativos del trámite.</span></div></div>
+              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content"><span><b>El trámite de baja comercial será efectivo una vez abonado el importe del mismo y obtenido el certificado respectivo.</b></span></div></div>
           </b-col>
         </b-row>
       </b-card-text>
     </b-card>
+    <div class="centeredContainer" style="min-width: 304px;">
+      <b-form-group>
+        <div id="captchaContainer" class="g-recaptcha" :data-sitekey="recaptchaSiteKey"></div>
+        <div v-if="captchaError" class="validation-error">
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Por favor completa la verificación para continuar.
+        </div>
+      </b-form-group>
+    </div>
     <div class="centeredContainer">
       <fieldset>
         <b-button size="lg" @click="onResetParams" variant="danger" class="btn-cancel" >Cancelar</b-button>
@@ -1484,6 +1485,9 @@ export default {
     max-width: 90%;
   }
 }
+#captchaContainer{
+  margin-bottom: 1rem;
+}
 .printing-modal .card-header h5{
   color: white !important;
 }
@@ -1747,6 +1751,9 @@ input[type="number"] {
 .importante-card .li-content{
   text-align: left;
   margin-bottom: 1rem;
+}
+.importante-card .li-content span{
+  font-weight: 500;
 }
 .importante-card .card-body{
   padding-bottom: 0.25rem;

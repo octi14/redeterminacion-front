@@ -1,34 +1,37 @@
 <template>
   <div class="page main-background">
     <Banner title="Índices"></Banner>
-    <div class="col-6 mx-auto mt-5">
-      <p style="font-size: 2rem"><b>Crear índice</b></p>
-    </div>
-    <div class="container col-6 card shadow-card my-5">
-      <b-form class="my-3 col-md-10 mx-auto justify-content-center" @submit.stop.prevent="onSubmitCreateFile">
+    <div class="container col-4 card shadow-card my-5">
+      <div class="col-5 ml-5 mt-5">
+        <h4>
+          <b-icon-arrow-down-left-square class="icon-orange" /> |
+          <b class="landing-text"> Crear índice </b>
+        </h4>
+      </div>
+      <hr class="col-9 mx-auto"/>
+      <b-form class="my-2 col-md-10 mx-auto justify-content-center" @submit.stop.prevent="onSubmitCreateFile">
         <b-form-group>
-            <b-form-group label="Año">
-              <b-form-input v-model="año" type="text" />
-            </b-form-group>
-            <b-form-group label="Mes">
+            <b-form-group label="Mes"  class="landing-text">
               <b-form-input v-model="mes" type="text" />
             </b-form-group>
-            <b-form-text class="h6"> Categoría </b-form-text>
+            <b-form-group label="Año"  class="landing-text">
+              <b-form-input v-model="año" type="text"/>
+            </b-form-group>
+            <b-form-text class="landing-text"><h6> Categoría </h6> </b-form-text>
             <b-form-select v-model="categoria" class="mb-3">
               <b-form-select-option
               v-for="categoria in categorias"
               :key="categoria.id"
               :value="categoria">{{categoria.nombre}}</b-form-select-option>
             </b-form-select>
-            <b-form-group label="Valor">
+            <b-form-group label="Valor" class="landing-text">
               <b-form-input v-model="valor" type="float" />
             </b-form-group>
         </b-form-group>
-          <hr />
-        <b-btn variant="success" style="color: black" type="submit">Crear índice</b-btn>
-        <b-btn variant="info">
-        <NuxtLink style="color: black" to="/obras"> Volver </NuxtLink>
-        </b-btn>
+        <b-row class="justify-content-center mb-3">
+          <b-btn variant="success" class="mx-2" type="submit">Crear índice</b-btn>
+          <b-btn variant="secondary" @click="goBack">Volver</b-btn>
+        </b-row>
       </b-form>
     </div>
   </div>
@@ -90,6 +93,15 @@ export default {
     deleteItem(index) {
       this.items.splice(index, 1)
     },
+    async goBack(){
+      await this.$router.push('/obras')
+    }
   },
 }
 </script>
+
+<style scoped>
+  .icon-orange{
+    color: #E27910;
+  }
+</style>

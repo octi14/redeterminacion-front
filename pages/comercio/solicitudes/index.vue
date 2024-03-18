@@ -101,7 +101,7 @@ export default{
         }
       ],
       estados: ['Rechazada','En revisión', 'Rectificación', 'Esperando turno','Esperando inspección','Inspeccionado', 'Esperando documentación', 'Prórroga 1', 'Prórroga 2', 'Finalizada'],
-      tiposTramite: ['Habilitación','Baja'],
+      tiposTramite: ['Habilitación','Baja', 'Renovación'],
 
 }
   },

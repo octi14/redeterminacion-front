@@ -1,28 +1,37 @@
 <template>
   <div class="page main-background">
     <Banner title="Índices"/>
-    <h4 class="col-md-5 col-sm-10 mx-auto mt-5"> Buscar índice </h4>
-    <div class="container col-md-5 col-sm-10 card shadow-card text-center my-5 mx-auto">
-      <b-form class="col-md-10 my-5 mx-auto" @submit.stop.prevent="onSearchIndex">
-        <b-text class="h6"> Mes </b-text>
-        <b-form-input type="number" v-model="mes"> </b-form-input>
-        <b-text class="h6"> Año </b-text>
-        <b-form-input type="number" v-model="año"> </b-form-input>
-        <b-text class="h6"> Categoria </b-text>
+    <div class="container col-md-4 col-sm-8 card shadow-card text-center my-5 mx-auto">
+      <div class="col-5 ml-5 mt-5">
+        <h4>
+          <b-icon-search class="icon-orange" /> |
+          <b class="landing-text"> Buscar índice </b>
+        </h4>
+      </div>
+      <hr class="col-9 mx-auto"/>
+      <b-form class="col-md-10 mb-4 mx-auto text-left" @submit.stop.prevent="onSearchIndex">
+        <b-form-group label="Mes"  class="landing-text">
+          <b-form-input v-model="mes" type="text" />
+        </b-form-group>
+        <b-form-group label="Año"  class="landing-text">
+          <b-form-input v-model="año" type="text"/>
+        </b-form-group>
+        <b-form-text class="landing-text"><h6> Categoría </h6> </b-form-text>
         <b-form-select v-model="categoria" class="mb-3">
           <b-form-select-option
           v-for="categoria in categorias"
           :key="categoria.id"
           :value="categoria">{{categoria.nombre}}</b-form-select-option>
         </b-form-select>
-        <b-button type="submit" variant="primary"> Buscar </b-button>
-        <b-button variant="warning">
-          <NuxtLink style="color: black" to="/obras"> Volver </NuxtLink>
-        </b-button>
+        <b-row class="justify-content-center mt-2">
+          <b-button type="submit" class="mx-2" variant="success"> Buscar </b-button>
+          <b-button variant="secondary" @click="goBack">
+            Volver
+          </b-button>
+        </b-row>
       </b-form>
-      <div class="container my-5" v-if="result">
-        <h4> Valor de índice </h4>
-        <h5> {{result}} </h5>
+      <div class="my-2" v-if="result">
+        <h4> Valor de índice: {{result}} </h4>
       </div>
     </div>
   </div>
@@ -51,8 +60,17 @@ export default {
         categoria: this.categoria,
       })
       this.result = this.$store.state.indices.single.valor
+    },
+    async goBack(){
+      await this.$router.push('/obras')
     }
   }
 
 }
 </script>
+
+<style scoped>
+  .icon-orange{
+    color: #E27910;
+  }
+</style>

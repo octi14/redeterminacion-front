@@ -2,7 +2,7 @@
   <div class="page main-background">
     <Banner title="Índices"></Banner>
     <div class="container col-4 card shadow-card my-5">
-      <div class="col-5 ml-5 mt-5">
+      <div class="col ml-5 mt-5">
         <h4>
           <b-icon-arrow-down-left-square class="icon-orange" /> |
           <b class="landing-text"> Crear índice </b>

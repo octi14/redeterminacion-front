@@ -488,6 +488,8 @@
 </template>
 
 <script>
+
+import { logUserActivity } from '~/plugins/logUserActivity.js';
 export default {
   data() {
     return {
@@ -621,6 +623,7 @@ export default {
       })
       this.habilitacion.status = habilitacion.status
       this.showRectificacion = false
+      logUserActivity("Nico","onSendRectificacion",habilitacion.status, this.$store.state.user.token);
     },
     async onSendSolicitar(){
       const habilitacion = {
@@ -634,6 +637,7 @@ export default {
       })
       this.habilitacion.status = habilitacion.status
       this.showSolicitarDoc = false
+      logUserActivity("Nico","onSendSolicitar",habilitacion.status, this.$store.state.user.token);
     },
     async onSendFinalizar(){
       var nroExpediente = ''
@@ -656,6 +660,7 @@ export default {
       })
       this.habilitacion.status = habilitacion.status
       this.showFinalizar = false
+      logUserActivity("Nico","onSendFinalizar",habilitacion.status, this.$store.state.user.token);
     },
     async onRestablecer(){
       const habilitacion = {
@@ -668,6 +673,7 @@ export default {
         habilitacion,
       })
       this.habilitacion.status = habilitacion.status
+      logUserActivity("Nico","onRestablecer",habilitacion.status, this.$store.state.user.token);
     },
     async onSendApprove(){
       const observaciones = this.habilitacion.observaciones || " "
@@ -688,6 +694,7 @@ export default {
       this.habilitacion.status = habilitacion.status
       this.showPrevApprove = false
       this.showApprove = true
+      logUserActivity("Nico","onSendApprove",habilitacion.status, this.$store.state.user.token);
     },
     async onSendAprobarBaja(){
       const observaciones = this.habilitacion.observaciones || " "
@@ -712,6 +719,7 @@ export default {
         this.showAprobarBaja = false
       }
       this.showApprove = true
+      logUserActivity("Nico","onSendAprobarBaja",habilitacion.status, this.$store.state.user.token);
     },
     onRechazarSolicitud(){
       this.showRejectPopup = true
@@ -732,6 +740,7 @@ export default {
       this.habilitacion.status = habilitacion.status
       this.observaciones = ''
       this.showRejectPopup = false
+      logUserActivity("Nico","onSendReject",habilitacion.status, this.$store.state.user.token);
     },
     //ESTE openDocumento es la prueba fallida de Nico para abrir los docs como modales dentro de la misma pagina
     /*openDocumento(documento, nombreDocumento) {

@@ -63,7 +63,7 @@ function getBrowserInfo() {
     // Utilizando el objeto 'navigator.userAgent' para obtener información sobre el navegador
     return navigator.userAgent;
 }
-export async function logUserActivity(userId, actionType, actionResult, sessionId, visitedUrl = null) {
+export async function logUserActivity(axios, userId, actionType, actionResult, sessionId, visitedUrl = null) {
     try {
         // Obtener la URL visitada si no se proporcionó como parámetro
         if (!visitedUrl) {

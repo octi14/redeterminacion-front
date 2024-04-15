@@ -24,9 +24,9 @@
           </div>
         </div>
         <div class="col mx-auto" v-if="habilitacion.status === 'Finalizada' || habilitacion.tipoSolicitud === 'Baja'">
-          <p class="h5 row justify-content-center"> Número de expediente: <b class="text-success ml-1"> {{ habilitacion.nroExpediente }} </b> </p>
-          <p class="h5 row justify-content-center" v-if="baja"> Alcance: <b class="text-success ml-1"> {{ habilitacion.alcance }} </b> </p>
-          <p class="h5 row justify-content-center" v-if="baja"> Legajo: <b class="text-success ml-1"> {{ habilitacion.nroLegajo }} </b> </p>
+          <div class="h5 row justify-content-center"> Número de expediente: <b class="text-success ml-1"> {{ habilitacion.nroExpediente }} </b> </div>
+          <div class="h5 row justify-content-center" v-if="baja"> Alcance: <b class="text-success ml-1"> {{ habilitacion.alcance }} </b> </div>
+          <div class="h5 row justify-content-center" v-if="baja"> Legajo: <b class="text-success ml-1"> {{ habilitacion.nroLegajo }} </b> </div>
         </div>
       </div>
       <!--Botones-->
@@ -488,8 +488,6 @@
 </template>
 
 <script>
-
-import { logUserActivity } from '~/plugins/logUserActivity.js';
 export default {
   data() {
     return {
@@ -623,7 +621,6 @@ export default {
       })
       this.habilitacion.status = habilitacion.status
       this.showRectificacion = false
-      //logUserActivity(this.$axios, this.$store.state.user.id,"onSendRectificacion",habilitacion.status, this.$store.state.user.token);
     },
     async onSendSolicitar(){
       const habilitacion = {
@@ -637,7 +634,6 @@ export default {
       })
       this.habilitacion.status = habilitacion.status
       this.showSolicitarDoc = false
-      //logUserActivity(this.$axios, this.$store.state.user.id,"onSendSolicitar",habilitacion.status, this.$store.state.user.token);
     },
     async onSendFinalizar(){
       var nroExpediente = ''
@@ -660,7 +656,6 @@ export default {
       })
       this.habilitacion.status = habilitacion.status
       this.showFinalizar = false
-      //logUserActivity(this.$axios, this.$store.state.user.id,"onSendFinalizar",habilitacion.status, this.$store.state.user.token);
     },
     async onRestablecer(){
       const habilitacion = {
@@ -673,7 +668,6 @@ export default {
         habilitacion,
       })
       this.habilitacion.status = habilitacion.status
-      //logUserActivity(this.$axios, this.$store.state.user.id,"onRestablecer",habilitacion.status, this.$store.state.user.token);
     },
     async onSendApprove(){
       const observaciones = this.habilitacion.observaciones || " "
@@ -694,7 +688,6 @@ export default {
       this.habilitacion.status = habilitacion.status
       this.showPrevApprove = false
       this.showApprove = true
-      //logUserActivity(this.$axios, this.$store.state.user.id,"onSendApprove",habilitacion.status, this.$store.state.user.token);
     },
     async onSendAprobarBaja(){
       const observaciones = this.habilitacion.observaciones || " "
@@ -719,7 +712,6 @@ export default {
         this.showAprobarBaja = false
       }
       this.showApprove = true
-      //logUserActivity(this.$axios, this.$store.state.user.id,"onSendAprobarBaja",habilitacion.status, this.$store.state.user.token);
     },
     onRechazarSolicitud(){
       this.showRejectPopup = true
@@ -740,7 +732,6 @@ export default {
       this.habilitacion.status = habilitacion.status
       this.observaciones = ''
       this.showRejectPopup = false
-      //logUserActivity(this.$axios, this.$store.state.user.id,"onSendReject",habilitacion.status, this.$store.state.user.token);
     },
     //ESTE openDocumento es la prueba fallida de Nico para abrir los docs como modales dentro de la misma pagina
     /*openDocumento(documento, nombreDocumento) {

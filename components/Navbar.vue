@@ -71,6 +71,15 @@
               Turnos
           </NuxtLink>
         </b-navbar-nav>
+        <b-navbar-nav v-if="adminComercio || adminInspeccion">
+          <NuxtLink
+            class="nav-link"
+            active-class="active"
+            to="/abierto_anual/registros"
+          >
+              Abierto anual
+          </NuxtLink>
+        </b-navbar-nav>
       </div>
       <b-navbar-nav class="ml-auto">
         <template v-if="isAuthenticated">

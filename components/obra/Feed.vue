@@ -1,6 +1,6 @@
 <template>
   <div class="obra-feed">
-    <b-form-group class="col-3 mx-auto mt-4" label-class="text-success h6">
+    <b-form-group class="col-md-3 col-sm-8 mx-auto mt-4" label-class="text-success h6">
       <label for="selectedAdjudicado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><b-icon-funnel-fill></b-icon-funnel-fill> Filtrar por empresa</label>
       <b-form-select plain v-model="selectedAdjudicado" @change="filterItems()">
         <option value="">Todos</option>
@@ -11,7 +11,7 @@
     <div class="row mt-5 justify-content-center text-center">
       <b-input
         type="text"
-        class="col-4"
+        class="col-6"
         v-model="search"
         @input="handleSearchInput"
         placeholder="Buscar..."

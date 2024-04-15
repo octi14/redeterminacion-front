@@ -65,46 +65,49 @@ function getBrowserInfo() {
 }
 export async function logUserActivity(axios, userId, actionType, actionResult, sessionId, visitedUrl = null) {
     try {
-        // Obtener la URL visitada si no se proporcionó como parámetro
-        if (!visitedUrl) {
-            visitedUrl = window.location.href;
-        }
+        const logUserActivityEnabled = process.env.LOG_USER_ACTIVITY_ENABLED === 'true' || false;
+        if(logUserActivityEnabled){
+            // Obtener la URL visitada si no se proporcionó como parámetro
+            if (!visitedUrl) {
+                visitedUrl = window.location.href;
+            }
 
-        // Recopilar información del dispositivo y navegador
-        const deviceInfo = {
-            deviceType: getDeviceType(),
-            os: getOperatingSystem(),
-            resolution: getScreenResolution(),
-            browserInfo: getBrowserInfo()
-        };
+            // Recopilar información del dispositivo y navegador
+            const deviceInfo = {
+                deviceType: getDeviceType(),
+                os: getOperatingSystem(),
+                resolution: getScreenResolution(),
+                browserInfo: getBrowserInfo()
+            };
 
-        // Datos a enviar al servidor
-        const data = {
-            userId: userId,
-            actionType: actionType,
-            actionResult: actionResult,
-            sessionId: sessionId,
-            visitedUrl: visitedUrl,
-            deviceInfo: deviceInfo
-        };
+            // Datos a enviar al servidor
+            const data = {
+                userId: userId,
+                actionType: actionType,
+                actionResult: actionResult,
+                sessionId: sessionId,
+                visitedUrl: visitedUrl,
+                deviceInfo: deviceInfo
+            };
 
-        // Enviar los datos al servidor utilizando Axios o tu librería HTTP preferida
-        //const response = await axios.post('URL_DEL_ENDPOINT_PARA_REGISTRAR_ACTIVIDAD', data);
-        console.log('logUserActivity() CALLED');
-        console.log('userId:' + userId);
-        console.log('actionType:' + actionType);
-        console.log('actionResult:' + actionResult);
-        console.log('sessionId:' + sessionId);
-        console.log('visitedUrl:' + visitedUrl);
-        console.log('deviceInfo.getDeviceType:' + deviceInfo.deviceType);
-        console.log('deviceInfo.getOperatingSystem:' + deviceInfo.os);
-        console.log('deviceInfo.getScreenResolution:' + deviceInfo.resolution);
-        console.log('deviceInfo.getBrowserInfo:' + deviceInfo.browserInfo);
+            // Enviar los datos al servidor utilizando Axios o tu librería HTTP preferida
+            //const response = await axios.post('URL_DEL_ENDPOINT_PARA_REGISTRAR_ACTIVIDAD', data);
+            /*console.log('logUserActivity() CALLED');
+            console.log('userId:' + userId);
+            console.log('actionType:' + actionType);
+            console.log('actionResult:' + actionResult);
+            console.log('sessionId:' + sessionId);
+            console.log('visitedUrl:' + visitedUrl);
+            console.log('deviceInfo.getDeviceType:' + deviceInfo.deviceType);
+            console.log('deviceInfo.getOperatingSystem:' + deviceInfo.os);
+            console.log('deviceInfo.getScreenResolution:' + deviceInfo.resolution);
+            console.log('deviceInfo.getBrowserInfo:' + deviceInfo.browserInfo);*/
 
-        // Manejar la respuesta del servidor si es necesario
-        await axios.post('/api/user-activity', data);
-        console.log('Registro de actividad exitoso:', response.data);
-
+            // Manejar la respuesta del servidor si es necesario
+            await axios.post('/api/user-activity', data);
+            console.log('Registro de actividad exitoso:', response.data);
+        } else
+        console.log('Logs desactivados. logUserActivityEnabled: ', logUserActivityEnabled);
     } catch (error) {
         // Manejar cualquier error que pueda ocurrir durante el registro de la actividad
         console.error('Error al registrar actividad:', error);

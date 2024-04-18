@@ -8,17 +8,17 @@ const formatFile = (FileResponse) => ({
     createdAt: new Date(FileResponse.createdAt).toLocaleDateString('es-AR'),
     updatedAt: new Date(FileResponse.updatedAt).toLocaleDateString('es-AR'),
   })
-  
+
   const formatExtendedFile = (FileResponse) => ({
     id: FileResponse._id,
     cuit: FileResponse.cuit,
-    dfe: FileResponse.dfe,  
+    dfe: FileResponse.dfe,
     status: FileResponse.status,
     nroLegajo: FileResponse.nroLegajo,
     observaciones: FileResponse.observaciones,
     createdAt: new Date(FileResponse.createdAt),
   })
-  
+
   module.exports = {
     getAll: async (axios,
       //  { skip = 0, limit = 6 }
@@ -43,11 +43,23 @@ const formatFile = (FileResponse) => ({
       const fileResponse = await axios.$get(`/abiertoAnual/${id}`)
       return formatExtendedFile(fileResponse.data)
     },
-  
-    create: async (axios, { habilitacion }) => {
-  
-      const createdFile = await axios.$post('/habilitaciones', { habilitacion });
-  
+
+
+    getByCuitLegajo: async(axios, { cuit, legajo }) => {
+      const fileResponse = await axios.$post(`/abiertoAnual/cuit`,{
+        cuit: cuit,
+        nroLegajo: legajo,
+      });
+      if(fileResponse.data){
+        return formatFile(fileResponse.data);
+      }else{
+        return null
+      }
+    },
+
+
+    create: async (axios, { cuit, nroLegajo }) => {
+      const createdFile = await axios.$post('/abiertoAnual', { cuit,nroLegajo });
       return createdFile;
     },
     update: async (axios, id, { habilitacion }) => {
@@ -71,7 +83,7 @@ const formatFile = (FileResponse) => ({
         headers: { Authorization: `Bearer ${userToken}` },
       })
     },
-  
+
     // searchFiles: async (
     //   axios,
     //   { expediente = '', objeto = '', adjudicado = '' }
@@ -86,4 +98,3 @@ const formatFile = (FileResponse) => ({
     //   return filesResponse.data.map(formatFile)
     // },
   }
-  

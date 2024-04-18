@@ -20,16 +20,16 @@
           </b-form-input>
         </b-form-group> -->
       </div>
-  
+
       <b-table per-page="10" head-row-variant="warning" class="col-md-10 white col-sm-8 mx-auto mt-4 shadow-card" :items="paginatedItems" :fields="fields">
         <!-- Plantilla personalizada para la columna "detalles" -->
         <template #cell(status)="row">
           <div>
             <!-- Itera sobre cada estado en el array de status -->
             <span v-for="(estado, index) in row.item.status" class="mx-1" :key="index" :style="{ color: estadoColor(estado) }">
-              <b-iconstack>
+              <b-iconstack :title="estado">
                 <b-icon-circle variant="dark"></b-icon-circle>
-                <b-icon icon="circle-fill"></b-icon> 
+                <b-icon icon="circle-fill"></b-icon>
               </b-iconstack>
             </span>
           </div>
@@ -48,13 +48,13 @@
         </template>
       </b-table>
       <b-pagination class="mt-4" :total-rows="items.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
-  
+
       <b-modal v-model="observacionesModal" header-bg-variant="primary" title="Observaciones" title-class="text-light" hide-footer centered>
         <p v-html="singleContent"></p>
       </b-modal>
     </div>
   </template>
-  
+
   <script>
   export default{
     data() {
@@ -88,15 +88,14 @@
             key: 'observaciones'
           }
         ],
-        estadosArchivo: ['Incompleto','En revisión', 'Incorrecto', 'Correcto'],
-  
+        estadosArchivo: ['Incompleto','En revisión', 'Incorrecto', 'Correcto']
   }
     },
     async fetch() {
       await this.$store.dispatch('abiertoAnual/getAll')
       this.items = this.tramites
       this.$store.commit('abiertoAnual/ordenar')
-  
+
       const perPage = 10;
     },
     computed: {
@@ -106,19 +105,19 @@
       paginatedItems() {
         const startIndex = (this.currentPage - 1) * this.perPage;
         const endIndex = startIndex + this.perPage;
-  
+
         return this.items.filter((item) => {
           const estadoCondition = !this.selectedEstado || item.status === this.selectedEstado;
           const tipoCondition = !this.selectedTipo || item.tipoSolicitud === this.selectedTipo;
           const finalizadosCondition = !this.hideFinalizados || !["Rechazada", "Finalizada"].includes(item.status);
-  
+
           return estadoCondition && tipoCondition && finalizadosCondition;
         }).slice(startIndex, endIndex);
       },
       filteredItems() {
         const startIndex = (this.currentPage - 1) * this.perPage;
         const endIndex = startIndex + this.perPage;
-  
+
         return this.items.filter((item) => {
           item.cuit === this.inputCUIT
         }).slice(startIndex, endIndex);
@@ -143,10 +142,10 @@
       },
       async onShowObservaciones(id) {
         const tramite = this.$store.state.abiertoAnual.all.find(tramite => tramite.id === id);
-  
+
         // Dividir el texto en líneas en función del guión medio "-" y unirlo con etiquetas <br>
         const observacionesDivididas = tramite.observaciones.split('-').join('<br>');
-  
+
         this.singleContent = observacionesDivididas;
         this.observacionesModal = true;
       },
@@ -165,4 +164,3 @@
     },
   }
   </script>
-  

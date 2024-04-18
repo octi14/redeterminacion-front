@@ -29,7 +29,7 @@
           </div>
         </b-card>
       </div>
-      
+
     </div>
 
     <!-- Modal número de trámite incorrecto -->
@@ -40,8 +40,8 @@
         </h3></div>
       </template>
       <div class="centeredContainer modal-error">
-        <p class="modal-subtitle">No hemos podido encontrar tu número de trámite</p>
-        <p class="">Por favor, corroborá que los datos ingresados sean correctos. Recordá que el número de trámite que te solicitamos fue enviado a tu correo electrónico.</p>
+        <p class="modal-subtitle">No hemos podido encontrar tu comercio</p>
+        <p class="">Por favor, corroborá que los datos ingresados sean correctos.</p>
         <p class="minitext">Si el problema persiste, envianos un correo a <a target="_blank" href="mailto:deptocomercio@gesell.gob.ar" class="icon-green">deptocomercio@gesell.gob.ar</a>.</p>
       </div>
       <template #modal-footer>
@@ -59,7 +59,7 @@
         </h3></div>
       </template>
       <div class="centeredContainer modal-error">
-        <p class="modal-subtitle">No has ingresado un número de trámite.</p>
+        <p class="modal-subtitle">No has ingresado un CUIT o un número de legajo válidos.</p>
         <p class="">Por favor, completá este campo para continuar.</p>
       </div>
       <template #modal-footer>
@@ -70,15 +70,15 @@
     </b-modal>
   </div>
 </template>
-  
+
   <script>
+  import maestroComercial from "@/plugins/maestroComercial.js";
   export default {
     data() {
       return {
-        nroTramite: null,
-        nroTramiteIngresado: null,
-        cuit: '',
-        nroLegajo: '',
+        cuit: null,
+        nroLegajo: null,
+        maestro: maestroComercial,
         page: 0,
         formOk: false,
         sendingForm: false,
@@ -95,48 +95,44 @@
       wait(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
       },
-      async onNextPage() {
+      async sendData() {
         switch (this.page) {
           case 0:
             this.enterKeyPressed = true
-            if (!this.nroTramiteIngresado) {
+            if (!this.cuit || !this.nroLegajo) {
               this.showPopupNoEntry = true
             } else {
-              try{
-                const nroTramite = this.nroTramiteIngresado
-                await this.$store.dispatch('habilitaciones/getByNroTramite',  { nroTramite })
-                if(this.$store.state.habilitaciones.single){
-                  const status = this.$store.state.habilitaciones.single.status
-                  if(status === "Esperando turno"){
-                    this.nroTramite = this.nroTramiteIngresado
-                    this.localidad = this.$store.state.habilitaciones.single.localidad
-                    this.page += 1
-                    await this.$store.dispatch('turnos/getAll')
-                  }else{
-                    if(status === "Esperando inspección" || status === "Prórroga 1" || status === "Prórroga 2" || status === "Inspeccionado"){
-                      await this.$store.dispatch('turnos/getSingle', { nroTramite })
-                      this.showPopupAlready = true
-                    }else{
-                      this.showPopupNotAllowed = true
-                    }
+              const result = this.maestro.filter((item) => item.cuit == this.cuit && item.nroLegajo == this.nroLegajo)
+              if(result.length > 0){
+                try{
+                  const response = await this.$store.dispatch('abiertoAnual/getByCuitLegajo',{
+                    cuit: this.cuit,
+                    legajo: this.nroLegajo,
+                  })
+                  if(!response){
+                    await this.$store.dispatch('abiertoAnual/create',{
+                      cuit: this.cuit,
+                      nroLegajo: this.nroLegajo,
+                    })
                   }
-                }else{
-                  this.showPopupFormError = true
+                }catch(e){
+                  console.log(e)
+                  this.$bvToast.toast('Algo salió mal buscando el trámite', {
+                    title: 'Error',
+                    variant: 'danger',
+                    appendToast: true,
+                    solid: true,
+                    toaster: 'b-toaster-top-center',
+                  });
                 }
-              }catch(e){
-                console.log(e)
-                this.$bvToast.toast('Algo salió mal buscando la habilitación.', {
-                  title: 'Error',
-                  variant: 'danger',
-                  appendToast: true,
-                  solid: true,
-                  toaster: 'b-toaster-top-center',
-                });
-              }
+                this.page += 1
+              }else{
+                this.showPopupFormError = true
             }
-            this.enterKeyPressed = false
-            break;
-  
+          }
+          this.enterKeyPressed = false
+          break;
+
           case 1:
             if (!this.datePicked) {
               this.$bvToast.toast('No ha seleccionado una fecha', {
@@ -151,7 +147,7 @@
               this.page += 1
             }
             break;
-  
+
           case 2:
             if (!this.timePicked) {
               this.$bvToast.toast('No ha seleccionado un horario', {
@@ -166,7 +162,7 @@
               this.page += 1
             }
             break;
-  
+
           default:
             // Por defecto, se incrementa la página en cualquier otro caso no especificado.
             this.page += 1;
@@ -174,30 +170,22 @@
         }
       },
       onResetParams() {
-        this.date = null;
-        this.time = null;
-        this.datePicked = null,
-        this.timePicked = null,
         this.$router.push('/abierto_anual');
         this.page = 0;
-        this.nombre = null;
-        this.domicilio = null;
-        this.dni = null;
-        this.token = null,
         this.printing = false;
         this.formOk = false;
-        this.cuit = '';
-        this.nroLegajo = '';
+        this.cuit = null;
+        this.nroLegajo = null;
       },
     },
-    computed: {
-      areAllFieldsComplete(){
-          return (this.date && this.time && this.nroTramite && this.nombre && this.dni && this.domicilio)
-      }
-    },
+    // computed: {
+    //   areAllFieldsComplete(){
+    //       return (this.date && this.time && this.nroTramite && this.nombre && this.dni && this.domicilio)
+    //   }
+    // },
   };
   </script>
-  
+
   <style scoped>
   @media (max-width: 720px){
     .banner-container{
@@ -209,7 +197,7 @@
     .card{
       width: 90% !important;
       margin-left: 5% !important;
-      margin-right: 5% !important; 
+      margin-right: 5% !important;
     }
     .btn{
       width: 9rem !important;
@@ -221,7 +209,7 @@
       margin: auto;
     }
   }
-    form{    
+    form{
       width: 90%;
       text-align: right;
       float: right;
@@ -303,15 +291,15 @@
     .modal-error .modal-subtitle{
       color: #e53749 !important;
     }
-  
+
     .modal-warning .modal-subtitle{
       color: #ddbc04 !important;
     }
-  
+
     .modal-error .centeredContainer{
       text-align: center;
     }
-  
+
     .modal-error p{
       color: black;
       font-weight: 500;
@@ -321,7 +309,7 @@
       font-size: 0.8rem;
       font-weight: 100;
     }
-  
+
     .modal-success p{
       color: black;
       font-weight: 500;
@@ -332,7 +320,7 @@
       font-size: 0.8rem;
       font-weight: 100;
     }
-  
+
     .modal-warning p{
       color: black;
       font-weight: 500;
@@ -342,7 +330,7 @@
       font-size: 0.9rem;
       font-weight: 100;
     }
-  
+
     .section-card{
       margin: 2rem auto !important;
       padding: 2rem 4rem;
@@ -457,4 +445,3 @@
       padding: 0.375rem 0.75rem; /* Ajusta el padding según tus necesidades */
     }
   </style>
-  

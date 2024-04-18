@@ -12,12 +12,14 @@ export const actions = {
     })
     commit('setAll', found)
   },
-  async getByNroTramite({ commit, state }, { nroTramite }) {
-    commit('setSingle', null)
-    const found = await AbiertoAnualService.getByNroTramite(this.$axios, {
-      nroTramite,
+  async getByCuitLegajo({ commit, state }, { cuit, legajo }) {
+    commit('setAll', null)
+    const found = await AbiertoAnualService.getByCuitLegajo(this.$axios, {
+      cuit,
+      legajo
     })
-    commit('setSingle', found)
+    commit('setAll', found)
+    return found
   },
   async getSingle({ commit, state }, { id }) {
     // commit('setSingle', null)
@@ -26,9 +28,10 @@ export const actions = {
     })
     commit('setSingle', found)
   },
-  async create({ commit, state }, { tramite }) {
+  async create({ commit, state }, { cuit, nroLegajo }) {
     const createdFile = await AbiertoAnualService.create(this.$axios, {
-      tramite,
+      cuit,
+      nroLegajo,
     })
     return createdFile
   },

@@ -34,47 +34,13 @@
           </b-card>
         </div>
       </template>
-      <!-- Documentación -->
-      <template v-if="habilitacion">
-        <div class="container col-md-6 col-sm-8 card shadow-card mt-4 mb-3 mx-auto">
-          <!-- Resto del contenido del componente -->
-          <div class="col mx-auto">
-            <div class="container text-center mx-auto">
-              <h2 class="text-success mt-2"><b> Documentación presentada </b></h2>
-              <hr/>
-            </div>
-          </div>
-          <!-- Mostrar los enlaces a los documentos -->
-          <div class="container justify-content-center mx-auto" v-if="facturas">
-            <div v-for="(documento, nombreDocumento) in facturas" :key="nombreDocumento">
-              <div class="layout" v-if="documento">
-                <p class="col col-main">
-                  <strong>{{ nombreDocumento }}</strong><br>
-                </p>
-                <p class="col col-complementary" role="complementary">
-                  <b-button size="sm" @click="openDocumento(documento, nombreDocumento)" variant="outline-primary" pill>
-                    <b-icon icon="eye" scale="1.2"></b-icon>
-                    Ver
-                  </b-button>
-                </p>
-              </div>
-            </div>
-          </div>
-          <div class="justify-content-center mx-auto" v-else>
-            <p class="h4 text-loading text-center"> Cargando... </p>
-            <div class="row justify-content-center mb-3">
-              <b-spinner variant="success"></b-spinner>
-            </div>
-          </div>
-        </div>
-      </template>
-  
+
       <div class="text-center mt-3">
         <NuxtLink to="/abierto_anual/registros">
           <b-button variant="primary">Volver</b-button>
         </NuxtLink>
       </div>
-  
+
       <!-- Modals -->
       <!--Modal previo a rechazar el turno-->
       <b-modal v-model="showRejectPopup" hide-footer :header-bg-variant="'danger'" centered>
@@ -95,7 +61,7 @@
             </div>
           </div>
       </b-modal>
-  
+
       <!--Modal solicitar rectificación de datos-->
       <b-modal v-model="showRectificacion" hide-footer :header-bg-variant="'secondary'" centered>
         <template #modal-header>
@@ -114,7 +80,7 @@
           </div>
         </div>
       </b-modal>
-  
+
       <!--Modal previo a aprobar(con y sin inspección)-->
       <b-modal v-model="showPrevApprove" hide-footer :header-bg-variant="'secondary'" centered>
         <template #modal-header>
@@ -137,7 +103,7 @@
           </div>
         </div>
       </b-modal>
-  
+
       <!--Modal previo a aprobar una baja-->
       <b-modal v-model="showAprobarBaja" hide-footer :header-bg-variant="'secondary'" centered>
         <template #modal-header>
@@ -169,7 +135,7 @@
           </div>
         </div>
       </b-modal>
-  
+
       <!--Modal solicitud aprobada-->
       <b-modal v-model="showApprove" hide-footer :header-bg-variant="'success'" centered>
         <template #modal-header>
@@ -180,7 +146,7 @@
         <div class="confirmation-popup-body">
           <h3 class="icon-orange text-success text-center" v-if="!baja"><b>Aprobar solicitud</b></h3>
           <h3 class="icon-orange text-success text-center" v-else><b>Trámite finalizado</b></h3>
-  
+
           <p v-if="!baja">La solicitud fue aprobada con éxito. Se deberá  enviar un correo electrónico al solicitante indicando que en el plazo de 7 días hábiles:</p>
           <p style="text-align: center" v-else>Recordá enviar un correo electrónico al solicitante indicando que el trámite ha sido finalizado.</p>
           <ul>
@@ -196,7 +162,7 @@
           </div>
         </div>
       </b-modal>
-  
+
       <!--Modal solicitar documentación(inspección aprobada)-->
       <b-modal v-model="showSolicitarDoc" hide-footer :header-bg-variant="'success'" centered>
         <template #modal-header>
@@ -219,7 +185,7 @@
           </div>
         </div>
       </b-modal>
-  
+
       <!--Modal finalizar trámite y colocar el número de expediente-->
       <b-modal v-model="showFinalizar" hide-footer :header-bg-variant="'success'" centered>
         <template #modal-header>
@@ -254,23 +220,23 @@
           </div>
         </div>
       </b-modal>
-  
+
       <b-modal v-model="showObservaciones" header-bg-variant="primary" title="Observaciones" title-class="text-light" hide-footer centered>
         <p v-html="observaciones"></p>
       </b-modal>
-  
+
       <b-modal v-model="showDocumentoModal" id="documento-modal" hide-footer centered>
         <template #modal-header>
           <h3 class="icon-orange text-primary text-center"><b>{{ DocumentoModalTitle + " - " + habilitacion.nroTramite }}</b></h3>
         </template>
         <div class="modal-body">
-  
+
         </div>
       </b-modal>
-  
+
     </div>
   </template>
-  
+
   <script>
   export default {
     data() {
@@ -314,7 +280,7 @@
         id: tramiteId,
       })
       this.tramite = this.$store.state.abiertoAnual.single
-  
+
       await this.$store.dispatch('facturas/getById', {
         id: tramiteId,
       })
@@ -484,21 +450,21 @@
         const decodedData = atob(documento.data);
         const arrayBuffer = new ArrayBuffer(decodedData.length);
         const arrayBufferView = new Uint8Array(arrayBuffer);
-  
+
         for (let i = 0; i < decodedData.length; i++) {
           arrayBufferView[i] = decodedData.charCodeAt(i);
         }
-  
+
         const blob = new Blob([arrayBuffer], { type: documento.contentType });
         const fileURL = URL.createObjectURL(blob);
-  
+
         this.$bvModal.show('documento-modal'); // Abre el modal
         this.DocumentoModalTitle = nombreDocumento;
-  
+
         // Utiliza $nextTick para esperar hasta que el componente esté completamente montado
         this.$nextTick(() => {
           const modalContent = document.querySelector('#documento-modal .modal-body'); // Obtén el elemento modal-body
-  
+
           if (modalContent) {
             if (documento.contentType === 'application/pdf') {
               const embed = document.createElement('iframe');
@@ -525,21 +491,21 @@
       },*/
       openDocumento(documento) {
         const decodedData = atob(documento.data); // Decodificar la data de Base64
-  
+
         const arrayBuffer = new ArrayBuffer(decodedData.length);
         const arrayBufferView = new Uint8Array(arrayBuffer);
-  
+
         for (let i = 0; i < decodedData.length; i++) {
           arrayBufferView[i] = decodedData.charCodeAt(i);
         }
-  
+
         const blob = new Blob([arrayBuffer], { type: documento.contentType });
         const fileURL = URL.createObjectURL(blob);
-  
+
         const newWindow = window.open('', '_blank');
-  
+
         let newWindowTitle = "Documento: " + nombreDocumento; // Título predeterminado
-  
+
         if (documento.contentType === 'application/pdf') {
           // Abrir el PDF en una nueva pestaña utilizando <embed>
           const embed = document.createElement('embed');
@@ -573,29 +539,29 @@
     },
   }
   </script>
-  
+
   <style scoped>
   .modal-dialog {
     max-width: 80% !important;
   }
-  
+
   .col-main {
     flex: 1;
   }
-  
+
   .col-complementary {
     flex: 1;
   }
-  
+
   .icon-orange{
     color: #E27910;
   }
-  
+
   .col strong{
     margin-bottom: 0%;
   }
   /* Responsive: */
-  
+
   @media only screen and (min-width: 640px) {
     .layout {
       display: flex;
@@ -603,13 +569,13 @@
       margin: auto;
     }
   }
-  
+
   /* etc */
   .iconoAdvertencia {
     position: relative;
     display: inline-block;
   }
-  
+
   /* Estilo del texto de advertencia */
   .textoHover {
     position: absolute;
@@ -623,18 +589,17 @@
     z-index: 1; /* Asegura que esté encima del ícono */
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3); /* Agrega una sombra */
   }
-  
+
   .text-loading{
     color: #0eb7b2ab;
   }
-  
+
   /* body {
     margin: 1.5em;
   } */
-  
+
   .col {
     padding: 0.4em;
     margin: 0 2px 2px 40px;
   }
   </style>
-  

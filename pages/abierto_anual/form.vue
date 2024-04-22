@@ -42,7 +42,7 @@
       <div class="centeredContainer modal-error">
         <p class="modal-subtitle">No hemos podido encontrar tu comercio</p>
         <p class="">Por favor, corroborá que los datos ingresados sean correctos.</p>
-        <p class="minitext">Si el problema persiste, envianos un correo a <a target="_blank" href="mailto:deptocomercio@gesell.gob.ar" class="icon-green">deptocomercio@gesell.gob.ar</a>.</p>
+        <p class="minitext">Si el problema persiste, envianos un correo a <a target="_blank" href="mailto:diarvige@gesell.gob.ar" class="icon-green">dirarvige@gesell.gob.ar</a>.</p>
       </div>
       <template #modal-footer>
         <div class="" style="margin: auto">

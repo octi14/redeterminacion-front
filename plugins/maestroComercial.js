@@ -2,12 +2,17 @@ const maestroComercial = [
   {
     cuit:"20366307940",
     nroLegajo: 1234,
-    dfe: true
+    dfe: "juancito@gmail.com"
   },
   {
     cuit:"27360710667",
     nroLegajo: 123,
-    dfe: true
+    dfe: "juancito@gmail.com"
+  },
+  {
+    cuit:"27360710668",
+    nroLegajo: 123,
+    dfe: ""
   },
 ]
 

@@ -17,21 +17,15 @@
         </div>
         <!--Datos de facturas-->
         <div class="row justify-content-center">
-          <b-card v-for="(estado,index) in tramite.status" :key="index" no-body class="col-md-3 col-sm-8 shadow-card mt-4 mx-2">
-            <div class="col mx-auto">
-              <div class="container text-center mx-auto">
-                  <h3 class="text-primary mt-2"><b> Período {{ index +1 }} </b></h3>
-                  <hr/>
-                  <h5>Estado: <b :class="statusClasses[estado]">{{ estado }} </b></h5>
-              </div>
-              <div class="layout" v-if="facturas && facturas[index]">
-                <b-button size="sm" @click="openDocumento(facturas[index])" variant="outline-primary" pill>
-                  <b-icon icon="eye" scale="1.2"></b-icon>
-                  Ver
-                </b-button>
-              </div>
-            </div>
-          </b-card>
+          <b-col v-for="(periodo, index) in periodos" :key="index" class="col-md-3 col-sm-8 mt-4 mx-2">
+              <AbiertoAnualAdminCard
+              :periodo="periodo.periodo"
+              :estado="periodo.estado"
+              :fecha="periodo.fecha"
+              :observaciones="periodo.observaciones"
+              :maxDate="periodo.maxDate"
+              />
+          </b-col>
         </div>
       </template>
 
@@ -238,7 +232,11 @@
   </template>
 
   <script>
-  export default {
+  import AbiertoAnualAdminCard from '~/components/comercio/AbiertoAnualAdminCard.vue';
+  export default {    
+    components: {
+      AbiertoAnualAdminCard
+    },
     data() {
       return {
         statusClasses: {
@@ -247,6 +245,43 @@
           'Incorrecto': 'text-danger',
           'Correcto': 'text-success',
         },
+        periodos: [
+          {
+              periodo: 1,
+              estado: 2,
+              fecha: '--/--/--',
+              observaciones: 'lalala',
+              maxDate: '--/--/--'
+          },
+          {
+              periodo: 2,
+              estado: 3,
+              fecha: '--/--/--',
+              observaciones: '',
+              maxDate: '--/--/--'
+          },
+          {
+              periodo: 3,
+              estado: 4,
+              fecha: '--/--/--',
+              observaciones: '',
+              maxDate: '--/--/--'
+          },
+          {
+              periodo: 3,
+              estado: 5,
+              fecha: '--/--/--',
+              observaciones: '',
+              maxDate: '--/--/--'
+          },
+          {
+              periodo: 3,
+              estado: 7,
+              fecha: '--/--/--',
+              observaciones: '',
+              maxDate: '--/--/--'
+          }
+        ],
         showRectificacion: false,
         showPrevApprove: false,
         showApprove: false,

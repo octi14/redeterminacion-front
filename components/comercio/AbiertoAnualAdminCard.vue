@@ -1,6 +1,20 @@
 <template>
     <transition name="flip">
     <b-card id="aaCard" ref="card" class="abierto-anual-card" style="max-width: 20rem;">
+        <div v-if="estadoActual != 1 && estadoActual != 6" class="btn-group"  > 
+            <div v-if="estadoActual == 2 || estadoActual == 4 || estadoActual == 7">
+                 <b-button @click="AprobarTicket" variant="success" class="btn-approve mr-2"><span>Aprobar</span></b-button>
+            </div>
+            <div v-if="estadoActual == 3">
+                <b-button @click="RectificarTicket" variant="warning" class="btn-rectific mr-2"><span>Rectificar</span></b-button>
+            </div>
+            <div v-if="estadoActual == 7">
+                <b-button @click="RectificarTicket" variant="warning" class="btn-rectific mr-2"><span>Rectificar</span></b-button>
+            </div>
+            <div v-if="estadoActual == 2 || estadoActual == 3 || estadoActual == 4">
+                 <b-button @click="RechazarTicket" variant="danger" class="btn-cancel mr-2"><span>Rechazar</span></b-button>
+            </div>
+        </div>
         <div class="icon-container">
             <b-icon-check-circle-fill v-if="estadoIcono ==='success'" scale="4" variant="success"></b-icon-check-circle-fill>
             <b-icon-arrow-clockwise v-else-if="estadoIcono ==='loading'" scale="5" animation="spin" variant="success"></b-icon-arrow-clockwise>
@@ -12,13 +26,6 @@
                 <b-icon stacked icon="hourglass-split" variant="dark" scale="0.5" shift-v="-1px"></b-icon>
                 <b-icon stacked icon="calendar" variant="dark"></b-icon>
             </b-iconstack>
-            <b-iconstack scale="4" v-else-if="estadoIcono ==='validating'">
-                <!-- <b-icon stacked icon="alarm" variant="dark" scale="0.5" shift-v="-1px"></b-icon> -->
-                <!-- <b-icon stacked icon="clock-history" variant="dark" scale="0.5" shift-v="-1px"></b-icon> -->
-                <b-icon stacked icon="list-task" variant="success" scale="0.5" shift-v="-1px"></b-icon>
-                <b-icon stacked icon="clipboard" variant="success"></b-icon>
-                <b-icon stacked icon="search" variant="dark" scale="0.75" shift-v="-2px" animation="cylon" styl></b-icon>
-            </b-iconstack>
         </div>
         <div class="periodo-header">
             <b-card-text><h2>Período {{ periodo }}</h2></b-card-text>
@@ -26,25 +33,9 @@
         </div>
         <b-card-text v-if="estadoActual == 1" class="periodo-esperando-card">
         <!-- estadoActual == 1 => DESHABILITADO PARA SUBIR PORQUE NO ES EL MOMENTO --> 
-        <!--
             <b-row>
-                <b-col><div class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> Cargá aquí tu factura</div></div></b-col>
+                <b-col><b>Todavía no está habilitada la carga de documentación para este período.</b></b-col>
             </b-row>
-            <b-form-file
-                disabled="disabled"
-                v-model="archivo"
-                :state="!$v.archivo.$error && archivo ? true : null"
-                placeholder="Selecciona un archivo"
-                accept="image/*, .pdf"
-                :max-size="5 * 1024 * 1024" 
-                class="mt-3"
-                style="font-size: 16px;"
-                browse-text="Examinar"
-            ></b-form-file>
-            <b-row class="texto-exp">
-                <b-col class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> Este período se habilitará a partir del día: {{ fecha }} </div></b-col>
-            </b-row>
-            --> 
             <b-row>
                 <b-col class="li-row texto-exp"><b>Todavía no está habilitada la carga de documentación para este período.</b></b-col>
             </b-row>
@@ -52,19 +43,19 @@
         <b-card-text v-else-if="estadoActual == 2" class="ticket-disabled-card">
         <!-- estadoActual == 2 => DESHABILITADO PARA SUBIR POR OTROS MOTIVOS -->         
             <b-row>
-                <b-col class="li-row texto-exp"><b>GAME OVER <br />TE PORTASTE MAL Y FUISTE CASTIGADO.</b></b-col>
+                <b-col class="li-row texto-exp"><b>DEFINIR ESTADOS INTERNOS. <br />NO SE CARGÓ NADA EN ESTE PERÍODO.</b></b-col>
             </b-row>
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 3" class="ticket-ok-card">
         <!-- estadoActual == 3 => DESHABILITADO PARA SUBIR POR ARCHIVO CORRECTO --> 
             <b-row>
-                <b-col class="li-row texto-exp"><b>La factura cargada el día {{ fecha }} es correcta.</b></b-col>
+                <b-col class="li-row texto-exp"><b>Aca se podría cargar el ticket en chiquito, y si lo clickean que se agrande o cargue en una nueva pestaña.</b></b-col>
             </b-row>
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 4" class="ticket-bad-card">
         <!-- estadoActual == 4 => DESHABILITADO PARA SUBIR POR ARCHIVO RECHAZADO --> 
             <b-row>
-                <b-col class="li-row texto-exp"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill>La factura cargada el día {{ fecha }} es <b>incorrecta</b> porque <b>{{ observaciones }}</b></div></b-col>
+                <b-col class="li-row texto-exp"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill>Aca podríamos poner la fecha en la que se lo subió y/o la fecha en la que se aprobó o rechazó</div></b-col>
             </b-row>
             <b-row>
                 <b-col class="li-row texto-exp"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill><b>Rectificación:</b> Se habilitará la rectificación del documento el {{ maxDate }}</div></b-col>
@@ -116,7 +107,7 @@
         <b-card-text v-else-if="estadoActual == 7" class="rectificacion-card">
         <!-- estadoActual == 7 => HABILITADO PARA SUBIR POR RECTIFICACIÓN -->  
         <b-row>
-            <b-col class="li-row texto-exp"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill>La factura cargada el día {{ fecha }} es <b>incorrecta</b> porque <b>{{ observaciones }}</b></div></b-col>
+            <b-col class="li-row texto-exp"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill>Aca podríamos poner la fecha en la que se lo subió y/o la fecha en la que se aprobó o rechazó</div></b-col>
         </b-row>
         <b-row>
             <b-col class="li-row texto-exp"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill><b>Rectificación:</b> Cargá nuevamente una factura emitida durante los meses indicados.<br />Tenés tiempo hasta el {{ maxDate }}</div></b-col>
@@ -234,7 +225,7 @@
                 case 6: return 'available';
                 case 7: return 'available';
                 case 8: return 'loading';
-                case 9: return 'validating';
+                case 9: return 'success';
                 case 10: return 'invalid';
             }        
         }
@@ -339,7 +330,7 @@ h3{
     margin-bottom: 2rem;
 }
 #aaCard{
-    min-height: 725px;
+    min-height: 675px;
     max-width: 22rem !important;
 }
 #captchaContainer{
@@ -407,6 +398,43 @@ h3{
     font-size: 24px;
     text-align: left;
     margin: 2rem auto 1rem;
+}
+.btn{
+    padding: 0.5rem 3rem;
+    font-weight: 500;
+    font-size: 1rem;
+    padding-right: 0;
+    padding-left: 0;
+    width: 8rem;
+}
+.btn-group{
+    width: 100%;
+    margin: 1rem auto;
+    text-align: center;
+}
+.btn-approve{
+    background-color: #0c681a;
+    border-color: #0c681a;
+}
+.btn-approve:hover{
+    background-color: green;
+    border-color: green;
+}
+.btn-rectific{
+    background-color: #a2ff00;
+    border-color: #a2ff00;
+}
+.btn-rectific:hover{
+    background-color: rgb(156, 139, 7);
+    border-color: rgb(156, 139, 7);
+}
+.btn-cancel:hover{
+    background-color: #f09658;
+    border-color: #f09658;
+}
+.btn-cancel{
+    background-color: #e53749;
+    border-color: #e53749;
 }
 @keyframes play-animation {
     0% {

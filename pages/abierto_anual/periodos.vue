@@ -58,12 +58,26 @@ export default {
         periodos: [
             {
                 periodo: 1,
-                estado: 1,
+                estado: 6,
                 fecha: '--/--/--',
                 observaciones: '',
                 maxDate: '--/--/--'
             },
             {
+                periodo: 2,
+                estado: 1,
+                fecha: '--/--/--',
+                observaciones: '',
+                maxDate: '--/--/--'
+            },  
+            {
+                periodo: 3,
+                estado: 1,
+                fecha: '--/--/--',
+                observaciones: '',
+                maxDate: '--/--/--'
+            },            
+            { 
                 periodo: 2,
                 estado: 2,
                 fecha: '--/--/--',
@@ -115,13 +129,6 @@ export default {
             {
                 periodo: 3,
                 estado: 9,
-                fecha: '--/--/--',
-                observaciones: '',
-                maxDate: '--/--/--'
-            },
-            {
-                periodo: 1,
-                estado: 10,
                 fecha: '--/--/--',
                 observaciones: '',
                 maxDate: '--/--/--'

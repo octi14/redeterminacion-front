@@ -1,26 +1,12 @@
 <template>
     <transition name="flip">
     <b-card id="aaCard" ref="card" class="abierto-anual-card" style="max-width: 20rem;">
-        <div v-if="estadoActual != 1 && estadoActual != 6" class="btn-group"  > 
-            <div v-if="estadoActual == 2 || estadoActual == 4 || estadoActual == 7">
-                 <b-button @click="AprobarTicket" variant="success" class="btn-approve mr-2"><span>Aprobar</span></b-button>
-            </div>
-            <div v-if="estadoActual == 3">
-                <b-button @click="RectificarTicket" variant="warning" class="btn-rectific mr-2"><span>Rectificar</span></b-button>
-            </div>
-            <div v-if="estadoActual == 7">
-                <b-button @click="RectificarTicket" variant="warning" class="btn-rectific mr-2"><span>Rectificar</span></b-button>
-            </div>
-            <div v-if="estadoActual == 2 || estadoActual == 3 || estadoActual == 4">
-                 <b-button @click="RechazarTicket" variant="danger" class="btn-cancel mr-2"><span>Rechazar</span></b-button>
-            </div>
-        </div>
         <div class="icon-container">
             <b-icon-check-circle-fill v-if="estadoIcono ==='success'" scale="4" variant="success"></b-icon-check-circle-fill>
-            <b-icon-arrow-clockwise v-else-if="estadoIcono ==='loading'" scale="5" animation="spin" variant="success"></b-icon-arrow-clockwise>
+            <b-icon-arrow-clockwise v-else-if="estadoIcono ==='disabled'" scale="5" animation="spin" variant="success"></b-icon-arrow-clockwise>
             <b-icon-x-circle-fill v-else-if="estadoIcono ==='invalid'" scale="5" variant="danger"></b-icon-x-circle-fill>
             <b-icon-arrow-up-circle-fill v-else-if="estadoIcono ==='available'" scale="4" variant="warning"></b-icon-arrow-up-circle-fill>
-            <b-iconstack scale="4" v-else-if="estadoIcono ==='disabled'">
+            <b-iconstack scale="4" v-else-if="estadoIcono ==='loading'">
                 <!-- <b-icon stacked icon="alarm" variant="dark" scale="0.5" shift-v="-1px"></b-icon> -->
                 <!-- <b-icon stacked icon="clock-history" variant="dark" scale="0.5" shift-v="-1px"></b-icon> -->
                 <b-icon stacked icon="hourglass-split" variant="dark" scale="0.5" shift-v="-1px"></b-icon>
@@ -125,16 +111,17 @@
         <div v-if="$v.archivo.$error" class="text-danger"><b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe seleccionar un archivo válido.</div>  
     </b-card-text>
         <b-card-text v-else-if="estadoActual == 8" class="ticket-enviando-card">
-            <!-- estadoActual == 8 => ESPERANDO CONFIRMACION DE UPLOAD -->      
+            <!-- estadoActual == 8 => Seleccionar Motivo -->      
             <b-row class="texto-exp">
-                <b-col class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> <b>Enviando archivo.</b> </div></b-col>
+                <b-col class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> <b>Selecciona un motivo:</b> </div></b-col>
             </b-row>
-            <b-row class="texto-exp">
-                <b-col class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> <b>Esto puede tardar unos minutos.</b> </div></b-col>
-            </b-row>
-            <b-row class="texto-exp">
-                <b-col class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> <b>No cierres esta ventana.</b> </div></b-col>
-            </b-row>
+            <b-radio-group>
+                <b-form-radio :id="'motivo-1-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="motivo-1"> Motivo 1</b-form-radio>
+                <b-form-radio :id="'motivo-2-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="motivo-2"> Motivo 2</b-form-radio>
+                <b-form-radio :id="'motivo-3-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="motivo-3"> Motivo 3</b-form-radio>
+                <b-form-radio :id="'motivo-4-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="motivo-4"> Motivo 4</b-form-radio>
+            </b-radio-group>
+            <b-button @click="ConfirmarMotivo" variant="success" class="btn-approve mr-2 btn-confirmar"><span>Confirmar</span></b-button>
             <!-- Aquí puedes agregar más campos si los necesitas -->
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 9">
@@ -162,15 +149,20 @@
                 <b-col class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> Si el problema persiste comunicarse con <a href="#" class="icon-green">ARVIGE</a>. </div></b-col>
             </b-row>
         </b-card-text>
-    <div v-if="estadoActual == 6 || estadoActual == 7"  >
-        <b-form-group>
-            <div id="captchaContainer" class="g-recaptcha" :data-sitekey="recaptchaSiteKey"></div>
-            <div v-if="captchaError" class="text-danger">
-                <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Por favor completa la verificación para continuar.
+        <div v-if="estadoActual != 1 && estadoActual != 6" class="btn-group"  > 
+            <div v-if="estadoActual == 2 || estadoActual == 4 || estadoActual == 7">
+                 <b-button @click="AprobarTicket" variant="success" class="btn-approve mr-2"><span>Aprobar</span></b-button>
             </div>
-        </b-form-group> 
-        <b-button @click="enviarArchivo" variant="success" class="mt-3 float-right"><span v-if="estadoActual == 6 ">Enviar</span><span v-else><b-icon-exclamation-circle></b-icon-exclamation-circle> Rectificar</span></b-button>
-    </div>
+            <div v-if="estadoActual == 3">
+                <b-button @click="RectificarTicket" variant="warning" class="btn-rectific mr-2"><span>Rectificar</span></b-button>
+            </div>
+            <div v-if="estadoActual == 7">
+                <b-button @click="RectificarTicket" variant="warning" class="btn-rectific mr-2"><span>Rectificar</span></b-button>
+            </div>
+            <div v-if="estadoActual == 2 || estadoActual == 3 || estadoActual == 4">
+                 <b-button @click="RechazarTicket" variant="danger" class="btn-cancel mr-2"><span>Rechazar</span></b-button>
+            </div>
+        </div>
     </b-card>
     </transition>
 </template>
@@ -179,6 +171,10 @@
   import { requiredIf } from 'vuelidate/lib/validators';
   export default {
     props: {
+      id: {
+        type: Number,
+        required: true
+        },
       periodo: Number,
       estado: Number,
       fecha: String,
@@ -189,12 +185,9 @@
     data() {
         return {
         archivo: null,
-        futuroEstado: null,
+        estadoFuturo: null,
         estadoActual: this.estado,
-        
-        recaptchaSiteKey: "6LfNxggoAAAAANyfZ5a2Lg_Rx28HX_lINDYX7AU-",
-        captchaResponse: null,
-        captchaError: false,
+        motivo: '',
         };
     },
     computed: {
@@ -239,12 +232,7 @@
     },
     mounted() {
 
-    grecaptcha.ready(() => {
-        grecaptcha.render('captchaContainer', {
-            sitekey: this.recaptchaSiteKey,
-            size: 'normal',
-        });
-    });
+    
     const contenedor = document.getElementById('aaCard');
 
     // Detecta el evento de inicio de la animación
@@ -263,30 +251,33 @@
     });
     },
     methods: {
-        isCaptchaOK(){
-            console.log("isCAPTCHAOK?? = " + (typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0));
-            this.captchaError = !(typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0);
-            if(this.TEST_submit) return true;
-            return !this.captchaError;
-        },
-        enviarArchivo() {
+        RechazarTicket() {
         // Validar que el archivo no esté vacío antes de enviarlo
-            this.$v.$touch(); 
-            if (!this.$v.archivo.$invalid && this.isCaptchaOK()) {
+            this.estadoFuturo = 2;
+            this.playAnimation(() => {
+                
+            },8);
+        },
+        RectificarTicket() {
+        // Validar que el archivo no esté vacío antes de enviarlo
+            this.estadoFuturo = 4;
+            this.playAnimation(() => {
+                
+            },8);
+        },
+        ConfirmarMotivo() {
+        // Validar que el archivo no esté vacío antes de enviarlo
+            if (this.motivo != '') {
                 this.playAnimation(() => {
-                    // Simular el envío del archivo
-                    // Generar un número aleatorio entre 1 y 10
-                    const randomState = Math.floor(Math.random() * 2) + 9;
-                    console.log("randomState: " + randomState);
-                    setTimeout(() => {                        
-                        // Iniciar segunda animación después de cambiar el estado
-                        this.playAnimation(() => {
-                            
-                           
-                        },randomState);
-                    }, 3000); // Esperar 5 segundos
-                },8);
+                    
+                },this.estadoFuturo);
             }
+        },
+        AprobarTicket() {
+        // Validar que el archivo no esté vacío antes de enviarlo
+            this.playAnimation(() => {
+                
+            },3);
         },
         playAnimation(callback, newState) {
         // Agregar clase para iniciar la animación
@@ -333,9 +324,6 @@ h3{
     min-height: 675px;
     max-width: 22rem !important;
 }
-#captchaContainer{
-    margin-top: 2rem;
-}
 .abierto-anual-card {
   margin-bottom: 20px; /* Espacio entre las tarjetas */
   margin: 0px auto 2rem;
@@ -360,6 +348,10 @@ h3{
 }
 .btn-success{
     width: 100%;
+}
+.btn-confirmar{
+    margin: 2rem auto !important;
+    width: 100% !important;
 }
 .icon-orange{
   color: #E27910;
@@ -435,6 +427,11 @@ h3{
 .btn-cancel{
     background-color: #e53749;
     border-color: #e53749;
+}
+.custom-radio{
+    width: 100%;
+    padding: 0.5rem 20%;
+    line-height: 20px;
 }
 @keyframes play-animation {
     0% {

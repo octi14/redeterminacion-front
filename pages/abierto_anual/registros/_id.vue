@@ -19,6 +19,7 @@
         <div class="row justify-content-center">
           <b-col v-for="(periodo, index) in periodos" :key="index" class="col-md-3 col-sm-8 mt-4 mx-2">
               <AbiertoAnualAdminCard
+              :id="periodo.id"
               :periodo="periodo.periodo"
               :estado="periodo.estado"
               :fecha="periodo.fecha"
@@ -247,36 +248,25 @@
         },
         periodos: [
           {
+              id: 1000,
               periodo: 1,
+              estado: 8,
+              fecha: '--/--/--',
+              observaciones: 'lalala',
+              maxDate: '--/--/--'
+          },
+          {
+              id: 1001,
+              periodo: 2,
               estado: 2,
               fecha: '--/--/--',
               observaciones: 'lalala',
               maxDate: '--/--/--'
           },
           {
-              periodo: 2,
+              id: 1002,
+              periodo: 3,
               estado: 3,
-              fecha: '--/--/--',
-              observaciones: '',
-              maxDate: '--/--/--'
-          },
-          {
-              periodo: 3,
-              estado: 4,
-              fecha: '--/--/--',
-              observaciones: '',
-              maxDate: '--/--/--'
-          },
-          {
-              periodo: 3,
-              estado: 5,
-              fecha: '--/--/--',
-              observaciones: '',
-              maxDate: '--/--/--'
-          },
-          {
-              periodo: 3,
-              estado: 7,
               fecha: '--/--/--',
               observaciones: '',
               maxDate: '--/--/--'

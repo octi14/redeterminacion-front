@@ -18,8 +18,9 @@
               <label for="cuit" class="col-6">CUIT/CUIM del titular del comercio: </label>
               <b-form-input class="col-6" :disabled="enterKeyPressed" @keydown.enter.native="onNextPage" v-model="cuit" id="cuit" type="number" placeholder="Ingrese su CUIT/CUIM" no-wheel></b-form-input>
             </b-row>
+            <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
             <b-row>
-              <label for="nroLegajo" class="col-6">N° de legajo comercial: </label>
+              <label for="nroLegajo" class="col-6"> N° de legajo comercial: <b-icon-question-circle-fill font-scale="1.25" variant="info"></b-icon-question-circle-fill></label>
               <b-form-input class="col-6" :disabled="enterKeyPressed" @keydown.enter.native="onNextPage" v-model="nroLegajo" id="nroLegajo" type="number" placeholder="Ingrese un N° de Legajo Comercial" no-wheel></b-form-input>
             </b-row>
           </b-form>

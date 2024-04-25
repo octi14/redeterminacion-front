@@ -173,7 +173,7 @@
         </b-card-text>
     <div v-if="estadoActual == 6 || estadoActual == 7"  >
         <b-form-group>
-            <div id="captchaContainer" class="g-recaptcha" :data-sitekey="recaptchaSiteKey"></div>
+            <div :id="'captchaContainer' + id" class="g-recaptcha"></div>
             <div v-if="captchaError" class="text-danger">
                 <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Por favor completa la verificación para continuar.
             </div>
@@ -188,6 +188,10 @@
   import { requiredIf } from 'vuelidate/lib/validators';
   export default {
     props: {
+      id: {
+        type: String,
+        required: true
+      },
       periodo: Number,
       estado: Number,
       fecha: String,
@@ -204,6 +208,7 @@
         recaptchaSiteKey: "6LfNxggoAAAAANyfZ5a2Lg_Rx28HX_lINDYX7AU-",
         captchaResponse: null,
         captchaError: false,
+        captchaWidgetId: null // Guarda el ID del widget del captcha
         };
     },
     computed: {
@@ -247,13 +252,14 @@
         }
     },
     mounted() {
-
-    grecaptcha.ready(() => {
-        grecaptcha.render('captchaContainer', {
-            sitekey: this.recaptchaSiteKey,
-            size: 'normal',
-        });
-    });
+    
+    window['onRecaptchaLoad_' + this.id] = () => {
+      this.captchaWidgetId = grecaptcha.render('captchaContainer-' + this.id, {
+        sitekey: this.recaptchaSiteKey,
+        size: 'normal',
+        callback: this.onCaptchaCompleted
+      });
+    };
     const contenedor = document.getElementById('aaCard');
 
     // Detecta el evento de inicio de la animación
@@ -272,9 +278,14 @@
     });
     },
     methods: {
+        onCaptchaCompleted(response) {
+            this.captchaResponse = response;
+            this.captchaError = false;
+        },
         isCaptchaOK(){
-            console.log("isCAPTCHAOK?? = " + (typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0));
-            this.captchaError = !(typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0);
+            //console.log("isCAPTCHAOK?? = " + (typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0));
+            //this.captchaError = !(typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0);
+            this.captchaError = this.captchaResponse === null;
             if(this.TEST_submit) return true;
             return !this.captchaError;
         },

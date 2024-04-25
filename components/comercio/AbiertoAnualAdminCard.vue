@@ -1,7 +1,7 @@
 <template>
     <transition name="flip">
-    <b-card id="aaCard" ref="card" class="abierto-anual-card" style="max-width: 20rem;">
-        <div v-if="estadoActual != 1 && estadoActual != 6" class="btn-group"  > 
+    <b-card id="aaCard" ref="card" class="abierto-anual-card shadow-card" style="max-width: 20rem;">
+        <div v-if="estadoActual != 1 && estadoActual != 6" class="btn-group"  >
             <div v-if="estadoActual == 2 || estadoActual == 4 || estadoActual == 7">
                  <b-button @click="AprobarTicket" variant="success" class="btn-approve mr-2"><span>Aprobar</span></b-button>
             </div>
@@ -31,8 +31,11 @@
             <b-card-text><h2>Período {{ periodo }}</h2></b-card-text>
             <b-card-text><h3>{{ periodoTexto }}</h3></b-card-text>
         </div>
+        <div class="row justify-content-center">
+          <b-button variant="primary" pill class="col-2" @click="openDocumento(factura)"><b-icon-eye></b-icon-eye></b-button>
+        </div>
         <b-card-text v-if="estadoActual == 1" class="periodo-esperando-card">
-        <!-- estadoActual == 1 => DESHABILITADO PARA SUBIR PORQUE NO ES EL MOMENTO --> 
+        <!-- estadoActual == 1 => DESHABILITADO PARA SUBIR PORQUE NO ES EL MOMENTO -->
             <b-row>
                 <b-col><b>Todavía no está habilitada la carga de documentación para este período.</b></b-col>
             </b-row>
@@ -41,19 +44,19 @@
             </b-row>
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 2" class="ticket-disabled-card">
-        <!-- estadoActual == 2 => DESHABILITADO PARA SUBIR POR OTROS MOTIVOS -->         
+        <!-- estadoActual == 2 => DESHABILITADO PARA SUBIR POR OTROS MOTIVOS -->
             <b-row>
                 <b-col class="li-row texto-exp"><b>DEFINIR ESTADOS INTERNOS. <br />NO SE CARGÓ NADA EN ESTE PERÍODO.</b></b-col>
             </b-row>
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 3" class="ticket-ok-card">
-        <!-- estadoActual == 3 => DESHABILITADO PARA SUBIR POR ARCHIVO CORRECTO --> 
+        <!-- estadoActual == 3 => DESHABILITADO PARA SUBIR POR ARCHIVO CORRECTO -->
             <b-row>
                 <b-col class="li-row texto-exp"><b>Aca se podría cargar el ticket en chiquito, y si lo clickean que se agrande o cargue en una nueva pestaña.</b></b-col>
             </b-row>
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 4" class="ticket-bad-card">
-        <!-- estadoActual == 4 => DESHABILITADO PARA SUBIR POR ARCHIVO RECHAZADO --> 
+        <!-- estadoActual == 4 => DESHABILITADO PARA SUBIR POR ARCHIVO RECHAZADO -->
             <b-row>
                 <b-col class="li-row texto-exp"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill>Aca podríamos poner la fecha en la que se lo subió y/o la fecha en la que se aprobó o rechazó</div></b-col>
             </b-row>
@@ -63,21 +66,21 @@
         <!-- Aquí puedes agregar más campos si los necesitas -->
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 5" class="periodo-vencido-card">
-        <!-- estadoActual == 5 => DESHABILITADO PARA SUBIR POR FECHA VENCIDA -->         
+        <!-- estadoActual == 5 => DESHABILITADO PARA SUBIR POR FECHA VENCIDA -->
             <b-row>
                 <b-col class="li-row texto-exp"><b>El plazo de carga de documentación para este período ha concluido.</b></b-col>
-            </b-row>   
-            <!-- 
+            </b-row>
+            <!--
             <b-row>
                 <b-col><div class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> Período Vencido</div></div></b-col>
             </b-row>
             <b-form-file
                 disabled="disabled"
-                v-model="archivo"
-                :state="!$v.archivo.$error && archivo ? true : null"
+                v-model="factura"
+                :state="!$v.factura.$error && factura ? true : null"
                 placeholder="Selecciona un archivo"
                 accept="image/*, .pdf"
-                :max-size="5 * 1024 * 1024" 
+                :max-size="5 * 1024 * 1024"
                 class="mt-3"
                 style="font-size: 16px;"
                 browse-text="Examinar"
@@ -88,24 +91,24 @@
             -->
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 6">
-        <!-- estadoActual == 6 => HABILITADO PARA SUBIR POR PERIODO CORRECTO -->        
+        <!-- estadoActual == 6 => HABILITADO PARA SUBIR POR PERIODO CORRECTO -->
         <b-row>
             <b-col><div class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> Cargá aquí una factura emitida durante los meses indicados.</div></div></b-col>
         </b-row>
         <b-form-file
-            v-model="archivo"
-            :state="!$v.archivo.$error && archivo ? true : null"
+            v-model="factura"
+            :state="!$v.factura.$error && factura ? true : null"
             placeholder="Selecciona un archivo"
             accept="image/*, .pdf"
-            :max-size="5 * 1024 * 1024" 
+            :max-size="5 * 1024 * 1024"
             class="mt-3"
             style="font-size: 16px;"
             browse-text="Examinar"
         ></b-form-file>
-        <div v-if="$v.archivo.$error" class="text-danger"><b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe seleccionar un archivo válido.</div>   
+        <div v-if="$v.factura.$error" class="text-danger"><b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe seleccionar un archivo válido.</div>
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 7" class="rectificacion-card">
-        <!-- estadoActual == 7 => HABILITADO PARA SUBIR POR RECTIFICACIÓN -->  
+        <!-- estadoActual == 7 => HABILITADO PARA SUBIR POR RECTIFICACIÓN -->
         <b-row>
             <b-col class="li-row texto-exp"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill>Aca podríamos poner la fecha en la que se lo subió y/o la fecha en la que se aprobó o rechazó</div></b-col>
         </b-row>
@@ -113,19 +116,19 @@
             <b-col class="li-row texto-exp"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill><b>Rectificación:</b> Cargá nuevamente una factura emitida durante los meses indicados.<br />Tenés tiempo hasta el {{ maxDate }}</div></b-col>
         </b-row>
         <b-form-file
-            v-model="archivo"
-            placeholder="Selecciona un archivo"        
-            :state="!$v.archivo.$error && archivo ? true : null"
+            v-model="factura"
+            placeholder="Selecciona un archivo"
+            :state="!$v.factura.$error && factura ? true : null"
             accept="image/*, .pdf"
-            :max-size="5 * 1024 * 1024" 
+            :max-size="5 * 1024 * 1024"
             class="mt-3"
             style="font-size: 16px;"
             browse-text="Examinar"
         ></b-form-file>
-        <div v-if="$v.archivo.$error" class="text-danger"><b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe seleccionar un archivo válido.</div>  
+        <div v-if="$v.factura.$error" class="text-danger"><b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe seleccionar un archivo válido.</div>
     </b-card-text>
         <b-card-text v-else-if="estadoActual == 8" class="ticket-enviando-card">
-            <!-- estadoActual == 8 => ESPERANDO CONFIRMACION DE UPLOAD -->      
+            <!-- estadoActual == 8 => ESPERANDO CONFIRMACION DE UPLOAD -->
             <b-row class="texto-exp">
                 <b-col class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> <b>Enviando archivo.</b> </div></b-col>
             </b-row>
@@ -138,7 +141,7 @@
             <!-- Aquí puedes agregar más campos si los necesitas -->
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 9">
-        <!-- estadoActual == 9 => CONFIRMACION DE UPLOAD CORRECTA --> 
+        <!-- estadoActual == 9 => CONFIRMACION DE UPLOAD CORRECTA -->
             <b-row class="texto-exp">
                 <b-col class="li-row"><h2 class="icon-green">Archivo enviado correctamente!</h2></b-col>
             </b-row>
@@ -151,7 +154,7 @@
             <!-- Aquí puedes agregar más campos si los necesitas -->
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 10">
-        <!-- estadoActual == 10 => CONFIRMACION DE UPLOAD INCORRECTA: ERROR --> 
+        <!-- estadoActual == 10 => CONFIRMACION DE UPLOAD INCORRECTA: ERROR -->
             <b-row class="texto-exp">
                 <b-col class="li-row"><h2 class="icon-orange">Error enviando el archivo!</h2></b-col>
             </b-row>
@@ -168,14 +171,14 @@
             <div v-if="captchaError" class="text-danger">
                 <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Por favor completa la verificación para continuar.
             </div>
-        </b-form-group> 
+        </b-form-group>
         <b-button @click="enviarArchivo" variant="success" class="mt-3 float-right"><span v-if="estadoActual == 6 ">Enviar</span><span v-else><b-icon-exclamation-circle></b-icon-exclamation-circle> Rectificar</span></b-button>
     </div>
     </b-card>
     </transition>
 </template>
-  
-  <script>  
+
+  <script>
   import { requiredIf } from 'vuelidate/lib/validators';
   export default {
     props: {
@@ -188,10 +191,8 @@
     },
     data() {
         return {
-        archivo: null,
         futuroEstado: null,
         estadoActual: this.estado,
-        
         recaptchaSiteKey: "6LfNxggoAAAAANyfZ5a2Lg_Rx28HX_lINDYX7AU-",
         captchaResponse: null,
         captchaError: false,
@@ -227,11 +228,19 @@
                 case 8: return 'loading';
                 case 9: return 'success';
                 case 10: return 'invalid';
-            }        
+            }
+        },
+        factura(){
+          if( this.$store.state.facturas.all && this.$store.state.facturas.all.length <= this.periodo){
+            return this.$store.state.facturas.all[this.periodo-1]
+          }else{
+            return null
+          }
+
         }
     },
     validations: {
-        archivo: {
+        factura: {
             requiredIf: requiredIf(function () {
                 return this.estadoActual === 6 || this.estadoActual === 7;
             })
@@ -270,22 +279,70 @@
             return !this.captchaError;
         },
         enviarArchivo() {
-        // Validar que el archivo no esté vacío antes de enviarlo
-            this.$v.$touch(); 
-            if (!this.$v.archivo.$invalid && this.isCaptchaOK()) {
+        // Validar que no esté vacío antes de enviarlo
+            this.$v.$touch();
+            if (!this.$v.factura.$invalid && this.isCaptchaOK()) {
                 this.playAnimation(() => {
-                    // Simular el envío del archivo
+                    // Simular el envío
                     // Generar un número aleatorio entre 1 y 10
                     const randomState = Math.floor(Math.random() * 2) + 9;
                     console.log("randomState: " + randomState);
-                    setTimeout(() => {                        
+                    setTimeout(() => {
                         // Iniciar segunda animación después de cambiar el estado
                         this.playAnimation(() => {
-                            
-                           
+
+
                         },randomState);
                     }, 3000); // Esperar 5 segundos
                 },8);
+            }
+        },
+        isValidBase64(str) {
+            try {
+                return btoa(atob(str)) == str;
+            } catch (e) {
+                return false;
+            }
+        },
+
+        openDocumento(documento) {
+            if (!this.isValidBase64(documento.data)) {
+                console.error('La cadena Base64 no es válida');
+                return;
+            }
+
+            const decodedData = atob(documento.data); // Decodificar la data de Base64
+
+            const arrayBuffer = new ArrayBuffer(decodedData.length);
+            const arrayBufferView = new Uint8Array(arrayBuffer);
+
+            for (let i = 0; i < decodedData.length; i++) {
+                arrayBufferView[i] = decodedData.charCodeAt(i);
+            }
+            const blob = new Blob([arrayBuffer], { type: documento.contentType });
+            const fileURL = URL.createObjectURL(blob);
+
+            const newWindow = window.open('', '_blank');
+
+            let newWindowTitle = "Documento: " + documento.filename; // Título predeterminado
+
+            if (documento.contentType === 'application/pdf') {
+                // Abrir el PDF en una nueva pestaña utilizando <embed>
+                const embed = document.createElement('embed');
+                embed.setAttribute('type', 'application/pdf');
+                embed.setAttribute('src', fileURL);
+                embed.setAttribute('width', '100%');
+                embed.setAttribute('height', '100%');
+                newWindow.document.body.appendChild(embed);
+            } else if (documento.contentType.startsWith('image/')) {
+                // Abrir la imagen en una nueva pestaña utilizando <img>
+                const img = document.createElement('img');
+                img.setAttribute('src', fileURL);
+                img.setAttribute('width', 'auto');
+                img.setAttribute('height', 'auto');
+                newWindow.document.body.appendChild(img);
+            } else {
+                console.log('Formato de contenido no compatible');
             }
         },
         playAnimation(callback, newState) {
@@ -307,9 +364,8 @@
         }, 500); // Cambia 500ms por la mitad de la duración de tu animación
     }
     }
-    }
-  
-  </script>
+}
+</script>
 <style scoped>
 h2, h3{
     color: #353535;
@@ -331,7 +387,7 @@ h3{
 }
 #aaCard{
     min-height: 675px;
-    max-width: 22rem !important;
+    max-width: 25rem !important;
 }
 #captchaContainer{
     margin-top: 2rem;

@@ -25,7 +25,7 @@
             <b-card-text><h3>{{ periodoTexto }}</h3></b-card-text>
         </div>
         <b-card-text v-if="estadoActual == 1" class="periodo-esperando-card">
-        <!-- estadoActual == 1 => DESHABILITADO PARA SUBIR PORQUE NO ES EL MOMENTO --> 
+        <!-- estadoActual == 1 => DESHABILITADO PARA SUBIR PORQUE NO ES EL MOMENTO -->
         <!--
             <b-row>
                 <b-col><div class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> Cargá aquí tu factura</div></div></b-col>
@@ -36,7 +36,7 @@
                 :state="!$v.archivo.$error && archivo ? true : null"
                 placeholder="Selecciona un archivo"
                 accept="image/*, .pdf"
-                :max-size="5 * 1024 * 1024" 
+                :max-size="5 * 1024 * 1024"
                 class="mt-3"
                 style="font-size: 16px;"
                 browse-text="Examinar"
@@ -44,25 +44,25 @@
             <b-row class="texto-exp">
                 <b-col class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> Este período se habilitará a partir del día: {{ fecha }} </div></b-col>
             </b-row>
-            --> 
+            -->
             <b-row>
                 <b-col class="li-row texto-exp"><b>Todavía no está habilitada la carga de documentación para este período.</b></b-col>
             </b-row>
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 2" class="ticket-disabled-card">
-        <!-- estadoActual == 2 => DESHABILITADO PARA SUBIR POR OTROS MOTIVOS -->         
+        <!-- estadoActual == 2 => DESHABILITADO PARA SUBIR POR OTROS MOTIVOS -->
             <b-row>
                 <b-col class="li-row texto-exp"><b>GAME OVER <br />TE PORTASTE MAL Y FUISTE CASTIGADO.</b></b-col>
             </b-row>
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 3" class="ticket-ok-card">
-        <!-- estadoActual == 3 => DESHABILITADO PARA SUBIR POR ARCHIVO CORRECTO --> 
+        <!-- estadoActual == 3 => DESHABILITADO PARA SUBIR POR ARCHIVO CORRECTO -->
             <b-row>
                 <b-col class="li-row texto-exp"><b>La factura cargada el día {{ fecha }} es correcta.</b></b-col>
             </b-row>
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 4" class="ticket-bad-card">
-        <!-- estadoActual == 4 => DESHABILITADO PARA SUBIR POR ARCHIVO RECHAZADO --> 
+        <!-- estadoActual == 4 => DESHABILITADO PARA SUBIR POR ARCHIVO RECHAZADO -->
             <b-row>
                 <b-col class="li-row texto-exp"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill>La factura cargada el día {{ fecha }} es <b>incorrecta</b> porque <b>{{ observaciones }}</b></div></b-col>
             </b-row>
@@ -72,11 +72,11 @@
         <!-- Aquí puedes agregar más campos si los necesitas -->
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 5" class="periodo-vencido-card">
-        <!-- estadoActual == 5 => DESHABILITADO PARA SUBIR POR FECHA VENCIDA -->         
+        <!-- estadoActual == 5 => DESHABILITADO PARA SUBIR POR FECHA VENCIDA -->
             <b-row>
                 <b-col class="li-row texto-exp"><b>El plazo de carga de documentación para este período ha concluido.</b></b-col>
-            </b-row>   
-            <!-- 
+            </b-row>
+            <!--
             <b-row>
                 <b-col><div class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> Período Vencido</div></div></b-col>
             </b-row>
@@ -86,7 +86,7 @@
                 :state="!$v.archivo.$error && archivo ? true : null"
                 placeholder="Selecciona un archivo"
                 accept="image/*, .pdf"
-                :max-size="5 * 1024 * 1024" 
+                :max-size="5 * 1024 * 1024"
                 class="mt-3"
                 style="font-size: 16px;"
                 browse-text="Examinar"
@@ -97,7 +97,7 @@
             -->
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 6">
-        <!-- estadoActual == 6 => HABILITADO PARA SUBIR POR PERIODO CORRECTO -->        
+        <!-- estadoActual == 6 => HABILITADO PARA SUBIR POR PERIODO CORRECTO -->
         <b-row>
             <b-col><div class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> Cargá aquí una factura emitida durante los meses indicados.</div></div></b-col>
         </b-row>
@@ -106,15 +106,15 @@
             :state="!$v.archivo.$error && archivo ? true : null"
             placeholder="Selecciona un archivo"
             accept="image/*, .pdf"
-            :max-size="5 * 1024 * 1024" 
+            :max-size="5 * 1024 * 1024"
             class="mt-3"
             style="font-size: 16px;"
             browse-text="Examinar"
         ></b-form-file>
-        <div v-if="$v.archivo.$error" class="text-danger"><b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe seleccionar un archivo válido.</div>   
+        <div v-if="$v.archivo.$error" class="text-danger"><b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe seleccionar un archivo válido.</div>
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 7" class="rectificacion-card">
-        <!-- estadoActual == 7 => HABILITADO PARA SUBIR POR RECTIFICACIÓN -->  
+        <!-- estadoActual == 7 => HABILITADO PARA SUBIR POR RECTIFICACIÓN -->
         <b-row>
             <b-col class="li-row texto-exp"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill>La factura cargada el día {{ fecha }} es <b>incorrecta</b> porque <b>{{ observaciones }}</b></div></b-col>
         </b-row>
@@ -123,18 +123,18 @@
         </b-row>
         <b-form-file
             v-model="archivo"
-            placeholder="Selecciona un archivo"        
+            placeholder="Selecciona un archivo"
             :state="!$v.archivo.$error && archivo ? true : null"
             accept="image/*, .pdf"
-            :max-size="5 * 1024 * 1024" 
+            :max-size="5 * 1024 * 1024"
             class="mt-3"
             style="font-size: 16px;"
             browse-text="Examinar"
         ></b-form-file>
-        <div v-if="$v.archivo.$error" class="text-danger"><b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe seleccionar un archivo válido.</div>  
+        <div v-if="$v.archivo.$error" class="text-danger"><b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe seleccionar un archivo válido.</div>
     </b-card-text>
         <b-card-text v-else-if="estadoActual == 8" class="ticket-enviando-card">
-            <!-- estadoActual == 8 => ESPERANDO CONFIRMACION DE UPLOAD -->      
+            <!-- estadoActual == 8 => ESPERANDO CONFIRMACION DE UPLOAD -->
             <b-row class="texto-exp">
                 <b-col class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> <b>Enviando archivo.</b> </div></b-col>
             </b-row>
@@ -147,7 +147,7 @@
             <!-- Aquí puedes agregar más campos si los necesitas -->
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 9">
-        <!-- estadoActual == 9 => CONFIRMACION DE UPLOAD CORRECTA --> 
+        <!-- estadoActual == 9 => CONFIRMACION DE UPLOAD CORRECTA -->
             <b-row class="texto-exp">
                 <b-col class="li-row"><h2 class="icon-green">Archivo enviado correctamente!</h2></b-col>
             </b-row>
@@ -160,7 +160,7 @@
             <!-- Aquí puedes agregar más campos si los necesitas -->
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 10">
-        <!-- estadoActual == 10 => CONFIRMACION DE UPLOAD INCORRECTA: ERROR --> 
+        <!-- estadoActual == 10 => CONFIRMACION DE UPLOAD INCORRECTA: ERROR -->
             <b-row class="texto-exp">
                 <b-col class="li-row"><h2 class="icon-orange">Error enviando el archivo!</h2></b-col>
             </b-row>
@@ -177,14 +177,14 @@
             <div v-if="captchaError" class="text-danger">
                 <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Por favor completa la verificación para continuar.
             </div>
-        </b-form-group> 
+        </b-form-group>
         <b-button @click="enviarArchivo" variant="success" class="mt-3 float-right"><span v-if="estadoActual == 6 ">Enviar</span><span v-else><b-icon-exclamation-circle></b-icon-exclamation-circle> Rectificar</span></b-button>
     </div>
     </b-card>
     </transition>
 </template>
-  
-  <script>  
+
+  <script>
   import { requiredIf } from 'vuelidate/lib/validators';
   export default {
     props: {
@@ -200,7 +200,6 @@
         archivo: null,
         futuroEstado: null,
         estadoActual: this.estado,
-        
         recaptchaSiteKey: "6LfNxggoAAAAANyfZ5a2Lg_Rx28HX_lINDYX7AU-",
         captchaResponse: null,
         captchaError: false,
@@ -236,8 +235,11 @@
                 case 8: return 'loading';
                 case 9: return 'validating';
                 case 10: return 'invalid';
-            }        
-        }
+            }
+        },
+        tramite(){
+          return this.$store.state.abiertoAnual.single.id
+        },
     },
     validations: {
         archivo: {
@@ -278,25 +280,52 @@
             if(this.TEST_submit) return true;
             return !this.captchaError;
         },
-        enviarArchivo() {
-        // Validar que el archivo no esté vacío antes de enviarlo
-            this.$v.$touch(); 
-            if (!this.$v.archivo.$invalid && this.isCaptchaOK()) {
-                this.playAnimation(() => {
-                    // Simular el envío del archivo
-                    // Generar un número aleatorio entre 1 y 10
-                    const randomState = Math.floor(Math.random() * 2) + 9;
-                    console.log("randomState: " + randomState);
-                    setTimeout(() => {                        
-                        // Iniciar segunda animación después de cambiar el estado
-                        this.playAnimation(() => {
-                            
-                           
-                        },randomState);
-                    }, 3000); // Esperar 5 segundos
-                },8);
-            }
+        blobToBase64(blob) {
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(blob);
+            reader.onloadend = () => {
+              resolve(reader.result.split(',')[1]);
+            };
+            reader.onerror = (error) => reject(error);
+          });
         },
+        async enviarArchivo() {
+          // Validar que el archivo no esté vacío antes de enviarlo
+          this.$v.$touch();
+          if (!this.$v.archivo.$invalid && this.isCaptchaOK()) {
+              const id = this.tramite;
+
+              let facturaParaGuardar = {};
+
+              // Convertir el archivo a un blob
+              if (this.archivo instanceof Blob) {
+                  const fileBlob = this.archivo;
+
+                  // Agregar el archivo a documentosParaGuardar
+                  facturaParaGuardar = {
+                      contenido: {
+                          data: await this.blobToBase64(fileBlob),
+                          contentType: fileBlob.type,
+                      }
+                  };
+              }
+
+              // Enviar la solicitud al store de Vuex
+              await this.$store.dispatch('facturas/agregar', {
+                  id: id,
+                  factura: facturaParaGuardar,
+                  periodo: this.periodo,
+              }).then(response => {
+                  // Manejar la respuesta del backend
+                  console.log(response);
+              }).catch(error => {
+                  // Manejar el error
+                  console.error(error);
+              });
+          }
+      },
+
         playAnimation(callback, newState) {
         // Agregar clase para iniciar la animación
         this.$refs.card.classList.add('playing-animation');
@@ -317,7 +346,7 @@
     }
     }
     }
-  
+
   </script>
 <style scoped>
 h2, h3{

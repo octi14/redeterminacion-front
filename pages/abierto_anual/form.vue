@@ -84,7 +84,6 @@
         sendingForm: false,
         token: 0,
         enterKeyPressed: false,
-        endButton: false,
         showPopupFormError: false,
         showPopupNoEntry: false,
         showPopupNotAllowed: false,
@@ -96,88 +95,51 @@
         return new Promise(resolve => setTimeout(resolve, ms));
       },
       async sendData() {
-        switch (this.page) {
-          case 0:
-            this.enterKeyPressed = true
-            if (!this.cuit || !this.nroLegajo) {
-              this.showPopupNoEntry = true
-            } else {
-              const result = this.maestro.filter((item) => item.cuit == this.cuit && item.nroLegajo == this.nroLegajo)
-              if(result.length > 0){
-                try{
-                  const response = await this.$store.dispatch('abiertoAnual/getByCuitLegajo',{
-                    cuit: this.cuit,
-                    legajo: this.nroLegajo,
-                  })
-                  if(!response){
-                    await this.$store.dispatch('abiertoAnual/create',{
-                      cuit: this.cuit,
-                      nroLegajo: this.nroLegajo,
-                    })
-                  }
-                }catch(e){
-                  console.log(e)
-                  this.$bvToast.toast('Algo salió mal buscando el trámite', {
-                    title: 'Error',
-                    variant: 'danger',
-                    appendToast: true,
-                    solid: true,
-                    toaster: 'b-toaster-top-center',
-                  });
-                }
-                this.page += 1
-              }else{
-                this.showPopupFormError = true
-            }
-          }
-          this.enterKeyPressed = false
-          break;
-
-          case 1:
-            if (!this.datePicked) {
-              this.$bvToast.toast('No ha seleccionado una fecha', {
+        this.enterKeyPressed = true
+        if (!this.cuit || !this.nroLegajo) {
+          this.showPopupNoEntry = true
+        } else {
+          const result = this.maestro.filter((item) => item.cuit == this.cuit && item.nroLegajo == this.nroLegajo)
+          if(result.length > 0){
+            try{
+              const cuit = Number(this.cuit)
+              const nroLegajo = Number(this.nroLegajo)
+              const response = await this.$store.dispatch('abiertoAnual/getByCuitLegajo',{
+                cuit: cuit,
+                nroLegajo: nroLegajo,
+              })
+              if(!response){
+                await this.$store.dispatch('abiertoAnual/create',{
+                  cuit: this.cuit,
+                  nroLegajo: this.nroLegajo,
+                })
+              }
+            }catch(e){
+              console.log(e)
+              this.$bvToast.toast('Algo salió mal buscando el trámite', {
                 title: 'Error',
                 variant: 'danger',
                 appendToast: true,
                 solid: true,
                 toaster: 'b-toaster-top-center',
               });
-            } else {
-              this.date = this.datePicked
-              this.page += 1
             }
-            break;
-
-          case 2:
-            if (!this.timePicked) {
-              this.$bvToast.toast('No ha seleccionado un horario', {
-                title: 'Error',
-                variant: 'danger',
-                appendToast: true,
-                solid: true,
-                toaster: 'b-toaster-top-center',
-              });
-            } else {
-              this.time = this.timePicked
-              this.page += 1
-            }
-            break;
-
-          default:
-            // Por defecto, se incrementa la página en cualquier otro caso no especificado.
-            this.page += 1;
-            break;
+            await this.$router.push('/abierto_anual/periodos')
+          }else{
+            this.showPopupFormError = true
         }
-      },
-      onResetParams() {
-        this.$router.push('/abierto_anual');
-        this.page = 0;
-        this.printing = false;
-        this.formOk = false;
-        this.cuit = null;
-        this.nroLegajo = null;
-      },
+      }
+      this.enterKeyPressed = false
     },
+    onResetParams() {
+      this.$router.push('/abierto_anual');
+      this.page = 0;
+      this.printing = false;
+      this.formOk = false;
+      this.cuit = null;
+      this.nroLegajo = null;
+    },
+  },
     // computed: {
     //   areAllFieldsComplete(){
     //       return (this.date && this.time && this.nroTramite && this.nombre && this.dni && this.domicilio)

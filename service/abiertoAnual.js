@@ -45,10 +45,9 @@ const formatFile = (FileResponse) => ({
     },
 
 
-    getByCuitLegajo: async(axios, { cuit, legajo }) => {
-      const fileResponse = await axios.$post(`/abiertoAnual/cuit`,{
-        cuit: cuit,
-        nroLegajo: legajo,
+    getByCuitLegajo: async(axios, { cuit, nroLegajo }) => {
+      const fileResponse = await axios.$post(`/abiertoAnual/buscar/${cuit}`,{
+        nroLegajo
       });
       if(fileResponse.data){
         return formatFile(fileResponse.data);

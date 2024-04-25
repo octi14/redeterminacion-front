@@ -42,14 +42,14 @@
               <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
             </h4>
             <transition name="expand">
-              <div v-show="isCardExpanded(1)">  
+              <div v-show="isCardExpanded(1)">
                 <div class="li-row first-li">
                   <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">
                     Los/las contribuyentes que ante evaluacion del Municipio acrediten que:</div>
                 </div>
                 <div class="li-row">
                   <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">
-                    Sus establecimientos hayan permanecido con actividad en forma permanente durante el ejercicio fiscal anterior y no 
+                    Sus establecimientos hayan permanecido con actividad en forma permanente durante el ejercicio fiscal anterior y no
                     posean deudas con la Municipalidad.</div>
                 </div>
                 <div class="li-row">
@@ -128,6 +128,37 @@
               </div>
             </transition>
           </b-card>
+          <b-card id="datos" class="section-card" v-bind:class="{ 'expanded': isCardExpanded(5) }">
+            <h4 class="section-title" @click="toggleCard(5)">
+              ¿Cómo se realiza la carga de datos?
+              <b-icon-chevron-compact-down v-if="!isCardExpanded(5)"></b-icon-chevron-compact-down>
+              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
+            </h4>
+            <transition name="expand">
+              <div v-show="isCardExpanded(5)">
+                <div class="li-row"><div class="li-icon">
+                  <b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-content">Luego de recibir la notificación en el DFE y/o en formato papel, deberás abrir
+                     esta página y leer atentamente cada uno de los requisitos para iniciar tu trámite. </div>
+                </div>
+                <div class="li-row"><div class="li-icon">
+                  <b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-content">Una vez leída toda la información, escribí tu número de legajo comercial
+                     (indicado en la notificación recibida) y tu CUIM/CUIT. </div>
+                </div>
+                <div class="li-row"><div class="li-icon">
+                  <b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-content">En la pantalla de “carga de documentación” deberás seleccionar el período que se encuentra habilitado para subir tu factura.
+                     Allí, cargarás una única factura (digital o fotografía de la factura impresa) que haya sido emitida durante los meses indicados
+                      para cada período. </div>
+                </div>
+                <div class="li-row"><div class="li-icon">
+                  <b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-content">Una vez cargada, ARVIGE revisará que la factura sea correcta.  </div>
+                </div>
+              </div>
+            </transition>
+          </b-card>
         <b-button variant="success" class="float-right btn-form" @click="openPopup('Form')">Iniciar Trámite</b-button>
         <br />
         </b-col>
@@ -181,9 +212,9 @@
     </b-modal>
 
     </div>
-  
+
   </template>
-  
+
   <script>
   import rubros from "@/plugins/rubros.js";
   export default {
@@ -259,7 +290,7 @@
     seleccionarTramite(tramite){
       // Obtener todas las imágenes de la botonera
       const imagenes = document.querySelectorAll('.botonera-container img');
-  
+
       // Iterar sobre cada imagen
       imagenes.forEach((imagen) => {
         // Verificar si la imagen actual es la que se ha clickeado

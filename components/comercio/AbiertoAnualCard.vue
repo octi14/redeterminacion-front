@@ -1,4 +1,5 @@
 <template>
+    <div>
     <transition name="flip">
     <b-card id="aaCard" ref="card" class="abierto-anual-card" style="max-width: 20rem;">
         <div class="icon-container">
@@ -26,25 +27,6 @@
         </div>
         <b-card-text v-if="estadoActual == 1" class="periodo-esperando-card">
         <!-- estadoActual == 1 => DESHABILITADO PARA SUBIR PORQUE NO ES EL MOMENTO --> 
-        <!--
-            <b-row>
-                <b-col><div class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> Cargá aquí tu factura</div></div></b-col>
-            </b-row>
-            <b-form-file
-                disabled="disabled"
-                v-model="archivo"
-                :state="!$v.archivo.$error && archivo ? true : null"
-                placeholder="Selecciona un archivo"
-                accept="image/*, .pdf"
-                :max-size="5 * 1024 * 1024" 
-                class="mt-3"
-                style="font-size: 16px;"
-                browse-text="Examinar"
-            ></b-form-file>
-            <b-row class="texto-exp">
-                <b-col class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> Este período se habilitará a partir del día: {{ fecha }} </div></b-col>
-            </b-row>
-            --> 
             <b-row>
                 <b-col class="li-row texto-exp"><b>Todavía no está habilitada la carga de documentación para este período.</b></b-col>
             </b-row>
@@ -76,42 +58,12 @@
             <b-row>
                 <b-col class="li-row texto-exp"><b>El plazo de carga de documentación para este período ha concluido.</b></b-col>
             </b-row>   
-            <!-- 
-            <b-row>
-                <b-col><div class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> Período Vencido</div></div></b-col>
-            </b-row>
-            <b-form-file
-                disabled="disabled"
-                v-model="archivo"
-                :state="!$v.archivo.$error && archivo ? true : null"
-                placeholder="Selecciona un archivo"
-                accept="image/*, .pdf"
-                :max-size="5 * 1024 * 1024" 
-                class="mt-3"
-                style="font-size: 16px;"
-                browse-text="Examinar"
-            ></b-form-file>
-            <b-row class="texto-exp">
-                <b-col class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> Seguinos en IG como <a href="#" class="icon-green">ARVIGE</a> y enterate cuando se habilitará el plazo de rectificación. </div></b-col>
-            </b-row>
-            -->
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 6">
-        <!-- estadoActual == 6 => HABILITADO PARA SUBIR POR PERIODO CORRECTO -->        
-        <b-row>
-            <b-col><div class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> Cargá aquí una factura emitida durante los meses indicados.</div></div></b-col>
-        </b-row>
-        <b-form-file
-            v-model="archivo"
-            :state="!$v.archivo.$error && archivo ? true : null"
-            placeholder="Selecciona un archivo"
-            accept="image/*, .pdf"
-            :max-size="5 * 1024 * 1024" 
-            class="mt-3"
-            style="font-size: 16px;"
-            browse-text="Examinar"
-        ></b-form-file>
-        <div v-if="$v.archivo.$error" class="text-danger"><b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe seleccionar un archivo válido.</div>   
+            <!-- estadoActual == 6 => HABILITADO PARA SUBIR POR PERIODO CORRECTO -->        
+            <b-row>
+                <b-col><div class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> Cargá aquí una factura emitida durante los meses indicados.</div></div></b-col>
+            </b-row>
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 7" class="rectificacion-card">
         <!-- estadoActual == 7 => HABILITADO PARA SUBIR POR RECTIFICACIÓN -->  
@@ -121,18 +73,7 @@
         <b-row>
             <b-col class="li-row texto-exp"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill><b>Rectificación:</b> Cargá nuevamente una factura emitida durante los meses indicados.<br />Tenés tiempo hasta el {{ maxDate }}</div></b-col>
         </b-row>
-        <b-form-file
-            v-model="archivo"
-            placeholder="Selecciona un archivo"        
-            :state="!$v.archivo.$error && archivo ? true : null"
-            accept="image/*, .pdf"
-            :max-size="5 * 1024 * 1024" 
-            class="mt-3"
-            style="font-size: 16px;"
-            browse-text="Examinar"
-        ></b-form-file>
-        <div v-if="$v.archivo.$error" class="text-danger"><b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe seleccionar un archivo válido.</div>  
-    </b-card-text>
+        </b-card-text>
         <b-card-text v-else-if="estadoActual == 8" class="ticket-enviando-card">
             <!-- estadoActual == 8 => ESPERANDO CONFIRMACION DE UPLOAD -->      
             <b-row class="texto-exp">
@@ -171,26 +112,54 @@
                 <b-col class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> Si el problema persiste comunicarse con <a href="#" class="icon-green">ARVIGE</a>. </div></b-col>
             </b-row>
         </b-card-text>
-    <div v-if="estadoActual == 6 || estadoActual == 7"  >
-        <b-form-group>
-            <div :id="'captchaContainer' + id" class="g-recaptcha"></div>
-            <div v-if="captchaError" class="text-danger">
-                <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Por favor completa la verificación para continuar.
-            </div>
-        </b-form-group> 
-        <b-button @click="enviarArchivo" variant="success" class="mt-3 float-right"><span v-if="estadoActual == 6 ">Enviar</span><span v-else><b-icon-exclamation-circle></b-icon-exclamation-circle> Rectificar</span></b-button>
+        <div v-if="estadoActual == 6 || estadoActual == 7"  >
+            <div class="btn-abajo-container">
+            <div v-if="$v.archivo.$error" class="text-danger"><b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe seleccionar un archivo válido.</div>  
+            <b-form-file
+                v-model="archivo"
+                placeholder="Selecciona un archivo"        
+                :state="!$v.archivo.$error && archivo ? true : null"
+                accept="image/*, .pdf"
+                :max-size="5 * 1024 * 1024" 
+                class="mt-3"
+                style="font-size: 16px;"
+                browse-text="Examinar"
+            ></b-form-file>
+            <b-button @click="openCaptchaPopup" variant="success" ><span v-if="estadoActual == 6 ">Enviar</span><span v-else><b-icon-exclamation-circle></b-icon-exclamation-circle> Rectificar</span></b-button>
+        </div>
     </div>
     </b-card>
     </transition>
+    <b-modal v-model="showPopupCaptcha" @shown="loadRecaptcha" title="Completa para continuar" :hide-footer="true" :header-bg-variant="'success'"  centered>
+        <template #modal-header>
+            <div class="modal-info">
+            <h5>
+                <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
+                Completa para continuar
+            </h5>
+            </div>
+            <button type="button" aria-label="Close" class="close" @click="showPopupCaptcha = false">×</button>
+        </template>
+        <div class="modal-info">
+            <b-form-group>
+                <div :id="'captchaContainer-' + id" class="g-recaptcha" :data-sitekey="recaptchaSiteKey"></div>
+                <div v-if="captchaError" class="text-danger">
+                    <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Por favor completa la verificación para continuar.
+                </div>
+            </b-form-group> 
+            <b-button @click="enviarArchivo" variant="success" :disabled="!captchaCompleted" class="mt-3 float-right"><span v-if="estadoActual == 6 ">Enviar</span><span v-else><b-icon-exclamation-circle></b-icon-exclamation-circle> Rectificar</span></b-button>
+        </div>
+    </b-modal>
+    </div>
 </template>
   
   <script>  
   import { requiredIf } from 'vuelidate/lib/validators';
   export default {
     props: {
-      id: {
-        type: String,
-        required: true
+      id:{
+        Type: Number,
+        required: true,
       },
       periodo: Number,
       estado: Number,
@@ -206,9 +175,11 @@
         estadoActual: this.estado,
         
         recaptchaSiteKey: "6LfNxggoAAAAANyfZ5a2Lg_Rx28HX_lINDYX7AU-",
-        captchaResponse: null,
+        captchaCompleted: null,
         captchaError: false,
-        captchaWidgetId: null // Guarda el ID del widget del captcha
+
+        showPopupCaptcha: false,
+        contenedor: null,
         };
     },
     computed: {
@@ -253,17 +224,11 @@
     },
     mounted() {
     
-    window['onRecaptchaLoad_' + this.id] = () => {
-      this.captchaWidgetId = grecaptcha.render('captchaContainer-' + this.id, {
-        sitekey: this.recaptchaSiteKey,
-        size: 'normal',
-        callback: this.onCaptchaCompleted
-      });
-    };
-    const contenedor = document.getElementById('aaCard');
+    
+    this.contenedor = document.getElementById('aaCard');
 
     // Detecta el evento de inicio de la animación
-    contenedor.addEventListener('animationstart', () => {
+    this.contenedor.addEventListener('animationstart', () => {
     // En el punto deseado de la animación, cambia el estado
     const nuevoEstado = event.target.dataset.futuroEstado; // Obtiene el nuevo estado desde el atributo data
     setTimeout(() => {
@@ -273,26 +238,39 @@
     });
 
     // Agrega un evento de transición para detectar el final de la animación
-    contenedor.addEventListener('animationend', () => {
+    this.contenedor.addEventListener('animationend', () => {
     // En este punto, la animación ha terminado y puedes realizar más acciones si es necesario
     });
     },
     methods: {
-        onCaptchaCompleted(response) {
-            this.captchaResponse = response;
-            this.captchaError = false;
+        loadRecaptcha() {
+            grecaptcha.render('captchaContainer-' + this.id, {
+            sitekey: this.recaptchaSiteKey,
+            size: 'normal',
+            callback: this.onCaptchaCompleted
+            });
+        },
+        openCaptchaPopup(){
+            this.$v.$touch(); 
+            if(!this.$v.archivo.$invalid){
+                this.showPopupCaptcha = true;
+            }
+        },
+        onCaptchaCompleted() {
+            this.captchaCompleted = true;
         },
         isCaptchaOK(){
-            //console.log("isCAPTCHAOK?? = " + (typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0));
-            //this.captchaError = !(typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0);
-            this.captchaError = this.captchaResponse === null;
-            if(this.TEST_submit) return true;
-            return !this.captchaError;
+            console.log("isCaptchaOK: ");
+            console.log("this.id: " + this.id);
+            this.captchaError = (typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0);           
+            console.log("this.captchaError: " + this.captchaError);         
+            return this.captchaError;
         },
         enviarArchivo() {
-        // Validar que el archivo no esté vacío antes de enviarlo
-            this.$v.$touch(); 
-            if (!this.$v.archivo.$invalid && this.isCaptchaOK()) {
+            // Validar que el archivo no esté vacío antes de enviarlo
+            console.log("enviarArchivo: ");
+            this.showPopupCaptcha = false;
+            if ( this.isCaptchaOK()) {
                 this.playAnimation(() => {
                     // Simular el envío del archivo
                     // Generar un número aleatorio entre 1 y 10
@@ -353,7 +331,7 @@ h3{
     min-height: 725px;
     max-width: 22rem !important;
 }
-#captchaContainer{
+.g-recaptcha{
     margin-top: 2rem;
 }
 .abierto-anual-card {
@@ -418,6 +396,15 @@ h3{
     font-size: 24px;
     text-align: left;
     margin: 2rem auto 1rem;
+}
+.btn-abajo-container {
+    width: 80%;
+    position: absolute;
+    bottom: 15px;
+    left:10%;
+}
+.btn-abajo-container button{
+    margin-top: 2rem;
 }
 @keyframes play-animation {
     0% {

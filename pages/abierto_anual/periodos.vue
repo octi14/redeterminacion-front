@@ -58,7 +58,7 @@ export default {
     return {
         periodos: [
             {
-                id: "1001",
+                id: 1001,
                 periodo: 1,
                 estado: 6,
                 fecha: '--/--/--',
@@ -66,23 +66,23 @@ export default {
                 maxDate: '--/--/--'
             },
             {
-                id: "1002",
+                id: 1002,
                 periodo: 2,
-                estado: 1,
+                estado: 6,
                 fecha: '--/--/--',
                 observaciones: '',
                 maxDate: '--/--/--'
             },  
             {
-                id: "1003",
+                id: 1003,
                 periodo: 3,
-                estado: 1,
+                estado: 7,
                 fecha: '--/--/--',
                 observaciones: '',
                 maxDate: '--/--/--'
             },            
             { 
-                id: "1004",
+                id: 1004,
                 periodo: 2,
                 estado: 2,
                 fecha: '--/--/--',
@@ -90,7 +90,7 @@ export default {
                 maxDate: '--/--/--'
             },
             {
-                id: "1005",
+                id: 1005,
                 periodo: 3,
                 estado: 3,
                 fecha: '--/--/--',
@@ -98,7 +98,7 @@ export default {
                 maxDate: '--/--/--'
             },
             {
-                id: "1006",
+                id: 1006,
                 periodo: 1,
                 estado: 4,
                 fecha: '--/--/--',
@@ -106,7 +106,7 @@ export default {
                 maxDate: '--/--/--'
             },
             {
-                id: "1007",
+                id: 1007,
                 periodo: 2,
                 estado: 5,
                 fecha: '--/--/--',
@@ -114,7 +114,7 @@ export default {
                 maxDate: '--/--/--'
             },
             {
-                id: "1008",
+                id: 1008,
                 periodo: 3,
                 estado: 6,
                 fecha: '--/--/--',
@@ -122,7 +122,7 @@ export default {
                 maxDate: '--/--/--'
             },
             {
-                id: "1009",
+                id: 1009,
                 periodo: 1,
                 estado: 7,
                 fecha: '--/--/--',
@@ -130,7 +130,7 @@ export default {
                 maxDate: '--/--/--'
             },
             {
-                id: "1010",
+                id: 1010,
                 periodo: 2,
                 estado: 8,
                 fecha: '--/--/--',
@@ -138,7 +138,7 @@ export default {
                 maxDate: '--/--/--'
             },
             {
-                id: "1011",
+                id: 1011,
                 periodo: 3,
                 estado: 9,
                 fecha: '--/--/--',

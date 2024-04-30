@@ -12,13 +12,13 @@ export const actions = {
     })
     commit('setAll', found)
   },
-  async getByCuitLegajo({ commit, state }, { cuit, legajo }) {
-    commit('setAll', null)
+  async getByCuitLegajo({ commit, state }, { cuit, nroLegajo }) {
+    commit('setSingle', null)
     const found = await AbiertoAnualService.getByCuitLegajo(this.$axios, {
       cuit,
-      legajo
+      nroLegajo
     })
-    commit('setAll', found)
+    commit('setSingle', found)
     return found
   },
   async getSingle({ commit, state }, { id }) {

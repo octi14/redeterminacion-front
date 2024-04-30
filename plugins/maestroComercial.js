@@ -5,6 +5,11 @@ const maestroComercial = [
     dfe: "juancito@gmail.com"
   },
   {
+    cuit:"20366307940",
+    nroLegajo: 1235,
+    dfe: "juancito@gmail.com"
+  },
+  {
     cuit:"27360710667",
     nroLegajo: 123,
     dfe: "juancito@gmail.com"

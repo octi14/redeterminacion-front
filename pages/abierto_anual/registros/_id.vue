@@ -87,10 +87,6 @@
           <h2 class="icon-orange text-secondary text-center"><b>Aprobar solicitud</b></h2>
           <hr/>
           <h5 class="mb-3 text-center mr-3"> <b-icon-exclamation-octagon scale="0.8" variant="secondary"/><b> ¿El comercio requiere inspección? </b> </h5>
-          <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="documentCheckbox" v-model="inspeccion"/>
-              <label class="form-check-label" for="documentCheckbox"><b> Si. </b> Enviá un mail indicando que la persona deberá solamente pedir un Turno Web para Inspección Comercial.</label>
-          </div>
           <div class="text-center mt-3">
             <b-btn variant="primary" @click="onSendApprove()" >
                 Aceptar
@@ -234,7 +230,7 @@
 
   <script>
   import AbiertoAnualAdminCard from '~/components/comercio/AbiertoAnualAdminCard.vue';
-  export default {    
+  export default {
     components: {
       AbiertoAnualAdminCard
     },
@@ -412,9 +408,6 @@
           status: 'Esperando documentación',
           observaciones: observaciones + " - " + "Se aprueba la solicitud el " + new Date().toLocaleDateString('es-AR') + " " + new Date().toLocaleTimeString()
         }
-        if(this.inspeccion){
-          habilitacion.status = "Esperando turno"
-        }
         const id = this.habilitacion.id
         const userToken = this.$store.state.user.token
         await this.$store.dispatch('habilitaciones/update', {
@@ -514,42 +507,6 @@
           }
         });
       },*/
-      openDocumento(documento) {
-        const decodedData = atob(documento.data); // Decodificar la data de Base64
-
-        const arrayBuffer = new ArrayBuffer(decodedData.length);
-        const arrayBufferView = new Uint8Array(arrayBuffer);
-
-        for (let i = 0; i < decodedData.length; i++) {
-          arrayBufferView[i] = decodedData.charCodeAt(i);
-        }
-
-        const blob = new Blob([arrayBuffer], { type: documento.contentType });
-        const fileURL = URL.createObjectURL(blob);
-
-        const newWindow = window.open('', '_blank');
-
-        let newWindowTitle = "Documento: " + nombreDocumento; // Título predeterminado
-
-        if (documento.contentType === 'application/pdf') {
-          // Abrir el PDF en una nueva pestaña utilizando <embed>
-          const embed = document.createElement('embed');
-          embed.setAttribute('type', 'application/pdf');
-          embed.setAttribute('src', fileURL);
-          embed.setAttribute('width', '100%');
-          embed.setAttribute('height', '100%');
-          newWindow.document.body.appendChild(embed);
-        } else if (documento.contentType.startsWith('image/')) {
-          // Abrir la imagen en una nueva pestaña utilizando <img>
-          const img = document.createElement('img');
-          img.setAttribute('src', fileURL);
-          img.setAttribute('width', 'auto');
-          img.setAttribute('height', 'auto');
-          newWindow.document.body.appendChild(img);
-        } else {
-          console.log('Formato de contenido no compatible');
-        }
-      },
       onResetEdit() {
         this.editing = false
       },

@@ -213,7 +213,10 @@
                 case 9: return 'validating';
                 case 10: return 'invalid';
             }        
-        }
+        },
+        tramite(){
+          return this.$store.state.abiertoAnual.single.id
+        },
     },
     validations: {
         archivo: {
@@ -266,26 +269,70 @@
             console.log("this.captchaError: " + this.captchaError);         
             return this.captchaError;
         },
-        enviarArchivo() {
-            // Validar que el archivo no esté vacío antes de enviarlo
-            console.log("enviarArchivo: ");
-            this.showPopupCaptcha = false;
-            if ( this.isCaptchaOK()) {
-                this.playAnimation(() => {
-                    // Simular el envío del archivo
-                    // Generar un número aleatorio entre 1 y 10
-                    const randomState = Math.floor(Math.random() * 2) + 9;
-                    console.log("randomState: " + randomState);
-                    setTimeout(() => {                        
-                        // Iniciar segunda animación después de cambiar el estado
-                        this.playAnimation(() => {
-                            
-                           
-                        },randomState);
-                    }, 3000); // Esperar 5 segundos
-                },8);
-            }
+        blobToBase64(blob) {
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(blob);
+            reader.onloadend = () => {
+              resolve(reader.result.split(',')[1]);
+            };
+            reader.onerror = (error) => reject(error);
+          });
         },
+        async enviarArchivo() {
+            // Validar que el archivo no esté vacío antes de enviarlo
+            this.$v.$touch();
+            if (!this.$v.archivo.$invalid && this.isCaptchaOK()) {
+                const id = this.tramite;
+
+                let facturaParaGuardar = {};
+
+                // Convertir el archivo a un blob
+                if (this.archivo instanceof Blob) {
+                const fileBlob = this.archivo;
+
+                // Agregar el archivo a documentosParaGuardar
+                facturaParaGuardar = {
+                    contenido: {
+                    data: await this.blobToBase64(fileBlob),
+                    contentType: fileBlob.type,
+                    }
+                };
+                }
+
+                // Iniciar primera animación
+                this.playAnimation(async () => {
+                try {
+                    // Enviar la solicitud al store de Vuex
+                    const response = await this.$store.dispatch('facturas/agregar', {
+                    id: id,
+                    factura: facturaParaGuardar,
+                    periodo: this.periodo,
+                    });
+
+                    // Manejar la respuesta del backend
+                    console.log(response);
+
+                    // Determinar qué animación ejecutar en función de la respuesta
+                    let animationState;
+                    if (response.estado === 'ok') {
+                    animationState = 9; // Archivo enviado correctamente
+                    } else {
+                    animationState = 10; // Falló el envío del archivo
+                    }
+
+                    // Iniciar segunda animación después de cambiar el estado
+                    this.playAnimation(() => {}, animationState);
+                } catch (error) {
+                    // Manejar el error
+                    console.error(error);
+
+                    // Iniciar segunda animación después de cambiar el estado
+                    this.playAnimation(() => {}, 10); // Falló el envío del archivo
+                }
+                }, 8);
+            }
+            },
         playAnimation(callback, newState) {
         // Agregar clase para iniciar la animación
         this.$refs.card.classList.add('playing-animation');

@@ -3,16 +3,16 @@
     <b-card id="aaCard" ref="card" class="abierto-anual-card shadow-card" style="max-width: 20rem;">
         <div v-if="estadoActual != 1 && estadoActual != 6" class="btn-group"  >
             <div v-if="estadoActual == 2 || estadoActual == 4 || estadoActual == 7">
-                 <b-button @click="AprobarTicket" variant="success" class="btn-approve mr-2"><span>Aprobar</span></b-button>
+                 <b-button @click="aprobarTicket" variant="success" class="btn-approve mr-2"><span>Aprobar</span></b-button>
             </div>
             <div v-if="estadoActual == 3">
-                <b-button @click="RectificarTicket" variant="warning" class="btn-rectific mr-2"><span>Rectificar</span></b-button>
+                <b-button @click="rectificarTicket" variant="warning" class="btn-rectific mr-2"><span>Rectificar</span></b-button>
             </div>
             <div v-if="estadoActual == 7">
-                <b-button @click="RectificarTicket" variant="warning" class="btn-rectific mr-2"><span>Rectificar</span></b-button>
+                <b-button @click="rectificarTicket" variant="warning" class="btn-rectific mr-2"><span>Rectificar</span></b-button>
             </div>
             <div v-if="estadoActual == 2 || estadoActual == 3 || estadoActual == 4">
-                 <b-button @click="RechazarTicket" variant="danger" class="btn-cancel mr-2"><span>Rechazar</span></b-button>
+                 <b-button @click="rechazarTicket" variant="danger" class="btn-cancel mr-2"><span>Rechazar</span></b-button>
             </div>
         </div>
         <div class="icon-container">
@@ -31,8 +31,8 @@
             <b-card-text><h2>Período {{ periodo }}</h2></b-card-text>
             <b-card-text><h3>{{ periodoTexto }}</h3></b-card-text>
         </div>
-        <div class="row justify-content-center">
-          <b-button variant="primary" pill class="col-2" @click="openDocumento(factura)"><b-icon-eye></b-icon-eye></b-button>
+        <div class="row justify-content-center" v-if="factura">
+          <b-button variant="outline-primary" class="col-10" @click="openDocumento(factura)"><b-icon-eye></b-icon-eye></b-button>
         </div>
         <b-card-text v-if="estadoActual == 1" class="periodo-esperando-card">
         <!-- estadoActual == 1 => DESHABILITADO PARA SUBIR PORQUE NO ES EL MOMENTO -->
@@ -191,6 +191,7 @@
     },
     data() {
         return {
+        factura: null,
         futuroEstado: null,
         estadoActual: this.estado,
         recaptchaSiteKey: "6LfNxggoAAAAANyfZ5a2Lg_Rx28HX_lINDYX7AU-",
@@ -203,9 +204,9 @@
             // Lógica para asignar un texto al periodo
             // Por ejemplo, puedes tener un array de textos correspondientes a cada periodo
             const periodosTextos = [
-                "Abril / Mayo",
-                "Junio / Julio",
-                "Septiembre / Octubre"
+                "Mayo",
+                "Julio",
+                "Octubre"
             ];
 
             // Asegúrate de que el periodo esté dentro del rango del array
@@ -230,14 +231,14 @@
                 case 10: return 'invalid';
             }
         },
-        factura(){
-          if( this.$store.state.facturas.all && this.$store.state.facturas.all.length <= this.periodo){
-            return this.$store.state.facturas.all[this.periodo-1]
-          }else{
-            return null
-          }
+        // factura(){
+        //   if( this.$store.state.facturas.all && this.$store.state.facturas.all.length <= this.periodo){
+        //     return this.$store.state.facturas.all[this.periodo-1]
+        //   }else{
+        //     return null
+        //   }
 
-        }
+        // }
     },
     validations: {
         factura: {
@@ -248,28 +249,36 @@
     },
     mounted() {
 
-    grecaptcha.ready(() => {
-        grecaptcha.render('captchaContainer', {
-            sitekey: this.recaptchaSiteKey,
-            size: 'normal',
-        });
-    });
-    const contenedor = document.getElementById('aaCard');
+    
+    if( this.$store.state.facturas.all && this.$store.state.facturas.all.length <= this.periodo){
+        this.factura = this.$store.state.facturas.all[this.periodo-1]
+    }else{
+        console.log("Mounted no se pudo traer nada para el período " + this.periodo)
+        console.log("A pesar de que el store tiene: " + this.$store.state.facturas.all)
+    }
+    console.log(this.factura)
+    // grecaptcha.ready(() => {
+    //     grecaptcha.render('captchaContainer', {
+    //         sitekey: this.recaptchaSiteKey,
+    //         size: 'normal',
+    //     });
+    // });
+    // const contenedor = document.getElementById('aaCard');
 
-    // Detecta el evento de inicio de la animación
-    contenedor.addEventListener('animationstart', () => {
-    // En el punto deseado de la animación, cambia el estado
-    const nuevoEstado = event.target.dataset.futuroEstado; // Obtiene el nuevo estado desde el atributo data
-    setTimeout(() => {
-        // Cambia el estado aquí
-        cambiarEstado(nuevoEstado); // Cambia al estado deseado
-    }, 510); // Espera medio segundo (en milisegundos) para cambiar el estado
-    });
+    // // Detecta el evento de inicio de la animación
+    // contenedor.addEventListener('animationstart', () => {
+    // // En el punto deseado de la animación, cambia el estado
+    // const nuevoEstado = event.target.dataset.futuroEstado; // Obtiene el nuevo estado desde el atributo data
+    // setTimeout(() => {
+    //     // Cambia el estado aquí
+    //     cambiarEstado(nuevoEstado); // Cambia al estado deseado
+    // }, 510); // Espera medio segundo (en milisegundos) para cambiar el estado
+    // });
 
-    // Agrega un evento de transición para detectar el final de la animación
-    contenedor.addEventListener('animationend', () => {
-    // En este punto, la animación ha terminado y puedes realizar más acciones si es necesario
-    });
+    // // Agrega un evento de transición para detectar el final de la animación
+    // contenedor.addEventListener('animationend', () => {
+    // // En este punto, la animación ha terminado y puedes realizar más acciones si es necesario
+    // });
     },
     methods: {
         isCaptchaOK(){
@@ -321,6 +330,8 @@
             }
             const blob = new Blob([arrayBuffer], { type: documento.contentType });
             const fileURL = URL.createObjectURL(blob);
+            console.log('File URL:', fileURL);
+
 
             const newWindow = window.open('', '_blank');
 
@@ -362,7 +373,13 @@
                 }
             }, 1000); // Cambia 1000ms por la duración de tu animación
         }, 500); // Cambia 500ms por la mitad de la duración de tu animación
-    }
+    },
+    aprobarTicket(){
+    },
+    rechazarTicket(){
+
+    },
+    rectificarTicket(){},
     }
 }
 </script>

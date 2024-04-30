@@ -210,9 +210,9 @@
             // Lógica para asignar un texto al periodo
             // Por ejemplo, puedes tener un array de textos correspondientes a cada periodo
             const periodosTextos = [
-                "Abril / Mayo",
-                "Junio / Julio",
-                "Septiembre / Octubre"
+                "Mayo",
+                "Agosto",
+                "Octubre"
             ];
 
             // Asegúrate de que el periodo esté dentro del rango del array

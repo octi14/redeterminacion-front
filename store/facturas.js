@@ -6,7 +6,7 @@ export const state = () => ({
 
 export const actions = {
   async getById({ commit, state }, { id }) {
-    commit('setAll', null)
+    commit('setAll', [])
     const found = await FacturaService.getById(this.$axios, {
       id,
     })

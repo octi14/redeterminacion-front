@@ -7,7 +7,7 @@
                 <div class="li-icon border-b border-r">
                   <b-icon-file-arrow-up font-scale="2" class="icon-orange"></b-icon-file-arrow-up>
                 </div>
-                <div class="li-content border-b">                  
+                <div class="li-content border-b">
                     <p class="subtitle">Carga de documentación</p>
                 </div>
               </div>
@@ -26,7 +26,7 @@
               />
           </b-col>
         </b-row>
-        
+
         <b-row class="page-body" align-h="center">
             <b-card border-variant="warning" align-h="center" class="importante-card li-p" >
                 <b-card-text>
@@ -53,6 +53,14 @@ export default {
   components: {
     AbiertoAnualCard
   },
+  computed: {
+    facturas(){
+      return this.$store.state.facturas.all
+    },
+    tramite(){
+      return this.$store.state.abiertoAnual.single
+    },
+  },
   data() {
     return {
         periodos: [
@@ -69,70 +77,14 @@ export default {
                 fecha: '--/--/--',
                 observaciones: '',
                 maxDate: '--/--/--'
-            },  
+            },
             {
                 periodo: 3,
                 estado: 1,
                 fecha: '--/--/--',
                 observaciones: '',
                 maxDate: '--/--/--'
-            },            
-            { 
-                periodo: 2,
-                estado: 2,
-                fecha: '--/--/--',
-                observaciones: '',
-                maxDate: '--/--/--'
             },
-            {
-                periodo: 3,
-                estado: 3,
-                fecha: '--/--/--',
-                observaciones: '',
-                maxDate: '--/--/--'
-            },
-            {
-                periodo: 1,
-                estado: 4,
-                fecha: '--/--/--',
-                observaciones: 'foto del bulto',
-                maxDate: '--/--/--'
-            },
-            {
-                periodo: 2,
-                estado: 5,
-                fecha: '--/--/--',
-                observaciones: '',
-                maxDate: '--/--/--'
-            },
-            {
-                periodo: 3,
-                estado: 6,
-                fecha: '--/--/--',
-                observaciones: '',
-                maxDate: '--/--/--'
-            },
-            {
-                periodo: 1,
-                estado: 7,
-                fecha: '--/--/--',
-                observaciones: 'sos burro',
-                maxDate: '--/--/--'
-            },
-            {
-                periodo: 2,
-                estado: 8,
-                fecha: '--/--/--',
-                observaciones: '',
-                maxDate: '--/--/--'
-            },
-            {
-                periodo: 3,
-                estado: 9,
-                fecha: '--/--/--',
-                observaciones: '',
-                maxDate: '--/--/--'
-            }
             ]
     };
   }
@@ -140,11 +92,11 @@ export default {
 </script>
 
   <style scoped>
-  @media (max-width: 720px){    
+  @media (max-width: 720px){
     .card{
       width: 90% !important;
       margin-left: 5% !important;
-      margin-right: 5% !important; 
+      margin-right: 5% !important;
     }
     .btn{
       width: 9rem !important;
@@ -160,7 +112,7 @@ export default {
     }
   }
     .section-subtitle  {
-     width: 100%; 
+     width: 100%;
      margin: 0 2rem 2rem;
      color: #353535;
      font-size: 20px;
@@ -205,7 +157,7 @@ export default {
         margin: 1rem auto;
         width: max-content;
     }
-    .card-body{        
+    .card-body{
         display: flex;
         flex-direction: column;
     }
@@ -304,4 +256,3 @@ export default {
       vertical-align: top;
     }
   </style>
-  

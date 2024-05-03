@@ -296,20 +296,26 @@
           if (!this.$v.archivo.$invalid && this.isCaptchaOK()) {
               const id = this.tramite;
 
+              console.log(this.archivo)
               let facturaParaGuardar = {};
 
+              let fileBlob = null
               // Convertir el archivo a un blob
               if (this.archivo instanceof Blob) {
-                  const fileBlob = this.archivo;
-
-                  // Agregar el archivo a documentosParaGuardar
-                  facturaParaGuardar = {
-                      contenido: {
-                          data: await this.blobToBase64(fileBlob),
-                          contentType: fileBlob.type,
-                      }
-                  };
+                  fileBlob = new Blob([this.archivo], { type: this.archivo.type });
               }
+              console.log(fileBlob)
+
+              // Agregar el archivo a documentosParaGuardar
+              facturaParaGuardar = {
+                  contenido: {
+                      data: await this.blobToBase64(fileBlob),
+                      contentType: fileBlob.type,
+                  }
+              };
+
+              // Antes de enviar el archivo al backend
+              console.log(facturaParaGuardar)
 
               // Enviar la solicitud al store de Vuex
               await this.$store.dispatch('facturas/agregar', {

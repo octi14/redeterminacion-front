@@ -124,6 +124,8 @@
                 toaster: 'b-toaster-top-center',
               });
             }
+            const id = this.$store.state.abiertoAnual.single.id
+            await this.$store.dispatch('facturas/getById', {id})
             await this.$router.push('/abierto_anual/periodos')
           }else{
             this.showPopupFormError = true

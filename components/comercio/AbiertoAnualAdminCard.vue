@@ -173,7 +173,6 @@
 
   <script>
   import { requiredIf } from 'vuelidate/lib/validators';
-import { EvalSourceMapDevToolPlugin } from 'webpack';
   export default {
     props: {
       id: {

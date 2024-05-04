@@ -17,8 +17,8 @@
             <b-card-text><h2>Período {{ periodo + 1 }}</h2></b-card-text>
             <b-card-text><h3>{{ periodoTexto }}</h3></b-card-text>
         </div>
-        <div class="row justify-content-center" v-if="factura">
-          <b-button variant="outline-primary" class="col-10" @click="openDocumento(factura)"><b-icon-eye></b-icon-eye></b-button>
+        <div class="row justify-content-center" v-if="facturas && facturas[periodo-1]">
+          <b-button variant="outline-primary" class="col-10" @click="openDocumento(facturas[periodo-1])"><b-icon-eye></b-icon-eye></b-button>
         </div>
         <b-card-text v-if="estadoActual == 1" class="periodo-esperando-card">
         <!-- estadoActual == 1 => DESHABILITADO PARA SUBIR PORQUE NO ES EL MOMENTO -->
@@ -203,15 +203,14 @@ import { EvalSourceMapDevToolPlugin } from 'webpack';
         };
     },
     computed: {
-        periodoTexto() {
-            // Lógica para asignar un texto al periodo
-            // Por ejemplo, puedes tener un array de textos correspondientes a cada periodo
-            const periodosTextos = [
-                "Mayo",
-                "Julio",
-                "Octubre"
-            ];
-
+      periodoTexto() {
+        // Lógica para asignar un texto al periodo
+        // Por ejemplo, puedes tener un array de textos correspondientes a cada periodo
+        const periodosTextos = [
+          "Mayo",
+          "Agosto",
+          "Octubre"
+        ];
             // Asegúrate de que el periodo esté dentro del rango del array
             if (this.periodo >= 0 && this.periodo <= periodosTextos.length) {
                 return periodosTextos[this.periodo];
@@ -258,6 +257,9 @@ import { EvalSourceMapDevToolPlugin } from 'webpack';
                 case 10: return 'invalid';
             }
         },
+        facturas(){
+        return this.$store.state.facturas.all
+      }
     },
     validations: {
         factura: {
@@ -266,9 +268,9 @@ import { EvalSourceMapDevToolPlugin } from 'webpack';
             })
         }
     },
+    fetchOnServer: false,
     mounted() {
 
-    
     const contenedor = document.getElementById('aaCard');
     if( this.$store.state.facturas.all && this.$store.state.facturas.all.length <= this.periodo){
         this.factura = this.$store.state.facturas.all[this.periodo-1]
@@ -338,47 +340,54 @@ import { EvalSourceMapDevToolPlugin } from 'webpack';
         },
 
         openDocumento(documento) {
-            if (!this.isValidBase64(documento.data)) {
-                console.error('La cadena Base64 no es válida');
-                return;
-            }
+          if (!this.isValidBase64(documento.data)) {
+              console.error('La cadena Base64 no es válida');
+              return;
+          }
 
-            const decodedData = atob(documento.data); // Decodificar la data de Base64
+          const decodedData = atob(documento.data); // Decodificar la data de Base64
+          // Verificar la decodificación Base64
+          console.log('Contenido decodificado:', decodedData);
+          const arrayBuffer = new Uint8Array(decodedData.length);
 
-            const arrayBuffer = new ArrayBuffer(decodedData.length);
-            const arrayBufferView = new Uint8Array(arrayBuffer);
+          for (let i = 0; i < decodedData.length; i++) {
+              arrayBuffer[i] = decodedData.charCodeAt(i);
+          }
 
-            for (let i = 0; i < decodedData.length; i++) {
-                arrayBufferView[i] = decodedData.charCodeAt(i);
-            }
-            const blob = new Blob([arrayBuffer], { type: documento.contentType });
-            const fileURL = URL.createObjectURL(blob);
-            console.log('File URL:', fileURL);
+          const blob = new Blob([arrayBuffer], { type: documento.contentType });
+          // Verificar la creación del Blob
+          console.log('Blob creado:', blob);
+          const fileURL = URL.createObjectURL(blob);
+          // Verificar la creación del objeto URL
+          console.log('URL del archivo:', fileURL);
+          const newWindow = window.open('', '_blank');
+
+          if (!newWindow) return; // Check if the new window was successfully opened.
+
+          if (documento.contentType === 'application/pdf') {
+              newWindow.location.href = fileURL; // Open the PDF in a new tab using href
+          } else if (documento.contentType.startsWith('image/')) {
+              const img = document.createElement('img');
+              img.src = fileURL;
+              img.style.width = '100%';
+              img.style.height = 'auto';
+              newWindow.document.body.appendChild(img);
+              newWindow.document.title = documento.filename; // Change the title of the tab
+          } else {
+              // If the file type is not supported, try downloading the file
+              const a = document.createElement('a');
+              a.href = fileURL;
+              a.download = documento.filename;
+              a.style.display = 'none';
+              document.body.appendChild(a);
+              a.click();
+              URL.revokeObjectURL(fileURL);
+          }
+      },
 
 
-            const newWindow = window.open('', '_blank');
 
-            let newWindowTitle = "Documento: " + documento.filename; // Título predeterminado
 
-            if (documento.contentType === 'application/pdf') {
-                // Abrir el PDF en una nueva pestaña utilizando <embed>
-                const embed = document.createElement('embed');
-                embed.setAttribute('type', 'application/pdf');
-                embed.setAttribute('src', fileURL);
-                embed.setAttribute('width', '100%');
-                embed.setAttribute('height', '100%');
-                newWindow.document.body.appendChild(embed);
-            } else if (documento.contentType.startsWith('image/')) {
-                // Abrir la imagen en una nueva pestaña utilizando <img>
-                const img = document.createElement('img');
-                img.setAttribute('src', fileURL);
-                img.setAttribute('width', 'auto');
-                img.setAttribute('height', 'auto');
-                newWindow.document.body.appendChild(img);
-            } else {
-                console.log('Formato de contenido no compatible');
-            }
-        },
         playAnimation(callback, newState) {
             // Agregar clase para iniciar la animación
             this.$refs.card.classList.add('playing-animation');

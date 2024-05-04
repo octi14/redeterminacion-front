@@ -275,58 +275,55 @@
         },
         async enviarArchivo() {
             // Validar que el archivo no esté vacío antes de enviarlo
+            this.playAnimation(() => {
+                    console.log("playiing animation: ");
+            },8);
             this.$v.$touch();
             if (!this.$v.archivo.$invalid && this.isCaptchaOK()) {
                 const id = this.tramite;
 
-                let facturaParaGuardar = {};
+              console.log(this.archivo)
+              let facturaParaGuardar = {};
 
-                // Convertir el archivo a un blob
-                if (this.archivo instanceof Blob) {
-                const fileBlob = this.archivo;
+              let fileBlob = null
+              // Convertir el archivo a un blob
+              if (this.archivo instanceof Blob) {
+                  fileBlob = new Blob([this.archivo], { type: this.archivo.type });
+              }
+              console.log(fileBlob)
 
-                // Agregar el archivo a documentosParaGuardar
-                facturaParaGuardar = {
-                    contenido: {
-                    data: await this.blobToBase64(fileBlob),
-                    contentType: fileBlob.type,
-                    }
-                };
-                }
+              // Agregar el archivo a documentosParaGuardar
+              facturaParaGuardar = {
+                  contenido: {
+                      data: await this.blobToBase64(fileBlob),
+                      contentType: fileBlob.type,
+                  }
+              };
 
-                // Iniciar primera animación
-                this.playAnimation(async () => {
-                try {
-                    // Enviar la solicitud al store de Vuex
-                    const response = await this.$store.dispatch('facturas/agregar', {
-                    id: id,
-                    factura: facturaParaGuardar,
-                    periodo: this.periodo,
-                    });
+              // Antes de enviar el archivo al backend
+              console.log(facturaParaGuardar)
 
-                    // Manejar la respuesta del backend
-                    console.log(response);
-
-                    // Determinar qué animación ejecutar en función de la respuesta
-                    let animationState;
-                    if (response.estado === 'ok') {
-                    animationState = 9; // Archivo enviado correctamente
-                    } else {
-                    animationState = 10; // Falló el envío del archivo
-                    }
-
-                    // Iniciar segunda animación después de cambiar el estado
-                    this.playAnimation(() => {}, animationState);
-                } catch (error) {
-                    // Manejar el error
-                    console.error(error);
-
-                    // Iniciar segunda animación después de cambiar el estado
-                    this.playAnimation(() => {}, 10); // Falló el envío del archivo
-                }
-                }, 8);
-            }
-        },
+              // Enviar la solicitud al store de Vuex
+              await this.$store.dispatch('facturas/agregar', {
+                  id: id,
+                  factura: facturaParaGuardar,
+                  periodo: this.periodo,
+              }).then(response => {
+                  // Manejar la respuesta del backend
+                  
+                    this.playAnimation(() => {
+                            console.log("playiing animation: ");
+                    },9);
+                  console.log(response);
+              }).catch(error => {
+                  // Manejar el error
+                    this.playAnimation(() => {
+                            console.log("playiing animation: ");
+                    },10);
+                  console.error(error);
+              });
+          }
+      },
         playAnimation(callback, newState) {
             // Agregar clase para iniciar la animación
             this.$refs.card.classList.add('playing-animation');

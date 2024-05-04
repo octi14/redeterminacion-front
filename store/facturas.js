@@ -1,15 +1,16 @@
 const FacturaService = require('../service/factura.js')
 
 export const state = () => ({
-  all: [],
+  all: null,
 })
 
 export const actions = {
   async getById({ commit, state }, { id }) {
-    commit('setAll', [])
+    commit('setAll', null)
     const found = await FacturaService.getById(this.$axios, {
       id,
     })
+    console.log(found)
     commit('setAll', found)
   },
 
@@ -31,4 +32,10 @@ export const mutations = {
     state.all = filesList
     // [...state.latest, ...filesList]
   },
+}
+
+export const getters = {
+  facturaPorPeriodo: (state) => (periodo) => {
+    return state.all && state.all.length >= periodo ? state.all[periodo - 1] : null;
+  }
 }

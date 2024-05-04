@@ -6,11 +6,11 @@ const formatDocs = (FileResponse) => {
       }
     }
     return formattedDocs;
-  };
+  }
 
 export async function getById(axios, { id }) {
   const fileResponse = await axios.$get(`/abiertoAnual/facturas/${id}`);
-  return formatDocs(fileResponse.data);
+  return formatDocs(fileResponse.data); // Ahora esto devuelve un arreglo
 }
 
 export async function agregar(axios, { id, factura, periodo }) {
@@ -18,5 +18,5 @@ export async function agregar(axios, { id, factura, periodo }) {
     factura,
     periodo,
   });
-  return formatDocs(fileResponse.data);
+  return formatDocs(fileResponse.data); // Esto también
 }

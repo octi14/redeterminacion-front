@@ -133,14 +133,11 @@
     <b-modal v-model="showPopupCaptcha" @shown="loadRecaptcha" title="Completa para continuar" :hide-footer="true" :header-bg-variant="'success'"  centered>
         <template #modal-header>
             <div class="modal-info">
-            <h5>
-                <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
-                Completa para continuar
-            </h5>
+                <b-icon icon="exclamation-circle" scale="2" variant="light"></b-icon>
             </div>
-            <button type="button" aria-label="Close" class="close" @click="showPopupCaptcha = false">×</button>
         </template>
         <div class="modal-info">
+            <h5>Completá para continuar</h5>
             <b-form-group>
                 <div :id="'captchaContainer-' + id" class="g-recaptcha" :data-sitekey="recaptchaSiteKey"></div>
                 <div v-if="captchaError" class="text-danger">
@@ -187,9 +184,9 @@
             // Lógica para asignar un texto al periodo
             // Por ejemplo, puedes tener un array de textos correspondientes a cada periodo
             const periodosTextos = [
-                "Abril / Mayo",
-                "Junio / Julio",
-                "Septiembre / Octubre"
+                "Mayo",
+                "Agosto",
+                "Octubre"
             ];
 
             // Asegúrate de que el periodo esté dentro del rango del array
@@ -213,9 +210,6 @@
                 case 9: return 'validating';
                 case 10: return 'invalid';
             }        
-        },
-        tramite(){
-          return this.$store.state.abiertoAnual.single.id
         },
     },
     validations: {
@@ -332,27 +326,26 @@
                 }
                 }, 8);
             }
-            },
+        },
         playAnimation(callback, newState) {
-        // Agregar clase para iniciar la animación
-        this.$refs.card.classList.add('playing-animation');
-        setTimeout(() => {
-            // Cambiar el estado a mitad de la animación
-            this.estadoActual = newState;
-
-            // Esperar a que termine la animación
+            // Agregar clase para iniciar la animación
+            this.$refs.card.classList.add('playing-animation');
             setTimeout(() => {
-                // Remover la clase para detener la animación
-                this.$refs.card.classList.remove('playing-animation');
-                // Llamar al callback después de la animación
-                if (callback) {
-                    callback();
-                }
-            }, 1000); // Cambia 1000ms por la duración de tu animación
-        }, 500); // Cambia 500ms por la mitad de la duración de tu animación
+                // Cambiar el estado a mitad de la animación
+                this.estadoActual = newState;
+                // Esperar a que termine la animación
+                setTimeout(() => {
+                    // Remover la clase para detener la animación
+                    this.$refs.card.classList.remove('playing-animation');
+                    // Llamar al callback después de la animación
+                    if (callback) {
+                        callback();
+                    }
+                }, 1000); // Cambia 1000ms por la duración de tu animación
+            }, 500); // Cambia 500ms por la mitad de la duración de tu animación
+        }
     }
-    }
-    }
+}
   
   </script>
 <style scoped>
@@ -378,8 +371,19 @@ h3{
     min-height: 725px;
     max-width: 22rem !important;
 }
-.g-recaptcha{
-    margin-top: 2rem;
+.modal-content div{
+    text-align: center;
+}
+.modal-info{
+    width: 100%;
+    margin: 0.5rem auto;
+}
+.modal-info h5{
+    color: #353535;
+    margin-bottom: 1.5rem;
+}
+.g-recaptcha :first-child{
+    margin: auto;
 }
 .abierto-anual-card {
   margin-bottom: 20px; /* Espacio entre las tarjetas */

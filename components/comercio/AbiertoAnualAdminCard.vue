@@ -14,11 +14,11 @@
             </b-iconstack>
         </div>
         <div class="periodo-header">
-            <b-card-text><h2>Período {{ periodo }}</h2></b-card-text>
+            <b-card-text><h2>Período {{ periodo + 1 }}</h2></b-card-text>
             <b-card-text><h3>{{ periodoTexto }}</h3></b-card-text>
         </div>
-        <div class="row justify-content-center">
-          <b-button variant="primary" pill class="col-2" @click="openDocumento(factura)"><b-icon-eye></b-icon-eye></b-button>
+        <div class="row justify-content-center" v-if="factura">
+          <b-button variant="outline-primary" class="col-10" @click="openDocumento(factura)"><b-icon-eye></b-icon-eye></b-button>
         </div>
         <b-card-text v-if="estadoActual == 1" class="periodo-esperando-card">
         <!-- estadoActual == 1 => DESHABILITADO PARA SUBIR PORQUE NO ES EL MOMENTO -->
@@ -47,7 +47,7 @@
                 <b-col class="li-row texto-exp"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill>Aca podríamos poner la fecha en la que se lo subió y/o la fecha en la que se aprobó o rechazó</div></b-col>
             </b-row>
             <b-row>
-                <b-col class="li-row texto-exp"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill><b>Rectificación:</b> Se habilitará la rectificación del documento el {{ maxDate }}</div></b-col>
+                <b-col class="li-row texto-exp"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill><b>Rectificación:</b> Se habilitará la rectificación del documento el {{ fecha? new Date(fecha).toLocaleDateString("Es-AR") : "" }}</div></b-col>
             </b-row>
         <!-- Aquí puedes agregar más campos si los necesitas -->
         </b-card-text>
@@ -173,6 +173,7 @@
 
   <script>
   import { requiredIf } from 'vuelidate/lib/validators';
+import { EvalSourceMapDevToolPlugin } from 'webpack';
   export default {
     props: {
       id: {
@@ -180,21 +181,25 @@
         required: true
         },
       periodo: Number,
-      estado: Number,
+      estado: String,
       fecha: String,
       observaciones: String,
-      maxDate: String
       // Puedes agregar más props según sea necesario
     },
     data() {
         return {
+
         archivo: null,
         estadoFuturo: null,
-        estadoActual: this.estado,
+        factura: null,
         motivo: '',
         recaptchaSiteKey: "6LfNxggoAAAAANyfZ5a2Lg_Rx28HX_lINDYX7AU-",
         captchaResponse: null,
         captchaError: false,
+        maxDate: "12/05/2024",
+        minDate: "3/05/2024",
+        isRectificacion: false,
+        periodoActivo: false,
         };
     },
     computed: {
@@ -202,23 +207,47 @@
             // Lógica para asignar un texto al periodo
             // Por ejemplo, puedes tener un array de textos correspondientes a cada periodo
             const periodosTextos = [
-                "Abril / Mayo",
-                "Junio / Julio",
-                "Septiembre / Octubre"
+                "Mayo",
+                "Julio",
+                "Octubre"
             ];
 
             // Asegúrate de que el periodo esté dentro del rango del array
-            if (this.periodo >= 1 && this.periodo <= periodosTextos.length) {
-                return periodosTextos[this.periodo - 1];
+            if (this.periodo >= 0 && this.periodo <= periodosTextos.length) {
+                return periodosTextos[this.periodo];
             } else {
                 // Si el periodo está fuera de rango, retorna un mensaje de error o un valor por defecto
                 return "Periodo no válido";
             }
         },
-        estadoIcono(){
+        estadoActual(){
+            const now = new Date().toLocaleDateString("Es-AR");
+            console.log("FECHA ACTUAL: " + now);
+            console.log("this.maxDate: " + this.maxDate);
+            console.log("this.maxDate: " + this.minDate);
+            switch(this.estado){
+                case "Correcto": {
+                        return 3;
+                    };
+                case "Incorrecto": {
+                        if (this.esRectificacion)
+                            return 7;
+                        return 4;
+                    };
+                case "Incompleto": {
+                        if (now > this.maxDate)
+                            return 5;
+                        if (now < this.minDate)
+                            return 1;
+                        return 6;
+                    };
+                default: return 2;
+            }
+        },
+        estadoIcono(){            
             switch(this.estadoActual){
                 case 1: return 'disabled';
-                case 2: return 'invalid';
+                case 2: return 'revision';
                 case 3: return 'success';
                 case 4: return 'invalid';
                 case 5: return 'invalid';
@@ -229,14 +258,6 @@
                 case 10: return 'invalid';
             }
         },
-        factura(){
-          if( this.$store.state.facturas.all && this.$store.state.facturas.all.length <= this.periodo){
-            return this.$store.state.facturas.all[this.periodo-1]
-          }else{
-            return null
-          }
-
-        }
     },
     validations: {
         factura: {
@@ -249,21 +270,14 @@
 
     
     const contenedor = document.getElementById('aaCard');
+    if( this.$store.state.facturas.all && this.$store.state.facturas.all.length <= this.periodo){
+        this.factura = this.$store.state.facturas.all[this.periodo-1]
+    }else{
+        console.log("Mounted no se pudo traer nada para el período " + this.periodo)
+        console.log("A pesar de que el store tiene: " + this.$store.state.facturas.all)
+    }
+    console.log(this.factura)
 
-    // Detecta el evento de inicio de la animación
-    contenedor.addEventListener('animationstart', () => {
-    // En el punto deseado de la animación, cambia el estado
-    const nuevoEstado = event.target.dataset.futuroEstado; // Obtiene el nuevo estado desde el atributo data
-    setTimeout(() => {
-        // Cambia el estado aquí
-        cambiarEstado(nuevoEstado); // Cambia al estado deseado
-    }, 510); // Espera medio segundo (en milisegundos) para cambiar el estado
-    });
-
-    // Agrega un evento de transición para detectar el final de la animación
-    contenedor.addEventListener('animationend', () => {
-    // En este punto, la animación ha terminado y puedes realizar más acciones si es necesario
-    });
     },
     methods: {
         RechazarTicket() {
@@ -339,6 +353,8 @@
             }
             const blob = new Blob([arrayBuffer], { type: documento.contentType });
             const fileURL = URL.createObjectURL(blob);
+            console.log('File URL:', fileURL);
+
 
             const newWindow = window.open('', '_blank');
 
@@ -364,23 +380,23 @@
             }
         },
         playAnimation(callback, newState) {
-        // Agregar clase para iniciar la animación
-        this.$refs.card.classList.add('playing-animation');
-        setTimeout(() => {
-            // Cambiar el estado a mitad de la animación
-            this.estadoActual = newState;
-
-            // Esperar a que termine la animación
+            // Agregar clase para iniciar la animación
+            this.$refs.card.classList.add('playing-animation');
             setTimeout(() => {
-                // Remover la clase para detener la animación
-                this.$refs.card.classList.remove('playing-animation');
-                // Llamar al callback después de la animación
-                if (callback) {
-                    callback();
-                }
-            }, 1000); // Cambia 1000ms por la duración de tu animación
-        }, 500); // Cambia 500ms por la mitad de la duración de tu animación
-    }
+                // Cambiar el estado a mitad de la animación
+                this.estadoActual = newState;
+
+                // Esperar a que termine la animación
+                setTimeout(() => {
+                    // Remover la clase para detener la animación
+                    this.$refs.card.classList.remove('playing-animation');
+                    // Llamar al callback después de la animación
+                    if (callback) {
+                        callback();
+                    }
+                }, 1000); // Cambia 1000ms por la duración de tu animación
+            }, 500); // Cambia 500ms por la mitad de la duración de tu animación
+        }
     }
 }
 </script>

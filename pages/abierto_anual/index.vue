@@ -30,7 +30,7 @@
                 <div class="li-row first-li">
                   <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">
                     Es un descuento del 60% (sesenta por ciento) del valor de la Tasa por Inspección y/o de la verificación de la Seguridad
-                     y la Higiene, otorgado en virtud del Artículo 182 de la</div>
+                     y la Higiene, otorgado en virtud del Artículo 182 de la <a href="https://arvige.gob.ar/legislacion/pdf/12" class="text-success">Ordenanza Fiscal 2156/08 (TO2023).</a></div>
                 </div>
               </div>
             </transition>
@@ -43,8 +43,7 @@
             </h4>
             <transition name="expand">
               <div v-show="isCardExpanded(1)">
-                <div class="li-row first-li">
-                  <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">
+                <div class="li-row first-li"><div class="li-content">
                     Los/las contribuyentes que ante evaluacion del Municipio acrediten que:</div>
                 </div>
                 <div class="li-row">
@@ -55,7 +54,7 @@
                 <div class="li-row">
                   <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">
                     Sus establecimientos hayan permanecido con actividad en forma permanente durante los fines de semana del ejercicio anterior y
-                     no posean deudas con la Municipalidad. <b-icon-question-circle-fill @click="openPopup('A')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div>
+                     no posean deudas con la Municipalidad.</div>
                 </div>
               </div>
             </transition>
@@ -68,34 +67,18 @@
             </h4>
             <transition name="expand">
               <div v-show="isCardExpanded(2)">
-                <div class="li-row first-li"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                  <div class="li-content"> Están excluídos del Beneficio: </div></div>
+                <div class="li-row first-li">
+                  <div class="li-content mb-1"> Están excluídos del Beneficio: </div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
                   <div class="li-content">Aquellos/as contribuyentes que no hayan acreditado, ante la evaluación del Municipio, contar con un comercio con
-                   actividad permanente durante el ejercicio fiscal anterior. <b-icon-question-circle-fill @click="openPopup('ConstanciaLibreDeudaSegHig')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div></div>
+                   actividad permanente durante el ejercicio fiscal anterior. </div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                  <div class="li-content"> Los Mayores Contribuyentes incluídos en los Artículos 181 bis a 181 noveno del a Ordenanza Fiscal 2156/08 c/ Mod. <b-icon-question-circle-fill @click="openPopup('LibreDeuda')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div></div>
-              <div class="separador-top">
-                <p>Los <b>documentos</b> deberán encontrarse <b>digitalizados</b> (podés escanearlos o sacarles una foto) y deben <b>ser legibles</b>. Pueden encontrarse <b>en formato pdf o imagen</b> y tener un <b>peso máximo de 15 Mb</b>.</p>
-              </div>
-              <b-card border-variant="warning" align="center" class="importante-card" >
-                <b-card-text>
-                  <b-row >
-                    <b-col md="2">
-                      <b-icon-exclamation-triangle variant="warning" font-scale="5"></b-icon-exclamation-triangle>
-                      <p class="li-title"><u><b>¡Importante!</b></u></p>
-                    </b-col>
-                    <b-col  md="10">
-                        <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Una vez iniciado el trámite, recibirás un correo electrónico del Departamento Comercio (deptocomercio@gesell.gob.ar), indicandote los pasos para continuar.</div></div>
-                        <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Tené en cuenta que la Baja será efectiva una vez que el Departamento Comercio haya verificado la documentación presentada, se haya abonado el valor del trámite y hayas obtenido el certificado respectivo.</div></div>
-                    </b-col>
-                  </b-row>
-                </b-card-text>
-              </b-card>
+                  <div class="li-content"> Los Mayores Contribuyentes incluídos en los Artículos 181 bis a 181 noveno de la Ordenanza Fiscal 2156/08 c/ Mod. </div>
+                </div>
               </div>
             </transition>
           </b-card>
-          <b-card class="section-card FAQs-card" v-bind:class="{ 'expanded': isCardExpanded(3) }">
+          <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(3) }">
             <h4 class="section-title" @click="toggleCard(3)">¿Qué requisitos se necesitan para obtener el beneficio de Abierto Anual?
               <b-icon-chevron-compact-down v-if="!isCardExpanded(3)"></b-icon-chevron-compact-down>
               <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
@@ -103,13 +86,17 @@
             <transition name="expand">
               <div v-show="isCardExpanded(3)">
                 <div class="li-row first-li"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                  <div class="li-content">Poseer una Habilitación Comercial en el Partido de Villa Gesell.</div></div>
+                  <div class="li-content">Poseer una Habilitación Comercial en el Partido de Villa Gesell.</div>
+                </div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                  <div class="li-content">No encontrarse en mora en la Tasa de Seguridad e Higiene. <b-icon-question-circle-fill @click="openPopup('ConstanciaLibreDeudaSegHig')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div></div>
-                  <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                  <div class="li-content"> No ser un contribuyente excluido del beneficio acorde Ord. 2156/08 c/ Mod. <b-icon-question-circle-fill @click="openPopup('LibreDeuda')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div></div>
-                  <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                  <div class="li-content"> Realizar el procedimiento de carga de datos según lo previsto por la Autoridad de Aplicación. <b-icon-question-circle-fill @click="openPopup('LibreDeuda')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div></div>
+                  <div class="li-content">No encontrarse en mora en la Tasa de Seguridad e Higiene.</div>
+                </div>
+                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                  <div class="li-content"> No ser un contribuyente excluido del beneficio acorde Ord. 2156/08 c/ Mod. </div>
+                </div>
+                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                  <div class="li-content"> Realizar el procedimiento de carga de datos según lo previsto por la Autoridad de Aplicación.</div>
+                </div>
               </div>
             </transition>
           </b-card>
@@ -121,10 +108,17 @@
             </h4>
             <transition name="expand">
               <div v-show="isCardExpanded(4)">
-                <p class="first-li">
-                  La habilitación de comercios/industrias o asimilables deberá adecuarse a lo determinado en concordancia con leyes nacionales, provinciales y
-                  <a href="https://arvige.gob.ar/legislacion/pdf/12" target="_blank" class="external-link">el Digesto de Habilitaciones Comerciales (Ord.1958/04 (TO2024)</a>.
-                </p>
+                <div class="li-row first-li mb-1">Una factura digital o una fotografía de la factura emitida en formato papel, correspondiente a los
+                   siguientes tres períodos del año en curso: </div>
+                  <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange"></b-icon-caret-right-fill></div>
+                    <div class="li-content"><b>Período 1:</b> Se deberá cargar una factura emitida durante el mes de Mayo.</div>
+                  </div>
+                  <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange"></b-icon-caret-right-fill></div>
+                    <div class="li-content"><b>Período 2:</b> Se deberá cargar una factura emitida durante el mes de Agosto.</div>
+                  </div>
+                  <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange"></b-icon-caret-right-fill></div>
+                    <div class="li-content"><b>Período 3:</b> Se deberá cargar una factura emitida durante el mes de Octubre.</div>
+                  </div>
               </div>
             </transition>
           </b-card>
@@ -173,9 +167,6 @@
         <div class="confirmation-popup-body">
           <h2 class="icon-orange"><b>IMPORTANTE</b></h2>
           <p>Antes de continuar tené en cuenta lo siguiente:</p>
-          <div class="li-row">
-            <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">La documentación presentada (certificaciones y libre deuda) deberá encontrarse actualizada, es decir que debe haber sido expedida dentro del plazo de los últimos 30 días.</div>
-          </div>
           <div class="li-row">
             <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Recordá que los documentos deben ser legibles, estar subidos en formato imagen o pdf y tener un peso máximo de 15 mb.</div>
           </div>

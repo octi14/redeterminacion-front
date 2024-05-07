@@ -8,10 +8,10 @@
         </div> -->
         <b-card class="section-card col-md-6 mx-auto">
           <div class="li-row">
-            <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Estás a punto de iniciar la carga de comprobantes para obtener el beneficio de Abierto Anual.</p></div>
+            <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content"><p>Estás a punto de iniciar la carga de comprobantes para obtener el beneficio de Abierto Anual.</p></div>
           </div>
           <div class="li-row">
-            <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Para comenzar, ingresá los siguientes datos del comercio:</p></div>
+            <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content"><p>Para comenzar, ingresá los siguientes datos del comercio:</p></div>
           </div>
           <b-form>
             <b-row>
@@ -78,7 +78,6 @@
       return {
         cuit: null,
         nroLegajo: null,
-        maestro: maestroComercial,
         page: 0,
         formOk: false,
         sendingForm: false,
@@ -90,6 +89,11 @@
         showPopupAlready: false,
       };
     },
+    computed: {
+      maestro(){
+        return this.$store.state.maestro.all
+      }
+    },
     methods: {
       wait(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
@@ -99,7 +103,8 @@
         if (!this.cuit || !this.nroLegajo) {
           this.showPopupNoEntry = true
         } else {
-          const result = this.maestro.filter((item) => item.cuit == this.cuit && item.nroLegajo == this.nroLegajo)
+          await this.$store.dispatch('maestro/get')
+          const result = this.maestro.filter((item) => item.cuit == this.cuit && item.legajo == this.nroLegajo)
           if(result.length > 0){
             try{
               const cuit = Number(this.cuit)
@@ -112,6 +117,10 @@
                 await this.$store.dispatch('abiertoAnual/create',{
                   cuit: this.cuit,
                   nroLegajo: this.nroLegajo,
+                })
+                const response = await this.$store.dispatch('abiertoAnual/getByCuitLegajo',{
+                  cuit: cuit,
+                  nroLegajo: nroLegajo,
                 })
               }
             }catch(e){

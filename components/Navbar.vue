@@ -80,6 +80,15 @@
               Abierto anual
           </NuxtLink>
         </b-navbar-nav>
+        <b-navbar-nav v-if="adminArvige">
+          <NuxtLink
+            class="nav-link"
+            active-class="active"
+            to="/maestro"
+          >
+              Maestro
+          </NuxtLink>
+        </b-navbar-nav>
       </div>
       <b-navbar-nav class="ml-auto">
         <template v-if="isAuthenticated">
@@ -118,6 +127,9 @@ export default {
     adminComercio(){
       return this.$store.state.user.admin == "comercio" || this.$store.state.user.admin =="master"
     },
+    adminArvige(){
+      return this.$store.state.user.admin == "arvige" || this.$store.state.user.admin =="master"
+    },
     adminInspeccion(){
       return this.$store.state.user.admin == "inspeccion"
     },
@@ -147,8 +159,8 @@ export default {
   }
 }
 .separador{
-  color:white; 
-  font-size: 35px; 
+  color:white;
+  font-size: 35px;
   opacity:0.3;
 }
 #app-iso {

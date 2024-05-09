@@ -170,10 +170,9 @@
         required: true,
       },
       periodo: Number,
-      estado: Number,
+      estado: String,
       fecha: String,
       observaciones: String,
-      maxDate: String
       // Puedes agregar más props según sea necesario
     },
     data() {
@@ -190,7 +189,6 @@
         maxDate: "12/05/2024",
         minDate: "3/05/2024",
         isRectificacion: false,
-        periodoActivo: false,
         };
     },
     computed: {
@@ -212,12 +210,11 @@
             }
         },
         estadoActual(){
-            //const now = new Date().toLocaleDateString("Es-AR");
-            /*
-            const now = this.fecha;
+            const now = new Date().toLocaleDateString("Es-AR");
             console.log("FECHA ACTUAL: " + now);
             console.log("this.maxDate: " + this.maxDate);
             console.log("this.maxDate: " + this.minDate);
+            console.log("this.estado: " + this.estado);
             switch(this.estado){
                 case "Correcto": {
                         return 3;
@@ -234,12 +231,11 @@
                             return 1;
                         return 6;
                     };
-                case "Revision":{
+                case "En revisión":{
                     return 2;
                 } 
             }
-            */
-           return this.estado;
+           return 0;
         },
         estadoIcono(){            
             switch(this.estadoActual){
@@ -256,7 +252,10 @@
         },
         facturas(){
             return this.$store.state.facturas.all
-        }
+        },
+        tramite(){
+            return this.$store.state.abiertoAnual.single
+        },
     },
     validations: {
         archivo: {

@@ -6,6 +6,7 @@
             <b-icon-x-circle-fill v-else-if="estadoIcono ==='incorrecto'" scale="5" variant="danger"></b-icon-x-circle-fill>
             <b-icon-exclamation-circle v-else-if="estadoIcono ==='rectificacion'" scale="5" variant="warning"></b-icon-exclamation-circle>
             <b-icon-check-circle-fill v-else-if="estadoIcono ==='correcto'" scale="4" variant="success"></b-icon-check-circle-fill>
+            <b-icon-arrow-clockwise v-else-if="estadoIcono ==='loading'" scale="5" animation="spin" variant="success"></b-icon-arrow-clockwise>
             <b-iconstack scale="4" v-else-if="estadoIcono ==='revision'">
                 <b-icon stacked icon="list-task" variant="warning" scale="0.5" shift-v="-1px"></b-icon>
                 <b-icon stacked icon="clipboard" variant="warning"></b-icon>
@@ -147,10 +148,19 @@
             <b-row>
                 <b-col><p class="texto-exp"><b>¿Deseas continuar?</b></p></b-col>
             </b-row>
+        </b-card-text>
+        <b-card-text v-else-if="estadoActual == 13" class="ticket-enviando-card">
+            <!-- estadoActual == 8 => ESPERANDO CONFIRMACION DE UPLOAD -->     
+            <b-row>
+                <b-col>
+                    <p class="texto-exp"><b>Cargando, esto puede demorar unos minutos.</b></p>
+                    <p class="sub-texto-exp">Por favor, no cierres esta página.</p>
+                </b-col>
+            </b-row>
+            <!-- Aquí puedes agregar más campos si los necesitas -->
         </b-card-text>        
             <b-row v-if="estadoActual == 2 || estadoActual == 3 || estadoActual == 4 || estadoActual == 8">    
-                <!-- <b-col class="row justify-content-center" v-if="facturas && facturas[periodo]"> -->
-                <b-col>
+                <b-col class="row justify-content-center" v-if="facturas && facturas[periodo]">
                     <b-button class="btn-show-ticket" variant="outline-primary" @click="openDocumento(facturas[periodo])"><b-icon-eye></b-icon-eye></b-button>
                 </b-col>
             </b-row>
@@ -235,6 +245,7 @@
                 case 10: return 'correcto';
                 case 11: return 'incorrecto';
                 case 12: return 'incorrecto';
+                case 13: return 'loading';
             }
         },
         facturas(){
@@ -262,9 +273,7 @@
         
                     
         //DETERMINAR ESATDO INICIAL    
-        //const now = new Date().toLocaleDateString("Es-AR");
-        /*
-        const now = this.fecha;
+        const now = new Date().toLocaleDateString("Es-AR");
         console.log("FECHA ACTUAL: " + now);
         console.log("this.maxDate: " + this.maxDate);
         console.log("this.maxDate: " + this.minDate);
@@ -284,12 +293,10 @@
                         this.estadoActual =  1;
                     this.estadoActual =  6;
                 };
-            case "Revision":{
+            case "En revisión":{
                 this.estadoActual =  2;
             } 
         }
-        */
-       this.estadoActual = this.estado;
        this.estadoPrevio = this.estadoActual;
        this.motivo = this.observaciones;
     },
@@ -368,25 +375,6 @@
             this.captchaError = !(typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0);
             if(this.TEST_submit) return true;
             return !this.captchaError;
-        },
-        enviarArchivo() {
-        // Validar que no esté vacío antes de enviarlo
-            this.$v.$touch();
-            if (!this.$v.factura.$invalid && this.isCaptchaOK()) {
-                this.playAnimation(() => {
-                    // Simular el envío
-                    // Generar un número aleatorio entre 1 y 10
-                    const randomState = Math.floor(Math.random() * 2) + 9;
-                    console.log("randomState: " + randomState);
-                    setTimeout(() => {
-                        // Iniciar segunda animación después de cambiar el estado
-                        this.playAnimation(() => {
-
-
-                        },randomState);
-                    }, 3000); // Esperar 5 segundos
-                },8);
-            }
         },
         isValidBase64(str) {
             try {

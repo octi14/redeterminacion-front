@@ -158,6 +158,24 @@
                 </b-col>
             </b-row>
             <!-- Aquí puedes agregar más campos si los necesitas -->
+        </b-card-text>
+        <b-card-text v-else-if="estadoActual == 14" class="ticket-enviando-fail-card">
+        <!-- estadoActual == 9 => CONFIRMACION DE UPLOAD INCORRECTA: ERROR --> 
+            <b-row>
+                <b-col>
+                    <p class="texto-exp"><b>Error conectando con el servidor!</b></p>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col>
+                    <p class="sub-texto-exp"> Por favor, revisa tu conexión a internet y volvé a intentarlo en unos minutos.</p>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col>
+                    <p class="mini-texto-exp"> Si el problema persiste comunicarse con <a href="#" class="icon-green">ARVIGE</a>.</p>
+                </b-col>
+            </b-row>
         </b-card-text>        
             <b-row v-if="estadoActual == 2 || estadoActual == 3 || estadoActual == 4 || estadoActual == 8">    
                 <b-col class="row justify-content-center" v-if="facturas && facturas[periodo]">
@@ -246,6 +264,7 @@
                 case 11: return 'incorrecto';
                 case 12: return 'incorrecto';
                 case 13: return 'loading';
+                case 14: return 'incorrecto';
             }
         },
         facturas(){
@@ -273,28 +292,41 @@
         
                     
         //DETERMINAR ESATDO INICIAL    
-        const now = new Date().toLocaleDateString("Es-AR");
-        console.log("FECHA ACTUAL: " + now);
-        console.log("this.maxDate: " + this.maxDate);
-        console.log("this.maxDate: " + this.minDate);
+        console.log("this.estado: " + this.estado);     
+        const now = new Date();
+        const maxDate = new Date(this.maxDate.split("/").reverse().join("-"));
+        const minDate = new Date(this.minDate.split("/").reverse().join("-"));
+        console.log("FECHA ACTUAL: " + now);              
+        console.log("maxDate: " + maxDate);
+        console.log("minDate: " + minDate);  
+        console.log("if (now > this.maxDate)" + (now > maxDate));
+        console.log("if (now < this.minDate)" + (now < minDate));
         switch(this.estado){
             case "Correcto": {
+                    console.log("this.estado Correcto: " + this.estado);   
                     this.estadoActual = 3;
+                    break;
                 };
             case "Incorrecto": {
+                    console.log("this.estado Incorrecto: " + this.estado);   
                     if (this.esRectificacion)
                         this.estadoActual =  7;
                     this.estadoActual =  4;
+                    break;
                 };
             case "Incompleto": {
-                    if (now > this.maxDate)
+                    console.log("this.estado Incompleto: " + this.estado);   
+                    if (now > maxDate)
                         this.estadoActual =  5;
-                    if (now < this.minDate)
+                    if (now < minDate)
                         this.estadoActual =  1;
                     this.estadoActual =  6;
+                    break;
                 };
             case "En revisión":{
+                console.log("this.estado revisión: " + this.estado);   
                 this.estadoActual =  2;
+                break;
             } 
         }
        this.estadoPrevio = this.estadoActual;

@@ -210,11 +210,15 @@
             }
         },
         estadoActual(){
-            const now = new Date().toLocaleDateString("Es-AR");
-            console.log("FECHA ACTUAL: " + now);
-            console.log("this.maxDate: " + this.maxDate);
-            console.log("this.maxDate: " + this.minDate);
-            console.log("this.estado: " + this.estado);
+            console.log("this.estado: " + this.estado);     
+            const now = new Date();
+            const maxDate = new Date(this.maxDate.split("/").reverse().join("-"));
+            const minDate = new Date(this.minDate.split("/").reverse().join("-"));
+            console.log("FECHA ACTUAL: " + now);              
+            console.log("maxDate: " + maxDate);
+            console.log("minDate: " + minDate);  
+            console.log("if (now > this.maxDate)" + (now > maxDate));
+            console.log("if (now < this.minDate)" + (now < minDate));
             switch(this.estado){
                 case "Correcto": {
                         return 3;
@@ -225,9 +229,9 @@
                         return 4;
                     };
                 case "Incompleto": {
-                        if (now > this.maxDate)
+                        if (now > maxDate)
                             return 5;
-                        if (now < this.minDate)
+                        if (now < minDate)
                             return 1;
                         return 6;
                     };

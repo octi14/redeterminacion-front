@@ -1,179 +1,184 @@
 <template>
     <transition name="flip">
-    <b-card id="aaCard" ref="card" class="abierto-anual-card shadow-card" style="max-width: 20rem;">
-        <div v-if="estadoActual != 1 && estadoActual != 6" class="btn-group"  >
-            <div v-if="estadoActual == 2 || estadoActual == 4 || estadoActual == 7">
-                 <b-button @click="aprobarTicket" variant="success" class="btn-approve mr-2"><span>Aprobar</span></b-button>
-            </div>
-            <div v-if="estadoActual == 3">
-                <b-button @click="rectificarTicket" variant="warning" class="btn-rectific mr-2"><span>Rectificar</span></b-button>
-            </div>
-            <div v-if="estadoActual == 7">
-                <b-button @click="rectificarTicket" variant="warning" class="btn-rectific mr-2"><span>Rectificar</span></b-button>
-            </div>
-            <div v-if="estadoActual == 2 || estadoActual == 3 || estadoActual == 4">
-                 <b-button @click="rechazarTicket" variant="danger" class="btn-cancel mr-2"><span>Rechazar</span></b-button>
-            </div>
-        </div>
+    <b-card id="aaCard" ref="card" class="abierto-anual-card" style="max-width: 20rem;">
         <div class="icon-container">
-            <b-icon-check-circle-fill v-if="estadoIcono ==='success'" scale="4" variant="success"></b-icon-check-circle-fill>
+            <b-icon-clock-history v-if="estadoIcono ==='esperando-periodo'" scale="4" variant="warning"></b-icon-clock-history>
+            <b-icon-x-circle-fill v-else-if="estadoIcono ==='incorrecto'" scale="5" variant="danger"></b-icon-x-circle-fill>
+            <b-icon-exclamation-circle v-else-if="estadoIcono ==='rectificacion'" scale="5" variant="warning"></b-icon-exclamation-circle>
+            <b-icon-check-circle-fill v-else-if="estadoIcono ==='correcto'" scale="4" variant="success"></b-icon-check-circle-fill>
             <b-icon-arrow-clockwise v-else-if="estadoIcono ==='loading'" scale="5" animation="spin" variant="success"></b-icon-arrow-clockwise>
-            <b-icon-x-circle-fill v-else-if="estadoIcono ==='invalid'" scale="5" variant="danger"></b-icon-x-circle-fill>
-            <b-icon-arrow-up-circle-fill v-else-if="estadoIcono ==='available'" scale="4" variant="warning"></b-icon-arrow-up-circle-fill>
-            <b-iconstack scale="4" v-else-if="estadoIcono ==='disabled'">
-                <!-- <b-icon stacked icon="alarm" variant="dark" scale="0.5" shift-v="-1px"></b-icon> -->
-                <!-- <b-icon stacked icon="clock-history" variant="dark" scale="0.5" shift-v="-1px"></b-icon> -->
-                <b-icon stacked icon="hourglass-split" variant="dark" scale="0.5" shift-v="-1px"></b-icon>
-                <b-icon stacked icon="calendar" variant="dark"></b-icon>
+            <b-iconstack scale="4" v-else-if="estadoIcono ==='revision'">
+                <b-icon stacked icon="list-task" variant="warning" scale="0.5" shift-v="-1px"></b-icon>
+                <b-icon stacked icon="clipboard" variant="warning"></b-icon>
+                <b-iconstack stacked shift-v="-7px" shift-h="7px">
+                    <b-icon stacked icon="circle-fill" scale="0.35" shift-h="-1px" shift-v="1px" style="color: white;"></b-icon>
+                    <b-icon stacked icon="search" variant="warning" scale="0.5"></b-icon>
+                </b-iconstack>
             </b-iconstack>
         </div>
         <div class="periodo-header">
-            <b-card-text><h2>Período {{ periodo }}</h2></b-card-text>
+            <b-card-text><h2>Período {{ periodo + 1 }}</h2></b-card-text>
             <b-card-text><h3>{{ periodoTexto }}</h3></b-card-text>
-        </div>
-        <div class="row justify-content-center" v-if="facturas && facturas[periodo-1]">
-          <b-button variant="outline-primary" class="col-10" @click="openDocumento(facturas[periodo-1])"><b-icon-eye></b-icon-eye></b-button>
         </div>
         <b-card-text v-if="estadoActual == 1" class="periodo-esperando-card">
         <!-- estadoActual == 1 => DESHABILITADO PARA SUBIR PORQUE NO ES EL MOMENTO -->
             <b-row>
-                <b-col><b>Todavía no está habilitada la carga de documentación para este período.</b></b-col>
+                <b-col><p class="sub-texto-exp">Estado: Incompleto</p></b-col>
             </b-row>
             <b-row>
-                <b-col class="li-row texto-exp"><b>Todavía no está habilitada la carga de documentación para este período.</b></b-col>
+                <b-col><p class="texto-exp"><b>Todavía no está habilitada la carga de documentación para este período.</b></p></b-col>
             </b-row>
         </b-card-text>
-        <b-card-text v-else-if="estadoActual == 2" class="ticket-disabled-card">
-        <!-- estadoActual == 2 => DESHABILITADO PARA SUBIR POR OTROS MOTIVOS -->
+        <b-card-text v-else-if="estadoActual == 2" class="ticket-revision-card">
+        <!-- estadoActual == 2 => EN REVISION -->
             <b-row>
-                <b-col class="li-row texto-exp"><b>DEFINIR ESTADOS INTERNOS. <br />NO SE CARGÓ NADA EN ESTE PERÍODO.</b></b-col>
+                <b-col><p class="sub-texto-exp">Estado: En Revisión</p></b-col>
+            </b-row>
+            <b-row>
+                <b-col><p class="texto-exp"><b>Fecha de Carga:</b> {{ fecha }}</p></b-col>
             </b-row>
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 3" class="ticket-ok-card">
         <!-- estadoActual == 3 => DESHABILITADO PARA SUBIR POR ARCHIVO CORRECTO -->
             <b-row>
-                <b-col class="li-row texto-exp"><b>Aca se podría cargar el ticket en chiquito, y si lo clickean que se agrande o cargue en una nueva pestaña.</b></b-col>
+                <b-col><p class="sub-texto-exp">Estado: Correcto</p></b-col>
+            </b-row>
+            <b-row>
+                <b-col><p class="texto-exp">La factura cargada el día {{ fecha }} es correcta.</p></b-col>
             </b-row>
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 4" class="ticket-bad-card">
         <!-- estadoActual == 4 => DESHABILITADO PARA SUBIR POR ARCHIVO RECHAZADO -->
             <b-row>
-                <b-col class="li-row texto-exp"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill>Aca podríamos poner la fecha en la que se lo subió y/o la fecha en la que se aprobó o rechazó</div></b-col>
+                <b-col><p class="sub-texto-exp">Estado: Incorrecto</p></b-col>
             </b-row>
             <b-row>
-                <b-col class="li-row texto-exp"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill><b>Rectificación:</b> Se habilitará la rectificación del documento el {{ maxDate }}</div></b-col>
+                <b-col><div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-3px"></b-icon-caret-right-fill><p class="texto-exp li-content">La <b>carga</b> realizada el día {{ fecha }} es <b>incorrecta</b>, porque <b>{{ motivo }}</b>.</p></div></b-col>
             </b-row>
-        <!-- Aquí puedes agregar más campos si los necesitas -->
+            <b-row>
+                <b-col><div class="importante-box">
+                    <b-icon-exclamation-triangle variant="warning" font-scale="1"></b-icon-exclamation-triangle>
+                    <p class="texto-exp">Recordá notificar por DFE el período de rectificación.</p>
+                </div></b-col>
+            </b-row>
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 5" class="periodo-vencido-card">
         <!-- estadoActual == 5 => DESHABILITADO PARA SUBIR POR FECHA VENCIDA -->
             <b-row>
-                <b-col class="li-row texto-exp"><b>El plazo de carga de documentación para este período ha concluido.</b></b-col>
+                <b-col><p class="sub-texto-exp">Estado: Incompleto</p></b-col>
             </b-row>
-            <!--
             <b-row>
-                <b-col><div class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> Período Vencido</div></div></b-col>
+                <b-col><p class="texto-exp">No se han cargado documentos.</p></b-col>
             </b-row>
-            <b-form-file
-                disabled="disabled"
-                v-model="factura"
-                :state="!$v.factura.$error && factura ? true : null"
-                placeholder="Selecciona un archivo"
-                accept="image/*, .pdf"
-                :max-size="5 * 1024 * 1024"
-                class="mt-3"
-                style="font-size: 16px;"
-                browse-text="Examinar"
-            ></b-form-file>
-            <b-row class="texto-exp">
-                <b-col class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> Seguinos en IG como <a href="#" class="icon-green">ARVIGE</a> y enterate cuando se habilitará el plazo de rectificación. </div></b-col>
+            <b-row>
+                <b-col><div class="importante-box">
+                    <b-icon-exclamation-triangle variant="warning" font-scale="1"></b-icon-exclamation-triangle>
+                    <p class="texto-exp">Recordá notificar por DFE el período de rectificación.</p>
+                </div></b-col>
             </b-row>
-            -->
         </b-card-text>
-        <b-card-text v-else-if="estadoActual == 6">
+        <b-card-text v-else-if="estadoActual == 6" class="periodo-correcto-card">
         <!-- estadoActual == 6 => HABILITADO PARA SUBIR POR PERIODO CORRECTO -->
-        <b-row>
-            <b-col><div class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> Cargá aquí una factura emitida durante los meses indicados.</div></div></b-col>
-        </b-row>
-        <b-form-file
-            v-model="factura"
-            :state="!$v.factura.$error && factura ? true : null"
-            placeholder="Selecciona un archivo"
-            accept="image/*, .pdf"
-            :max-size="5 * 1024 * 1024"
-            class="mt-3"
-            style="font-size: 16px;"
-            browse-text="Examinar"
-        ></b-form-file>
-        <div v-if="$v.factura.$error" class="text-danger"><b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe seleccionar un archivo válido.</div>
+            <b-row>
+                <b-col><p class="sub-texto-exp">Estado: Incompleto</p></b-col>
+            </b-row>
+            <b-row>
+                <b-col><p class="texto-exp"><b>Aún no se han cargado documentos.</b></p></b-col>
+            </b-row>
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 7" class="rectificacion-card">
         <!-- estadoActual == 7 => HABILITADO PARA SUBIR POR RECTIFICACIÓN -->
-        <b-row>
-            <b-col class="li-row texto-exp"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill>Aca podríamos poner la fecha en la que se lo subió y/o la fecha en la que se aprobó o rechazó</div></b-col>
-        </b-row>
-        <b-row>
-            <b-col class="li-row texto-exp"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill><b>Rectificación:</b> Cargá nuevamente una factura emitida durante los meses indicados.<br />Tenés tiempo hasta el {{ maxDate }}</div></b-col>
-        </b-row>
-        <b-form-file
-            v-model="factura"
-            placeholder="Selecciona un archivo"
-            :state="!$v.factura.$error && factura ? true : null"
-            accept="image/*, .pdf"
-            :max-size="5 * 1024 * 1024"
-            class="mt-3"
-            style="font-size: 16px;"
-            browse-text="Examinar"
-        ></b-form-file>
-        <div v-if="$v.factura.$error" class="text-danger"><b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe seleccionar un archivo válido.</div>
-    </b-card-text>
-        <b-card-text v-else-if="estadoActual == 8" class="ticket-enviando-card">
-            <!-- estadoActual == 8 => ESPERANDO CONFIRMACION DE UPLOAD -->
-            <b-row class="texto-exp">
-                <b-col class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> <b>Enviando archivo.</b> </div></b-col>
+            <b-row class="importante-box">
+                <b-col><p><b>Rectificación</b></p></b-col>
+            </b-row>   
+            <b-row>
+                <b-col><p class="texto-exp"><b>Aún no se han cargado documentos.</b></p></b-col>
             </b-row>
-            <b-row class="texto-exp">
-                <b-col class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> <b>Esto puede tardar unos minutos.</b> </div></b-col>
+        </b-card-text>
+        <b-card-text v-else-if="estadoActual == 8" class="ticket-revision-card">
+        <!-- estadoActual == 8 => EN REVISION POR RECTIFICACION -->
+            <b-row class="importante-box">
+                <b-col><p><b>Rectificación</b></p></b-col>
+            </b-row>   
+            <b-row>
+                <b-col><p class="sub-texto-exp">Estado: En Revisión</p></b-col>
             </b-row>
-            <b-row class="texto-exp">
-                <b-col class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> <b>No cierres esta ventana.</b> </div></b-col>
+            <b-row>
+                <b-col><p class="texto-exp"><b>Fecha de Carga:</b> {{ fecha }}</p></b-col>
+            </b-row>
+        </b-card-text>        
+        <b-card-text v-else-if="estadoActual == 9" class="action-confirmation-card">
+        <!-- estadoActual == 9 => CONFIRMAR RECTIFICACION MANUAL -->
+            <b-row>
+                <b-col><p class="texto-exp"><b>Estas a punto de dar una rectificación manual.<br />¿Deseas continuar?</b></p></b-col>
+            </b-row>
+            <b-row>
+                <b-col><div class="importante-box">
+                    <b-icon-exclamation-triangle variant="warning" font-scale="1"></b-icon-exclamation-triangle>
+                    <p class="texto-exp">Opción habilitada para casos excepecionales.</p>
+                </div></b-col>
+            </b-row>
+        </b-card-text>        
+        <b-card-text v-else-if="estadoActual == 10" class="action-confirmation-card">
+        <!-- estadoActual == 9 => CONFIRMAR APROBACION -->
+            <b-row>
+                <b-col><p class="texto-exp"><b>Estas por indicar que la factura es correcta.</b></p></b-col>
+            </b-row>
+            <b-row>
+                <b-col><p class="texto-exp"><b>¿Deseas continuar?</b></p></b-col>
+            </b-row>
+        </b-card-text>
+        <b-card-text v-else-if="estadoActual == 11" class="comment-pick-card">
+            <!-- estadoActual == 8 => Seleccionar Motivo -->      
+            <b-row>
+                <b-col><div class="li-row"><b-icon-caret-right-fill class="li-icon icon-orange" font-scale="1" shift-v="-3px"></b-icon-caret-right-fill><p class="li-content texto-exp"><b>Seleccioná los motivos por los que la carga es incorrecta:</b></p></div></b-col>
+            </b-row>
+            <b-row><b-radio-group>
+                <b-form-radio :id="'motivo-1-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="La factura no corresponde al período solicitado."> La factura no corresponde al período solicitado.</b-form-radio>
+                <b-form-radio :id="'motivo-2-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="La factura no corresponde al Legajo y/o CUIT/CUIM."> La factura no corresponde al Legajo y/o CUIT/CUIM.</b-form-radio>
+                <b-form-radio :id="'motivo-3-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="El documento no es legible."> El documento no es legible.</b-form-radio>
+                <b-form-radio :id="'motivo-4-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="El documento no es una factura."> El documento no es una factura.</b-form-radio>
+            </b-radio-group></b-row>
+        </b-card-text>
+        <b-card-text v-else-if="estadoActual == 12" class="action-confirmation-card">
+        <!-- estadoActual == 9 => CONFIRMACION DE RECHAZO -->
+            <b-row>
+                <b-col><p class="texto-exp">Estas por indicar que la factura es incorrecta porque <b>{{ motivo }}</b></p></b-col>
+            </b-row>
+            <b-row>
+                <b-col><p class="texto-exp"><b>¿Deseas continuar?</b></p></b-col>
+            </b-row>
+        </b-card-text>
+        <b-card-text v-else-if="estadoActual == 13" class="ticket-enviando-card">
+            <!-- estadoActual == 8 => ESPERANDO CONFIRMACION DE UPLOAD -->     
+            <b-row>
+                <b-col>
+                    <p class="texto-exp"><b>Cargando, esto puede demorar unos minutos.</b></p>
+                    <p class="sub-texto-exp">Por favor, no cierres esta página.</p>
+                </b-col>
             </b-row>
             <!-- Aquí puedes agregar más campos si los necesitas -->
-        </b-card-text>
-        <b-card-text v-else-if="estadoActual == 9">
-        <!-- estadoActual == 9 => CONFIRMACION DE UPLOAD CORRECTA -->
-            <b-row class="texto-exp">
-                <b-col class="li-row"><h2 class="icon-green">Archivo enviado correctamente!</h2></b-col>
+        </b-card-text>        
+            <b-row v-if="estadoActual == 2 || estadoActual == 3 || estadoActual == 4 || estadoActual == 8">    
+                <b-col class="row justify-content-center" v-if="facturas && facturas[periodo]">
+                    <b-button class="btn-show-ticket" variant="outline-primary" @click="openDocumento(facturas[periodo])"><b-icon-eye></b-icon-eye></b-button>
+                </b-col>
             </b-row>
-            <b-row class="texto-exp">
-                <b-col class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> Nos comunicaremos a traves del DFE declarado para este legajo comercial. </div></b-col>
-            </b-row>
-            <b-row class="texto-exp">
-                <b-col class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> En caso de no tener DFE vas a tener que volver a revisar cada tanto amigo. </div></b-col>
-            </b-row>
-            <!-- Aquí puedes agregar más campos si los necesitas -->
-        </b-card-text>
-        <b-card-text v-else-if="estadoActual == 10">
-        <!-- estadoActual == 10 => CONFIRMACION DE UPLOAD INCORRECTA: ERROR -->
-            <b-row class="texto-exp">
-                <b-col class="li-row"><h2 class="icon-orange">Error enviando el archivo!</h2></b-col>
-            </b-row>
-            <b-row class="texto-exp">
-                <b-col class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> Por favor, revisa tu conexión a internet y volvé a intentarlo en unos minutos. </div></b-col>
-            </b-row>
-            <b-row class="texto-exp">
-                <b-col class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> Si el problema persiste comunicarse con <a href="#" class="icon-green">ARVIGE</a>. </div></b-col>
-            </b-row>
-        </b-card-text>
-    <div v-if="estadoActual == 6 || estadoActual == 7"  >
-        <b-form-group>
-            <div id="captchaContainer" class="g-recaptcha" :data-sitekey="recaptchaSiteKey"></div>
-            <div v-if="captchaError" class="text-danger">
-                <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Por favor completa la verificación para continuar.
+        <div class="btn-abajo-container">
+            <div class="btn-group">
+                <div v-if="estadoActual == 9 || estadoActual == 10 || estadoActual == 11 || estadoActual == 12" style="width: 100%;">
+                    <b-button @click="AvanzarPaso" variant="success" class="btn-approve float-left"><span>Aceptar</span></b-button>
+                    <b-button @click="RetrocederPaso" variant="danger" class="btn-cancel float-right"><span>Cancelar</span></b-button>
+                </div>
+                <div v-else-if="estadoActual == 2 || estadoActual == 8" style="width: 100%;">
+                    <b-button @click="AprobarTicket" variant="success" class="btn-approve float-left"><span>Aprobar</span></b-button>
+                    <b-button @click="RechazarTicket" variant="danger" class="btn-cancel float-right"><span>Rechazar</span></b-button>
+                </div>
+                <div v-else-if="estadoActual == 4 || estadoActual == 5" style="width: 100%;">
+                    <b-icon-pencil-square variant="dark" scale="2" @click="RectificarTicket" class="btn-rectific"></b-icon-pencil-square>
+                </div>
             </div>
-        </b-form-group>
-        <b-button @click="enviarArchivo" variant="success" class="mt-3 float-right"><span v-if="estadoActual == 6 ">Enviar</span><span v-else><b-icon-exclamation-circle></b-icon-exclamation-circle> Rectificar</span></b-button>
-    </div>
+        </div>
     </b-card>
     </transition>
 </template>
@@ -182,21 +187,31 @@
   import { requiredIf } from 'vuelidate/lib/validators';
   export default {
     props: {
+      id: {
+        type: Number,
+        required: true
+        },
       periodo: Number,
-      estado: Number,
+      estado: String,
       fecha: String,
       observaciones: String,
-      maxDate: String
       // Puedes agregar más props según sea necesario
     },
     data() {
         return {
+
+        archivo: null,
+        estadoActual: null,
+        estadoPrevio: null,
         factura: null,
-        futuroEstado: null,
-        estadoActual: this.estado,
+        motivo: '',
         recaptchaSiteKey: "6LfNxggoAAAAANyfZ5a2Lg_Rx28HX_lINDYX7AU-",
         captchaResponse: null,
         captchaError: false,
+        maxDate: "12/05/2024",
+        minDate: "3/05/2024",
+        isRectificacion: false,
+        periodoActivo: false,
         };
     },
     computed: {
@@ -208,31 +223,33 @@
           "Agosto",
           "Octubre"
         ];
-
-        // Asegúrate de que el periodo esté dentro del rango del array
-        if (this.periodo >= 1 && this.periodo <= periodosTextos.length) {
-          return periodosTextos[this.periodo - 1];
-        } else {
-          // Si el periodo está fuera de rango, retorna un mensaje de error o un valor por defecto
-          return "Periodo no válido";
-        }
-      },
-      estadoIcono(){
-        switch(this.estadoActual){
-            case 1: return 'disabled';
-            case 2: return 'invalid';
-            case 3: return 'success';
-            case 4: return 'invalid';
-            case 5: return 'invalid';
-            case 6: return 'available';
-            case 7: return 'available';
-            case 8: return 'loading';
-            case 9: return 'success';
-            case 10: return 'invalid';
-        }
-      },
-      facturas(){
-        return this.$store.state.facturas.all
+            // Asegúrate de que el periodo esté dentro del rango del array
+            if (this.periodo >= 0 && this.periodo <= periodosTextos.length) {
+                return periodosTextos[this.periodo];
+            } else {
+                // Si el periodo está fuera de rango, retorna un mensaje de error o un valor por defecto
+                return "Periodo no válido";
+            }
+        },
+        estadoIcono(){              
+            switch(this.estadoActual){
+                case 1: return 'esperando-periodo';
+                case 2: return 'revision';
+                case 3: return 'correcto';
+                case 4: return 'incorrecto';
+                case 5: return 'incorrecto';
+                case 6: return 'esperando-periodo';
+                case 7: return 'esperando-periodo';
+                case 8: return 'revision';
+                case 9: return 'rectificacion';
+                case 10: return 'correcto';
+                case 11: return 'incorrecto';
+                case 12: return 'incorrecto';
+                case 13: return 'loading';
+            }
+        },
+        facturas(){
+            return this.$store.state.facturas.all
       }
     },
     validations: {
@@ -245,57 +262,119 @@
     fetchOnServer: false,
     mounted() {
 
-    // grecaptcha.ready(() => {
-    //     grecaptcha.render('captchaContainer', {
-    //         sitekey: this.recaptchaSiteKey,
-    //         size: 'normal',
-    //     });
-    // });
-    // const contenedor = document.getElementById('aaCard');
-
-    // // Detecta el evento de inicio de la animación
-    // contenedor.addEventListener('animationstart', () => {
-    // // En el punto deseado de la animación, cambia el estado
-    // const nuevoEstado = event.target.dataset.futuroEstado; // Obtiene el nuevo estado desde el atributo data
-    // setTimeout(() => {
-    //     // Cambia el estado aquí
-    //     cambiarEstado(nuevoEstado); // Cambia al estado deseado
-    // }, 510); // Espera medio segundo (en milisegundos) para cambiar el estado
-    // });
-
-    // // Agrega un evento de transición para detectar el final de la animación
-    // contenedor.addEventListener('animationend', () => {
-    // // En este punto, la animación ha terminado y puedes realizar más acciones si es necesario
-    // });
+        const contenedor = document.getElementById('aaCard');
+        if( this.$store.state.facturas.all && this.$store.state.facturas.all.length <= this.periodo){
+            this.factura = this.$store.state.facturas.all[this.periodo-1]
+        }else{
+            console.log("Mounted no se pudo traer nada para el período " + this.periodo)
+            console.log("A pesar de que el store tiene: " + this.$store.state.facturas.all)
+        }
+        console.log(this.factura);
+        
+                    
+        //DETERMINAR ESATDO INICIAL    
+        const now = new Date().toLocaleDateString("Es-AR");
+        console.log("FECHA ACTUAL: " + now);
+        console.log("this.maxDate: " + this.maxDate);
+        console.log("this.maxDate: " + this.minDate);
+        switch(this.estado){
+            case "Correcto": {
+                    this.estadoActual = 3;
+                };
+            case "Incorrecto": {
+                    if (this.esRectificacion)
+                        this.estadoActual =  7;
+                    this.estadoActual =  4;
+                };
+            case "Incompleto": {
+                    if (now > this.maxDate)
+                        this.estadoActual =  5;
+                    if (now < this.minDate)
+                        this.estadoActual =  1;
+                    this.estadoActual =  6;
+                };
+            case "En revisión":{
+                this.estadoActual =  2;
+            } 
+        }
+       this.estadoPrevio = this.estadoActual;
+       this.motivo = this.observaciones;
     },
     methods: {
-        wait(ms) {
-          return new Promise(resolve => setTimeout(resolve, ms));
+        RechazarTicket() {
+        // Validar que el archivo no esté vacío antes de enviarlo
+            var nextCard = null;
+            if (this.estadoActual == 2 || this.estadoActual == 8){
+                nextCard = 11;
+                this.estadoPrevio = this.estadoActual;
+            }
+            else 
+                nextCard = this.estadoActual;
+            console.log("Rechazar Ticket: nextCard -> " + nextCard);
+            this.playAnimation(() => {                
+                },nextCard);
+        },
+        RectificarTicket() {
+            var nextCard = null;
+            if (this.estadoActual == 4 || this.estadoActual == 5){
+                nextCard = 9;
+                this.estadoPrevio = this.estadoActual;                
+            }
+            else 
+                nextCard = this.estadoActual;
+            console.log("Rectificar Ticket: nextCard -> " + nextCard);
+            this.playAnimation(() => {                
+                },nextCard);
+        },
+        AprobarTicket() {
+            var nextCard = null;
+            if (this.estadoActual == 2 || this.estadoActual == 8){
+                nextCard = 10;
+                this.estadoPrevio = this.estadoActual;
+            }
+            else 
+                nextCard = this.estadoActual;
+            console.log("Aprobar Ticket: nextCard -> " + nextCard);
+            this.playAnimation(() => {                
+                },nextCard);
+        },
+        AvanzarPaso() {
+            var nextCard = null;
+            if (this.estadoActual == 9)
+                nextCard = 7;
+            else 
+            if (this.estadoActual == 10)
+                nextCard = 3;
+            else 
+            if (this.estadoActual == 11)
+                nextCard = 12;
+            else 
+            if ( this.estadoActual == 12)
+                nextCard = 4;
+            else 
+                nextCard = this.estadoActual;
+            console.log("AvanzarPaso : nextCard -> " + nextCard);
+            this.playAnimation(() => {                
+                },nextCard);
+        },
+        RetrocederPaso() {
+            var nextCard = null;
+            if (this.estadoActual == 9 || this.estadoActual == 10 || this.estadoActual == 11)
+                nextCard = this.estadoPrevio;
+            else 
+            if (this.estadoActual == 12)
+                nextCard = 11;
+            else 
+                nextCard = this.estadoPrevio;
+            console.log("RetrocederPaso : nextCard -> " + nextCard);
+            this.playAnimation(() => {                
+                },nextCard);
         },
         isCaptchaOK(){
             console.log("isCAPTCHAOK?? = " + (typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0));
             this.captchaError = !(typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0);
             if(this.TEST_submit) return true;
             return !this.captchaError;
-        },
-        enviarArchivo() {
-        // Validar que no esté vacío antes de enviarlo
-            this.$v.$touch();
-            if (!this.$v.factura.$invalid && this.isCaptchaOK()) {
-                this.playAnimation(() => {
-                    // Simular el envío
-                    // Generar un número aleatorio entre 1 y 10
-                    const randomState = Math.floor(Math.random() * 2) + 9;
-                    console.log("randomState: " + randomState);
-                    setTimeout(() => {
-                        // Iniciar segunda animación después de cambiar el estado
-                        this.playAnimation(() => {
-
-
-                        },randomState);
-                    }, 3000); // Esperar 5 segundos
-                },8);
-            }
         },
         isValidBase64(str) {
             try {
@@ -349,29 +428,23 @@
 
 
         playAnimation(callback, newState) {
-        // Agregar clase para iniciar la animación
-        this.$refs.card.classList.add('playing-animation');
-        setTimeout(() => {
-            // Cambiar el estado a mitad de la animación
-            this.estadoActual = newState;
-
-            // Esperar a que termine la animación
+            // Agregar clase para iniciar la animación
+            this.$refs.card.classList.add('playing-animation');
             setTimeout(() => {
-                // Remover la clase para detener la animación
-                this.$refs.card.classList.remove('playing-animation');
-                // Llamar al callback después de la animación
-                if (callback) {
-                    callback();
-                }
-            }, 1000); // Cambia 1000ms por la duración de tu animación
-        }, 500); // Cambia 500ms por la mitad de la duración de tu animación
-    },
-    aprobarTicket(){
-    },
-    rechazarTicket(){
+                // Cambiar el estado a mitad de la animación
+                this.estadoActual = newState;
 
-    },
-    rectificarTicket(){},
+                // Esperar a que termine la animación
+                setTimeout(() => {
+                    // Remover la clase para detener la animación
+                    this.$refs.card.classList.remove('playing-animation');
+                    // Llamar al callback después de la animación
+                    if (callback) {
+                        callback();
+                    }
+                }, 1000); // Cambia 1000ms por la duración de tu animación
+            }, 500); // Cambia 500ms por la mitad de la duración de tu animación
+        }
     }
 }
 </script>
@@ -395,11 +468,22 @@ h3{
     margin-bottom: 2rem;
 }
 #aaCard{
-    min-height: 675px;
-    max-width: 25rem !important;
+    min-height: 775px;
+    max-width: 26rem !important;
 }
-#captchaContainer{
-    margin-top: 2rem;
+#aaCard .card-body{
+    padding: 1rem 3rem;
+}
+.modal-content div{
+    text-align: center;
+}
+.modal-info{
+    width: 100%;
+    margin: 0.5rem auto;
+}
+.modal-info h5{
+    color: #353535;
+    margin-bottom: 1.5rem;
 }
 .abierto-anual-card {
   margin-bottom: 20px; /* Espacio entre las tarjetas */
@@ -426,6 +510,10 @@ h3{
 .btn-success{
     width: 100%;
 }
+.btn-confirmar{
+    margin: 2rem auto !important;
+    width: 100% !important;
+}
 .icon-orange{
   color: #E27910;
 }
@@ -446,23 +534,78 @@ h3{
   display: flex;
   width: 100%;
 }
-.texto-exp {
-    margin-top: 1rem;
-    text-align: left;
+.periodo-esperando-card, .ticket-ok-card, .ticket-enviando-card, .ticket-enviando-fail-card, .ticket-revision-card, .rectificacion-card, .action-confirmation-card{
+    margin-top: 4rem;
+}
+.ticket-bad-card .importante-box, .periodo-vencido-card .importante-box, .action-confirmation-card .importante-box{
+    border: 1px solid #EAE89B;
+    text-align: center;
+    margin-left: 5%;
+    margin-right: 5%;
+    padding: 1rem 2rem;
+}
+.rectificacion-card .importante-box p, .ticket-revision-card .importante-box p{
+    background-color: #EAE89B;
+    text-align: center;
+    font-size: 20px;
+    padding: 1rem 0.5rem;
+}
+.ticket-revision-card .importante-box p{
+    margin: inherit auto;
     font-size: 20px;
 }
-.rectificacion-card .texto-exp{
-    font-size: 16px;
+.action-confirmation-card .row, .periodo-correcto-card .row, .ticket-revision-card .row, .ticket-bad-card .row, .periodo-vencido-card .row, .upload-card .row, .rectificacion-card .row, .ticket-enviando-fail-card .row, .periodo-esperando-card .row, .ticket-ok-card .row{
+    margin-top: 2rem;
 }
-.periodo-esperando-card .texto-exp, .ticket-ok-card .texto-exp, .periodo-vencido-card .texto-exp, .ticket-disabled-card .texto-exp{
-    font-size: 24px;
+.ticket-revision-card .texto-exp, .ticket-revision-card .titulo-exp{
+    margin: 0 auto;
+}
+.ticket-revision-card .titulo-exp{
+    text-decoration: underline;
+    font-weight: 600;
+    width: 100%;
+}
+.action-confirmation-card .texto-exp, .periodo-correcto-card .texto-exp, .rectificacion-card .texto-exp, .periodo-esperando-card .texto-exp, .ticket-ok-card .texto-exp, .periodo-vencido-card .texto-exp, .ticket-enviando-fail-card .texto-exp, .ticket-revision-card .texto-exp{
     text-align: center;
-    margin: 4rem 8% 0;
 }
-.ticket-enviando-card .texto-exp{
-    font-size: 24px;
+.periodo-esperando-card .texto-exp, .ticket-ok-card .texto-exp, .periodo-vencido-card .texto-exp, .ticket-enviando-card .texto-exp, .ticket-enviando-fail-card .texto-exp, .ticket-revision-card .texto-exp{
+    font-size: 20px;
+}
+.ticket-bad-card .texto-exp, .comment-pick-card .texto-exp{
+    font-size: 18px;
+}
+.action-confirmation-card .importante-box .texto-exp, .periodo-vencido-card .importante-box .texto-exp, .ticket-bad-card .importante-box .texto-exp, .comment-pick-card .custom-radio, .periodo-correcto-card .sub-texto-exp, .ticket-revision-card .sub-texto-exp, .ticket-ok-card .sub-texto-exp, .periodo-esperando-card .sub-texto-exp, .ticket-revision-card .titulo-exp, .ticket-enviando-card .sub-texto-exp, .periodo-vencido-card .sub-texto-exp, .ticket-bad-card .sub-texto-exp, .ticket-enviando-fail-card .sub-texto-exp {
+    font-size: 15px;
+}
+.periodo-correcto-card .sub-texto-exp, .periodo-vencido-card .sub-texto-exp, .ticket-enviando-fail-card .sub-texto-exp, .ticket-revision-card .sub-texto-exp, .ticket-bad-card .sub-texto-exp, .periodo-esperando-card .sub-texto-exp, .ticket-ok-card .sub-texto-exp{
+    text-align: center;
+}
+.ticket-enviando-fail-card .mini-texto-exp{
+    font-size: 12px;
+    text-align: center;
+}
+.periodo-vencido-card .mini-texto-exp{
+    font-size: 12px;
     text-align: left;
-    margin: 2rem auto 1rem;
+}
+.ticket-enviando-card .row{
+    text-align: center;
+}
+.ticket-enviando-card .sub-texto-exp{
+    margin-top: 2rem;
+}
+.ticket-enviando-card, .rectificacion-card, .periodo-esperando-card {
+    margin-left: 5%;
+    margin-right: 5%;
+}
+.btn-abajo-container{
+    width: 80%;
+    position: absolute;
+    bottom: 15px;
+    left: 10%;
+}
+.btn-abajo-container button{
+    margin-top: 2rem;
 }
 .btn{
     padding: 0.5rem 3rem;
@@ -471,6 +614,10 @@ h3{
     padding-right: 0;
     padding-left: 0;
     width: 8rem;
+}
+.btn-show-ticket{
+    width: 100%;
+    margin-top: 2rem;
 }
 .btn-group{
     width: 100%;
@@ -486,12 +633,7 @@ h3{
     border-color: green;
 }
 .btn-rectific{
-    background-color: #a2ff00;
-    border-color: #a2ff00;
-}
-.btn-rectific:hover{
-    background-color: rgb(156, 139, 7);
-    border-color: rgb(156, 139, 7);
+    cursor: pointer;
 }
 .btn-cancel:hover{
     background-color: #f09658;
@@ -500,6 +642,11 @@ h3{
 .btn-cancel{
     background-color: #e53749;
     border-color: #e53749;
+}
+.custom-radio{
+    width: 100%;
+    padding: 0.5rem 20%;
+    line-height: 20px;
 }
 @keyframes play-animation {
     0% {

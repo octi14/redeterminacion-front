@@ -1,10 +1,11 @@
 const formatFile = (FileResponse) => ({
     id: FileResponse._id,
     cuit: FileResponse.cuit,
-    nroLegajo: FileResponse.nroLegajo,
+    nroLegajo: FileResponse.nroLegajo, 
     dfe: FileResponse.dfe,
     status: FileResponse.status,
     observaciones: FileResponse.observaciones,
+    fechasCarga: FileResponse.fechasCarga,
     createdAt: new Date(FileResponse.createdAt).toLocaleDateString('es-AR'),
     updatedAt: new Date(FileResponse.updatedAt).toLocaleDateString('es-AR'),
   })
@@ -16,7 +17,8 @@ const formatFile = (FileResponse) => ({
     status: FileResponse.status,
     nroLegajo: FileResponse.nroLegajo,
     observaciones: FileResponse.observaciones,
-    createdAt: new Date(FileResponse.createdAt),
+    fechasCarga: FileResponse.fechasCarga,
+    createdAt: new Date(FileResponse.createdAt), 
   })
 
   module.exports = {
@@ -37,7 +39,7 @@ const formatFile = (FileResponse) => ({
     //     return formatFile(fileResponse.data)
     //   }else{
     //     return null
-    //   }
+    //   } 
     // },
     getSingle: async (axios, { id }) => {
       const fileResponse = await axios.$get(`/abiertoAnual/${id}`)

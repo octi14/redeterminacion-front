@@ -21,13 +21,13 @@
                 <div class="li-conent">Seleccioná el período que corresponda  y subí la factura del legajo comercial declarado.</div>
               </div>
           </div>
-          <b-col v-for="(periodo, index) in periodos" :key="index" cols="12" sm="8" md="6" lg="6" xl="4">
+          <b-col v-for="(periodo, index) in tramite.status" :key="index" cols="12" sm="8" md="6" lg="6" xl="4">
               <AbiertoAnualCard
-              :periodo="periodo.periodo"
-              :estado="periodo.estado"
-              :fecha="periodo.fecha"
-              :observaciones="periodo.observaciones"
-              :maxDate="periodo.maxDate"
+              :id="index"
+              :periodo="index"
+              :estado="periodo"
+              :fecha="tramite.fechasCarga[index]"
+              :observaciones="tramite.observaciones"
               />
           </b-col>
         </b-row>
@@ -71,29 +71,7 @@ export default {
   },
   data() {
     return {
-        periodos: [
-            {
-                periodo: 1,
-                estado: 6,
-                fecha: '--/--/--',
-                observaciones: '',
-                maxDate: '--/--/--'
-            },
-            {
-                periodo: 2,
-                estado: 1,
-                fecha: '--/--/--',
-                observaciones: '',
-                maxDate: '--/--/--'
-            },
-            {
-                periodo: 3,
-                estado: 1,
-                fecha: '--/--/--',
-                observaciones: '',
-                maxDate: '--/--/--'
-            },
-            ]
+        periodos: []
     };
   }
 };

@@ -17,13 +17,13 @@
         </div>
         <!--Datos de facturas-->
         <div class="row justify-content-center">
-          <b-col v-for="(periodo, index) in periodos" :key="index" class="col-md-3 col-sm-8 mt-4 mx-2">
+          <b-col v-for="(periodo, index) in tramite.status" :key="index" class="col-md-3 col-sm-8 mt-4 mx-2">
               <AbiertoAnualAdminCard
-              :periodo="periodo.periodo"
-              :estado="periodo.estado"
-              :fecha="periodo.fecha"
-              :observaciones="periodo.observaciones"
-              :maxDate="periodo.maxDate"
+              :id="index"
+              :periodo="index"
+              :estado="periodo"
+              :fecha="tramite.fechasCarga[index]"
+              :observaciones="tramite.observaciones"
               />
           </b-col>
         </div>
@@ -57,27 +57,6 @@
           'Correcto': 'text-success',
         },
         periodos: [
-          {
-              periodo: 1,
-              estado: 3,
-              fecha: null,
-              observaciones: '',
-              maxDate: '--/--/--'
-          },
-          {
-              periodo: 2,
-              estado: 3,
-              fecha: null,
-              observaciones: '',
-              maxDate: '--/--/--'
-          },
-          {
-              periodo: 3,
-              estado: 1,
-              fecha: null,
-              observaciones: '',
-              maxDate: '--/--/--'
-          },
         ],
         showRectificacion: false,
         showPrevApprove: false,
@@ -111,6 +90,7 @@
       await this.$store.dispatch('facturas/getById', {
         id: tramiteId,
       })
+
     },
     fetchOnServer: false,
     activated() {
@@ -146,51 +126,6 @@
         }
         this.showObservaciones = true
       },
-
-      //ESTE openDocumento es la prueba fallida de Nico para abrir los docs como modales dentro de la misma pagina
-      /*openDocumento(documento, nombreDocumento) {
-        const decodedData = atob(documento.data);
-        const arrayBuffer = new ArrayBuffer(decodedData.length);
-        const arrayBufferView = new Uint8Array(arrayBuffer);
-
-        for (let i = 0; i < decodedData.length; i++) {
-          arrayBufferView[i] = decodedData.charCodeAt(i);
-        }
-
-        const blob = new Blob([arrayBuffer], { type: documento.contentType });
-        const fileURL = URL.createObjectURL(blob);
-
-        this.$bvModal.show('documento-modal'); // Abre el modal
-        this.DocumentoModalTitle = nombreDocumento;
-
-        // Utiliza $nextTick para esperar hasta que el componente esté completamente montado
-        this.$nextTick(() => {
-          const modalContent = document.querySelector('#documento-modal .modal-body'); // Obtén el elemento modal-body
-
-          if (modalContent) {
-            if (documento.contentType === 'application/pdf') {
-              const embed = document.createElement('iframe');
-              embed.setAttribute('type', 'application/pdf');
-              embed.setAttribute('src', fileURL);
-              embed.setAttribute('width', '100%');
-              embed.setAttribute('height', '100%');
-              modalContent.appendChild(embed);
-            } else if (documento.contentType.startsWith('image/')) {
-              const img = document.createElement('img');
-              img.setAttribute('src', fileURL);
-              img.style.maxWidth = '100%';
-              img.style.maxHeight = '100%';
-              img.style.display = 'block';
-              img.style.margin = 'auto';
-              modalContent.appendChild(img);
-            } else {
-              console.log('Formato de contenido no compatible');
-            }
-          } else {
-            console.log('No se encontró modalContent en el DOM');
-          }
-        });
-      },*/
       onResetEdit() {
         this.editing = false
       },

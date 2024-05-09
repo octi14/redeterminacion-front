@@ -17,13 +17,13 @@
         </div>
         <!--Datos de facturas-->
         <div class="row justify-content-center">
-          <b-col v-for="(periodo, index) in tramite.status" :key="index" class="col-md-3 col-sm-8 mt-4 mx-2">
+          <b-col v-for="(periodo, index) in periodos" :key="index" class="col-md-3 col-sm-8 mt-4 mx-2">
               <AbiertoAnualAdminCard
               :id="index"
-              :periodo="index"
-              :estado="periodo"
-              :fecha="tramite.fechasCarga[index]"
-              :observaciones="facturas.observaciones"
+              :periodo="periodo.periodo"
+              :estado="periodo.estado"
+              :fecha="periodo.fecha"
+              :observaciones="periodo.observaciones"
               />
           </b-col>
         </div>
@@ -57,6 +57,126 @@
           'Correcto': 'text-success',
         },
         periodos: [
+          {
+                id: 1001,
+                periodo: 1,
+                estado: 1,
+                fecha: '01/05/2024',
+                observaciones: '',
+                maxDate: '--/--/--'
+            },
+            {
+                id: 1002,
+                periodo: 2,
+                estado: 2,
+                fecha: '04/05/2024',
+                observaciones: '',
+                maxDate: '--/--/--'
+            },  
+            {
+                id: 1003,
+                periodo: 0,
+                estado: 3,
+                fecha: '06/05/2024',
+                observaciones: '',
+                maxDate: '--/--/--'
+            },            
+            { 
+                id: 1004,
+                periodo: 2,
+                estado: 4,
+                fecha: '06/05/2024',
+                observaciones: 'observacion ASDF',
+                maxDate: '--/--/--'
+            },
+            {
+                id: 1005,
+                periodo: 0,
+                estado: 5,
+                fecha: '11/11/2024',
+                observaciones: '',
+                maxDate: '--/--/--'
+            },
+            {
+                id: 1006,
+                periodo: 1,
+                estado: 6,
+                fecha: '06/05/2024',
+                observaciones: '',
+                maxDate: '--/--/--'
+            },
+            {
+                id: 1007,
+                periodo: 2,
+                estado: 7,
+                fecha: '06/05/2024',
+                observaciones: '',
+                maxDate: '--/--/--'
+            },
+            {
+                id: 1008,
+                periodo: 2,
+                estado: 8,
+                fecha: '06/05/2024',
+                observaciones: '',
+                maxDate: '--/--/--'
+            },
+            {
+                id: 1009,
+                periodo: 2,
+                estado: 9,
+                fecha: '06/05/2024',
+                observaciones: '',
+                maxDate: '--/--/--'
+            },
+            {
+                id: 1010,
+                periodo: 2,
+                estado: 10,
+                fecha: '06/05/2024',
+                observaciones: '',
+                maxDate: '--/--/--'
+            },
+            {
+                id: 1011,
+                periodo: 2,
+                estado: 11,
+                fecha: '06/05/2024',
+                observaciones: '',
+                maxDate: '--/--/--'
+            },
+            {
+                id: 1012,
+                periodo: 2,
+                estado: 12,
+                fecha: '06/05/2024',
+                observaciones: '',
+                maxDate: '--/--/--'
+            },
+            {
+                id: 1013,
+                periodo: 2,
+                estado: 13,
+                fecha: '06/05/2024',
+                observaciones: '',
+                maxDate: '--/--/--'
+            },
+            {
+                id: 1014,
+                periodo: 2,
+                estado: 14,
+                fecha: '06/05/2024',
+                observaciones: '',
+                maxDate: '--/--/--'
+            },
+            {
+                id: 1015,
+                periodo: 2,
+                estado: 15,
+                fecha: '06/05/2024',
+                observaciones: '',
+                maxDate: '--/--/--'
+            }
         ],
         showRectificacion: false,
         showPrevApprove: false,

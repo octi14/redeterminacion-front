@@ -3,113 +3,124 @@
     <transition name="flip">
     <b-card id="aaCard" ref="card" class="abierto-anual-card" style="max-width: 20rem;">
         <div class="icon-container">
-            <b-icon-check-circle-fill v-if="estadoIcono ==='success'" scale="4" variant="success"></b-icon-check-circle-fill>
+            <b-icon-arrow-up-circle-fill v-if="estadoIcono ==='habilitado-subir'" scale="4" variant="warning"></b-icon-arrow-up-circle-fill>
+            <b-icon-clock-history v-else-if="estadoIcono ==='esperando-periodo'" scale="4" variant="warning"></b-icon-clock-history>
             <b-icon-arrow-clockwise v-else-if="estadoIcono ==='loading'" scale="5" animation="spin" variant="success"></b-icon-arrow-clockwise>
-            <b-icon-x-circle-fill v-else-if="estadoIcono ==='invalid'" scale="5" variant="danger"></b-icon-x-circle-fill>
-            <b-icon-arrow-up-circle-fill v-else-if="estadoIcono ==='available'" scale="4" variant="warning"></b-icon-arrow-up-circle-fill>
-            <b-iconstack scale="4" v-else-if="estadoIcono ==='disabled'">
-                <!-- <b-icon stacked icon="alarm" variant="dark" scale="0.5" shift-v="-1px"></b-icon> -->
-                <!-- <b-icon stacked icon="clock-history" variant="dark" scale="0.5" shift-v="-1px"></b-icon> -->
-                <b-icon stacked icon="hourglass-split" variant="dark" scale="0.5" shift-v="-1px"></b-icon>
-                <b-icon stacked icon="calendar" variant="dark"></b-icon>
-            </b-iconstack>
-            <b-iconstack scale="4" v-else-if="estadoIcono ==='validating'">
-                <!-- <b-icon stacked icon="alarm" variant="dark" scale="0.5" shift-v="-1px"></b-icon> -->
-                <!-- <b-icon stacked icon="clock-history" variant="dark" scale="0.5" shift-v="-1px"></b-icon> -->
-                <b-icon stacked icon="list-task" variant="success" scale="0.5" shift-v="-1px"></b-icon>
-                <b-icon stacked icon="clipboard" variant="success"></b-icon>
-                <b-icon stacked icon="search" variant="dark" scale="0.75" shift-v="-2px" animation="cylon" styl></b-icon>
+            <b-icon-x-circle-fill v-else-if="estadoIcono ==='incorrecto'" scale="5" variant="danger"></b-icon-x-circle-fill>
+            <b-icon-check-circle-fill v-else-if="estadoIcono ==='correcto'" scale="4" variant="success"></b-icon-check-circle-fill>
+            <b-iconstack scale="4" v-else-if="estadoIcono ==='revision'">
+                <b-icon stacked icon="list-task" variant="warning" scale="0.5" shift-v="-1px"></b-icon>
+                <b-icon stacked icon="clipboard" variant="warning"></b-icon>
+                <b-iconstack stacked shift-v="-7px" shift-h="7px">
+                    <b-icon stacked icon="circle-fill" scale="0.35" shift-h="-1px" shift-v="1px" style="color: white;"></b-icon>
+                    <b-icon stacked icon="search" variant="warning" scale="0.5"></b-icon>
+                </b-iconstack>
             </b-iconstack>
         </div>
         <div class="periodo-header">
-            <b-card-text><h2>Período {{ periodo }}</h2></b-card-text>
+            <b-card-text><h2>Período {{ periodo + 1 }}</h2></b-card-text>
             <b-card-text><h3>{{ periodoTexto }}</h3></b-card-text>
         </div>
         <b-card-text v-if="estadoActual == 1" class="periodo-esperando-card">
         <!-- estadoActual == 1 => DESHABILITADO PARA SUBIR PORQUE NO ES EL MOMENTO --> 
             <b-row>
-                <b-col class="li-row texto-exp"><b>Todavía no está habilitada la carga de documentación para este período.</b></b-col>
+                <b-col class="li-row"><p class="texto-exp"><b>Todavía no está habilitada la carga de documentación para este período.</b></p></b-col>
             </b-row>
         </b-card-text>
-        <b-card-text v-else-if="estadoActual == 2" class="ticket-disabled-card">
+        <b-card-text v-else-if="estadoActual == 2" class="ticket-revision-card">
         <!-- estadoActual == 2 => DESHABILITADO PARA SUBIR POR OTROS MOTIVOS -->         
+            <b-row class="envio-ok">
+                <b-col><p class="sub-texto-exp">La documentación ha subido con éxito.</p></b-col>
+            </b-row>
+            <b-row class="importante-box">
+                <b-col><p><b>En el curso de la semana ARVIGE verificará que la factura cargada sea correcta.</b></p></b-col>
+            </b-row>
             <b-row>
-                <b-col class="li-row texto-exp"><b>GAME OVER <br />TE PORTASTE MAL Y FUISTE CASTIGADO.</b></b-col>
+                <b-col>
+                    <div class="li-row"><b-icon-exclamation-circle variant="dark" font-scale="1" shift-v="-2" class="li-icon"></b-icon-exclamation-circle><p class="li-content titulo-exp">Si la factura presenta errores</p></div>
+                    <div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1"></b-icon-caret-right-fill><p class="li-content texto-exp">Recibirás una <b>notificación a tu Domicilio Fiscal Electrónico</b> (DFE) indicando fecha y farma de <b>rectificación</b>.</p></div>
+                    <div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1"></b-icon-caret-right-fill><p class="li-content texto-exp"><b>Si aún no tenés DFE</b>, podés <a href="#" class="icon-green">tramitarlo aquí</a>. En caso contrario, <b>no se te notificará el error</b> y deberás <b>revisar periodicamente la información en esta página</b> (volviendo a introducir los datos del comercio).</p></div>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col>
+                    <div class="li-row"><b-icon-exclamation-circle variant="dark" font-scale="1" shift-v="-2" class="li-icon"></b-icon-exclamation-circle><p class="li-content titulo-exp">Si la factura es correcta</p></div>
+                    <div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1"></b-icon-caret-right-fill><p class="li-content texto-exp">Si el archivo no presenta errores, no recibirás notificación de confirmación.</p></div>
+                </b-col>
             </b-row>
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 3" class="ticket-ok-card">
         <!-- estadoActual == 3 => DESHABILITADO PARA SUBIR POR ARCHIVO CORRECTO --> 
             <b-row>
-                <b-col class="li-row texto-exp"><b>La factura cargada el día {{ fecha }} es correcta.</b></b-col>
+                <b-col class="li-row"><p class="texto-exp"><b>La factura cargada el día {{ fecha }} es correcta.</b></p></b-col>
             </b-row>
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 4" class="ticket-bad-card">
         <!-- estadoActual == 4 => DESHABILITADO PARA SUBIR POR ARCHIVO RECHAZADO --> 
             <b-row>
-                <b-col class="li-row texto-exp"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill>La factura cargada el día {{ fecha }} es <b>incorrecta</b> porque <b>{{ observaciones }}</b></div></b-col>
+                <b-col><div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-2"></b-icon-caret-right-fill><p class="li-content sub-texto-exp">La <b>carga</b> realizada el día {{ fecha }} es <b>incorrecta</b>, porque <b>{{ observaciones }}.</b></p></div></b-col>
             </b-row>
             <b-row>
-                <b-col class="li-row texto-exp"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill><b>Rectificación:</b> Se habilitará la rectificación del documento el {{ maxDate }}</div></b-col>
+                <b-col><div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-2"></b-icon-caret-right-fill><p class="li-content sub-texto-exp">Recibirás una notificación a tu Domicilio Fiscal Electrónico (DFE) indicando fecha y forma de rectificación.</p></div></b-col>
+            </b-row>
+            <b-row>
+                <b-col><div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-2"></b-icon-caret-right-fill><p class="li-content sub-texto-exp">Si aún no tenés DFE, podés <a href="#" class="icon-green">tramitarlo aquí</a>. En caso contrario, se te notificará el error y deberás revisar periódicamente está página para obtener dicha información.</p></div></b-col>
             </b-row>
         <!-- Aquí puedes agregar más campos si los necesitas -->
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 5" class="periodo-vencido-card">
         <!-- estadoActual == 5 => DESHABILITADO PARA SUBIR POR FECHA VENCIDA -->         
             <b-row>
-                <b-col class="li-row texto-exp"><b>El plazo de carga de documentación para este período ha concluido.</b></b-col>
+                <b-col><p class="texto-exp"><b>El plazo de carga de documentación para este período ha concluido.</b></p></b-col>
+            </b-row>
+            <b-row>
+                <b-col><p class="sub-texto-exp">Recibirás una notificación a tu Domicilio Fiscal Electrónico (DFE) indicando fecha y forma de rectificación.</p></b-col>
+            </b-row>
+            <b-row>
+                <b-col class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-3"></b-icon-caret-right-fill><p class="li-content mini-texto-exp"><b>Si aún no tenés DFE</b>, podés <a href="#" class="icon-green">tramitarlo aquí</a>. En caso contrario <b>no se te notificará el error</b> y deberás <b>revisar periodicamente la información en esta página</b> (Volviendo a introducir los datos del comercio).</p></b-col>
             </b-row>   
         </b-card-text>
-        <b-card-text v-else-if="estadoActual == 6">
+        <b-card-text v-else-if="estadoActual == 6" class="upload-card">
             <!-- estadoActual == 6 => HABILITADO PARA SUBIR POR PERIODO CORRECTO -->        
             <b-row>
-                <b-col><div class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> Cargá aquí una factura emitida durante los meses indicados.</div></div></b-col>
+                <b-col><div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-3"></b-icon-caret-right-fill><p class="texto-exp li-content"> Cargá aquí una factura emitida durante <b>el mes de {{ periodoTexto }}</b>.</p></div></b-col>
             </b-row>
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 7" class="rectificacion-card">
         <!-- estadoActual == 7 => HABILITADO PARA SUBIR POR RECTIFICACIÓN -->  
-        <b-row>
-            <b-col class="li-row texto-exp"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill>La factura cargada el día {{ fecha }} es <b>incorrecta</b> porque <b>{{ observaciones }}</b></div></b-col>
-        </b-row>
-        <b-row>
-            <b-col class="li-row texto-exp"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill><b>Rectificación:</b> Cargá nuevamente una factura emitida durante los meses indicados.<br />Tenés tiempo hasta el {{ maxDate }}</div></b-col>
-        </b-row>
+            <b-row class="importante-box">
+                <b-col><p><b>Rectificación</b></p></b-col>
+            </b-row>      
+            <b-row>
+                <b-col><div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-3"></b-icon-caret-right-fill><p class="texto-exp li-content"> Cargá aquí una factura emitida durante <b>el mes de {{ periodoTexto }}</b>.</p></div></b-col>
+            </b-row>
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 8" class="ticket-enviando-card">
-            <!-- estadoActual == 8 => ESPERANDO CONFIRMACION DE UPLOAD -->      
-            <b-row class="texto-exp">
-                <b-col class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> <b>Enviando archivo.</b> </div></b-col>
-            </b-row>
-            <b-row class="texto-exp">
-                <b-col class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> <b>Esto puede tardar unos minutos.</b> </div></b-col>
-            </b-row>
-            <b-row class="texto-exp">
-                <b-col class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> <b>No cierres esta ventana.</b> </div></b-col>
+            <!-- estadoActual == 8 => ESPERANDO CONFIRMACION DE UPLOAD -->     
+            <b-row>
+                <b-col>
+                    <p class="texto-exp"><b>Tu archivo se está cargando, esto puede demorar unos minutos.</b></p>
+                    <p class="sub-texto-exp">Por favor, no cierres esta página.</p>
+                </b-col>
             </b-row>
             <!-- Aquí puedes agregar más campos si los necesitas -->
         </b-card-text>
-        <b-card-text v-else-if="estadoActual == 9">
-        <!-- estadoActual == 9 => CONFIRMACION DE UPLOAD CORRECTA --> 
-            <b-row class="texto-exp">
-                <b-col class="li-row"><h2 class="icon-green">Archivo enviado correctamente!</h2></b-col>
+        <b-card-text v-else-if="estadoActual == 9" class="ticket-enviando-fail-card">
+        <!-- estadoActual == 9 => CONFIRMACION DE UPLOAD INCORRECTA: ERROR --> 
+            <b-row>
+                <b-col>
+                    <p class="texto-exp"><b>Error enviando el archivo!</b></p>
+                </b-col>
             </b-row>
-            <b-row class="texto-exp">
-                <b-col class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> Nos comunicaremos a traves del DFE declarado para este legajo comercial. </div></b-col>
+            <b-row>
+                <b-col>
+                    <p class="sub-texto-exp"> Por favor, revisa tu conexión a internet y volvé a intentarlo en unos minutos.</p>
+                </b-col>
             </b-row>
-            <b-row class="texto-exp">
-                <b-col class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> En caso de no tener DFE vas a tener que volver a revisar cada tanto amigo. </div></b-col>
-            </b-row>
-            <!-- Aquí puedes agregar más campos si los necesitas -->
-        </b-card-text>
-        <b-card-text v-else-if="estadoActual == 10">
-        <!-- estadoActual == 10 => CONFIRMACION DE UPLOAD INCORRECTA: ERROR --> 
-            <b-row class="texto-exp">
-                <b-col class="li-row"><h2 class="icon-orange">Error enviando el archivo!</h2></b-col>
-            </b-row>
-            <b-row class="texto-exp">
-                <b-col class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> Por favor, revisa tu conexión a internet y volvé a intentarlo en unos minutos. </div></b-col>
-            </b-row>
-            <b-row class="texto-exp">
-                <b-col class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange" font-scale="1"></b-icon-caret-right-fill> Si el problema persiste comunicarse con <a href="#" class="icon-green">ARVIGE</a>. </div></b-col>
+            <b-row>
+                <b-col>
+                    <p class="mini-texto-exp"> Si el problema persiste comunicarse con <a href="#" class="icon-green">ARVIGE</a>.</p>
+                </b-col>
             </b-row>
         </b-card-text>
         <div v-if="estadoActual == 6 || estadoActual == 7"  >
@@ -169,7 +180,6 @@
         return {
         archivo: null,
         futuroEstado: null,
-        estadoActual: this.estado,
         
         recaptchaSiteKey: "6LfNxggoAAAAANyfZ5a2Lg_Rx28HX_lINDYX7AU-",
         captchaCompleted: null,
@@ -177,6 +187,10 @@
 
         showPopupCaptcha: false,
         contenedor: null,
+        maxDate: "12/05/2024",
+        minDate: "3/05/2024",
+        isRectificacion: false,
+        periodoActivo: false,
         };
     },
     computed: {
@@ -190,27 +204,59 @@
             ];
 
             // Asegúrate de que el periodo esté dentro del rango del array
-            if (this.periodo >= 1 && this.periodo <= periodosTextos.length) {
-                return periodosTextos[this.periodo - 1];
+            if (this.periodo >= 0 && this.periodo <= periodosTextos.length) {
+                return periodosTextos[this.periodo];
             } else {
                 // Si el periodo está fuera de rango, retorna un mensaje de error o un valor por defecto
                 return "Periodo no válido";
             }
         },
-        estadoIcono(){
-            switch(this.estadoActual){
-                case 1: return 'disabled';
-                case 2: return 'invalid';
-                case 3: return 'success';
-                case 4: return 'invalid';
-                case 5: return 'invalid';
-                case 6: return 'available';
-                case 7: return 'available';
-                case 8: return 'loading';
-                case 9: return 'validating';
-                case 10: return 'invalid';
-            }        
+        estadoActual(){
+            //const now = new Date().toLocaleDateString("Es-AR");
+            /*
+            const now = this.fecha;
+            console.log("FECHA ACTUAL: " + now);
+            console.log("this.maxDate: " + this.maxDate);
+            console.log("this.maxDate: " + this.minDate);
+            switch(this.estado){
+                case "Correcto": {
+                        return 3;
+                    };
+                case "Incorrecto": {
+                        if (this.esRectificacion)
+                            return 7;
+                        return 4;
+                    };
+                case "Incompleto": {
+                        if (now > this.maxDate)
+                            return 5;
+                        if (now < this.minDate)
+                            return 1;
+                        return 6;
+                    };
+                case "Revision":{
+                    return 2;
+                } 
+            }
+            */
+           return this.estado;
         },
+        estadoIcono(){            
+            switch(this.estadoActual){
+                case 1: return 'esperando-periodo';
+                case 2: return 'revision';
+                case 3: return 'correcto';
+                case 4: return 'incorrecto';
+                case 5: return 'incorrecto';
+                case 6: return 'habilitado-subir';
+                case 7: return 'habilitado-subir';
+                case 8: return 'loading';
+                case 9: return 'incorrecto';
+            }
+        },
+        facturas(){
+            return this.$store.state.facturas.all
+        }
     },
     validations: {
         archivo: {
@@ -313,13 +359,13 @@
                   
                     this.playAnimation(() => {
                             console.log("playiing animation: ");
-                    },9);
+                    },2);
                   console.log(response);
               }).catch(error => {
                   // Manejar el error
                     this.playAnimation(() => {
                             console.log("playiing animation: ");
-                    },10);
+                    },9);
                   console.error(error);
               });
           }
@@ -366,7 +412,10 @@ h3{
 }
 #aaCard{
     min-height: 725px;
-    max-width: 22rem !important;
+    max-width: 26rem !important;
+}
+#aaCard .card-body{
+    padding: 1rem 3rem;
 }
 .modal-content div{
     text-align: center;
@@ -388,11 +437,11 @@ h3{
 }
 .abierto-anual-card p{
     color: #353535;
-    font-size: 20px;
+    font-size: 18px;
 }
 .text-danger{
     color: red;
-    font-size: 12px;
+    font-size: 10px;
 }
 .icon-container{
     margin: 3rem auto;
@@ -427,29 +476,63 @@ h3{
   display: flex;
   width: 100%;
 }
-.texto-exp {
-    margin-top: 1rem;
-    text-align: left;
+.periodo-esperando-card, .ticket-ok-card, .ticket-enviando-card, .ticket-enviando-fail-card{
+    margin-top: 4rem;
+}
+.rectificacion-card .importante-box p{
+    text-align: center;
+    margin: auto;
+}
+.rectificacion-card .importante-box b, .ticket-revision-card .importante-box p{
+    background-color: #EAE89B;
+    text-align: center;
+    font-size: 22px;
+    padding: 1rem 0.5rem;
+}
+.ticket-revision-card .importante-box p{
+    margin: inherit auto;
     font-size: 20px;
 }
-.rectificacion-card .texto-exp{
-    font-size: 16px;
+.ticket-revision-card .row, .ticket-bad-card .row, .periodo-vencido-card .row, .upload-card .row, .rectificacion-card .row, .ticket-enviando-fail-card .row{
+    margin-top: 2rem;
 }
-.periodo-esperando-card .texto-exp, .ticket-ok-card .texto-exp, .periodo-vencido-card .texto-exp, .ticket-disabled-card .texto-exp{
-    font-size: 24px;
+.ticket-revision-card .texto-exp, .ticket-revision-card .titulo-exp{
+    margin: 0 auto;
+}
+.ticket-revision-card .titulo-exp{
+    text-decoration: underline;
+    font-weight: 600;
+    width: 100%;
+}
+.periodo-esperando-card .texto-exp, .ticket-ok-card .texto-exp, .periodo-vencido-card .texto-exp, .ticket-enviando-fail-card .texto-exp{
     text-align: center;
-    margin: 4rem 8% 0;
 }
-.ticket-enviando-card .texto-exp{
-    font-size: 24px;
+.periodo-esperando-card .texto-exp, .ticket-ok-card .texto-exp, .periodo-vencido-card .texto-exp, .ticket-enviando-card .texto-exp, .ticket-enviando-fail-card .texto-exp{
+    font-size: 22px;
+}
+.ticket-revision-card .titulo-exp, .ticket-enviando-card .sub-texto-exp, .periodo-vencido-card .sub-texto-exp, .ticket-bad-card .sub-texto-exp, .ticket-enviando-fail-card .sub-texto-exp {
+    font-size: 15px;
+}
+.periodo-vencido-card .sub-texto-exp, .ticket-enviando-fail-card .sub-texto-exp{
+    text-align: center;
+}
+.ticket-enviando-fail-card .mini-texto-exp{
+    font-size: 12px;
+    text-align: center;
+}
+.ticket-revision-card .texto-exp, .periodo-vencido-card .mini-texto-exp{
+    font-size: 12px;
     text-align: left;
-    margin: 2rem auto 1rem;
 }
-.btn-abajo-container {
-    width: 80%;
-    position: absolute;
-    bottom: 15px;
-    left:10%;
+.ticket-enviando-card .row{
+    text-align: center;
+}
+.ticket-enviando-card .sub-texto-exp{
+    margin-top: 2rem;
+}
+.btn-abajo-container, .ticket-enviando-card, .rectificacion-card, .periodo-esperando-card {
+    margin-left: 5%;
+    margin-right: 5%;
 }
 .btn-abajo-container button{
     margin-top: 2rem;

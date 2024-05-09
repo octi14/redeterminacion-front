@@ -2,7 +2,7 @@ const formatDocs = (FileResponse) => {
     const formattedDocs = []
     for (const key in FileResponse) {
       if (FileResponse.hasOwnProperty(key)) {
-        formattedDocs[key] = FileResponse[key];
+        formattedDocs[key] = FileResponse[key]; 
       }
     }
     return formattedDocs;

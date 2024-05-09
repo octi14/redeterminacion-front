@@ -1,7 +1,7 @@
 const formatFile = (FileResponse) => ({
     id: FileResponse._id,
     cuit: FileResponse.cuit,
-    nroLegajo: FileResponse.nroLegajo,
+    nroLegajo: FileResponse.nroLegajo, 
     dfe: FileResponse.dfe,
     status: FileResponse.status,
     observaciones: FileResponse.observaciones,

@@ -18,12 +18,11 @@
           </div>
           <b-col v-for="(periodo, index) in periodos" :key="index" cols="12" sm="8" md="6" lg="6" xl="4">
               <AbiertoAnualCard
-              :id="periodo.id"
+              :id="index"
               :periodo="periodo.periodo"
               :estado="periodo.estado"
               :fecha="periodo.fecha"
               :observaciones="periodo.observaciones"
-              :maxDate="periodo.maxDate"
               />
           </b-col>
         </b-row>
@@ -65,6 +64,78 @@ export default {
   data() {
     return {
         periodos: [
+          {
+                id: 1001,
+                periodo: 1,
+                estado: 1,
+                fecha: '01/05/2024',
+                observaciones: '',
+                maxDate: '--/--/--'
+            },
+            {
+                id: 1002,
+                periodo: 2,
+                estado: 2,
+                fecha: '04/05/2024',
+                observaciones: '',
+                maxDate: '--/--/--'
+            },  
+            {
+                id: 1003,
+                periodo: 0,
+                estado: 3,
+                fecha: '06/05/2024',
+                observaciones: '',
+                maxDate: '--/--/--'
+            },            
+            { 
+                id: 1004,
+                periodo: 2,
+                estado: 4,
+                fecha: '06/05/2024',
+                observaciones: '',
+                maxDate: '--/--/--'
+            },
+            {
+                id: 1005,
+                periodo: 0,
+                estado: 5,
+                fecha: '11/11/2024',
+                observaciones: '',
+                maxDate: '--/--/--'
+            },
+            {
+                id: 1006,
+                periodo: 1,
+                estado: 6,
+                fecha: '06/05/2024',
+                observaciones: '',
+                maxDate: '--/--/--'
+            },
+            {
+                id: 1007,
+                periodo: 2,
+                estado: 7,
+                fecha: '06/05/2024',
+                observaciones: '',
+                maxDate: '--/--/--'
+            },
+            {
+                id: 1008,
+                periodo: 2,
+                estado: 8,
+                fecha: '06/05/2024',
+                observaciones: '',
+                maxDate: '--/--/--'
+            },
+            {
+                id: 1009,
+                periodo: 2,
+                estado: 9,
+                fecha: '06/05/2024',
+                observaciones: '',
+                maxDate: '--/--/--'
+            }
             ]
     };
   }

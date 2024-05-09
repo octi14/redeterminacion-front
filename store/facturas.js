@@ -10,7 +10,6 @@ export const actions = {
     const found = await FacturaService.getById(this.$axios, {
       id,
     })
-    console.log(found)
     commit('setAll', found)
   },
 

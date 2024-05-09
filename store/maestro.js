@@ -11,6 +11,13 @@ export const actions = {
     const found = await MaestroService.get(this.$axios)
     commit('setAll', found)
   },
+  async getSingle({commit, state}, { cuit, legajo}){
+    commit('setSingle', [])
+    const found = await MaestroService.getSingle(this.$axios, {
+      cuit, legajo
+    })
+    commit('setSingle', found)
+  },
   async create({ commit, state }, { file }) {
     try {
       const response = await MaestroService.create(this.$axios, { file });
@@ -30,9 +37,9 @@ export const mutations = {
     state.all = filesList
     // [...state.latest, ...filesList]
   },
-  // setSingle(state, singleFile) {
-  //   state.single = singleFile
-  // },
+  setSingle(state, singleFile) {
+    state.single = singleFile
+  },
   // setMany(state, certifList) {
   //   state.certifs = certifList
   // }

@@ -175,7 +175,7 @@
               <label class="form-check-label" for="documentCheckbox">Ya tengo todos los documentos digitalizados y la información requerida.</label>
           </div>
           <div class="text-center mt-3">
-              <nuxt-link :class="{ 'disabled': !documentCheckboxChecked }" :to="{path: '/abierto_anual/form', query: { tramite: tramiteSeleccionado } }">
+              <nuxt-link :class="{ 'disabled': !documentCheckboxChecked }" :to="{path: '/abierto_anual/form'}">
               <b-btn variant="success" :disabled="!documentCheckboxChecked" @click="proceedToForm()" >
                   Aceptar
               </b-btn>
@@ -278,25 +278,6 @@
     isCardExpanded(cardIndex) {
       return this.expandedCards.includes(cardIndex);
     },
-    seleccionarTramite(tramite){
-      // Obtener todas las imágenes de la botonera
-      const imagenes = document.querySelectorAll('.botonera-container img');
-
-      // Iterar sobre cada imagen
-      imagenes.forEach((imagen) => {
-        // Verificar si la imagen actual es la que se ha clickeado
-        if (imagen.id === `btn-${tramite}`) {
-          // Agregar la clase 'selected' a la imagen clickeada
-          imagen.classList.add('selected');
-        } else {
-          // Eliminar la clase 'selected' de las demás imágenes
-          imagen.classList.remove('selected');
-        }
-      });
-      this.expandedCards.forEach((card) => {
-        if( this.isCardExpanded(card)) this.toggleCard(card);
-      });
-    }
   }
   }
   </script>

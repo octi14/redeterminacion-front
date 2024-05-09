@@ -105,6 +105,7 @@
               <div class="layout">
                 <p class="col col-main">
                   <strong>Redeterminación mano de obra </strong>
+                </p>
                   <p class="col col-complementary" role="complementary">
                     <a>$ {{ format(redeterminarManoObra(ponderar(certificado.items[index].contratado - saldoAcumulado(index), obra.ponderacion[2].porcentaje))) }}
                     </a>
@@ -152,9 +153,6 @@
 export default {
   data() {
     return {
-      certificado: null,
-      obra: null,
-
       obraUvi: false,
 
       fechaAnterior: null,
@@ -177,17 +175,23 @@ export default {
       redeterminacion: [],
     }
   },
+  computed: {
+    certificado(){
+      return this.$store.state.certificados.single
+    },
+    obra(){
+      return this.$store.state.obras.single
+    }
+  },
   async fetch() {
     const certificadoId = this.$route.params.id
     await this.$store.dispatch('certificados/getSingle',{
       id: certificadoId,
     })
-    this.certificado = this.$store.state.certificados.single
     const obraId = this.certificado.obra
     await this.$store.dispatch('obras/getSingle', {
       id: obraId,
     })
-    this.obra = this.$store.state.obras.single
     for (var i = 0; i < this.obra.items.length; i++) {
       this.totales.push(0)
     }
@@ -195,8 +199,6 @@ export default {
   },
   fetchOnServer: false,
   activated() {
-    this.certificado = null
-    this.obra = null
     this.$fetch()
   },
   methods: {
@@ -338,6 +340,9 @@ export default {
           return (this.certificado.items[n].contratado * avanceTotal)/100
         }
       }
+    },
+    wait(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
     },
   },
 }

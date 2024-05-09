@@ -312,8 +312,6 @@
           }
 
           const decodedData = atob(documento.data); // Decodificar la data de Base64
-          // Verificar la decodificación Base64
-          console.log('Contenido decodificado:', decodedData);
           const arrayBuffer = new Uint8Array(decodedData.length);
 
           for (let i = 0; i < decodedData.length; i++) {
@@ -321,11 +319,7 @@
           }
 
           const blob = new Blob([arrayBuffer], { type: documento.contentType });
-          // Verificar la creación del Blob
-          console.log('Blob creado:', blob);
           const fileURL = URL.createObjectURL(blob);
-          // Verificar la creación del objeto URL
-          console.log('URL del archivo:', fileURL);
           const newWindow = window.open('', '_blank');
 
           if (!newWindow) return; // Check if the new window was successfully opened.

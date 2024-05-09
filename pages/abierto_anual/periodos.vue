@@ -1,6 +1,11 @@
 <template>
     <div class="page main-background">
         <Banner title="Comercio Abierto Anual"/>
+        <div class="mx-auto text-center">
+          <span v-if="maestro.dfe != '\r'">Tenes DFE</span>
+          <span v-else>No tenes DFE</span>
+        </div>
+
         <b-row class="page-body" align-h="center">
           <div class="section-subtitle">
               <div class="li-row">
@@ -60,6 +65,9 @@ export default {
     tramite(){
       return this.$store.state.abiertoAnual.single
     },
+    maestro(){
+      return this.$store.state.maestro.single[0]
+    }
   },
   data() {
     return {

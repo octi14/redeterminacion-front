@@ -22,13 +22,13 @@
             <b-card-text><h3>{{ periodoTexto }}</h3></b-card-text>
         </div>
         <b-card-text v-if="estadoActual == 1" class="periodo-esperando-card">
-        <!-- estadoActual == 1 => DESHABILITADO PARA SUBIR PORQUE NO ES EL MOMENTO --> 
+        <!-- estadoActual == 1 => DESHABILITADO PARA SUBIR PORQUE NO ES EL MOMENTO -->
             <b-row>
                 <b-col class="li-row"><p class="texto-exp"><b>Todavía no está habilitada la carga de documentación para este período.</b></p></b-col>
             </b-row>
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 2" class="ticket-revision-card">
-        <!-- estadoActual == 2 => DESHABILITADO PARA SUBIR POR OTROS MOTIVOS -->         
+        <!-- estadoActual == 2 => DESHABILITADO PARA SUBIR POR OTROS MOTIVOS -->
             <b-row class="envio-ok">
                 <b-col><p class="sub-texto-exp">La documentación ha subido con éxito.</p></b-col>
             </b-row>
@@ -50,14 +50,14 @@
             </b-row>
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 3" class="ticket-ok-card">
-        <!-- estadoActual == 3 => DESHABILITADO PARA SUBIR POR ARCHIVO CORRECTO --> 
+        <!-- estadoActual == 3 => DESHABILITADO PARA SUBIR POR ARCHIVO CORRECTO -->
             <b-row>
                 <b-col class="li-row"><p class="texto-exp"><b>La factura cargada el día {{ fecha }} es correcta.</b></p></b-col>
             </b-row>
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 4" class="ticket-bad-card">
-        <!-- estadoActual == 4 => DESHABILITADO PARA SUBIR POR ARCHIVO RECHAZADO --> 
-            <b-row>
+        <!-- estadoActual == 4 => DESHABILITADO PARA SUBIR POR ARCHIVO RECHAZADO -->
+            <b-row v-if="observaciones && observaciones != ''">
                 <b-col><div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-2"></b-icon-caret-right-fill><p class="li-content sub-texto-exp">La <b>carga</b> realizada el día {{ fecha }} es <b>incorrecta</b>, porque <b>{{ observaciones }}.</b></p></div></b-col>
             </b-row>
             <b-row>
@@ -69,7 +69,7 @@
         <!-- Aquí puedes agregar más campos si los necesitas -->
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 5" class="periodo-vencido-card">
-        <!-- estadoActual == 5 => DESHABILITADO PARA SUBIR POR FECHA VENCIDA -->         
+        <!-- estadoActual == 5 => DESHABILITADO PARA SUBIR POR FECHA VENCIDA -->
             <b-row>
                 <b-col><p class="texto-exp"><b>El plazo de carga de documentación para este período ha concluido.</b></p></b-col>
             </b-row>
@@ -78,25 +78,25 @@
             </b-row>
             <b-row>
                 <b-col class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-3"></b-icon-caret-right-fill><p class="li-content mini-texto-exp"><b>Si aún no tenés DFE</b>, podés <a href="#" class="icon-green">tramitarlo aquí</a>. En caso contrario <b>no se te notificará el error</b> y deberás <b>revisar periodicamente la información en esta página</b> (Volviendo a introducir los datos del comercio).</p></b-col>
-            </b-row>   
+            </b-row>
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 6" class="upload-card">
-            <!-- estadoActual == 6 => HABILITADO PARA SUBIR POR PERIODO CORRECTO -->        
+            <!-- estadoActual == 6 => HABILITADO PARA SUBIR POR PERIODO CORRECTO -->
             <b-row>
                 <b-col><div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-3"></b-icon-caret-right-fill><p class="texto-exp li-content"> Cargá aquí una factura emitida durante <b>el mes de {{ periodoTexto }}</b>.</p></div></b-col>
             </b-row>
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 7" class="rectificacion-card">
-        <!-- estadoActual == 7 => HABILITADO PARA SUBIR POR RECTIFICACIÓN -->  
+        <!-- estadoActual == 7 => HABILITADO PARA SUBIR POR RECTIFICACIÓN -->
             <b-row class="importante-box">
                 <b-col><p><b>Rectificación</b></p></b-col>
-            </b-row>      
+            </b-row>
             <b-row>
                 <b-col><div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-3"></b-icon-caret-right-fill><p class="texto-exp li-content"> Cargá aquí una factura emitida durante <b>el mes de {{ periodoTexto }}</b>.</p></div></b-col>
             </b-row>
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 8" class="ticket-enviando-card">
-            <!-- estadoActual == 8 => ESPERANDO CONFIRMACION DE UPLOAD -->     
+            <!-- estadoActual == 8 => ESPERANDO CONFIRMACION DE UPLOAD -->
             <b-row>
                 <b-col>
                     <p class="texto-exp"><b>Tu archivo se está cargando, esto puede demorar unos minutos.</b></p>
@@ -106,7 +106,7 @@
             <!-- Aquí puedes agregar más campos si los necesitas -->
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 9" class="ticket-enviando-fail-card">
-        <!-- estadoActual == 9 => CONFIRMACION DE UPLOAD INCORRECTA: ERROR --> 
+        <!-- estadoActual == 9 => CONFIRMACION DE UPLOAD INCORRECTA: ERROR -->
             <b-row>
                 <b-col>
                     <p class="texto-exp"><b>Error enviando el archivo!</b></p>
@@ -125,13 +125,13 @@
         </b-card-text>
         <div v-if="estadoActual == 6 || estadoActual == 7"  >
             <div class="btn-abajo-container">
-            <div v-if="$v.archivo.$error" class="text-danger"><b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe seleccionar un archivo válido.</div>  
+            <div v-if="$v.archivo.$error" class="text-danger"><b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe seleccionar un archivo válido.</div>
             <b-form-file
                 v-model="archivo"
-                placeholder="Selecciona un archivo"        
+                placeholder="Selecciona un archivo"
                 :state="!$v.archivo.$error && archivo ? true : null"
                 accept="image/*, .pdf"
-                :max-size="5 * 1024 * 1024" 
+                :max-size="5 * 1024 * 1024"
                 class="mt-3"
                 style="font-size: 16px;"
                 browse-text="Examinar"
@@ -154,14 +154,14 @@
                 <div v-if="captchaError" class="text-danger">
                     <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Por favor completa la verificación para continuar.
                 </div>
-            </b-form-group> 
+            </b-form-group>
             <b-button @click="enviarArchivo" variant="success" :disabled="!captchaCompleted" class="mt-3 float-right"><span v-if="estadoActual == 6 ">Enviar</span><span v-else><b-icon-exclamation-circle></b-icon-exclamation-circle> Rectificar</span></b-button>
         </div>
     </b-modal>
     </div>
 </template>
-  
-  <script>  
+
+  <script>
   import { requiredIf } from 'vuelidate/lib/validators';
   export default {
     props: {
@@ -179,15 +179,15 @@
         return {
         archivo: null,
         futuroEstado: null,
-        
+
         recaptchaSiteKey: "6LfNxggoAAAAANyfZ5a2Lg_Rx28HX_lINDYX7AU-",
         captchaCompleted: null,
         captchaError: false,
 
         showPopupCaptcha: false,
         contenedor: null,
-        maxDate: "12/05/2024",
-        minDate: "3/05/2024",
+        maxDate: ["31/05/2024","31/08/2024","31/10/2024"],
+        minDate: ["1/05/2024","1/08/2024", "1/10/2024"],
         isRectificacion: false,
         };
     },
@@ -209,35 +209,35 @@
                 return "Periodo no válido";
             }
         },
-        estadoActual(){
-            const now = new Date().toLocaleDateString("Es-AR");
-            console.log("FECHA ACTUAL: " + now);
-            console.log("this.maxDate: " + this.maxDate);
-            console.log("this.maxDate: " + this.minDate);
-            console.log("this.estado: " + this.estado);
-            switch(this.estado){
-                case "Correcto": {
-                        return 3;
-                    };
-                case "Incorrecto": {
-                        if (this.esRectificacion)
-                            return 7;
-                        return 4;
-                    };
-                case "Incompleto": {
-                        if (now > this.maxDate)
-                            return 5;
-                        if (now < this.minDate)
-                            return 1;
-                        return 6;
-                    };
-                case "En revisión":{
-                    return 2;
-                } 
-            }
-           return 0;
-        },
-        estadoIcono(){            
+        estadoActual() {
+          const now = new Date();
+          console.log("FECHA ACTUAL: " + now.toLocaleDateString("Es-AR"));
+          console.log("this.maxDate: " + this.maxDate[this.periodo]);
+          console.log("this.minDate: " + this.minDate[this.periodo]);
+          console.log("this.estado: " + this.estado);
+
+          switch (this.estado) {
+              case "Correcto":
+                  return 3;
+              case "Incorrecto":
+                  if (this.esRectificacion) return 7;
+                  return 4;
+              case "Incompleto":
+                const now = new Date();
+                const maxDateParts = this.maxDate[this.periodo].split('/');
+                const minDateParts = this.minDate[this.periodo].split('/');
+                const maxDate = new Date(maxDateParts[2], maxDateParts[1] - 1, maxDateParts[0]);
+                const minDate = new Date(minDateParts[2], minDateParts[1] - 1, minDateParts[0]);
+                if (now > maxDate) return 5;
+                if (now <= maxDate && now <= minDate) return 1;
+                return 6;
+              case "En revisión":
+                  return 2;
+              default:
+                  return 0;
+          }
+      },
+        estadoIcono(){
             switch(this.estadoActual){
                 case 1: return 'esperando-periodo';
                 case 2: return 'revision';
@@ -265,8 +265,8 @@
         }
     },
     mounted() {
-    
-    
+
+
     this.contenedor = document.getElementById('aaCard');
 
     // Detecta el evento de inicio de la animación
@@ -293,7 +293,7 @@
             });
         },
         openCaptchaPopup(){
-            this.$v.$touch(); 
+            this.$v.$touch();
             if(!this.$v.archivo.$invalid){
                 this.showPopupCaptcha = true;
             }
@@ -304,8 +304,8 @@
         isCaptchaOK(){
             console.log("isCaptchaOK: ");
             console.log("this.id: " + this.id);
-            this.captchaError = (typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0);           
-            console.log("this.captchaError: " + this.captchaError);         
+            this.captchaError = (typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0);
+            console.log("this.captchaError: " + this.captchaError);
             return this.captchaError;
         },
         blobToBase64(blob) {
@@ -325,7 +325,7 @@
             },8);
             this.$v.$touch();
             if (!this.$v.archivo.$invalid && this.isCaptchaOK()) {
-                const id = this.tramite;
+                const id = this.tramite.id;
 
               let facturaParaGuardar = {};
 
@@ -357,9 +357,9 @@
                   periodo: this.periodo,
               }).then(response => {
                   // Manejar la respuesta del backend
-                  
+
                     this.playAnimation(() => {
-                            console.log("playiing animation: ");
+                            console.log(response + "playiing animation: 2 ");
                     },2);
                   console.log(response);
               }).catch(error => {
@@ -390,7 +390,7 @@
         }
     }
 }
-  
+
   </script>
 <style scoped>
 h2, h3{

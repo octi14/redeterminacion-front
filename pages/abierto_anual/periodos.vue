@@ -2,7 +2,7 @@
     <div class="page main-background">
         <Banner title="Comercio Abierto Anual"/>
         <div class="mx-auto text-center">
-          <span v-if="maestro.dfe != '\r'">Tenes DFE</span>
+          <span v-if="maestro && maestro.dfe != '\r'">Tenes DFE</span>
           <span v-else>No tenes DFE</span>
         </div>
 
@@ -27,7 +27,7 @@
               :periodo="index"
               :estado="periodo"
               :fecha="tramite.fechasCarga[index]"
-              :observaciones="tramite.observaciones"
+              :observaciones="tramite.facturas[index] ? tramite.facturas[index].observaciones : null"
               />
           </b-col>
         </b-row>

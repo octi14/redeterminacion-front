@@ -1,6 +1,6 @@
 <template>
     <transition name="flip">
-    <b-card id="aaCard" ref="card" class="abierto-anual-card" style="max-width: 20rem;">
+    <b-card id="aaCard" ref="card" class="abierto-anual-card shadow-card" style="max-width: 20rem;">
         <div class="icon-container">
             <b-icon-clock-history v-if="estadoIcono ==='esperando-periodo'" scale="4" variant="warning"></b-icon-clock-history>
             <b-icon-x-circle-fill v-else-if="estadoIcono ==='incorrecto'" scale="5" variant="danger"></b-icon-x-circle-fill>
@@ -53,7 +53,7 @@
                 <b-col><p class="sub-texto-exp">Estado: Incorrecto</p></b-col>
             </b-row>
             <b-row>
-                <b-col><div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-3px"></b-icon-caret-right-fill><p class="texto-exp li-content">La <b>carga</b> realizada el día {{ fecha }} es <b>incorrecta</b>, porque <b>{{ motivo }}</b>.</p></div></b-col>
+                <b-col><div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-3px"></b-icon-caret-right-fill><p class="texto-exp li-content">La <b>carga</b> realizada el día {{ fecha }} es <b>incorrecta</b>, porque <b>{{ motivo ? motivo : tramite.facturas[periodo].observaciones }}</b>.</p></div></b-col>
             </b-row>
             <b-row>
                 <b-col><div class="importante-box">
@@ -90,7 +90,7 @@
         <!-- estadoActual == 7 => HABILITADO PARA SUBIR POR RECTIFICACIÓN -->
             <b-row class="importante-box">
                 <b-col><p><b>Rectificación</b></p></b-col>
-            </b-row>   
+            </b-row>
             <b-row>
                 <b-col><p class="texto-exp"><b>Aún no se han cargado documentos.</b></p></b-col>
             </b-row>
@@ -99,14 +99,14 @@
         <!-- estadoActual == 8 => EN REVISION POR RECTIFICACION -->
             <b-row class="importante-box">
                 <b-col><p><b>Rectificación</b></p></b-col>
-            </b-row>   
+            </b-row>
             <b-row>
                 <b-col><p class="sub-texto-exp">Estado: En Revisión</p></b-col>
             </b-row>
             <b-row>
                 <b-col><p class="texto-exp"><b>Fecha de Carga:</b> {{ fecha }}</p></b-col>
             </b-row>
-        </b-card-text>        
+        </b-card-text>
         <b-card-text v-else-if="estadoActual == 9" class="action-confirmation-card">
         <!-- estadoActual == 9 => CONFIRMAR RECTIFICACION MANUAL -->
             <b-row>
@@ -118,7 +118,7 @@
                     <p class="texto-exp">Opción habilitada para casos excepecionales.</p>
                 </div></b-col>
             </b-row>
-        </b-card-text>        
+        </b-card-text>
         <b-card-text v-else-if="estadoActual == 10" class="action-confirmation-card">
         <!-- estadoActual == 9 => CONFIRMAR APROBACION -->
             <b-row>
@@ -129,7 +129,7 @@
             </b-row>
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 11" class="comment-pick-card">
-            <!-- estadoActual == 8 => Seleccionar Motivo -->      
+            <!-- estadoActual == 8 => Seleccionar Motivo -->
             <b-row>
                 <b-col><div class="li-row"><b-icon-caret-right-fill class="li-icon icon-orange" font-scale="1" shift-v="-3px"></b-icon-caret-right-fill><p class="li-content texto-exp"><b>Seleccioná los motivos por los que la carga es incorrecta:</b></p></div></b-col>
             </b-row>
@@ -150,7 +150,7 @@
             </b-row>
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 13" class="ticket-enviando-card">
-            <!-- estadoActual == 8 => ESPERANDO CONFIRMACION DE UPLOAD -->     
+            <!-- estadoActual == 8 => ESPERANDO CONFIRMACION DE UPLOAD -->
             <b-row>
                 <b-col>
                     <p class="texto-exp"><b>Cargando, esto puede demorar unos minutos.</b></p>
@@ -158,8 +158,8 @@
                 </b-col>
             </b-row>
             <!-- Aquí puedes agregar más campos si los necesitas -->
-        </b-card-text>        
-            <b-row v-if="estadoActual == 2 || estadoActual == 3 || estadoActual == 4 || estadoActual == 8">    
+        </b-card-text>
+            <b-row v-if="estadoActual == 2 || estadoActual == 3 || estadoActual == 4 || estadoActual == 8">
                 <b-col class="row justify-content-center" v-if="facturas && facturas[periodo]">
                     <b-button class="btn-show-ticket" variant="outline-primary" @click="openDocumento(facturas[periodo])"><b-icon-eye></b-icon-eye></b-button>
                 </b-col>
@@ -184,6 +184,7 @@
 </template>
 
   <script>
+  import abiertoAnualConfig from "@/plugins/abiertoAnualConfig.js";
   import { requiredIf } from 'vuelidate/lib/validators';
   export default {
     props: {
@@ -199,7 +200,7 @@
     },
     data() {
         return {
-
+        config: abiertoAnualConfig,
         archivo: null,
         estadoActual: null,
         estadoPrevio: null,
@@ -208,11 +209,15 @@
         recaptchaSiteKey: "6LfNxggoAAAAANyfZ5a2Lg_Rx28HX_lINDYX7AU-",
         captchaResponse: null,
         captchaError: false,
-        maxDate: "12/05/2024",
-        minDate: "3/05/2024",
         isRectificacion: false,
         periodoActivo: false,
         };
+    },
+    async fetch(){
+      const id = this.tramite.id
+      await this.$store.dispatch('facturas/getById',{
+        id
+      })
     },
     computed: {
       periodoTexto() {
@@ -231,7 +236,7 @@
                 return "Periodo no válido";
             }
         },
-        estadoIcono(){              
+        estadoIcono(){
             switch(this.estadoActual){
                 case 1: return 'esperando-periodo';
                 case 2: return 'revision';
@@ -248,8 +253,11 @@
                 case 13: return 'loading';
             }
         },
-        facturas(){
-            return this.$store.state.facturas.all
+      facturas(){
+        return this.$store.state.facturas.all
+      },
+      tramite(){
+        return this.$store.state.abiertoAnual.single
       }
     },
     validations: {
@@ -264,38 +272,41 @@
 
         const contenedor = document.getElementById('aaCard');
         if( this.$store.state.facturas.all && this.$store.state.facturas.all.length <= this.periodo){
-            this.factura = this.$store.state.facturas.all[this.periodo-1]
+            this.factura = this.$store.state.facturas.all[this.periodo]
         }else{
             console.log("Mounted no se pudo traer nada para el período " + this.periodo)
             console.log("A pesar de que el store tiene: " + this.$store.state.facturas.all)
         }
         console.log(this.factura);
-        
-                    
-        //DETERMINAR ESATDO INICIAL    
-        const now = new Date().toLocaleDateString("Es-AR");
-        console.log("FECHA ACTUAL: " + now);
-        console.log("this.maxDate: " + this.maxDate);
-        console.log("this.maxDate: " + this.minDate);
+
+
+        //DETERMINAR ESATDO INICIAL
+        const now = new Date();
+        const maxDate = new Date(abiertoAnualConfig.maxDates[this.periodo].split("/").reverse().join("-"));
+        const minDate = new Date(abiertoAnualConfig.minDates[this.periodo].split("/").reverse().join("-"));
         switch(this.estado){
             case "Correcto": {
                     this.estadoActual = 3;
+                    break
                 };
             case "Incorrecto": {
                     if (this.esRectificacion)
                         this.estadoActual =  7;
                     this.estadoActual =  4;
+                    break
                 };
             case "Incompleto": {
-                    if (now > this.maxDate)
+                    if (now > maxDate)
                         this.estadoActual =  5;
-                    if (now < this.minDate)
+                    if (now < minDate)
                         this.estadoActual =  1;
                     this.estadoActual =  6;
+                    break
                 };
             case "En revisión":{
                 this.estadoActual =  2;
-            } 
+                break
+            }
         }
        this.estadoPrevio = this.estadoActual;
        this.motivo = this.observaciones;
@@ -308,22 +319,22 @@
                 nextCard = 11;
                 this.estadoPrevio = this.estadoActual;
             }
-            else 
+            else
                 nextCard = this.estadoActual;
             console.log("Rechazar Ticket: nextCard -> " + nextCard);
-            this.playAnimation(() => {                
+            this.playAnimation(() => {
                 },nextCard);
         },
         RectificarTicket() {
             var nextCard = null;
             if (this.estadoActual == 4 || this.estadoActual == 5){
                 nextCard = 9;
-                this.estadoPrevio = this.estadoActual;                
+                this.estadoPrevio = this.estadoActual;
             }
-            else 
+            else
                 nextCard = this.estadoActual;
             console.log("Rectificar Ticket: nextCard -> " + nextCard);
-            this.playAnimation(() => {                
+            this.playAnimation(() => {
                 },nextCard);
         },
         AprobarTicket() {
@@ -332,42 +343,71 @@
                 nextCard = 10;
                 this.estadoPrevio = this.estadoActual;
             }
-            else 
+            else
                 nextCard = this.estadoActual;
             console.log("Aprobar Ticket: nextCard -> " + nextCard);
-            this.playAnimation(() => {                
+            this.playAnimation(() => {
                 },nextCard);
         },
-        AvanzarPaso() {
-            var nextCard = null;
-            if (this.estadoActual == 9)
-                nextCard = 7;
-            else 
-            if (this.estadoActual == 10)
-                nextCard = 3;
-            else 
-            if (this.estadoActual == 11)
-                nextCard = 12;
-            else 
-            if ( this.estadoActual == 12)
-                nextCard = 4;
-            else 
-                nextCard = this.estadoActual;
-            console.log("AvanzarPaso : nextCard -> " + nextCard);
-            this.playAnimation(() => {                
-                },nextCard);
-        },
+        async AvanzarPaso() {
+          var nextCard = null;
+          var facturas = JSON.parse(JSON.stringify(this.tramite.facturas)); // Clonar el objeto para no mutar el estado Vuex
+          var status = JSON.parse(JSON.stringify(this.tramite.status)); // Clonar el objeto para no mutar el estado Vuex
+          switch (this.estadoActual) {
+              case 9:
+                  nextCard = 7;
+                  facturas[this.periodo] = {
+                      contenido: facturas[this.periodo].contenido,
+                      rectificando: true,
+                  };
+                  status[this.periodo] = "Incorrecto";
+                  break;
+              case 10:
+                  nextCard = 3;
+                  status[this.periodo] = "Correcto";
+                  break;
+              case 11:
+                  nextCard = 12;
+                  break;
+              case 12:
+                  nextCard = 4;
+                  status[this.periodo] = "Incorrecto";
+                  facturas[this.periodo].observaciones = this.motivo;
+                  console.log(facturas)
+                  break;
+              default:
+                  nextCard = this.estadoActual;
+          }
+          const id = this.tramite.id;
+          if (this.estadoActual != 11) {
+              await this.$store.dispatch('abiertoAnual/update', {
+                  id,
+                  tramite: {
+                      facturas: facturas,
+                      status: status,
+                  }
+              }).then(response => {
+                  this.playAnimation(() => { }, nextCard);
+              }).catch(error => {
+                  this.playAnimation(() => { console.log("13") }, 13);
+              });
+          }else{
+            this.playAnimation(() => { }, nextCard);
+          }
+          console.log("AvanzarPaso : nextCard -> " + nextCard);
+      },
+
         RetrocederPaso() {
             var nextCard = null;
             if (this.estadoActual == 9 || this.estadoActual == 10 || this.estadoActual == 11)
                 nextCard = this.estadoPrevio;
-            else 
+            else
             if (this.estadoActual == 12)
                 nextCard = 11;
-            else 
+            else
                 nextCard = this.estadoPrevio;
             console.log("RetrocederPaso : nextCard -> " + nextCard);
-            this.playAnimation(() => {                
+            this.playAnimation(() => {
                 },nextCard);
         },
         isCaptchaOK(){

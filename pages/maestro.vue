@@ -9,8 +9,25 @@
       </b-form>
     </div>
     <b-table per-page="10" head-row-variant="warning" class="col-md-10 white col-sm-8 mx-auto mt-4 shadow-card" :items="paginatedMaestro" :fields="fields">
+      <template #cell(detalles)="row">
+          <b-button variant="outline-secondary" size="sm" title="Editar" @click="editarMaestro(row.item)">
+              <b-icon-pen size="sm"/>
+          </b-button>
+      </template>
     </b-table>
+
     <b-pagination class="mt-4" :total-rows="maestro.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
+
+    <b-modal id="modalEditarMaestro" hide-header-close v-model="editing" header-bg-variant="secondary" title="Editar maestro comercial" title-class="h5 text-light mx-auto" hide-footer centered>
+      <MaestroComercialForm
+          v-if="editing"
+          v-on:show="fetch"
+          :item="editarItem"
+          :create="false"
+          @submit="onSubmitEditMaestro"
+          @reset="editing = false"
+      ></MaestroComercialForm>
+    </b-modal>
   </div>
 </template>
 
@@ -21,6 +38,7 @@ export default {
       file: null,
       currentPage: 1,
       perPage: 10,
+      editing: false,
       fields: [
         {
           key: 'cuit',
@@ -50,6 +68,9 @@ export default {
           key: 'dfe',
           label: 'DFE',
         },
+        {
+          key: 'detalles'
+        }
       ],
     };
   },
@@ -70,6 +91,11 @@ export default {
     await this.$store.dispatch('maestro/get')
   },
   methods: {
+    editarMaestro(item) {
+        this.$bvModal.show('modalEditarMaestro');
+        // Puedes almacenar el item en una variable del componente para usarlo en el modal
+        this.editarItem = item;
+    },
     onPageChange(newPage) {
       this.currentPage = newPage;
     },

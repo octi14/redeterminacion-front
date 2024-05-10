@@ -104,9 +104,14 @@
         if (!this.cuit || !this.nroLegajo) {
           this.showPopupNoEntry = true
         } else {
-          await this.$store.dispatch('maestro/get')
-          const result = this.maestro.filter((item) => item.cuit == this.cuit && item.legajo == this.nroLegajo)
-          if(result.length > 0){
+          const cuit = Number(this.cuit)
+          const nroLegajo = Number(this.nroLegajo)
+          await this.$store.dispatch('maestro/getSingle',{
+            cuit: cuit,
+            legajo:  nroLegajo,
+          })
+          const result = this.$store.state.maestro.single
+          if(result){
             try{
               const cuit = Number(this.cuit)
               const nroLegajo = Number(this.nroLegajo)
@@ -135,7 +140,7 @@
               });
             }
             const id = this.$store.state.abiertoAnual.single.id
-            await this.$store.dispatch('facturas/getById', {id})
+            // await this.$store.dispatch('facturas/getById', {id})
             await this.$router.push('/abierto_anual/periodos')
           }else{
             this.showPopupFormError = true

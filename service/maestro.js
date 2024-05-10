@@ -17,6 +17,12 @@ module.exports = {
     })
     return maestroResponse.data.map(formatMaestro)
   },
+  getSingle: async (axios,{cuit, legajo}) => {
+    const maestroResponse = await axios.$post('/maestro/single', {
+      cuit,legajo
+    })
+    return maestroResponse.data.map(formatMaestro)
+  },
   create: async (axios, { file }) => {
     const createdCertif = await axios.$post(
       '/maestro',

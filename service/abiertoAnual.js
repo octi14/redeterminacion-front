@@ -1,14 +1,15 @@
 const formatFile = (FileResponse) => ({
-    id: FileResponse._id,
-    cuit: FileResponse.cuit,
-    nroLegajo: FileResponse.nroLegajo, 
-    dfe: FileResponse.dfe,
-    status: FileResponse.status,
-    observaciones: FileResponse.observaciones,
-    fechasCarga: FileResponse.fechasCarga,
-    createdAt: new Date(FileResponse.createdAt).toLocaleDateString('es-AR'),
-    updatedAt: new Date(FileResponse.updatedAt).toLocaleDateString('es-AR'),
-  })
+  id: FileResponse._id,
+  cuit: FileResponse.cuit,
+  nroLegajo: FileResponse.nroLegajo,
+  dfe: FileResponse.dfe,
+  facturas: FileResponse.facturas,
+  status: FileResponse.status,
+  fechasCarga: FileResponse.fechasCarga.map(fecha => new Date(fecha).toLocaleDateString('es-AR')),
+  createdAt: new Date(FileResponse.createdAt).toLocaleDateString('es-AR'),
+  updatedAt: new Date(FileResponse.updatedAt).toLocaleDateString('es-AR'),
+});
+
 
   const formatExtendedFile = (FileResponse) => ({
     id: FileResponse._id,
@@ -18,7 +19,7 @@ const formatFile = (FileResponse) => ({
     nroLegajo: FileResponse.nroLegajo,
     observaciones: FileResponse.observaciones,
     fechasCarga: FileResponse.fechasCarga,
-    createdAt: new Date(FileResponse.createdAt), 
+    createdAt: new Date(FileResponse.createdAt),
   })
 
   module.exports = {
@@ -39,11 +40,11 @@ const formatFile = (FileResponse) => ({
     //     return formatFile(fileResponse.data)
     //   }else{
     //     return null
-    //   } 
+    //   }
     // },
     getSingle: async (axios, { id }) => {
       const fileResponse = await axios.$get(`/abiertoAnual/${id}`)
-      return formatExtendedFile(fileResponse.data)
+      return formatFile(fileResponse.data)
     },
 
 
@@ -63,11 +64,11 @@ const formatFile = (FileResponse) => ({
       const createdFile = await axios.$post('/abiertoAnual', { cuit,nroLegajo });
       return createdFile;
     },
-    update: async (axios, id, { habilitacion }) => {
+    update: async (axios, id, { tramite }) => {
       axios.setHeader('Access-Control-Allow-Origin', true)
       const updated = await axios.$put(
-        `/habilitaciones/${id}`,
-        { habilitacion },
+        `/abiertoAnual/${id}`,
+        { tramite },
       )
       return formatFile(updated)
     },

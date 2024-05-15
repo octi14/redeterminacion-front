@@ -20,7 +20,7 @@
             </b-row>
             <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
             <b-row>
-              <label for="nroLegajo" class="col-6"> N° de legajo comercial: <b-icon-question-circle-fill font-scale="1.25" variant="info"></b-icon-question-circle-fill></label>
+              <label for="nroLegajo" class="col-6"> N° de legajo comercial: <b-icon-question-circle-fill @click="openPopup('A')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></label>
               <b-form-input class="col-6" :disabled="enterKeyPressed" v-model="nroLegajo" id="nroLegajo" type="number" placeholder="Ingrese un N° de Legajo Comercial" no-wheel></b-form-input>
             </b-row>
           </b-form>
@@ -69,6 +69,24 @@
         </div>
       </template>
     </b-modal>
+  <!-- Modal información Adicional -->
+    <b-modal v-model="showPopupA"  :hide-footer="true" @click-outside="showPopupA = false" :header-bg-variant="'success'" centered>
+    <template #modal-header>
+        <div class="modal-info">
+          <h5>
+              <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
+              Información Adicional
+          </h5>
+        </div>
+            <button type="button" aria-label="Close" class="close" @click="showPopupA = false">×</button>
+      </template>
+      <div class="modal-info">
+        <p class="destacado"><b-icon-caret-right-fill class="icon-orange" shift-v="" scale="1.5"></b-icon-caret-right-fill>Podés encontrar el número de CUIM y de legajo comercial en el encabezado de la notificación que recibiste. Hacé click en la imagen y verificá cómo se visualiza.</p>
+        <div style="width: 100%">
+          <a href="http://haciendavgesell.gob.ar/_nuxt/img/ej-cedulanotificacion.78769c7.jpg" target="_blank"><img src="../../assets/ej-cedulanotificacion.jpg" width="100%" height="fit-content" /></a>
+        </div>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -88,6 +106,7 @@
         showPopupNoEntry: false,
         showPopupNotAllowed: false,
         showPopupAlready: false,
+        showPopupA: false,
       };
     },
     computed: {
@@ -155,6 +174,13 @@
       this.formOk = false;
       this.cuit = null;
       this.nroLegajo = null;
+    },
+    openPopup(type) {
+      // Lógica para abrir el popup correspondiente según el tipo (A, B, C, D)
+      if (type === 'A') {
+        console.log("ShowPopup A")
+        this.showPopupA = true;
+      } 
     },
   },
     // computed: {
@@ -309,7 +335,27 @@
       font-size: 0.9rem;
       font-weight: 100;
     }
-
+    .modal-info .destacado{
+      color: #353535;
+      font-size: 1.25rem;
+      text-align: left;
+      padding: 2rem 0.5rem;
+    }
+    .modal-info .destacado .bi-caret-right-fill{
+      margin-right: 1rem;
+    }
+    .modal h5{
+      color: white !important;
+      font-weight: bold;
+      font-size: 1.5rem;
+      margin-top: 1.5rem;
+      margin-bottom: 1.5rem;
+    }    
+    .modal-info .bi-question-circle{
+      margin-right: 1rem;
+      padding-right: 0.5rem;
+      border-right: 1px solid #FFF;
+    }
     .section-card{
       margin: 2rem auto !important;
       padding: 2rem 4rem;

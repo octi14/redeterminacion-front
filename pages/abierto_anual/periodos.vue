@@ -1,11 +1,6 @@
 <template>
     <div class="page main-background">
         <Banner title="Comercio Abierto Anual"/>
-        <div class="mx-auto text-center">
-          <span v-if="maestro && maestro.dfe != '\r'">Tenes DFE</span>
-          <span v-else>No tenes DFE</span>
-        </div>
-
         <b-row class="page-body" align-h="center">
           <div class="section-subtitle">
               <div class="li-row">
@@ -19,6 +14,23 @@
               <div class="li-row sangria">
                 <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                 <div class="li-conent">Seleccioná el período que corresponda  y subí la factura del legajo comercial declarado.</div>
+              </div>
+              <div class="li-row sangria DFE-card">
+                <b-row style="width:100%">
+                  <b-col md="2" style="padding-right: 0;">
+                    <b-icon-exclamation-circle variant="dark" font-scale="3"></b-icon-exclamation-circle>
+                  </b-col>
+                  <b-col v-if="maestro && maestro.dfe != '\r'" md="10" style="padding-left: 0;">
+                    <p class="subtitle">Este comercio posee Domicilio Fiscal Electrónico (DFE).</p>
+                    <p class="">En caso de que la factura cargada sea incorrecta se te notificará el período de rectificación a través del Domicilio Fiscal Electrónico.<br />
+                    Si la carga no tiene errores no serás notificado/a y podrás verificarla ingresando tus datos en esta misma página.</p>
+                  </b-col>
+                  <b-col v-else md="10" style="padding-left: 0;">
+                    <p class="subtitle">Este comercio no posee Domicilio Fiscal Electrónico (DFE). <a href="#">Tramitalo haciendo click acá.</a></p>
+                    <p class="">En caso de que la factura cargada sea incorrecta se te notificará el período de rectificación a través del Domicilio Fiscal Electrónico.<br />
+                    en caso de no constituirlo deberás revisar periodicamente esta misma página para corroborar que la carga no tenga errores.</p>
+                  </b-col>
+                </b-row>
               </div>
           </div>
           <b-col v-for="(periodo, index) in tramite.status" :key="index" cols="12" sm="8" md="6" lg="6" xl="4">
@@ -35,7 +47,7 @@
         <b-row class="page-body" align-h="center">
             <b-card border-variant="warning" align-h="center" class="importante-card li-p" >
                 <b-card-text>
-                <b-row >
+                <b-row style="width:100%">
                     <b-col md="2">
                     <b-icon-exclamation-triangle variant="warning" font-scale="5"></b-icon-exclamation-triangle>
                     <p class="li-title"><u><b>¡Importante!</b></u></p>
@@ -204,6 +216,29 @@ export default {
     }
     .importante-card .col-md-2 .li-title{
         margin-bottom: 1rem;
+    }
+    .DFE-card{
+      min-width: 80% !important;
+      background-color: #FACD8A;
+      padding: 1rem;
+      border-radius: 1rem;
+      padding-bottom: 2rem;
+    }
+    .DFE-card .subtitle{
+      margin-bottom: 1rem;
+    }
+    .DFE-card .subtitle a{
+      color: #353535;
+      text-decoration: underline;
+    }
+    .DFE-card p{
+      font-size: 1.1rem;
+      color: #353535;
+    }
+    .DFE-card .bi-exclamation-circle{
+      margin-left: 20%;
+      margin-top: 10%;
+      text-align: center;
     }
     .b-row {
       height: 100%; /* Asegúrate de que el b-row tenga una altura definida (puede ser 100% o cualquier otra altura que desees). */

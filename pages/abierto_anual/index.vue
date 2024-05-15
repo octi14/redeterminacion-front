@@ -6,14 +6,12 @@
             id="mainCarousel"
             v-model="slide"
             :interval="4000"
-            controls
-            indicators
             img-width="100%"
             style="text-shadow: 1px 1px 2px #333;"
             @sliding-start="onSlideStart"
             @sliding-end="onSlideEnd"
             >
-                <b-carousel-slide img-src="../../assets/habilita-en-simples-pasos-2.png"></b-carousel-slide>
+                <b-carousel-slide img-src="../../assets/banner-abierto-anual.png"></b-carousel-slide>
             </b-carousel>
         </div>
     <b-row>
@@ -119,6 +117,19 @@
                   <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange"></b-icon-caret-right-fill></div>
                     <div class="li-content"><b>Período 3:</b> Se deberá cargar una factura emitida durante el mes de Octubre.</div>
                   </div>
+                  <b-card border-variant="warning" align="center" class="importante-card" >
+                    <b-card-text>
+                      <b-row >
+                        <b-col md="2">
+                          <b-icon-exclamation-triangle variant="warning" font-scale="4"></b-icon-exclamation-triangle>
+                          <p class="li-title"><u><b>¡Importante!</b></u></p>
+                        </b-col>
+                        <b-col  md="10">
+                            <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Las <b>facturas</b> deberán ser <b>digitales</b> (en caso de tenerlas en formato papel <b>podés escanearlos o sacarles una foto</b>) y deben ser <b>legibles</b>. Pueden encontrarse en formato pdf o imagen y tener un peso máximo de 15Mb.</div></div>
+                        </b-col>
+                      </b-row>
+                    </b-card-text>
+                  </b-card>
               </div>
             </transition>
           </b-card>
@@ -130,7 +141,7 @@
             </h4>
             <transition name="expand">
               <div v-show="isCardExpanded(5)">
-                <div class="li-row"><div class="li-icon">
+                <div class="li-row first-li"><div class="li-icon">
                   <b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                   <div class="li-content">Luego de recibir la notificación en el DFE y/o en formato papel, deberás abrir
                      esta página y leer atentamente cada uno de los requisitos para iniciar tu trámite. </div>
@@ -351,9 +362,15 @@
 p, .li-content{
   font-family: Calibri, 'Trebuchet MS', sans-serif;
 }
+.importante-card{
+  margin-top: 2rem;
+}
+.importante-card .li-row{
+  margin-top: 1rem;
+}
 .importante-card .li-content{
   text-align: left;
-  margin-bottom: 1rem;
+  color: #353535;
 }
 .importante-card .card-body{
   padding-bottom: 0.25rem;

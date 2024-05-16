@@ -163,6 +163,7 @@
 
   <script>
   import { requiredIf } from 'vuelidate/lib/validators';
+  import abiertoAnualConfig from '~/plugins/abiertoAnualConfig';
   export default {
     props: {
       id:{
@@ -177,6 +178,7 @@
     },
     data() {
         return {
+        config: abiertoAnualConfig,
         archivo: null,
         futuroEstado: null,
 
@@ -186,9 +188,6 @@
 
         showPopupCaptcha: false,
         contenedor: null,
-        maxDate: ["31/05/2024","31/08/2024","31/10/2024"],
-        minDate: ["1/05/2024","1/08/2024", "1/10/2024"],
-        isRectificacion: false,
         };
     },
     computed: {
@@ -212,20 +211,20 @@
         estadoActual() {
           const now = new Date();
           console.log("FECHA ACTUAL: " + now.toLocaleDateString("Es-AR"));
-          console.log("this.maxDate: " + this.maxDate[this.periodo]);
-          console.log("this.minDate: " + this.minDate[this.periodo]);
+          console.log("this.maxDate: " + this.config.maxDates[this.periodo]);
+          console.log("this.minDate: " + this.config.minDates[this.periodo]);
           console.log("this.estado: " + this.estado);
 
           switch (this.estado) {
               case "Correcto":
                   return 3;
               case "Incorrecto":
-                  if (this.esRectificacion) return 7;
+                  if (this.tramite.facturas[this.periodo] && this.tramite.facturas[this.periodo].rectificando) return 7;
                   return 4;
               case "Incompleto":
                 const now = new Date();
-                const maxDateParts = this.maxDate[this.periodo].split('/');
-                const minDateParts = this.minDate[this.periodo].split('/');
+                const maxDateParts = this.config.maxDates[this.periodo].split('/');
+                const minDateParts = this.config.minDates[this.periodo].split('/');
                 const maxDate = new Date(maxDateParts[2], maxDateParts[1] - 1, maxDateParts[0]);
                 const minDate = new Date(minDateParts[2], minDateParts[1] - 1, minDateParts[0]);
                 if (now > maxDate) return 5;

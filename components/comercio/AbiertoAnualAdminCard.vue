@@ -209,7 +209,6 @@
         recaptchaSiteKey: "6LfNxggoAAAAANyfZ5a2Lg_Rx28HX_lINDYX7AU-",
         captchaResponse: null,
         captchaError: false,
-        isRectificacion: false,
         periodoActivo: false,
         };
     },
@@ -290,9 +289,11 @@
                     break
                 };
             case "Incorrecto": {
-                    if (this.esRectificacion)
+                    if (this.tramite.facturas[this.periodo] && this.tramite.facturas[this.periodo].rectificando){
                         this.estadoActual =  7;
-                    this.estadoActual =  4;
+                    }else{
+                      this.estadoActual =  4;
+                    }
                     break
                 };
             case "Incompleto": {

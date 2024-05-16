@@ -151,7 +151,7 @@
             <h5>Completá para continuar</h5>
             <b-form-group>
                 <div :id="'captchaContainer-' + id" class="g-recaptcha" :data-sitekey="recaptchaSiteKey"></div>
-                <div v-if="captchaError" class="text-danger">
+                <div v-if="!captchaCompleted" class="text-danger">
                     <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Por favor completa la verificación para continuar.
                 </div>
             </b-form-group>
@@ -180,11 +180,11 @@
         return {
         config: abiertoAnualConfig,
         archivo: null,
-        futuroEstado: null,
+        estadoActual: null,
 
         recaptchaSiteKey: "6LfNxggoAAAAANyfZ5a2Lg_Rx28HX_lINDYX7AU-",
-        captchaCompleted: null,
-        captchaError: false,
+        captchaCompleted: false,
+        //captchaError: false,
 
         showPopupCaptcha: false,
         contenedor: null,
@@ -208,34 +208,6 @@
                 return "Periodo no válido";
             }
         },
-        estadoActual() {
-          const now = new Date();
-          console.log("FECHA ACTUAL: " + now.toLocaleDateString("Es-AR"));
-          console.log("this.maxDate: " + this.config.maxDates[this.periodo]);
-          console.log("this.minDate: " + this.config.minDates[this.periodo]);
-          console.log("this.estado: " + this.estado);
-
-          switch (this.estado) {
-              case "Correcto":
-                  return 3;
-              case "Incorrecto":
-                  if (this.tramite.facturas[this.periodo] && this.tramite.facturas[this.periodo].rectificando) return 7;
-                  return 4;
-              case "Incompleto":
-                const now = new Date();
-                const maxDateParts = this.config.maxDates[this.periodo].split('/');
-                const minDateParts = this.config.minDates[this.periodo].split('/');
-                const maxDate = new Date(maxDateParts[2], maxDateParts[1] - 1, maxDateParts[0]);
-                const minDate = new Date(minDateParts[2], minDateParts[1] - 1, minDateParts[0]);
-                if (now > maxDate) return 5;
-                if (now <= maxDate && now <= minDate) return 1;
-                return 6;
-              case "En revisión":
-                  return 2;
-              default:
-                  return 0;
-          }
-      },
         estadoIcono(){
             switch(this.estadoActual){
                 case 1: return 'esperando-periodo';
@@ -264,24 +236,52 @@
         }
     },
     mounted() {
+        const now = new Date();
+        console.log("FECHA ACTUAL: " + now.toLocaleDateString("Es-AR"));
+        console.log("this.maxDate: " + this.config.maxDates[this.periodo]);
+        console.log("this.minDate: " + this.config.minDates[this.periodo]);
+        console.log("this.estado: " + this.estado);
 
-
-    this.contenedor = document.getElementById('aaCard');
-
-    // Detecta el evento de inicio de la animación
-    this.contenedor.addEventListener('animationstart', () => {
-    // En el punto deseado de la animación, cambia el estado
-    const nuevoEstado = event.target.dataset.futuroEstado; // Obtiene el nuevo estado desde el atributo data
-    setTimeout(() => {
-        // Cambia el estado aquí
-        cambiarEstado(nuevoEstado); // Cambia al estado deseado
-    }, 510); // Espera medio segundo (en milisegundos) para cambiar el estado
-    });
-
-    // Agrega un evento de transición para detectar el final de la animación
-    this.contenedor.addEventListener('animationend', () => {
-    // En este punto, la animación ha terminado y puedes realizar más acciones si es necesario
-    });
+        switch (this.estado) {
+            case "Correcto": {
+                this.estadoActual = 3;
+                break;
+            }
+            case "Incorrecto":{
+                if (this.tramite.facturas[this.periodo] && this.tramite.facturas[this.periodo].rectificando){
+                    this.estadoActual = 7;
+                    break;
+                }
+                this.estadoActual = 4;
+                break;
+            }
+            case "Incompleto":{
+                const now = new Date();
+                const maxDateParts = this.config.maxDates[this.periodo].split('/');
+                const minDateParts = this.config.minDates[this.periodo].split('/');
+                const maxDate = new Date(maxDateParts[2], maxDateParts[1] - 1, maxDateParts[0]);
+                const minDate = new Date(minDateParts[2], minDateParts[1] - 1, minDateParts[0]);
+            if (now > maxDate){ 
+                this.estadoActual = 5;
+                break;
+            }
+            if (now <= maxDate && now <= minDate){
+                this.estadoActual = 1;
+                break
+            }
+                this.estadoActual = 6;
+                break;
+            }       
+            case "En revisión":{
+                this.estadoActual = 2;
+                break;
+            }
+            default:{
+                this.estadoActual = 0;
+                break;
+            }
+        }            
+        this.estadoPrevio = this.estadoActual;
     },
     methods: {
         loadRecaptcha() {
@@ -303,9 +303,10 @@
         isCaptchaOK(){
             console.log("isCaptchaOK: ");
             console.log("this.id: " + this.id);
-            this.captchaError = (typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0);
-            console.log("this.captchaError: " + this.captchaError);
-            return this.captchaError;
+            //this.captchaError = (typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0);
+            //console.log("this.captchaError: " + this.captchaError);
+            console.log("this.captchaCompleted: " + this.captchaCompleted);
+            return this.captchaCompleted;
         },
         blobToBase64(blob) {
           return new Promise((resolve, reject) => {
@@ -319,6 +320,7 @@
         },
         async enviarArchivo() {
             // Validar que el archivo no esté vacío antes de enviarlo
+            this.showPopupCaptcha = false;
             this.playAnimation(() => {
                     console.log("playiing animation: ");
             },8);

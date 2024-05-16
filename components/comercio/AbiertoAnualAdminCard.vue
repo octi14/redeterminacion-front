@@ -280,9 +280,6 @@
 
 
         //DETERMINAR ESATDO INICIAL
-        const now = new Date();
-        const maxDate = new Date(abiertoAnualConfig.maxDates[this.periodo].split("/").reverse().join("-"));
-        const minDate = new Date(abiertoAnualConfig.minDates[this.periodo].split("/").reverse().join("-"));
         switch(this.estado){
             case "Correcto": {
                     this.estadoActual = 3;
@@ -291,16 +288,26 @@
             case "Incorrecto": {
                     if (this.tramite.facturas[this.periodo] && this.tramite.facturas[this.periodo].rectificando){
                         this.estadoActual =  7;
+                        break
                     }else{
                       this.estadoActual =  4;
+                        break
                     }
-                    break
                 };
-            case "Incompleto": {
-                    if (now > maxDate)
+            case "Incompleto": {                
+                    const now = new Date();
+                    const maxDateParts = this.config.maxDates[this.periodo].split('/');
+                    const minDateParts = this.config.minDates[this.periodo].split('/');
+                    const maxDate = new Date(maxDateParts[2], maxDateParts[1] - 1, maxDateParts[0]);
+                    const minDate = new Date(minDateParts[2], minDateParts[1] - 1, minDateParts[0]);
+                    if (now > maxDate){
                         this.estadoActual =  5;
-                    if (now < minDate)
+                        break;
+                    }
+                    if (now < minDate){
                         this.estadoActual =  1;
+                        break;
+                    }
                     this.estadoActual =  6;
                     break
                 };

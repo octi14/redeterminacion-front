@@ -159,24 +159,6 @@
             </b-row>
             <!-- Aquí puedes agregar más campos si los necesitas -->
         </b-card-text>
-        <b-card-text v-else-if="estadoActual == 14" class="ticket-enviando-fail-card">
-        <!-- estadoActual == 9 => CONFIRMACION DE UPLOAD INCORRECTA: ERROR --> 
-            <b-row>
-                <b-col>
-                    <p class="texto-exp"><b>Error conectando con el servidor!</b></p>
-                </b-col>
-            </b-row>
-            <b-row>
-                <b-col>
-                    <p class="sub-texto-exp"> Por favor, revisa tu conexión a internet y volvé a intentarlo en unos minutos.</p>
-                </b-col>
-            </b-row>
-            <b-row>
-                <b-col>
-                    <p class="mini-texto-exp"> Si el problema persiste comunicarse con <a href="#" class="icon-green">ARVIGE</a>.</p>
-                </b-col>
-            </b-row>
-        </b-card-text>        
             <b-row v-if="estadoActual == 2 || estadoActual == 3 || estadoActual == 4 || estadoActual == 8">
                 <b-col class="row justify-content-center" v-if="facturas && facturas[periodo]">
                     <b-button class="btn-show-ticket" variant="outline-primary" @click="openDocumento(facturas[periodo])"><b-icon-eye></b-icon-eye></b-button>
@@ -227,7 +209,6 @@
         recaptchaSiteKey: "6LfNxggoAAAAANyfZ5a2Lg_Rx28HX_lINDYX7AU-",
         captchaResponse: null,
         captchaError: false,
-        isRectificacion: false,
         periodoActivo: false,
         };
     },
@@ -269,7 +250,6 @@
                 case 11: return 'incorrecto';
                 case 12: return 'incorrecto';
                 case 13: return 'loading';
-                case 14: return 'incorrecto';
             }
         },
       facturas(){
@@ -297,26 +277,24 @@
             console.log("A pesar de que el store tiene: " + this.$store.state.facturas.all)
         }
         console.log(this.factura);
+
+
         //DETERMINAR ESATDO INICIAL
         const now = new Date();
         const maxDate = new Date(abiertoAnualConfig.maxDates[this.periodo].split("/").reverse().join("-"));
         const minDate = new Date(abiertoAnualConfig.minDates[this.periodo].split("/").reverse().join("-"));
         switch(this.estado){
             case "Correcto": {
-                    console.log("this.estado Correcto: " + this.estado);   
                     this.estadoActual = 3;
-                    break;
+                    break
                 };
             case "Incorrecto": {
-                    console.log("this.estado Incorrecto: " + this.estado);   
-                    if (this.esRectificacion)
+                    if (this.tramite.facturas[this.periodo] && this.tramite.facturas[this.periodo].rectificando){
                         this.estadoActual =  7;
-                    this.estadoActual =  4;
-                    break;
-                };
-            case "Incompleto": {
-                    console.log("this.estado Incompleto: " + this.estado);   
-                    break;
+                    }else{
+                      this.estadoActual =  4;
+                    }
+                    break
                 };
             case "Incompleto": {
                     if (now > maxDate)
@@ -324,12 +302,11 @@
                     if (now < minDate)
                         this.estadoActual =  1;
                     this.estadoActual =  6;
-                    break;
+                    break
                 };
             case "En revisión":{
-                console.log("this.estado revisión: " + this.estado);   
                 this.estadoActual =  2;
-                break;
+                break
             }
         }
        this.estadoPrevio = this.estadoActual;

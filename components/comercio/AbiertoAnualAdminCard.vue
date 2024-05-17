@@ -157,13 +157,12 @@
                     <p class="sub-texto-exp">Por favor, no cierres esta página.</p>
                 </b-col>
             </b-row>
-            <!-- Aquí puedes agregar más campos si los necesitas -->
         </b-card-text>
-            <b-row v-if="estadoActual == 2 || estadoActual == 3 || estadoActual == 4 || estadoActual == 8">
-                <b-col class="row justify-content-center" v-if="facturas && facturas[periodo]">
-                    <b-button class="btn-show-ticket" variant="outline-primary" @click="openDocumento(facturas[periodo])"><b-icon-eye></b-icon-eye></b-button>
-                </b-col>
-            </b-row>
+        <b-row v-if="estadoActual == 2 || estadoActual == 3 || estadoActual == 4 || estadoActual == 8">
+            <b-col v-if="facturas && facturas[periodo]">
+                <b-button class="btn-show-ticket" variant="outline-primary" @click="openDocumento(facturas[periodo])"><b-icon-eye></b-icon-eye></b-button>
+            </b-col>
+        </b-row>
         <div class="btn-abajo-container">
             <div class="btn-group">
                 <div v-if="estadoActual == 9 || estadoActual == 10 || estadoActual == 11 || estadoActual == 12" style="width: 100%;">
@@ -196,6 +195,7 @@
       estado: String,
       fecha: String,
       observaciones: String,
+      hardEstado: Number,
       // Puedes agregar más props según sea necesario
     },
     data() {
@@ -318,6 +318,9 @@
         }
        this.estadoPrevio = this.estadoActual;
        this.motivo = this.observaciones;
+       
+       if (this.hardEstado != null)
+            this.estadoActual = this.hardEstado;
     },
     methods: {
         RechazarTicket() {

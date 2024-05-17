@@ -33,9 +33,9 @@
                 </b-row>
               </div>
           </div>
-          <b-col v-for="(periodo, index) in tramite.status" :key="index" cols="12" sm="8" md="6" lg="6" xl="4">
+          <b-col v-for="(periodo, index) in tramite.status" :key="index" cols="12" sm="8" md="6" lg="4" xl="4">
               <AbiertoAnualCard
-              :id="index"
+              :id="index" 
               :periodo="index"
               :estado="periodo"
               :fecha="tramite.fechasCarga[index]"
@@ -90,7 +90,46 @@ export default {
 </script>
 
   <style scoped>
-  @media (max-width: 720px){
+  @media (max-width: 1200px){
+    .DFE-card .subtitle{
+      font-size: 28px !important;
+    }
+    .DFE-card p, .importante-card p{
+      font-size: 18px !important;
+    }
+  }
+  @media (max-width: 720px){    
+    .section-subtitle{
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+    .section-subtitle .li-content{
+      padding-right: 0 !important;
+      padding-top: 5px !important;
+    }
+    .bi-file-arrow-up{
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      margin-bottom: 0.25rem !important;
+    }
+    .subtitle{
+      font-size: 24px !important;
+    }
+    .sangria{
+      margin-left: 0 !important;
+    }
+    .DFE-card p, .importante-card p{
+      font-size: 18px !important;
+      text-align: center;
+    }
+    .DFE-card .row{
+      text-align: center !important;
+      margin: 0 auto !important;
+    }
+    .DFE-card .col-md-2, .DFE-card .col-md-10{
+      padding-right: 0 !important;
+      padding-left: 0 !important;
+    }
     .card{
       width: 90% !important;
       margin-left: 5% !important;
@@ -108,6 +147,11 @@ export default {
     .justify-content-center{
       margin: auto;
     }
+    .bi-exclamation-circle{
+      margin: 1rem auto !important;
+      width: 100%;
+    }
+
   }
     .section-subtitle  {
      width: 100%;

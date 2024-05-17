@@ -58,7 +58,7 @@
         <b-card-text v-else-if="estadoActual == 4" class="ticket-bad-card">
         <!-- estadoActual == 4 => DESHABILITADO PARA SUBIR POR ARCHIVO RECHAZADO -->
             <b-row v-if="observaciones && observaciones != ''">
-                <b-col><div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-2"></b-icon-caret-right-fill><p class="li-content sub-texto-exp">La <b>carga</b> realizada el día {{ fecha }} es <b>incorrecta</b>, porque <b>{{ observaciones }}.</b></p></div></b-col>
+                <b-col><div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-2"></b-icon-caret-right-fill><p class="li-content sub-texto-exp">La <b>carga</b> realizada el día {{ fecha }} es <b>incorrecta</b>, porque <b>{{ observaciones }}</b></p></div></b-col>
             </b-row>
             <b-row>
                 <b-col><div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-2"></b-icon-caret-right-fill><p class="li-content sub-texto-exp">Recibirás una notificación a tu Domicilio Fiscal Electrónico (DFE) indicando fecha y forma de rectificación.</p></div></b-col>
@@ -174,6 +174,7 @@
       estado: String,
       fecha: String,
       observaciones: String,
+      hardEstado: Number,
       // Puedes agregar más props según sea necesario
     },
     data() {
@@ -282,6 +283,8 @@
             }
         }            
         this.estadoPrevio = this.estadoActual;
+        if (this.hardEstado != null)
+            this.estadoActual = this.hardEstado;
     },
     methods: {
         loadRecaptcha() {
@@ -394,6 +397,47 @@
 
   </script>
 <style scoped>
+@media (max-width: 1200px){
+    #aaCard .card-body{
+        padding-left: 10% !important;
+        padding-right: 10% !important;
+    }
+    .envio-ok {
+        text-align: center;
+    }
+    .ticket-revision-card .importante-box p{
+        font-size: 20px;
+    }
+    .ticket-revision-card .titulo-exp{
+        text-decoration: underline;
+        font-weight: 600;
+        width: 100%;
+    }
+    .periodo-esperando-card .texto-exp, .ticket-ok-card .texto-exp, .periodo-vencido-card .texto-exp, .ticket-enviando-fail-card .texto-exp{
+        text-align: center;
+    }
+    .rectificacion-card .importante-box b, .ticket-revision-card .importante-box p, .periodo-esperando-card .texto-exp, .ticket-ok-card .texto-exp, .periodo-vencido-card .texto-exp, .ticket-enviando-card .texto-exp, .ticket-enviando-fail-card .texto-exp{
+        font-size: 20px !important;
+    }
+    .ticket-revision-card .titulo-exp, .ticket-enviando-card .sub-texto-exp, .periodo-vencido-card .sub-texto-exp, .ticket-bad-card .sub-texto-exp, .ticket-enviando-fail-card .sub-texto-exp {
+        font-size: 15px;
+    }
+    .periodo-vencido-card .sub-texto-exp, .ticket-enviando-fail-card .sub-texto-exp{
+        text-align: center;
+    }
+    .ticket-enviando-fail-card .mini-texto-exp{
+        font-size: 12px;
+    }
+    .ticket-revision-card .texto-exp, .periodo-vencido-card .mini-texto-exp{
+        font-size: 12px;
+    }
+}
+@media (max-width: 720px){
+    #aaCard .card-body{
+        padding-left: 5% !important;
+        padding-right: 5% !important;
+    }
+}
 h2, h3{
     color: #353535;
     font-size: 28px;

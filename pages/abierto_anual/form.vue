@@ -192,6 +192,11 @@
   </script>
 
   <style scoped>
+  @media (max-width: 1200px){
+    .section-card{
+      min-width: 60%;
+    }
+  }
   @media (max-width: 720px){
     .banner-container{
       margin:auto;
@@ -204,14 +209,23 @@
       margin-left: 5% !important;
       margin-right: 5% !important;
     }
-    .btn{
-      width: 9rem !important;
-    }
     .modal-dialog{
       max-width: 100px !important;
     }
     .justify-content-center{
       margin: auto;
+    }
+    .li-content p{
+      font-size: 1.25rem;
+      padding-top: 5px;
+    }
+    .col-6{
+      min-width: 100%;
+      text-align: left;
+      padding-left: 0;
+    }
+    .btn{
+      max-width: 8rem;
     }
   }
     form{

@@ -235,13 +235,8 @@
             })
         }
     },
-    mounted() {
-        const now = new Date();
-        console.log("FECHA ACTUAL: " + now.toLocaleDateString("Es-AR"));
-        console.log("this.maxDate: " + this.config.maxDates[this.periodo]);
-        console.log("this.minDate: " + this.config.minDates[this.periodo]);
-        console.log("this.estado: " + this.estado);
-
+    async created() {
+        var now
         switch (this.estado) {
             case "Correcto": {
                 this.estadoActual = 3;
@@ -256,12 +251,13 @@
                 break;
             }
             case "Incompleto":{
-                const now = new Date();
+                await this.$store.dispatch('fechas/get')
+                now = new Date(this.$store.state.fechas.fecha.fecha);
                 const maxDateParts = this.config.maxDates[this.periodo].split('/');
                 const minDateParts = this.config.minDates[this.periodo].split('/');
                 const maxDate = new Date(maxDateParts[2], maxDateParts[1] - 1, maxDateParts[0]);
                 const minDate = new Date(minDateParts[2], minDateParts[1] - 1, minDateParts[0]);
-            if (now > maxDate){ 
+            if (now > maxDate){
                 this.estadoActual = 5;
                 break;
             }
@@ -271,7 +267,7 @@
             }
                 this.estadoActual = 6;
                 break;
-            }       
+            }
             case "En revisión":{
                 this.estadoActual = 2;
                 break;
@@ -280,7 +276,7 @@
                 this.estadoActual = 0;
                 break;
             }
-        }            
+        }
         this.estadoPrevio = this.estadoActual;
     },
     methods: {

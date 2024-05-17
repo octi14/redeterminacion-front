@@ -119,53 +119,44 @@
         return new Promise(resolve => setTimeout(resolve, ms));
       },
       async sendData() {
-        this.enterKeyPressed = true
+        this.enterKeyPressed = true;
         if (!this.cuit || !this.nroLegajo) {
-          this.showPopupNoEntry = true
+          //Faltan introducir datos
+          this.showPopupNoEntry = true;
         } else {
-          const cuit = Number(this.cuit)
-          const nroLegajo = Number(this.nroLegajo)
-          await this.$store.dispatch('maestro/getSingle',{
+          const cuit = Number(this.cuit);
+          const nroLegajo = Number(this.nroLegajo);
+          //busco en el maestro
+          await this.$store.dispatch('maestro/getSingle', {
             cuit: cuit,
-            legajo:  nroLegajo,
-          })
-          const result = this.$store.state.maestro.single
-          if(result){
-            try{
-              const cuit = Number(this.cuit)
-              const nroLegajo = Number(this.nroLegajo)
-              const response = await this.$store.dispatch('abiertoAnual/getByCuitLegajo',{
+            legajo: nroLegajo,
+          });
+          const result = this.$store.state.maestro.single;
+          if (result && result.length > 0) {
+            //existe en el maestro
+            await this.$store.dispatch('abiertoAnual/getByCuitLegajo', {
+              cuit: cuit,
+              nroLegajo: nroLegajo,
+            });
+            //si no estaba creado,
+            if (!this.$store.state.abiertoAnual.single) {
+              // Crear un nuevo AbiertoAnual si no se encuentra uno existente
+              await this.$store.dispatch('abiertoAnual/create', {
+                cuit: this.cuit,
+                nroLegajo: this.nroLegajo,
+              });
+              await this.$store.dispatch('abiertoAnual/getByCuitLegajo', {
                 cuit: cuit,
                 nroLegajo: nroLegajo,
-              })
-              if(!response){
-                await this.$store.dispatch('abiertoAnual/create',{
-                  cuit: this.cuit,
-                  nroLegajo: this.nroLegajo,
-                })
-                const response = await this.$store.dispatch('abiertoAnual/getByCuitLegajo',{
-                  cuit: cuit,
-                  nroLegajo: nroLegajo,
-                })
-              }
-            }catch(e){
-              console.log(e)
-              this.$bvToast.toast('Algo salió mal buscando el trámite', {
-                title: 'Error',
-                variant: 'danger',
-                appendToast: true,
-                solid: true,
-                toaster: 'b-toaster-top-center',
               });
             }
-            const id = this.$store.state.abiertoAnual.single.id
-            // await this.$store.dispatch('facturas/getById', {id})
-            await this.$router.push('/abierto_anual/periodos')
-          }else{
-            this.showPopupFormError = true
+            const id = this.$store.state.abiertoAnual.single.id;
+            await this.$router.push('/abierto_anual/periodos');
+        } else {
+            this.showPopupFormError = true;
         }
+        this.enterKeyPressed = false;
       }
-      this.enterKeyPressed = false
     },
     onResetParams() {
       this.$router.push('/abierto_anual');
@@ -180,7 +171,7 @@
       if (type === 'A') {
         console.log("ShowPopup A")
         this.showPopupA = true;
-      } 
+      }
     },
   },
     // computed: {
@@ -350,7 +341,7 @@
       font-size: 1.5rem;
       margin-top: 1.5rem;
       margin-bottom: 1.5rem;
-    }    
+    }
     .modal-info .bi-question-circle{
       margin-right: 1rem;
       padding-right: 0.5rem;

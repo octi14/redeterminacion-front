@@ -267,8 +267,7 @@
         }
     },
     fetchOnServer: false,
-    mounted() {
-
+    async created() {
         const contenedor = document.getElementById('aaCard');
         if( this.$store.state.facturas.all && this.$store.state.facturas.all.length <= this.periodo){
             this.factura = this.$store.state.facturas.all[this.periodo]
@@ -294,17 +293,18 @@
                         break
                     }
                 };
-            case "Incompleto": {                
-                    const now = new Date();
+            case "Incompleto": {
+                    await this.$store.dispatch('fechas/get')
+                    const now = new Date(this.$store.state.fechas.fecha.fecha);
                     const maxDateParts = this.config.maxDates[this.periodo].split('/');
                     const minDateParts = this.config.minDates[this.periodo].split('/');
                     const maxDate = new Date(maxDateParts[2], maxDateParts[1] - 1, maxDateParts[0]);
                     const minDate = new Date(minDateParts[2], minDateParts[1] - 1, minDateParts[0]);
-                    if (now > maxDate){
+                    if (now && now > maxDate){
                         this.estadoActual =  5;
                         break;
                     }
-                    if (now < minDate){
+                    if (now && now < minDate){
                         this.estadoActual =  1;
                         break;
                     }

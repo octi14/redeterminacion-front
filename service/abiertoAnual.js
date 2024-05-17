@@ -52,10 +52,10 @@ const formatFile = (FileResponse) => ({
       const fileResponse = await axios.$post(`/abiertoAnual/buscar/${cuit}`,{
         nroLegajo
       });
-      if(fileResponse.data){
-        return formatFile(fileResponse.data);
-      }else{
+      if (fileResponse.data.length === 0) {
         return null
+      }else{
+        return formatFile(fileResponse.data);
       }
     },
 

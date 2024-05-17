@@ -37,10 +37,9 @@ export const actions = {
   },
   async update({ commit }, { id, tramite}) {
     try {
-      const updated = await AbiertoAnualService.update(this.$axios, id, {
+      commit('setSingle',  await AbiertoAnualService.update(this.$axios, id, {
         tramite,
-      })
-      commit('setSingle', { updated })
+      }))
     } catch (e) {
       throw new Error(e.message)
     }

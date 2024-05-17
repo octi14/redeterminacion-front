@@ -21,7 +21,7 @@
                     <b-icon-exclamation-circle variant="dark" font-scale="3"></b-icon-exclamation-circle>
                   </b-col>
                   <b-col v-if="maestro && maestro.dfe != '\r'" md="10" style="padding-left: 0;">
-                    <p class="subtitle">Este comercio posee Domicilio Fiscal Electrónico (DFE).</p>
+                    <p class="subtitle"><b>Este comercio posee Domicilio Fiscal Electrónico (DFE).</b>  </p>
                     <p class="">En caso de que la factura cargada sea incorrecta se te notificará el período de rectificación a través del Domicilio Fiscal Electrónico.<br />
                     Si la carga no tiene errores no serás notificado/a y podrás verificarla ingresando tus datos en esta misma página.</p>
                   </b-col>
@@ -60,6 +60,9 @@
                 </b-card-text>
             </b-card>
         </b-row>
+        <div class="row justify-content-center my-4">
+          <b-button variant="success" @click="volver">Volver</b-button>
+        </div>
     </div>
 </template>
 
@@ -70,6 +73,12 @@ export default {
   components: {
     AbiertoAnualCard
   },
+  mounted() {
+    window.addEventListener('keydown', this.preventReload);
+  },
+  beforeDestroy() {
+    window.removeEventListener('keydown', this.preventReload);
+  },
   computed: {
     facturas(){
       return this.$store.state.facturas.all
@@ -79,6 +88,18 @@ export default {
     },
     maestro(){
       return this.$store.state.maestro.single[0]
+    }
+  },
+  methods: {
+    preventReload(event) {
+      if (event.key === 'F5' || (event.ctrlKey && event.key === 'r')) {
+        event.preventDefault();
+        // Aquí puedes agregar cualquier lógica adicional que necesites.
+        console.log('Intento de recarga bloqueado');
+      }
+    },
+    async volver(){
+      await this.$router.push('form')
     }
   },
   data() {

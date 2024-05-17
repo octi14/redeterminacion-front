@@ -1,7 +1,7 @@
 <template>
     <div class="page main-background">
         <Banner title="Comercio Abierto Anual"/>
-        <b-row class="page-body" align-h="center">
+        <b-row v-if="tramite" class="page-body" align-h="center" style="width: 100%;">
           <div class="section-subtitle">
               <div class="li-row">
                 <div class="li-icon border-b border-r">
@@ -39,12 +39,12 @@
               :periodo="index"
               :estado="periodo"
               :fecha="tramite.fechasCarga[index]"
-              :observaciones="tramite.facturas[index] ? tramite.facturas[index].observaciones : null"
+              :observaciones="tramite && tramite.facturas[index] ? tramite.facturas[index].observaciones : null"
               />
           </b-col>
         </b-row>
 
-        <b-row class="page-body" align-h="center">
+        <b-row class="page-body" align-h="center" style="width: 100%;">
             <b-card border-variant="warning" align-h="center" class="importante-card li-p" >
                 <b-card-text>
                 <b-row style="width:100%">
@@ -60,7 +60,7 @@
                 </b-card-text>
             </b-card>
         </b-row>
-        <div class="row justify-content-center my-4">
+        <div class="row justify-content-center my-4" style="width: 100%;">
           <b-button variant="success" @click="volver">Volver</b-button>
         </div>
     </div>

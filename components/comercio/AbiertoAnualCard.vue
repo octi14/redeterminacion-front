@@ -244,7 +244,7 @@
                 break;
             }
             case "Incorrecto":{
-                if (this.tramite.facturas[this.periodo] && this.tramite.facturas[this.periodo].rectificando){
+                if (this.tramite.facturas[this.periodo] && (this.tramite.facturas[this.periodo].rectificando || this.config.rectificacion)){
                     this.estadoActual = 7;
                     break;
                 }
@@ -259,6 +259,10 @@
                 const maxDate = new Date(maxDateParts[2], maxDateParts[1] - 1, maxDateParts[0]);
                 const minDate = new Date(minDateParts[2], minDateParts[1] - 1, minDateParts[0]);
             if (now > maxDate){
+                if(this.config.rectificacion){
+                    this.estadoActual = 7;
+                    break;
+                }
                 this.estadoActual = 5;
                 break;
             }

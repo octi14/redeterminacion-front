@@ -1,8 +1,8 @@
 <template>
   <div class="page main-background">
     <Banner title="Índices"/>
-    <div class="container col-md-4 col-sm-8 card shadow-card text-center my-5 mx-auto">
-      <div class="col-5 ml-5 mt-5">
+    <div class="container col-md-4 col-sm-8 card shadow-card my-5 mx-auto">
+      <div class="col ml-5 mt-5">
         <h4>
           <b-icon-search class="icon-orange" /> |
           <b class="landing-text"> Buscar índice </b>

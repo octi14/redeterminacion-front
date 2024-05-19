@@ -15,7 +15,7 @@
                 <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                 <div class="li-conent">Seleccioná el período que corresponda  y subí la factura del legajo comercial declarado.</div>
               </div>
-              <div class="li-row sangria DFE-card">
+              <div class="li-row DFE-card">
                 <b-row style="width:100%">
                   <b-col md="2" style="padding-right: 0;">
                     <b-icon-exclamation-circle variant="dark" font-scale="3"></b-icon-exclamation-circle>
@@ -40,6 +40,7 @@
               :estado="periodo"
               :fecha="tramite.fechasCarga[index]"
               :observaciones="tramite && tramite.facturas[index] ? tramite.facturas[index].observaciones : null"
+              :DFE= "maestro && maestro.dfe != '\r'"
               />
           </b-col>
         </b-row>

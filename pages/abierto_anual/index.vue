@@ -105,16 +105,16 @@
             </h4>
             <transition name="expand">
               <div v-show="isCardExpanded(4)">
-                <div class="li-row first-li mb-1">Una <b>factura digital</b> o una <b>fotografía de la factura emitida en formato papel</b>, correspondiente a los
-                   siguientes tres períodos del año en curso: </div>
+                <div class="li-row first-li mb-1"><p>Una <b>factura digital</b> o una <b>fotografía de la factura emitida en formato papel</b>, correspondiente a los
+                   siguientes tres períodos del año en curso: </p></div>
                   <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange"></b-icon-caret-right-fill></div>
-                    <div class="li-content"><b>Período 1:</b> Se deberá cargar una factura emitida durante el mes de Mayo.</div>
+                    <div class="li-content"><p><b>Período 1:</b> Se deberá cargar una factura emitida durante el mes de Mayo.</p></div>
                   </div>
                   <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange"></b-icon-caret-right-fill></div>
-                    <div class="li-content"><b>Período 2:</b> Se deberá cargar una factura emitida durante el mes de Agosto.</div>
+                    <div class="li-content"><p><b>Período 2:</b> Se deberá cargar una factura emitida durante el mes de Agosto.</p></div>
                   </div>
                   <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange"></b-icon-caret-right-fill></div>
-                    <div class="li-content"><b>Período 3:</b> Se deberá cargar una factura emitida durante el mes de Octubre.</div>
+                    <div class="li-content"><p><b>Período 3:</b> Se deberá cargar una factura emitida durante el mes de Octubre.</p></div>
                   </div>
                   <b-card border-variant="warning" align="center" class="importante-card" >
                     <b-card-text>
@@ -402,7 +402,7 @@ p, .li-content{
   margin-top: 2rem;
 }
 .importante-card .li-row{
-  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 .importante-card .li-content, .card-foot{
   text-align: left;

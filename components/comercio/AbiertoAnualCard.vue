@@ -39,7 +39,7 @@
                 <b-col>
                     <div class="li-row"><b-icon-exclamation-circle variant="dark" font-scale="1" shift-v="-2" class="li-icon"></b-icon-exclamation-circle><p class="li-content titulo-exp">Si la factura presenta errores</p></div>
                     <div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1"></b-icon-caret-right-fill><p class="li-content texto-exp">Recibirás una <b>notificación a tu Domicilio Fiscal Electrónico</b> (DFE) indicando fecha y forma de <b>rectificación</b>.</p></div>
-                    <div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1"></b-icon-caret-right-fill><p class="li-content texto-exp"><b>Si aún no tenés DFE, no se te notificará el error</b> y deberás <b>revisar periodicamente la información en esta página</b> (volviendo a introducir los datos del comercio).</p></div>
+                    <div class="li-row" v-if="!DFE"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1"></b-icon-caret-right-fill><p class="li-content texto-exp"><b>Si aún no tenés DFE, no se te notificará el error</b> y deberás <b>revisar periodicamente la información en esta página</b> (volviendo a introducir los datos del comercio).</p></div>
                 </b-col>
             </b-row>
             <b-row>
@@ -64,7 +64,7 @@
                 <b-col><div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-2"></b-icon-caret-right-fill><p class="li-content sub-texto-exp">Recibirás una notificación a tu Domicilio Fiscal Electrónico (DFE) indicando fecha y forma de rectificación.</p></div></b-col>
             </b-row>
             <b-row>
-                <b-col><div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-2"></b-icon-caret-right-fill><p class="li-content sub-texto-exp">Si aún no tenés DFE, tramitalo enviando un mail a <a href="mailto:arvige@gesell.gob.ar" class="icon-green">dirarvige@gesell.gob.ar</a>. En caso contrario, no se te notificará el error y deberás revisar periódicamente está página para obtener dicha información.</p></div></b-col>
+                <b-col><div class="li-row" v-if="!DFE"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-2"></b-icon-caret-right-fill><p class="li-content sub-texto-exp">Si aún no tenés DFE, tramitalo enviando un mail a <a href="mailto:arvige@gesell.gob.ar" class="icon-green">dirarvige@gesell.gob.ar</a>. En caso contrario, no se te notificará el error y deberás revisar periódicamente está página para obtener dicha información.</p></div></b-col>
             </b-row>
         <!-- Aquí puedes agregar más campos si los necesitas -->
         </b-card-text>
@@ -77,7 +77,7 @@
                 <b-col><p class="sub-texto-exp">Recibirás una notificación a tu Domicilio Fiscal Electrónico (DFE) indicando fecha y forma de rectificación.</p></b-col>
             </b-row>
             <b-row>
-                <b-col class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-3"></b-icon-caret-right-fill><p class="li-content mini-texto-exp"><b>Si aún no tenés DFE</b>, tramitalo enviando un mail a <a href="mailto:dirarvige@gesell.gob.ar" class="icon-green">dirarvige@gesell.gob.ar</a>. En caso contrario <b>no se te notificará el error</b> y deberás <b>revisar periodicamente la información en esta página</b> (Volviendo a introducir los datos del comercio).</p></b-col>
+                <b-col class="li-row" v-if="!DFE"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-3"></b-icon-caret-right-fill><p class="li-content mini-texto-exp"><b>Si aún no tenés DFE</b>, tramitalo enviando un mail a <a href="mailto:dirarvige@gesell.gob.ar" class="icon-green">dirarvige@gesell.gob.ar</a>. En caso contrario <b>no se te notificará el error</b> y deberás <b>revisar periodicamente la información en esta página</b> (Volviendo a introducir los datos del comercio).</p></b-col>
             </b-row>
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 6" class="upload-card">
@@ -175,6 +175,7 @@
       fecha: String,
       observaciones: String,
       hardEstado: Number,
+      DFE: Boolean,
       // Puedes agregar más props según sea necesario
     },
     data() {

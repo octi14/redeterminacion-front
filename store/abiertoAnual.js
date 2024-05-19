@@ -73,6 +73,6 @@ export const mutations = {
     state.single = singleFile
   },
   ordenar(state) {
-    state.all.sort((a, b) => b.updatedAt - a.updatedAt);
-  },
+    state.all.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  }
 }

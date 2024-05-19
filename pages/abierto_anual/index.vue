@@ -70,7 +70,7 @@
                   <div class="li-content">Aquellos/as <b>contribuyentes que no hayan acreditado</b>, ante la evaluación del Municipio, <b>contar con un comercio con
                    actividad permanente durante el ejercicio fiscal anterior</b>. </div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                  <div class="li-content"> Los <b>Mayores Contribuyentes</b> incluidos en los Artículos 181 bis a 181 noveno de la Ordenanza Fiscal 2156/08 c/ Mod. </div>
+                  <div class="li-content"> Los <b>Mayores Contribuyentes</b> incluidos en los Artículos 181 bis a 181 noveno de la <a href="https://arvige.gob.ar/legislacion/pdf/12" class="text-success">Ordenanza Fiscal 2156/08 c/ Mod</a>. </div>
                 </div>
               </div>
             </transition>
@@ -107,14 +107,14 @@
               <div v-show="isCardExpanded(4)">
                 <div class="li-row first-li mb-1"><p>Una <b>factura digital</b> o una <b>fotografía de la factura emitida en formato papel</b>, correspondiente a los
                    siguientes tres períodos del año en curso: </p></div>
-                  <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange"></b-icon-caret-right-fill></div>
-                    <div class="li-content"><p><b>Período 1:</b> Se deberá cargar una factura emitida durante el mes de Mayo.</p></div>
+                  <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                    <div class="li-content"><p><b>Período 1:</b> Se deberá cargar una factura emitida durante el mes de <i>Mayo</i>.</p></div>
                   </div>
-                  <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange"></b-icon-caret-right-fill></div>
-                    <div class="li-content"><p><b>Período 2:</b> Se deberá cargar una factura emitida durante el mes de Agosto.</p></div>
+                  <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                    <div class="li-content"><p><b>Período 2:</b> Se deberá cargar una factura emitida durante el mes de <i>Agosto</i>.</p></div>
                   </div>
-                  <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange"></b-icon-caret-right-fill></div>
-                    <div class="li-content"><p><b>Período 3:</b> Se deberá cargar una factura emitida durante el mes de Octubre.</p></div>
+                  <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                    <div class="li-content"><p><b>Período 3:</b> Se deberá cargar una factura emitida durante el mes de <i>Octubre</i>.</p></div>
                   </div>
                   <b-card border-variant="warning" align="center" class="importante-card" >
                     <b-card-text>
@@ -125,7 +125,7 @@
                         </b-col>
                         <b-col  md="10">
                           <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Las <b>facturas</b> deberán ser <b>digitales</b> (en caso de tenerlas en formato papel <b>podés escanearlos o sacarles una foto</b>) y deben ser <b>legibles</b>. Pueden encontrarse en formato pdf o imagen y tener un peso máximo de 15Mb.</div></div>
-                          <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Cada una de estas <b>facturas</b> será cargada por la persona interesada a medida que se vayan habilitando los <b>períodos de recepción de las mismas</b> (definidos por la Autoridad de Aplicación) en el curso del año.</div></div>
+                          <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Los <b>periodos de recepción</b> de las facturas serán <b>definidos</b> por la <b>Autoridad de Aplicación</b> en el transcurso del año. Estos periodos <b>serán notificados al DFE</b> de la persona interesada <b>y publicitados en las vías oficiales</b> de comunicación <b>del Municipio</b>.</div></div>
                         </b-col>
                       </b-row>
                     </b-card-text>
@@ -143,60 +143,60 @@
               <div v-show="isCardExpanded(5)">
                 <div class="li-row first-li">
                   <div class="li-icon">
-                    <p class="">1. </p>
+                    <p class="icon-orange">1. </p>
                   </div>
                   <div class="li-content">
                     <p><b>Leé</b> atentamente la <b>notificación</b> que recibiste y los <b>requisitos</b> que están aquí descriptos.</p>
                   </div>
                 </div>
-                <div class="li-row">
+                <div class="li-row other-li">
                   <div class="li-icon">
-                    <p class="">2. </p>
+                    <p class="icon-orange">2. </p>
                   </div>
                   <div class="li-content">
                     <p>Una vez leída la información, <b>escribí tu número de legajo comercial</b> (indicado en la notificación recibida) y tu <b>CUIM/CUIT</b>. </p>
                   </div>
                 </div>
-                <div class="li-row">
+                <div class="li-row other-li">
                   <div class="li-icon">
-                    <p class="">3. </p>
+                    <p class="icon-orange">3. </p>
                   </div>
                   <div class="li-content">
                     <p>En la pantalla de “carga de documentación” <b>seleccioná el período que se encuentra habilitado y cargá una factura</b> (digital o fotografía de la boleta impresa) que haya sido <b>emitida durante el mes indicado</b>.</p>
                   </div>
                 </div>
-                <div class="li-row">
+                <div class="li-row other-li">
                   <div class="li-icon">
-                    <p class="">4. </p>
+                    <p class="icon-orange">4. </p>
                   </div>
                   <div class="li-content">
                     <p>Una vez cargada, <b>ARVIGE revisará</b> que <b>la factura</b> sea correcta:</p>
-                    <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-green"></b-icon-check-lg></div>
-                      <div class="li-content"><p>Si la <b>factura</b> es <b>correcta, no recibirás notificaciones en tu Domicilio Fiscal Electrónico (DFE)</b>. Para más información lee atentamente el paso 5.</p></div>
+                    <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="0.75" class="icon-orange" shift-v="3px"></b-icon-caret-right-fill></div>
+                      <div class="li-content mini-content"><p>Si la <u>factura es correcta</u>, <b>no recibirás notificaciones en tu Domicilio Fiscal Electrónico (DFE)</b>. Para más información lee atentamente el paso 5.</p></div>
                     </div>
-                    <div class="li-row"><div class="li-icon"><b-icon-x-lg font-scale="0.75" class="icon-orange"></b-icon-x-lg></div>
-                      <div class="li-content"><p>Si la <b>factura</b> es <b>incorrecta</b> o la carga fue errónea (por ejemplo, se subió una imagen donde la fecha no coincide con el período a acreditar) <b>se te notificará por DFE que deberás volver a efectuar la carga en un plazo de tiempo determinado</b>. Si no tenes constituido tu DFE podés iniciar el trámite enviando un mail a <a href="mailto:dirarvige@gesell.gob.ar" target="_blank" class="icon-green">dirarvige@gesell.gob.ar</a></p></div>
+                    <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="0.75" class="icon-orange" shift-v="3px"></b-icon-caret-right-fill></div>
+                      <div class="li-content mini-content"><p>Si la <u>factura es incorrecta</u> o la carga fue errónea (por ejemplo, se subió una imagen donde la fecha no coincide con el período a acreditar) <b>se te notificará por DFE que deberás volver a efectuar la carga en un plazo de tiempo determinado</b>. Si no tenes constituido tu DFE podés iniciar el trámite enviando un mail a <a href="mailto:dirarvige@gesell.gob.ar" target="_blank" class="icon-green">dirarvige@gesell.gob.ar</a></p></div>
                     </div>
-                    <div class="li-row"><div class="li-icon"><b-icon-dash variant="dark"></b-icon-dash></div>
-                      <div class="li-content"><p><i>En caso que no dispongas de DFE no se te notificará el error y deberás continuar en el paso 5.</i></p></div>
+                    <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="0.75" class="icon-orange" shift-v="3px"></b-icon-caret-right-fill></div>
+                      <div class="li-content mini-content"><p><i>En caso que no dispongas de DFE no se te notificará el error y deberás continuar en el paso 5.</i></p></div>
                     </div>
                   </div>
                 </div>
-                <div class="li-row">
+                <div class="li-row other-li">
                   <div class="li-icon">
-                    <p class="">5. </p>
+                    <p class="icon-orange">5. </p>
                   </div>
                   <div class="li-content">
                     <p>Si la persona que solicita el beneficio desea <b>verificar el estado de carga de su boleta, podrá hacerlo en esta misma página</b>. Para eso, <b>deberá ingresar nuevamente los datos requeridos</b> y revisar en “carga de documentación” si la misma fue aceptada o rechazada:</p>   
-                    <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-green"></b-icon-check-lg></div>
-                      <div class="li-content"><p>Si la factura enviada es correcta podrá ver la fecha en la que fue verificada por ARVIGE.</p></div>
+                    <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="0.75" class="icon-orange" shift-v="3px"></b-icon-caret-right-fill></div>
+                      <div class="li-content mini-content"><p>Si la <u>factura es correcta</u> podrá ver la fecha en la que fue verificada por ARVIGE.</p></div>
                     </div>
-                    <div class="li-row"><div class="li-icon"><b-icon-x-lg font-scale="0.75" class="icon-orange"></b-icon-x-lg></div>
-                      <div class="li-content"><p>Si la factura enviada fue rechazada, podrá visualizar en la página la información necesaria para la rectificación de la misma en el periodo fijado a esos efectos.</p></div>
+                    <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="0.75" class="icon-orange" shift-v="3px"></b-icon-caret-right-fill></div>
+                      <div class="li-content mini-content"><p>Si la <u>factura fue rechazada</u>, podrá visualizar en la página la información necesaria para la rectificación de la misma en el periodo fijado a esos efectos.</p></div>
                     </div>
                   </div>
                 </div>
-                <p class="first-li card-foot"><b><b-icon-exclamation-lg variant="dark"></b-icon-exclamation-lg> El trámite concluye a fin de año (2024) y es requisito que hayas cargado 3 facturas (una por cada período) para obtener el Beneficio de Comercio Abierto Anual.</b></p>
+                <p class="first-li separador-top"><b>El trámite concluye a fin de año (2024) y es requisito que hayas cargado 3 facturas (una por cada período) para obtener el Beneficio de Comercio Abierto Anual.</b></p>
               </div>
             </transition>
           </b-card>
@@ -398,6 +398,9 @@
 p, .li-content{
   font-family: Calibri, 'Trebuchet MS', sans-serif;
 }
+.mini-content{
+  font-size: 0.85rem ;
+}
 .importante-card{
   margin-top: 2rem;
 }
@@ -422,6 +425,7 @@ p, .li-content{
   padding: 2rem 0;
   margin-top: 2rem;
   text-align: center;
+  color: #353535;
 }
 .btn-form{
   margin: 15px 0;
@@ -639,6 +643,9 @@ ul{
 }
 .first-li{
   margin-top: 1rem;
+}
+.other-li{
+  margin-top: 0.35rem;
 }
 .FAQs-card .li-row{
   margin-top: 1rem;

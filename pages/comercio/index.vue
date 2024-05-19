@@ -1,7 +1,7 @@
 <template>
   <div class="page main-background">
     <Banner title="Habilitaciones comerciales" />
-    
+
     <div class="col-10 mainCarrousel" style="margin: auto; margin-top: 2rem">
       <b-carousel
         id="mainCarousel"
@@ -39,7 +39,7 @@
         <b-col class="botonera">
           <h2 class="icon-green"><b-icon-question-octagon-fill class="icon-orange" scale="0.75"></b-icon-question-octagon-fill> ¿Qué trámite estás buscando?</h2>
           <div class="botonera-container">
-            <b-row>                            
+            <b-row>
               <b-col lg="3" md="4" sm="6"><a href="#card-habilitacion" id="btnH"><img id="btn-Habilitación" width="100%" src="../../assets/btn/btn_habilitacion.png" @click="seleccionarTramite('Habilitación')"></a></b-col>
               <b-col lg="3" md="4" sm="6"><a href="#card-baja" id="btnB"><img id="btn-Baja" width="100%" src="../../assets/btn/btn_baja.png" @click="seleccionarTramite('Baja')"></a></b-col>
               <b-col lg="3" md="4" sm="6"><img id="btn-Cambio-Titular" class="disabled" width="100%" src="../../assets/btn/btn_cambio_titular.png" @click="seleccionarTramite('Cambio-Titular')"></b-col>
@@ -126,7 +126,7 @@
               </b-card>
               </div>
             </transition>
-          </b-card>          
+          </b-card>
           <b-card class="section-card FAQs-card" v-bind:class="{ 'expanded': isCardExpanded(3) }">
             <h4 class="section-title" @click="toggleCard(3)">Preguntas Frecuentes
               <b-icon-chevron-compact-down v-if="!isCardExpanded(3)"></b-icon-chevron-compact-down>
@@ -139,7 +139,7 @@
                   <div class="li-content">
                     <p class="li-title">¿Qué sucede si el/la titular de la baja se encuentra fallecido/a?</p>
                     <p>En ese caso, deberás eviar un correo electrónico a: <a class="external-link" href="mailto:deptocomercio@gesell.gob.ar">deptocomercio@gesell.gob.ar</a>, informando los siguientes datos:</p>
-                    
+
                   </div>
                 </div>
                 <div class="li-row">
@@ -212,7 +212,7 @@
             <transition name="expand">
               <div v-show="isCardExpanded(4)">
                 <p class="first-li">
-                  La habilitación de comercios/industrias o asimilables deberá adecuarse a lo determinado en concordancia con leyes nacionales, provinciales y 
+                  La habilitación de comercios/industrias o asimilables deberá adecuarse a lo determinado en concordancia con leyes nacionales, provinciales y
                   <a href="https://arvige.gob.ar/legislacion/pdf/12" target="_blank" class="external-link">el Digesto de Habilitaciones Comerciales (Ord.1958/04 (TO2024)</a>.
                 </p>
               </div>
@@ -784,7 +784,7 @@ export default {
       showPopupE: false,
       showConfirmationPopup: false,
       showLibreDeudaPopup: false,
-      showPopupNroInmueble: false,      
+      showPopupNroInmueble: false,
       showPopupConstanciaLibreDeudaSegHig: false,
       documentCheckboxChecked: false,
       tramiteSeleccionado: '',
@@ -994,7 +994,7 @@ export default {
     border: 3px solid #999999
     top: 6px
     border-radius: 50%
-@media (max-width: 1200px)  
+@media (max-width: 1200px)
   #mainCarousel
     .carousel-control-prev-icon::after,
     .carousel-control-next-icon::after
@@ -1072,7 +1072,6 @@ export default {
   }
 }
 @media (max-width: 720px){
-  h1
   .mainCarrousel{
     display: none;
   }
@@ -1093,7 +1092,7 @@ export default {
   }
   .botonera-container .row div img{
     margin: 0 !important;
-  }  
+  }
 }
 p, .li-content{
   font-family: Calibri, 'Trebuchet MS', sans-serif;

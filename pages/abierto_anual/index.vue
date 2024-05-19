@@ -27,8 +27,7 @@
               <div v-show="isCardExpanded(0)">
                 <div class="li-row first-li">
                   <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">
-                    Es un descuento del 60% (sesenta por ciento) del valor de la Tasa por Inspección y/o de la verificación de la Seguridad
-                     y la Higiene, otorgado en virtud del Artículo 182 de la <a href="https://arvige.gob.ar/legislacion/pdf/12" class="text-success">Ordenanza Fiscal 2156/08 (TO2023).</a></div>
+                    Es un <b>descuento del 60% </b>(sesenta por ciento) del valor <b>de la Tasa por Inspección de  Seguridad e Higiene</b>, otorgado en virtud del Artículo 182 de la <a href="https://arvige.gob.ar/legislacion/pdf/12" class="text-success">Ordenanza Fiscal 2156/08 (TO2023).</a></div>
                 </div>
               </div>
             </transition>
@@ -42,17 +41,17 @@
             <transition name="expand">
               <div v-show="isCardExpanded(1)">
                 <div class="li-row first-li"><div class="li-content">
-                    Los/las contribuyentes que ante evaluacion del Municipio acrediten que:</div>
+                    Los/las <b>contribuyentes</b> que ante evaluacion del Municipio <b>acrediten</b> que:</div>
                 </div>
                 <div class="li-row">
                   <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">
-                    Sus establecimientos hayan permanecido con actividad en forma permanente durante el ejercicio fiscal anterior y no
-                    posean deudas con la Municipalidad.</div>
+                    Sus <b>establecimientos</b> hayan permanecido <b>con actividad</b> en forma <b>permanente durante el ejercicio fiscal anterior y no
+                    posean deudas</b> con la Municipalidad.</div>
                 </div>
                 <div class="li-row">
                   <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">
-                    Sus establecimientos hayan permanecido con actividad en forma permanente durante los fines de semana del ejercicio anterior y
-                     no posean deudas con la Municipalidad.</div>
+                    Sus <b>establecimientos</b> hayan permanecido <b>con actividad</b> en forma <b>permanente durante los fines de semana del ejercicio anterior y
+                     no posean deudas</b> con la Municipalidad.</div>
                 </div>
               </div>
             </transition>
@@ -66,12 +65,12 @@
             <transition name="expand">
               <div v-show="isCardExpanded(2)">
                 <div class="li-row first-li">
-                  <div class="li-content mb-1"> Están excluídos del Beneficio: </div></div>
+                  <div class="li-content mb-1"> Están <b>excluidos</b> del Beneficio: </div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                  <div class="li-content">Aquellos/as contribuyentes que no hayan acreditado, ante la evaluación del Municipio, contar con un comercio con
-                   actividad permanente durante el ejercicio fiscal anterior. </div></div>
+                  <div class="li-content">Aquellos/as <b>contribuyentes que no hayan acreditado</b>, ante la evaluación del Municipio, <b>contar con un comercio con
+                   actividad permanente durante el ejercicio fiscal anterior</b>. </div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                  <div class="li-content"> Los Mayores Contribuyentes incluídos en los Artículos 181 bis a 181 noveno de la Ordenanza Fiscal 2156/08 c/ Mod. </div>
+                  <div class="li-content"> Los <b>Mayores Contribuyentes</b> incluidos en los Artículos 181 bis a 181 noveno de la Ordenanza Fiscal 2156/08 c/ Mod. </div>
                 </div>
               </div>
             </transition>
@@ -84,16 +83,16 @@
             <transition name="expand">
               <div v-show="isCardExpanded(3)">
                 <div class="li-row first-li"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                  <div class="li-content">Poseer una Habilitación Comercial en el Partido de Villa Gesell.</div>
+                  <div class="li-content">Poseer una <b>Habilitación Comercial</b> en el Partido de Villa Gesell.</div>
                 </div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                  <div class="li-content">No encontrarse en mora en la Tasa de Seguridad e Higiene.</div>
+                  <div class="li-content"><b>No</b> encontrarse en <b>mora</b> en la <b>Tasa de Seguridad e Higiene</b>.</div>
                 </div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                  <div class="li-content"> No ser un contribuyente excluido del beneficio acorde Ord. 2156/08 c/ Mod. </div>
+                  <div class="li-content">No ser un contribuyente excluido del beneficio acorde Ord. 2156/08 c/ Mod. </div>
                 </div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                  <div class="li-content"> Realizar el procedimiento de carga de datos según lo previsto por la Autoridad de Aplicación.</div>
+                  <div class="li-content"><b>Realizar</b> el procedimiento de <b>carga de datos</b> según lo previsto por la Autoridad de Aplicación.</div>
                 </div>
               </div>
             </transition>
@@ -106,7 +105,7 @@
             </h4>
             <transition name="expand">
               <div v-show="isCardExpanded(4)">
-                <div class="li-row first-li mb-1">Una factura digital o una fotografía de la factura emitida en formato papel, correspondiente a los
+                <div class="li-row first-li mb-1">Una <b>factura digital</b> o una <b>fotografía de la factura emitida en formato papel</b>, correspondiente a los
                    siguientes tres períodos del año en curso: </div>
                   <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill class="icon-orange"></b-icon-caret-right-fill></div>
                     <div class="li-content"><b>Período 1:</b> Se deberá cargar una factura emitida durante el mes de Mayo.</div>
@@ -125,7 +124,8 @@
                           <p class="li-title"><u><b>¡Importante!</b></u></p>
                         </b-col>
                         <b-col  md="10">
-                            <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Las <b>facturas</b> deberán ser <b>digitales</b> (en caso de tenerlas en formato papel <b>podés escanearlos o sacarles una foto</b>) y deben ser <b>legibles</b>. Pueden encontrarse en formato pdf o imagen y tener un peso máximo de 15Mb.</div></div>
+                          <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Las <b>facturas</b> deberán ser <b>digitales</b> (en caso de tenerlas en formato papel <b>podés escanearlos o sacarles una foto</b>) y deben ser <b>legibles</b>. Pueden encontrarse en formato pdf o imagen y tener un peso máximo de 15Mb.</div></div>
+                          <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Cada una de estas <b>facturas</b> será cargada por la persona interesada a medida que se vayan habilitando los <b>períodos de recepción de las mismas</b> (definidos por la Autoridad de Aplicación) en el curso del año.</div></div>
                         </b-col>
                       </b-row>
                     </b-card-text>
@@ -135,32 +135,68 @@
           </b-card>
           <b-card id="datos" class="section-card" v-bind:class="{ 'expanded': isCardExpanded(5) }">
             <h4 class="section-title" @click="toggleCard(5)">
-              ¿Cómo se realiza la carga de datos?
+              ¿Cómo se realiza la carga y verificación de la documentación?
               <b-icon-chevron-compact-down v-if="!isCardExpanded(5)"></b-icon-chevron-compact-down>
               <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
             </h4>
             <transition name="expand">
               <div v-show="isCardExpanded(5)">
-                <div class="li-row first-li"><div class="li-icon">
-                  <b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
-                  <div class="li-content">Luego de recibir la notificación en el DFE y/o en formato papel, deberás abrir
-                     esta página y leer atentamente cada uno de los requisitos para iniciar tu trámite. </div>
+                <div class="li-row first-li">
+                  <div class="li-icon">
+                    <p class="">1. </p>
+                  </div>
+                  <div class="li-content">
+                    <p><b>Leé</b> atentamente la <b>notificación</b> que recibiste y los <b>requisitos</b> que están aquí descriptos.</p>
+                  </div>
                 </div>
-                <div class="li-row"><div class="li-icon">
-                  <b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
-                  <div class="li-content">Una vez leída toda la información, escribí tu número de legajo comercial
-                     (indicado en la notificación recibida) y tu CUIM/CUIT. </div>
+                <div class="li-row">
+                  <div class="li-icon">
+                    <p class="">2. </p>
+                  </div>
+                  <div class="li-content">
+                    <p>Una vez leída la información, <b>escribí tu número de legajo comercial</b> (indicado en la notificación recibida) y tu <b>CUIM/CUIT</b>. </p>
+                  </div>
                 </div>
-                <div class="li-row"><div class="li-icon">
-                  <b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
-                  <div class="li-content">En la pantalla de “carga de documentación” deberás seleccionar el período que se encuentra habilitado para subir tu factura.
-                     Allí, cargarás una única factura (digital o fotografía de la factura impresa) que haya sido emitida durante los meses indicados
-                      para cada período. </div>
+                <div class="li-row">
+                  <div class="li-icon">
+                    <p class="">3. </p>
+                  </div>
+                  <div class="li-content">
+                    <p>En la pantalla de “carga de documentación” <b>seleccioná el período que se encuentra habilitado y cargá una factura</b> (digital o fotografía de la boleta impresa) que haya sido <b>emitida durante el mes indicado</b>.</p>
+                  </div>
                 </div>
-                <div class="li-row"><div class="li-icon">
-                  <b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
-                  <div class="li-content">Una vez cargada, ARVIGE revisará que la factura sea correcta.  </div>
+                <div class="li-row">
+                  <div class="li-icon">
+                    <p class="">4. </p>
+                  </div>
+                  <div class="li-content">
+                    <p>Una vez cargada, <b>ARVIGE revisará</b> que <b>la factura</b> sea correcta:</p>
+                    <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-green"></b-icon-check-lg></div>
+                      <div class="li-content"><p>Si la <b>factura</b> es <b>correcta, no recibirás notificaciones en tu Domicilio Fiscal Electrónico (DFE)</b>. Para más información lee atentamente el paso 5.</p></div>
+                    </div>
+                    <div class="li-row"><div class="li-icon"><b-icon-x-lg font-scale="0.75" class="icon-orange"></b-icon-x-lg></div>
+                      <div class="li-content"><p>Si la <b>factura</b> es <b>incorrecta</b> o la carga fue errónea (por ejemplo, se subió una imagen donde la fecha no coincide con el período a acreditar) <b>se te notificará por DFE que deberás volver a efectuar la carga en un plazo de tiempo determinado</b>. Si no tenes constituido tu DFE podés iniciar el trámite enviando un mail a <a href="mailto:dirarvige@gesell.gob.ar" target="_blank" class="icon-green">dirarvige@gesell.gob.ar</a></p></div>
+                    </div>
+                    <div class="li-row"><div class="li-icon"><b-icon-dash variant="dark"></b-icon-dash></div>
+                      <div class="li-content"><p><i>En caso que no dispongas de DFE no se te notificará el error y deberás continuar en el paso 5.</i></p></div>
+                    </div>
+                  </div>
                 </div>
+                <div class="li-row">
+                  <div class="li-icon">
+                    <p class="">5. </p>
+                  </div>
+                  <div class="li-content">
+                    <p>Si la persona que solicita el beneficio desea <b>verificar el estado de carga de su boleta, podrá hacerlo en esta misma página</b>. Para eso, <b>deberá ingresar nuevamente los datos requeridos</b> y revisar en “carga de documentación” si la misma fue aceptada o rechazada:</p>   
+                    <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-green"></b-icon-check-lg></div>
+                      <div class="li-content"><p>Si la factura enviada es correcta podrá ver la fecha en la que fue verificada por ARVIGE.</p></div>
+                    </div>
+                    <div class="li-row"><div class="li-icon"><b-icon-x-lg font-scale="0.75" class="icon-orange"></b-icon-x-lg></div>
+                      <div class="li-content"><p>Si la factura enviada fue rechazada, podrá visualizar en la página la información necesaria para la rectificación de la misma en el periodo fijado a esos efectos.</p></div>
+                    </div>
+                  </div>
+                </div>
+                <p class="first-li card-foot"><b><b-icon-exclamation-lg variant="dark"></b-icon-exclamation-lg> El trámite concluye a fin de año (2024) y es requisito que hayas cargado 3 facturas (una por cada período) para obtener el Beneficio de Comercio Abierto Anual.</b></p>
               </div>
             </transition>
           </b-card>
@@ -368,9 +404,12 @@ p, .li-content{
 .importante-card .li-row{
   margin-top: 1rem;
 }
-.importante-card .li-content{
+.importante-card .li-content, .card-foot{
   text-align: left;
   color: #353535;
+}
+.card-foot{
+  text-align: center;
 }
 .importante-card .card-body{
   padding-bottom: 0.25rem;

@@ -53,7 +53,7 @@
                 <b-col><p class="sub-texto-exp">Estado: Incorrecto</p></b-col>
             </b-row>
             <b-row>
-                <b-col><div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-3px"></b-icon-caret-right-fill><p class="texto-exp li-content">La <b>carga</b> realizada el día {{ fecha }} es <b>incorrecta</b>, porque <b>{{ motivo ? motivo : tramite.facturas[periodo].observaciones }}</b>.</p></div></b-col>
+                <b-col><div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-3px"></b-icon-caret-right-fill><p class="texto-exp li-content">La <b>carga</b> realizada el día {{ fecha }} es <b>incorrecta</b>, porque <b>{{ motivo ? motivo : tramite.facturas[periodo].observaciones }}</b></p></div></b-col>
             </b-row>
             <b-row>
                 <b-col><div class="importante-box">
@@ -506,6 +506,53 @@
 }
 </script>
 <style scoped>
+@media (max-width: 1200px){
+    #aaCard .card-body{
+        padding-left: 5% !important;
+        padding-right: 5% !important;
+    }
+    .envio-ok {
+        text-align: center;
+    }
+    .ticket-revision-card .importante-box p{
+        font-size: 20px;
+    }
+    .ticket-revision-card .titulo-exp{
+        text-decoration: underline;
+        font-weight: 600;
+        width: 100%;
+    }
+    .periodo-esperando-card .texto-exp, .ticket-ok-card .texto-exp, .periodo-vencido-card .texto-exp, .ticket-enviando-fail-card .texto-exp{
+        text-align: center;
+    }
+    .rectificacion-card .importante-box b, .ticket-revision-card .importante-box p, .periodo-esperando-card .texto-exp, .ticket-ok-card .texto-exp, .ticket-bad-card .texto-exp, .periodo-vencido-card .texto-exp, .ticket-enviando-card .texto-exp, .ticket-enviando-fail-card .texto-exp{
+        font-size: 16px !important;
+    }
+    .ticket-revision-card .titulo-exp, .ticket-enviando-card .sub-texto-exp, .periodo-vencido-card .sub-texto-exp, .ticket-bad-card .sub-texto-exp, .ticket-enviando-fail-card .sub-texto-exp {
+        font-size: 14px !important;
+    }
+    .comment-pick-card .custom-radio{
+        font-size: 14px !important;
+    }
+    .periodo-vencido-card .sub-texto-exp, .ticket-enviando-fail-card .sub-texto-exp{
+        text-align: center;
+    }
+    .ticket-enviando-fail-card .mini-texto-exp{
+        font-size: 12px;
+    }
+    .ticket-revision-card .texto-exp, .periodo-vencido-card .mini-texto-exp{
+        font-size: 12px;
+    }
+    .btn-approve, .btn-cancel{
+        width: 45% !important;
+    }
+}
+@media (max-width: 720px){
+    #aaCard .card-body{
+        padding-left: 5% !important;
+        padding-right: 5% !important;
+    }
+}
 h2, h3{
     color: #353535;
     font-size: 28px;
@@ -525,7 +572,7 @@ h3{
     margin-bottom: 2rem;
 }
 #aaCard{
-    min-height: 775px;
+    min-height: 780px;
     max-width: 26rem !important;
 }
 #aaCard .card-body{

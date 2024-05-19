@@ -15,7 +15,7 @@
           </div>
           <b-form>
             <b-row>
-              <label for="cuit" class="col-6">CUIT/CUIM del titular del comercio: </label>
+              <label for="cuit" class="col-6">CUIT/CUIM del titular del comercio: <span style="font-weight: 500"><i>(sin guiones)</i></span></label>
               <b-form-input class="col-6" :disabled="enterKeyPressed" v-model="cuit" id="cuit" type="number" placeholder="Ingrese su CUIT/CUIM" no-wheel></b-form-input>
             </b-row>
             <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
@@ -81,7 +81,7 @@
             <button type="button" aria-label="Close" class="close" @click="showPopupA = false">×</button>
       </template>
       <div class="modal-info">
-        <p class="destacado"><b-icon-caret-right-fill class="icon-orange" shift-v="" scale="1.5"></b-icon-caret-right-fill>Podés encontrar el número de CUIM y de legajo comercial en el encabezado de la notificación que recibiste. Hacé click en la imagen y verificá cómo se visualiza.</p>
+        <p class="destacado"><b-icon-caret-right-fill class="icon-orange" shift-v="" scale="1.5"></b-icon-caret-right-fill>Podés encontrar el número de <b>CUIM</b> y de <b>legajo comercial</b> en el encabezado de la notificación que recibiste. Hacé click en la imagen y verificá cómo se visualiza.</p>
         <div style="width: 100%">
           <a href="http://haciendavgesell.gob.ar/_nuxt/img/ej-cedulanotificacion.78769c7.jpg" target="_blank"><img src="../../assets/ej-cedulanotificacion.jpg" width="100%" height="fit-content" /></a>
         </div>
@@ -216,7 +216,7 @@
       padding-left: 0;
     }
     .btn{
-      max-width: 8rem;
+      max-width: 45%;
     }
   }
     form{

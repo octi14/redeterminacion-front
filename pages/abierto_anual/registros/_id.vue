@@ -7,7 +7,7 @@
       </div>
       <!-- Datos del solicitante -->
       <template v-if="tramite">
-        <div class="flex col" style="width: 96%">
+        <div class="flex col title-row" style="width: 96%">
           <div class="row justify-content-center mt-3">
             <p class="h5"> Número de legajo: <b> {{ tramite.nroLegajo }}  </b></p>
           </div>
@@ -17,7 +17,7 @@
         </div>
         <!--Datos de facturas-->
         <div class="row justify-content-center">
-          <b-col v-for="(periodo, index) in tramite.status" :key="index" class="col-md-3 col-sm-8 mt-4 mx-2">
+          <b-col v-for="(periodo, index) in tramite.status" :key="index" cols="12" sm="8" md="6" lg="4" xl="4">
               <AbiertoAnualAdminCard
               :id="index"
               :periodo="index"
@@ -142,6 +142,35 @@
   </script>
 
   <style scoped>
+  @media (max-width: 720px){    
+    .section-subtitle{
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+    .subtitle{
+      font-size: 24px !important;
+    }
+    .sangria{
+      margin-left: 0 !important;
+    }
+    .card{
+      width: 90% !important;
+      margin-left: 5% !important;
+      margin-right: 5% !important;
+    }
+    .btn{
+      width: 9rem !important;
+    }
+    .bi-exclamation-circle{
+      margin: 1rem auto !important;
+      width: 100%;
+    }
+    .title-row {
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      margin-bottom: 2rem !important;
+    }
+  }
   .modal-dialog {
     max-width: 80% !important;
   }
@@ -162,14 +191,6 @@
     margin-bottom: 0%;
   }
   /* Responsive: */
-
-  @media only screen and (min-width: 640px) {
-    .layout {
-      display: flex;
-      max-width: 90%;
-      margin: auto;
-    }
-  }
 
   /* etc */
   .iconoAdvertencia {

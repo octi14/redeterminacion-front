@@ -26,7 +26,7 @@
                     Si la carga no tiene errores no serás notificado/a y podrás verificarla ingresando tus datos en esta misma página.</p>
                   </b-col>
                   <b-col v-else md="10" style="padding-left: 0;">
-                    <p class="subtitle">Este comercio no posee Domicilio Fiscal Electrónico (DFE). <a href="#">Tramitalo haciendo click acá.</a></p>
+                    <p class="subtitle">Este comercio no posee Domicilio Fiscal Electrónico (DFE). Tramitalo enviando un mail a <a href="mailto:dirarvige@gesell.gob.ar" target="_blank">dirarvige@gesell.gob.ar</a></p>
                     <p class="">En caso de que la factura cargada sea incorrecta se te notificará el período de rectificación a través del Domicilio Fiscal Electrónico.<br />
                     en caso de no constituirlo deberás revisar periodicamente esta misma página para corroborar que la carga no tenga errores.</p>
                   </b-col>
@@ -42,23 +42,6 @@
               :observaciones="tramite && tramite.facturas[index] ? tramite.facturas[index].observaciones : null"
               />
           </b-col>
-        </b-row>
-
-        <b-row class="page-body" align-h="center" style="width: 100%;">
-            <b-card border-variant="warning" align-h="center" class="importante-card li-p" >
-                <b-card-text>
-                <b-row style="width:100%">
-                    <b-col md="2">
-                    <b-icon-exclamation-triangle variant="warning" font-scale="5"></b-icon-exclamation-triangle>
-                    <p class="li-title"><u><b>¡Importante!</b></u></p>
-                    </b-col>
-                    <b-col  md="10">
-                        <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Para habilitar un comercio del rubro <b>necesitás solicitar turno para llevar a cabo la inspección</b> correspondiente. Allí se constatará el cumplimiento de los requisitos mencionados previamente.</div></div>
-                        <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Los turnos de Inspección se solicitan <b>luego de recibir el correo electrónico del Departamento Comercio</b> autorizando el Formulario de Solicitud de Habilitación (donde te indicarán los pasos a seguir para continuar).</div></div>
-                    </b-col>
-                </b-row>
-                </b-card-text>
-            </b-card>
         </b-row>
         <div class="row justify-content-center my-4" style="width: 100%;">
           <b-button variant="success" @click="volver">Volver</b-button>

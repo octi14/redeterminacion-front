@@ -6,7 +6,7 @@
             <b-icon-arrow-up-circle-fill v-if="estadoIcono ==='habilitado-subir'" scale="4" variant="warning"></b-icon-arrow-up-circle-fill>
             <b-icon-clock-history v-else-if="estadoIcono ==='esperando-periodo'" scale="4" variant="warning"></b-icon-clock-history>
             <b-icon-arrow-clockwise v-else-if="estadoIcono ==='loading'" scale="5" animation="spin" variant="success"></b-icon-arrow-clockwise>
-            <b-icon-x-circle-fill v-else-if="estadoIcono ==='incorrecto'" scale="5" variant="danger"></b-icon-x-circle-fill>
+            <b-icon-x-circle-fill v-else-if="estadoIcono ==='incorrecto'" scale="6" variant="danger"></b-icon-x-circle-fill>
             <b-icon-check-circle-fill v-else-if="estadoIcono ==='correcto'" scale="4" variant="success"></b-icon-check-circle-fill>
             <b-iconstack scale="4" v-else-if="estadoIcono ==='revision'">
                 <b-icon stacked icon="list-task" variant="warning" scale="0.5" shift-v="-1px"></b-icon>
@@ -38,14 +38,14 @@
             <b-row>
                 <b-col>
                     <div class="li-row"><b-icon-exclamation-circle variant="dark" font-scale="1" shift-v="-2" class="li-icon"></b-icon-exclamation-circle><p class="li-content titulo-exp">Si la factura presenta errores</p></div>
-                    <div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1"></b-icon-caret-right-fill><p class="li-content texto-exp">Recibirás una <b>notificación a tu Domicilio Fiscal Electrónico</b> (DFE) indicando fecha y farma de <b>rectificación</b>.</p></div>
-                    <div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1"></b-icon-caret-right-fill><p class="li-content texto-exp"><b>Si aún no tenés DFE</b>, podés <a href="#" class="icon-green">tramitarlo aquí</a>. En caso contrario, <b>no se te notificará el error</b> y deberás <b>revisar periodicamente la información en esta página</b> (volviendo a introducir los datos del comercio).</p></div>
+                    <div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1"></b-icon-caret-right-fill><p class="li-content texto-exp">Recibirás una <b>notificación a tu Domicilio Fiscal Electrónico</b> (DFE) indicando fecha y forma de <b>rectificación</b>.</p></div>
+                    <div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1"></b-icon-caret-right-fill><p class="li-content texto-exp"><b>Si aún no tenés DFE, no se te notificará el error</b> y deberás <b>revisar periodicamente la información en esta página</b> (volviendo a introducir los datos del comercio).</p></div>
                 </b-col>
             </b-row>
             <b-row>
                 <b-col>
                     <div class="li-row"><b-icon-exclamation-circle variant="dark" font-scale="1" shift-v="-2" class="li-icon"></b-icon-exclamation-circle><p class="li-content titulo-exp">Si la factura es correcta</p></div>
-                    <div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1"></b-icon-caret-right-fill><p class="li-content texto-exp">Si el archivo no presenta errores, no recibirás notificación de confirmación.</p></div>
+                    <div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1"></b-icon-caret-right-fill><p class="li-content texto-exp">No recibirás notificación de confirmación.</p></div>
                 </b-col>
             </b-row>
         </b-card-text>
@@ -64,7 +64,7 @@
                 <b-col><div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-2"></b-icon-caret-right-fill><p class="li-content sub-texto-exp">Recibirás una notificación a tu Domicilio Fiscal Electrónico (DFE) indicando fecha y forma de rectificación.</p></div></b-col>
             </b-row>
             <b-row>
-                <b-col><div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-2"></b-icon-caret-right-fill><p class="li-content sub-texto-exp">Si aún no tenés DFE, podés <a href="#" class="icon-green">tramitarlo aquí</a>. En caso contrario, se te notificará el error y deberás revisar periódicamente está página para obtener dicha información.</p></div></b-col>
+                <b-col><div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-2"></b-icon-caret-right-fill><p class="li-content sub-texto-exp">Si aún no tenés DFE, tramitalo enviando un mail a <a href="mailto:arvige@gesell.gob.ar" class="icon-green">dirarvige@gesell.gob.ar</a>. En caso contrario, no se te notificará el error y deberás revisar periódicamente está página para obtener dicha información.</p></div></b-col>
             </b-row>
         <!-- Aquí puedes agregar más campos si los necesitas -->
         </b-card-text>
@@ -77,7 +77,7 @@
                 <b-col><p class="sub-texto-exp">Recibirás una notificación a tu Domicilio Fiscal Electrónico (DFE) indicando fecha y forma de rectificación.</p></b-col>
             </b-row>
             <b-row>
-                <b-col class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-3"></b-icon-caret-right-fill><p class="li-content mini-texto-exp"><b>Si aún no tenés DFE</b>, podés <a href="#" class="icon-green">tramitarlo aquí</a>. En caso contrario <b>no se te notificará el error</b> y deberás <b>revisar periodicamente la información en esta página</b> (Volviendo a introducir los datos del comercio).</p></b-col>
+                <b-col class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-3"></b-icon-caret-right-fill><p class="li-content mini-texto-exp"><b>Si aún no tenés DFE</b>, tramitalo enviando un mail a <a href="mailto:dirarvige@gesell.gob.ar" class="icon-green">dirarvige@gesell.gob.ar</a>. En caso contrario <b>no se te notificará el error</b> y deberás <b>revisar periodicamente la información en esta página</b> (Volviendo a introducir los datos del comercio).</p></b-col>
             </b-row>
         </b-card-text>
         <b-card-text v-else-if="estadoActual == 6" class="upload-card">
@@ -109,7 +109,7 @@
         <!-- estadoActual == 9 => CONFIRMACION DE UPLOAD INCORRECTA: ERROR -->
             <b-row>
                 <b-col>
-                    <p class="texto-exp"><b>Error enviando el archivo!</b></p>
+                    <p class="texto-exp"><b>¡Error enviando el archivo!</b></p>
                 </b-col>
             </b-row>
             <b-row>
@@ -119,13 +119,12 @@
             </b-row>
             <b-row>
                 <b-col>
-                    <p class="mini-texto-exp"> Si el problema persiste comunicarse con <a href="#" class="icon-green">ARVIGE</a>.</p>
+                    <p class="mini-texto-exp"> Si el problema persiste comunicarse con <a href="mailto:dirarvige@gesell.gob.ar" class="icon-green">ARVIGE</a>.</p>
                 </b-col>
             </b-row>
         </b-card-text>
         <div v-if="estadoActual == 6 || estadoActual == 7"  >
             <div class="btn-abajo-container">
-            <div v-if="$v.archivo.$error" class="text-danger"><b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe seleccionar un archivo válido.</div>
             <b-form-file
                 v-model="archivo"
                 placeholder="Selecciona un archivo"
@@ -136,6 +135,7 @@
                 style="font-size: 16px;"
                 browse-text="Examinar"
             ></b-form-file>
+            <div v-if="$v.archivo.$error" class="text-danger"><b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe seleccionar un archivo válido.</div>  
             <b-button @click="openCaptchaPopup" variant="success" ><span v-if="estadoActual == 6 ">Enviar</span><span v-else><b-icon-exclamation-circle></b-icon-exclamation-circle> Rectificar</span></b-button>
         </div>
     </div>
@@ -483,7 +483,7 @@ h3{
 }
 .abierto-anual-card p{
     color: #353535;
-    font-size: 18px;
+    font-size: 16px;
 }
 .text-danger{
     color: red;
@@ -533,7 +533,7 @@ h3{
     background-color: #EAE89B;
     text-align: center;
     font-size: 22px;
-    padding: 1rem 0.5rem;
+    padding: 0.25rem 0.5rem;
 }
 .ticket-revision-card .importante-box p{
     margin: inherit auto;

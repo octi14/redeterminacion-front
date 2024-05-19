@@ -33,7 +33,7 @@
         <b-form-select title="Por el momento solo se pueden solicitar habilitaciones comerciales." id="tipo-solicitud" v-model="tipoSolicitudSeleccionada" >
           <b-form-select-option value="Habilitación">Habilitar nuevo comercio</b-form-select-option>
           <b-form-select-option value="Baja">Baja de comercio</b-form-select-option>
-          <b-form-select-option value="Renovación">Renovación de comercio</b-form-select-option>
+          <!-- <b-form-select-option value="Renovación">Renovación de comercio</b-form-select-option> -->
           <!-- Agrega más opciones según sea necesario -->
         </b-form-select>
       </b-form-group>
@@ -381,7 +381,7 @@
         <div v-if="$v.documentos.libreDeudaIB.contenido.$error || fileTooLargeError.libreDeudaIB" class="validation-error">
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.libreDeudaIB || 'Debe seleccionar un archivo.' }}
         </div>
-      </b-form-group>      
+      </b-form-group>
       <b-form-group v-if="solicitante.tipoSolicitud=='Habilitación' || solicitante.tipoSolicitud == 'Renovación'">
         <label for="certificadoDomicilio" class="rubro-label">Certificado de domicilio Ingresos Brutos - Punto de venta Villa Gesell <span v-if="solicitante.tipoSolicitud == 'Renovación'">*</span> <b-icon-question-circle-fill @click="openPopup('certificadoDomicilio')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
         <b-form-file v-model="documentos.certificadoDomicilio.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('certificadoDomicilio')"
@@ -465,7 +465,7 @@
       </b-form-group>
     </fieldset>
     </fieldset>
-    
+
     <b-card v-if="solicitante.tipoSolicitud=='Baja'" border-variant="warning" align="center" class="importante-card" >
       <b-card-text>
         <b-row >
@@ -491,7 +491,7 @@
     <div class="centeredContainer">
       <fieldset>
         <b-button size="lg" @click="onResetParams" variant="danger" class="btn-cancel" >Cancelar</b-button>
-        <b-button size="lg" type="submit" variant="success" :disabled="!areAllFieldsComplete" class="" >Enviar</b-button>        
+        <b-button size="lg" type="submit" variant="success" :disabled="!areAllFieldsComplete" class="" >Enviar</b-button>
       </fieldset>
         <div v-if="!areAllFieldsComplete" class="validation-error">
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Completar todos los campos marcados con (*).
@@ -763,7 +763,7 @@ export default {
         rubro: { required },
         calle: { required },
         nro: { required, numeric },
-        serviciosHoteleria: { 
+        serviciosHoteleria: {
           requiredIfAtLeastOneChecked: function() {
             let alMenosUnoSeleccionado = false;
 
@@ -811,7 +811,7 @@ export default {
           return this.solicitante.esPersonaJuridica === 'true' })}},
         //Validaciones exclusivas de Habilitación
         constanciaCuit: { contenido:{requiredIf: requiredIf(function () {
-          return (this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Renovación') }) } },        
+          return (this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Renovación') }) } },
         plano: { contenido:{requiredIf: requiredIf(function () {
           return (this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Renovación') }) }},
         croquis: { contenido:{requiredIf: requiredIf(function () {
@@ -1093,7 +1093,7 @@ export default {
           console.log("this.$v.documentos.dniDorso.contenido.$error: " + this.$v.documentos.dniDorso.contenido.$error);
           console.log("this.$v.documentos.libreDeudaUrbana.contenido.$error: " + this.$v.documentos.libreDeudaUrbana.contenido.$error);
           console.log("this.$v.documentos.planillaAutorizacion.contenido.$error: " + this.$v.documentos.planillaAutorizacion.contenido.$error);
-          console.log("this.$v.documentos.actaPersonaJuridica.contenido.$error: " + this.$v.documentos.actaPersonaJuridica.contenido.$error);          
+          console.log("this.$v.documentos.actaPersonaJuridica.contenido.$error: " + this.$v.documentos.actaPersonaJuridica.contenido.$error);
           console.log("-*-*Validaciones exclusivas de Habilitación*-*-");
           console.log("this.$v.documentos.constanciaCuit.contenido.$error: " + this.$v.documentos.constanciaCuit.contenido.$error);
           console.log("this.$v.inmueble.serviciosHoteleria.$error: " + this.$v.inmueble.serviciosHoteleria.$error);
@@ -1227,8 +1227,8 @@ export default {
           this.isCaptchaOK();
 
         }else{
-          console.log("SUBMIT FORM CALLED:");          
-          
+          console.log("SUBMIT FORM CALLED:");
+
           this.$v.$touch(); // Marca los campos como tocados para mostrar los errores
           //this.LoguearValidaciones();
           if (!this.$v.$invalid && !Object.values(this.fileTooLargeError).some(error => !!error) && this.isCaptchaOK()) {

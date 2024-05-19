@@ -54,6 +54,11 @@ export default {
           title: "Consulta estado de trámite"
         },
         {
+          to: "/abierto_anual",
+          icon: "shop",
+          title: "Comercio Abierto anual"
+        },
+        {
           to: "/compras",
           icon: "briefcase",
           title: "Compras"

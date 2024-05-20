@@ -166,7 +166,8 @@
       <div class="btn-abajo-container">
           <div class="btn-group">
               <div v-if="estadoActual == 9 || estadoActual == 10 || estadoActual == 11 || estadoActual == 12" style="width: 100%;">
-                  <b-button @click="AvanzarPaso" variant="success" class="btn-approve float-left"><span>Aceptar</span></b-button>
+                  <b-button @click="AvanzarPaso" variant="success" class="btn-approve float-left" disabled="disabled" v-if="(estadoActual == 11) && (!motivo)"><span>Aceptar</span></b-button>
+                  <b-button @click="AvanzarPaso" variant="success" class="btn-approve float-left" v-else><span>Aceptar</span></b-button>
                   <b-button @click="RetrocederPaso" variant="danger" class="btn-cancel float-right"><span>Cancelar</span></b-button>
               </div>
               <div v-else-if="estadoActual == 2 || estadoActual == 8" style="width: 100%;">
@@ -415,17 +416,22 @@ export default {
     },
 
       RetrocederPaso() {
-          var nextCard = null;
-          if (this.estadoActual == 9 || this.estadoActual == 10 || this.estadoActual == 11)
-              nextCard = this.estadoPrevio;
-          else
-          if (this.estadoActual == 12)
-              nextCard = 11;
-          else
-              nextCard = this.estadoPrevio;
-          console.log("RetrocederPaso : nextCard -> " + nextCard);
-          this.playAnimation(() => {
-              },nextCard);
+        var nextCard = null;
+            if (this.estadoActual == 9 || this.estadoActual == 10 || this.estadoActual == 11){
+                nextCard = this.estadoPrevio;
+                if(this.estadoActual == 11)
+                    this.motivo = null;
+                }
+            else
+            if (this.estadoActual == 12){
+                nextCard = 11;
+                this.motivo = null;
+                }
+            else
+                nextCard = this.estadoPrevio;
+            console.log("RetrocederPaso : nextCard -> " + nextCard);
+            this.playAnimation(() => {
+                },nextCard);
       },
       isCaptchaOK(){
           console.log("isCAPTCHAOK?? = " + (typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0));

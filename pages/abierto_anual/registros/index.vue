@@ -1,7 +1,7 @@
 <template>
   <div class="page main-background">
     <Banner title="Comercio Abierto anual" subtitle="Uso interno" />
-    <div class="col-8 mx-auto" v-if="adminComercio">
+    <div class="col-8 mx-auto" v-if="adminArvige">
       <b-form-group class="col-5 mx-6 mx-auto mt-4" label-class="text-success h6">
         <label for="inputCUIT" class="bv-no-focus-ring col-form-label pt-0 text-success h6">
           <b-icon-search></b-icon-search> Buscar por CUIT
@@ -95,8 +95,8 @@ export default {
     totalPages() {
       return Math.ceil(this.filteredItems.length / this.perPage);
     },
-    adminComercio() {
-      return this.$store.state.user.admin === "comercio" || this.$store.state.user.admin === "master";
+    adminArvige() {
+      return this.$store.state.user.admin === "arvige" || this.$store.state.user.admin === "master";
     }
   },
   methods: {

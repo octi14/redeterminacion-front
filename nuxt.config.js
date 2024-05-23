@@ -46,8 +46,8 @@ export default {
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    baseURL: 'https://redeterminacion-back.herokuapp.com/',
-    // baseURL: 'http://localhost:5000/',  // Used as fallback if no runtime config is provided
+    // baseURL: 'https://redeterminacion-back.herokuapp.com/',
+    baseURL: 'http://localhost:5000/',  // Used as fallback if no runtime config is provided
   },
 
 

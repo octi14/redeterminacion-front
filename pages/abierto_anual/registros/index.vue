@@ -1,7 +1,7 @@
 <template>
   <div class="page main-background">
     <Banner title="Comercio Abierto anual" subtitle="Uso interno" />
-    <div class="col-8 mx-auto" v-if="adminComercio">
+    <div class="col-8 mx-auto" v-if="adminArvige">
       <b-form-group class="col-5 mx-6 mx-auto mt-4" label-class="text-success h6">
         <label for="inputCUIT" class="bv-no-focus-ring col-form-label pt-0 text-success h6">
           <b-icon-search></b-icon-search> Buscar por CUIT
@@ -15,13 +15,12 @@
         />
       </b-form-group>
       <b-form-checkbox class="text-center" v-model="hideFinalizados">Ocultar incompletos</b-form-checkbox>
+      <b-button class="mt-3" @click="exportarCSV">Exportar a CSV</b-button>
     </div>
 
     <b-table per-page="10" head-row-variant="warning" class="col-md-10 white col-sm-8 mx-auto mt-4 shadow-card" :items="paginatedItems" :fields="fields">
-      <!-- Plantilla personalizada para la columna "detalles" -->
       <template #cell(status)="row">
         <div>
-          <!-- Itera sobre cada estado en el array de status -->
           <span v-for="(estado, index) in row.item.status" class="mx-1" :key="index" :style="{ color: estadoColor(estado) }">
             <b-iconstack :title="estado">
               <b-icon-circle variant="dark"></b-icon-circle>
@@ -95,8 +94,8 @@ export default {
     totalPages() {
       return Math.ceil(this.filteredItems.length / this.perPage);
     },
-    adminComercio() {
-      return this.$store.state.user.admin === "comercio" || this.$store.state.user.admin === "master";
+    adminArvige() {
+      return this.$store.state.user.admin === "arvige" || this.$store.state.user.admin === "master";
     }
   },
   methods: {
@@ -119,9 +118,37 @@ export default {
         case 'Correcto':
           return 'green';
         case 'En revisión':
-          return '#dfe305';
+          return '#FADD1A';
         default:
-          return 'grey';
+          return 'lightgrey';
+      }
+    },
+    exportarCSV() {
+      const data = this.tramites.map(tramite => ({
+        CUIT: tramite.cuit,
+        'Legajo comercial': tramite.nroLegajo,
+        Status1: tramite.status[0],
+        Status2: tramite.status[1],
+        Status3: tramite.status[2]
+      }));
+
+      const csvContent = [
+        ['CUIT', 'Legajo comercial', 'Status1', 'Status2', 'Status3'],
+        ...data.map(item => [item.CUIT, item['Legajo comercial'], item.Status1, item.Status2, item.Status3])
+      ]
+        .map(e => e.join(","))
+        .join("\n");
+
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      if (link.download !== undefined) {
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", "comercio_abierto_anual.csv");
+        link.style.visibility = "hidden";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
     }
   }

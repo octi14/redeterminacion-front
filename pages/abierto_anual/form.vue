@@ -26,7 +26,7 @@
           </b-form>
           <div class="btn-container">
             <b-button class="btn-cancel" @click="onResetParams">Cancelar</b-button>
-            <b-button @click="sendData">Aceptar</b-button>
+            <b-button @click="sendData" :disabled="enterKeyPressed">Aceptar</b-button>
           </div>
         </b-card>
       </div>

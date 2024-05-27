@@ -44,6 +44,13 @@
               />
           </b-col>
         </b-row>
+        <b-row class="page-body" v-else>
+          <b-col class="mx-auto col-4 card shadow-card m-5">
+            <b-icon-exclamation-circle variant="danger" class="mx-auto" style="margin-top: 10%;margin-bottom: 5%;" scale="2.5"/> <hr/>
+            <h5 class="text-center mt-4 mb-3"> <b>Hubo un error cargando las facturas.</b></h5>
+            <h6 class="text-center mb-5"> Por favor, volvé a iniciar el proceso de carga.</h6>
+          </b-col>
+        </b-row>
         <div class="row justify-content-center my-4" style="width: 100%;">
           <b-button variant="success" @click="volver">Volver</b-button>
         </div>

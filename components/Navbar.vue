@@ -71,7 +71,7 @@
               Turnos
           </NuxtLink>
         </b-navbar-nav>
-        <b-navbar-nav v-if="adminComercio || adminInspeccion">
+        <b-navbar-nav v-if="adminArvige">
           <NuxtLink
             class="nav-link"
             active-class="active"

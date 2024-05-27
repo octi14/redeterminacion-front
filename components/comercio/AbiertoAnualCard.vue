@@ -439,6 +439,10 @@
         padding-right: 5% !important;
     }
 }
+
+.envio-ok {
+    text-align: center;
+}
 h2, h3{
     color: #353535;
     font-size: 28px;
@@ -544,7 +548,7 @@ h3{
     margin-top: 2rem;
 }
 .ticket-revision-card .texto-exp, .ticket-revision-card .titulo-exp{
-    margin: 0 auto;
+    margin: 0;
 }
 .ticket-revision-card .titulo-exp{
     text-decoration: underline;

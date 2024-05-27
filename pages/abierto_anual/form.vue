@@ -26,7 +26,7 @@
           </b-form>
           <div class="btn-container">
             <b-button class="btn-cancel" @click="onResetParams">Cancelar</b-button>
-            <b-button @click="sendData">Aceptar</b-button>
+            <b-button @click="sendData" :disabled="enterKeyPressed">Aceptar</b-button>
           </div>
         </b-card>
       </div>
@@ -115,6 +115,21 @@
       }
     },
     methods: {
+      ProcessCuit(cuit) {
+        // Convierte el CUIT a string por si acaso está en otro formato
+        cuit = cuit.toString();
+        // Verifica si tiene exactamente 11 dígitos
+        if (cuit.length === 11) {
+          // Verifica si el tercer dígito es igual a '0'
+          if (cuit[2] === '0') {
+            // Elimina el tercer dígito
+            cuit = cuit.slice(0, 2) + cuit.slice(3);
+          }
+        }
+        
+        // Convierte el CUIT procesado de vuelta a número
+        return Number(cuit);
+      },
       wait(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
       },
@@ -124,7 +139,7 @@
           //Faltan introducir datos
           this.showPopupNoEntry = true;
         } else {
-          const cuit = Number(this.cuit);
+          const cuit = this.ProcessCuit(this.cuit);
           const nroLegajo = Number(this.nroLegajo);
           //busco en el maestro
           await this.$store.dispatch('maestro/getSingle', {
@@ -173,6 +188,7 @@
         this.showPopupA = true;
       }
     },
+    
   },
     // computed: {
     //   areAllFieldsComplete(){

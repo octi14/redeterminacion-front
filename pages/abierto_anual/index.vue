@@ -14,6 +14,19 @@
                 <b-carousel-slide img-src="../../assets/banner-abierto-anual.png"></b-carousel-slide>
             </b-carousel>
         </div>
+        <div class="col-10 mobileCarrousel" style="margin: auto; margin-top: 2rem">
+            <b-carousel
+            id="mainCarousel"
+            v-model="slide"
+            :interval="4000"
+            img-width="100%"
+            style="text-shadow: 1px 1px 2px #333;"
+            @sliding-start="onSlideStart"
+            @sliding-end="onSlideEnd"
+            >
+                <b-carousel-slide img-src="../../assets/banner-abierto-anual-mobile.png"></b-carousel-slide>
+            </b-carousel>
+        </div>
     <b-row>
         <b-col class="col-md-8 mx-auto">
           <br />
@@ -70,7 +83,7 @@
                   <div class="li-content">Aquellos/as <b>contribuyentes que no hayan acreditado</b>, ante la evaluación del Municipio, <b>contar con un comercio con
                    actividad permanente durante el ejercicio fiscal anterior</b>. </div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                  <div class="li-content"> Los <b>Mayores Contribuyentes</b> incluidos en los Artículos 181 bis a 181 noveno de la <a href="https://arvige.gob.ar/legislacion/pdf/12" class="text-success">Ordenanza Fiscal 2156/08 c/ Mod</a>. </div>
+                  <div class="li-content"> Los <b>Grandes Contribuyentes</b> incluidos en los Artículos 181 bis a 181 noveno de la <a href="https://arvige.gob.ar/legislacion/pdf/12" class="text-success">Ordenanza Fiscal 2156/08 c/ Mod</a>. </div>
                 </div>
               </div>
             </transition>
@@ -194,6 +207,13 @@
                     <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="0.75" class="icon-orange" shift-v="3px"></b-icon-caret-right-fill></div>
                       <div class="li-content mini-content"><p>Si la <u>factura fue rechazada</u>, podrá visualizar en la página la información necesaria para la rectificación de la misma en el periodo fijado a esos efectos.</p></div>
                     </div>
+                  </div>
+                </div>
+                <div class="li-row other-li">
+                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-content">
+                    <p class="li-title">Para visualizar como realizar tu trámite, podés mirar este video tutorial</p>
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/NKZWxjCh1l4?si=SCCPendq9R_daKRK" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                   </div>
                 </div>
                 <p class="first-li separador-top"><b>El trámite concluye a fin de año (2024) y es requisito que hayas cargado 3 facturas (una por cada período) para obtener el Beneficio de Comercio Abierto Anual.</b></p>
@@ -333,7 +353,7 @@
 .mainCarrousel{
     display: block;
   }
-  .moblieCarrousel{
+  .mobileCarrousel{
     display: none;
   }
 @media (max-width: 1200px) {
@@ -359,7 +379,7 @@
   .mainCarrousel{
     display: block;
   }
-  .moblieCarrousel{
+  .mobileCarrousel{
     display: none;
   }
   .botonera-container .row div{
@@ -376,7 +396,7 @@
   .mainCarrousel{
     display: none;
   }
-  .moblieCarrousel{
+  .mobileCarrousel{
     display: block;
   }
   .col-8{

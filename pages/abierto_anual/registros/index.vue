@@ -14,14 +14,15 @@
           type="text"
         />
       </b-form-group>
-      <b-form-checkbox class="text-center" v-model="hideFinalizados">Ocultar incompletos</b-form-checkbox>
+      <div class="row justify-content-center">
+        <!-- <b-form-checkbox class="mx-3 mt-2" v-model="hideFinalizados">Ocultar finalizados</b-form-checkbox> -->
+        <b-button pill variant="info" @click="exportarCSV"><b-icon-download class="mr-1"/>Exportar CSV</b-button>
+      </div>
     </div>
 
     <b-table per-page="10" head-row-variant="warning" class="col-md-10 white col-sm-8 mx-auto mt-4 shadow-card" :items="paginatedItems" :fields="fields">
-      <!-- Plantilla personalizada para la columna "detalles" -->
       <template #cell(status)="row">
         <div>
-          <!-- Itera sobre cada estado en el array de status -->
           <span v-for="(estado, index) in row.item.status" class="mx-1" :key="index" :style="{ color: estadoColor(estado) }">
             <b-iconstack :title="estado">
               <b-icon-circle variant="dark"></b-icon-circle>
@@ -119,9 +120,36 @@ export default {
         case 'Correcto':
           return 'green';
         case 'En revisión':
-          return '#dfe305';
+          return '#FADD1A';
         default:
-          return 'grey';
+          return 'lightgrey';
+      }
+    },
+    exportarCSV() {
+      const headers = ['CUIT', 'Legajo comercial', 'Status1', 'Status2', 'Status3'];
+      const data = this.tramites.map(tramite => [
+        tramite.cuit,
+        tramite.nroLegajo,
+        tramite.status[0] || '',
+        tramite.status[1] || '',
+        tramite.status[2] || ''
+      ]);
+
+      const csvContent = [
+        headers.join(";"),
+        ...data.map(row => row.map(field => `"${field}"`).join(";"))
+      ].join("\n");
+
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      if (link.download !== undefined) {
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", "comercio_abierto_anual.csv");
+        link.style.visibility = "hidden";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
     }
   }

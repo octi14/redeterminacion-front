@@ -138,7 +138,9 @@
               <b-form-radio :id="'motivo-2-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="La factura no corresponde al Legajo y/o CUIT/CUIM."> La factura no corresponde al Legajo y/o CUIT/CUIM.</b-form-radio>
               <b-form-radio :id="'motivo-3-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="El documento no es legible."> El documento no es legible.</b-form-radio>
               <b-form-radio :id="'motivo-4-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="El documento no es una factura."> El documento no es una factura.</b-form-radio>
-          </b-radio-group></b-row>
+              <b-form-radio :id="'motivo-5-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="El contribuyente cambió de categoría tirbutaria."> El contribuyente cambió de categoría tributaria.</b-form-radio>
+
+            </b-radio-group></b-row>
       </b-card-text>
       <b-card-text v-else-if="estadoActual == 12" class="action-confirmation-card">
       <!-- estadoActual == 9 => CONFIRMACION DE RECHAZO -->

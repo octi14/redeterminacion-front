@@ -366,6 +366,7 @@ export default {
     async onSelectTurno() {
       let success = false; // Bandera para verificar si el try se ejecutó con éxito
 
+      let tipoTramite = this.$store.state.habilitaciones.single.tipoSolicitud
       if (!this.nombre || !this.dni || !this.domicilio) {
         this.$bvToast.toast('Existen datos incompletos', {
           title: 'Error',
@@ -382,6 +383,7 @@ export default {
             dni: this.dni,
             domicilio: this.domicilio,
             nroTramite: this.nroTramite,
+            tipoTramite: tipoTramite,
           }
           this.sendingForm = true
           await this.$store.dispatch('turnos/create',{

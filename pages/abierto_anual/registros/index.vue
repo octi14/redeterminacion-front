@@ -126,13 +126,17 @@ export default {
       }
     },
     exportarCSV() {
-      const headers = ['CUIT', 'Legajo comercial', 'Status1', 'Status2', 'Status3'];
+      const headers = ['CUIT', 'Legajo comercial', 'Status1', 'Observaciones1', 'Status2', 'Observaciones2', 'Status3', 'Observaciones3'];
       const data = this.tramites.map(tramite => [
         tramite.cuit,
         tramite.nroLegajo,
+        // tramite.mail,
         tramite.status[0] || '',
+        (tramite.facturas[0] && tramite.facturas[0].observaciones) || '',
         tramite.status[1] || '',
-        tramite.status[2] || ''
+        (tramite.facturas[1] && tramite.facturas[1].observaciones) || '',
+        tramite.status[2] || '',
+        (tramite.facturas[2] && tramite.facturas[2].observaciones) || '',
       ]);
 
       const csvContent = [
@@ -152,6 +156,7 @@ export default {
         document.body.removeChild(link);
       }
     }
+
   }
 }
 </script>

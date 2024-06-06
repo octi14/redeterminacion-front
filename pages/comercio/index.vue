@@ -615,7 +615,7 @@
             <transition name="expand">
               <div v-show="isCardExpanded(11)">
                 <div class="li-row first-li">
-                  <p class="first-li first-p"><b>El trámite</b> de Renovación Comercial <b>implica reafirmar la continuidad de una Habilitación Comercial en los mismos términos en los que fue solicitada</b>. Mediante este trámite el Municipio verificará que la documentación solicitada y el pago de tasas correspondientes estén cumplimentadas.
+                  <p class="first-li first-p"><b>El trámite de Renovación Comercial implica reafirmar la continuidad de una Habilitación Comercial en los mismos términos en los que fue solicitada</b>. Mediante este trámite el Municipio verificará que la documentación solicitada y el pago de tasas correspondientes estén cumplimentadas.
                   <br />Una vez confirmada esta información se extiende al solicitante un Certificado de Habilitación donde consta la renovación comercial con este Municipio.</p>
                 </div>
                 <div class="li-row">
@@ -724,7 +724,7 @@
                 <div class="li-row">
                   <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                   <div class="li-content">
-                    <p class="li-title">¿Deben renovarse las habilitaciones comerciales?</p>
+                    <p class="li-title">¿Cuándo deben renovarse las habilitaciones comerciales?</p>
                     <div class="li-row">
                       <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
                       <div class="li-content"><p><b>En caso de contrato de locación:</b> Las habilitaciones se extienden por el período que abarca el contrato de locación y deben reempadronarse anualmente, según corresponda, teniendo en cuenta la normativa vigente.</p></div>

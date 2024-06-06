@@ -172,7 +172,7 @@
             </div>
             <div class="layout" v-if="!baja">
               <p class="col col-main">
-                <strong class="text-primary">- Mercadería: </strong> <b-icon-check-circle-fill variant="info" v-if="habilitacion.espacioPublico"></b-icon-check-circle-fill>
+                <strong class="text-primary">- Mercadería: </strong> <b-icon-check-circle-fill variant="info" v-if="habilitacion.mercaderia"></b-icon-check-circle-fill>
                   <b-icon-x-circle-fill variant="danger" v-else></b-icon-x-circle-fill><br>
               </p>
             </div>

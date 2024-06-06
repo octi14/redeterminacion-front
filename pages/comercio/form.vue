@@ -480,6 +480,21 @@
         </b-row>
       </b-card-text>
     </b-card>
+    <b-card v-if="solicitante.tipoSolicitud=='Renovación'"  border-variant="warning" align="center" class="importante-card" >
+      <b-card-text>
+        <b-row >
+          <b-col md="2">
+            <b-icon-exclamation-triangle variant="warning" font-scale="5"></b-icon-exclamation-triangle>
+            <p class="li-title"><u><b>¡Importante!</b></u></p>
+          </b-col>
+          <b-col  md="10">
+              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content"><span>Una vez iniciado el trámite, <b>recibirás un correo electrónico del Departamento Comercio</b> (deptocomercio@gesell.gob.ar), indicandote los pasos para continuar.</span></div></div>
+              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content"><span>Tené en cuenta que la renovación ó el reempadronamiento serán efectivos una vez que el Departamento Comercio (deptocomercio@gesell.gob.ar) haya verificado la documentación presentada, se haya abonado el valor del trámite, se hayan presentado los originales y, posteriormente, hayas obtenido el certificado respectivo.</span></div></div>
+              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content"><span>Recordá que las <b>renovaciones y reempadronamientos</b> sólo se <b>realizan si no hiciste modificaciones</b> respecto a la <b>habilitación inicial</b>. En caso contrario deberás iniciar un  trámite diferente (por ejemplo, un cambio de domicilio).</span></div></div>
+          </b-col>
+        </b-row>
+      </b-card-text>
+    </b-card>
     <div class="centeredContainer" style="min-width: 304px;">
       <b-form-group>
         <div id="captchaContainer" class="g-recaptcha" :data-sitekey="recaptchaSiteKey"></div>

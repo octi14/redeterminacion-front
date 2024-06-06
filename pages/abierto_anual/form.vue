@@ -126,7 +126,7 @@
             cuit = cuit.slice(0, 2) + cuit.slice(3);
           }
         }
-        
+        console.log(cuit)
         // Convierte el CUIT procesado de vuelta a número
         return Number(cuit);
       },
@@ -157,7 +157,7 @@
             if (!this.$store.state.abiertoAnual.single) {
               // Crear un nuevo AbiertoAnual si no se encuentra uno existente
               await this.$store.dispatch('abiertoAnual/create', {
-                cuit: this.cuit,
+                cuit: cuit,
                 nroLegajo: this.nroLegajo,
               });
               await this.$store.dispatch('abiertoAnual/getByCuitLegajo', {

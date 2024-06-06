@@ -14,8 +14,10 @@
           type="text"
         />
       </b-form-group>
-      <b-form-checkbox class="text-center" v-model="hideFinalizados">Ocultar incompletos</b-form-checkbox>
-      <b-button class="mt-3" @click="exportarCSV">Exportar a CSV</b-button>
+      <div class="row justify-content-center">
+        <!-- <b-form-checkbox class="mx-3 mt-2" v-model="hideFinalizados">Ocultar finalizados</b-form-checkbox> -->
+        <b-button pill variant="info" @click="exportarCSV"><b-icon-download class="mr-1"/>Exportar CSV</b-button>
+      </div>
     </div>
 
     <b-table per-page="10" head-row-variant="warning" class="col-md-10 white col-sm-8 mx-auto mt-4 shadow-card" :items="paginatedItems" :fields="fields">
@@ -124,20 +126,19 @@ export default {
       }
     },
     exportarCSV() {
-      const data = this.tramites.map(tramite => ({
-        CUIT: tramite.cuit,
-        'Legajo comercial': tramite.nroLegajo,
-        Status1: tramite.status[0],
-        Status2: tramite.status[1],
-        Status3: tramite.status[2]
-      }));
+      const headers = ['CUIT', 'Legajo comercial', 'Status1', 'Status2', 'Status3'];
+      const data = this.tramites.map(tramite => [
+        tramite.cuit,
+        tramite.nroLegajo,
+        tramite.status[0] || '',
+        tramite.status[1] || '',
+        tramite.status[2] || ''
+      ]);
 
       const csvContent = [
-        ['CUIT', 'Legajo comercial', 'Status1', 'Status2', 'Status3'],
-        ...data.map(item => [item.CUIT, item['Legajo comercial'], item.Status1, item.Status2, item.Status3])
-      ]
-        .map(e => e.join(","))
-        .join("\n");
+        headers.join(";"),
+        ...data.map(row => row.map(field => `"${field}"`).join(";"))
+      ].join("\n");
 
       const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
       const link = document.createElement("a");

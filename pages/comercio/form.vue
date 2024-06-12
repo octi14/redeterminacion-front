@@ -1,5 +1,5 @@
 <template>
-<div class="page">
+<div class="page main-background">
   <Banner title="Habilitaciones comerciales" />
   <!-- Comprobante (página 4) -->
   <div v-if="printing === true">

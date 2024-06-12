@@ -13,20 +13,26 @@
           <div class="li-row">
             <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content"><p>Para comenzar, ingresá los siguientes datos del comercio:</p></div>
           </div>
-          <b-form>
+          <b-form @submit="sendData">
             <b-row>
               <label for="cuit" class="col-6">CUIT/CUIM del titular del comercio: <span style="font-weight: 500"><i>(sin guiones)</i></span></label>
-              <b-form-input class="col-6" :disabled="enterKeyPressed" v-model="cuit" id="cuit" type="number" placeholder="Ingrese su CUIT/CUIM" no-wheel></b-form-input>
-            </b-row>
-            <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
+              <b-form-input class="col-6" v-model="cuit" id="cuit" type="number" placeholder="Ingrese su CUIT/CUIM" no-wheel></b-form-input>
+              <div v-if="$v.cuit.$error" class="validation-error col-12">
+                <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon>  'El CUIT/CUIT debe ser un número de 11 dígitos'
+              </div>
+            </b-row>        
+            <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>    
             <b-row>
               <label for="nroLegajo" class="col-6"> N° de legajo comercial: <b-icon-question-circle-fill @click="openPopup('A')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></label>
-              <b-form-input class="col-6" :disabled="enterKeyPressed" v-model="nroLegajo" id="nroLegajo" type="number" placeholder="Ingrese un N° de Legajo Comercial" no-wheel></b-form-input>
-            </b-row>
+              <b-form-input class="col-6" v-model="nroLegajo" id="nroLegajo" type="number" placeholder="Ingrese un N° de Legajo Comercial" no-wheel></b-form-input>
+              <div v-if="$v.nroLegajo.$error" class="validation-error col-12">
+                <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon>  'Completá este campo'
+              </div>
+            </b-row>   
           </b-form>
           <div class="btn-container">
             <b-button class="btn-cancel" @click="onResetParams">Cancelar</b-button>
-            <b-button @click="sendData" :disabled="enterKeyPressed">Aceptar</b-button>
+            <b-button @click="sendData">Aceptar</b-button>
           </div>
         </b-card>
       </div>
@@ -91,8 +97,19 @@
 </template>
 
   <script>
-  import maestroComercial from "@/plugins/maestroComercial.js";
+  import maestroComercial from "@/plugins/maestroComercial.js";  
+  import { required, requiredIf, alpha, numeric, email, minLength, maxLength, sameAs } from 'vuelidate/lib/validators';
   export default {
+    validations() {
+      return {        
+        cuit:{
+          required, numeric, maxLength: maxLength(11), minLength: minLength(11)
+        },
+        nroLegajo:{
+          required, numeric
+        }
+      }
+    },
     data() {
       return {
         cuit: null,
@@ -115,62 +132,50 @@
       }
     },
     methods: {
-      ProcessCuit(cuit) {
-        // Convierte el CUIT a string por si acaso está en otro formato
-        cuit = cuit.toString();
-        // Verifica si tiene exactamente 11 dígitos
-        if (cuit.length === 11) {
-          // Verifica si el tercer dígito es igual a '0'
-          if (cuit[2] === '0') {
-            // Elimina el tercer dígito
-            cuit = cuit.slice(0, 2) + cuit.slice(3);
-          }
-        }
-        console.log(cuit)
-        // Convierte el CUIT procesado de vuelta a número
-        return Number(cuit);
-      },
       wait(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
       },
       async sendData() {
-        this.enterKeyPressed = true;
-        if (!this.cuit || !this.nroLegajo) {
-          //Faltan introducir datos
-          this.showPopupNoEntry = true;
-        } else {
-          const cuit = this.ProcessCuit(this.cuit);
-          const nroLegajo = Number(this.nroLegajo);
-          //busco en el maestro
-          await this.$store.dispatch('maestro/getSingle', {
-            cuit: cuit,
-            legajo: nroLegajo,
-          });
-          const result = this.$store.state.maestro.single;
-          if (result && result.length > 0) {
-            //existe en el maestro
-            await this.$store.dispatch('abiertoAnual/getByCuitLegajo', {
+        this.$v.$touch(); // Marca los campos como tocados para mostrar los errores
+        if (!this.$v.$invalid){
+          this.enterKeyPressed = true;
+          if (!this.cuit || !this.nroLegajo) {
+            //Faltan introducir datos
+            this.showPopupNoEntry = true;
+          } else {
+            const cuit = Number(this.cuit);
+            const nroLegajo = Number(this.nroLegajo);
+            //busco en el maestro
+            await this.$store.dispatch('maestro/getSingle', {
               cuit: cuit,
-              nroLegajo: nroLegajo,
+              legajo: nroLegajo,
             });
-            //si no estaba creado,
-            if (!this.$store.state.abiertoAnual.single) {
-              // Crear un nuevo AbiertoAnual si no se encuentra uno existente
-              await this.$store.dispatch('abiertoAnual/create', {
-                cuit: cuit,
-                nroLegajo: this.nroLegajo,
-              });
+            const result = this.$store.state.maestro.single;
+            if (result && result.length > 0) {
+              //existe en el maestro
               await this.$store.dispatch('abiertoAnual/getByCuitLegajo', {
                 cuit: cuit,
                 nroLegajo: nroLegajo,
               });
-            }
-            const id = this.$store.state.abiertoAnual.single.id;
-            await this.$router.push('/abierto_anual/periodos');
-        } else {
-            this.showPopupFormError = true;
+              //si no estaba creado,
+              if (!this.$store.state.abiertoAnual.single) {
+                // Crear un nuevo AbiertoAnual si no se encuentra uno existente
+                await this.$store.dispatch('abiertoAnual/create', {
+                  cuit: cuit,
+                  nroLegajo: this.nroLegajo,
+                });
+                await this.$store.dispatch('abiertoAnual/getByCuitLegajo', {
+                  cuit: cuit,
+                  nroLegajo: nroLegajo,
+                });
+              }
+              const id = this.$store.state.abiertoAnual.single.id;
+              await this.$router.push('/abierto_anual/periodos');
+          } else {
+              this.showPopupFormError = true;
+          }
+          this.enterKeyPressed = false;
         }
-        this.enterKeyPressed = false;
       }
     },
     onResetParams() {
@@ -253,7 +258,7 @@
       width: 50%;
     }
     .validation-error {
-      text-align: center;
+      text-align: right;
       color: red;
       font-size: 14px;
       margin-top: 5px;

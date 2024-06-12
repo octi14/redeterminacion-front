@@ -624,6 +624,10 @@
                     <p class="li-title">Si realizaste alguna de estas acciones, el trámite a realizar NO es una renovación comercial:</p>
                     <div class="li-row">
                       <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                      <div class="li-content"><p><b>Baja Comercial</b>. Podes ver los requisitos de este trámite haciendo <a href="#card-baja" id="btnB" class="external-link" @click="seleccionarTramite('Baja')">click aquí</a>.</p></div>
+                    </div>
+                    <div class="li-row">
+                      <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
                       <div class="li-content"><p><b>Cambio de Domicilio</b>.<!--  Podes ver los requisitos de este trámite haciendo <a href="#card-cambio-domicilio" id="btnCD" class="external-link" @click="seleccionarTramite('Cambio de Domicilio')">click aquí</a>. --></p></div>
                     </div>
                     <div class="li-row">
@@ -633,10 +637,6 @@
                     <div class="li-row">
                       <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
                       <div class="li-content"><p><b>Anexo de Mts2</b>.<!--  Podes ver los requisitos de este trámite haciendo <a href="#card-anexo-mt-2" id="btnAM2" class="external-link" @click="seleccionarTramite('Anexo de Mts2')">click aquí</a>. --></p></div>
-                    </div>
-                    <div class="li-row">
-                      <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                      <div class="li-content"><p><b>Baja Comercial</b>. Podes ver los requisitos de este trámite haciendo <a href="#card-baja" id="btnB" class="external-link" @click="seleccionarTramite('Baja')">click aquí</a>.</p></div>
                     </div>
                   </div>
                 </div>

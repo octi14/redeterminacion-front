@@ -32,7 +32,7 @@
           </b-form>
           <div class="btn-container">
             <b-button class="btn-cancel" @click="onResetParams">Cancelar</b-button>
-            <b-button @click="sendData">Aceptar</b-button>
+            <b-button @click="sendData" :disabled="enterKeyPressed">Aceptar</b-button>
           </div>
         </b-card>
       </div>
@@ -137,8 +137,8 @@
       },
       async sendData() {
         this.$v.$touch(); // Marca los campos como tocados para mostrar los errores
+        this.enterKeyPressed = true;
         if (!this.$v.$invalid){
-          this.enterKeyPressed = true;
           if (!this.cuit || !this.nroLegajo) {
             //Faltan introducir datos
             this.showPopupNoEntry = true;

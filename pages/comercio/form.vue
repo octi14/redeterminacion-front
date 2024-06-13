@@ -382,6 +382,16 @@
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.libreDeudaIB || 'Debe seleccionar un archivo.' }}
         </div>
       </b-form-group>
+      <b-form-group v-if="solicitante.tipoSolicitud == 'Renovación'">
+        <label for="constanciaAFIP" class="rubro-label">Constancia de inscripción de AFIP con punto de venta en Villa Gesell <span v-if="solicitante.esTitular || solicitante.tipoSolicitud == 'Renovación'">* </span></label>
+        <b-form-file v-model="documentos.constanciaAFIP.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
+        accept=".pdf, image/*"  :state="getFormFieldState('constanciaAFIP')"
+        @change="handleDocumentUpdate('constanciaAFIP'); checkDocumentSize('constanciaAFIP', $event)"
+        @input="clearFormFieldState('constanciaAFIP')"></b-form-file>
+        <div v-if="$v.documentos.constanciaAFIP.contenido.$error || fileTooLargeError.constanciaAFIP" class="validation-error">
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.constanciaAFIP || 'Debe seleccionar un archivo.' }}
+        </div>
+      </b-form-group>
       <b-form-group v-if="solicitante.tipoSolicitud=='Habilitación' || solicitante.tipoSolicitud == 'Renovación'">
         <label for="certificadoDomicilio" class="rubro-label">Certificado de domicilio Ingresos Brutos - Punto de venta Villa Gesell <span v-if="solicitante.tipoSolicitud == 'Renovación'">*</span> <b-icon-question-circle-fill @click="openPopup('certificadoDomicilio')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
         <b-form-file v-model="documentos.certificadoDomicilio.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('certificadoDomicilio')"
@@ -840,10 +850,13 @@ export default {
 
         //Validaciones exclusivas de Renovacion
         certificadoDomicilio: { contenido:{requiredIf: requiredIf(function () {
-          return (this.solicitante.tipoSolicitud === 'Renovación') }) } 
+          return (this.solicitante.tipoSolicitud === 'Renovación') }) }
+        },
+        constanciaAFIP: { contenido:{requiredIf: requiredIf(function () {
+          return (this.solicitante.tipoSolicitud === 'Renovación') }) }
         },
         libreDeudaComercial: { contenido:{requiredIf: requiredIf(function () {
-          return (this.solicitante.tipoSolicitud === 'Renovación') }) } 
+          return (this.solicitante.tipoSolicitud === 'Renovación') }) }
         },
 
         //Validaciones con varias condiciones
@@ -851,7 +864,7 @@ export default {
           return (this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Renovación') || (
             this.solicitante.tipoSolicitud === 'Baja' && this.solicitante.esPropietario && !this.solicitante.esTitular)
           }) }},
-        
+
       }
     }
     // Otras validaciones aquí...
@@ -992,6 +1005,10 @@ export default {
         croquis:{
           nombreDocumento: 'Croquis',
           contenido: null
+        },
+        constanciaAFIP: {
+          nombreDocumento: 'Constancia de inscripción de AFIP con punto de venta en Villa Gesell',
+          contenido: null
         }
       },
       formFieldStates: {
@@ -999,6 +1016,7 @@ export default {
         dniFrente: null,
         dniDorso: null,
         constanciaCuit: null,
+        constanciaAFIP: null,
         constanciaIngresosBrutos: null,
         actaPersonaJuridica: null,
         actaDirectorio: null,
@@ -1065,7 +1083,8 @@ export default {
               (this.documentos.libreDeudaComercial || this.solicitante.tipoSolicitud!='Baja') &&
               (this.documentos.libreDeudaIB || this.solicitante.tipoSolicitud!='Baja') &&
               (this.documentos.tituloPropiedad || this.solicitante.tipoSolicitud!='Habilitación' || this.solicitante.tipoSolicitud != 'Renovación') &&
-              (this.documentos.plano || this.solicitante.tipoSolicitud!='Habilitación' || this.solicitante.tipoSolicitud != 'Renovación')
+              (this.documentos.plano || this.solicitante.tipoSolicitud!='Habilitación' || this.solicitante.tipoSolicitud != 'Renovación') &&
+              (this.documentos.constanciaAFIP || this.solicitante.tipoSolicitud != 'Renovación')
 
       }
     },

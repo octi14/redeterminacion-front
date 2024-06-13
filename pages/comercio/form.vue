@@ -1,5 +1,5 @@
 <template>
-<div class="page">
+<div class="page main-background">
   <Banner title="Habilitaciones comerciales" />
   <!-- Comprobante (página 4) -->
   <div v-if="printing === true">
@@ -22,7 +22,7 @@
     </b-card>
   </div>
   <b-form v-else @submit.prevent="submitForm" class="my-3" style="margin-left:10px;margin-right:10px">
-    <b-card no-body class="col-8 mt-1 section-card"  style="margin: 0px auto">
+    <b-card v-if="solicitante.tipoSolicitud=='Baja'" no-body class="col-8 mt-1 section-card"  style="margin: 0px auto">
       <h5 style="margin-top:0px; margin-bottom: 0px; text-align:center;" ><b-icon-exclamation-circle-fill class="icon-orange"></b-icon-exclamation-circle-fill> El siguiente formulario tiene carácter de declaración jurada.</h5>
     </b-card>
   <b-card no-body class="col-8 mt-1 section-card"  style="margin: 0px auto">
@@ -382,23 +382,33 @@
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.libreDeudaIB || 'Debe seleccionar un archivo.' }}
         </div>
       </b-form-group>
+      <b-form-group v-if="solicitante.tipoSolicitud == 'Renovación'">
+        <label for="constanciaAFIP" class="rubro-label">Constancia de inscripción de AFIP con punto de venta en Villa Gesell <span v-if="solicitante.esTitular || solicitante.tipoSolicitud == 'Renovación'">* </span></label>
+        <b-form-file v-model="documentos.constanciaAFIP.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
+        accept=".pdf, image/*"  :state="getFormFieldState('constanciaAFIP')"
+        @change="handleDocumentUpdate('constanciaAFIP'); checkDocumentSize('constanciaAFIP', $event)"
+        @input="clearFormFieldState('constanciaAFIP')"></b-form-file>
+        <div v-if="$v.documentos.constanciaAFIP.contenido.$error || fileTooLargeError.constanciaAFIP" class="validation-error">
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.constanciaAFIP || 'Debe seleccionar un archivo.' }}
+        </div>
+      </b-form-group>
       <b-form-group v-if="solicitante.tipoSolicitud=='Habilitación' || solicitante.tipoSolicitud == 'Renovación'">
         <label for="certificadoDomicilio" class="rubro-label">Certificado de domicilio Ingresos Brutos - Punto de venta Villa Gesell <span v-if="solicitante.tipoSolicitud == 'Renovación'">*</span> <b-icon-question-circle-fill @click="openPopup('certificadoDomicilio')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
         <b-form-file v-model="documentos.certificadoDomicilio.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('certificadoDomicilio')"
         @change="handleDocumentUpdate('certificadoDomicilio'); checkDocumentSize('certificadoDomicilio', $event)"
         @input="clearFormFieldState('certificadoDomicilio')"></b-form-file>
-        <div v-if="fileTooLargeError.certificadoDomicilio" class="validation-error">
-          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.certificadoDomicilio }}
+        <div v-if="$v.documentos.certificadoDomicilio.contenido.$error || fileTooLargeError.certificadoDomicilio" class="validation-error">
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.certificadoDomicilio || 'Debe seleccionar un archivo.' }}
         </div>
       </b-form-group>
       <b-form-group v-if="solicitante.tipoSolicitud=='Baja' || solicitante.tipoSolicitud == 'Renovación'">
         <label for="libreDeudaComercial" class="rubro-label">Libre Deuda de Tasa de Inspección de Seguridad e Higiene. * <b-icon-question-circle-fill @click="openPopup('ConstanciaLibreDeudaSegHig')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
-        <b-form-file v-model="documentos.libreDeudaSegHig.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
-        accept=".pdf, image/*"  :state="getFormFieldState('libreDeudaSegHig')"
-        @change="handleDocumentUpdate('libreDeudaSegHig'); checkDocumentSize('libreDeudaSegHig', $event)"
-        @input="clearFormFieldState('libreDeudaSegHig')"></b-form-file>
-        <div v-if="$v.documentos.libreDeudaSegHig.contenido.$error || fileTooLargeError.libreDeudaSegHig" class="validation-error">
-          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.libreDeudaSegHig || 'Debe seleccionar un archivo.' }}
+        <b-form-file v-model="documentos.libreDeudaComercial.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
+        accept=".pdf, image/*"  :state="getFormFieldState('libreDeudaComercial')"
+        @change="handleDocumentUpdate('libreDeudaComercial'); checkDocumentSize('libreDeudaComercial', $event)"
+        @input="clearFormFieldState('libreDeudaComercial')"></b-form-file>
+        <div v-if="$v.documentos.libreDeudaComercial.contenido.$error || fileTooLargeError.libreDeudaComercial" class="validation-error">
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.libreDeudaComercial || 'Debe seleccionar un archivo.' }}
         </div>
       </b-form-group>
       <b-form-group>
@@ -476,6 +486,21 @@
           <b-col  md="10">
               <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content"><span>Una vez completado el formulario, el Dpto. Comercio se comunicará a través del correo electrónico oficial (<a href="mailto:deptocomercio@gesell.gob.ar" class="external-link" target="_blank" >deptocomercio@gesell.gob.ar</a>), indicándote los costos administrativos del trámite.</span></div></div>
               <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content"><span><b>El trámite de baja comercial será efectivo una vez abonado el importe del mismo y obtenido el certificado respectivo.</b></span></div></div>
+          </b-col>
+        </b-row>
+      </b-card-text>
+    </b-card>
+    <b-card v-if="solicitante.tipoSolicitud=='Renovación'"  border-variant="warning" align="center" class="importante-card" >
+      <b-card-text>
+        <b-row >
+          <b-col md="2">
+            <b-icon-exclamation-triangle variant="warning" font-scale="5"></b-icon-exclamation-triangle>
+            <p class="li-title"><u><b>¡Importante!</b></u></p>
+          </b-col>
+          <b-col  md="10">
+              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content"><span>Una vez iniciado el trámite, <b>recibirás un correo electrónico del Departamento Comercio</b> (deptocomercio@gesell.gob.ar), indicandote los pasos para continuar.</span></div></div>
+              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content"><span>Tené en cuenta que la renovación ó el reempadronamiento serán efectivos una vez que el Departamento Comercio (deptocomercio@gesell.gob.ar) haya verificado la documentación presentada, se haya abonado el valor del trámite, se hayan presentado los originales y, posteriormente, hayas obtenido el certificado respectivo.</span></div></div>
+              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content"><span>Recordá que las <b>renovaciones y reempadronamientos</b> sólo se <b>realizan si no hiciste modificaciones</b> respecto a la <b>habilitación inicial</b>. En caso contrario deberás iniciar un  trámite diferente (por ejemplo, un cambio de domicilio).</span></div></div>
           </b-col>
         </b-row>
       </b-card-text>
@@ -752,10 +777,10 @@ export default {
         mail: { required, email },
         mail2: { required, email, sameAs: sameAs( function(){return this.solicitante.mail } ) },
         esPropietario: { requiredIfAtLeastOneChecked: (value) => {
-            return value || this.solicitante.esTitular || this.solicitante.tipoSolicitud === 'Habilitación' || solicitante.tipoSolicitud === 'Renovación';
+            return value || this.solicitante.esTitular || this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Renovación';
           } },
         esTitular: { requiredIfAtLeastOneChecked: (value) => {
-            return value || this.solicitante.esPropietario || this.solicitante.tipoSolicitud === 'Habilitación' || solicitante.tipoSolicitud === 'Renovación';
+            return value || this.solicitante.esPropietario || this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Renovación';
           } },
       },
       inmueble: {
@@ -773,7 +798,7 @@ export default {
                 break; // Termina la iteración si encuentra al menos uno seleccionado
               }
             }
-            return alMenosUnoSeleccionado || !this.isHoteleria || !(this.solicitante.tipoSolicitud === 'Habilitación' || solicitante.tipoSolicitud === 'Renovación');
+            return alMenosUnoSeleccionado || !this.isHoteleria || !(this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Renovación');
           }
         },
         otrosServicios: { requiredIf: requiredIf(function () {
@@ -811,23 +836,35 @@ export default {
           return this.solicitante.esPersonaJuridica === 'true' })}},
         //Validaciones exclusivas de Habilitación
         constanciaCuit: { contenido:{requiredIf: requiredIf(function () {
-          return (this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Renovación') }) } },
+          return (this.solicitante.tipoSolicitud === 'Habilitación') }) } },
         plano: { contenido:{requiredIf: requiredIf(function () {
-          return (this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Renovación') }) }},
+          return (this.solicitante.tipoSolicitud === 'Habilitación') }) }},
         croquis: { contenido:{requiredIf: requiredIf(function () {
-          return this.rubroSeleccionado.croquis && !this.isHoteleria && (this.solicitante.tipoSolicitud === 'Habilitación' || solicitante.tipoSolicitud === 'Renovación') })}},
+          return this.rubroSeleccionado.croquis && !this.isHoteleria && (this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Renovación') })}},
 
         //Validaciones exclusivas de Baja
         libreDeudaIB: { contenido:{ requiredIf: requiredIf(function () {
-          return (this.solicitante.tipoSolicitud === 'Baja' && this.solicitante.esTitular == true) }) }},
+          return ((this.solicitante.tipoSolicitud === 'Baja' && this.solicitante.esTitular == true) || this.solicitante.tipoSolicitud === 'Renovación') }) }},
         libreDeudaSegHig: { contenido:{ requiredIf: requiredIf(function () {
           return this.solicitante.tipoSolicitud === 'Baja' }) }},
+
+        //Validaciones exclusivas de Renovacion
+        certificadoDomicilio: { contenido:{requiredIf: requiredIf(function () {
+          return (this.solicitante.tipoSolicitud === 'Renovación') }) }
+        },
+        constanciaAFIP: { contenido:{requiredIf: requiredIf(function () {
+          return (this.solicitante.tipoSolicitud === 'Renovación') }) }
+        },
+        libreDeudaComercial: { contenido:{requiredIf: requiredIf(function () {
+          return (this.solicitante.tipoSolicitud === 'Renovación') }) }
+        },
 
         //Validaciones con varias condiciones
         tituloPropiedad: { contenido:{ requiredIf: requiredIf(function () {
           return (this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Renovación') || (
             this.solicitante.tipoSolicitud === 'Baja' && this.solicitante.esPropietario && !this.solicitante.esTitular)
           }) }},
+
       }
     }
     // Otras validaciones aquí...
@@ -968,6 +1005,10 @@ export default {
         croquis:{
           nombreDocumento: 'Croquis',
           contenido: null
+        },
+        constanciaAFIP: {
+          nombreDocumento: 'Constancia de inscripción de AFIP con punto de venta en Villa Gesell',
+          contenido: null
         }
       },
       formFieldStates: {
@@ -975,6 +1016,7 @@ export default {
         dniFrente: null,
         dniDorso: null,
         constanciaCuit: null,
+        constanciaAFIP: null,
         constanciaIngresosBrutos: null,
         actaPersonaJuridica: null,
         actaDirectorio: null,
@@ -1041,7 +1083,8 @@ export default {
               (this.documentos.libreDeudaComercial || this.solicitante.tipoSolicitud!='Baja') &&
               (this.documentos.libreDeudaIB || this.solicitante.tipoSolicitud!='Baja') &&
               (this.documentos.tituloPropiedad || this.solicitante.tipoSolicitud!='Habilitación' || this.solicitante.tipoSolicitud != 'Renovación') &&
-              (this.documentos.plano || this.solicitante.tipoSolicitud!='Habilitación' || this.solicitante.tipoSolicitud != 'Renovación')
+              (this.documentos.plano || this.solicitante.tipoSolicitud!='Habilitación' || this.solicitante.tipoSolicitud != 'Renovación') &&
+              (this.documentos.constanciaAFIP || this.solicitante.tipoSolicitud != 'Renovación')
 
       }
     },

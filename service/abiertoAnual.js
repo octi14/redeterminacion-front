@@ -8,6 +8,7 @@ const formatFile = (FileResponse) => ({
   fechasCarga: FileResponse.fechasCarga.map(fecha => new Date(fecha).toLocaleDateString('es-AR')),
   createdAt: new Date(FileResponse.createdAt).toLocaleDateString('es-AR'),
   updatedAt: new Date(FileResponse.updatedAt).toLocaleDateString('es-AR'),
+  ultimaActualizacion: new Date(FileResponse.updatedAt),
 });
 
 

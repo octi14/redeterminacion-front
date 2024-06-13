@@ -33,7 +33,7 @@
         <b-form-select title="Por el momento solo se pueden solicitar habilitaciones comerciales." id="tipo-solicitud" v-model="tipoSolicitudSeleccionada" >
           <b-form-select-option value="Habilitación">Habilitar nuevo comercio</b-form-select-option>
           <b-form-select-option value="Baja">Baja de comercio</b-form-select-option>
-          <b-form-select-option value="Renovación">Renovación de comercio</b-form-select-option>
+          <!-- <b-form-select-option value="Renovación">Renovación de comercio</b-form-select-option> -->
           <!-- Agrega más opciones según sea necesario -->
         </b-form-select>
       </b-form-group>

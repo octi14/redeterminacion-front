@@ -42,7 +42,7 @@
             <b-row>
               <b-col lg="3" md="4" sm="6"><a href="#card-habilitacion" id="btnH"><img id="btn-Habilitación" width="100%" src="../../assets/btn/btn_habilitacion.png" @click="seleccionarTramite('Habilitación')"></a></b-col>
               <b-col lg="3" md="4" sm="6"><a href="#card-baja" id="btnB"><img id="btn-Baja" width="100%" src="../../assets/btn/btn_baja.png" @click="seleccionarTramite('Baja')"></a></b-col>
-              <b-col lg="3" md="4" sm="6"><a href="#card-renovacion" id="btnR"><img id="btn-Renovación" width="100%" src="../../assets/btn/btn_renovacion.png" @click="seleccionarTramite('Renovación')"></a></b-col>
+              <b-col lg="3" md="4" sm="6"><a href="#card-renovacion" id="btnR"><img id="btn-Renovación" class="disabled" width="100%" src="../../assets/btn/btn_renovacion.png" @click="seleccionarTramite('Renovación')"></a></b-col>
               <b-col lg="3" md="4" sm="6"><img id="btn-Cambio-Titular" class="disabled" width="100%" src="../../assets/btn/btn_cambio_titular.png" @click="seleccionarTramite('Cambio-Titular')"></b-col>
               <b-col lg="3" md="4" sm="6"><img id="btn-Cambio-Domicilio" class="disabled" width="100%" src="../../assets/btn/btn_cambio_domicilio.png" @click="seleccionarTramite('Cambio-Domicilio')"></b-col>
               <b-col lg="3" md="4" sm="6"><img id="btn-Anexo" class="disabled" width="100%" src="../../assets/btn/btn_anexo.png" @click="seleccionarTramite('Anexo')"></b-col>

@@ -33,7 +33,7 @@
         <b-form-select title="Por el momento solo se pueden solicitar habilitaciones comerciales." id="tipo-solicitud" v-model="tipoSolicitudSeleccionada" >
           <b-form-select-option value="Habilitación">Habilitar nuevo comercio</b-form-select-option>
           <b-form-select-option value="Baja">Baja de comercio</b-form-select-option>
-          <!-- <b-form-select-option value="Renovación">Renovación de comercio</b-form-select-option> -->
+          <b-form-select-option value="Renovación">Renovación de comercio</b-form-select-option>
           <!-- Agrega más opciones según sea necesario -->
         </b-form-select>
       </b-form-group>
@@ -363,12 +363,12 @@
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.constanciaCuit || 'Debe seleccionar un archivo.' }}
         </div>
       </b-form-group>
-      <b-form-group v-if="solicitante.tipoSolicitud=='Habilitación'">
-        <label for="constanciaIngresosBrutos" class="rubro-label">Constancia de inscripción a Ingresos Brutos <b-icon-question-circle-fill @click="openPopup('ConstanciaIngresosBrutos')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
+      <b-form-group v-if="solicitante.tipoSolicitud=='Habilitación' || solicitante.tipoSolicitud == 'Renovación'">
+        <label for="constanciaIngresosBrutos" class="rubro-label">Constancia de inscripción a Ingresos Brutos * <b-icon-question-circle-fill @click="openPopup('ConstanciaIngresosBrutos')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
         <b-form-file v-model="documentos.constanciaIngresosBrutos.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('constanciaIngresosBrutos')"
         @change="handleDocumentUpdate('constanciaIngresosBrutos'); checkDocumentSize('constanciaIngresosBrutos', $event)"
         @input="clearFormFieldState('constanciaIngresosBrutos')"></b-form-file>
-        <div v-if="fileTooLargeError.constanciaIngresosBrutos" class="validation-error">
+        <div v-if="$v.documentos.constanciaIngresosBrutos.contenido.$error || fileTooLargeError.constanciaIngresosBrutos" class="validation-error">
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.constanciaIngresosBrutos || 'Debe seleccionar un archivo.' }}
         </div>
       </b-form-group>
@@ -393,7 +393,7 @@
         </div>
       </b-form-group>
       <b-form-group v-if="solicitante.tipoSolicitud=='Habilitación' || solicitante.tipoSolicitud == 'Renovación'">
-        <label for="certificadoDomicilio" class="rubro-label">Certificado de domicilio Ingresos Brutos - Punto de venta Villa Gesell <span v-if="solicitante.tipoSolicitud == 'Renovación'">*</span> <b-icon-question-circle-fill @click="openPopup('certificadoDomicilio')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
+        <label for="certificadoDomicilio" class="rubro-label">Certificado de domicilio Ingresos Brutos * <b-icon-question-circle-fill @click="openPopup('certificadoDomicilio')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
         <b-form-file v-model="documentos.certificadoDomicilio.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('certificadoDomicilio')"
         @change="handleDocumentUpdate('certificadoDomicilio'); checkDocumentSize('certificadoDomicilio', $event)"
         @input="clearFormFieldState('certificadoDomicilio')"></b-form-file>
@@ -402,13 +402,13 @@
         </div>
       </b-form-group>
       <b-form-group v-if="solicitante.tipoSolicitud=='Baja' || solicitante.tipoSolicitud == 'Renovación'">
-        <label for="libreDeudaComercial" class="rubro-label">Libre Deuda de Tasa de Inspección de Seguridad e Higiene. * <b-icon-question-circle-fill @click="openPopup('ConstanciaLibreDeudaSegHig')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
-        <b-form-file v-model="documentos.libreDeudaComercial.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
-        accept=".pdf, image/*"  :state="getFormFieldState('libreDeudaComercial')"
-        @change="handleDocumentUpdate('libreDeudaComercial'); checkDocumentSize('libreDeudaComercial', $event)"
-        @input="clearFormFieldState('libreDeudaComercial')"></b-form-file>
-        <div v-if="$v.documentos.libreDeudaComercial.contenido.$error || fileTooLargeError.libreDeudaComercial" class="validation-error">
-          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.libreDeudaComercial || 'Debe seleccionar un archivo.' }}
+        <label for="libreDeudaSegHig" class="rubro-label">Libre Deuda de Tasa de Inspección de Seguridad e Higiene. * <b-icon-question-circle-fill @click="openPopup('ConstanciaLibreDeudaSegHig')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
+        <b-form-file v-model="documentos.libreDeudaSegHig.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
+        accept=".pdf, image/*"  :state="getFormFieldState('libreDeudaSegHig')"
+        @change="handleDocumentUpdate('libreDeudaSegHig'); checkDocumentSize('libreDeudaSegHig', $event)"
+        @input="clearFormFieldState('libreDeudaSegHig')"></b-form-file>
+        <div v-if="$v.documentos.libreDeudaSegHig.contenido.$error || fileTooLargeError.libreDeudaSegHig" class="validation-error">
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.libreDeudaSegHig || 'Debe seleccionar un archivo.' }}
         </div>
       </b-form-group>
       <b-form-group>
@@ -837,6 +837,14 @@ export default {
         //Validaciones exclusivas de Habilitación
         constanciaCuit: { contenido:{requiredIf: requiredIf(function () {
           return (this.solicitante.tipoSolicitud === 'Habilitación') }) } },
+        constanciaIngresosBrutos: { contenido:{requiredIf: requiredIf(function () {
+          return (this.solicitante.tipoSolicitud === 'Habilitación'|| this.solicitante.tipoSolicitud === 'Renovación') }) } },
+        certificadoDomicilio: { contenido:{requiredIf: requiredIf(function () {
+          return (this.solicitante.tipoSolicitud === 'Habilitación'|| this.solicitante.tipoSolicitud === 'Renovación') }) }
+        },
+        libreDeudaSegHig: { contenido:{requiredIf: requiredIf(function () {
+          return (this.solicitante.tipoSolicitud === 'Renovación' || this.solicitante.tipoSolicitud === 'Baja') }) }
+        },
         plano: { contenido:{requiredIf: requiredIf(function () {
           return (this.solicitante.tipoSolicitud === 'Habilitación') }) }},
         croquis: { contenido:{requiredIf: requiredIf(function () {
@@ -845,17 +853,9 @@ export default {
         //Validaciones exclusivas de Baja
         libreDeudaIB: { contenido:{ requiredIf: requiredIf(function () {
           return ((this.solicitante.tipoSolicitud === 'Baja' && this.solicitante.esTitular == true) || this.solicitante.tipoSolicitud === 'Renovación') }) }},
-        libreDeudaSegHig: { contenido:{ requiredIf: requiredIf(function () {
-          return this.solicitante.tipoSolicitud === 'Baja' }) }},
 
-        //Validaciones exclusivas de Renovacion
-        certificadoDomicilio: { contenido:{requiredIf: requiredIf(function () {
-          return (this.solicitante.tipoSolicitud === 'Renovación') }) }
-        },
+        //Validaciones exclusivas de Renovacion        
         constanciaAFIP: { contenido:{requiredIf: requiredIf(function () {
-          return (this.solicitante.tipoSolicitud === 'Renovación') }) }
-        },
-        libreDeudaComercial: { contenido:{requiredIf: requiredIf(function () {
           return (this.solicitante.tipoSolicitud === 'Renovación') }) }
         },
 
@@ -978,10 +978,6 @@ export default {
           nombreDocumento: 'Libre Deuda de Tasa por Servicios Urbanos',
           contenido: null
         },
-        libreDeudaComercial:{
-          nombreDocumento: 'Libre Deuda de Tasa de Inspección de Seguridad e Higiene',
-          contenido: null
-        },
         libreDeudaIB:{
           nombreDocumento: 'Libre Deuda de Ingresos Brutos',
           contenido: null
@@ -999,7 +995,7 @@ export default {
           contenido: null
         },
         certificadoDomicilio:{
-          nombreDocumento: 'Certificado de domicilio Ingresos Brutos - Punto de venta Villa Gesell ',
+          nombreDocumento: 'Certificado de domicilio Ingresos Brutos',
           contenido: null
         },
         croquis:{
@@ -1021,7 +1017,7 @@ export default {
         actaPersonaJuridica: null,
         actaDirectorio: null,
         libreDeudaUrbana: null,
-        libreDeudaComercial: null,
+        libreDeudaSegHig: null,
         libreDeudaIB: null,
         tituloPropiedad: null,
         certificadoDomicilio: null,
@@ -1080,7 +1076,7 @@ export default {
               this.inmueble.localidad && this.inmueble.calle && this.inmueble.nro && this.inmueble.rubro && this.documentos.dniFrente && this.documentos.dniDorso &&
               (this.documentos.constanciaCuit || this.solicitante.tipoSolicitud!='Habilitación' || this.solicitante.tipoSolicitud != 'Renovación') &&
               this.documentos.libreDeudaUrbana &&
-              (this.documentos.libreDeudaComercial || this.solicitante.tipoSolicitud!='Baja') &&
+              (this.documentos.libreDeudaSegHig || this.solicitante.tipoSolicitud!='Baja') &&
               (this.documentos.libreDeudaIB || this.solicitante.tipoSolicitud!='Baja') &&
               (this.documentos.tituloPropiedad || this.solicitante.tipoSolicitud!='Habilitación' || this.solicitante.tipoSolicitud != 'Renovación') &&
               (this.documentos.plano || this.solicitante.tipoSolicitud!='Habilitación' || this.solicitante.tipoSolicitud != 'Renovación') &&
@@ -1116,7 +1112,7 @@ export default {
     },
     LoguearValidaciones(){
           console.log("this.solicitante.tipoSolicitud: " + this.solicitante.tipoSolicitud);
-          console.log("VAlidaciones compartidas ");
+          console.log("Validaciones compartidas ");
           console.log("this.$v.solicitante.nombre.$error: " + this.$v.solicitante.nombre.$error);
           console.log("this.$v.solicitante.apellido.$error: " + this.$v.solicitante.apellido.$error);
           console.log("this.$v.solicitante.dni.$error: " + this.$v.solicitante.dni.$error);
@@ -1132,29 +1128,88 @@ export default {
           console.log("this.$v.inmueble.rubro.$error: " + this.$v.inmueble.rubro.$error);
           console.log("this.$v.inmueble.calle.$error: " + this.$v.inmueble.calle.$error);
           console.log("this.$v.inmueble.nro.$error: " + this.$v.inmueble.nro.$error);
+          console.log("Documentos compartidos ");
           console.log("this.$v.documentos.dniFrente.contenido.$error: " + this.$v.documentos.dniFrente.contenido.$error);
           console.log("this.$v.documentos.dniDorso.contenido.$error: " + this.$v.documentos.dniDorso.contenido.$error);
           console.log("this.$v.documentos.libreDeudaUrbana.contenido.$error: " + this.$v.documentos.libreDeudaUrbana.contenido.$error);
+          console.log("this.solicitante.esApoderado: " + this.solicitante.esApoderado);
           console.log("this.$v.documentos.planillaAutorizacion.contenido.$error: " + this.$v.documentos.planillaAutorizacion.contenido.$error);
+          console.log("this.solicitante.esPersonaJuridica: " + this.solicitante.esPersonaJuridica);
           console.log("this.$v.documentos.actaPersonaJuridica.contenido.$error: " + this.$v.documentos.actaPersonaJuridica.contenido.$error);
-          console.log("-*-*Validaciones exclusivas de Habilitación*-*-");
-          console.log("this.$v.documentos.constanciaCuit.contenido.$error: " + this.$v.documentos.constanciaCuit.contenido.$error);
-          console.log("this.$v.inmueble.serviciosHoteleria.$error: " + this.$v.inmueble.serviciosHoteleria.$error);
-          console.log("this.$v.inmueble.otrosServicios.$error: " + this.$v.inmueble.otrosServicios.$error);
-          console.log("this.$v.inmueble.marquesina.$error: " + this.$v.inmueble.marquesina.$error);
-          console.log("this.$v.inmueble.mercaderia.$error: " + this.$v.inmueble.mercaderia.$error);
-          console.log("this.$v.inmueble.carteles.$error: " + this.$v.inmueble.carteles.$error);
-          console.log("this.$v.inmueble.mesas.$error: " + this.$v.inmueble.mesas.$error);
-          console.log("this.$v.documentos.plano.contenido.$error: " + this.$v.documentos.plano.contenido.$error);
-          console.log("this.$v.documentos.croquis.contenido.$error: " + this.$v.documentos.croquis.contenido.$error);
-          console.log("-*-*Validaciones exclusivas de Baja*-*-");
-          console.log("this.$v.nroLegajo.$error: " + this.$v.nroLegajo.$error);
-          console.log("this.$v.solicitante.esPropietario.$error: " + this.$v.solicitante.esPropietario.$error);
-          console.log("this.$v.solicitante.esTitular.$error: " + this.$v.solicitante.esTitular.$error);
-          console.log("this.$v.documentos.libreDeudaIB.contenido.$error: " + this.$v.documentos.libreDeudaIB.contenido.$error);
-          console.log("this.$v.documentos.libreDeudaSegHig.contenido.$error: " + this.$v.documentos.libreDeudaSegHig.contenido.$error);
-          console.log("-*-*Validaciones raras*-*-");
-          console.log("this.$v.documentos.tituloPropiedad.contenido.$error: " + this.$v.documentos.tituloPropiedad.contenido.$error);
+          if(this.solicitante.tipoSolicitud==="Habilitación"){
+            console.log("-*-*Validaciones Exclusivas de Habilitación*-*-");
+            console.log("this.$v.inmueble.serviciosHoteleria.$error: " + this.$v.inmueble.serviciosHoteleria.$error);
+            console.log("this.$v.inmueble.otrosServicios.$error: " + this.$v.inmueble.otrosServicios.$error);
+            console.log("this.$v.inmueble.marquesina.$error: " + this.$v.inmueble.marquesina.$error);
+            console.log("this.$v.inmueble.mercaderia.$error: " + this.$v.inmueble.mercaderia.$error);
+            console.log("this.$v.inmueble.carteles.$error: " + this.$v.inmueble.carteles.$error);
+            console.log("this.$v.inmueble.mesas.$error: " + this.$v.inmueble.mesas.$error);
+            console.log("-*-*Documentos de Habilitación*-*-");
+            console.log("this.$v.documentos.constanciaCuit.contenido.$error: " + this.$v.documentos.constanciaCuit.contenido.$error);
+            console.log("this.$v.documentos.constanciaIngresosBrutos.contenido.$error: " + this.$v.documentos.constanciaIngresosBrutos.contenido.$error);
+            console.log("this.$v.documentos.certificadoDomicilio.contenido.$error: " + this.$v.documentos.certificadoDomicilio.contenido.$error);
+            console.log("this.$v.documentos.libreDeudaUrbana.contenido.$error: " + this.$v.documentos.libreDeudaUrbana.contenido.$error);
+            console.log("this.$v.documentos.tituloPropiedad.contenido.$error: " + this.$v.documentos.tituloPropiedad.contenido.$error);
+            console.log("this.$v.documentos.plano.contenido.$error: " + this.$v.documentos.plano.contenido.$error);
+            console.log("this.$v.documentos.croquis.contenido.$error: " + this.$v.documentos.croquis.contenido.$error);
+            console.log("-*-*Validaciones que no son de Habilitación*-*-");
+            console.log("this.$v.nroLegajo.$error: " + this.$v.nroLegajo.$error);
+            console.log("this.solicitante.esPropietario: " + this.solicitante.esPropietario);
+            console.log("this.solicitante.esTitular: " + this.solicitante.esTitular);
+            console.log("this.$v.documentos.libreDeudaIB.contenido.$error: " + this.$v.documentos.libreDeudaIB.contenido.$error);
+            console.log("this.$v.documentos.libreDeudaSegHig.contenido.$error: " + this.$v.documentos.libreDeudaSegHig.contenido.$error);
+            console.log("this.$v.documentos.constanciaAFIP.contenido.$error: " + this.$v.documentos.constanciaAFIP.contenido.$error);
+          }
+          if(this.solicitante.tipoSolicitud==="Baja"){
+            console.log("-*-*Validaciones exclusivas de Baja*-*-");
+            console.log("this.$v.nroLegajo.$error: " + this.$v.nroLegajo.$error);
+            console.log("this.solicitante.esTitular: " + this.solicitante.esTitular);
+            console.log("this.solicitante.esPropietario: " + this.solicitante.esPropietario);
+            console.log("-*-*Documentos de Baja*-*-");
+            console.log("this.$v.documentos.libreDeudaSegHig.contenido.$error: " + this.$v.documentos.libreDeudaSegHig.contenido.$error);
+            console.log("this.$v.documentos.libreDeudaUrbana.contenido.$error: " + this.$v.documentos.libreDeudaUrbana.contenido.$error);
+            console.log("Solo si this.solicitante.esTitular: " + this.solicitante.esTitular);
+            console.log("this.$v.documentos.libreDeudaIB.contenido.$error: " + this.$v.documentos.libreDeudaIB.contenido.$error);
+            console.log("Solo y solo si this.solicitante.esPropietario: " + this.solicitante.esPropietario);
+            console.log("this.$v.documentos.tituloPropiedad.contenido.$error: " + this.$v.documentos.tituloPropiedad.contenido.$error);
+            console.log("-*-*Validaciones que no son de Baja*-*-");
+            console.log("this.$v.inmueble.serviciosHoteleria.$error: " + this.$v.inmueble.serviciosHoteleria.$error);
+            console.log("this.$v.inmueble.otrosServicios.$error: " + this.$v.inmueble.otrosServicios.$error);
+            console.log("this.$v.inmueble.marquesina.$error: " + this.$v.inmueble.marquesina.$error);
+            console.log("this.$v.inmueble.mercaderia.$error: " + this.$v.inmueble.mercaderia.$error);
+            console.log("this.$v.inmueble.carteles.$error: " + this.$v.inmueble.carteles.$error);
+            console.log("this.$v.inmueble.mesas.$error: " + this.$v.inmueble.mesas.$error);
+            console.log("this.$v.documentos.constanciaAFIP.contenido.$error: " + this.$v.documentos.constanciaAFIP.contenido.$error);
+            console.log("this.$v.documentos.constanciaCuit.contenido.$error: " + this.$v.documentos.constanciaCuit.contenido.$error);
+            console.log("this.$v.documentos.constanciaIngresosBrutos.contenido.$error: " + this.$v.documentos.constanciaIngresosBrutos.contenido.$error);
+            console.log("this.$v.documentos.certificadoDomicilio.contenido.$error: " + this.$v.documentos.certificadoDomicilio.contenido.$error);
+            console.log("this.$v.documentos.plano.contenido.$error: " + this.$v.documentos.plano.contenido.$error);
+            console.log("this.$v.documentos.croquis.contenido.$error: " + this.$v.documentos.croquis.contenido.$error);
+          }
+          if(this.solicitante.tipoSolicitud==="Renovación"){
+            console.log("-*-*Validaciones exclusivas de Renovación*-*-");
+            console.log("this.$v.nroLegajo.$error: " + this.$v.nroLegajo.$error);
+            console.log("this.$v.inmueble.serviciosHoteleria.$error: " + this.$v.inmueble.serviciosHoteleria.$error);
+            console.log("this.$v.inmueble.otrosServicios.$error: " + this.$v.inmueble.otrosServicios.$error);
+            console.log("this.$v.inmueble.marquesina.$error: " + this.$v.inmueble.marquesina.$error);
+            console.log("this.$v.inmueble.mercaderia.$error: " + this.$v.inmueble.mercaderia.$error);
+            console.log("this.$v.inmueble.carteles.$error: " + this.$v.inmueble.carteles.$error);
+            console.log("this.$v.inmueble.mesas.$error: " + this.$v.inmueble.mesas.$error);
+            console.log("-*-*Documentos de Renovación*-*-");
+            console.log("this.$v.documentos.constanciaIngresosBrutos.contenido.$error: " + this.$v.documentos.constanciaIngresosBrutos.contenido.$error);
+            console.log("this.$v.documentos.libreDeudaIB.contenido.$error: " + this.$v.documentos.libreDeudaIB.contenido.$error);
+            console.log("this.$v.documentos.constanciaAFIP.contenido.$error: " + this.$v.documentos.constanciaAFIP.contenido.$error);
+            console.log("this.$v.documentos.certificadoDomicilio.contenido.$error: " + this.$v.documentos.certificadoDomicilio.contenido.$error);
+            console.log("this.$v.documentos.libreDeudaSegHig.contenido.$error: " + this.$v.documentos.libreDeudaSegHig.contenido.$error);
+            console.log("this.$v.documentos.libreDeudaUrbana.contenido.$error: " + this.$v.documentos.libreDeudaUrbana.contenido.$error);
+            console.log("this.$v.documentos.tituloPropiedad.contenido.$error: " + this.$v.documentos.tituloPropiedad.contenido.$error);
+            console.log("this.$v.documentos.plano.contenido.$error: " + this.$v.documentos.plano.contenido.$error);
+            console.log("this.$v.documentos.croquis.contenido.$error: " + this.$v.documentos.croquis.contenido.$error);
+            console.log("-*-*Validaciones que no son de Renovación*-*-");
+            console.log("this.solicitante.esPropietario: " + this.solicitante.esPropietario);
+            console.log("this.solicitante.esTitular: " + this.solicitante.esTitular);
+            console.log("this.$v.documentos.constanciaCuit.contenido.$error: " + this.$v.documentos.constanciaCuit.contenido.$error);
+          }
     },
     openPopup(type) {
       // Lógica para abrir el popup correspondiente según el tipo (A, B, C, D)else if (type === 'B')
@@ -1226,7 +1281,7 @@ export default {
           nombreDocumento: 'Libre Deuda de Tasa por Servicios Urbanos',
           contenido: null
         },
-        libreDeudaComercial:{
+        libreDeudaSegHig:{
           nombreDocumento: 'Libre Deuda de Tasa de Inspección de Seguridad e Higiene',
           contenido: null
         },
@@ -1393,7 +1448,7 @@ export default {
       this.documentos.actaPersonaJuridica.contenido = null
       this.documentos.actaDirectorio.contenido = null
       this.documentos.libreDeudaUrbana.contenido = null
-      this.documentos.libreDeudaComercial.contenido = null
+      this.documentos.libreDeudaSegHig.contenido = null
       this.documentos.libreDeudaIB.contenido = null
       this.documentos.tituloPropiedad.contenido = null
       this.documentos.certificadoDomicilio.contenido = null

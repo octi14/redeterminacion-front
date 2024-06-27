@@ -22,9 +22,9 @@
     </b-card>
   </div>
   <b-form v-else @submit.prevent="submitForm" class="my-3" style="margin-left:10px;margin-right:10px">
-    <b-card v-if="solicitante.tipoSolicitud=='Baja'" no-body class="col-8 mt-1 section-card"  style="margin: 0px auto">
+    <!-- <b-card v-if="solicitante.tipoSolicitud=='Baja'" no-body class="col-8 mt-1 section-card"  style="margin: 0px auto">
       <h5 style="margin-top:0px; margin-bottom: 0px; text-align:center;" ><b-icon-exclamation-circle-fill class="icon-orange"></b-icon-exclamation-circle-fill> El siguiente formulario tiene carácter de declaración jurada.</h5>
-    </b-card>
+    </b-card> -->
   <b-card no-body class="col-8 mt-1 section-card"  style="margin: 0px auto">
     <!-- Sección: Datos del solicitante -->
     <fieldset >
@@ -354,7 +354,7 @@
         </b-col>
       </b-row>
       <b-form-group v-if="solicitante.tipoSolicitud=='Habilitación'">
-        <label for="constanciaCuit" class="rubro-label">Constancia de CUIT actualizada * <b-icon-question-circle-fill @click="openPopup('ConstanciaCUIT')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
+        <label for="constanciaCuit" class="rubro-label">Constancia de CUIT actualizada / Inscripción a AFIP * <b-icon-question-circle-fill @click="openPopup('ConstanciaCUIT')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
         <b-form-file v-model="documentos.constanciaCuit.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
         accept=".pdf, image/*"  :state="getFormFieldState('constanciaCuit')"
         @change="handleDocumentUpdate('constanciaCuit'); checkDocumentSize('constanciaCuit', $event)"
@@ -383,7 +383,7 @@
         </div>
       </b-form-group>
       <b-form-group v-if="solicitante.tipoSolicitud == 'Renovación'">
-        <label for="constanciaAFIP" class="rubro-label">Constancia de inscripción de AFIP con punto de venta en Villa Gesell <span v-if="solicitante.esTitular || solicitante.tipoSolicitud == 'Renovación'">* </span></label>
+        <label for="constanciaAFIP" class="rubro-label">Constancia de inscripción de AFIP <span v-if="solicitante.esTitular || solicitante.tipoSolicitud == 'Renovación'">* </span></label>
         <b-form-file v-model="documentos.constanciaAFIP.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
         accept=".pdf, image/*"  :state="getFormFieldState('constanciaAFIP')"
         @change="handleDocumentUpdate('constanciaAFIP'); checkDocumentSize('constanciaAFIP', $event)"
@@ -959,7 +959,7 @@ export default {
           contenido: null
         },
         constanciaCuit:{
-          nombreDocumento: 'Constancia de CUIT',
+          nombreDocumento: 'Constancia de CUIT / Inscripción de AFIP',
           contenido: null
         },
         constanciaIngresosBrutos:{
@@ -1003,7 +1003,7 @@ export default {
           contenido: null
         },
         constanciaAFIP: {
-          nombreDocumento: 'Constancia de inscripción de AFIP con punto de venta en Villa Gesell',
+          nombreDocumento: 'Constancia de inscripción de AFIP',
           contenido: null
         }
       },

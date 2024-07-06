@@ -1,6 +1,6 @@
 <template>
   <div class="page main-background">
-    <Banner title="Habilitaciones comerciales" />
+    <Banner title="Trámites comerciales" />
 
     <div class="col-10 mainCarrousel" style="margin: auto; margin-top: 2rem">
       <b-carousel

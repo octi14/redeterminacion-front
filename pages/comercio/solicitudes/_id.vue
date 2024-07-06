@@ -147,6 +147,14 @@
                 <a>{{ habilitacion.rubro }}</a>
               </p>
             </div>
+            <div class="layout">
+              <p class="col col-main">
+                <strong>Descripción del rubro</strong><br>
+              </p>
+              <p class="col col-complementary" role="complementary">
+                <a>{{ habilitacion.descripcionRubro }}</a>
+              </p>
+            </div>
             <div class="layout" v-if="!baja">
               <p class="col col-main">
                 <strong v-if="habilitacion.espacioPublico">Uso de espacio público: </strong><br>
@@ -471,6 +479,28 @@
       </div>
     </b-modal>
 
+    <!--Modal volver a erstado En revisión-->
+    <b-modal v-model="showRestoreDefault" hide-footer :header-bg-variant="'secondary'" centered>
+      <template #modal-header>
+        <div class="confirmation-popup-header mx-auto">
+          <b-icon-exclamation-triangle scale="2" variant="light" />
+        </div>
+      </template>
+      <div class="confirmation-popup-body text-center">
+        <h3 class="text-secondary text-center mb-4"><b>Volver a En Revisión</b></h3>
+        <p style="color:black"> ¿Estás seguro/a de que deseas volver el trámite a “En revisión”? </p>
+        <small>Esta acción es permanente y reinicia el proceso de verificación del trámite.</small>
+        <div class="text-center mt-4">
+          <b-btn variant="success" @click="onSendRestablecer" >
+              Aceptar
+          </b-btn>
+          <b-btn variant="danger" @click="onRestablecer" >
+              Cancelar
+          </b-btn>
+        </div>
+      </div>
+    </b-modal>
+
     <b-modal v-model="showObservaciones" header-bg-variant="primary" title="Observaciones" title-class="text-light" hide-footer centered>
       <p v-html="observaciones"></p>
     </b-modal>
@@ -512,6 +542,7 @@ export default {
       showFinalizar: false,
       showRejectPopup: false,
       showSolicitarDoc: false,
+      showRestoreDefault: false,
       showObservaciones: false,
       habilitacion: null,
       turno: null,
@@ -657,7 +688,10 @@ export default {
       this.habilitacion.status = habilitacion.status
       this.showFinalizar = false
     },
-    async onRestablecer(){
+    onRestablecer(){
+      this.showRestoreDefault = !this.showRestoreDefault
+    },
+    async onSendRestablecer(){
       const habilitacion = {
         status: 'En revisión'
       }
@@ -668,6 +702,7 @@ export default {
         habilitacion,
       })
       this.habilitacion.status = habilitacion.status
+      this.showRestoreDefault = false
     },
     async onSendApprove(){
       const observaciones = this.habilitacion.observaciones || " "

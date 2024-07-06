@@ -14,7 +14,7 @@
           <NuxtLink to="/obras" class="d-block">
             <b-button variant="outline" class="btn-5">
               <b-icon-calculator class="mb-4 landing-icon" />
-              <h5 class="landing-text"><b> Redeterminación </b></h5>
+              <h5 class="landing-text"><b> Obras </b></h5>
             </b-button>
           </NuxtLink>
         </div>
@@ -29,14 +29,14 @@ export default {
     return {
       links: [
         {
-          to: "/ordenanzas",
+          to: "/normativa",
           icon: "receipt",
-          title: "Digesto comercial"
+          title: "Normativa"
         },
         {
           to: "/comercio",
           icon: "pen",
-          title: "Habilitaciones comerciales"
+          title: "Trámites comerciales"
         },
         {
           to: "/turnos",

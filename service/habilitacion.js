@@ -37,6 +37,7 @@ const formatExtendedFile = (FileResponse) => ({
   nroLocal: FileResponse.inmueble.nroLocal,
   nombreFantasia: FileResponse.inmueble.nombreFantasia,
   rubro: FileResponse.inmueble.rubro,
+  descripcionRubro: FileResponse.inmueble.descripcionRubro,
   espacioPublico: FileResponse.inmueble.espacioPublico,
   serviciosHoteleria: FileResponse.inmueble.serviciosHoteleria,
   marquesina: FileResponse.inmueble.marquesina,

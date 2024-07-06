@@ -57,6 +57,9 @@ export default {
         },
         {
           nombre: "Ordenanzas",
+        },
+        {
+          nombre: "Obras",
         }
       ],
     }

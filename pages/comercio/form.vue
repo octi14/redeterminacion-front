@@ -230,7 +230,7 @@
         <b-col lg="12" md="12">
         <div v-if="solicitante.tipoSolicitud == 'Habilitación'  || solicitante.tipoSolicitud == 'Renovación'">
           <b-form-group label="Describí brevemente la actividad a realizar (En caso de no encontrar un rubro que represente con precisión la misma)" label-for="nombre-fantasia" >
-            <b-form-textarea id="actividad" v-model="inmueble.actividad">
+            <b-form-textarea id="descripcionRubro" v-model="inmueble.descripcionRubro">
             </b-form-textarea>
           </b-form-group>
         </div></b-col>
@@ -854,7 +854,7 @@ export default {
         libreDeudaIB: { contenido:{ requiredIf: requiredIf(function () {
           return ((this.solicitante.tipoSolicitud === 'Baja' && this.solicitante.esTitular == true) || this.solicitante.tipoSolicitud === 'Renovación') }) }},
 
-        //Validaciones exclusivas de Renovacion        
+        //Validaciones exclusivas de Renovacion
         constanciaAFIP: { contenido:{requiredIf: requiredIf(function () {
           return (this.solicitante.tipoSolicitud === 'Renovación') }) }
         },
@@ -923,7 +923,7 @@ export default {
         nroLocal: null,
         nombreFantasia: '',
         rubro: null,
-        actividad: "",
+        descripcionRubro: "",
         espacioPublico: true,
         marquesina: false,
         mercaderia: false,

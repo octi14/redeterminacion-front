@@ -107,7 +107,7 @@
         </template>
         <div class="centeredContainer modal-primary">
           <p class="modal-subtitle">Tu trámite se encuentra en estado de <b class="modal-subtitle"> rectificación.</b></p>
-          <p>Esto significa que alguno de los documentos cargados son incorrectos o no son legibles. 
+          <p>Esto significa que alguno de los documentos cargados son incorrectos o no son legibles.
             El Departamento Comercio se comunicará por correo electrónico para indicarte los pasos a seguir para continuar el trámite.</p>
           <p class="minitext" style="color:gray">No olvides revisar la carpeta de "Spam" o "No deseados". </p>
         </div>
@@ -117,7 +117,7 @@
           </div>
         </template>
       </b-modal>
-      
+
       <!-- Modal El sistema espera que usted saque un turno -->
       <b-modal v-model="showPopupWaiting" @click-outside="showPopupWaiting = false" header-class="lightblue" centered>
         <template #modal-header>
@@ -207,7 +207,7 @@
           <p class="modal-subtitle">Tu trámite se encuentra esperando documentación.</p>
           <p> Estás a punto de finalizar tu trámite. El Departamento Comercio te envió un correo electrónico indicándote los pasos a seguir.</p>
           <small class="minitext">No olvides revisar la carpeta de “spam” o “no deseados”.</small>
-        </div>  
+        </div>
         <template #modal-footer>
           <div class="" style="margin: auto">
             <b-button @click="showPopupWaitingDoc = false" variant="danger" class="btn-primary">Aceptar</b-button>
@@ -224,7 +224,7 @@
         </template>
         <div class="centeredContainer modal-success">
           <p class="modal-subtitle">Tu trámite ha sido finalizado.</p>
-          <p> Tu habilitación comercial ha sido aprobada con el expediente nro. <b>{{ nroExpediente }}.</b></p>
+          <p> Tu solicitud ha sido aprobada con el expediente nro. <b>{{ nroExpediente }}.</b></p>
         </div>
         <template #modal-footer>
           <div class="" style="margin: auto">
@@ -387,7 +387,7 @@ export default {
   .modal-content .centeredContainer{
     margin: 1rem auto;
   }
-  
+
   .modal .modal-subtitle{
     color: #0c681a !important;
     font-size: 1.25rem;

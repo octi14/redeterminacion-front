@@ -256,7 +256,7 @@ export default {
   },
   computed: {
     adminInspeccion(){
-      return this.$store.state.user.admin === "inspeccion"
+      return this.$store.state.user.admin === "inspeccion" || this.$store.state.user.admin === "master"
     }
   },
   methods: {

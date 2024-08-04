@@ -2,7 +2,7 @@
   <div class="page main-background mt-3">
     <Banner title="Compras" />
     <div class="mt-5">
-      <h1 class="text-title banner-title">Inscripción de proveedores</h1>
+      <h1 class="text-title">Inscripción de proveedores</h1>
       <b-card class="m-4 mt-5 col-md-11 col-sm-8 shadow-card" style="width:auto">
         <h4 class="section-title mt-4"> ¿Qué documentación necesito para registrarme como Proveedor Municipal? </h4>
         <div class="li-row ml-3 mt-3 mb-3">
@@ -25,7 +25,7 @@
           <div class="row">
             <b-icon-caret-right-fill font-scale="1" class="icon-orange icon mx-2"></b-icon-caret-right-fill>
             <h6> El valor de la inscripción corresponde a lo indicado en el <a href="https://arvige.gob.ar/legislacion/pdf/12">
-             Art. 242 de la Ordenanza Municipal 2156/08 (TO 2023). </a>
+             Art. 242 de la Ordenanza Municipal 2156/08 (TO 2024). </a>
              </h6>
           </div>
           <div class="row">
@@ -60,6 +60,11 @@
           <h6> tesoreriavg@gesell.gob.ar | Tel: 02255-478034 </h6>
         </div>
       </b-card>
+    <div class="text-center m-4 float-lg-end">
+      <NuxtLink to="/compras">
+        <b-button variant="primary"> Volver </b-button>
+      </NuxtLink>
+    </div>
     </div>
   </div>
 </template>

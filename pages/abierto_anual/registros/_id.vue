@@ -76,9 +76,9 @@
       adminComercio(){
         return this.$store.state.user.admin == "comercio" || this.$store.state.user.admin == "master"
       },
-      facturas(){
-        return this.$store.state.facturas.all
-      }
+      // facturas(){
+      //   return this.$store.state.facturas.all
+      // }
     },
     async fetch() {
       const tramiteId = this.$route.params.id
@@ -87,9 +87,9 @@
       })
       this.tramite = this.$store.state.abiertoAnual.single
 
-      await this.$store.dispatch('facturas/getById', {
-        id: tramiteId,
-      })
+      // await this.$store.dispatch('facturas/getById', {
+      //   id: tramiteId,
+      // })
 
     },
     fetchOnServer: false,
@@ -142,7 +142,7 @@
   </script>
 
   <style scoped>
-  @media (max-width: 720px){    
+  @media (max-width: 720px){
     .section-subtitle{
       margin-left: 0 !important;
       margin-right: 0 !important;

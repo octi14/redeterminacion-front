@@ -43,10 +43,10 @@
               <b-col lg="3" md="4" sm="6"><a href="#card-habilitacion" id="btnH"><img id="btn-Habilitación" width="100%" src="../../assets/btn/btn_habilitacion.png" @click="seleccionarTramite('Habilitación')"></a></b-col>
               <b-col lg="3" md="4" sm="6"><a href="#card-baja" id="btnB"><img id="btn-Baja" width="100%" src="../../assets/btn/btn_baja.png" @click="seleccionarTramite('Baja')"></a></b-col>
               <b-col lg="3" md="4" sm="6"><a href="#card-renovacion" id="btnR"><img id="btn-Renovación" width="100%" src="../../assets/btn/btn_renovacion.png" @click="seleccionarTramite('Renovación')"></a></b-col>
+              <b-col lg="3" md="4" sm="6"><a href="#card-reempadronamiento" id="btnRe"><img id="btn-Reempadronamiento" width="100%" src="../../assets/btn/btn_reempadronamiento.png" @click="seleccionarTramite('Reempadronamiento')"></a></b-col>
               <b-col lg="3" md="4" sm="6"><img id="btn-Cambio-Titular" class="disabled" width="100%" src="../../assets/btn/btn_cambio_titular.png" @click="seleccionarTramite('Cambio-Titular')"></b-col>
               <b-col lg="3" md="4" sm="6"><img id="btn-Cambio-Domicilio" class="disabled" width="100%" src="../../assets/btn/btn_cambio_domicilio.png" @click="seleccionarTramite('Cambio-Domicilio')"></b-col>
               <b-col lg="3" md="4" sm="6"><img id="btn-Anexo" class="disabled" width="100%" src="../../assets/btn/btn_anexo.png" @click="seleccionarTramite('Anexo')"></b-col>
-              <b-col lg="3" md="4" sm="6"><img id="btn-Reempadronamiento" class="disabled" width="100%" src="../../assets/btn/btn_reempadronamiento.png" @click="seleccionarTramite('Reempadronamiento')"></b-col>
               <b-col lg="3" md="4" sm="6"><img id="btn-Anexo-Cambio" class="disabled" width="100%" src="../../assets/btn/btn_anexo_cambio.png" @click="seleccionarTramite('Anexo-Cambio')"></b-col>
             </b-row>
           </div>
@@ -615,28 +615,37 @@
             <transition name="expand">
               <div v-show="isCardExpanded(11)">
                 <div class="li-row first-li">
-                  <p class="first-li first-p"><b>El trámite de Renovación Comercial implica reafirmar la continuidad de una Habilitación Comercial en los mismos términos en los que fue solicitada</b>. Mediante este trámite el Municipio verificará que la documentación solicitada y el pago de tasas correspondientes estén cumplimentadas.
-                  <br />Una vez confirmada esta información se extiende al solicitante un Certificado de Habilitación donde consta la renovación comercial con este Municipio.</p>
+                  <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> El trámite de <b>Renovación Comercial</b> implica <b>reafirmar la continuidad de una Habilitación comercial</b> una vez que el <b>contrato de locación/comodato/etc. original haya concluido.</b></div>
                 </div>
                 <div class="li-row">
-                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
-                  <div class="li-content">
-                    <p class="li-title">Si realizaste alguna de estas acciones, el trámite a realizar NO es una renovación comercial:</p>
+                  <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Mediante este trámite <b>el Municipio verificará que la documentación solicitada</b> y el <b>pago de tasas correspondientes estén cumplimentadas.</b></div>
+                </div>
+                <div class="li-row first-p">
+                  <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Una vez <b>confirmada esta información y concluida la inspección correspondiente</b> se extiende al solicitante un <b>Certificado de Habilitación donde consta la renovación comercial</b> con este Municipio.</div>
+                </div>
+                <div class="li-row">
+                  <div class="li-icon"><b-icon-exclamation-circle font-scale="1" class="icon-orange"></b-icon-exclamation-circle></div>
+                  <div class="li-content" style="width:100%">
+                    <p class="li-title">El trámite a realizar NO es una renovación comercial en los siguientes casos:</p>
                     <div class="li-row">
                       <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                      <div class="li-content"><p><b>Baja Comercial</b>. Podes ver los requisitos de este trámite haciendo <a href="#card-baja" id="btnB" class="external-link" @click="seleccionarTramite('Baja')">click aquí</a>.</p></div>
+                      <div class="li-content"><p>Si el contrato de locación, comodato, etc. no ha concluido el trámite a realizar es un <a href="#card-reempadronamiento" id="btnRe" class="external-link" @click="seleccionarTramite('Reempadronamiento')">Reempadronamiento comercial.</a></p></div>
                     </div>
                     <div class="li-row">
                       <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                      <div class="li-content"><p><b>Cambio de Domicilio</b>.<!--  Podes ver los requisitos de este trámite haciendo <a href="#card-cambio-domicilio" id="btnCD" class="external-link" @click="seleccionarTramite('Cambio de Domicilio')">click aquí</a>. --></p></div>
+                      <div class="li-content"><p>Si realizaste una <a href="#card-baja" id="btnB" class="external-link" @click="seleccionarTramite('Baja')">Baja Comercial</a></p></div>
                     </div>
                     <div class="li-row">
                       <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                      <div class="li-content"><p><b>Cambio de Titular</b>.<!--  Podes ver los requisitos de este trámite haciendo <a href="#card-cambio-titular" id="btnCT" class="external-link" @click="seleccionarTramite('Cambio de Titular')">click aquí</a>. --></p></div>
+                      <div class="li-content"><p>Si realizaste un <b>Cambio de Domicilio</b>.<!--  Podes ver los requisitos de este trámite haciendo <a href="#card-cambio-domicilio" id="btnCD" class="external-link" @click="seleccionarTramite('Cambio de Domicilio')">click aquí</a>. --></p></div>
                     </div>
                     <div class="li-row">
                       <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                      <div class="li-content"><p><b>Anexo de Mts2</b>.<!--  Podes ver los requisitos de este trámite haciendo <a href="#card-anexo-mt-2" id="btnAM2" class="external-link" @click="seleccionarTramite('Anexo de Mts2')">click aquí</a>. --></p></div>
+                      <div class="li-content"><p>Si realizaste un <b>Cambio de Titular</b>.<!--  Podes ver los requisitos de este trámite haciendo <a href="#card-cambio-titular" id="btnCT" class="external-link" @click="seleccionarTramite('Cambio de Titular')">click aquí</a>. --></p></div>
+                    </div>
+                    <div class="li-row">
+                      <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                      <div class="li-content"><p>Si se <b>anexaron metros cuadrados</b> al comercio.<!--  Podes ver los requisitos de este trámite haciendo <a href="#card-anexo-mt-2" id="btnAM2" class="external-link" @click="seleccionarTramite('Anexo de Mts2')">click aquí</a>. --></p></div>
                     </div>
                   </div>
                 </div>
@@ -660,7 +669,6 @@
               </div>
             </transition>
           </b-card>
-
           <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(13) }">
             <h4 class="section-title" @click="toggleCard(13)">
               ¿Qué documentación necesito para iniciar una Renovación Comercial?
@@ -728,12 +736,7 @@
                   <div class="li-content">
                     <p class="li-title">¿Cuándo deben renovarse las habilitaciones comerciales?</p>
                     <div class="li-row">
-                      <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                      <div class="li-content"><p><b>En caso de contrato de locación:</b> Las habilitaciones se extienden por el período que abarca el contrato de locación y deben reempadronarse anualmente, según corresponda, teniendo en cuenta la normativa vigente.</p></div>
-                    </div>
-                    <div class="li-row">
-                      <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                      <div class="li-content"><p><b>En caso de ser propietario/a del inmueble:</b> Las habilitaciones no tienen caducidad si la titularidad o las condiciones acreditadas al momento de la entrega del certificado de habilitación no cambian.</p></div>
+                      <p>En el caso que la/el titular de la actividad sujeta a habilitación desarrolle la misma en un local o establecimiento alquilado, la habilitación tendrá la misma duración que el contrato de locación y caducará automáticamente cuando el mismo finalice. En esos casos, la habilitación comercial deberá ser renovada. </p>
                     </div>
                   </div>
                 </div>
@@ -741,7 +744,7 @@
                   <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                   <div class="li-content">
                     <p class="li-title">¿Por qué no cargan mis archivos?</p>
-                    <p>Puede ser que los archivos que quieras cargar superen el peso máximo soportado. En ese caso, te sugerimos reducirlos con alguna herramienta digital (por ejemplo: <a href="https://www.ilovepdf.com/es/comprimir_pdf" target="_blank" class="external-link">ilovepdf</a>). Si el problema persiste podés comunicarte con <a href="mailto:deptocomercio@gesell.gob.ar" target="_blank" class="external-link">deptocomercio@gesell.gob.ar</a></p>
+                    <p>Puede ser que los archivos que quieras cargar superen el peso máximo soportado. En ese caso, te sugerimos reducirlos con alguna herramienta digital (por ejemplo: <a href="https://www.ilovepdf.com/es/comprimir_pdf" target="_blank" class="external-link">ilovepdf</a>, <a href="https://www.camscanner.com/es-es" target="_blank" class="external-link">camscanner</a>, entre otras). Si el problema persiste podés comunicarte con <a href="mailto:deptocomercio@gesell.gob.ar" target="_blank" class="external-link">deptocomercio@gesell.gob.ar</a></p>
                   </div>
                 </div>
                 <div class="li-row first-li">
@@ -777,8 +780,195 @@
             <transition name="expand">
               <div v-show="isCardExpanded(16)">
                 <p class="first-li">
-                  La habilitación de comercios/industrias o asimilables deberá adecuarse a lo determinado en concordancia con leyes nacionales, provinciales y
-                  <a href="https://arvige.gob.ar/legislacion/pdf/12" target="_blank" class="external-link">el Digesto de Habilitaciones Comerciales (Ord.1958/04 (TO2024)</a>.
+                  La renovación de comercios/industrias o asimilables deberá adecuarse a lo determinado en concordancia con leyes nacionales, provinciales y el art. 168 del Digesto de Habilitaciones Comerciales 
+                  <a href="https://arvige.gob.ar/legislacion/pdf/12" target="_blank" class="external-link">(Ord.1958/04 (TO2024)</a>.
+                </p>
+              </div>
+            </transition>
+          </b-card>
+        <b-button variant="success" class="float-right btn-form" @click="openPopup('Form')">Iniciar Trámite</b-button>
+        <br />
+        </b-col>
+        <b-col v-if="tramiteSeleccionado=='Reempadronamiento'">
+          <br />
+          <b-card class="section-card" id="card-baja" v-bind:class="{ 'expanded': isCardExpanded(17) }">
+            <h4 class="section-title" @click="toggleCard(17)">
+              ¿Qué significa realizar un Reempadronamiento Comercial?
+              <b-icon-chevron-compact-down v-if="!isCardExpanded(17)"></b-icon-chevron-compact-down>
+              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
+            </h4>
+            <transition name="expand">
+              <div v-show="isCardExpanded(17)">
+                <div class="li-row first-li">
+                  <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> El trámite de <b>Reempadronamiento Comercial</b> implica <b>reafirmar la continuidad de una Habilitación comercial</b> en <b>los mismos términos en los que fue solicitada</b>,  siempre y cuando el certificado de habilitación se encuentre vigente.</div>
+                </div>
+                <div class="li-row first-p">
+                  <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Mediante este trámite <b>el Municipio verificará que la documentación solicitada</b> y el <b>pago de tasas correspondientes estén cumplimentadas.</b></div>
+                </div>
+                <div class="li-row">
+                  <div class="li-icon"><b-icon-exclamation-circle font-scale="1" class="icon-orange"></b-icon-exclamation-circle></div>
+                  <div class="li-content" style="width:100%">
+                    <p class="li-title">El trámite a realizar NO es un reempadronamiento comercial en los siguientes casos:</p>
+                    <div class="li-row">
+                      <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                      <div class="li-content"><p>Si el contrato de locación, comodato, etc. original se encuentra concluído, el trámite a realizar es una <a href="#card-renovacion" id="btnR" class="external-link" @click="seleccionarTramite('Renovación')">Renovación comercial.</a></p></div>
+                    </div>
+                    <div class="li-row">
+                      <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                      <div class="li-content"><p>Si realizaste una <a href="#card-baja" id="btnB" class="external-link" @click="seleccionarTramite('Baja')">Baja Comercial</a></p></div>
+                    </div>
+                    <div class="li-row">
+                      <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                      <div class="li-content"><p>Si realizaste un <b>Cambio de Domicilio</b>.<!--  Podes ver los requisitos de este trámite haciendo <a href="#card-cambio-domicilio" id="btnCD" class="external-link" @click="seleccionarTramite('Cambio de Domicilio')">click aquí</a>. --></p></div>
+                    </div>
+                    <div class="li-row">
+                      <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                      <div class="li-content"><p>Si realizaste un <b>Cambio de Titular</b>.<!--  Podes ver los requisitos de este trámite haciendo <a href="#card-cambio-titular" id="btnCT" class="external-link" @click="seleccionarTramite('Cambio de Titular')">click aquí</a>. --></p></div>
+                    </div>
+                    <div class="li-row">
+                      <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                      <div class="li-content"><p>Si se <b>anexaron metros cuadrados</b> al comercio.<!--  Podes ver los requisitos de este trámite haciendo <a href="#card-anexo-mt-2" id="btnAM2" class="external-link" @click="seleccionarTramite('Anexo de Mts2')">click aquí</a>. --></p></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </transition>
+          </b-card>
+          <b-card class="section-card" id="card-habilitacion" v-bind:class="{ 'expanded': isCardExpanded(18) }">
+            <h4 class="section-title" @click="toggleCard(18)">
+              ¿Quién puede iniciar un Reempadronamiento Comercial?
+              <b-icon-chevron-compact-down v-if="!isCardExpanded(18)"></b-icon-chevron-compact-down>
+              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
+            </h4>
+            <transition name="expand">
+              <div v-show="isCardExpanded(18)">
+                <div class="li-row first-li">
+                  <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> El <b>Titular de la Habilitación Comercial</b> ó</div>
+                </div>
+                <div class="li-row">
+                  <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> El <b>Representante o Apoderado/a de la persona interesada</b> con documentación que acredite el carácter de tal. <b-icon-question-circle-fill @click="openPopup('A')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div>
+                </div>
+              </div>
+            </transition>
+          </b-card>
+          <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(19) }">
+            <h4 class="section-title" @click="toggleCard(19)">
+              ¿Qué documentación necesito para iniciar un Reempadronamiento Comercial?
+              <b-icon-chevron-compact-down v-if="!isCardExpanded(19)"></b-icon-chevron-compact-down>
+              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
+            </h4>
+            <transition name="expand">
+              <div v-show="isCardExpanded(19)">
+                <div class="li-row first-li"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> DNI del solicitante <i>(imagen del frente y dorso)</i>.</div></div>
+                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Libre deuda de Tasa de Inspección de Seguridad e Higiene. <b-icon-question-circle-fill @click="openPopup('ConstanciaLibreDeudaSegHig')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div></div>
+                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Libre deuda de <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Tasa por Servicios Urbanos</a> que afectan al local <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. <b-icon-question-circle-fill @click="openPopup('LibreDeuda')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div></div>
+                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Libre deuda de <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=266&categ=34" target="_blank" class="external-link">Ingresos Brutos</a>  del titular de la habilitación. </div></div>
+                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> <a href="https://www.afip.gob.ar/landing/default.asp" target="_blank" class="external-link">Constancia de inscripción de AFIP</a>. </div></div>
+                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" class="external-link">Certificado de domicilio Ingresos Brutos.</a></div></div>
+                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" class="external-link">Constancia de inscripción a Ingresos Brutos.</a></div></div>
+                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Libro de actas: se entrega en forma presencial al finalizar el trámite. (<i>En el caso de alojamientos se presentarán 2 libros: de quejas y de habilitación.</i>)</div></div>
+                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Plano de obra vigente. <u>Si éste continua en tramite</u>, presentar Informe Técnico Visado en el Colegio de Arquitectos (<a href="" class="external-link">Artic. 20º Ord. Nº 3177/21</a>) </div></div>
+                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Contrato de locación con el correspondiente Impuesto de Sellos Provincial y firma certificada por Escribano Público, Entidad Bancaria o Autoridad Administrativa. <i>(Si el contrato original se encuentra finalizado el trámite a realizar es una <a href="#card-renovacion" id="btnR" class="external-link" @click="seleccionarTramite('Renovación')">renovación</a>, no un reempadronamiento)</i></div></div>
+                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Planilla de Autorización de Trámite legalizada o poder autorizado por escribano <i>(únicamente si el trámite es iniciado mediante representante o apoderado/a)</i>.</div></div>
+                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> <b>Personas Jurídicas:</b> Escritura constitutiva de la misma con designación actual de sus representantes.</div></div>
+                <div class="separador-top">
+                  <p>Los <b>documentos</b> deberán encontrarse <b>digitalizados</b> (podés escanearlos o sacarles una foto) y deben <b>ser legibles</b>. Pueden encontrarse <b>en formato pdf o imagen</b> y tener un <b>peso máximo de 15 Mb</b>.</p>
+                </div>
+                <b-card border-variant="warning" align="center" class="importante-card" >
+                  <b-card-text>
+                    <b-row >
+                      <b-col md="2">
+                        <b-icon-exclamation-triangle variant="warning" font-scale="5"></b-icon-exclamation-triangle>
+                        <p class="li-title"><u><b>¡Importante!</b></u></p>
+                      </b-col>
+                      <b-col  md="10">
+                          <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Una vez iniciado el trámite, <b>recibirás un correo electrónico del Departamento Comercio</b> (deptocomercio@gesell.gob.ar), indicandote los pasos para continuar.</div></div>
+                          <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Tené en cuenta que la renovación ó el reempadronamiento serán efectivos una vez que el Departamento Comercio (deptocomercio@gesell.gob.ar) haya verificado la documentación presentada, se haya abonado el valor del trámite, se hayan presentado los originales y, posteriormente, hayas obtenido el certificado respectivo.</div></div>
+                          <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Recordá que las <b>renovaciones y reempadronamientos</b> sólo se <b>realizan si no hiciste modificaciones</b> respecto a la <b>habilitación inicial</b>. En caso contrario deberás iniciar un  trámite diferente (por ejemplo, un cambio de domicilio).</div></div>
+                      </b-col>
+                    </b-row>
+                  </b-card-text>
+                </b-card>
+            </div>
+            </transition>
+          </b-card>
+          <b-card class="section-card FAQs-card" v-bind:class="{ 'expanded': isCardExpanded(20) }">
+            <h4 class="section-title" @click="toggleCard(20)">Preguntas Frecuentes
+              <b-icon-chevron-compact-down v-if="!isCardExpanded(20)"></b-icon-chevron-compact-down>
+              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
+            </h4>
+            <transition name="expand">
+              <div v-show="isCardExpanded(20)">
+                <div class="li-row first-li">
+                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-content">
+                    <p class="li-title">¿Cuál es el costo del trámite?</p>
+                    <p>El costo del trámite se encuentra determinado en la Ordenanza 2156/08 (TO 2023).</p>
+                  </div>
+                </div>
+                <div class="li-row">
+                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-content">
+                    <p class="li-title">¿Cómo finaliza el trámite?</p>
+                    <p>Una vez completado el formulario, el Dpto. Comercio se comunicará a través del correo electrónico oficial (<a href="mailto:deptocomercio@gesell.gob.ar" target="_blank" class="external-link">deptocomercio@gesell.gob.ar</a>), indicándote los pasos a seguir y los costos administrativos del trámite.</p>
+                  </div>
+                </div>
+                <div class="li-row">
+                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-content">
+                    <p class="li-title">¿Cuándo deben reempadronrse las habilitaciones comerciales?</p>
+                    <div class="li-row">
+                      <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                      <div class="li-content"><p><b>En caso de contrato de locación:</b> Las habilitaciones se extienden por el período que abarca el contrato de locación y deben reempadronarse anualmente, según corresponda, teniendo en cuenta la normativa vigente.</p></div>
+                    </div>
+                    <div class="li-row">
+                      <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                      <div class="li-content"><p><b>En caso de ser propietario/a del inmueble:</b> Las habilitaciones no tienen caducidad si la titularidad o las condiciones acreditadas al momento de la entrega del certificado de habilitación no cambian.</p></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="li-row">
+                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-content">
+                    <p class="li-title">¿Por qué no cargan mis archivos?</p>
+                    <p>Puede ser que los archivos que quieras cargar superen el peso máximo soportado. En ese caso, te sugerimos reducirlos con alguna herramienta digital (por ejemplo: <a href="https://www.ilovepdf.com/es/comprimir_pdf" target="_blank" class="external-link">ilovepdf</a>, <a href="https://www.camscanner.com/es-es" target="_blank" class="external-link">camscanner</a>, entre otras). Si el problema persiste podés comunicarte con <a href="mailto:deptocomercio@gesell.gob.ar" target="_blank" class="external-link">deptocomercio@gesell.gob.ar</a></p>
+                  </div>
+                </div>
+                <div class="li-row first-li">
+                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-content">
+                    <p class="li-title">¿Cómo cargo varias imágenes en un campo único del formulario?</p>
+                    <p>En caso de que el archivo que vayas a subir tenga varias páginas (y, por ejemplo, vos las hayas fotografiado) deberás compilarlas en un único archivo pdf. Para ello existen diversas herramientas digitales (por ejemplo, <a href="https://www.ilovepdf.com/es/jpg_a_pdf" target="_blank" class="external-link">ilovepdf</a>) que te permiten hacerlo de manera sencilla y gratuita. </p>
+                  </div>
+                </div>
+                <div class="li-row first-li">
+                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-content">
+                    <p class="li-title">¿Cómo puedo saber en qué estado se encuentra mi trámite?</p>
+                    <p>Hacé click en el botón <a class="external-link" href="/consulta_tramite">consulta de trámites</a> que se encuentra en la página de inicio y escribí el número de trámite que te dio el sistema cuando completaste tu solicitud.</p>
+                  </div>
+                </div>
+                <div class="li-row first-li">
+                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-content">
+                    <p class="li-title">Para visualizar como realizar tu trámite, podés mirar este video tutorial</p>
+                    <iframe class="videoTuto" width="560" height="315" src="https://www.youtube.com/embed/HJwZkfxsnOw?si=EszZ_Byjmv2-ysF8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                  </div>
+                </div>
+              </div>
+            </transition>
+          </b-card>
+          <b-card id="normas" class="section-card" v-bind:class="{ 'expanded': isCardExpanded(21) }">
+            <h4 class="section-title" @click="toggleCard(21)">
+              Condiciones legales
+              <b-icon-chevron-compact-down v-if="!isCardExpanded(21)"></b-icon-chevron-compact-down>
+              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
+            </h4>
+            <transition name="expand">
+              <div v-show="isCardExpanded(21)">
+                <p class="first-li">
+                  El reempadronamiento de comercios/industrias o asimilables deberá adecuarse a lo determinado en concordancia con leyes nacionales, provinciales y el art. 163 del Digesto de Habilitaciones Comerciales
+                  <a href="https://arvige.gob.ar/legislacion/pdf/12" target="_blank" class="external-link">(Ord.1958/04 (TO2024)</a>.
                 </p>
               </div>
             </transition>

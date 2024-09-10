@@ -25,8 +25,8 @@
         </div>
         <div class="col mx-auto" v-if="habilitacion.status === 'Finalizada' || habilitacion.tipoSolicitud === 'Baja' || habilitacion.tipoSolicitud === 'Renovación' || habilitacion.tipoSolicitud === 'Reempadronamiento'">
           <div class="h5 row justify-content-center"> Número de expediente: <b class="text-success ml-1"> {{ habilitacion.nroExpediente }} </b> </div>
-          <div class="h5 row justify-content-center" v-if="baja || renovacion"> Alcance: <b class="text-success ml-1"> {{ habilitacion.alcance }} </b> </div>
-          <div class="h5 row justify-content-center" v-if="baja || renovacion"> Legajo: <b class="text-success ml-1"> {{ habilitacion.nroLegajo }} </b> </div>
+          <div class="h5 row justify-content-center" v-if="baja || renovacion || reempadronamiento"> Alcance: <b class="text-success ml-1"> {{ habilitacion.alcance }} </b> </div>
+          <div class="h5 row justify-content-center" v-if="baja || renovacion || reempadronamiento"> Legajo: <b class="text-success ml-1"> {{ habilitacion.nroLegajo }} </b> </div>
         </div>
       </div>
       <!--Botones-->

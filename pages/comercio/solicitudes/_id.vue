@@ -23,7 +23,7 @@
             <h5 :class="getStatusClass(habilitacion.status)" class="ml-2"> {{ habilitacion.status }}</h5>
           </div>
         </div>
-        <div class="col mx-auto" v-if="habilitacion.status === 'Finalizada' || habilitacion.tipoSolicitud === 'Baja' || habilitacion.tipoSolicitud === 'Renovación'">
+        <div class="col mx-auto" v-if="habilitacion.status === 'Finalizada' || habilitacion.tipoSolicitud === 'Baja' || habilitacion.tipoSolicitud === 'Renovación' || habilitacion.tipoSolicitud === 'Reempadronamiento'">
           <div class="h5 row justify-content-center"> Número de expediente: <b class="text-success ml-1"> {{ habilitacion.nroExpediente }} </b> </div>
           <div class="h5 row justify-content-center" v-if="baja || renovacion"> Alcance: <b class="text-success ml-1"> {{ habilitacion.alcance }} </b> </div>
           <div class="h5 row justify-content-center" v-if="baja || renovacion"> Legajo: <b class="text-success ml-1"> {{ habilitacion.nroLegajo }} </b> </div>

@@ -452,7 +452,7 @@
           <b-icon-check-circle scale="2" variant="light" />
         </div>
       </template>
-      <div class="confirmation-popup-body" v-if="!baja">
+      <div class="confirmation-popup-body">
         <h3 class="text-success text-center"><b>Finalizar trámite</b></h3>
         <p>El trámite será finalizado.</p>
         <p> Ingresa el número de expediente asignado a este trámite: </p>
@@ -462,7 +462,7 @@
           <b-form-input class="col-3" type="number" no-wheel size="sm" v-model="nroExpediente1"/><a class="mx-3"> / </a>
           <b-form-input size="sm" type="number" no-wheel class="col-3" v-model="nroExpediente2"/>
         </p>
-        <p class="row ml-1 mt-2">
+        <p class="row ml-1 mt-2" v-if="!habilitacion">
           <b-icon-caret-right-fill class="icon-orange mt-1"/><b>Alcance:</b>
           <b-form-input class="col-3 ml-2" type="number" no-wheel size="sm" v-model="alcance"/>
         </p>
@@ -470,16 +470,6 @@
         <small> Recordá que más adelante podrás consultar los datos proporcionados en la sección de búsqueda. </small>
         <div class="text-center mt-3">
           <b-btn variant="success" :disabled="!nroExpediente1 || !nroExpediente2 || !alcance" @click="onSendFinalizar" >
-              Aceptar
-          </b-btn>
-        </div>
-      </div>
-      <div v-else>
-        <h3 class="text-success text-center"><b>Finalizar trámite</b></h3>
-        <p>El trámite será finalizado. El comercio será dado de baja, y se agregarán los documentos al expediente original. </p>
-        <small> Recordá que más adelante podrás consultar los datos proporcionados en la sección de búsqueda. </small>
-        <div class="text-center mt-3">
-          <b-btn variant="success" @click="onSendFinalizar" >
               Aceptar
           </b-btn>
         </div>

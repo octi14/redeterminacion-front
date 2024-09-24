@@ -23,10 +23,10 @@
             <h5 :class="getStatusClass(habilitacion.status)" class="ml-2"> {{ habilitacion.status }}</h5>
           </div>
         </div>
-        <div class="col mx-auto" v-if="habilitacion.status === 'Finalizada' || habilitacion.tipoSolicitud === 'Baja' || habilitacion.tipoSolicitud === 'Renovación'">
+        <div class="col mx-auto" v-if="habilitacion.status === 'Finalizada' || habilitacion.tipoSolicitud === 'Baja' || habilitacion.tipoSolicitud === 'Renovación' || habilitacion.tipoSolicitud === 'Reempadronamiento'">
           <div class="h5 row justify-content-center"> Número de expediente: <b class="text-success ml-1"> {{ habilitacion.nroExpediente }} </b> </div>
-          <div class="h5 row justify-content-center" v-if="baja || renovacion"> Alcance: <b class="text-success ml-1"> {{ habilitacion.alcance }} </b> </div>
-          <div class="h5 row justify-content-center" v-if="baja || renovacion"> Legajo: <b class="text-success ml-1"> {{ habilitacion.nroLegajo }} </b> </div>
+          <div class="h5 row justify-content-center" v-if="baja || renovacion || reempadronamiento"> Alcance: <b class="text-success ml-1"> {{ habilitacion.alcance }} </b> </div>
+          <div class="h5 row justify-content-center" v-if="baja || renovacion || reempadronamiento"> Legajo: <b class="text-success ml-1"> {{ habilitacion.nroLegajo }} </b> </div>
         </div>
       </div>
       <!--Botones-->
@@ -452,30 +452,24 @@
           <b-icon-check-circle scale="2" variant="light" />
         </div>
       </template>
-      <div class="confirmation-popup-body" v-if="!baja">
+      <div class="confirmation-popup-body">
         <h3 class="text-success text-center"><b>Finalizar trámite</b></h3>
         <p>El trámite será finalizado.</p>
         <p> Ingresa el número de expediente asignado a este trámite: </p>
         <div class="row mx-auto">
           <p style="margin: 3%"><b-icon-caret-right-fill class="icon-orange"/><b>Número de expediente:</b></p>
         <p class="row mr-2" style="margin: 3%"> 4124 -
-          <b-form-input class="col-3 ml-2" type="number" no-wheel size="sm" v-model="nroExpediente1"/><a class="mx-3"> / </a>
+          <b-form-input class="col-3" type="number" no-wheel size="sm" v-model="nroExpediente1"/><a class="mx-3"> / </a>
           <b-form-input size="sm" type="number" no-wheel class="col-3" v-model="nroExpediente2"/>
+        </p>
+        <p class="row ml-1 mt-2" v-if="!habilitacion">
+          <b-icon-caret-right-fill class="icon-orange mt-1"/><b>Alcance:</b>
+          <b-form-input class="col-3 ml-2" type="number" no-wheel size="sm" v-model="alcance"/>
         </p>
         </div>
         <small> Recordá que más adelante podrás consultar los datos proporcionados en la sección de búsqueda. </small>
         <div class="text-center mt-3">
-          <b-btn variant="success" :disabled="!nroExpediente1 || !nroExpediente2" @click="onSendFinalizar" >
-              Aceptar
-          </b-btn>
-        </div>
-      </div>
-      <div v-else>
-        <h3 class="text-success text-center"><b>Finalizar trámite</b></h3>
-        <p>El trámite será finalizado. El comercio será dado de baja, y se agregarán los documentos al expediente original. </p>
-        <small> Recordá que más adelante podrás consultar los datos proporcionados en la sección de búsqueda. </small>
-        <div class="text-center mt-3">
-          <b-btn variant="success" @click="onSendFinalizar" >
+          <b-btn variant="success" :disabled="!nroExpediente1 || !nroExpediente2 || !alcance" @click="onSendFinalizar" >
               Aceptar
           </b-btn>
         </div>
@@ -504,7 +498,7 @@
         </div>
         <small> Recordá que más adelante podrás consultar los datos proporcionados en la sección de búsqueda. </small>
         <div class="text-center mt-3">
-          <b-btn variant="success" :disabled="!nroExpediente1 || !nroExpediente2 || !alcance" @click="onSendFinalizar" >
+          <b-btn variant="success" :disabled="!nroExpediente1 || !nroExpediente2 || !alcance" @click="onSendAprobarRenovacion" >
               Aceptar
           </b-btn>
         </div>
@@ -777,6 +771,30 @@ export default {
       this.showApprove = true
     },
     async onSendAprobarBaja(){
+      const observaciones = this.habilitacion.observaciones || " "
+      const nroExpediente = "4124 - " + this.nroExpediente1 + "/" + this.nroExpediente2
+      const alcance = this.alcance
+      const habilitacion = {
+        status: 'Finalizada',
+        nroExpediente: nroExpediente,
+        alcance: alcance,
+        observaciones: observaciones + " - " + "Se finaliza la solicitud el " + new Date().toLocaleDateString('es-AR') + " " + new Date().toLocaleTimeString()
+      }
+      const id = this.habilitacion.id
+      const userToken = this.$store.state.user.token
+      await this.$store.dispatch('habilitaciones/update', {
+        id,
+        habilitacion,
+      })
+      this.wait(300)
+      this.habilitacion.status = habilitacion.status
+      this.showPrevApprove = false
+      if(this.baja){
+        this.showAprobarBaja = false
+      }
+      this.showApprove = true
+    },
+    async onSendAprobarRenovacion(){
       const observaciones = this.habilitacion.observaciones || " "
       const nroExpediente = "4124 - " + this.nroExpediente1 + "/" + this.nroExpediente2
       const alcance = this.alcance

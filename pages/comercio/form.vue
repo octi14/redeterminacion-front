@@ -183,8 +183,8 @@
       </b-form-group>
     </fieldset>
   </b-card>
-  <b-card no body class="col-8 mt-1 section-card" style="margin: 0px auto" v-if="solicitante.tipoSolicitud == 'Cambio de Titular'" >    
-    <div>
+  <b-card no-body class="col-8 mt-1 section-card" style="margin: 0px auto" v-if="solicitante.tipoSolicitud == 'Cambio de Titular'" >   
+    <fieldset> 
       <legend><h3>Datos del Titular Anterior</h3></legend>
       <b-row>
         <b-col lg="6">
@@ -217,7 +217,7 @@
           </b-form-group>
         </b-col>
       </b-row>
-    </div>
+    </fieldset>
   </b-card>
   <b-card no-body class="col-8 mt-1 section-card"  style="margin: 0px auto">
     <!-- Sección: Datos del inmueble -->

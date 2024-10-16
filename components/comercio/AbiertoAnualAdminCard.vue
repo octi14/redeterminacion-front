@@ -139,7 +139,7 @@
               <b-form-radio :id="'motivo-3-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="El documento no es legible."> El documento no es legible.</b-form-radio>
               <b-form-radio :id="'motivo-4-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="El documento no es una factura."> El documento no es una factura.</b-form-radio>
               <b-form-radio :id="'motivo-5-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="El contribuyente cambió de categoría tirbutaria."> El contribuyente cambió de categoría tributaria.</b-form-radio>
-
+              <b-form-radio :id="'motivo-6-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="La facturacion no es compatible con las reglamentaciones de AFIP."> La facturacion no es compatible con las reglamentaciones de AFIP.</b-form-radio>
             </b-radio-group></b-row>
       </b-card-text>
       <b-card-text v-else-if="estadoActual == 12" class="action-confirmation-card">

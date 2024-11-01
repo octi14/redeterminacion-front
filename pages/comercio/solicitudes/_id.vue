@@ -700,8 +700,11 @@ export default {
       this.showRectificacion = false
     },
     async onSendSolicitar(){
+      const observaciones = this.habilitacion.observaciones || ""
+
       const habilitacion = {
-        status: 'Esperando documentación'
+        status: 'Esperando documentación',
+        observaciones: observaciones + " - " + "Se solicita documentación el día " + new Date().toLocaleDateString('es-AR')
       }
       const id = this.habilitacion.id
       const userToken = this.$store.state.user.token
@@ -738,9 +741,13 @@ export default {
       this.showRestoreDefault = !this.showRestoreDefault
     },
     async onSendRestablecer(){
+
+      const observaciones = this.habilitacion.observaciones || ""
       const habilitacion = {
-        status: 'En revisión'
+        status: 'En revisión',
+        observaciones: observaciones + " - " + "Se restablece el trámite a 'En revisión' el día " + new Date().toLocaleDateString('es-AR')
       }
+
       const id = this.habilitacion.id
       const userToken = this.$store.state.user.token
       await this.$store.dispatch('habilitaciones/update', {

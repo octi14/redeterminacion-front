@@ -33,9 +33,20 @@
                 </b-row>
               </div>
           </div>
+          <div class="section-subtitle">
+              <div class="li-row">
+                <div class="li-icon border-b border-r">
+                  <b-icon-file-arrow-up font-scale="2" class="icon-orange"></b-icon-file-arrow-up>
+                </div>
+                <div class="li-content border-b">
+                    <p class="subtitle">CUIT: <b>{{ tramite ? tramite.cuit : "" }}</b></p>
+                    <p class="subtitle">Legajo comercial: <b>{{ tramite ? tramite.nroLegajo : "" }}</b></p>
+                </div>
+              </div>
+          </div>
           <b-col v-for="(periodo, index) in tramite.status" :key="index" cols="12" sm="8" md="6" lg="4" xl="4">
               <AbiertoAnualCard
-              :id="index" 
+              :id="index"
               :periodo="index"
               :estado="periodo"
               :fecha="tramite.fechasCarga[index]"
@@ -110,7 +121,7 @@ export default {
       font-size: 18px !important;
     }
   }
-  @media (max-width: 720px){    
+  @media (max-width: 720px){
     .section-subtitle{
       margin-left: 0 !important;
       margin-right: 0 !important;

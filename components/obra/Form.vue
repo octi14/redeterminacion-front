@@ -1,11 +1,7 @@
 <template>
   <div>
-    <div class="card shadow-card col-md-8 col-sm-12 mx-auto" style="color: black">
-      <div class="text-center mt-3">
-        <strong class="h4 text-center my-3 text-primary"><b> Editar obra </b></strong>
-      </div>
-      <b-form
-        class="my-4" style="margin-left:10px;margin-right:10px"
+    <div class="mx-auto" style="color: black">
+      <b-form style="margin-left:10px;margin-right:10px"
         @submit.stop.prevent="onSubmit"
         @reset.stop.prevent="onResetForm"
       >

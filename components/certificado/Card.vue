@@ -1,36 +1,25 @@
 <template>
-  <div class="mx-auto">
-    <b-col class="text-center">
-      <b-button class="mx-auto" variant="info" @click="toggleShow">
-        {{ visible ? "Ocultar" : "Mostrar"}}
-      </b-button>
-      <b-card no-body class="certificado-card shadow-card mb-4 col-md-6 mx-auto text-center" v-if="visible && certificado">
-        <div class="row">
-          <NuxtLink v-if="!certificado.redeterminado" class="text-center col" :to="{ name: 'redeterminaciones-id', params: { id: certificado.id } }">
-            <b-button variant="success" class="my-1 col-sm-3" > Redeterminar  </b-button>
-          </NuxtLink>
-          <strong v-if="certificado.redeterminado" class="text-center col"> Redeterminado el {{ certificado.redeterminado }} </strong>
-          <b-dropdown variant="outline-primary">
-            <b-dropdown-item @click="eliminarRedet"> Eliminar redeterminación </b-dropdown-item>
-            <b-dropdown-item @click="eliminarCert" variant="danger"> Eliminar certificado </b-dropdown-item>
-          </b-dropdown>
-        </div>
-        <b-card-body class="col-md-12 text-center">
-          <b-form-group v-for="(_, index) in certificado.items" :key="index">
-            <strong class="h5 mx-auto"> Item {{ index + 1 }}: {{ certificado.items[index].item }}</strong>
-            <h6>Contratado: ${{ format(redondear(certificado.items[index].contratado)) }}</h6>
-            <h6 v-if="!obraUvi">Anticipo: ${{ format(redondear(certificado.items[index].anticipo)) }}</h6>
-            <h6>Avance: {{ certificado.items[index].avance }}%</h6>
-            <h6 v-if="!obraUvi">Saldo: ${{ format(redondear(certificado.items[index].saldo)) }}</h6>
-            <h6 v-else>Saldo: ${{ format(redondear((certificado.items[index].contratado - certificado.items[index].anticipo) * (certificado.items[index].avance/100))) }}</h6>
-            <strong v-if="certificado.redeterminado && redet && redet.items && redet.items[index] !== undefined">
-              Saldo redeterminado: ${{ format(redondear(totalRedet(redet.items[index]))) }}
-            </strong>
-          </b-form-group>
-        </b-card-body>
-      </b-card>
-    </b-col>
-  </div>
+  <!-- Modal del Certificado con tabla de detalles -->
+  <b-modal v-model="visible" title="Detalles del Certificado" header-bg-variant="info" @hide="closeModal" size="xl">
+    <div v-if="certificado">
+      <div class="text-center mb-3">
+        <NuxtLink v-if="!certificado.redeterminado" :to="{ name: 'redeterminaciones-id', params: { id: certificado.id } }">
+          <b-button variant="success">Redeterminar</b-button>
+        </NuxtLink>
+        <strong v-else>Redeterminado el {{ certificado.redeterminado }}</strong>
+
+        <b-dropdown variant="outline-primary" class="text-center mb-3">
+          <b-dropdown-item @click="eliminarRedet">Eliminar redeterminación</b-dropdown-item>
+          <b-dropdown-item @click="eliminarCert" variant="danger">Eliminar certificado</b-dropdown-item>
+        </b-dropdown>
+      </div>
+      <!-- Tabla de detalles del certificado -->
+      <b-table :items="tableItems" :fields="tableFields" striped hover responsive class="mt-3"></b-table>
+    </div>
+    <template #modal-footer>
+      <b-button variant="secondary" @click="closeModal">Cerrar</b-button>
+    </template>
+  </b-modal>
 </template>
 
 <script>
@@ -51,8 +40,16 @@ export default {
   },
   data() {
     return {
-      visible: false,
+      visible: true,
       obraUvi: false,
+      tableFields: [
+        { key: 'item', label: 'Item' },
+        { key: 'contratado', label: 'Contratado ($)' },
+        { key: 'anticipo', label: 'Anticipo ($)' },
+        { key: 'avance', label: 'Avance' },
+        { key: 'saldo', label: 'Saldo ($)' },
+        { key: 'saldoRedeterminado', label: 'Saldo Redeterminado ($)' }
+      ]
     }
   },
   async fetch() {
@@ -65,6 +62,24 @@ export default {
     adminHacienda(){
       return this.$store.state.user.admin == "hacienda"
     },
+    tableItems() {
+      return this.certificado.items.map((item, index) => ({
+        item: `Item ${index + 1}: ${item.item}`,
+        contratado: this.format(this.redondear(item.contratado)),
+        anticipo: !this.obraUvi ? this.format(this.redondear(item.anticipo)) : '-',
+        avance: `${item.avance}%`,
+        saldo: this.format(
+          this.redondear(
+            this.obraUvi
+              ? (item.contratado - item.anticipo) * (item.avance / 100)
+              : item.saldo
+          )
+        ),
+        saldoRedeterminado: this.certificado.redeterminado && this.redet?.items[index] !== undefined
+          ? this.format(this.redondear(this.totalRedet(this.redet.items[index])))
+          : '-'
+      }));
+    }
   },
   methods: {
     redondear(numero) {
@@ -154,6 +169,10 @@ export default {
           solid: true,
         })
       }
+    },
+    closeModal() {
+      this.visible = false;
+      this.$emit('close');
     },
   },
 }

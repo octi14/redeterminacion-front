@@ -1,8 +1,7 @@
 <template>
   <div class="page">
-    <div class="card shadow-card col-8 mx-auto">
-      <div class="container my-3 col-md-9">
-        <h4>Asignar certificado a esta obra</h4>
+    <div class="mx-auto">
+      <div class="container my-3">
         <b-form class="my-1"
         @submit.stop.prevent="onSubmit"
         @reset.stop.prevent="onResetForm">

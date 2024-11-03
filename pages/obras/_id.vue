@@ -17,21 +17,22 @@
                 </div>
               </div>
             </div>
-            <ObraForm
-              v-show="editing"
-              :obra="obra"
-              @submit="onSubmitEditObra"
-              @reset="editing = false"/>
-            <CertificadoForm
-              v-show="adding"
-              :obra="obra"
-              @submit="onSubmitCreateCertif"/>
+
+            <b-modal size="lg" v-model="editing" header-bg-variant="info" hide-footer title="Editar Obra">
+              <ObraForm :obra="obra" @submit="onSubmitEditObra" @reset="editing = false"/>
+            </b-modal>
+            <b-modal header-bg-variant="info" hide-footer v-model="adding" title="Asignar certificado a esta obra">
+              <CertificadoForm
+                :obra="obra"
+                @submit="onSubmitCreateCertif"/>
+            </b-modal>
             <CertificadoFeed
               v-show="watchingCertif"
               :obra="obra"/>
-            <ObraProgress class="mx-auto"
-              v-show="watchingProgress"
-              :obra="obra"/>
+            <b-modal id="obraProgressModal" v-model="watchingProgress" header-bg-variant="info" title="Avance de la Obra" size="lg" hide-footer>
+              <ObraProgress class="mx-auto" :obra="obra"/>
+            </b-modal>
+
             <!-- Body -->
             <div class="card shadow-card col-md-6 col-sm-12 mx-auto" v-if="!adding && !editing">
               <div class="col-12 mx-auto mt-3 mb-4">
@@ -221,9 +222,9 @@ export default {
           action: this.onShowCertif
         },
         {
-          variant: "success",
-          label: this.$data.watchingProgress ? "Ocultar avance" : "Ver avance",
-          action: this.mostrarAvance
+          variant: this.watchingProgress ? "danger" : "success",
+          label: this.watchingProgress ? "Ocultar avance" : "Ver avance",
+          action: this.toggleProgress
         },
         {
           variant: "success",
@@ -289,8 +290,8 @@ export default {
     onShowCertif() {
       this.watchingCertif = !this.watchingCertif
     },
-    async mostrarAvance() {
-      this.watchingProgress = !this.watchingProgress
+    toggleProgress() {
+      this.watchingProgress = !this.watchingProgress;
     },
     async onSubmitEditObra({ obra }) {
       try {

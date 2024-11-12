@@ -5,6 +5,7 @@
         <div class="mx-auto" style="text-align:center">
           <p>2024 - Municipalidad de Villa Gesell  </p>
           <p> <b-icon-telephone scale="0.9"/> Depto. Comercio: (02255) 478056 | Depto. Inspección: (02255) 478053</p>
+          <p> Sec. Hacienda: (02255) 478073</p>
           <p> <small> Sitio desarrollado por el Depto. Modernización del Estado - ARVIGE  </small></p>
         </div>
 

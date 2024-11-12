@@ -1,23 +1,23 @@
 <template>
-  <div class="certificado-feed">
-    <!-- <b-nav-text class="fs-5" variant="primary" align="center"> Obras públicas </b-nav-text> -->
-    <div class="mx-auto col" v-if="certificados">
-      <div
-        v-for="(_, index) in certificados"
-        :key="index"
-      >
-      <strong class="row my-2 h6 justify-content-center"> Certificado {{index + 1}} </strong>
-        <CertificadoCard :certificado="certificados[index]" :obra="obra" :redet="redets[index]" class="row" />
+  <div class="certificado-feed mx-auto col">
+    <div v-if="certificados">
+      <div v-for="(_, index) in certificados" :key="index" class="my-2 text-center">
+        <b-button @click="openModal(index)" variant="info" class="col-3 mx-auto">
+          Certificado {{ index + 1 }}
+        </b-button>
       </div>
-      <!-- <div class="table-responsive col-md-12" v-for="table in tables" :key="table.id">
-        <b-table hover head-variant="dark" :items="items" :fields="fields"></b-table>
-      </div> -->
-      <!-- <template slot="actions" slot-scope="data">
-        <b-button class="btn btn-dark" @click="update(data)" :ref="'btn' + data.index">Update</b-button>
-      </template> -->
+
+      <!-- Modal de Certificado -->
+      <CertificadoCard
+        v-if="selectedCertificado !== null"
+        :certificado="certificados[selectedCertificado]"
+        :obra="obra"
+        :redet="redets[selectedCertificado]"
+        @close="closeModal"
+      />
     </div>
     <div v-else>
-      <h6> No hay certificados para mostrar </h6>
+      <h6>No hay certificados para mostrar</h6>
     </div>
   </div>
 </template>
@@ -35,6 +35,7 @@ export default {
       lastLength: false,
       items: [],
       redets: [],
+      selectedCertificado: null, // Índice del certificado seleccionado
     }
   },
   async fetch() {
@@ -66,6 +67,12 @@ export default {
   methods: {
     loadMore() {
       this.$fetch()
+    },
+    openModal(index) {
+      this.selectedCertificado = index;
+    },
+    closeModal() {
+      this.selectedCertificado = null;
     },
   },
 }

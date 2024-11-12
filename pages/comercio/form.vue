@@ -35,6 +35,7 @@
           <b-form-select-option value="Baja">Baja de comercio</b-form-select-option>
           <b-form-select-option value="Renovación">Renovación de comercio</b-form-select-option>
           <b-form-select-option value="Reempadronamiento">Reempadronamiento de comercio</b-form-select-option>
+          <b-form-select-option value="Cambio de Titular">Cambio de Titular</b-form-select-option>
           <!-- Agrega más opciones según sea necesario -->
         </b-form-select>
       </b-form-group>
@@ -170,9 +171,9 @@
     </b-row>
     <!-- Sección: Datos del Apoderado -->
     <fieldset v-if="solicitante.esApoderado === 'true'">
-        <p>En este campo deberás cargar <span v-if="solicitante.tipoSolicitud == 'Habilitación' || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">la <a href="https://drive.google.com/file/d/1m5ouibBL4sWokhkSR5keTjbUVo-I4TOU/view" target="_blank" class="external-link">Planilla de autorización de trámite</a> o </span>el Poder autorizado por escribano que te indicamos que completes previamente.</p>
+        <p>En este campo deberás cargar <span v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">la <a href="https://drive.google.com/file/d/1m5ouibBL4sWokhkSR5keTjbUVo-I4TOU/view" target="_blank" class="external-link">Planilla de autorización de trámite</a> o </span>el Poder autorizado por escribano que te indicamos que completes previamente.</p>
         <b-form-group v-if="solicitante.esApoderado === 'true'" >
-          <label for="documentos.planillaAutorizacion.contenido" v-if="solicitante.tipoSolicitud == 'Habilitación' || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">Planilla de autorización de trámite *</label>
+          <label for="documentos.planillaAutorizacion.contenido" v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">Planilla de autorización de trámite *</label>
           <label for="documentos.planillaAutorizacion.contenido" v-else>Poder Autorizado por Escribano *</label>
 
         <b-form-file v-model="documentos.planillaAutorizacion.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('planillaAutorizacion')" @change="checkDocumentSize('planillaAutorizacion', $event)" @input="clearFormFieldState('planillaAutorizacion')"></b-form-file>
@@ -182,11 +183,47 @@
       </b-form-group>
     </fieldset>
   </b-card>
+  <b-card no-body class="col-8 mt-1 section-card" style="margin: 0px auto" v-if="solicitante.tipoSolicitud == 'Cambio de Titular'" >   
+    <fieldset> 
+      <legend><h3>Datos del Titular Anterior</h3></legend>
+      <b-row>
+        <b-col lg="6">
+          <b-form-group>
+            <label for="documentos.dniAnteriorFrente.contenido">DNI del titular anterior (Frente) *</label>
+            <b-form-file v-model="documentos.dniAnteriorFrente.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('dniAnteriorFrente')" @change="checkDocumentSize('dniAnteriorFrente', $event)" @input="clearFormFieldState('dniAnteriorFrente')"></b-form-file>
+            <div v-if="$v.documentos.dniAnteriorFrente.contenido.$error || fileTooLargeError.dniAnteriorFrente" class="validation-error">
+              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.dniAnteriorFrente || 'Debe seleccionar un archivo.' }}
+            </div>
+          </b-form-group>
+        </b-col>
+        <b-col lg="6">
+          <b-form-group>
+            <label for="documentos.dniAnteriorDorso.contenido">DNI del titular anterior (Dorso) *</label>
+            <b-form-file v-model="documentos.dniAnteriorDorso.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('dniAnteriorDorso')" @change="checkDocumentSize('dniAnteriorDorso', $event)" @input="clearFormFieldState('dniAnteriorDorso')"></b-form-file>
+            <div v-if="$v.documentos.dniAnteriorDorso.contenido.$error || fileTooLargeError.dniAnteriorDorso" class="validation-error">
+              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.dniAnteriorDorso || 'Debe seleccionar un archivo.' }}
+            </div>
+          </b-form-group>
+        </b-col>
+      </b-row>      
+      <b-row>
+        <b-col lg="12">
+          <b-form-group>
+            <label for="documentos.constanciaCambioTitular.contenido">Constancia de Conformidad de Cambio de Titularidad * <b-icon-question-circle-fill @click="openPopup('CertificadoCambioTitular')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
+            <b-form-file v-model="documentos.constanciaCambioTitular.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('constanciaCambioTitular')" @change="checkDocumentSize('constanciaCambioTitular', $event)" @input="clearFormFieldState('constanciaCambioTitular')"></b-form-file>
+            <div v-if="$v.documentos.constanciaCambioTitular.contenido.$error || fileTooLargeError.constanciaCambioTitular" class="validation-error">
+              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.constanciaCambioTitular || 'Debe seleccionar un archivo.' }}
+            </div>
+          </b-form-group>
+        </b-col>
+      </b-row>
+    </fieldset>
+  </b-card>
   <b-card no-body class="col-8 mt-1 section-card"  style="margin: 0px auto">
     <!-- Sección: Datos del inmueble -->
     <fieldset >
       <legend><h3>Datos del Inmueble</h3></legend>
-      <b-row v-if="solicitante.tipoSolicitud == 'Baja' || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">
+      <b-row v-if="solicitante.tipoSolicitud == 'Baja' || solicitante.tipoSolicitud == 'Cambio de Titular' || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">
         <b-col lg="12" md="12">
           <b-form-group label="Nro de Legajo *" label-for="nroLegajo" >
               <b-form-input id="nroLegajo" v-model="nroLegajo" no-wheel></b-form-input>
@@ -229,7 +266,7 @@
       </b-row>
       <b-row >
         <b-col lg="12" md="12">
-        <div v-if="solicitante.tipoSolicitud == 'Habilitación'  || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">
+        <div v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular')  || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">
           <b-form-group label="Describí brevemente la actividad a realizar (En caso de no encontrar un rubro que represente con precisión la misma)" label-for="nombre-fantasia" >
             <b-form-textarea id="descripcionRubro" v-model="inmueble.descripcionRubro">
             </b-form-textarea>
@@ -263,7 +300,7 @@
       <b-form-group label="Nombre de Fantasía (En caso de que lo posea)" label-for="nombre-fantasia" >
         <b-form-input id="nombre-fantasia" v-model="inmueble.nombreFantasia"></b-form-input>
       </b-form-group>
-    <fieldset  v-if="isHoteleria && (solicitante.tipoSolicitud=='Habilitación' || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento'))" key="rubro-h">
+    <fieldset  v-if="isHoteleria && ((solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento'))" key="rubro-h">
       <h5>Servicios exclusivos del rubro {{inmueble.rubro}} *</h5>
       <p>Seleccioná los servicios que brinda tu establecimiento:</p>
 
@@ -282,7 +319,7 @@
         </div>
       </b-form-group>
     </fieldset>
-      <b-form-group v-if="rubroSeleccionado.croquis === true && isHoteleria && (solicitante.tipoSolicitud=='Habilitación' || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento'))" label-for="documentos.croquis" >
+      <b-form-group v-if="rubroSeleccionado.croquis === true && isHoteleria && ((solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento'))" label-for="documentos.croquis" >
         <label for="croquis">Croquis <i>(en casos en que hay más de una parcela para uso de la actividad comercial y las mismas no se hallan reunidas por plano de mensura y unificación o reunidas de oficio)</i></label>
         <b-form-file v-model="documentos.croquis.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('croquis')"
         @change="checkDocumentSize('croquis', $event)"
@@ -291,8 +328,8 @@
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.croquis }}
         </div>
       </b-form-group>
-      <b-form-group v-if="rubroSeleccionado.croquis === true && !isHoteleria && (solicitante.tipoSolicitud=='Habilitación' || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento'))" label-for="documentos.croquis" >
-        <label for="croquis">Croquis <span v-if="solicitante.tipoSolicitud=='Habilitación'">*</span></label>
+      <b-form-group v-if="rubroSeleccionado.croquis === true && !isHoteleria && ((solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento'))" label-for="documentos.croquis" >
+        <label for="croquis">Croquis <span v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular')">*</span></label>
         <b-form-file v-model="documentos.croquis.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('croquis')"
         @change="checkDocumentSize('croquis', $event)"
         @input="clearFormFieldState('croquis')"></b-form-file>
@@ -300,7 +337,7 @@
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.croquis || 'Debe seleccionar un archivo.' }}
         </div>
       </b-form-group>
-    <fieldset  v-if="solicitante.tipoSolicitud=='Habilitación' || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">
+    <fieldset  v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">
        <b-row>
               <b-col lg="5" md="8" sm="7">
                 <h5>Uso de espacio público</h5>
@@ -354,7 +391,7 @@
           </b-form-group>
         </b-col>
       </b-row>
-      <b-form-group v-if="solicitante.tipoSolicitud=='Habilitación'">
+      <b-form-group v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular')">
         <label for="constanciaCuit" class="rubro-label">Constancia de CUIT actualizada / Inscripción a AFIP * <b-icon-question-circle-fill @click="openPopup('ConstanciaCUIT')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
         <b-form-file v-model="documentos.constanciaCuit.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
         accept=".pdf, image/*"  :state="getFormFieldState('constanciaCuit')"
@@ -364,7 +401,7 @@
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.constanciaCuit || 'Debe seleccionar un archivo.' }}
         </div>
       </b-form-group>
-      <b-form-group v-if="solicitante.tipoSolicitud=='Habilitación' || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">
+      <b-form-group v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">
         <label for="constanciaIngresosBrutos" class="rubro-label">Constancia de inscripción a Ingresos Brutos * <b-icon-question-circle-fill @click="openPopup('ConstanciaIngresosBrutos')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
         <b-form-file v-model="documentos.constanciaIngresosBrutos.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('constanciaIngresosBrutos')"
         @change="handleDocumentUpdate('constanciaIngresosBrutos'); checkDocumentSize('constanciaIngresosBrutos', $event)"
@@ -393,7 +430,7 @@
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.constanciaAFIP || 'Debe seleccionar un archivo.' }}
         </div>
       </b-form-group>
-      <b-form-group v-if="solicitante.tipoSolicitud=='Habilitación' || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">
+      <b-form-group v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">
         <label for="certificadoDomicilio" class="rubro-label">Certificado de domicilio Ingresos Brutos * <b-icon-question-circle-fill @click="openPopup('certificadoDomicilio')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
         <b-form-file v-model="documentos.certificadoDomicilio.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('certificadoDomicilio')"
         @change="handleDocumentUpdate('certificadoDomicilio'); checkDocumentSize('certificadoDomicilio', $event)"
@@ -422,7 +459,7 @@
         </div>
       </b-form-group>
       <b-form-group >
-        <label v-if="solicitante.tipoSolicitud=='Habilitación' || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')" for="tituloPropiedad"><span v-if="solicitante.tipoSolicitud != 'Renovación' && solicitante.tipoSolicitud != 'Reempadronamiento'">Escritura traslativa de Dominio del inmueble /</span> Contrato de locación / Otro. <span v-if="solicitante.tipoSolicitud != 'Reempadronamiento'">*</span><i v-else>(Sólo en caso que presente modificaciones desde la fecha en que se extendió el certificado de habilitación original)</i></label>
+        <label v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')" for="tituloPropiedad"><span v-if="solicitante.tipoSolicitud != 'Renovación' && solicitante.tipoSolicitud != 'Reempadronamiento'">Escritura traslativa de Dominio del inmueble /</span> Contrato de locación / Otro. <span v-if="solicitante.tipoSolicitud != 'Reempadronamiento'">*</span><i v-else>(Sólo en caso que presente modificaciones desde la fecha en que se extendió el certificado de habilitación original)</i></label>
         <label v-if="solicitante.tipoSolicitud=='Baja'" for="tituloPropiedad"><span v-if="solicitante.tipoSolicitud != 'Renovación' && solicitante.tipoSolicitud != 'Reempadronamiento'"> Escritura traslativa de Dominio del inmueble / </span>Contrato de locación / Boleto de Compraventa. <span v-if="!solicitante.esTitular && solicitante.esPropietario">* </span></label>
         <b-form-file v-model="documentos.tituloPropiedad.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
         accept=".pdf, image/*"  :state="getFormFieldState('tituloPropiedad')"
@@ -432,8 +469,23 @@
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.tituloPropiedad || 'Debe seleccionar un archivo.' }}
         </div>
       </b-form-group>
-      <b-form-group v-if="solicitante.tipoSolicitud=='Habilitación' || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">
-        <label for="plano" class="rubro-label">Plano o Informe técnico <span v-if="solicitante.tipoSolicitud=='Habilitación'">. *</span><span v-if="(solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')"><i>(En caso de continuar en trámite)</i>.</span> <b-icon-question-circle-fill @click="openPopup('plano')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
+      <b-row v-if="solicitante.tipoSolicitud == 'Cambio de Titular'">
+        <b-col lg="6" md="8" sm="7">
+          <h5>¿Se hicieron modificaciones al plano?</h5>
+        </b-col>
+        <b-form-group label="" label-for="esModificacionesPlano" style="margin:auto 0">
+          <div class="form-check-inline">
+            <b-col lg="3" sm="3">
+              <b-form-radio  id="esModificacionesPlano-no" v-model="solicitante.esModificacionesPlano" name="radio-esModificacionesPlano" checked="checked" value="false"> No</b-form-radio>
+            </b-col>
+            <b-col lg="3" sm="2">
+              <b-form-radio  id="esModificacionesPlano-si" v-model="solicitante.esModificacionesPlano" name="radio-esModificacionesPlano" value="true"> Sí</b-form-radio>
+            </b-col>
+          </div>
+        </b-form-group>
+      </b-row>
+      <b-form-group v-if="solicitante.tipoSolicitud == 'Habilitación' || (solicitante.tipoSolicitud == 'Cambio de Titular' && solicitante.esModificacionesPlano=='true') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">
+        <label for="plano" class="rubro-label">Plano o Informe técnico <span v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular')">. *</span><span v-if="(solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')"><i>(En caso de continuar en trámite)</i>.</span> <b-icon-question-circle-fill @click="openPopup('plano')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
         <b-form-file v-model="documentos.plano.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*"  :state="getFormFieldState('plano')"
         @change="handleDocumentUpdate('plano'); checkDocumentSize('plano', $event)"
         @input="clearFormFieldState('plano')"></b-form-file>
@@ -667,6 +719,20 @@
     <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>Podés solicitarlo enviando un correo electrónico a <a href="mailto:deptocomercio@gesell.gob.ar" target="_blank" >deptocomercio@gesell.gob.ar</a>, indicando <b>número de legajo comercial</b> y <b>nombre del titular de la habilitación</b>.</p>
   </div>
 </b-modal>
+<b-modal v-model="showPopupConstanciaCambioTitular" title="Constancia de Conformidad de Cambio de Titularidad firmada por el anterior Titular" :hide-footer="true" @click-outside="showPopupConstanciaCambioTitular = false" :header-bg-variant="'success'"  centered>
+  <template #modal-header>
+    <div class="modal-info">
+      <h5>
+          <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
+          Información Adicional
+      </h5>
+    </div>
+    <button type="button" aria-label="Close" class="close" @click="showPopupConstanciaCambioTitular = false">×</button>
+  </template>
+  <div class="modal-info">
+    <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>Podés descargar la planilla de la constancia de conformidad haciendo <a href="https://drive.google.com/file/d/1T0tLmahWr8YZ5q_XqV9_RPAkDGyXQ-wo/view" target="_blank" class="external-link">click acá</a>.</p>
+  </div>
+</b-modal>
 <b-modal v-model="showPopupPlano" title="" :hide-footer="true" @click-outside="showPopupPlano = false" :header-bg-variant="'success'"  centered>
   <template #modal-header>
     <div class="modal-info">
@@ -764,7 +830,7 @@ export default {
   validations() {
     return {
       nroLegajo: { requiredIf: requiredIf(function () {
-        return (this.solicitante.tipoSolicitud == 'Baja' || this.solicitante.tipoSolicitud == 'Renovación' || this.solicitante.tipoSolicitud == 'Reempadronamiento') }) , numeric, maxLength: maxLength(6),  minLength: minLength(4) },
+        return (this.solicitante.tipoSolicitud == 'Baja' || this.solicitante.tipoSolicitud == 'Renovación' || this.solicitante.tipoSolicitud == 'Reempadronamiento' || this.solicitante.tipoSolicitud == 'Cambio de Titular') }) , numeric, maxLength: maxLength(6),  minLength: minLength(4) },
       solicitante: {
         nombre: { required },
         apellido: { required },
@@ -778,10 +844,10 @@ export default {
         mail: { required, email },
         mail2: { required, email, sameAs: sameAs( function(){return this.solicitante.mail } ) },
         esPropietario: { requiredIfAtLeastOneChecked: (value) => {
-            return value || this.solicitante.esTitular || this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Renovación' || this.solicitante.tipoSolicitud === 'Reempadronamiento';
+            return value || this.solicitante.esTitular || (this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Titular') || this.solicitante.tipoSolicitud === 'Renovación' || this.solicitante.tipoSolicitud === 'Reempadronamiento';
           } },
         esTitular: { requiredIfAtLeastOneChecked: (value) => {
-            return value || this.solicitante.esPropietario || this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Renovación' || this.solicitante.tipoSolicitud === 'Reempadronamiento';
+            return value || this.solicitante.esPropietario || (this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Titular') || this.solicitante.tipoSolicitud === 'Renovación' || this.solicitante.tipoSolicitud === 'Reempadronamiento';
           } },
       },
       inmueble: {
@@ -799,7 +865,7 @@ export default {
                 break; // Termina la iteración si encuentra al menos uno seleccionado
               }
             }
-            return alMenosUnoSeleccionado || !this.isHoteleria || !(this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Renovación' || this.solicitante.tipoSolicitud === 'Reempadronamiento');
+            return alMenosUnoSeleccionado || !this.isHoteleria || !((this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Titular') || this.solicitante.tipoSolicitud === 'Renovación' || this.solicitante.tipoSolicitud === 'Reempadronamiento');
           }
         },
         otrosServicios: { requiredIf: requiredIf(function () {
@@ -830,6 +896,12 @@ export default {
         //Validaciones compartidas
         dniFrente: { contenido:{ required} },
         dniDorso: { contenido:{ required} },
+        dniAnteriorFrente: { contenido:{ requiredIf: requiredIf(function () {
+          return this.solicitante.tipoSolicitud === 'Cambio de Titular' })} },
+        dniAnteriorDorso: { contenido:{ requiredIf: requiredIf(function () {
+          return this.solicitante.tipoSolicitud === 'Cambio de Titular' })} },
+        constanciaCambioTitular: { contenido:{ requiredIf: requiredIf(function () {
+          return this.solicitante.tipoSolicitud === 'Cambio de Titular' })} },
         libreDeudaUrbana: { contenido:{ required} },
         planillaAutorizacion: { contenido:{requiredIf: requiredIf(function () {
           return this.solicitante.esApoderado === 'true' })}},
@@ -837,19 +909,19 @@ export default {
           return this.solicitante.esPersonaJuridica === 'true' })}},
         //Validaciones exclusivas de Habilitación
         constanciaCuit: { contenido:{requiredIf: requiredIf(function () {
-          return (this.solicitante.tipoSolicitud === 'Habilitación') }) } },
+          return ((this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Titular')) }) } },
         constanciaIngresosBrutos: { contenido:{requiredIf: requiredIf(function () {
-          return (this.solicitante.tipoSolicitud === 'Habilitación'|| this.solicitante.tipoSolicitud === 'Renovación' || this.solicitante.tipoSolicitud === 'Reempadronamiento') }) } },
+          return ((this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Titular')|| this.solicitante.tipoSolicitud === 'Renovación' || this.solicitante.tipoSolicitud === 'Reempadronamiento') }) } },
         certificadoDomicilio: { contenido:{requiredIf: requiredIf(function () {
-          return (this.solicitante.tipoSolicitud === 'Habilitación'|| this.solicitante.tipoSolicitud === 'Renovación' || this.solicitante.tipoSolicitud === 'Reempadronamiento') }) }
+          return ((this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Titular')|| this.solicitante.tipoSolicitud === 'Renovación' || this.solicitante.tipoSolicitud === 'Reempadronamiento') }) }
         },
         libreDeudaSegHig: { contenido:{requiredIf: requiredIf(function () {
           return (this.solicitante.tipoSolicitud === 'Renovación' || this.solicitante.tipoSolicitud === 'Baja' || this.solicitante.tipoSolicitud === 'Reempadronamiento') }) }
         },
         plano: { contenido:{requiredIf: requiredIf(function () {
-          return (this.solicitante.tipoSolicitud === 'Habilitación') }) }},
+          return ((this.solicitante.tipoSolicitud === 'Habilitación' || (this.solicitante.tipoSolicitud === 'Cambio de Titular' && this.solicitante.esModificacionesPlano === 'true'))) }) }},
         croquis: { contenido:{requiredIf: requiredIf(function () {
-          return this.rubroSeleccionado.croquis && !this.isHoteleria && (this.solicitante.tipoSolicitud === 'Habilitación') })}},
+          return this.rubroSeleccionado.croquis && !this.isHoteleria && ((this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Titular')) })}},
 
         //Validaciones exclusivas de Baja
         libreDeudaIB: { contenido:{ requiredIf: requiredIf(function () {
@@ -862,7 +934,7 @@ export default {
 
         //Validaciones con varias condiciones
         tituloPropiedad: { contenido:{ requiredIf: requiredIf(function () {
-          return (this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Renovación') || (
+          return ((this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Titular') || this.solicitante.tipoSolicitud === 'Renovación') || (
             this.solicitante.tipoSolicitud === 'Baja' && this.solicitante.esPropietario && !this.solicitante.esTitular)
           }) }},
 
@@ -877,7 +949,7 @@ export default {
       captchaError: false,
       maxFileSize: 15 * 1024 * 1024, // 15MB in bytes,
       fileTooLargeError: {},
-      TEST_submit: false,
+      TEST_submit: true,
       listaRubros: rubros,
       rubroSeleccionado: {
         id: null,
@@ -914,6 +986,7 @@ export default {
         mail: '',
         esApoderado: false,
         esPersonaJuridica: false,
+        esModificacionesPlano: false,
         esTitular: false,
         esPropietario: false,
       },
@@ -957,6 +1030,18 @@ export default {
         },
         dniDorso:{
           nombreDocumento: 'DNI (Dorso)',
+          contenido: null
+        },
+        dniAnteriorFrente:{
+          nombreDocumento: 'DNI del titular anterior (Frente)',
+          contenido: null
+        },
+        dniAnteriorDorso:{
+          nombreDocumento: 'DNI del titular anterior (Dorso)',
+          contenido: null
+        },
+        constanciaCambioTitular:{
+          nombreDocumento: 'Constancia de Conformidad de Cambio de Titularidad firmada por el anterior Titular',
           contenido: null
         },
         constanciaCuit:{
@@ -1034,6 +1119,7 @@ export default {
       showPopupCertificadoDomicilio: false,
       showPopupConstanciaLibreDeudaIB: false,
       showPopupConstanciaLibreDeudaSegHig: false,
+      showPopupConstanciaCambioTitular: false,
       showPopupPlano: false,
       showPopupFormOk: false,
       showPopupFormLoading: false,
@@ -1075,12 +1161,12 @@ export default {
         return this.solicitante.nombre && this.solicitante.apellido && this.solicitante.dni && this.solicitante.cuit && this.solicitante.domicilioReal &&
               this.solicitante.telefono && this.solicitante.codigoPostal && this.solicitante.localidad && this.solicitante.provincia && this.solicitante.mail &&
               this.inmueble.localidad && this.inmueble.calle && this.inmueble.nro && this.inmueble.rubro && this.documentos.dniFrente && this.documentos.dniDorso &&
-              (this.documentos.constanciaCuit || this.solicitante.tipoSolicitud!='Habilitación' && this.solicitante.tipoSolicitud != 'Renovación' && this.solicitante.tipoSolicitud != 'Reempadronamiento') &&
+              (this.documentos.constanciaCuit || this.solicitante.tipoSolicitud != 'Habilitación' && this.solicitante.tipoSolicitud != 'Renovación' && this.solicitante.tipoSolicitud != 'Reempadronamiento' && this.solicitante.tipoSolicitud != 'Cambio de Titular') &&
               this.documentos.libreDeudaUrbana &&
               (this.documentos.libreDeudaSegHig || this.solicitante.tipoSolicitud!='Baja') &&
               (this.documentos.libreDeudaIB || this.solicitante.tipoSolicitud!='Baja') &&
-              (this.documentos.tituloPropiedad || this.solicitante.tipoSolicitud!='Habilitación' && this.solicitante.tipoSolicitud != 'Renovación' && this.solicitante.tipoSolicitud != 'Reempadronamiento') &&
-              (this.documentos.plano || this.solicitante.tipoSolicitud!='Habilitación' && this.solicitante.tipoSolicitud != 'Renovación' && this.solicitante.tipoSolicitud != 'Reempadronamiento') &&
+              (this.documentos.tituloPropiedad || this.solicitante.tipoSolicitud != 'Habilitación' && this.solicitante.tipoSolicitud != 'Renovación' && this.solicitante.tipoSolicitud != 'Reempadronamiento' && this.solicitante.tipoSolicitud != 'Cambio de Titular') &&
+              (this.documentos.plano || this.solicitante.tipoSolicitud != 'Habilitación' && this.solicitante.tipoSolicitud != 'Renovación' && this.solicitante.tipoSolicitud != 'Reempadronamiento' && this.solicitante.tipoSolicitud != 'Cambio de Titular') &&
               (this.documentos.constanciaAFIP || this.solicitante.tipoSolicitud != 'Renovación' && this.solicitante.tipoSolicitud != 'Reempadronamiento')
 
       }
@@ -1244,6 +1330,8 @@ export default {
         this.showPopupConstanciaLibreDeudaIB = true;
       }else if (type === 'ConstanciaLibreDeudaSegHig') {
         this.showPopupConstanciaLibreDeudaSegHig = true;
+      }else if (type === 'CertificadoCambioTitular') {
+        this.showPopupConstanciaCambioTitular = true;
       }
     },
     cancelForm(){
@@ -1541,7 +1629,7 @@ export default {
       //console.log('file.size: ' + file.size + '> this.maxFileSize: ' + this.maxFileSize);
        if (file && file.size > this.maxFileSize) {
         // El archivo excede el tamaño máximo permitido
-        this.fileTooLargeError[field] = 'Tu archivo pesa '+ file.size/1024/1024 + 'MB'+ ', superando el límite de peso permitido (' + this.maxFileSize/1024/1024 + 'MB'+ '). Reducilo y volvé a cargarlo.' ;
+        this.fileTooLargeError[field] = 'Tu archivo pesa '+ (file.size/1024/1024).toFixed(2) + 'MB'+ ', superando el límite de peso permitido (' + this.maxFileSize/1024/1024 + 'MB'+ '). Reducilo y volvé a cargarlo.' ;
         return;
       }else
       this.fileTooLargeError[field] = null

@@ -371,6 +371,9 @@ export default {
     .bi-check{
       vertical-align: top;
     }
+    .todos-correctos{
+      background-color: #FFF !important;
+    }
     .todos-correctos .subtitle{
       font-size: 2rem;
     }

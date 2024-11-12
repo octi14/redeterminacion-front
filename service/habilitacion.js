@@ -109,6 +109,11 @@ module.exports = {
       headers: { Authorization: `Bearer ${userToken}` },
     })
   },
+  descargarHabilitacion: async (axios, { id }) => {
+    return await axios.$get(`/habilitaciones/descargar/${id}`, {
+      responseType: 'blob',
+    });
+  },
 
   // searchFiles: async (
   //   axios,

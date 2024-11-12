@@ -51,10 +51,10 @@
           </div>
 
           <template v-if="todosCorrectos">
-            <div class="li-row DFE-card">
-              <b-row style="width:100%">
-                  <b-col md="2" style="padding-right: 0;">
-                    <b-icon-check-circle scale="3" variant="success" font-scale="3"></b-icon-check-circle>
+            <div class="li-row DFE-card todos-correctos">
+              <b-row style="width:100%; margin-top: 20px;">
+                  <b-col md="2" style="padding-right: 0; text-align: center;">
+                    <b-icon-check-circle variant="success" font-scale="8"></b-icon-check-circle>
                   </b-col>
                   <b-col v-if="maestro && maestro.dfe != '\r'" md="10" style="padding-left: 0;">
                       <p class="subtitle"><b>Tu solicitud de Abierto Anual fue aprobada.</b></p>
@@ -370,5 +370,11 @@ export default {
     }
     .bi-check{
       vertical-align: top;
+    }
+    .todos-correctos .subtitle{
+      font-size: 2rem;
+    }
+    .todos-correctos p{
+      font-size: 1.25rem;
     }
   </style>

@@ -31,16 +31,19 @@
       </div>
       <!--Botones-->
       <div class="row col-10 mx-auto justify-content-center" v-if="jefeComercio">
-        <b-button @click="onSolicitarDocumentacion" variant="success" pill class="btn-4 mt-3 mx-1" v-if="habilitacion.status === 'Inspeccionado'"> Solicitar documentación </b-button>
-        <b-button @click="onAprobarBaja" variant="success" pill class="btn-4 mt-3 mx-1" v-if="baja && (habilitacion.status === 'En revisión' || habilitacion.status === 'Rectificación')"> Aprobar solicitud </b-button>
-        <b-button @click="onAprobarSolicitud" variant="success" pill class="btn-4 mt-3 mx-1" v-if="!baja && habilitacion.status==='En revisión'"> Aprobar solicitud </b-button>
-        <b-button @click="onRectificacion" variant="secondary " pill class="btn-4 mt-3 mx-1" v-if="habilitacion.status === 'En revisión'"> Rectificación </b-button>
-        <b-button @click="onFinalizarSolicitud" variant="success" pill class="btn-4 mt-3 mx-1" v-if="(!renovacion && !reempadronamiento) && habilitacion.status === 'Esperando documentación'"> Finalizar solicitud </b-button>
-        <b-button @click="onFinalizarRenovacion" variant="success" pill class="btn-4 mt-3 mx-1" v-if="(renovacion || reempadronamiento) && habilitacion.status === 'Esperando documentación'"> Finalizar solicitud </b-button>
-        <b-button @click="onRestablecer" variant="secondary" pill class="btn-4 mt-3 mx-1" v-if="habilitacion.status != 'En revisión' && habilitacion.status != 'Rectificación'"> Volver a estado En Revisión </b-button>
-        <b-button @click="onRechazarSolicitud" pill class="btn-3 mt-3 mx-1"> Rechazar solicitud </b-button>
-        <b-button @click="onShowObservaciones" variant="primary" pill class="btn-2 mt-3 mx-1"> Ver observaciones </b-button>
+        <b-button @click="onSolicitarDocumentacion" variant="success" class="btn-4 mt-3 mx-1" v-if="habilitacion.status === 'Inspeccionado'"> Solicitar documentación </b-button>
+        <b-button @click="onAprobarBaja" variant="success" class="btn-4 mt-3 mx-1" v-if="baja && (habilitacion.status === 'En revisión' || habilitacion.status === 'Rectificación')"> Aprobar solicitud </b-button>
+        <b-button @click="onAprobarSolicitud" variant="success" class="btn-4 mt-3 mx-1" v-if="!baja && habilitacion.status==='En revisión'"> Aprobar solicitud </b-button>
+        <b-button @click="onRectificacion" variant="secondary " class="btn-4 mt-3 mx-1" v-if="habilitacion.status === 'En revisión'"> Rectificación </b-button>
+        <b-button @click="onFinalizarSolicitud" variant="success" class="btn-4 mt-3 mx-1" v-if="(!renovacion && !reempadronamiento) && habilitacion.status === 'Esperando documentación'"> Finalizar solicitud </b-button>
+        <b-button @click="onFinalizarRenovacion" variant="success" class="btn-4 mt-3 mx-1" v-if="(renovacion || reempadronamiento) && habilitacion.status === 'Esperando documentación'"> Finalizar solicitud </b-button>
+        <b-button @click="onRestablecer" variant="secondary" class="btn-4 mt-3 mx-1" v-if="habilitacion.status != 'En revisión' && habilitacion.status != 'Rectificación'"> Volver a estado En Revisión </b-button>
+        <b-button @click="onRechazarSolicitud" class="btn-3 mt-3 mx-1"> Rechazar solicitud </b-button>
+        <b-button @click="onShowObservaciones" variant="primary" class="btn-2 mt-3 mx-1"> Ver observaciones </b-button>
       </div>
+      <b-button @click="onDescargarHabilitacion" v-if="adminComercio || adminArvige || adminModernizacion" variant="success" class="btn-4 mt-3 mx-1">
+          <b-icon icon="download" class="mr-1"></b-icon> Descargar trámite
+      </b-button>
       <!--Datos del solicitante-->
       <b-card no-body class="container col-md-6 col-sm-8 shadow-card mt-4 mx-auto">
           <div class="col mx-auto">
@@ -554,6 +557,10 @@
 </template>
 
 <script>
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
+import * as XLSX from 'xlsx';
+
 export default {
   data() {
     return {
@@ -614,6 +621,12 @@ export default {
     },
     adminComercio(){
       return this.$store.state.user.admin == "comercio" || this.$store.state.user.admin == "master"
+    },
+    adminArvige(){
+      return this.$store.state.user.admin == "arvige" || this.$store.state.user.admin == "master"
+    },
+    adminModernizacion(){
+      return this.$store.state.user.admin == "modernizacion" || this.$store.state.user.admin == "master"
     },
     jefeComercio(){
       return (this.$store.state.user.username === "myriamalonso@gesell.gob.ar"
@@ -845,6 +858,87 @@ export default {
       this.observaciones = ''
       this.showRejectPopup = false
     },
+    async onDescargarHabilitacion() {
+      try {
+        const id = this.habilitacion.id;
+
+        // Obtenemos los datos y documentos de la habilitación del store
+        const habilitacion = this.habilitacion;
+        const documentos = this.documentos || {};
+
+        const zip = new JSZip();
+
+        // Convertir los datos de la habilitación a Excel
+        const datosHabilitacion = XLSX.utils.json_to_sheet([habilitacion]);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, datosHabilitacion, 'Datos_Habilitacion');
+        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+        zip.file('datos_habilitacion.xlsx', excelBuffer);
+
+        // Función para decodificar base64 y crear un buffer
+        const crearBufferDesdeBase64 = (base64Data) => {
+          const decodedData = atob(base64Data);
+          const arrayBuffer = new ArrayBuffer(decodedData.length);
+          const arrayBufferView = new Uint8Array(arrayBuffer);
+
+          for (let i = 0; i < decodedData.length; i++) {
+            arrayBufferView[i] = decodedData.charCodeAt(i);
+          }
+
+          return arrayBuffer;
+        };
+
+        // Función para obtener la extensión del archivo a partir del contentType
+        const obtenerExtension = (contentType) => {
+          switch (contentType) {
+            case 'application/pdf':
+              return '.pdf';
+            case 'image/jpeg':
+              return '.jpg';
+            case 'image/png':
+              return '.png';
+            case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+              return '.docx';
+            case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+              return '.xlsx';
+            // Añadir otros tipos de contenido según sea necesario
+            default:
+              return '';
+          }
+        };
+
+        // Añadir documentos al zip, reemplazando caracteres especiales y añadiendo extensión
+        Object.entries(documentos).forEach(([key, doc], index) => {
+          let { data, filename, contentType } = doc;
+
+          if (data) {
+            // Reemplazar caracteres que puedan causar problemas en nombres de archivo
+            filename = filename.replace(/[\/\\?%*:|"<>]/g, '_');
+
+            // Obtener la extensión del archivo
+            const extension = obtenerExtension(contentType);
+            const nombreConExtension = `${filename}${extension}`;
+
+            console.log(`Añadiendo documento ${index + 1}: ${nombreConExtension}`);
+
+            // Decodificar el contenido de Base64 a ArrayBuffer y añadirlo al zip
+            const buffer = crearBufferDesdeBase64(data);
+            zip.file(nombreConExtension, buffer, { binary: true });
+          } else {
+            console.warn(`El documento ${filename} no tiene contenido.`);
+          }
+        });
+
+        const nroTramite = this.habilitacion.nroTramite; // Cambiamos a nroTramite
+
+        // Generar y descargar el archivo zip
+        const zipContent = await zip.generateAsync({ type: 'blob' });
+        saveAs(zipContent, `Habilitacion_${nroTramite}.zip`);
+      } catch (error) {
+        console.error('Error al descargar la habilitación:', error);
+      }
+    },
+
     //ESTE openDocumento es la prueba fallida de Nico para abrir los docs como modales dentro de la misma pagina
     /*openDocumento(documento, nombreDocumento) {
       const decodedData = atob(documento.data);

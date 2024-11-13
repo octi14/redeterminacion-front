@@ -59,7 +59,20 @@ export const actions = {
     })
     return deleted
   },
+  async descargar({ commit }, { id }) {
+    try {
+      console.log("ID: " + id)
+      // Llamamos al servicio y retornamos la respuesta para que el componente maneje el blob
+      const response = await HabilitacionService.descargarHabilitacion(this.$axios, { id });
 
+      console.log("Response: " + response)
+      // Devolvemos la respuesta completa para que el componente se encargue del procesamiento
+      return response;
+    } catch (error) {
+      console.error('Error en la acción descargarHabilitacion:', error);
+      throw error; // Re-lanzamos el error para que el componente también pueda manejarlo si es necesario
+    }
+  },
 }
 
 export const mutations = {

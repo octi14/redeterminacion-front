@@ -1,71 +1,96 @@
 <template>
-    <div class="page main-background">
-        <Banner title="Comercio Abierto Anual"/>
-        <b-row v-if="tramite" class="page-body" align-h="center" style="width: 100%;">
-          <div class="section-subtitle">
+  <div class="page main-background">
+      <Banner title="Comercio Abierto Anual"/>
+      <b-row v-if="tramite" class="page-body" align-h="center" style="width: 100%;">
+          <div class="section-subtitle" v-if="!todosCorrectos">
               <div class="li-row">
-                <div class="li-icon border-b border-r">
-                  <b-icon-file-arrow-up font-scale="2" class="icon-orange"></b-icon-file-arrow-up>
-                </div>
-                <div class="li-content border-b">
-                    <p class="subtitle">Carga de documentación</p>
-                </div>
+                  <div class="li-icon border-b border-r">
+                      <b-icon-file-arrow-up font-scale="2" class="icon-orange"></b-icon-file-arrow-up>
+                  </div>
+                  <div class="li-content border-b">
+                      <p class="subtitle">Carga de documentación</p>
+                  </div>
               </div>
               <div class="li-row sangria">
-                <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
-                <div class="li-conent">Seleccioná el período que corresponda  y subí la factura del legajo comercial declarado.</div>
+                  <div class="li-icon">
+                      <b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill>
+                  </div>
+                  <div class="li-content">
+                      Seleccioná el período que corresponda y subí la factura del legajo comercial declarado.
+                  </div>
               </div>
               <div class="li-row DFE-card">
-                <b-row style="width:100%">
-                  <b-col md="2" style="padding-right: 0;">
-                    <b-icon-exclamation-circle variant="dark" font-scale="3"></b-icon-exclamation-circle>
-                  </b-col>
-                  <b-col v-if="maestro && maestro.dfe != '\r'" md="10" style="padding-left: 0;">
-                    <p class="subtitle"><b>Este comercio posee Domicilio Fiscal Electrónico (DFE).</b>  </p>
-                    <p class="">En caso de que la factura cargada sea incorrecta se te notificará el período de rectificación a través del Domicilio Fiscal Electrónico.<br />
-                    Si la carga no tiene errores no serás notificado/a y podrás verificarla ingresando tus datos en esta misma página.</p>
-                  </b-col>
-                  <b-col v-else md="10" style="padding-left: 0;">
-                    <p class="subtitle">Este comercio no posee Domicilio Fiscal Electrónico (DFE). Tramitalo enviando un mail a <a href="mailto:dirarvige@gesell.gob.ar" target="_blank">dirarvige@gesell.gob.ar</a></p>
-                    <p class="">En caso de que la factura cargada sea incorrecta se te notificará el período de rectificación a través del Domicilio Fiscal Electrónico.<br />
-                    en caso de no constituirlo deberás revisar periodicamente esta misma página para corroborar que la carga no tenga errores.</p>
-                  </b-col>
-                </b-row>
+                  <b-row style="width:100%">
+                      <b-col md="2" style="padding-right: 0;">
+                          <b-icon-exclamation-circle variant="dark" font-scale="3"></b-icon-exclamation-circle>
+                      </b-col>
+                      <b-col v-if="maestro && maestro.dfe != '\r'" md="10" style="padding-left: 0;">
+                          <p class="subtitle"><b>Este comercio posee Domicilio Fiscal Electrónico (DFE).</b></p>
+                          <p>En caso de que la factura cargada sea incorrecta se te notificará el período de rectificación a través del Domicilio Fiscal Electrónico.<br />
+                          Si la carga no tiene errores no serás notificado/a y podrás verificarla ingresando tus datos en esta misma página.</p>
+                      </b-col>
+                      <b-col v-else md="10" style="padding-left: 0;">
+                          <p class="subtitle">Este comercio no posee Domicilio Fiscal Electrónico (DFE). Tramitalo enviando un mail a <a href="mailto:dirarvige@gesell.gob.ar" target="_blank">dirarvige@gesell.gob.ar</a></p>
+                          <p>En caso de que la factura cargada sea incorrecta se te notificará el período de rectificación a través del Domicilio Fiscal Electrónico.<br />
+                          en caso de no constituirlo deberás revisar periódicamente esta misma página para corroborar que la carga no tenga errores.</p>
+                      </b-col>
+                  </b-row>
               </div>
           </div>
+
           <div class="section-subtitle">
               <div class="li-row">
-                <div class="li-icon border-b border-r">
-                  <b-icon-file-arrow-up font-scale="2" class="icon-orange"></b-icon-file-arrow-up>
-                </div>
-                <div class="li-content border-b">
-                    <p class="subtitle">CUIT: <b>{{ tramite ? tramite.cuit : "" }}</b></p>
-                    <p class="subtitle">Legajo comercial: <b>{{ tramite ? tramite.nroLegajo : "" }}</b></p>
-                </div>
+                  <div class="li-icon border-b border-r">
+                      <b-icon-file-arrow-up font-scale="2" class="icon-orange"></b-icon-file-arrow-up>
+                  </div>
+                  <div class="li-content border-b">
+                      <p class="subtitle">CUIT: <b>{{ tramite ? tramite.cuit : "" }}</b></p>
+                      <p class="subtitle">Legajo comercial: <b>{{ tramite ? tramite.nroLegajo : "" }}</b></p>
+                  </div>
               </div>
           </div>
-          <b-col v-for="(periodo, index) in tramite.status" :key="index" cols="12" sm="8" md="6" lg="4" xl="4">
-              <AbiertoAnualCard
-              :id="index"
-              :periodo="index"
-              :estado="periodo"
-              :fecha="tramite.fechasCarga[index]"
-              :observaciones="tramite && tramite.facturas[index] ? tramite.facturas[index].observaciones : null"
-              :DFE= "maestro && maestro.dfe != '\r'"
-              />
-          </b-col>
-        </b-row>
-        <b-row class="page-body" v-else>
+
+          <template v-if="todosCorrectos">
+            <div class="li-row DFE-card todos-correctos">
+              <b-row style="width:100%; margin-top: 20px;">
+                  <b-col md="2" style="padding-right: 0; text-align: center;">
+                    <b-icon-check-circle variant="success" font-scale="8"></b-icon-check-circle>
+                  </b-col>
+                  <b-col v-if="maestro && maestro.dfe != '\r'" md="10" style="padding-left: 0;">
+                      <p class="subtitle"><b>Tu solicitud de Abierto Anual fue aprobada.</b></p>
+                      <p>Esto significa que obtendrás el beneficio correspondiente en tu Tasa por Inspección de Seguridad e Higiene durante el año 2025.</p>
+                  </b-col>
+              </b-row>
+            </div>
+          </template>
+
+          <template v-else>
+              <b-col v-for="(periodo, index) in tramite.status" :key="index" cols="12" sm="8" md="6" lg="4" xl="4">
+                  <AbiertoAnualCard
+                      :id="index"
+                      :periodo="index"
+                      :estado="periodo"
+                      :fecha="tramite.fechasCarga[index]"
+                      :observaciones="tramite && tramite.facturas[index] ? tramite.facturas[index].observaciones : null"
+                      :DFE="maestro && maestro.dfe != '\r'"
+                  />
+              </b-col>
+          </template>
+      </b-row>
+
+      <b-row class="page-body" v-else>
           <b-col class="mx-auto col-4 card shadow-card m-5">
-            <b-icon-exclamation-circle variant="danger" class="mx-auto" style="margin-top: 10%;margin-bottom: 5%;" scale="2.5"/> <hr/>
-            <h5 class="text-center mt-4 mb-3"> <b>Hubo un error cargando las facturas.</b></h5>
-            <h6 class="text-center mb-5"> Por favor, volvé a iniciar el proceso de carga.</h6>
+              <b-icon-exclamation-circle variant="danger" class="mx-auto" style="margin-top: 10%;margin-bottom: 5%;" scale="2.5"/>
+              <hr/>
+              <h5 class="text-center mt-4 mb-3"> <b>Hubo un error cargando las facturas.</b></h5>
+              <h6 class="text-center mb-5"> Por favor, volvé a iniciar el proceso de carga.</h6>
           </b-col>
-        </b-row>
-        <div class="row justify-content-center my-4" style="width: 100%;">
+      </b-row>
+
+      <div class="row justify-content-center my-4" style="width: 100%;">
           <b-button variant="success" @click="volver">Volver</b-button>
-        </div>
-    </div>
+      </div>
+  </div>
 </template>
 
 <script>
@@ -90,6 +115,9 @@ export default {
     },
     maestro(){
       return this.$store.state.maestro.single[0]
+    },
+    todosCorrectos() {
+      return this.tramite.status.every(estado => estado === "Correcto")
     }
   },
   methods: {
@@ -342,5 +370,14 @@ export default {
     }
     .bi-check{
       vertical-align: top;
+    }
+    .todos-correctos{
+      background-color: #FFF !important;
+    }
+    .todos-correctos .subtitle{
+      font-size: 2rem;
+    }
+    .todos-correctos p{
+      font-size: 1.25rem;
     }
   </style>

@@ -14,6 +14,22 @@
           type="text"
         />
       </b-form-group>
+
+      <div class="row justify-content-center mb-3">
+        <div class="col text-center">
+          <p>Filtrar período 1</p>
+          <b-form-select v-model="selectedEstado1" :options="estadosArchivo" class="mx-2"/>
+        </div>
+        <div class="col text-center">
+          <p>Filtrar período 2</p>
+          <b-form-select v-model="selectedEstado2" :options="estadosArchivo" class="col mx-2"/>
+        </div>
+        <div class="col text-center">
+          <p>Filtrar período 3</p>
+          <b-form-select v-model="selectedEstado3" :options="estadosArchivo" class="col mx-2"/>
+        </div>
+      </div>
+
       <div class="row justify-content-center">
         <!-- <b-form-checkbox class="mx-3 mt-2" v-model="hideFinalizados">Ocultar finalizados</b-form-checkbox> -->
         <b-button pill variant="info" @click="exportarCSV"><b-icon-download class="mr-1"/>Exportar CSV</b-button>
@@ -62,7 +78,10 @@ export default {
         { key: 'status', label: 'Facturas enviadas', estadoColor: '' },
         { key: 'detalles' },
       ],
-      estadosArchivo: ['Incompleto','En revisión', 'Incorrecto', 'Correcto']
+      estadosArchivo: ['Todos', 'Incompleto', 'En revisión', 'Incorrecto', 'Correcto'],
+      selectedEstado1: '', // Filtro para el estado del período 1
+      selectedEstado2: '', // Filtro para el estado del período 2
+      selectedEstado3: '', // Filtro para el estado del período 3
     }
   },
   async fetch() {
@@ -84,6 +103,17 @@ export default {
         items = items.filter(item => {
           return item.cuit && String(item.cuit).includes(this.inputCUIT);
         });
+      }
+
+      // Filtros por estado en cada período, exceptuando "Todos"
+      if (this.selectedEstado1 && this.selectedEstado1 !== 'Todos') {
+        items = items.filter(item => item.status[0] === this.selectedEstado1);
+      }
+      if (this.selectedEstado2 && this.selectedEstado2 !== 'Todos') {
+        items = items.filter(item => item.status[1] === this.selectedEstado2);
+      }
+      if (this.selectedEstado3 && this.selectedEstado3 !== 'Todos') {
+        items = items.filter(item => item.status[2] === this.selectedEstado3);
       }
 
       return items;

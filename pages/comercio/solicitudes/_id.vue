@@ -40,10 +40,10 @@
         <b-button @click="onRestablecer" variant="secondary" class="btn-4 mt-3 mx-1" v-if="habilitacion.status != 'En revisión' && habilitacion.status != 'Rectificación'"> Volver a estado En Revisión </b-button>
         <b-button @click="onRechazarSolicitud" class="btn-3 mt-3 mx-1"> Rechazar solicitud </b-button>
         <b-button @click="onShowObservaciones" variant="primary" class="btn-2 mt-3 mx-1"> Ver observaciones </b-button>
-        <b-button @click="onDescargarHabilitacion" variant="success" class="btn-4 mt-3 mx-1">
-          <b-icon icon="download" class="mr-1"></b-icon> Descargar Habilitación
-        </b-button>
       </div>
+      <b-button @click="onDescargarHabilitacion" v-if="adminComercio || adminArvige || adminModernizacion" variant="success" class="btn-4 mt-3 mx-1">
+          <b-icon icon="download" class="mr-1"></b-icon> Descargar trámite
+      </b-button>
       <!--Datos del solicitante-->
       <b-card no-body class="container col-md-6 col-sm-8 shadow-card mt-4 mx-auto">
           <div class="col mx-auto">
@@ -621,6 +621,12 @@ export default {
     },
     adminComercio(){
       return this.$store.state.user.admin == "comercio" || this.$store.state.user.admin == "master"
+    },
+    adminArvige(){
+      return this.$store.state.user.admin == "arvige" || this.$store.state.user.admin == "master"
+    },
+    adminModernizacion(){
+      return this.$store.state.user.admin == "modernizacion" || this.$store.state.user.admin == "master"
     },
     jefeComercio(){
       return (this.$store.state.user.username === "myriamalonso@gesell.gob.ar"

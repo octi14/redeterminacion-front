@@ -41,9 +41,12 @@
         <b-button @click="onRechazarSolicitud" class="btn-3 mt-3 mx-1"> Rechazar solicitud </b-button>
         <b-button @click="onShowObservaciones" variant="primary" class="btn-2 mt-3 mx-1"> Ver observaciones </b-button>
       </div>
-      <b-button @click="onDescargarHabilitacion" v-if="adminComercio || adminArvige || adminModernizacion" variant="success" class="btn-4 mt-3 mx-1">
+      <div class="row no-gutters">
+        <b-button @click="onDescargarHabilitacion" v-if="adminComercio || adminArvige || adminModernizacion" variant="success" class="btn-4 mx-auto mt-3 mx-1">
           <b-icon icon="download" class="mr-1"></b-icon> Descargar trámite
-      </b-button>
+        </b-button>
+      </div>
+
       <!--Datos del solicitante-->
       <b-card no-body class="container col-md-6 col-sm-8 shadow-card mt-4 mx-auto">
           <div class="col mx-auto">

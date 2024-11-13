@@ -4,7 +4,19 @@
     <div class="col-8 mx-auto" v-if="adminComercio">
       <!-- Filtrar por estado -->
       <b-row>
-        <b-form-group class="col-5 mx-6 mx-auto mt-4" label-class="text-success h6">
+        <b-form-group class="col-4 mx-6 mx-auto mt-4" label-class="text-success h6">
+          <label for="inputNroTramite" class="bv-no-focus-ring col-form-label pt-0 text-success h6">
+            <b-icon-search></b-icon-search> Buscar por N° de Trámite
+          </label>
+          <b-form-input
+            id="inputNroTramite"
+            v-model="inputNroTramite"
+            placeholder="Ingresá el número de trámite"
+            @input="filtrarPorNroTramite"
+            type="text"
+          />
+        </b-form-group>
+        <b-form-group class="col-4 mx-6 mx-auto mt-4" label-class="text-success h6">
           <label for="selectedEstado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><b-icon-funnel-fill></b-icon-funnel-fill> Filtrar por Estado</label>
           <b-form-select plain v-model="selectedEstado">
             <option value="">Todos</option>
@@ -12,7 +24,7 @@
           </b-form-select>
         </b-form-group>
         <!-- filtrar por tipo de trámite -->
-        <b-form-group class="col-5 mx-auto mt-4" label-class="text-success h6">
+        <b-form-group class="col-4 mx-auto mt-4" label-class="text-success h6">
           <label for="selectedEstado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><b-icon-funnel-fill></b-icon-funnel-fill> Filtrar por tipo de trámite</label>
           <b-form-select plain v-model="selectedTipo">
             <option value="">Todos</option>
@@ -46,7 +58,7 @@
         </b-button>
       </template>
     </b-table>
-    <b-pagination class="mt-4" :total-rows="items.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
+    <b-pagination class="mt-4" :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
 
     <b-modal v-model="observacionesModal" header-bg-variant="primary" title="Observaciones" title-class="text-light" hide-footer centered>
       <p v-html="singleContent"></p>
@@ -60,6 +72,7 @@ export default{
     return {
       hideFinalizados: false,
       lastLength: false,
+      inputNroTramite: "", // Variable de búsqueda por número de trámite
       items: [],
       selectedEstado: '',
       selectedTipo: '',
@@ -143,28 +156,43 @@ export default{
       return this.$store.state.habilitaciones.all
     },
     paginatedItems() {
-      const startIndex = (this.currentPage - 1) * this.perPage;
-      const endIndex = startIndex + this.perPage;
-
-      return this.items.filter((item) => {
-        const estadoCondition = !this.selectedEstado || item.status === this.selectedEstado;
-        const tipoCondition = !this.selectedTipo || item.tipoSolicitud === this.selectedTipo;
-        const finalizadosCondition = !this.hideFinalizados || !["Rechazada", "Finalizada"].includes(item.status);
-
-        return estadoCondition && tipoCondition && finalizadosCondition;
-      }).slice(startIndex, endIndex);
+      const start = (this.currentPage - 1) * this.perPage;
+      const end = start + this.perPage;
+      return this.filteredItems.slice(start, end);
     },
     filteredItems() {
-      const startIndex = (this.currentPage - 1) * this.perPage;
-      const endIndex = startIndex + this.perPage;
+      let items = this.items;
 
-      return this.items.filter((item) => {
-        const estadoCondition = !this.selectedEstado || item.status === this.selectedEstado;
-        const tipoCondition = !this.selectedTipo || item.tipoSolicitud === this.selectedTipo;
-        const finalizadosCondition = !this.hideFinalizados || !["Rechazada", "Finalizada"].includes(item.status);
+      // Filtrar los finalizados
+      if (this.hideFinalizados) {
+        items = items.filter(item => !["Rechazada", "Finalizada"].includes(item.status));
+      }
 
-        return estadoCondition && tipoCondition && finalizadosCondition;
-      }).slice(startIndex, endIndex);
+      // Filtrar por CUIT
+      if (this.inputCUIT) {
+        items = items.filter(item => {
+          return item.cuit && String(item.cuit).includes(this.inputCUIT);
+        });
+      }
+
+      // Filtrar por N° de Trámite
+      if (this.inputNroTramite) {
+        items = items.filter(item => {
+          return item.nroTramite && String(item.nroTramite).includes(this.inputNroTramite);
+        });
+      }
+
+      // Filtrar por tipo de solicitud
+      if (this.selectedTipo) {
+        items = items.filter(item => item.tipoSolicitud === this.selectedTipo);
+      }
+
+      // Filtrar por estado
+      if (this.selectedEstado) {
+        items = items.filter(item => item.status === this.selectedEstado);
+      }
+
+      return items;
     },
     totalPages() {
       return Math.ceil(this.filteredItems.length / this.perPage);

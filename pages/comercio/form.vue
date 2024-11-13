@@ -183,8 +183,8 @@
       </b-form-group>
     </fieldset>
   </b-card>
-  <b-card no-body class="col-8 mt-1 section-card" style="margin: 0px auto" v-if="solicitante.tipoSolicitud == 'Cambio de Titular'" >   
-    <fieldset> 
+  <b-card no-body class="col-8 mt-1 section-card" style="margin: 0px auto" v-if="solicitante.tipoSolicitud == 'Cambio de Titular'" >
+    <fieldset>
       <legend><h3>Datos del Titular Anterior</h3></legend>
       <b-row>
         <b-col lg="6">
@@ -205,7 +205,7 @@
             </div>
           </b-form-group>
         </b-col>
-      </b-row>      
+      </b-row>
       <b-row>
         <b-col lg="12">
           <b-form-group>
@@ -810,7 +810,7 @@
   <div class="centeredContainer modal-error">
     <p class="modal-subtitle">No hemos podido procesar tu solicitud</p>
     <p class="">Por favor, verificá tu conexión a internet e intentalo nuevamente más tarde.</p>
-    <p class="minitext">Si el problema persiste, comunicate con <a target="_blank" href="mailto:arvige@gesell.gob.ar" class="external-link">arvige@gesell.gob.ar</a> para que podamos ayudarte.</p>
+    <p class="minitext">Si el problema persiste, comunicate con <a target="_blank" href="mailto:deptocmercio@gesell.gob.ar" class="external-link">deptocomercio@gesell.gob.ar</a> para que podamos ayudarte.</p>
   </div>
   <template #modal-footer>
     <div class="" style="margin: auto">

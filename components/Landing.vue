@@ -20,6 +20,19 @@
         </div>
       </div>
     </div>
+
+    <!--Popup anuncio de rectificación -->
+    <b-modal size="lg" v-model="showPopupAnuncio" id="abierto-anual-modal" hide-footer hide-header centered>
+      <h1 style="font-size: 4rem" class="mt-5 landing-text font-weight-bold text-center">ABIERTO ANUAL</h1><hr/>
+      <div class="row no-gutters justify-content-center m-5">
+        <img src="../assets/version_2.png" class="img-fluid w-100"/>
+      </div>
+      <div variant="light" show class="row justify-content-center m-4 mt-6">
+        <b-icon-exclamation-circle variant="success" font-scale="1.7" class="mr-3 mt-2"></b-icon-exclamation-circle>
+        <small style="font-size: 1.2rem">Recordá que el beneficio se otorgará una vez que ARVIGE<br/> haya corroborado la carga de tickets de
+          <b>Mayo, Agosto</b> y <br/><b>Octubre del año 2024</b>.</small>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -27,6 +40,7 @@
 export default {
   data() {
     return {
+      showPopupAnuncio: false,
       links: [
         {
           to: "/normativa",
@@ -69,6 +83,13 @@ export default {
   computed: {
     adminHacienda(){
       return this.$store.state.user.admin == "hacienda" || this.$store.state.user.admin == "master"
+    }
+  },
+  mounted() {
+    // Verificar si el anuncio ya fue mostrado
+    if (!localStorage.getItem('anuncioMostrado')) {
+      this.showPopupAnuncio = true; // Mostrar el popup
+      localStorage.setItem('anuncioMostrado', 'true'); // Guardar en localStorage
     }
   }
 }

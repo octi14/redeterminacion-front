@@ -91,6 +91,18 @@
           <b-row class="importante-box">
               <b-col><p><b>Rectificación</b></p></b-col>
           </b-row>
+          <b-row v-if="tramite.facturas[periodo]">
+            <b-col>
+              <div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-3px">
+                </b-icon-caret-right-fill><p style="text-align: justify;" class="texto-exp li-content">Motivo de rechazo: <b>{{ observaciones ? observaciones : tramite.facturas[periodo].observaciones }}</b></p></div>
+            </b-col>
+          </b-row>
+          <b-row v-else>
+            <b-col v-if="estado === 'Rechazado'">
+              <div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-3px">
+                </b-icon-caret-right-fill><p style="text-align: justify;" class="texto-exp li-content">Motivo de rechazo: <b>{{ tramite.facturas[periodo] ? tramite.facturas[periodo].observaciones : "No se seleccionó ningún motivo." }}</b></p></div>
+            </b-col>
+          </b-row>
           <b-row>
               <b-col><p class="texto-exp"><b>Aún no se han cargado documentos.</b></p></b-col>
           </b-row>
@@ -284,6 +296,7 @@ export default {
       //DETERMINAR ESATDO INICIAL
       console.log("this.config.rectificacion: " + this.config.rectificacion);
       console.log("this.estado: " + this.estado);
+      console.log("Motivo de rechazo " + this.observaciones)
       switch(this.estado){
           case "Correcto": {
                   this.estadoActual = 3;

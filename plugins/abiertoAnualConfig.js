@@ -9,7 +9,7 @@ const abiertoAnualConfig = {
       "07/09/2024",
       "01/11/2024"
     ],
-    rectificacion: true,
+    rectificacion: false,
 
 }
 

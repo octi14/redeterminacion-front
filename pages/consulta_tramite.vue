@@ -215,6 +215,25 @@
         </template>
       </b-modal>
 
+            <!-- Modal Su trámite está esperando pago -->
+      <b-modal v-model="showPopupWaitingPay" @click-outside="showPopupWaitingPay = false" header-class="lightblue" centered>
+        <template #modal-header>
+          <div class="centeredContainer">
+            <b-icon-info-circle scale="2" variant="light"/>
+          </div>
+        </template>
+        <div class="centeredContainer modal-primary">
+          <p class="modal-subtitle">Tu trámite se encuentra en proceso de facturación.</p>
+          <p> El Departamento Comercio te envió un correo electrónico indicándote los pasos a seguir para finalizar el trámite.</p>
+          <small class="minitext">No olvides revisar la carpeta de “spam” o “no deseados”.</small>
+        </div>
+        <template #modal-footer>
+          <div class="" style="margin: auto">
+            <b-button @click="showPopupWaitingPay = false" variant="danger" class="btn-primary">Aceptar</b-button>
+          </div>
+        </template>
+      </b-modal>
+
       <!-- Modal Su trámite fue finalizado -->
       <b-modal v-model="showPopupFinished" @click-outside="showPopupFinished = false" header-class="lightblue" centered>
         <template #modal-header>
@@ -260,6 +279,7 @@ export default {
       showPopupProrroga: false,
       showPopupInspected: false,
       showPopupWaitingDoc: false,
+      showPopupWaitingPay: false,
       showPopupRejected: false,
       showPopupFinished: false,
     };
@@ -316,6 +336,9 @@ export default {
 
               case "Esperando documentación":
                 this.showPopupWaitingDoc = true
+                break
+              case "Esperando pago":
+                this.showPopupWaitingPay = true
                 break
               case "Rectificación":
                 this.showPopupResend = true

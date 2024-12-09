@@ -23,10 +23,10 @@
             <h5 :class="getStatusClass(habilitacion.status)" class="ml-2"> {{ habilitacion.status }}</h5>
           </div>
         </div>
-        <div class="col mx-auto" v-if="habilitacion.status === 'Finalizada' || habilitacion.tipoSolicitud === 'Baja' || habilitacion.tipoSolicitud === 'Renovación' || habilitacion.tipoSolicitud === 'Reempadronamiento'">
+        <div class="col mx-auto" v-if="habilitacion.status === 'Finalizada' || !esHabilitacion">
           <div class="h5 row justify-content-center"> Número de expediente: <b class="text-success ml-1"> {{ habilitacion.nroExpediente }} </b> </div>
-          <div class="h5 row justify-content-center" v-if="baja || renovacion || reempadronamiento"> Alcance: <b class="text-success ml-1"> {{ habilitacion.alcance }} </b> </div>
-          <div class="h5 row justify-content-center" v-if="baja || renovacion || reempadronamiento"> Legajo: <b class="text-success ml-1"> {{ habilitacion.nroLegajo }} </b> </div>
+          <div class="h5 row justify-content-center" v-if="!esHabilitacion"> Alcance: <b class="text-success ml-1"> {{ habilitacion.alcance }} </b> </div>
+          <div class="h5 row justify-content-center" v-if="!esHabilitacion"> Legajo: <b class="text-success ml-1"> {{ habilitacion.nroLegajo }} </b> </div>
         </div>
       </div>
       <!--Botones-->
@@ -35,7 +35,7 @@
         <b-button @click="onAprobarBaja" variant="success" class="btn-4 mt-3 mx-1" v-if="baja && (habilitacion.status === 'En revisión' || habilitacion.status === 'Rectificación')"> Aprobar solicitud </b-button>
         <b-button @click="onAprobarSolicitud" variant="success" class="btn-4 mt-3 mx-1" v-if="!baja && habilitacion.status==='En revisión'"> Aprobar solicitud </b-button>
         <b-button @click="onRectificacion" variant="secondary " class="btn-4 mt-3 mx-1" v-if="habilitacion.status === 'En revisión'"> Rectificación </b-button>
-        <b-button @click="onFinalizarSolicitud" variant="success" class="btn-4 mt-3 mx-1" v-if="(!renovacion && !reempadronamiento) && habilitacion.status === 'Esperando documentación'"> Finalizar solicitud </b-button>
+        <b-button @click="onFinalizarSolicitud" variant="success" class="btn-4 mt-3 mx-1" v-if="(!renovacion && !reempadronamiento) && (habilitacion.status === 'Esperando documentación' || habilitacion.status === 'Esperando pago')"> Finalizar solicitud </b-button>
         <b-button @click="onFinalizarRenovacion" variant="success" class="btn-4 mt-3 mx-1" v-if="(renovacion || reempadronamiento) && habilitacion.status === 'Esperando documentación'"> Finalizar solicitud </b-button>
         <b-button @click="onRestablecer" variant="secondary" class="btn-4 mt-3 mx-1" v-if="habilitacion.status != 'En revisión' && habilitacion.status != 'Rectificación'"> Volver a estado En Revisión </b-button>
         <b-button @click="onRechazarSolicitud" class="btn-3 mt-3 mx-1"> Rechazar solicitud </b-button>
@@ -380,7 +380,7 @@
         <h2 class="icon-orange text-secondary text-center"><b>Aprobar solicitud</b></h2>
         <p style="margin: 3%"> Se aprobará la solicitud. Se deberá enviar un mail al solicitante indicando que el
            trámite está completo y adjuntar el certificado de baja. </p>
-        <p style="margin: 3%"> Ingresá el número de expediente asignado al expediente actual y su alcance. </p>
+        <!-- <p style="margin: 3%"> Ingresá el número de expediente asignado al expediente actual y su alcance. </p>
         <div class="mx-auto">
         <p style="margin: 3%"><b-icon-caret-right-fill class="icon-orange"/><b>Número de expediente:</b></p>
         <p class="row mr-2" style="margin: 3%"> 4124 -
@@ -391,7 +391,7 @@
           <b-icon-caret-right-fill class="icon-orange mt-1"/><b>Alcance:</b>
           <b-form-input class="col-3 ml-2" type="number" no-wheel size="sm" v-model="alcance"/>
         </p>
-        </div>
+        </div> -->
         <hr/>
         <div class="text-center mt-3">
           <b-btn variant="primary" @click="onSendAprobarBaja()" >
@@ -468,7 +468,7 @@
           <b-form-input class="col-3" type="number" no-wheel size="sm" v-model="nroExpediente1"/><a class="mx-3"> / </a>
           <b-form-input size="sm" type="number" no-wheel class="col-3" v-model="nroExpediente2"/>
         </p>
-        <p class="row ml-1 mt-2" v-if="!habilitacion">
+        <p class="row ml-1 mt-2" v-if="!esHabilitacion">
           <b-icon-caret-right-fill class="icon-orange mt-1"/><b>Alcance:</b>
           <b-form-input class="col-3 ml-2" type="number" no-wheel size="sm" v-model="alcance"/>
         </p>
@@ -576,6 +576,7 @@ export default {
         'Prórroga 2': 'text-secondary',
         'Inspeccionado': 'text-lightgreen',
         'Esperando documentación': 'text-success',
+        'Esperando pago': 'text-success',
         'Rechazada': 'text-danger',
         'Finalizada': 'text-darkgreen'
       },
@@ -615,6 +616,9 @@ export default {
     },
     baja(){
       return this.habilitacion && this.habilitacion.tipoSolicitud === "Baja"
+    },
+    esHabilitacion(){
+      return this.habilitacion && this.habilitacion.tipoSolicitud === "Habilitación"
     },
     renovacion(){
       return this.habilitacion && this.habilitacion.tipoSolicitud === "Renovación"
@@ -733,15 +737,16 @@ export default {
     },
     async onSendFinalizar(){
       var nroExpediente = ''
-      if(!this.baja){
-        nroExpediente = "4124-" + this.nroExpediente1 + "/" + this.nroExpediente2
-      }else{
-        nroExpediente = this.habilitacion.nroExpediente
+      var alcance = ''
+      if(this.baja){
+        alcance = this.alcance
       }
+      nroExpediente = "4124-" + this.nroExpediente1 + "/" + this.nroExpediente2
       const observaciones = this.habilitacion.observaciones || ""
       const habilitacion = {
         status: 'Finalizada',
         nroExpediente: nroExpediente,
+        alcance: alcance,
         observaciones: observaciones + " - " + "Se finaliza el trámite el día " + new Date().toLocaleDateString('es-AR')
       }
       const id = this.habilitacion.id
@@ -752,6 +757,9 @@ export default {
       })
       this.habilitacion.status = habilitacion.status
       this.showFinalizar = false
+      if(this.baja){
+        this.showApprove = true
+      }
     },
     onRestablecer(){
       this.showRestoreDefault = !this.showRestoreDefault
@@ -798,10 +806,10 @@ export default {
       const nroExpediente = "4124 - " + this.nroExpediente1 + "/" + this.nroExpediente2
       const alcance = this.alcance
       const habilitacion = {
-        status: 'Finalizada',
+        status: 'Esperando pago',
         nroExpediente: nroExpediente,
         alcance: alcance,
-        observaciones: observaciones + " - " + "Se finaliza la solicitud el " + new Date().toLocaleDateString('es-AR') + " " + new Date().toLocaleTimeString()
+        observaciones: observaciones + " - " + "Se aprueba la solicitud el " + new Date().toLocaleDateString('es-AR') + " " + new Date().toLocaleTimeString() + ". Esperando pago."
       }
       const id = this.habilitacion.id
       const userToken = this.$store.state.user.token
@@ -815,7 +823,6 @@ export default {
       if(this.baja){
         this.showAprobarBaja = false
       }
-      this.showApprove = true
     },
     async onSendAprobarRenovacion(){
       const observaciones = this.habilitacion.observaciones || " "

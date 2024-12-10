@@ -22,7 +22,7 @@
     </div>
 
     <!--Popup anuncio de rectificación -->
-    <b-modal size="lg" v-model="showPopupAnuncio" id="abierto-anual-modal" hide-footer hide-header centered>
+    <!-- <b-modal size="lg" v-model="showPopupAnuncio" id="abierto-anual-modal" hide-footer hide-header centered>
       <h1 style="font-size: 4rem" class="mt-5 landing-text font-weight-bold text-center">ABIERTO ANUAL</h1><hr/>
       <div class="row no-gutters justify-content-center m-5">
         <img src="../assets/version_2.png" class="img-fluid w-100"/>
@@ -32,7 +32,7 @@
         <small style="font-size: 1.2rem">Recordá que el beneficio se otorgará una vez que ARVIGE<br/> haya corroborado la carga de tickets de
           <b>Mayo, Agosto</b> y <br/><b>Octubre del año 2024</b>.</small>
       </div>
-    </b-modal>
+    </b-modal> -->
   </div>
 </template>
 

@@ -780,7 +780,7 @@
             <transition name="expand">
               <div v-show="isCardExpanded(16)">
                 <p class="first-li">
-                  La renovación de comercios/industrias o asimilables deberá adecuarse a lo determinado en concordancia con leyes nacionales, provinciales y el art. 168 del Digesto de Habilitaciones Comerciales 
+                  La renovación de comercios/industrias o asimilables deberá adecuarse a lo determinado en concordancia con leyes nacionales, provinciales y el art. 168 del Digesto de Habilitaciones Comerciales
                   <a href="https://arvige.gob.ar/legislacion/pdf/12" target="_blank" class="external-link">(Ord.1958/04 (TO2024)</a>.
                 </p>
               </div>
@@ -1333,7 +1333,7 @@
       </div>
     </b-modal>
     <!-- Popup de advertencia -->
-    <b-modal v-model="showConfirmationPopup" hide-footer :header-bg-variant="'success'" centered>
+    <b-modal v-model="showConfirmationPopup" v-if="estaAbierto" hide-footer :header-bg-variant="'success'" centered>
         <template #modal-header>
           <div class="confirmation-popup-header">
               <b-icon icon="exclamation-triangle" scale="2" variant="light" ></b-icon>
@@ -1360,6 +1360,26 @@
               </nuxt-link>
           </div>
         </div>
+    </b-modal>
+    <!--Popup está cerrado-->
+    <b-modal v-model="showConfirmationPopup" v-if="!estaAbierto" hide-footer header-bg-variant="secondary" centered>
+      <template #modal-header>
+        <div class="confirmation-popup-header">
+            <b-icon icon="exclamation-triangle" scale="2" variant="light" ></b-icon>
+          </div>
+      </template>
+      <div class="confirmation-popup-body">
+        <p class="text-secondary"><b>No es posible iniciar un trámite comercial.</b></p>
+        <div class="li-row">
+          <div class="li-icon"></div><div class="li-content text-center">
+            Por el momento solo es posible iniciar trámites comerciales de lunes a viernes de 8 a 17hs.</div>
+        </div>
+        <div class="text-center mt-3">
+          <b-button class="btn-secondary" @click="showConfirmationPopup = false">
+              Aceptar
+          </b-button>
+        </div>
+      </div>
     </b-modal>
     <!-- Popup de solicitud de libredeuda -->
     <b-modal v-model="showLibreDeudaPopup" title="" @hide="resetForm" :header-bg-variant="'success'" hide-footer centered>
@@ -1448,6 +1468,22 @@ export default {
   },
   mounted() {
     this.filteredRubros.sort((a, b) => a.nombre.localeCompare(b.nombre));
+  },
+  computed:{
+    estaAbierto(){
+      // Obtener fecha y hora actuales
+      const ahora = new Date();
+
+      // Día y horario actual
+      const dia = ahora.getDay(); // 0 = Domingo, 1 = Lunes, ..., 6 = Sábado
+      const hora = ahora.getHours();
+
+      // Verificar si está dentro del rango permitido
+      const esDiaHabil = dia >= 1 && dia <= 5; // De lunes a viernes
+      const esHorarioPermitido = hora >= 8 && hora < 17; // Entre las 8 y las 17 hs (sin incluir 17)
+
+      return esDiaHabil && esHorarioPermitido;
+    }
   },
   methods: {
     onSlideStart(slide) {
@@ -1656,6 +1692,10 @@ export default {
       display: none
 </style>
 <style scoped>
+.btn-secondary{
+  background-color: #daa511 !important;
+  border: none;
+}
 .mainCarrousel{
     display: block;
   }

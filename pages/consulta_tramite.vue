@@ -88,7 +88,7 @@
         </template>
         <div class="centeredContainer modal-primary">
           <p class="modal-subtitle">Tu trámite se encuentra<b class="modal-subtitle"> en revisión.</b></p>
-          <p>Durante los próximos 7 días hábiles recibirás un correo electrónico del Departamento Comercio donde se te indicarán los pasos a seguir. </p>
+          <p>Durante los próximos días recibirás un correo electrónico del Departamento Comercio donde se te indicarán los pasos a seguir. </p>
           <p class="minitext" style="color:gray">No olvides revisar la carpeta de "Spam" o "No deseados". </p>
         </div>
         <template #modal-footer>

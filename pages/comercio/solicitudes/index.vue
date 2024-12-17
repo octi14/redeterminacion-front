@@ -33,6 +33,9 @@
         </b-form-group>
       </b-row>
       <b-form-checkbox class="text-center" v-model="hideFinalizados">Ocultar Finalizados/Rechazados</b-form-checkbox>
+      <div class="row no-gutters justify-content-center">
+        <b-button variant="success" class="text-center mt-3" v-if="adminMaster" @click="generarExcelTramitesNoFinalizados"> Exportar a Excel</b-button>
+      </div>
       <!-- <b-form-group class="col-4 mx-auto mt-4" horizontal label-class="text-success h6" label="Filtrar por DNI">
         <b-icon-funnel-fill variant="success" />
         <b-form-input v-model="selectedDocumento" @keypress="onSearchByDocumento">
@@ -67,6 +70,7 @@
 </template>
 
 <script>
+import * as XLSX from 'xlsx';
 export default{
   data() {
     return {
@@ -199,9 +203,58 @@ export default{
     },
     adminComercio() {
       return this.$store.state.user.admin === "comercio" || this.$store.state.user.admin == "master"
+    },
+    adminMaster() {
+      return this.$store.state.user.admin == "master"
     }
   },
   methods: {
+    async generarExcelTramitesNoFinalizados() {
+      try {
+        // Obtenemos todos los trámites del store o de una API
+        var tramites = []
+        await this.$store.dispatch('habilitaciones/getAll')
+        tramites = this.$store.state.habilitaciones.all
+
+        // Filtramos los trámites que no están finalizados
+        const tramitesNoFinalizados = tramites.filter(tramite => tramite.status != "Finalizada" && tramite.status != "Rechazada");
+        console.log(tramitesNoFinalizados)
+
+        if (tramitesNoFinalizados.length === 0) {
+          console.warn('No hay trámites no finalizados.');
+          return;
+        }
+
+        // Mapeamos los datos necesarios para el Excel
+        const datosExcel = tramitesNoFinalizados.map(tramite => ({
+          NroTramite: tramite.nroTramite,
+          DNI: tramite.dni,
+          Mail: tramite.mail,
+          Estado: tramite.status,
+          FechaCreacion: tramite.createdAt, // Asegúrate de formatear fechas si es necesario
+        }));
+
+        // Convertimos los datos a una hoja de Excel
+        const hojaTramites = XLSX.utils.json_to_sheet(datosExcel);
+
+        // Creamos un libro de Excel y agregamos la hoja
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, hojaTramites, 'Tramites_No_Finalizados');
+
+        // Convertimos el libro a un buffer
+        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+
+        // Creamos un Blob para descargar
+        const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+
+        // Usamos FileSaver.js para guardar el archivo
+        saveAs(blob, 'Tramites_No_Finalizados.xlsx');
+
+        console.log('Archivo generado y descargado con éxito.');
+      } catch (error) {
+        console.error('Error al generar el Excel de trámites no finalizados:', error);
+      }
+    },
     onPageChange(newPage) {
       this.currentPage = newPage;
     },

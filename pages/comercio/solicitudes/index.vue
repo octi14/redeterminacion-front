@@ -217,7 +217,7 @@ export default{
         tramites = this.$store.state.habilitaciones.all
 
         // Filtramos los trámites que no están finalizados
-        const tramitesNoFinalizados = tramites.filter(tramite => tramite.status != "Finalizada" && tramite.status != "Rechazada");
+        const tramitesNoFinalizados = tramites//.filter(tramite => tramite.status != "Finalizada" && tramite.status != "Rechazada");
         console.log(tramitesNoFinalizados)
 
         if (tramitesNoFinalizados.length === 0) {
@@ -230,8 +230,10 @@ export default{
           NroTramite: tramite.nroTramite,
           DNI: tramite.dni,
           Mail: tramite.mail,
+          TipoTramite: tramite.tipoSolicitud,
           Estado: tramite.status,
           FechaCreacion: tramite.createdAt, // Asegúrate de formatear fechas si es necesario
+          observaciones: tramite.observaciones,
         }));
 
         // Convertimos los datos a una hoja de Excel

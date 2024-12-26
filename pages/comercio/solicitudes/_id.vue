@@ -1025,14 +1025,22 @@ export default {
         embed.setAttribute('height', '100%');
         newWindow.document.body.appendChild(embed);
       } else if (documento.contentType.startsWith('image/')) {
-        // Abrir la imagen en una nueva pestaña utilizando <img>
-        const img = document.createElement('img');
-        img.setAttribute('src', fileURL);
-        img.setAttribute('width', 'auto');
-        img.setAttribute('height', 'auto');
-        newWindow.document.body.appendChild(img);
+          // Verifica si es una imagen y maneja tanto .jpeg como .jpg
+          const img = document.createElement('img');
+          img.setAttribute('src', fileURL);
+          img.setAttribute('width', 'auto');
+          img.setAttribute('height', 'auto');
+
+          // Normaliza el tipo de contenido si es .jpeg
+          if (fileURL.endsWith('.jpeg')) {
+              img.setAttribute('src', fileURL); // Asume que los .jpeg también son imágenes
+          } else if (fileURL.endsWith('.jpg')) {
+              img.setAttribute('src', fileURL); // Si es .jpg, funciona igual
+          }
+
+          newWindow.document.body.appendChild(img);
       } else {
-        console.log('Formato de contenido no compatible');
+          console.log('Formato de contenido no compatible');
       }
     },
     onResetEdit() {

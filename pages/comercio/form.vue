@@ -1141,7 +1141,7 @@ export default {
       const esDiaHabil = dia >= 1 && dia <= 5; // De lunes a viernes
       const esHorarioPermitido = hora >= 8 && hora < 17; // Entre las 8 y las 17 hs (sin incluir 17)
 
-      return false //esDiaHabil && esHorarioPermitido;
+      return esDiaHabil && esHorarioPermitido;
     },
     tipoSolicitudSeleccionada: {
       get() {

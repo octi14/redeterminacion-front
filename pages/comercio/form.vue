@@ -569,7 +569,7 @@
     <div class="centeredContainer">
       <fieldset>
         <b-button size="lg" @click="onResetParams" variant="danger" class="btn-cancel" >Cancelar</b-button>
-        <b-button size="lg" type="submit" variant="success" :disabled="!areAllFieldsComplete" class="" >Enviar</b-button>
+        <b-button size="lg" type="submit" variant="success" :disabled="!areAllFieldsComplete || !estaAbierto" class="" >Enviar</b-button>
       </fieldset>
         <div v-if="!areAllFieldsComplete" class="validation-error">
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Completar todos los campos marcados con (*).
@@ -1129,6 +1129,20 @@ export default {
       }
   },
   computed: {
+    estaAbierto(){
+      // Obtener fecha y hora actuales
+      const ahora = new Date();
+
+      // Día y horario actual
+      const dia = ahora.getDay(); // 0 = Domingo, 1 = Lunes, ..., 6 = Sábado
+      const hora = ahora.getHours();
+
+      // Verificar si está dentro del rango permitido
+      const esDiaHabil = dia >= 1 && dia <= 5; // De lunes a viernes
+      const esHorarioPermitido = hora >= 8 && hora < 17; // Entre las 8 y las 17 hs (sin incluir 17)
+
+      return false //esDiaHabil && esHorarioPermitido;
+    },
     tipoSolicitudSeleccionada: {
       get() {
         //console.log("tipoSolicitudSeleccionada: " + this.$route.query.tramite);
@@ -1634,7 +1648,7 @@ export default {
       }else
       this.fileTooLargeError[field] = null
     },
-     getFormFieldState(fieldName) {
+    getFormFieldState(fieldName) {
       return this.formFieldStates[fieldName];
     },
     clearFormFieldState(fieldName) {

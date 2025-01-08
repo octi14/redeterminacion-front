@@ -320,7 +320,7 @@
           <p>Observaciones:  </p>
           <b-form-textarea v-model="observaciones" required type="text" />
           <div class="text-center mt-3">
-            <b-btn variant="danger" @click="onSendReject()" >
+            <b-btn variant="danger" @click="onSendReject(); registrarActividad('onSendReject', 'Rejected', habilitacion.nroTramite)" >
                 Enviar
             </b-btn>
           </div>
@@ -672,6 +672,18 @@ export default {
     this.$fetch()
   },
   methods: {
+    async registrarActividad(evento, result, nroSolicitud){
+      const userId = this.$store.state.user.username; // Reemplaza con el ID del usuario real
+      const actionType = evento;
+      const actionResult = result + ' ' + nroSolicitud;
+
+      try {
+          await this.$logUserActivity(userId, actionType, actionResult);
+          console.log('Actividad registrada con éxito');
+      } catch (error) {
+          console.error('Error al registrar la actividad:', error);
+      }
+    },
     getStatusClass(status) {
       return this.statusClasses[status] || '';
     },

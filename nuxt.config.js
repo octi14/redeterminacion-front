@@ -27,6 +27,7 @@ export default {
   plugins: [
     { src: '~/plugins/vuelidate.js', ssr: true },
     { src: '~/plugins/logUserActivity.js', ssr: false }
+    '~/plugins/logUserActivity.js',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

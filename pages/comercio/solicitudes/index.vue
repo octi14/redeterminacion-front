@@ -50,7 +50,7 @@
       </template>
       <template #cell(detalles)="row">
         <NuxtLink :to="{ name: 'comercio-solicitudes-id', params: { id: row.item.id } }">
-          <b-button variant="outline-secondary" size="sm" title="Editar">
+          <b-button variant="outline-secondary" size="sm" title="Editar" @click="registrarEntrarDetalles(row.item.id)">
             <b-icon-pen/>
           </b-button>
         </NuxtLink>
@@ -71,6 +71,7 @@
 
 <script>
 import * as XLSX from 'xlsx';
+
 export default{
   data() {
     return {
@@ -209,6 +210,21 @@ export default{
     }
   },
   methods: {
+    async registrarEntrarDetalles(id){
+      registrarActividad("onEntrerSolicitudDetalles", id);
+    },
+    async registrarActividad(evento, id){
+      const userId = this.$store.state.user.username; // Reemplaza con el ID del usuario real
+      const actionType = evento;
+      const actionResult = 'enter ' + id;
+
+      try {
+          await this.$logUserActivity(userId, actionType, actionResult);
+          console.log('Actividad registrada con éxito');
+      } catch (error) {
+          console.error('Error al registrar la actividad:', error);
+      }
+    },
     async generarExcelTramitesNoFinalizados() {
       try {
         // Obtenemos todos los trámites del store o de una API

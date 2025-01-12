@@ -49,8 +49,8 @@
         <div :class="row.item.estadoColor"><b>{{ row.value }}</b></div>
       </template>
       <template #cell(detalles)="row">
-        <NuxtLink :to="{ name: 'comercio-solicitudes-id', params: { id: row.item.id } }">
-          <b-button variant="outline-secondary" size="sm" title="Editar" @click="registrarEntrarDetalles(row.item.id)">
+        <NuxtLink :to="{ name: 'comercio-solicitudes-id', params: { id: row.item.id } }" @click.native="registrarActividad('Abrir Trámite', 'Trámite nro: ' + row.item.nroTramite)">
+          <b-button variant="outline-secondary" size="sm" title="Editar">
             <b-icon-pen/>
           </b-button>
         </NuxtLink>
@@ -120,8 +120,7 @@ export default{
       ],
       estados: ['Rechazada','En revisión', 'Rectificación', 'Esperando turno','Esperando inspección','Inspeccionado', 'Esperando documentación', 'Prórroga 1', 'Prórroga 2', 'Finalizada'],
       tiposTramite: ['Habilitación','Baja', 'Renovación', 'Reempadronamiento', 'Cambio de Titular'],
-
-}
+    };
   },
   async fetch() {
     await this.$store.dispatch('habilitaciones/getAll')
@@ -210,13 +209,10 @@ export default{
     }
   },
   methods: {
-    async registrarEntrarDetalles(id){
-      registrarActividad("onEntrerSolicitudDetalles", id);
-    },
-    async registrarActividad(evento, id){
+    async registrarActividad(evento, result){
       const userId = this.$store.state.user.username; // Reemplaza con el ID del usuario real
       const actionType = evento;
-      const actionResult = 'enter ' + id;
+      const actionResult = result;
 
       try {
           await this.$logUserActivity(userId, actionType, actionResult);
@@ -232,11 +228,15 @@ export default{
         await this.$store.dispatch('habilitaciones/getAll')
         tramites = this.$store.state.habilitaciones.all
 
+        console.log("TRAMITES: ");
+        console.log(tramites);
         // Filtramos los trámites que no están finalizados
         const tramitesNoFinalizados = tramites//.filter(tramite => tramite.status != "Finalizada" && tramite.status != "Rechazada");
+        console.log("tramitesNoFinalizados:")
         console.log(tramitesNoFinalizados)
 
         if (tramitesNoFinalizados.length === 0) {
+          this.registrarActividad("Descargar trámites no finalizados", "No Hay trámites no finalizados.");
           console.warn('No hay trámites no finalizados.');
           return;
         }
@@ -245,6 +245,8 @@ export default{
         const datosExcel = tramitesNoFinalizados.map(tramite => ({
           NroTramite: tramite.nroTramite,
           DNI: tramite.dni,
+          CUIL: tramite.cuit,
+          legajo: tramite.nroLegajo,
           Mail: tramite.mail,
           TipoTramite: tramite.tipoSolicitud,
           Estado: tramite.status,
@@ -268,12 +270,14 @@ export default{
         // Usamos FileSaver.js para guardar el archivo
         saveAs(blob, 'Tramites_No_Finalizados.xlsx');
 
+        this.registrarActividad("Descargar trámites no finalizados", "Archivo descargado.");
         console.log('Archivo generado y descargado con éxito.');
       } catch (error) {
         console.error('Error al generar el Excel de trámites no finalizados:', error);
+        this.registrarActividad("Descargar trámites no finalizados", "Error al generar el Excel de trámites no finalizados: " + error);
       }
     },
-    onPageChange(newPage) {
+    onPageChange(newPage) {      
       this.currentPage = newPage;
     },
     async onShowObservaciones(id) {
@@ -284,6 +288,7 @@ export default{
 
       this.singleContent = observacionesDivididas;
       this.observacionesModal = true;
+      this.registrarActividad("Ver Observaciones", "Trámite nro: " + habilitacion.nroTramite);
     },
   },
 }

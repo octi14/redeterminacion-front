@@ -27,8 +27,8 @@
       </template>
       <!-- Plantilla personalizada para la columna "detalles" -->
       <template #cell(detalles)="row">
-      <NuxtLink :to="{ name: 'turnos-id', params: { id: row.item.id } }">
-        <b-button variant="outline-secondary" size="sm" title="Editar">
+      <NuxtLink :to="{ name: 'turnos-id', params: { id: row.item.id } }" @click.native="registrarActividad('Abrir Turno', 'Turno nro: ' + row.item.nroTramite)">
+        <b-button variant="outline-secondary" size="sm" title="Editar" >
           <b-icon-pen/>
         </b-button>
       </NuxtLink>
@@ -168,6 +168,18 @@ export default{
     },
   },
   methods: {
+    async registrarActividad(evento, result){
+      const userId = this.$store.state.user.username; // Reemplaza con el ID del usuario real
+      const actionType = evento;
+      const actionResult = result;
+
+      try {
+          await this.$logUserActivity(userId, actionType, actionResult);
+          console.log('Actividad registrada con éxito');
+      } catch (error) {
+          console.error('Error al registrar la actividad:', error);
+      }
+    },
     onPageChange(newPage) {
       this.currentPage = newPage;
     },
@@ -187,6 +199,7 @@ export default{
       this.singleContent = turno[0].observaciones
       this.$fetch()
       this.singleModal = true
+      this.registrarActividad("Ver Observaciones", "Trámite nro: " + habilitacion.nroTramite);
     },
   },
 }

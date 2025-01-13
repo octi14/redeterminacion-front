@@ -42,7 +42,7 @@
         <b-button @click="onShowObservaciones" variant="primary" class="btn-2 mt-3 mx-1"> Ver observaciones </b-button>
       </div>
       <div class="row no-gutters">
-        <b-button @click="onDescargarHabilitacion" v-if="adminComercio || adminArvige || adminModernizacion" variant="success" class="btn-4 mx-auto mt-3 mx-1">
+        <b-button @click="onDescargarHabilitacion(); registrarActividad('Descargar Trámite', 'Trámite Descargado', habilitacion.nroTramite)" v-if="adminComercio || adminArvige || adminModernizacion" variant="success" class="btn-4 mx-auto mt-3 mx-1">
           <b-icon icon="download" class="mr-1"></b-icon> Descargar trámite
         </b-button>
       </div>
@@ -444,7 +444,7 @@
           <li>  Constituya el Domicilio Fiscal Electrónico (DFE). </li>
         </ul>
         <div class="text-center mt-3">
-          <b-btn variant="success" @click="onSendSolicitar" >
+          <b-btn variant="success" @click="onSendSolicitar()" >
               Aceptar
           </b-btn>
         </div>
@@ -475,7 +475,7 @@
         </div>
         <small> Recordá que más adelante podrás consultar los datos proporcionados en la sección de búsqueda. </small>
         <div class="text-center mt-3">
-          <b-btn variant="success" :disabled="!nroExpediente1 || !nroExpediente2" @click="onSendFinalizar" >
+          <b-btn variant="success" :disabled="!nroExpediente1 || !nroExpediente2" @click="onSendFinalizar();" >
               Aceptar
           </b-btn>
         </div>
@@ -504,7 +504,7 @@
         </div>
         <small> Recordá que más adelante podrás consultar los datos proporcionados en la sección de búsqueda. </small>
         <div class="text-center mt-3">
-          <b-btn variant="success" :disabled="!nroExpediente1 || !nroExpediente2 || !alcance" @click="onSendAprobarRenovacion" >
+          <b-btn variant="success" :disabled="!nroExpediente1 || !nroExpediente2 || !alcance" @click="onSendAprobarRenovacion()" >
               Aceptar
           </b-btn>
         </div>
@@ -514,7 +514,7 @@
         <p>El trámite será finalizado. El comercio será dado de baja, y se agregarán los documentos al expediente original. </p>
         <small> Recordá que más adelante podrás consultar los datos proporcionados en la sección de búsqueda. </small>
         <div class="text-center mt-3">
-          <b-btn variant="success" @click="onSendFinalizar" >
+          <b-btn variant="success" @click="onSendFinalizar();" >
               Aceptar
           </b-btn>
         </div>
@@ -533,7 +533,7 @@
         <p style="color:black"> ¿Estás seguro/a de que deseas volver el trámite a “En revisión”? </p>
         <small>Esta acción es permanente y reinicia el proceso de verificación del trámite.</small>
         <div class="text-center mt-4">
-          <b-btn variant="success" @click="onSendRestablecer" >
+          <b-btn variant="success" @click="onSendRestablecer()" >
               Aceptar
           </b-btn>
           <b-btn variant="danger" @click="onRestablecer" >
@@ -672,6 +672,17 @@ export default {
     this.$fetch()
   },
   methods: {
+    async registrarActividad(evento, result, nroSolicitud){
+      const userId = this.$store.state.user.username; // Reemplaza con el ID del usuario real
+      const actionType = evento;
+      const actionResult = "Trámite nro " + nroSolicitud + ' ' + result;
+
+      try {
+          await this.$logUserActivity(userId, actionType, actionResult);
+      } catch (error) {
+          console.error('Error al registrar la actividad:', error);
+      }
+    },
     getStatusClass(status) {
       return this.statusClasses[status] || '';
     },
@@ -716,6 +727,8 @@ export default {
         id,
         habilitacion,
       })
+      this.registrarActividad('Rectificar Trámite', 'Rectificación Solicitada', this.habilitacion.nroTramite)
+      this.wait(300)
       this.habilitacion.status = habilitacion.status
       this.showRectificacion = false
     },
@@ -732,6 +745,8 @@ export default {
         id,
         habilitacion,
       })
+      this.registrarActividad('Solicitar Documentación', 'Documentación Solicitada', this.habilitacion.nroTramite)
+      this.wait(300)
       this.habilitacion.status = habilitacion.status
       this.showSolicitarDoc = false
     },
@@ -755,6 +770,8 @@ export default {
         id,
         habilitacion,
       })
+      this.registrarActividad('Finalizar Trámite', 'Trámite Cerrado. Expediente: ' + nroExpediente + ". Alcance: " + alcance, this.habilitacion.nroTramite)
+      this.wait(300)
       this.habilitacion.status = habilitacion.status
       this.showFinalizar = false
       if(this.baja){
@@ -778,6 +795,8 @@ export default {
         id,
         habilitacion,
       })
+      this.registrarActividad('Volver a En Revisión', 'Solicitud Reestablecida. Observaciones: ' + observaciones, this.habilitacion.nroTramite)   
+      this.wait(300)
       this.habilitacion.status = habilitacion.status
       this.showRestoreDefault = false
     },
@@ -796,6 +815,7 @@ export default {
         id,
         habilitacion,
       })
+      this.registrarActividad('Aprobar Habilitación', 'Habilitación Aprobada. Inspeccion: ' + this.inspeccion, this.habilitacion.nroTramite)      
       this.wait(300)
       this.habilitacion.status = habilitacion.status
       this.showPrevApprove = false
@@ -817,6 +837,7 @@ export default {
         id,
         habilitacion,
       })
+      this.registrarActividad('Aprobar Baja', 'Baja Aprobada', this.habilitacion.nroTramite)
       this.wait(300)
       this.habilitacion.status = habilitacion.status
       this.showPrevApprove = false
@@ -840,6 +861,7 @@ export default {
         id,
         habilitacion,
       })
+      this.registrarActividad('Aprobar Renovación', 'Renovación Aprobada', this.habilitacion.nroTramite)
       this.wait(300)
       this.habilitacion.status = habilitacion.status
       this.showPrevApprove = false
@@ -863,6 +885,7 @@ export default {
         id,
         habilitacion,
       })
+      this.registrarActividad('Rechazar Solicitud', 'Rechazado por: ' + observaciones, this.habilitacion.nroTramite)
       this.wait(300)
       this.habilitacion.status = habilitacion.status
       this.observaciones = ''

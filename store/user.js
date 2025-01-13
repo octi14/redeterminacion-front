@@ -24,6 +24,7 @@ export const actions = {
           appendToast: true,
           solid: true,
         });
+      await dispatch('registrarActividad', { evento: 'LogIn', result: 'LogIn Exitoso', username });
       await this.$router.push('/');
     } catch (e) {
       // Muestra el mensaje de error en el Toast
@@ -37,6 +38,19 @@ export const actions = {
       commit('logout');
     }
   },
+
+  async registrarActividad({ state }, { evento, result, username }) {
+    const userId = username || state.username; // Usa el username actual si no se pasa explícitamente
+    const actionType = evento;
+    const actionResult = result;
+
+    try {
+      await this.$logUserActivity(userId, actionType, actionResult);
+    } catch (error) {
+      console.error('Error al registrar la actividad:', error);
+    }
+  },
+
   async changePassword({ commit }, { userId, oldPassword, newPassword }) {
     try {
       const response = await UserService.changePassword(this.$axios, {

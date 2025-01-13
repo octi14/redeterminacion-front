@@ -141,10 +141,23 @@ export default {
     },
   },
   methods: {
+    async registrarActividad(evento, result){
+      const userId = this.$store.state.user.username; // Reemplaza con el ID del usuario real
+      const actionType = evento;
+      const actionResult = result;
+
+      try {
+          await this.$logUserActivity(userId, actionType, actionResult);
+      } catch (error) {
+          console.error('Error al registrar la actividad:', error);
+      }
+    },
     onUserLogout() {
+      this.registrarActividad("User Logout", "User Logout");
       this.$store.dispatch('user/logout')
     },
     onMyAccount(){
+      this.registrarActividad("My Account", "Enter");
       this.$router.push('/account')
     }
   },

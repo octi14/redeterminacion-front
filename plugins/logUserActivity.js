@@ -91,23 +91,9 @@ export default (context, inject) => {
                     visitedUrl,
                     deviceInfo,
                 };
-
-                console.log('logUserActivity() CALLED');
-                console.log('userId:' + userId);
-                console.log('actionType:' + actionType);
-                console.log('actionResult:' + actionResult);
-                console.log('sessionId:' + sessionId);
-                console.log('visitedUrl:' + visitedUrl);
-                console.log('deviceInfo.getDeviceType:' + deviceInfo.deviceType);
-                console.log('deviceInfo.getOperatingSystem:' + deviceInfo.os);
-                console.log('deviceInfo.getScreenResolution:' + deviceInfo.resolution);
-                console.log('deviceInfo.getBrowserInfo:' + deviceInfo.browserInfo);
-
-
                 const response = await context.$axios.post('/api/user-activity', data);
-                console.log('Registro de actividad exitoso:', response.data);
             } else {
-                console.log('Logs desactivados.');
+                //console.log('Logs desactivados.');
             }
         } catch (error) {
             console.error('Error al registrar actividad:', error);

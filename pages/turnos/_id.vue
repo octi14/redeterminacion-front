@@ -4,7 +4,7 @@
     <!-- Datos del solicitante -->
     <template v-if="turno">
       <div class="text-center mt-3">
-        <p class="h4"> Número de trámite: <b> {{ turno.nroTramite }}  </b>
+        <p class="h4"> Número de trámite: <b> {{ turno.nroTramite }}  </b></p>
         <h5> Tipo de trámite: <b> {{ tipoSolicitud }} </b></h5>
       </div>
       <div class="row justify-content-center mt-3">
@@ -256,10 +256,21 @@ export default {
   },
   computed: {
     adminInspeccion(){
-      return this.$store.state.user.admin === "inspeccion" || this.$store.state.user.admin === "master"
+      return this.$store.state.user.admin == "inspeccion" || this.$store.state.user.admin == "master"
     }
   },
   methods: {
+    async registrarActividad(evento, result, nroSolicitud){
+      const userId = this.$store.state.user.username; // Reemplaza con el ID del usuario real
+      const actionType = evento;
+      const actionResult = "Trámite nro " + nroSolicitud + ' ' + result;
+
+      try {
+          await this.$logUserActivity(userId, actionType, actionResult);
+      } catch (error) {
+          console.error('Error al registrar la actividad:', error);
+      }
+    },
     wait(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
     },
@@ -302,6 +313,7 @@ export default {
         id: habId,
         habilitacion,
       })
+      this.registrarActividad('Arobar Inspección', 'Inspección Aprobada', this.turno.nroTramite)
       this.wait(300)
       this.$fetch()
       this.showPrevApprove = false
@@ -351,6 +363,7 @@ export default {
         id: habId,
         habilitacion,
       })
+      this.registrarActividad('Otorgar Prorroga', this.turno.status + " Otorgada", this.turno.nroTramite)
       this.wait(300)
       this.$fetch()
       this.showPrevProrroga = false
@@ -382,6 +395,7 @@ export default {
         id: habId,
         habilitacion,
       })
+      this.registrarActividad('Rechazar Inspección', 'Inspección Rechazada', this.turno.nroTramite)
       this.wait(300)
       this.observaciones = ''
       this.$fetch()
@@ -413,6 +427,7 @@ export default {
         id: habId,
         habilitacion,
       })
+      this.registrarActividad('Cancelar Turno Inspección', 'Inspección Cancelada', nroTramite)
       this.wait(300)
       this.observaciones = ''
       this.$fetch()

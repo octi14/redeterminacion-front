@@ -148,7 +148,6 @@ export default {
 
       try {
           await this.$logUserActivity(userId, actionType, actionResult);
-          console.log('Actividad registrada con éxito');
       } catch (error) {
           console.error('Error al registrar la actividad:', error);
       }

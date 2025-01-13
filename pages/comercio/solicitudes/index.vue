@@ -1,10 +1,10 @@
 <template>
   <div class="page main-background">
     <Banner title="Solicitudes de trámite" subtitle="Uso interno" />
-    <div class="col-8 mx-auto" v-if="adminComercio">
+    <div class="col-10 mx-auto" v-if="adminComercio">
       <!-- Filtrar por estado -->
       <b-row>
-        <b-form-group class="col-4 mx-6 mx-auto mt-4" label-class="text-success h6">
+        <b-form-group class="col-3 mx-6 mx-auto mt-4" label-class="text-success h6">
           <label for="inputNroTramite" class="bv-no-focus-ring col-form-label pt-0 text-success h6">
             <b-icon-search></b-icon-search> Buscar por N° de Trámite
           </label>
@@ -16,7 +16,19 @@
             type="text"
           />
         </b-form-group>
-        <b-form-group class="col-4 mx-6 mx-auto mt-4" label-class="text-success h6">
+        <b-form-group class="col-3 mx-6 mx-auto mt-4" label-class="text-success h6">
+          <label for="inputCUIT" class="bv-no-focus-ring col-form-label pt-0 text-success h6">
+            <b-icon-search></b-icon-search> Buscar por CUIT
+          </label>
+          <b-form-input
+            id="inputCUIT"
+            v-model="inputCUIT"
+            placeholder="Ingresá el CUIT"
+            @input="filtrarPorCuit"
+            type="text"
+          />
+        </b-form-group>
+        <b-form-group class="col-3 mx-6 mx-auto mt-4" label-class="text-success h6">
           <label for="selectedEstado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><b-icon-funnel-fill></b-icon-funnel-fill> Filtrar por Estado</label>
           <b-form-select plain v-model="selectedEstado">
             <option value="">Todos</option>
@@ -24,7 +36,7 @@
           </b-form-select>
         </b-form-group>
         <!-- filtrar por tipo de trámite -->
-        <b-form-group class="col-4 mx-auto mt-4" label-class="text-success h6">
+        <b-form-group class="col-3 mx-auto mt-4" label-class="text-success h6">
           <label for="selectedEstado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><b-icon-funnel-fill></b-icon-funnel-fill> Filtrar por tipo de trámite</label>
           <b-form-select plain v-model="selectedTipo">
             <option value="">Todos</option>
@@ -77,6 +89,7 @@ export default{
       hideFinalizados: false,
       lastLength: false,
       inputNroTramite: "", // Variable de búsqueda por número de trámite
+      inputCUIT: "",
       items: [],
       selectedEstado: '',
       selectedTipo: '',
@@ -98,8 +111,8 @@ export default{
           label: 'Fecha de solicitud',
         },
         {
-          key: 'dni',
-          label: 'DNI',
+          key: 'cuit',
+          label: 'CUIT',
         },
         {
           key: 'mail',

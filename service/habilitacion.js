@@ -2,6 +2,7 @@ const formatFile = (FileResponse) => ({
   id: FileResponse._id,
   tipoSolicitud: FileResponse.solicitante.tipoSolicitud,
   dni: FileResponse.solicitante.dni,
+  cuit: FileResponse.solicitante.cuit,
   mail: FileResponse.solicitante.mail,
   rubro: FileResponse.inmueble.rubro,
   localidad: FileResponse.inmueble.localidad,

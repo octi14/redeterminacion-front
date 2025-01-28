@@ -243,7 +243,7 @@ export default{
         console.log("TRAMITES: ");
         console.log(tramites);
         // Filtramos los trámites que no están finalizados
-        const tramitesNoFinalizados = tramites//.filter(tramite => tramite.status != "Finalizada" && tramite.status != "Rechazada");
+        const tramitesNoFinalizados = tramites.filter(tramite => tramite.status != "Finalizada" && tramite.status != "Rechazada");
         console.log("tramitesNoFinalizados:")
         console.log(tramitesNoFinalizados)
 

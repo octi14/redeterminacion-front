@@ -3,6 +3,7 @@ const formatFile = (FileResponse) => ({
   tipoSolicitud: FileResponse.solicitante.tipoSolicitud,
   dni: FileResponse.solicitante.dni,
   cuit: FileResponse.solicitante.cuit,
+  nroLegajo: FileResponse.nroLegajo,
   mail: FileResponse.solicitante.mail,
   rubro: FileResponse.inmueble.rubro,
   localidad: FileResponse.inmueble.localidad,

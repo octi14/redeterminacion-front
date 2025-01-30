@@ -31,12 +31,12 @@
       </div>
       <!--Botones-->
       <div class="row col-10 mx-auto justify-content-center" v-if="jefeComercio">
-        <b-button @click="onSolicitarDocumentacion" variant="success" class="btn-4 mt-3 mx-1" v-if="habilitacion.status === 'Inspeccionado'"> Solicitar documentación </b-button>
-        <b-button @click="onAprobarBaja" variant="success" class="btn-4 mt-3 mx-1" v-if="baja && (habilitacion.status === 'En revisión' || habilitacion.status === 'Rectificación')"> Aprobar solicitud </b-button>
-        <b-button @click="onAprobarSolicitud" variant="success" class="btn-4 mt-3 mx-1" v-if="!baja && habilitacion.status==='En revisión'"> Aprobar solicitud </b-button>
-        <b-button @click="onRectificacion" variant="secondary " class="btn-4 mt-3 mx-1" v-if="habilitacion.status === 'En revisión'"> Rectificación </b-button>
-        <b-button @click="onFinalizarSolicitud" variant="success" class="btn-4 mt-3 mx-1" v-if="(!renovacion && !reempadronamiento) && (habilitacion.status === 'Esperando documentación' || habilitacion.status === 'Esperando pago')"> Finalizar solicitud </b-button>
-        <b-button @click="onFinalizarRenovacion" variant="success" class="btn-4 mt-3 mx-1" v-if="(renovacion || reempadronamiento) && habilitacion.status === 'Esperando documentación'"> Finalizar solicitud </b-button>
+        <b-button @click="onShowSolicitarDocumentacion" variant="success" class="btn-4 mt-3 mx-1" v-if="habilitacion.status === 'Inspeccionado'"> Solicitar documentación </b-button>
+        <b-button @click="onShowAprobarBaja" variant="success" class="btn-4 mt-3 mx-1" v-if="baja && (habilitacion.status === 'En revisión' || habilitacion.status === 'Rectificación')"> Aprobar solicitud </b-button>
+        <b-button @click="onShowAprobarSolicitud" variant="success" class="btn-4 mt-3 mx-1" v-if="!baja && habilitacion.status==='En revisión'"> Aprobar solicitud </b-button>
+        <b-button @click="onShowRectificacion" variant="secondary " class="btn-4 mt-3 mx-1" v-if="habilitacion.status === 'En revisión'"> Rectificación </b-button>
+        <b-button @click="onShowFinalizarSolicitud" variant="success" class="btn-4 mt-3 mx-1" v-if="(!renovacion && !reempadronamiento) && (habilitacion.status === 'Esperando documentación' || habilitacion.status === 'Esperando pago')"> Finalizar solicitud </b-button>
+        <b-button @click="onShowFinalizarRenovacion" variant="success" class="btn-4 mt-3 mx-1" v-if="(renovacion || reempadronamiento) && habilitacion.status === 'Esperando documentación'"> Finalizar solicitud </b-button>
         <b-button @click="onRestablecer" variant="secondary" class="btn-4 mt-3 mx-1" v-if="habilitacion.status != 'En revisión' && habilitacion.status != 'Rectificación'"> Volver a estado En Revisión </b-button>
         <b-button @click="onRechazarSolicitud" class="btn-3 mt-3 mx-1"> Rechazar solicitud </b-button>
         <b-button @click="onShowObservaciones" variant="primary" class="btn-2 mt-3 mx-1"> Ver observaciones </b-button>
@@ -504,7 +504,7 @@
         </div>
         <small> Recordá que más adelante podrás consultar los datos proporcionados en la sección de búsqueda. </small>
         <div class="text-center mt-3">
-          <b-btn variant="success" :disabled="!nroExpediente1 || !nroExpediente2 || !alcance" @click="onSendAprobarRenovacion()" >
+          <b-btn variant="success" :disabled="!nroExpediente1 || !nroExpediente2 || !alcance" @click="onSendFinalizarRenovacion()" >
               Aceptar
           </b-btn>
         </div>
@@ -689,22 +689,22 @@ export default {
     wait(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
     },
-    onRectificacion(){
+    onShowRectificacion(){
       this.showRectificacion = true
     },
-    onSolicitarDocumentacion(){
+    onShowSolicitarDocumentacion(){
       this.showSolicitarDoc = true
     },
-    onAprobarBaja(){
+    onShowAprobarBaja(){
       this.showAprobarBaja = true
     },
-    async onAprobarSolicitud(){
+    async onShowAprobarSolicitud(){
       this.showPrevApprove = true
     },
-    onFinalizarSolicitud(){
+    onShowFinalizarSolicitud(){
       this.showFinalizar = true
     },
-    onFinalizarRenovacion(){
+    onShowFinalizarRenovacion(){
       this.showFinalizarRenovacion = true
     },
     onShowObservaciones(){
@@ -770,7 +770,12 @@ export default {
         id,
         habilitacion,
       })
-      this.registrarActividad('Finalizar Trámite', 'Trámite Cerrado. Expediente: ' + nroExpediente + ". Alcance: " + alcance, this.habilitacion.nroTramite)
+      if(this.baja){
+        this.registrarActividad('Finalizar Baja', 'Trámite Cerrado. Expediente: ' + nroExpediente + ". Alcance: " + alcance, this.habilitacion.nroTramite)
+
+      }else{
+        this.registrarActividad('Finalizar Habilitación', 'Trámite Cerrado. Expediente: ' + nroExpediente + ". Alcance: " + alcance, this.habilitacion.nroTramite)
+      }
       this.wait(300)
       this.habilitacion.status = habilitacion.status
       this.showFinalizar = false
@@ -845,7 +850,7 @@ export default {
         this.showAprobarBaja = false
       }
     },
-    async onSendAprobarRenovacion(){
+    async onSendFinalizarRenovacion(){
       const observaciones = this.habilitacion.observaciones || " "
       const nroExpediente = "4124 - " + this.nroExpediente1 + "/" + this.nroExpediente2
       const alcance = this.alcance
@@ -861,7 +866,11 @@ export default {
         id,
         habilitacion,
       })
-      this.registrarActividad('Aprobar Renovación', 'Renovación Aprobada', this.habilitacion.nroTramite)
+      if(this.reempadronamiento){
+        this.registrarActividad('Finalizar Reempadronamiento', 'Reempadronamiento Finalizado', this.habilitacion.nroTramite)
+      }else{
+        this.registrarActividad('Finalizar Renovación', 'Renovación Finalizada', this.habilitacion.nroTramite)
+      }
       this.wait(300)
       this.habilitacion.status = habilitacion.status
       this.showPrevApprove = false

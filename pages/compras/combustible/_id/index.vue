@@ -24,12 +24,14 @@
       <!--Botones-->
       <div class="row col-10 mx-auto justify-content-center" v-if="adminCompras">
         <b-button 
-          @click="$router.push(`/compras/combustible/${orden._id}/generar`)" 
+          v-if="orden && orden.id"
+          @click="$router.push(`/compras/combustible/${orden.id}/generar`)" 
           variant="success" 
           class="btn-4 mt-3 mx-1"
         >
           Generar vales
         </b-button>
+
         <b-button @click="onShowObservaciones" variant="primary" class="btn-2 mt-3 mx-1"> Ver observaciones </b-button>
       </div>
       <!--Botón emitir vales (opcional)-->
@@ -48,6 +50,10 @@
           </div>
         </div>
         <div class="container mx-auto">
+          <div class="d-flex justify-content-between align-items-center mt-3 mx-4">
+            <p class="font-weight-bold text-primary">Área asignada</p>
+            <p class="text-right"><strong>{{ orden.area }}</strong></p>
+          </div>
           <div class="d-flex justify-content-between align-items-center mt-3 mx-4">
             <p class="font-weight-bold text-primary">Monto total</p>
             <p class="text-right"><strong>{{ format(orden.montoSuper + orden.montoVPower) }}</strong></p>

@@ -2,51 +2,65 @@
   <div class="page">
     <Banner title="Compras" subtitle="Generar vales"/>
 
-    <b-container class="mt-4 card shadow-card" v-if="orden">
-      <b-form @submit.prevent="generarVales" class="m-4">
-        <b-form-group label="Cantidad de vales" label-for="cantidad">
-          <b-form-input
-            id="cantidad"
-            v-model.number="form.cantidad"
-            type="number"
-            min="1"
-            required
-          ></b-form-input>
-        </b-form-group>
+    <b-container class="mt-4" v-if="orden">
+      <b-card class="shadow-card">
+        <!-- Header corregido -->
+        <b-card-header class="bg-success text-white text-center">
+          <h3>Generando vales sobre la orden N°:</h3>
+          <h4 class="text-white font-weight-bold">{{ orden.nroOrden }}</h4>
+        </b-card-header>
 
-        <b-form-group label="Tipo de combustible" label-for="combustible">
-          <b-form-select 
-            id="combustible" 
-            v-model="form.combustible"
-            :options="tiposCombustible"
-            required
-          ></b-form-select>
-        </b-form-group>
+        <b-card-body>
+          <div class="row no-gutters justify-content-center">
+            <h4 class="text-primary text-center mt-4 font-weight-bold">Área asignada:  </h4> 
+            <h4 class="text-dark text-center mt-4 font-weight-bold"> {{ orden.area }}</h4>
+          </div>
+          <b-form @submit.prevent="generarVales" class="m-4">
+            <b-form-group label="Cantidad de vales" label-for="cantidad">
+              <b-form-input
+                id="cantidad"
+                v-model.number="form.cantidad"
+                type="number"
+                min="1"
+                required
+              ></b-form-input>
+            </b-form-group>
 
-        <b-form-group label="Monto de cada vale" label-for="monto">
-          <b-form-input
-            id="monto"
-            v-model.number="form.monto"
-            type="number"
-            min="1"
-            required
-          ></b-form-input>
-        </b-form-group>
+            <b-form-group label="Tipo de combustible" label-for="combustible">
+              <b-form-select 
+                id="combustible" 
+                v-model="form.combustible"
+                :options="tiposCombustible"
+                required
+              ></b-form-select>
+            </b-form-group>
 
-        <b-button 
-          type="submit" 
-          variant="primary"
-          :disabled="!orden"
-        >
-          Generar vales
-        </b-button>
-      </b-form>
+            <b-form-group label="Monto de cada vale" label-for="monto">
+              <b-form-input
+                id="monto"
+                v-model.number="form.monto"
+                type="number"
+                min="1"
+                required
+              ></b-form-input>
+            </b-form-group>
+
+            <b-button type="submit" variant="success" :disabled="!form.monto || !form.cantidad">
+              Generar vales
+            </b-button>
+          </b-form>
+        </b-card-body>
+      </b-card>
     </b-container>
+
     <b-container class="justify-content-center text-center card shadow-card mt-4" v-else>
       <h3 class="text-danger font-weight-bold mt-5">Ocurrió un error al cargar la orden de compra.</h3>
       <h5 class="m-5">Por favor, volvé a la lista de órdenes de compra y seleccioná una.</h5>
-      <b-button variant="primary" class="col-3 mb-4 mx-auto" @click="$router.push(`/compras/combustible`)">Volver</b-button>
     </b-container>
+
+    <div class="row no-gutters justify-content-center">
+      <b-button variant="primary" class="col-3 my-4 mx-auto" @click="$router.push(`/compras/combustible`)">Volver</b-button>
+    </div>
   </div>
 </template>
 
@@ -95,3 +109,10 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+  /* Quita el padding del body de la card */
+  .card-body {
+    padding: 0 !important;
+  }
+</style>

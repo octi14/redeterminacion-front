@@ -5,6 +5,7 @@ const formatOrden = (OrdenResponse) => ({
   montoVPower: OrdenResponse.monto.montoVPower,
   saldoSuper: OrdenResponse.saldoRestante.saldoSuper,
   saldoVPower: OrdenResponse.saldoRestante.saldoVPower,
+  area: OrdenResponse.area,
 })
 
 module.exports = {

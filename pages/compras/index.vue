@@ -28,7 +28,7 @@
           </b-button>
         </NuxtLink>
       </div>
-      <div class="row no-gutters justify-content-center mt-5">
+      <div class="row no-gutters justify-content-center mt-5" v-if="adminHacienda">
         <NuxtLink to="/compras/combustible" class="col-md-5">
           <b-button variant="outline" class="d-flex w-100 white shadow-card">
             <div class="me-3">
@@ -55,6 +55,9 @@ export default {
   computed: {
     adminHacienda() {
       return this.$store.state.user.admin == "hacienda" || this.$store.state.user.admin == "master";
+    },
+    adminCompras(){
+      return this.$store.state.user.admin == "compras" || this.$store.state.user.admin == "master";
     }
   }
 };
@@ -70,21 +73,6 @@ export default {
 /* Aplicar escala al hacer hover en el ícono */
 .landing-icon:hover {
   transform: scale(1.15);
-}
-.obra-icon{
-  padding-left: 8px;
-  color:#ef8918;
-  transition: transform 0.2s ease; /* Cambia la duración a medio segundo (0.5s) */
-}
-/* Aplicar escala al hacer hover en el ícono */
-.obra-icon:hover {
-  transform: scale(1.15); /* Ajusta el valor según desees el efecto de escala */
-}
-.custom-row {
-  padding-top: 10px;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .col{

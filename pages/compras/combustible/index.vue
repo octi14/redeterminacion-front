@@ -1,9 +1,8 @@
 <template>
-  <div class="page main-background">
+  <div v-if="adminCompras" class="page main-background">
     <Banner title="Compras" subtitle="Combustible"/>
     <div class="row no-gutters justify-content-center" v-if="adminCompras">
         <b-button variant="success" class="text-center mt-3 mx-3" @click="showCargarOrden = true">Cargar Orden de Compra</b-button>
-        <b-button variant="success" class="text-center mt-3 mx-3">Generar Vale de Combustible</b-button>
     </div>
     <b-table per-page="10" head-row-variant="success" class="col-md-10 white col-sm-8 mx-auto mt-4 shadow-card" :items="paginatedItems" :fields="fields">
       <template #cell(monto)="row">
@@ -18,6 +17,11 @@
             <b-icon-pen/>
           </b-button>
         </NuxtLink>
+      </template>
+      <template #cell(observaciones)="row">
+        <b-button v-if="row.item.observaciones && row.item.observaciones != ''" @click="onShowObservaciones(row.index)" variant="outline-primary" size="sm" title="Observaciones">
+          <b-icon-eye/>
+        </b-button>
       </template>
     </b-table>
 
@@ -37,7 +41,7 @@
       </template>
       <div class="confirmation-popup-body">
         <h3 class="text-success text-center"><b>Cargar orden de compra</b></h3>
-        <p class="text-dark text-center">Ingresá los datos de la orden de compra</p>
+
 
         <!-- Mensaje de éxito -->
         <div v-if="successMessage" class="text-center">
@@ -46,6 +50,7 @@
         </div>
 
         <div v-else>
+          <p class="text-dark text-center">Ingresá los datos de la orden de compra</p>
           <div class="row mx-auto">
             <!-- Número de orden de compra -->
             <b-form-group label="Número de orden de compra" label-class="text-dark font-weight-bold" class="col-12">
@@ -71,17 +76,28 @@
             </b-form-group>
           </div>
 
-          <!-- Botón de aceptar -->
-          <div class="text-center mt-3">
-            <b-btn variant="success" :disabled="!nroOrden1 || !nroOrden2 || !orden.area" @click="submitForm">
-              Aceptar
-            </b-btn>
+          <div class="row justify-content-end">
+            <!-- Botón de salir -->
+            <div class="text-center mt-3 mx-2">
+              <b-btn variant="secondary" @click="showCargarOrden=false">
+                Cancelar
+              </b-btn>
+            </div>
+            <!-- Botón de aceptar -->
+            <div class="text-center mt-3 mx-2">
+              <b-btn variant="success" :disabled="!nroOrden1 || !nroOrden2 || !orden.area" @click="submitForm">
+                Aceptar
+              </b-btn>
+            </div>
+
           </div>
         </div>
       </div>
     </b-modal>
 
-
+    <b-modal v-model="showObservaciones" header-bg-variant="primary" title="Observaciones" title-class="text-light" hide-footer centered>
+      <p v-html="observaciones"></p>
+    </b-modal>
 
   </div>
 </template>
@@ -96,6 +112,8 @@ export default {
       showCargarOrden: false,
       isLoading: false,
       successMessage: false,
+      observaciones: '',
+      showObservaciones: false,
       orden: {
         nroOrden: "",
         area: "",
@@ -106,10 +124,10 @@ export default {
       currentPage: 1,
       perPage: 10,
       fields: [
-        { key: 'nroOrden', label: 'Número de orden de compra' },
-        { key: 'monto', label: 'Monto total' },
-        { key: 'vales', label: 'Vales emitidos' },
-        { key: 'saldoRestante', label: 'Saldo restante' },
+        { key: 'nroOrden', label: 'Nro. orden' },
+        { key: 'monto', label: 'Importe' },
+        { key: 'vales', label: 'Vales' },
+        { key: 'saldoRestante', label: 'Saldo' },
         { key: 'detalles', label: 'Detalles' },
         { key: 'observaciones', label: 'Observaciones' },
       ]
@@ -134,7 +152,7 @@ export default {
       return this.filteredItems.slice(start, end).map(item => ({
         ...item,
         monto: (item.montoSuper || 0) + (item.montoVPower || 0),
-        vales: Array.isArray(item.vales) ? item.vales.length : 0,
+        vales: item.vales,
         saldoRestante: (item.saldoSuper || 0) + (item.saldoVPower || 0)
       }));
     },
@@ -151,6 +169,14 @@ export default {
   methods: {
     onPageChange(newPage) {
       this.currentPage = newPage;
+    },
+    onShowObservaciones(index){
+      if(this.ordenesCompra[index].observaciones){
+        this.observaciones = this.ordenesCompra[index].observaciones.split('**').join('<br>')
+      }else{
+        this.observaciones = "No hay observaciones para mostrar."
+      }
+      this.showObservaciones = true
     },
     async submitForm() {
       this.isLoading = true;

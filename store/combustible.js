@@ -3,6 +3,8 @@ const CombustibleService = require('../service/combustible')
 export const state = () => ({
   single: null,
   all: [],
+  vales_creados: [],
+  all_vales: [],
 })
 
 export const actions = {
@@ -13,7 +15,6 @@ export const actions = {
     commit('setAll', found)
   },
   async getSingle({ commit, state }, { id }) {
-    commit('setSingle', null)
     const found = await CombustibleService.getSingle(this.$axios, {
       id,
     })
@@ -25,6 +26,35 @@ export const actions = {
     })
     return createdFile
   },
+  async getAllVales({ commit, state}){
+    const found = await CombustibleService.getAllVales(this.$axios, {
+    })
+    commit('setAllVales', found)
+  },
+  async getValesSingle({ commit, state}, { id }){
+    commit('setValesCreados', null)
+    const found = await CombustibleService.getValesSingle(this.$axios, {
+      id
+    })
+    commit('setValesCreados', found)
+  },
+  async generarVales({ commit, state }, { payload }){
+    const createdVales = await CombustibleService.generarVales(this.$axios, {
+      payload
+    })
+    commit('setValesCreados', createdVales)
+  },
+  async eliminarVale({ commit }, { id, userToken }) {
+    try {
+      const response = await CombustibleService.deleteVale(this.$axios, { id, userToken });
+
+      // Si el backend responde correctamente, eliminamos el vale del store
+      commit("removerVale", id);
+    } catch (error) {
+      console.error("Error del store de VueX", error);
+      throw error; // Esto hace que el error se propague al frontend
+    }
+  },
 }
 
 export const mutations = {
@@ -35,7 +65,13 @@ export const mutations = {
   setSingle(state, singleFile) {
     state.single = singleFile
   },
-  // setMany(state, certifList) {
-  //   state.certifs = certifList
-  // }
+  setValesCreados(state, valesList) {
+    state.vales_creados = valesList
+  },
+  setAllVales(state, valesList){
+    state.all_vales = valesList
+  },
+  removerVale(state, valeId) {
+    state.vales_creados = state.vales_creados.filter(vale => vale.id !== valeId);
+  }
 }

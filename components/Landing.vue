@@ -3,26 +3,17 @@
     <div class="container text-center">
       <div class="row custom-row">
         <div v-for="(link, index) in links" :key="index" class="col-lg-4 my-4 mx-auto col-md-6 col-sm-12 mb-3">
-          <NuxtLink :to="link.to" class="d-block">
-            <b-button variant="outline" class="btn-5">
-              <b-icon :icon="link.icon" class="mb-4 landing-icon" />
-              <h5 class="landing-text"><b>{{ link.title }}</b></h5>
-            </b-button>
-          </NuxtLink>
+          <LandingIcon :icon="link.icon" :title="link.title" :to="link.to" />
         </div>
         <div v-if="adminHacienda" class="col-lg-4 col-md-6 mx-auto my-4 col-sm-12 mb-4">
-          <NuxtLink to="/obras" class="d-block">
-            <b-button variant="outline" class="btn-5">
-              <b-icon-calculator class="mb-4 landing-icon" />
-              <h5 class="landing-text"><b> Obras </b></h5>
-            </b-button>
-          </NuxtLink>
+          <LandingIcon icon="calculator" title="Obras" to="/obras" />
         </div>
       </div>
     </div>
+  </div>
 
-    <!--Popup anuncio de rectificación -->
-    <!-- <b-modal size="lg" v-model="showPopupAnuncio" id="abierto-anual-modal" hide-footer hide-header centered>
+  <!--Popup anuncio de rectificación -->
+  <!-- <b-modal size="lg" v-model="showPopupAnuncio" id="abierto-anual-modal" hide-footer hide-header centered>
       <h1 style="font-size: 4rem" class="mt-5 landing-text font-weight-bold text-center">ABIERTO ANUAL</h1><hr/>
       <div class="row no-gutters justify-content-center m-5">
         <img src="../assets/version_2.png" class="img-fluid w-100"/>
@@ -33,7 +24,7 @@
           <b>Mayo, Agosto</b> y <br/><b>Octubre del año 2024</b>.</small>
       </div>
     </b-modal> -->
-  </div>
+
 </template>
 
 <script>
@@ -42,41 +33,13 @@ export default {
     return {
       showPopupAnuncio: false,
       links: [
-        {
-          to: "/normativa",
-          icon: "receipt",
-          title: "Normativa"
-        },
-        {
-          to: "/comercio",
-          icon: "pen",
-          title: "Trámites comerciales"
-        },
-        {
-          to: "/turnos",
-          icon: "clock",
-          title: "Turnos inspección"
-        },
-        {
-          to: "/modernizacion",
-          icon: "list-ul",
-          title: "Modernización"
-        },
-        {
-          to: "/consulta_tramite",
-          icon: "search",
-          title: "Consulta estado de trámite"
-        },
-        {
-          to: "/abierto_anual",
-          icon: "shop",
-          title: "Comercio Abierto anual"
-        },
-        {
-          to: "/compras",
-          icon: "briefcase",
-          title: "Compras"
-        }
+        { to: "/normativa", icon: "receipt", title: "Normativa" },
+        { to: "/comercio", icon: "pen", title: "Trámites comerciales" },
+        { to: "/turnos", icon: "clock", title: "Turnos inspección" },
+        { to: "/modernizacion", icon: "list-ul", title: "Modernización" },
+        { to: "/consulta_tramite", icon: "search", title: "Consulta estado de trámite" },
+        { to: "/abierto_anual", icon: "shop", title: "Comercio Abierto anual" },
+        { to: "/compras", icon: "briefcase", title: "Compras" }
       ]
     };
   },

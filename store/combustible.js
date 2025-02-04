@@ -44,6 +44,15 @@ export const actions = {
     })
     commit('setValesCreados', createdVales)
   },
+  async consumirVale({ commit }, { id, vale}) {
+    try {
+      await CombustibleService.consumirVale(this.$axios, id, {
+        vale,
+      })
+    } catch (e) {
+      throw new Error(e.message)
+    }
+  },
   async eliminarVale({ commit }, { id, userToken }) {
     try {
       const response = await CombustibleService.deleteVale(this.$axios, { id, userToken });

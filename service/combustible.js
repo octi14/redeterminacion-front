@@ -72,6 +72,14 @@ module.exports = {
     )
     return createdVales.data.map(formatVale)
   },
+  consumirVale: async (axios, id, { vale }) => {
+    axios.setHeader('Access-Control-Allow-Origin', true)
+    const updated = await axios.$put(
+      `/valesCombustible/${id}`,
+      { vale },
+    )
+    return formatVale(updated)
+  },
   deleteVale: async (axios, { id, userToken }) =>{
     console.log("Borrandolo...")
     return await axios.$delete(`/valesCombustible/${id}`, {

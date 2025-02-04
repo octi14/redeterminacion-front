@@ -55,24 +55,24 @@
             <!-- Número de orden de compra -->
             <b-form-group label="Número de orden de compra" label-class="text-dark font-weight-bold" class="col-12">
               <div class="numero-orden-container">
-                <b-form-input type="number" no-wheel v-model="nroOrden1"/>
+                <b-form-input type="number" class="col-4" no-wheel v-model="nroOrden1"/>
                 <span>/</span>
-                <b-form-input type="number" no-wheel v-model="nroOrden2"/>
+                <b-form-input type="number" class="col-4" no-wheel v-model="nroOrden2"/>
               </div>
             </b-form-group>
 
             <!-- Montos -->
             <b-form-group label="Monto asignado combustible Súper" label-class="text-dark font-weight-bold" class="col-12">
-              <b-form-input class="col-6" type="number" no-wheel  v-model="orden.montoSuper"/>
+              <b-form-input class="col-8" type="number" no-wheel  v-model="orden.montoSuper"/>
             </b-form-group>
 
             <b-form-group label="Monto asignado combustible V-Power" label-class="text-dark font-weight-bold" class="col-12">
-              <b-form-input class="col-6" type="number" no-wheel  v-model="orden.montoVPower"/>
+              <b-form-input class="col-8" type="number" no-wheel  v-model="orden.montoVPower"/>
             </b-form-group>
 
             <!-- Área asignada -->
             <b-form-group label="Área asignada" label-class="text-dark font-weight-bold" class="col-12">
-              <b-form-input class="col-6" type="text" no-wheel  v-model="orden.area"/>
+              <b-form-input class="col-8" type="text" no-wheel  v-model="orden.area"/>
             </b-form-group>
           </div>
 
@@ -95,7 +95,7 @@
       </div>
     </b-modal>
 
-    <b-modal v-model="showObservaciones" header-bg-variant="primary" title="Observaciones" title-class="text-light" hide-footer centered>
+    <b-modal size="lg" v-model="showObservaciones" header-bg-variant="primary" title="Observaciones" title-class="text-light" hide-footer centered>
       <p v-html="observaciones"></p>
     </b-modal>
 
@@ -172,7 +172,7 @@ export default {
     },
     onShowObservaciones(index){
       if(this.ordenesCompra[index].observaciones){
-        this.observaciones = this.ordenesCompra[index].observaciones.split('**').join('<br>')
+        this.observaciones = this.ordenesCompra[index].observaciones.split('**').join('<br>').split(',').join('')
       }else{
         this.observaciones = "No hay observaciones para mostrar."
       }

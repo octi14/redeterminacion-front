@@ -10,8 +10,8 @@
         </b-card-header>
 
         <b-card-body>
-          <div class="row no-gutters justify-content-center">
-            <h4 class="text-primary text-center mt-4 font-weight-bold">Área asignada: </h4>
+          <div class="row justify-content-center">
+            <h4 class="text-primary text-center mt-4 mx-2 font-weight-bold">Área asignada: </h4>
             <h4 class="text-dark text-center mt-4 font-weight-bold"> {{ orden.area }}</h4>
           </div>
 
@@ -74,7 +74,7 @@ export default {
       },
       tiposCombustible: [
         { value: "Super", text: "Super" },
-        { value: "V-Power", text: "V-Power" }
+        { value: "V-Power Diesel", text: "V-Power Diesel" }
       ]
     };
   },
@@ -94,6 +94,26 @@ export default {
       }
 
       const area = this.orden.area;
+
+      const totalMonto = this.form.cantidad * this.form.monto;
+      // Verificar si el total excede el saldo disponible según el tipo de combustible
+      const saldoDisponible =
+        this.form.combustible === "Super" ? this.orden.saldoSuper : this.orden.saldoVPower;
+
+      if (totalMonto > saldoDisponible) {
+        this.$bvModal.msgBoxOk(`El monto total excede el saldo disponible para ${this.form.combustible}.`, {
+          title: "Saldo insuficiente",
+          size: "md",
+          buttonSize: "md",
+          okVariant: "danger",
+          okTitle: "Aceptar",
+          titleClass: "text-center text-light",
+          headerBgVariant: "danger",
+          centered: true,
+        });
+        return; // Detener la ejecución si el saldo es insuficiente
+      }
+
       const payload = {
         orden: this.orden.id,
         cantidad: this.form.cantidad,
@@ -190,14 +210,14 @@ export default {
 
         //Original
         ctx.fillText(`${this.orden.nroOrden}`, 600, 367);
-        ctx.fillText(`${i + 1}`, 1600, 266);
+        ctx.fillText(`${(i + 1).toString().padStart(3, '0')}`, 1600, 266);
         ctx.fillText(`${this.valesCreados[i].area}`, 1400, 365);
         ctx.fillText(`${this.valesCreados[i].tipoCombustible}`, 600, 420);
-        ctx.fillText(`${this.valesCreados[i].fechaEmision.toLocaleDateString('es-AR')}`, 1400, 420);
+        // ctx.fillText(`${this.valesCreados[i].fechaEmision.toLocaleDateString('es-AR')}`, 1400, 420);
         ctx.fillText(`$${this.valesCreados[i].monto}`, 600, 471);
         // Cambiar el tamaño de la fuente solo para el monto
         ctx.font = "500 30px sans-serif";  // Fuente más pequeña
-        ctx.fillText(montoTexto, 1100, 471);
+        ctx.fillText(montoTexto, 1000, 471);
 
         //Volver a la fuente original para los demás campos
         ctx.font = "500 38px sans-serif";
@@ -205,17 +225,17 @@ export default {
 
         //Duplicado
         ctx.fillText(`${this.orden.nroOrden}`, 2348, 367);
-        ctx.fillText(`${i + 1}`, 3348, 266);
+        ctx.fillText(`${(i + 1).toString().padStart(3, '0')}`, 3348, 266);
         ctx.fillText(`${this.valesCreados[i].area}`, 3148, 365);
         ctx.fillText(`${this.valesCreados[i].tipoCombustible}`, 2348, 420);
-        ctx.fillText(`${this.valesCreados[i].fechaEmision.toLocaleDateString('es-AR')}`, 3148, 420);
+        // ctx.fillText(`${this.valesCreados[i].fechaEmision.toLocaleDateString('es-AR')}`, 3148, 420);
         ctx.fillText(`$${this.valesCreados[i].monto}`, 2348, 471);
         // Cambiar el tamaño de la fuente solo para el monto en el duplicado
         ctx.font = "500 30px sans-serif";  // Fuente más pequeña
-        ctx.fillText(montoTexto, 2848, 471);
+        ctx.fillText(montoTexto, 2748, 471);
 
         // Convertir canvas en imagen y agregarlo al PDF
-        const imgData = canvas.toDataURL("image/png");
+        const imgData = canvas.toDataURL("image/jpeg", 0.7); // Calidad 0.7 (ajustable)
         pdf.addImage(imgData, "PNG", 5, posY - 9, valeWidthScaled, valeHeightScaled);
       }
 

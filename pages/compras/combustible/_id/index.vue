@@ -60,15 +60,29 @@
           </div>
           <div class="d-flex justify-content-between align-items-center mt-0 mb-2 mx-4">
             <div class="d-flex align-items-center gap-1">
-              <b-icon-caret-right-fill/>
+              <b-icon-caret-right-fill class="icon-orange mr-2"/>
               <p class="mb-0">Super</p>
             </div>
             <p class="mb-0 text-right">{{ format(orden.montoSuper) }}</p>
           </div>
           <div class="d-flex justify-content-between align-items-center mt-0 mx-4">
             <div class="d-flex align-items-center gap-2">
-              <b-icon-caret-right-fill/>
+              <b-icon-caret-right-fill class="icon-orange mr-2"/>
               <p class="mb-0">V-Power</p>
+            </div>
+            <p class="mb-0 text-right">{{ format(orden.montoVPower) }}</p>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mt-2 mx-4">
+            <div class="d-flex align-items-center gap-2">
+              <b-icon-caret-right-fill class="icon-orange mr-2"/>
+              <p class="mb-0">Combustible 3</p>
+            </div>
+            <p class="mb-0 text-right">{{ format(orden.montoVPower) }}</p>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mt-2 mx-4">
+            <div class="d-flex align-items-center gap-2">
+              <b-icon-caret-right-fill class="icon-orange mr-2"/>
+              <p class="mb-0">Combustible 4</p>
             </div>
             <p class="mb-0 text-right">{{ format(orden.montoVPower) }}</p>
           </div>
@@ -78,17 +92,31 @@
           </div>
           <div class="d-flex justify-content-between align-items-center mt-0 mx-4">
             <div class="d-flex align-items-center gap-1">
-              <b-icon-caret-right-fill/>
+              <b-icon-caret-right-fill class="icon-orange mr-2"/>
               <p class="mb-0">Super</p>
             </div>
             <p class="mb-0 text-right">{{ format(orden.saldoSuper) }}</p>
           </div>
-          <div class="d-flex justify-content-between align-items-center mt-2 mb-4 mx-4">
+          <div class="d-flex justify-content-between align-items-center mt-2 mx-4">
             <div class="d-flex align-items-center gap-2">
-              <b-icon-caret-right-fill/>
+              <b-icon-caret-right-fill class="icon-orange mr-2"/>
               <p class="mb-0">V-Power</p>
             </div>
             <p class="mb-0 text-right">{{ format(orden.saldoVPower) }}</p>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mt-2 mx-4">
+            <div class="d-flex align-items-center gap-1">
+              <b-icon-caret-right-fill class="icon-orange mr-2"/>
+              <p class="mb-0">Combustible 3</p>
+            </div>
+            <p class="mb-0 text-right">{{ format(orden.saldoSuper) }}</p>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mt-2 mb-4 mx-4">
+            <div class="d-flex align-items-center gap-1">
+              <b-icon-caret-right-fill class="icon-orange mr-2"/>
+              <p class="mb-0">Combustible 4</p>
+            </div>
+            <p class="mb-0 text-right">{{ format(orden.saldoSuper) }}</p>
           </div>
         </div>
       </b-card>
@@ -594,15 +622,6 @@ export default {
 .modal-dialog {
   max-width: 80% !important;
 }
-
-.col-main {
-  flex: 1;
-}
-
-.col-complementary {
-  flex: 1;
-}
-
 .icon-orange{
   color: #E27910;
 }

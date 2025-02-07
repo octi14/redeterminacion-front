@@ -800,7 +800,7 @@ export default {
         id,
         habilitacion,
       })
-      this.registrarActividad('Volver a En Revisión', 'Solicitud Reestablecida. Observaciones: ' + observaciones, this.habilitacion.nroTramite)   
+      this.registrarActividad('Volver a En Revisión', 'Solicitud Reestablecida. Observaciones: ' + observaciones, this.habilitacion.nroTramite)
       this.wait(300)
       this.habilitacion.status = habilitacion.status
       this.showRestoreDefault = false
@@ -820,7 +820,7 @@ export default {
         id,
         habilitacion,
       })
-      this.registrarActividad('Aprobar Habilitación', 'Habilitación Aprobada. Inspeccion: ' + this.inspeccion, this.habilitacion.nroTramite)      
+      this.registrarActividad('Aprobar Habilitación', 'Habilitación Aprobada. Inspeccion: ' + this.inspeccion, this.habilitacion.nroTramite)
       this.wait(300)
       this.habilitacion.status = habilitacion.status
       this.showPrevApprove = false
@@ -1026,55 +1026,49 @@ export default {
       });
     },*/
     openDocumento(documento, nombreDocumento) {
-      const decodedData = atob(documento.data); // Decodificar la data de Base64
+  const decodedData = atob(documento.data); // Decodificar la data de Base64
 
-      const arrayBuffer = new ArrayBuffer(decodedData.length);
-      const arrayBufferView = new Uint8Array(arrayBuffer);
+  const arrayBuffer = new ArrayBuffer(decodedData.length);
+  const arrayBufferView = new Uint8Array(arrayBuffer);
 
-      for (let i = 0; i < decodedData.length; i++) {
-        arrayBufferView[i] = decodedData.charCodeAt(i);
-      }
+  for (let i = 0; i < decodedData.length; i++) {
+    arrayBufferView[i] = decodedData.charCodeAt(i);
+  }
 
-      const blob = new Blob([arrayBuffer], { type: documento.contentType });
-      const fileURL = URL.createObjectURL(blob);
+  const blob = new Blob([arrayBuffer], { type: documento.contentType });
+  const fileURL = URL.createObjectURL(blob);
 
-      const newWindow = window.open('', '_blank');
+  const newWindow = window.open('', '_blank');
+  newWindow.document.title = documento.filename || `Documento: ${nombreDocumento}`;
 
-      let newWindowTitle = "Documento: " + nombreDocumento; // Título predeterminado
-
-      if (documento.filename) {
-        newWindowTitle = documento.filename; // Usar el nombre del archivo si está disponible
-      }
-
-      newWindow.document.title = newWindowTitle; // Establecer el título de la pestaña
-
-      if (documento.contentType === 'application/pdf') {
-        // Abrir el PDF en una nueva pestaña utilizando <embed>
-        const embed = document.createElement('embed');
-        embed.setAttribute('type', 'application/pdf');
-        embed.setAttribute('src', fileURL);
-        embed.setAttribute('width', '100%');
-        embed.setAttribute('height', '100%');
-        newWindow.document.body.appendChild(embed);
-      } else if (documento.contentType.startsWith('image/')) {
-          // Verifica si es una imagen y maneja tanto .jpeg como .jpg
-          const img = document.createElement('img');
-          img.setAttribute('src', fileURL);
-          img.setAttribute('width', 'auto');
-          img.setAttribute('height', 'auto');
-
-          // Normaliza el tipo de contenido si es .jpeg
-          if (fileURL.endsWith('.jpeg')) {
-              img.setAttribute('src', fileURL); // Asume que los .jpeg también son imágenes
-          } else if (fileURL.endsWith('.jpg')) {
-              img.setAttribute('src', fileURL); // Si es .jpg, funciona igual
-          }
-
-          newWindow.document.body.appendChild(img);
-      } else {
-          console.log('Formato de contenido no compatible');
-      }
-    },
+  if (documento.contentType === 'application/pdf') {
+    const embed = document.createElement('embed');
+    embed.setAttribute('type', 'application/pdf');
+    embed.setAttribute('src', fileURL);
+    embed.setAttribute('width', '100%');
+    embed.setAttribute('height', '100%');
+    newWindow.document.body.appendChild(embed);
+  } else if (documento.contentType.startsWith('image/')) {
+    const img = document.createElement('img');
+    img.setAttribute('src', fileURL);
+    img.setAttribute('width', 'auto');
+    img.setAttribute('height', 'auto');
+    newWindow.document.body.appendChild(img);
+  } else if (
+    documento.contentType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+    documento.contentType === 'application/msword'
+  ) {
+    // Crear un link de descarga automática
+    const link = document.createElement('a');
+    link.href = fileURL;
+    link.download = documento.filename || 'documento.docx';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } else {
+    console.log('Formato de contenido no compatible');
+  }
+},
     onResetEdit() {
       this.editing = false
     },

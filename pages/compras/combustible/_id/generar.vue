@@ -72,10 +72,6 @@ export default {
         combustible: "Super",
         monto: null
       },
-      tiposCombustible: [
-        { value: "Super", text: "Super" },
-        { value: "V-Power Diesel", text: "V-Power Diesel" }
-      ]
     };
   },
   computed: {
@@ -84,6 +80,12 @@ export default {
     },
     valesCreados(){
       return this.$store.state.combustible.vales_creados
+    },
+    tiposCombustible(){
+      const orden = this.$store.state.combustible.single
+      var tiposCombustible = []
+      orden.montos.map((item) => tiposCombustible.push(item.tipoCombustible))
+      return tiposCombustible
     }
   },
   methods: {
@@ -217,7 +219,7 @@ export default {
         ctx.fillText(`$${this.valesCreados[i].monto}`, 600, 471);
         // Cambiar el tamaño de la fuente solo para el monto
         ctx.font = "500 30px sans-serif";  // Fuente más pequeña
-        ctx.fillText(montoTexto, 1000, 471);
+        ctx.fillText(montoTexto, 1100, 471);
 
         //Volver a la fuente original para los demás campos
         ctx.font = "500 38px sans-serif";
@@ -232,7 +234,7 @@ export default {
         ctx.fillText(`$${this.valesCreados[i].monto}`, 2348, 471);
         // Cambiar el tamaño de la fuente solo para el monto en el duplicado
         ctx.font = "500 30px sans-serif";  // Fuente más pequeña
-        ctx.fillText(montoTexto, 2748, 471);
+        ctx.fillText(montoTexto, 2848, 471);
 
         // Convertir canvas en imagen y agregarlo al PDF
         const imgData = canvas.toDataURL("image/jpeg", 0.7); // Calidad 0.7 (ajustable)

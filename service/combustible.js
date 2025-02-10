@@ -1,14 +1,14 @@
 const formatOrden = (OrdenResponse) => ({
   id: OrdenResponse._id,
   nroOrden: OrdenResponse.nroOrden,
-  montoSuper: OrdenResponse.monto.montoSuper,
-  montoVPower: OrdenResponse.monto.montoVPower,
-  saldoSuper: OrdenResponse.saldoRestante.saldoSuper,
-  saldoVPower: OrdenResponse.saldoRestante.saldoVPower,
   area: OrdenResponse.area,
-  vales: OrdenResponse.vales ? OrdenResponse.vales.length : 0,  // Aquí agregas el campo 'vales' con la longitud
-  observaciones: String(OrdenResponse.observaciones),
-})
+  montos: OrdenResponse.monto || [],  // Dejamos montos como array
+  saldos: OrdenResponse.saldoRestante || [],  // Dejamos saldos como array
+  proveedor: OrdenResponse.proveedor,
+  vales: OrdenResponse.vales ? OrdenResponse.vales.length : 0,
+  observaciones: String(OrdenResponse.observaciones || ""),
+});
+
 
 const formatVale = (ValeResponse) => ({
   id: ValeResponse._id,

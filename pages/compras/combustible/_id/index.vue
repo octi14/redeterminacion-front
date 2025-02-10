@@ -45,7 +45,7 @@
       <b-card no-body class="container col-md-6 col-sm-10 shadow-card mt-4 mx-auto">
         <div class="col mx-auto">
           <div class="container text-center mx-auto">
-            <h2 class="text-success mt-2"><b> Datos de orden de compra </b></h2>
+            <h2 class="text-success mt-2"><b>Datos de orden de compra</b></h2>
             <hr/>
           </div>
         </div>
@@ -54,69 +54,43 @@
             <p class="font-weight-bold text-primary">Área asignada</p>
             <p class="text-right"><strong>{{ orden.area }}</strong></p>
           </div>
+          <div class="d-flex justify-content-between align-items-center mt-1 mx-4">
+            <p class="font-weight-bold text-primary">Proveedor</p>
+            <p class="text-right"><strong>{{ orden.proveedor }}</strong></p>
+          </div>
+
+          <!-- Monto total -->
           <div class="d-flex justify-content-between align-items-center mt-2 mx-4">
             <p class="font-weight-bold text-primary">Monto total</p>
-            <p class="text-right"><strong>{{ format(orden.montoSuper + orden.montoVPower) }}</strong></p>
+            <p class="text-right">
+              <strong>{{ format(totalMonto) }}</strong>
+            </p>
           </div>
-          <div class="d-flex justify-content-between align-items-center mt-0 mb-2 mx-4">
+
+          <!-- Lista de montos por combustible -->
+          <div v-for="monto in orden.montos" :key="monto.tipo" class="d-flex justify-content-between align-items-center mt-0 mx-4">
             <div class="d-flex align-items-center gap-1">
               <b-icon-caret-right-fill class="icon-orange mr-2"/>
-              <p class="mb-0">Super</p>
+              <p class="mb-0">{{ monto.tipoCombustible }}</p>
             </div>
-            <p class="mb-0 text-right">{{ format(orden.montoSuper) }}</p>
+            <p class="mb-0 text-right">{{ format(monto.monto) }}</p>
           </div>
-          <div class="d-flex justify-content-between align-items-center mt-0 mx-4">
-            <div class="d-flex align-items-center gap-2">
-              <b-icon-caret-right-fill class="icon-orange mr-2"/>
-              <p class="mb-0">V-Power</p>
-            </div>
-            <p class="mb-0 text-right">{{ format(orden.montoVPower) }}</p>
-          </div>
-          <div class="d-flex justify-content-between align-items-center mt-2 mx-4">
-            <div class="d-flex align-items-center gap-2">
-              <b-icon-caret-right-fill class="icon-orange mr-2"/>
-              <p class="mb-0">Combustible 3</p>
-            </div>
-            <p class="mb-0 text-right">{{ format(orden.montoVPower) }}</p>
-          </div>
-          <div class="d-flex justify-content-between align-items-center mt-2 mx-4">
-            <div class="d-flex align-items-center gap-2">
-              <b-icon-caret-right-fill class="icon-orange mr-2"/>
-              <p class="mb-0">Combustible 4</p>
-            </div>
-            <p class="mb-0 text-right">{{ format(orden.montoVPower) }}</p>
-          </div>
+
+          <!-- Saldo restante total -->
           <div class="d-flex justify-content-between align-items-center mt-3 mx-4">
             <p class="font-weight-bold text-primary">Saldo restante</p>
-            <p class="text-right"><strong>{{ format(orden.saldoSuper + orden.saldoVPower) }}</strong></p>
+            <p class="text-right">
+              <strong>{{ format(totalSaldo) }}</strong>
+            </p>
           </div>
-          <div class="d-flex justify-content-between align-items-center mt-0 mx-4">
+
+          <!-- Lista de saldos por combustible -->
+          <div v-for="saldo in orden.saldos" :key="saldo.tipo" class="d-flex justify-content-between align-items-center mt-0 mx-4">
             <div class="d-flex align-items-center gap-1">
               <b-icon-caret-right-fill class="icon-orange mr-2"/>
-              <p class="mb-0">Super</p>
+              <p class="mb-0">{{ saldo.tipoCombustible }}</p>
             </div>
-            <p class="mb-0 text-right">{{ format(orden.saldoSuper) }}</p>
-          </div>
-          <div class="d-flex justify-content-between align-items-center mt-2 mx-4">
-            <div class="d-flex align-items-center gap-2">
-              <b-icon-caret-right-fill class="icon-orange mr-2"/>
-              <p class="mb-0">V-Power</p>
-            </div>
-            <p class="mb-0 text-right">{{ format(orden.saldoVPower) }}</p>
-          </div>
-          <div class="d-flex justify-content-between align-items-center mt-2 mx-4">
-            <div class="d-flex align-items-center gap-1">
-              <b-icon-caret-right-fill class="icon-orange mr-2"/>
-              <p class="mb-0">Combustible 3</p>
-            </div>
-            <p class="mb-0 text-right">{{ format(orden.saldoSuper) }}</p>
-          </div>
-          <div class="d-flex justify-content-between align-items-center mt-2 mb-4 mx-4">
-            <div class="d-flex align-items-center gap-1">
-              <b-icon-caret-right-fill class="icon-orange mr-2"/>
-              <p class="mb-0">Combustible 4</p>
-            </div>
-            <p class="mb-0 text-right">{{ format(orden.saldoSuper) }}</p>
+            <p class="mb-0 text-right">{{ format(saldo.saldo) }}</p>
           </div>
         </div>
       </b-card>
@@ -295,6 +269,12 @@ export default {
   computed: {
     orden(){
       return this.$store.state.combustible.single
+    },
+    totalMonto() {
+      return this.orden.montos.reduce((total, m) => total + m.monto, 0);
+    },
+    totalSaldo() {
+      return this.orden.saldos.reduce((total, s) => total + s.saldo, 0);
     },
     adminCompras(){
       return this.$store.state.user.admin == "compras" || this.$store.state.user.admin == "master"

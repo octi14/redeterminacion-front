@@ -6,10 +6,10 @@
     </div>
     <b-table per-page="10" head-row-variant="success" class="col-md-10 white col-sm-8 mx-auto mt-4 shadow-card" :items="paginatedItems" :fields="fields">
       <template #cell(monto)="row">
-        {{ format(row.item.monto) }}
+        {{ format(row.item.montos.reduce((acc, combustible) => acc + combustible.monto, 0)) }}
       </template>
       <template #cell(saldoRestante)="row">
-        {{ format(row.item.saldoRestante) }}
+        {{ format(row.item.saldos.reduce((acc, saldo) => acc + saldo.saldo, 0)) }}
       </template>
       <template #cell(detalles)="row">
         <NuxtLink :to="{ name: 'compras-combustible-id', params: { id: row.item.id } }">
@@ -32,7 +32,6 @@
       </NuxtLink>
     </div>
 
-    <!--Modal cargar orden de compra-->
     <b-modal v-model="showCargarOrden" hide-footer :header-bg-variant="'success'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
@@ -41,7 +40,6 @@
       </template>
       <div class="confirmation-popup-body">
         <h3 class="text-success text-center"><b>Cargar orden de compra</b></h3>
-
 
         <!-- Mensaje de éxito -->
         <div v-if="successMessage" class="text-center">
@@ -61,18 +59,24 @@
               </div>
             </b-form-group>
 
-            <!-- Montos -->
-            <b-form-group label="Monto asignado combustible Súper" label-class="text-dark font-weight-bold" class="col-12">
-              <b-form-input class="col-8" type="number" no-wheel  v-model="orden.montoSuper"/>
+            <!-- Combustibles -->
+            <b-form-group label="Montos asignados por tipo de combustible" label-class="text-dark font-weight-bold" class="col-12">
+              <div v-for="(combustible, index) in orden.montos" :key="index" class="d-flex align-items-center mb-2">
+                <b-form-input class="col-5" type="text" placeholder="Tipo de combustible" v-model="combustible.tipoCombustible" />
+                <b-form-input class="col-5 ml-2" type="number" placeholder="Monto" no-wheel v-model="combustible.monto" />
+                <b-button variant="danger" size="sm" class="ml-2" @click="removeCombustible(index)">X</b-button>
+              </div>
+              <b-button variant="primary" :disabled="this.orden.montos.length >= 4" size="sm" @click="addCombustible">+ Agregar otro combustible</b-button>
             </b-form-group>
 
-            <b-form-group label="Monto asignado combustible V-Power" label-class="text-dark font-weight-bold" class="col-12">
-              <b-form-input class="col-8" type="number" no-wheel  v-model="orden.montoVPower"/>
+            <!-- Proveedor -->
+            <b-form-group label="Proveedor" label-class="text-dark font-weight-bold" class="col-12">
+              <b-form-input class="col-8" type="text" v-model="orden.proveedor"/>
             </b-form-group>
 
             <!-- Área asignada -->
             <b-form-group label="Área asignada" label-class="text-dark font-weight-bold" class="col-12">
-              <b-form-input class="col-8" type="text" no-wheel  v-model="orden.area"/>
+              <b-form-input class="col-8" type="text" v-model="orden.area"/>
             </b-form-group>
           </div>
 
@@ -85,15 +89,15 @@
             </div>
             <!-- Botón de aceptar -->
             <div class="text-center mt-3 mx-2">
-              <b-btn variant="success" :disabled="!nroOrden1 || !nroOrden2 || !orden.area" @click="submitForm">
+              <b-btn variant="success" :disabled="!nroOrden1 || !nroOrden2 || !orden.area || !orden.montos.length" @click="submitForm">
                 Aceptar
               </b-btn>
             </div>
-
           </div>
         </div>
       </div>
     </b-modal>
+
 
     <b-modal size="lg" v-model="showObservaciones" header-bg-variant="primary" title="Observaciones" title-class="text-light" hide-footer centered>
       <p v-html="observaciones"></p>
@@ -117,8 +121,8 @@ export default {
       orden: {
         nroOrden: "",
         area: "",
-        montoSuper: null,
-        montoVPower: null,
+        proveedor: '',
+        montos: [],
       },
       items: [],
       currentPage: 1,
@@ -178,6 +182,12 @@ export default {
       }
       this.showObservaciones = true
     },
+    addCombustible() {
+      this.orden.montos.push({ tipoCombustible: "", monto: 0 });
+    },
+    removeCombustible(index) {
+      this.orden.montos.splice(index, 1);
+    },
     async submitForm() {
       this.isLoading = true;
       try {
@@ -188,10 +198,10 @@ export default {
 
         await this.$store.dispatch('combustible/create', {
           orden: {
-            nroOrden,  // Enviar como un único string con el formato "1234/5678"
-            montoSuper: this.orden.montoSuper,
-            montoVPower: this.orden.montoVPower,
+            nroOrden: nroOrden,
+            proveedor: this.orden.proveedor,
             area: this.orden.area,
+            montos: this.orden.montos.filter(m => m.tipoCombustible && m.monto > 0) // Evitar enviar montos vacíos
           },
         });
 
@@ -201,6 +211,7 @@ export default {
         // Esperar 2 segundos antes de cerrar el modal y refrescar la página
         await new Promise(resolve => setTimeout(resolve, 2000));
         this.showCargarOrden = false;  // Cerrar modal
+        this.successMessage = false,
         location.reload();  // Refrescar página
       } catch (error) {
         this.$bvToast.toast("Error al crear la orden", { variant: "danger" });

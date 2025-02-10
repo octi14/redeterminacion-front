@@ -32,7 +32,8 @@
           </b-form>
           <div class="btn-container">
             <b-button class="btn-cancel" @click="onResetParams">Cancelar</b-button>
-            <b-button @click="sendData" :disabled="enterKeyPressed">Aceptar</b-button>
+            <!-- <b-button @click="sendData" :disabled="enterKeyPressed">Aceptar</b-button> -->
+            <b-button @click="openPopup('ClosedPeriod')" :disabled="enterKeyPressed">Aceptar</b-button>
           </div>
         </b-card>
       </div>
@@ -93,8 +94,32 @@
         </div>
       </div>
     </b-modal>
+    <!-- Popup de periodo cerrado -->
+    <b-modal v-model="showClosedPopup" hide-footer :header-bg-variant="'success'" centered   no-close-on-backdrop no-close-on-esc>
+      <template #modal-header>
+        <div class="closed-popup-header">
+            <b-icon icon="exclamation-triangle" scale="2" variant="light" ></b-icon>
+        </div>
+            <button type="button" aria-label="Close" class="close" @click="showClosedPopup = false" style="position: absolute; right: 15px; top: 15px;">×</button>
+      </template>
+      <div class="closed-popup-body">
+        <h2 class="icon-orange"><b>IMPORTANTE</b></h2>
+        <p >El plazo para acreditar las facturas del año 2024 ha expirado.</p>
+  
+        <div class="li-row">
+          <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Por cualquier reclamo comunicate con <a href="mailto:dirarvige@gesell.gob.ar" class="text-success">ARVIGE</a> para conocer los pasos a seguir.</div>
+        </div>
+
+        <div class="text-center mt-3">
+            <b-btn variant="success" @click="showClosedPopup = false">
+                Aceptar
+            </b-btn>
+        </div>
+      </div>
+    </b-modal>
   </div>
 </template>
+
 
   <script>
   import maestroComercial from "@/plugins/maestroComercial.js";  
@@ -102,9 +127,7 @@
   export default {
     validations() {
       return {        
-        cuit:{
-          required, numeric, maxLength: maxLength(11), minLength: minLength(11)
-        },
+        cuit: { required, numeric, maxLength: maxLength(12), minLength: minLength(11) },
         nroLegajo:{
           required, numeric
         }
@@ -124,7 +147,11 @@
         showPopupNotAllowed: false,
         showPopupAlready: false,
         showPopupA: false,
+        showClosedPopup: false,
       };
+    },
+    mounted() {
+      this.showClosedPopup = true;
     },
     computed: {
       maestro(){
@@ -191,7 +218,9 @@
       if (type === 'A') {
         console.log("ShowPopup A")
         this.showPopupA = true;
-      }
+      }else if (type === 'ClosedPeriod'){
+          this.showClosedPopup = true;
+        }
     },
     
   },
@@ -381,6 +410,30 @@
       margin-right: 1rem;
       padding-right: 0.5rem;
       border-right: 1px solid #FFF;
+    }
+    .confirmation-popup-header, .closed-popup-header{
+      margin: auto;
+      font-size: 2rem;
+    }
+    .confirmation-popup-body h2, .closed-popup-body h2{
+      text-align: center;
+      font-size: 2.5rem;
+    }
+    .confirmation-popup-body h2 b, .closed-popup-body h2 b{
+      padding: 0 5%;
+      border-bottom: 1px solid #ccc;
+    }
+    .confirmation-popup-body p, .closed-popup-body p{
+      text-align: center;
+      font-size: 1.25rem;
+      color: black;
+    }
+    .confirmation-popup-body .form-check{
+      margin: auto;
+      margin-top: 1rem;
+    }
+    .confirmation-popup-body .li-content, .closed-popup-body .li-content{
+      color: black;
     }
     .section-card{
       margin: 2rem auto !important;

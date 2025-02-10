@@ -220,8 +220,12 @@
               </div>
             </transition>
           </b-card>
-        <b-button variant="success" class="float-right btn-form" @click="openPopup('Form')">Iniciar Trámite</b-button>
-        <br />
+          <b-row>
+            <b-col>
+              <!-- <b-button variant="success" class="float-right btn-form" @click="openPopup('Form')" disabled="disabled">Iniciar Trámite</b-button> -->
+              <b-button variant="success" class="float-right btn-form" @click="openPopup('ClosedPeriod')">Iniciar Trámite</b-button>
+            </b-col>
+          </b-row>
         </b-col>
       </b-row>
      <!-- Popup de advertencia -->
@@ -268,7 +272,29 @@
         </div>
       </div>
     </b-modal>
+    <!-- Popup de periodo cerrado -->
+    <b-modal v-model="showClosedPopup" hide-footer :header-bg-variant="'success'" centered   no-close-on-backdrop no-close-on-esc>
+      <template #modal-header>
+        <div class="closed-popup-header">
+            <b-icon icon="exclamation-triangle" scale="2" variant="light" ></b-icon>
+        </div>
+            <button type="button" aria-label="Close" class="close" @click="showClosedPopup = false" style="position: absolute; right: 15px; top: 15px;">×</button>
+      </template>
+      <div class="closed-popup-body">
+        <h2 class="icon-orange"><b>IMPORTANTE</b></h2>
+        <p >El plazo para acreditar las facturas del año 2024 ha expirado.</p>
+  
+        <div class="li-row">
+          <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Por cualquier reclamo comunicate con <a href="mailto:dirarvige@gesell.gob.ar" class="text-success">ARVIGE</a> para conocer los pasos a seguir.</div>
+        </div>
 
+        <div class="text-center mt-3">
+            <b-btn variant="success" @click="showClosedPopup = false">
+                Aceptar
+            </b-btn>
+        </div>
+      </div>
+    </b-modal>
     </div>
 
   </template>
@@ -291,12 +317,14 @@
         showPopupNroInmueble: false,
         showPopupConstanciaLibreDeudaSegHig: false,
         documentCheckboxChecked: false,
+        showClosedPopup: false,
         captchaResponse: null,
         expandedCards: [],
       };
     },
     mounted() {
       this.filteredRubros.sort((a, b) => a.nombre.localeCompare(b.nombre));
+      this.showClosedPopup = true;
     },
     methods: {
       onSlideStart(slide) {
@@ -326,6 +354,8 @@
           this.showPopupNroInmueble = true;
         }else if (type === 'ConstanciaLibreDeudaSegHig'){
           this.showPopupConstanciaLibreDeudaSegHig = true;
+        }else if (type === 'ClosedPeriod'){
+          this.showClosedPopup = true;
         }
       },
       proceedToForm() {
@@ -450,19 +480,19 @@ p, .li-content{
 .btn-form{
   margin: 15px 0;
 }
-.confirmation-popup-header{
+.confirmation-popup-header, .closed-popup-header{
  margin: auto;
  font-size: 2rem;
 }
-.confirmation-popup-body h2{
+.confirmation-popup-body h2, .closed-popup-body h2{
   text-align: center;
   font-size: 2.5rem;
 }
-.confirmation-popup-body h2 b{
+.confirmation-popup-body h2 b, .closed-popup-body h2 b{
   padding: 0 5%;
   border-bottom: 1px solid #ccc;
 }
-.confirmation-popup-body p{
+.confirmation-popup-body p, .closed-popup-body p{
   text-align: center;
   font-size: 1.25rem;
   color: black;
@@ -471,14 +501,14 @@ p, .li-content{
   margin: auto;
   margin-top: 1rem;
 }
-.confirmation-popup-body .li-content{
+.confirmation-popup-body .li-content, .closed-popup-body .li-content{
   color: black;
 }
-.btn{
+.btn-success{
   background-color: #0c681a;
   border-color: #0c681a;
 }
-.btn:hover{
+.btn-success:hover{
   background-color: green;
   border-color: green;
 }

@@ -3,10 +3,10 @@
     <div class="container text-center">
       <div class="row custom-row">
         <div v-for="(link, index) in links" :key="index" class="col-lg-4 my-4 mx-auto col-md-6 col-sm-12 mb-3">
-          <LandingIcon :icon="link.icon" :title="link.title" :to="link.to" />
+          <LandingIcon :icon="link.icon" :title="link.title" :type="link.type" :to="link.to" />
         </div>
         <div v-if="adminHacienda" class="col-lg-4 col-md-6 mx-auto my-4 col-sm-12 mb-4">
-          <LandingIcon icon="calculator" title="Obras" to="/obras" />
+          <LandingIcon icon="calculator" title="Obras" :type="'bootstrap-vue'" to="/obras" />
         </div>
       </div>
     </div>
@@ -33,13 +33,14 @@ export default {
     return {
       showPopupAnuncio: false,
       links: [
-        { to: "/normativa", icon: "receipt", title: "Normativa" },
-        { to: "/comercio", icon: "pen", title: "Trámites comerciales" },
-        { to: "/turnos", icon: "clock", title: "Turnos inspección" },
-        { to: "/modernizacion", icon: "list-ul", title: "Modernización" },
-        { to: "/consulta_tramite", icon: "search", title: "Consulta estado de trámite" },
-        { to: "/abierto_anual", icon: "shop", title: "Comercio Abierto anual" },
-        { to: "/compras", icon: "briefcase", title: "Compras" }
+        { to: "/normativa", icon: "receipt", title: "Normativa", type: "bootstrap-vue" },
+        { to: "/comercio", icon: "pen", title: "Trámites comerciales", type: "bootstrap-vue" },
+        { to: "/turnos", icon: "clock", title: "Turnos inspección", type: "bootstrap-vue" },
+        { to: "/modernizacion", icon: "list-ul", title: "Modernización", type: "bootstrap-vue" },
+        { to: "/consulta_tramite", icon: "search", title: "Consulta estado de trámite", type: "bootstrap-vue" },
+        { to: "/abierto_anual", icon: "shop", title: "Comercio Abierto anual", type: "bootstrap-vue" },
+        { to: "/transito", icon: "car-front", title: "Tránsito", type: "bootstrap-icons" }, // 🚗 Usa Bootstrap Icons
+        { to: "/compras", icon: "briefcase", title: "Compras", type: "bootstrap-vue" }
       ]
     };
   },
@@ -59,17 +60,24 @@ export default {
 </script>
 
 <style>
-.landing-icon{
-  margin-top: 20px;
+.landing-icon {
   width: 80px;
   height: 80px;
-  color:#ef8918;
-  transition: transform 0.2s ease; /* Cambia la duración a medio segundo (0.5s) */
+  color: #ef8918;
+  transition: transform 0.2s ease;
+  display: flex;
 }
+
+.bootstrap-icons {
+  font-size: 5.5rem; /* Asegura que mantengan el tamaño */
+  line-height: 1; /* Evita espacios extra */
+}
+
 /* Aplicar escala al hacer hover en el ícono */
 .landing-icon:hover {
-  transform: scale(1.15); /* Ajusta el valor según desees el efecto de escala */
+  transform: scale(1.15); /* Efecto de escala */
 }
+
 .custom-row {
   padding-top:10px;
   max-width: 800px; /* Ajusta el ancho máximo deseado */

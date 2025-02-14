@@ -1,106 +1,97 @@
 <template>
   <div class="page main-background">
     <Banner title="Compras" subtitle="Detalle de orden de compra"/>
-    <!-- Datos de la orden de compra -->
+    <!-- Header + Datos de la orden de compra -->
     <template v-if="orden && adminCompras">
       <div class="flex col" style="width: 96%">
         <div class="row justify-content-center mt-3">
           <h4> Número de orden: <b> {{ orden.nroOrden }}</b></h4>
         </div>
         <!-- <div class="row justify-content-center mt-3">
-          <p class="h5"> Tipo de trámite: <b> {{ habilitacion.tipoSolicitud }}  </b></p>
-        </div> -->
-        <!-- <div class="row justify-content-center mt-3">
           <div class="h5 row"> Estado:
             <h5 :class="getStatusClass(habilitacion.status)" class="ml-2"> {{ habilitacion.status }}</h5>
           </div>
         </div> -->
-        <!-- <div class="col mx-auto">
-          <div class="h5 row justify-content-center"> Número de expediente: <b class="text-success ml-1"> {{ habilitacion.nroExpediente }} </b> </div>
-          <div class="h5 row justify-content-center" v-if="!esHabilitacion"> Alcance: <b class="text-success ml-1"> {{ habilitacion.alcance }} </b> </div>
-          <div class="h5 row justify-content-center" v-if="!esHabilitacion"> Legajo: <b class="text-success ml-1"> {{ habilitacion.nroLegajo }} </b> </div>
-        </div> -->
       </div>
       <!--Botones-->
       <div class="row col-10 mx-auto justify-content-center" v-if="adminCompras">
-        <b-button
-          v-if="orden && orden.id"
-          @click="$router.push(`/compras/combustible/${orden.id}/generar`)"
-          variant="success"
-          class="btn-4 mt-3 mx-1"
-        >
+        <b-button v-if="orden && orden.id" @click="$router.push(`/compras/combustible/${orden.id}/generar`)" variant="success" class="btn-4 mt-3 mx-1">
           Generar vales
         </b-button>
-
         <b-button @click="onShowObservaciones" variant="primary" class="btn-2 mt-3 mx-1"> Ver observaciones </b-button>
       </div>
-      <!--Botón emitir vales (opcional)-->
-      <!-- <div class="row no-gutters">
-        <b-button @click="onDescargarHabilitacion(); registrarActividad('Descargar Trámite', 'Trámite Descargado', habilitacion.nroTramite)" v-if="adminComercio || adminArvige || adminModernizacion" variant="success" class="btn-4 mx-auto mt-3 mx-1">
-          <b-icon icon="download" class="mr-1"></b-icon> Descargar trámite
-        </b-button>
-      </div> -->
 
-      <!--Datos del solicitante-->
-      <b-card no-body class="container col-md-6 col-sm-10 shadow-card mt-4 mx-auto">
+      <!--Datos de orden de compra-->
+      <b-card no-body class="container col-md-7 col-sm-10 shadow-card mt-4 mx-auto">
         <div class="col mx-auto">
           <div class="container text-center mx-auto">
             <h2 class="text-success mt-2"><b>Datos de orden de compra</b></h2>
-            <hr/>
+            <hr />
           </div>
         </div>
-        <div class="container mx-auto">
-          <div class="d-flex justify-content-between align-items-center mt-1 mx-4">
-            <p class="font-weight-bold text-primary">Área asignada</p>
-            <p class="text-right"><strong>{{ orden.area }}</strong></p>
-          </div>
-          <div class="d-flex justify-content-between align-items-center mt-1 mx-4">
-            <p class="font-weight-bold text-primary">Proveedor</p>
-            <p class="text-right"><strong>{{ orden.proveedor }}</strong></p>
-          </div>
 
-          <!-- Monto total -->
-          <div class="d-flex justify-content-between align-items-center mt-2 mx-4">
-            <p class="font-weight-bold text-primary">Monto total</p>
-            <p class="text-right">
-              <strong>{{ format(totalMonto) }}</strong>
-            </p>
-          </div>
-
-          <!-- Lista de montos por combustible -->
-          <div v-for="monto in orden.montos" :key="monto.tipo" class="d-flex justify-content-between align-items-center mt-0 mx-4">
-            <div class="d-flex align-items-center gap-1">
-              <b-icon-caret-right-fill class="icon-orange mr-2"/>
-              <p class="mb-0">{{ monto.tipoCombustible }}</p>
+        <div class="container mb-3 mx-auto">
+          <div class="col-4 mx-auto">
+            <div class="row no-gutters justify-content-center mt-1 mx-4">
+              <p class="font-weight-bold text-primary mx-2">Área asignada: </p>
+              <p class="text-right"><strong> {{ orden.area }}</strong></p>
             </div>
-            <p class="mb-0 text-right">{{ format(monto.monto) }}</p>
-          </div>
-
-          <!-- Saldo restante total -->
-          <div class="d-flex justify-content-between align-items-center mt-3 mx-4">
-            <p class="font-weight-bold text-primary">Saldo restante</p>
-            <p class="text-right">
-              <strong>{{ format(totalSaldo) }}</strong>
-            </p>
-          </div>
-
-          <!-- Lista de saldos por combustible -->
-          <div v-for="saldo in orden.saldos" :key="saldo.tipo" class="d-flex justify-content-between align-items-center mt-0 mx-4">
-            <div class="d-flex align-items-center gap-1">
-              <b-icon-caret-right-fill class="icon-orange mr-2"/>
-              <p class="mb-0">{{ saldo.tipoCombustible }}</p>
+            <div class="row no-gutters justify-content-center mt-1 mx-4">
+              <p class="font-weight-bold text-primary mx-2">Proveedor:</p>
+              <p class="text-right"><strong>{{ orden.proveedor }}</strong></p>
             </div>
-            <p class="mb-0 text-right">{{ format(saldo.saldo) }}</p>
+          </div>
+
+          <div class="container">
+            <!-- Título de la gráfica -->
+            <div class="my-4 text-center">
+              <h5 class="text-primary">Saldos por combustible</h5>
+            </div>
+
+            <div class="layout">
+              <!-- Gráfica para cada combustible -->
+              <div v-for="(monto, index) in orden.montos" :key="index" class="col col-main mx-4 mb-4">
+                <p class="mb-1 h6 text-center font-weight-bold">{{ monto.tipoCombustible }}</p>
+
+              <!-- SVG de círculo completo -->
+              <div class="circular-progress-container">
+                <svg viewBox="0 0 100 100" class="circular-progress">
+                  <!-- Fondo gris (borde de la barra) -->
+                  <circle
+                    class="progress-background"
+                    cx="50"
+                    cy="50"
+                    r="40"
+                    stroke-width="10"
+                  ></circle>
+
+                  <!-- Barra de progreso -->
+                  <circle
+                    class="progress-bar"
+                    cx="50"
+                    cy="50"
+                    r="40"
+                    :style="{ strokeDasharray: getProgreso(orden.saldos[index].saldo, monto.monto) }"
+                  ></circle>
+                </svg>
+                <FuelIcon class="fuel-icon icon-orange" style="height: 30px; width: 30px;"/>
+              </div>
+
+                <!-- Monto en números -->
+                <div class="text-center">
+                  <small class="text-muted font-weight-bold mx-2 small">Total: {{ format(monto.monto) }}</small>
+                  <small class="text-success font-weight-bold small mx-2">Restante: {{ format(orden.saldos[index].saldo) }}</small>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </b-card>
-
-
     </template>
     <!-- Vales -->
     <template>
       <div v-if="orden">
-        <div class="container col-md-6 col-sm-10 card shadow-card mt-4 mb-3 mx-auto">
+        <div class="container col-md-7 col-sm-10 card shadow-card mt-4 mb-3 mx-auto">
           <!-- Título -->
           <div class="col mx-auto">
             <div class="container text-center mx-auto">
@@ -111,56 +102,65 @@
 
           <!-- Mostrar los enlaces a los vales -->
           <div class="container justify-content-center mx-auto" v-if="vales && vales.length">
-            <!-- Botón para reimprimir seleccionados -->
-            <div class="text-center my-3" v-if="valesSeleccionados.length">
-              <button class="btn btn-primary" @click="abrirModalReimpresion">
-                <b-icon-printer-fill/> Reimprimir seleccionados ({{ valesSeleccionados.length }})
-              </button>
-            </div>
-            <div v-for="(vale, index) in paginatedVales" :key="index" class="mb-3">
-              <div class="card shadow-sm">
-                <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <!-- Checkbox para seleccionar el vale -->
-                    <div class="col-auto">
-                      <input
-                        type="checkbox"
-                        :value="vale.id"
-                        v-model="valesSeleccionados"
-                      />
-                    </div>
-
-                    <div class="col ml-2">
-                      <h5 class="card-title font-weight-bold text-success">
-                        Vale N° {{ (currentPage - 1) * itemsPerPage + index + 1 }}
-                      </h5>
-                      <p class="card-text">Tipo de combustible: {{ vale.tipoCombustible }}</p>
-                      <p class="card-text">Importe: {{ format(vale.monto) }}</p>
-                      <p class="card-text">Fecha de emisión: {{ new Date(vale.fechaEmision).toLocaleString('es-AR') }}</p>
-                      <p class="card-text">
-                        Estado:
-                        <span :class="vale.consumido ? 'text-danger' : 'text-success'">
-                          <b>{{ vale.consumido ? 'No disponible' : 'Disponible' }}</b>
-                        </span>
-                      </p>
-                    </div>
-
-                    <!-- Botones -->
-                    <div v-if="adminCompras" class="d-flex">
-                      <button v-if="!vale.consumido" class="btn btn-success mx-2" title="Marcar como utilizado" @click="marcarUtilizado(vale, (currentPage - 1) * itemsPerPage + index)">
-                        <b-icon-check />
-                      </button>
-                      <button v-if="!vale.consumido" class="btn btn-warning mx-2" title="Reimprimir" @click="confirmarReimpresion(vale, index)">
-                        <b-icon-printer-fill />
-                      </button>
-                      <button v-if="!vale.consumido" class="btn btn-danger mx-2" title="Eliminar" @click="confirmarEliminacion(vale.id)">
-                        <b-icon-trash-fill />
-                      </button>
-                    </div>
-                  </div>
-                </div>
+            <!-- Botones de utilización masiva -->
+            <div class="row justify-content-center">
+              <!-- Botón para reimprimir seleccionados -->
+              <div class="text-center mx-3 my-3" v-if="valesSeleccionados.length">
+                <button class="btn btn-primary" @click="abrirModalReimpresion">
+                  <b-icon-printer-fill/> Reimprimir seleccionados ({{ valesSeleccionados.length }})
+                </button>
+              </div>
+              <!-- Botón para reimprimir seleccionados -->
+              <div class="text-center my-3" v-if="valesSeleccionados.length">
+                <button class="btn btn-success" @click="abrirModalUtilizarVales">
+                  <b-icon-check/> Marcar como utilizados ({{ valesSeleccionados.length }})
+                </button>
               </div>
             </div>
+            <!-- Cards de los vales -->
+            <div class="row">
+              <div v-for="(vale, index) in paginatedVales" :key="index" class="col-md-6 mb-2">
+                <b-card no-body class="shadow-sm">
+                  <div class="m-2">
+                    <div class="row no-gutters align-items-center">
+                      <!-- Checkbox para seleccionar el vale -->
+                      <div class="col-auto" v-if="!vale.consumido">
+                        <input type="checkbox" :value="vale.id" v-model="valesSeleccionados" />
+                      </div>
+
+                      <div class="col ml-2">
+                        <p class="card-title mb-0 font-weight-bold text-success">
+                          Vale N° {{ (currentPage - 1) * itemsPerPage + index + 1 }}
+                        </p>
+                        <p class="card-text">Tipo de combustible: {{ vale.tipoCombustible }}</p>
+                        <p class="card-text">Importe: {{ format(vale.monto) }}</p>
+                        <p class="card-text">Fecha de emisión: {{ new Date(vale.fechaEmision).toLocaleDateString('es-AR') }}</p>
+                        <p class="card-text">
+                          Estado:
+                          <span :class="vale.consumido ? 'text-danger' : 'text-success'">
+                            <b>{{ vale.consumido ? 'No disponible' : 'Disponible' }}</b>
+                          </span>
+                        </p>
+                      </div>
+
+                      <!-- Botones -->
+                      <div v-if="jefeCompras" class="d-flex">
+                        <button v-if="!vale.consumido" class="btn btn-success btn-sm mx-1" title="Marcar como utilizado" @click="marcarUtilizado(vale, (currentPage - 1) * itemsPerPage + index)">
+                          <b-icon-check />
+                        </button>
+                        <button v-if="!vale.consumido" class="btn btn-warning btn-sm mx-1" title="Reimprimir" @click="confirmarReimpresion(vale, index)">
+                          <b-icon-printer-fill />
+                        </button>
+                        <button v-if="!vale.consumido" class="btn btn-danger btn-sm mx-1" title="Eliminar" @click="confirmarEliminacion(vale.id)">
+                          <b-icon-trash-fill />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </b-card>
+              </div>
+            </div>
+
 
             <!-- Paginador -->
             <b-pagination v-model="currentPage" :total-rows="vales.length" :per-page="itemsPerPage"
@@ -186,23 +186,32 @@
 
 
     <!-- Modal de Confirmación para Reimpresión -->
-    <b-modal v-model="modalReimpresion" title="Confirmar Reimpresión" title-class="text-light text-center" header-bg-variant="success" hide-footer centered>
+    <b-modal id="modalReimpresion" title="Confirmar Reimpresión" title-class="text-light text-center" header-bg-variant="success" hide-footer centered>
       <template #modal-title>
         <b-icon-printer-fill class="mr-2" /> Confirmar Reimpresión
       </template>
       <p>¿Estás seguro de que deseas reimprimir el vale?</p>
       <div class="d-flex justify-content-end">
-        <button class="btn btn-secondary mr-2" @click="modalReimpresion = false">Cancelar</button>
+        <button class="btn btn-secondary mr-2" @click="$bvModal.hide('modalReimpresion')">Cancelar</button>
         <button class="btn btn-success" @click="reimprimirVale(valeSeleccionado)">Aceptar</button>
       </div>
     </b-modal>
 
     <!-- Modal de confirmación para reimpresión múltiple -->
-    <b-modal id="modalReimpresion" header-bg-variant="success" title-class="text-light text-center" hide-footer centered title="Confirmar Reimpresión">
+    <b-modal id="modalReimpresionMasiva" header-bg-variant="success" title-class="text-light text-center" hide-footer centered title="Confirmar Reimpresión masiva">
       <p class="h5 text-center mb-4">¿Estás seguro de que querés reimprimir los vales seleccionados?</p>
       <div class="row no-gutters justify-content-center">
-        <b-button variant="secondary" class="mx-2" @click="$bvModal.hide('modalReimpresion')">Cancelar</b-button>
+        <b-button variant="secondary" class="mx-2" @click="$bvModal.hide('modalReimpresionMasiva')">Cancelar</b-button>
         <b-button variant="success" @click="imprimirValesSeleccionados">Aceptar</b-button>
+      </div>
+    </b-modal>
+
+    <!-- Modal de confirmación para marcación como consumido masivamente -->
+    <b-modal id="modalUtilizacionMasiva" header-bg-variant="success" title-class="text-light text-center" hide-footer centered title="Confirmar utilización masiva">
+      <p class="h5 text-center mb-4">¿Estás seguro de que querés marcar los vales seleccionados como utilizados?</p>
+      <div class="row no-gutters justify-content-center">
+        <b-button variant="secondary" class="mx-2" @click="$bvModal.hide('modalUtilizacionMasiva')">Cancelar</b-button>
+        <b-button variant="success" @click="marcarValesSeleccionados">Aceptar</b-button>
       </div>
     </b-modal>
 
@@ -230,7 +239,7 @@
     </b-modal>
 
       <!-- Modal de Confirmación para Eliminación -->
-      <b-modal v-model="modalModificado" title="Confirmar modificación" title-class="mx-auto text-light text-center" header-bg-variant="success" hide-footer centered>
+    <b-modal v-model="modalModificado" title="Confirmar modificación" title-class="mx-auto text-light text-center" header-bg-variant="success" hide-footer centered>
       <template #modal-title>
         <b-icon-pencil-fill class="mr-2" /> Confirmar modificación
       </template>
@@ -254,8 +263,7 @@ export default {
   data() {
     return {
       currentPage: 1,
-      itemsPerPage: 5,
-      modalReimpresion: false,
+      itemsPerPage: 6,
       modalEliminacion: false,
       modalEliminado: false,
       modalModificado: false,
@@ -278,6 +286,9 @@ export default {
     },
     adminCompras(){
       return this.$store.state.user.admin == "compras" || this.$store.state.user.admin == "master"
+    },
+    jefeCompras(){
+      return (this.$store.state.user.admin == "compras" && this.$store.state.user.username == "martinjordan@gesell.gob.ar") || this.$store.state.user.admin == "master"
     },
     vales(){
       return this.$store.state.combustible.vales_creados
@@ -304,6 +315,11 @@ export default {
     })
   },
   methods: {
+    getProgreso(saldo, monto) {
+      const porcentaje = (saldo / monto) * 100; // Obtiene el porcentaje restante
+      const circunferencia = 2 * Math.PI * 40; // Longitud total del círculo (basado en el radio de 40)
+      return `${(porcentaje / 100) * circunferencia}, ${circunferencia}`;
+    },
     async registrarActividad(evento, result, nroSolicitud){
       const userId = this.$store.state.user.username; // Reemplaza con el ID del usuario real
       const actionType = evento;
@@ -329,7 +345,7 @@ export default {
     confirmarReimpresion(vale, index) {
       this.valeSeleccionado = vale;
       this.indexSeleccionado = index
-      this.modalReimpresion = true;
+      this.$bvModal.show('modalReimpresion')
     },
     confirmarEliminacion(id) {
       this.valeSeleccionado = id;
@@ -365,6 +381,7 @@ export default {
       ctx.font = "500 40px sans-serif";
       //Original
       ctx.fillText(`${this.orden.nroOrden}`, 600, 368);
+      ctx.fillText(`${this.orden.proveedor}`, 600, 310);
       ctx.fillText(`${(this.indexSeleccionado + 1).toString().padStart(3, '0')}`, 1600, 266);
       ctx.fillText(`${vale.area}`, 1400, 365);
       ctx.fillText(`${vale.tipoCombustible}`, 600, 420);
@@ -376,11 +393,11 @@ export default {
 
       //Volver a la fuente original para los demás campos
       ctx.font = "500 40px sans-serif";
-      ctx.fillText(`${this.orden.nroOrden}`, 600, 368);
 
       //Duplicado
       ctx.fillText(`${this.orden.nroOrden}`, 2348, 368);
-      ctx.fillText(`${(this.indexSeleccionado + 1).toString().padStart(3, '0')}`, 1600, 266);
+      ctx.fillText(`${this.orden.proveedor}`, 2348, 310);
+      ctx.fillText(`${(this.indexSeleccionado + 1).toString().padStart(3, '0')}`, 3348, 266);
       ctx.fillText(`${vale.area}`, 3148, 365);
       ctx.fillText(`${vale.tipoCombustible}`, 2348, 420);
       // ctx.fillText(`${vale.fechaEmision.toLocaleDateString('es-AR')}`, 3148, 420);
@@ -395,6 +412,8 @@ export default {
       link.href = imgData;
       link.download = `Vale_${this.orden.nroOrden}_N${this.indexSeleccionado +1}.png`;
       link.click();
+      await this.wait(400)
+      this.$bvModal.hide('modalReimpresion')
     },
     async imprimirValesSeleccionados() {
       if (this.valesSeleccionados.length === 0) return;
@@ -469,6 +488,7 @@ export default {
         // 🔹 Agregar texto con la numeración correcta
         ctx.fillStyle = "black";
         ctx.font = "500 38px sans-serif";
+        ctx.fillText(`${this.orden.proveedor}`, 600, 310);
         ctx.fillText(`${this.orden.nroOrden}`, 600, 368);
         ctx.fillText(`${indiceOriginal.toString().padStart(3, '0')}`, 1600, 266);  // 🛠️ Aquí usamos el índice original
         ctx.fillText(`${vale.area}`, 1400, 365);
@@ -485,6 +505,7 @@ export default {
 
         // Duplicado
         ctx.fillText(`${this.orden.nroOrden}`, 2348, 368);
+        ctx.fillText(`${this.orden.proveedor}`, 2348, 310);
         ctx.fillText(`${indiceOriginal.toString().padStart(3, '0')}`, 3348, 266);  // 🛠️ Aquí también usamos el índice original
         ctx.fillText(`${vale.area}`, 3148, 365);
         ctx.fillText(`${vale.tipoCombustible}`, 2348, 420);
@@ -502,6 +523,7 @@ export default {
 
       // Descargar el PDF
       pdf.save(`Vales_${this.orden.nroOrden}.pdf`);
+      this.modalReimpresion = false
     },
     async eliminarVale() {
       if (!this.valeSeleccionado) return;
@@ -566,11 +588,36 @@ export default {
         }
       }
     },
+    async marcarValesSeleccionados() {
+      if (this.valesSeleccionados.length === 0) return;
+
+      for (let i = 0; i < this.valesSeleccionados.length; i++) {
+        try {
+          const id = this.valesSeleccionados[i];
+          const userToken = this.$store.state.user.token;
+
+          const vale = {
+            consumido: true,
+          }
+          // Hacer la petición al backend para eliminar el vale
+          await this.$store.dispatch("combustible/consumirVale", { id, vale })
+        }catch (error) {
+        console.error("Error al eliminar el vale:", error);
+        alert("Ocurrió un error al eliminar el vale. Revisa la consola para más detalles.");
+        }
+      }
+      await this.wait(500)
+      this.$bvModal.hide('modalUtilizacionMasiva')
+      location.reload()
+    },
     getStatusClass(status) {
       return this.statusClasses[status] || '';
     },
     abrirModalReimpresion() {
-      this.$bvModal.show('modalReimpresion');
+      this.$bvModal.show('modalReimpresionMasiva');
+    },
+    abrirModalUtilizarVales() {
+      this.$bvModal.show('modalUtilizacionMasiva');
     },
     //Métodos de sistema
     async volver(){
@@ -590,6 +637,12 @@ export default {
     onResetEdit() {
       this.editing = false
     },
+    // format(value) {
+    //   return new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(value);
+    // },
+    getPercentage(saldo, monto) {
+      return monto ? (saldo / monto) * 100 : 0;
+    },
     format(value) {
       if (!value) return "$0";
       return `$${value.toLocaleString('es-AR')}`;
@@ -599,6 +652,56 @@ export default {
 </script>
 
 <style scoped>
+.fuel-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-46%, -80%);
+}
+/* Contenedor de la barra semicircular */
+.circular-progress-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.small{
+  font-size: 16px;
+}
+
+/* Estilo del SVG */
+.circular-progress {
+  width: 120px; /* Aumento del tamaño del SVG */
+  height: 120px; /* Aumento del tamaño del SVG */
+  transform: rotate(-260deg); /* Giramos el círculo para que empiece desde la parte superior */
+}
+
+/* Fondo gris del círculo */
+.progress-background {
+  fill: none;
+  stroke: #e9e9e9;
+  stroke-linecap: round;
+  stroke-width: 11;
+}
+
+/* Barra de progreso */
+.progress-bar {
+  fill: none;
+  stroke: #ef8918;
+  stroke-linecap: round;
+  stroke-dasharray: 314.16, 314.16; /* Longitud total del círculo (basado en el radio de 50) */
+  transition: stroke-dasharray 1.5s ease-in-out;
+  stroke-width: 11;
+}
+.card-title{
+  font-size: 20px;
+}
+
+.card-text{
+  font-size: 16px;
+}
+
 .modal-dialog {
   max-width: 80% !important;
 }

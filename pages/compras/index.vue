@@ -28,7 +28,7 @@
           </b-button>
         </NuxtLink>
       </div>
-      <div class="row no-gutters justify-content-center mt-5" v-if="adminHacienda">
+      <div class="row no-gutters justify-content-center mt-5" v-if="adminCompras">
         <NuxtLink to="/compras/combustible" class="col-md-5">
           <b-button variant="outline" class="d-flex w-100 white shadow-card">
             <div class="me-3">

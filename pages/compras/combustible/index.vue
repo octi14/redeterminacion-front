@@ -53,9 +53,9 @@
             <!-- Número de orden de compra -->
             <b-form-group label="Número de orden de compra" label-class="text-dark font-weight-bold" class="col-12">
               <div class="numero-orden-container">
-                <b-form-input type="number" class="col-4" no-wheel v-model="nroOrden1"/>
+                <b-form-input type="number" class="col-6" no-wheel v-model="nroOrden1"/>
                 <span>/</span>
-                <b-form-input type="number" class="col-4" no-wheel v-model="nroOrden2"/>
+                <b-form-input type="number" class="col-2" no-wheel v-model="nroOrden2"/>
               </div>
             </b-form-group>
 
@@ -122,7 +122,7 @@ export default {
         nroOrden: "",
         area: "",
         proveedor: '',
-        montos: [],
+        montos: [{ tipoCombustible: "", monto: 0 }],
       },
       items: [],
       currentPage: 1,
@@ -186,7 +186,9 @@ export default {
       this.orden.montos.push({ tipoCombustible: "", monto: 0 });
     },
     removeCombustible(index) {
-      this.orden.montos.splice(index, 1);
+      if (this.orden.montos.length > 1) {
+        this.orden.montos.splice(index, 1);
+      }
     },
     async submitForm() {
       this.isLoading = true;

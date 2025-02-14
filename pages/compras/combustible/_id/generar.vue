@@ -211,12 +211,13 @@ export default {
         ctx.font = "500 38px sans-serif";
 
         //Original
+        ctx.fillText(`${this.orden.proveedor}`, 600, 310);
         ctx.fillText(`${this.orden.nroOrden}`, 600, 367);
         ctx.fillText(`${(i + 1).toString().padStart(3, '0')}`, 1600, 266);
         ctx.fillText(`${this.valesCreados[i].area}`, 1400, 365);
         ctx.fillText(`${this.valesCreados[i].tipoCombustible}`, 600, 420);
         // ctx.fillText(`${this.valesCreados[i].fechaEmision.toLocaleDateString('es-AR')}`, 1400, 420);
-        ctx.fillText(`$${this.valesCreados[i].monto}`, 600, 471);
+        ctx.fillText(`${this.format(this.valesCreados[i].monto)}`, 600, 471);
         // Cambiar el tamaño de la fuente solo para el monto
         ctx.font = "500 30px sans-serif";  // Fuente más pequeña
         ctx.fillText(montoTexto, 1100, 471);
@@ -226,12 +227,13 @@ export default {
         ctx.fillText(`${this.orden.nroOrden}`, 600, 368);
 
         //Duplicado
+        ctx.fillText(`${this.orden.proveedor}`, 2348, 310);
         ctx.fillText(`${this.orden.nroOrden}`, 2348, 367);
         ctx.fillText(`${(i + 1).toString().padStart(3, '0')}`, 3348, 266);
         ctx.fillText(`${this.valesCreados[i].area}`, 3148, 365);
         ctx.fillText(`${this.valesCreados[i].tipoCombustible}`, 2348, 420);
         // ctx.fillText(`${this.valesCreados[i].fechaEmision.toLocaleDateString('es-AR')}`, 3148, 420);
-        ctx.fillText(`$${this.valesCreados[i].monto}`, 2348, 471);
+        ctx.fillText(`${this.format(this.valesCreados[i].monto)}`, 2348, 471);
         // Cambiar el tamaño de la fuente solo para el monto en el duplicado
         ctx.font = "500 30px sans-serif";  // Fuente más pequeña
         ctx.fillText(montoTexto, 2848, 471);
@@ -243,7 +245,12 @@ export default {
 
       // Descargar el PDF
       pdf.save(`Vales_${this.orden.nroOrden}.pdf`);
-    }
+    },
+    format(value) {
+      if (!value) return "$0";
+      return `$${value.toLocaleString('es-AR')}`;
+    },
+
   }
 };
 </script>

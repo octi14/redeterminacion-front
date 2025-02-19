@@ -39,7 +39,7 @@
         </div>
       </template>
       <div class="confirmation-popup-body">
-        <h3 class="text-success text-center"><b>Cargar orden de compra</b></h3>
+        <h3 class="landing-text text-center"><b>Cargar orden de compra</b></h3><hr/>
 
         <!-- Mensaje de éxito -->
         <div v-if="successMessage" class="text-center">
@@ -48,49 +48,67 @@
         </div>
 
         <div v-else>
-          <p class="text-dark text-center">Ingresá los datos de la orden de compra</p>
-          <div class="row mx-auto">
+          <div class="mx-auto">
             <!-- Número de orden de compra -->
-            <b-form-group label="Número de orden de compra" label-class="text-dark font-weight-bold" class="col-12">
+            <div class="row mt-4 mx-1">
+              <b-icon-caret-right-fill class="icon-orange ml-0" scale="1.2"/>
+              <h6 class="text-dark font-weight-600 ml-1">Número de Orden de Compra</h6>
+            </div>
+            <b-form-group class="col-12">
               <div class="numero-orden-container">
-                <b-form-input type="number" class="col-6" no-wheel v-model="nroOrden1"/>
+                <b-form-input size="sm" style="border-radius: 0;" type="number" class="col-7" no-wheel v-model="nroOrden1"/>
                 <span>/</span>
-                <b-form-input type="number" class="col-2" no-wheel v-model="nroOrden2"/>
+                <b-form-input size="sm" style="border-radius: 0;" type="number" class="col-3" no-wheel v-model="nroOrden2"/>
               </div>
-            </b-form-group>
 
-            <!-- Combustibles -->
-            <b-form-group label="Montos asignados por tipo de combustible" label-class="text-dark font-weight-bold" class="col-12">
-              <div v-for="(combustible, index) in orden.montos" :key="index" class="d-flex align-items-center mb-2">
-                <b-form-input class="col-5" type="text" placeholder="Tipo de combustible" v-model="combustible.tipoCombustible" />
-                <b-form-input class="col-5 ml-2" type="number" placeholder="Monto" no-wheel v-model="combustible.monto" />
-                <b-button variant="danger" size="sm" class="ml-2" @click="removeCombustible(index)">X</b-button>
-              </div>
-              <b-button variant="primary" :disabled="this.orden.montos.length >= 4" size="sm" @click="addCombustible">+ Agregar otro combustible</b-button>
             </b-form-group>
 
             <!-- Proveedor -->
-            <b-form-group label="Proveedor" label-class="text-dark font-weight-bold" class="col-12">
-              <b-form-input class="col-8" type="text" v-model="orden.proveedor"/>
+            <div class="row mt-4 mx-1">
+              <b-icon-caret-right-fill class="icon-orange ml-0" scale="1.2"/>
+              <h6 class="text-dark font-weight-600 ml-1">Proveedor</h6>
+            </div>
+            <b-form-group label-class="text-dark font-weight-bold" class="col-12">
+              <b-form-input style="border-radius: 0;" size="sm" class="col-8" type="text" v-model="orden.proveedor"/>
             </b-form-group>
 
             <!-- Área asignada -->
-            <b-form-group label="Área asignada" label-class="text-dark font-weight-bold" class="col-12">
-              <b-form-input class="col-8" type="text" v-model="orden.area"/>
+            <div class="row mt-4 mx-1">
+              <b-icon-caret-right-fill class="icon-orange ml-0" scale="1.2"/>
+              <h6 class="text-dark font-weight-600 ml-1">Área asignada</h6>
+            </div>
+            <b-form-group label-class="text-dark font-weight-bold" class="col-12">
+              <b-form-input style="border-radius: 0;" size="sm" class="col-8" type="text" v-model="orden.area"/>
             </b-form-group>
+            <!-- Combustibles -->
+            <div class="row mt-4 mx-1">
+              <b-icon-caret-right-fill class="icon-orange ml-0" scale="1.2"/>
+              <h6 class="text-dark font-weight-600 ml-1">Montos asignados por tipo de combustible</h6>
+            </div>
+            <b-form-group class="col-12">
+              <div v-for="(combustible, index) in orden.montos" :key="index" class="d-flex align-items-center mb-2">
+                <b-form-input style="border-radius: 0;" size="sm" class="col-5" type="text" placeholder="Tipo de combustible" v-model="combustible.tipoCombustible" />
+                <h6 class="font-weight-600 text-dark ml-3 mr-1 mt-1">$ </h6>
+                 <b-form-input style="border-radius: 0;" size="sm" class="col-5 ml-2" type="number" placeholder="Monto" no-wheel v-model="combustible.monto" />
+                <b-button v-if="orden.montos.length > 1" variant="danger" size="sm" class="ml-2" @click="removeCombustible(index)">X</b-button>
+              </div>
+              <b-button variant="primary" :disabled="this.orden.montos.length >= 4" size="sm" @click="addCombustible">+ Agregar combustible</b-button>
+            </b-form-group>
+
+
           </div>
 
           <div class="row justify-content-end">
-            <!-- Botón de salir -->
-            <div class="text-center mt-3 mx-2">
-              <b-btn variant="secondary" @click="showCargarOrden=false">
-                Cancelar
-              </b-btn>
-            </div>
             <!-- Botón de aceptar -->
             <div class="text-center mt-3 mx-2">
               <b-btn variant="success" :disabled="!nroOrden1 || !nroOrden2 || !orden.area || !orden.montos.length" @click="submitForm">
                 Aceptar
+              </b-btn>
+            </div>
+            <!-- Botón de salir -->
+            <div class="text-center mt-3 mx-2">
+              <b-btn variant="danger" @click="showCargarOrden=false">
+                Cancelar
               </b-btn>
             </div>
           </div>
@@ -247,6 +265,10 @@ export default {
 /* Mejor organización de los inputs del número de orden */
 .numero-orden-container {
   display: flex;
+}
+
+.icon-orange{
+  color: #FF7A00;
 }
 
 .numero-orden-container input {

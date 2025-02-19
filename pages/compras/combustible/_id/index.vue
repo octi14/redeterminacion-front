@@ -16,75 +16,75 @@
       <!--Botones-->
       <div class="row col-10 mx-auto justify-content-center" v-if="adminCompras">
         <b-button v-if="orden && orden.id" @click="$router.push(`/compras/combustible/${orden.id}/generar`)" variant="success" class="btn-4 mt-3 mx-1">
-          Generar vales
+          + | Agregar vales
         </b-button>
         <b-button @click="onShowObservaciones" variant="primary" class="btn-2 mt-3 mx-1"> Ver observaciones </b-button>
       </div>
 
       <!--Datos de orden de compra-->
       <b-card no-body class="container col-md-7 col-sm-10 shadow-card mt-4 mx-auto">
-        <div class="col mx-auto">
-          <div class="container text-center mx-auto">
-            <h2 class="text-success mt-2"><b>Datos de orden de compra</b></h2>
-            <hr />
-          </div>
+        <div class="container mt-4 ml-4 mx-auto">
+          <h5 class="row">
+            <b-icon-receipt class="icon-orange mt-4 ml-4" scale="2"/>
+            <a class="ml-3 mr-2 mt-2 separador" > | </a>
+            <h2 class="text-green mt-3"><b>Datos de orden de compra</b></h2>
+          </h5>
+          <hr />
         </div>
 
         <div class="container mb-3 mx-auto">
-          <div class="col-4 mx-auto">
-            <div class="row no-gutters justify-content-center mt-1 mx-4">
-              <p class="font-weight-bold text-primary mx-2">Área asignada: </p>
-              <p class="text-right"><strong> {{ orden.area }}</strong></p>
-            </div>
-            <div class="row no-gutters justify-content-center mt-1 mx-4">
-              <p class="font-weight-bold text-primary mx-2">Proveedor:</p>
-              <p class="text-right"><strong>{{ orden.proveedor }}</strong></p>
-            </div>
+          <div class="row mt-1 mx-4">
+            <b-icon-caret-right-fill class="icon-orange mt-1" scale="1.5"/>
+            <h5 class="font-weight-bold text-dark mx-2">Área asignada: </h5>
+            <h5 class="text-right text-dark">{{ orden.area }}</h5>
           </div>
-
-          <div class="container">
-            <!-- Título de la gráfica -->
-            <div class="my-4 text-center">
-              <h5 class="text-primary">Saldos por combustible</h5>
-            </div>
+          <div class="row no-gutters mt-1 mx-4">
+            <b-icon-caret-right-fill class="icon-orange mt-1" scale="1.5"/>
+            <h5 class="font-weight-bold text-dark mx-2">Proveedor:</h5>
+            <h5 class="text-right text-dark">{{ orden.proveedor }}</h5>
+          </div>
+          <!-- Título de la gráfica -->
+          <div class="row no-gutters mt-1 mx-4">
+            <b-icon-caret-right-fill class="icon-orange mt-1" scale="1.5"/>
+            <h5 class="font-weight-bold text-dark mx-2">Saldos por combustible:</h5>
+          </div>
 
             <div class="layout">
               <!-- Gráfica para cada combustible -->
-              <div v-for="(monto, index) in orden.montos" :key="index" class="col col-main mx-4 mb-4">
-                <p class="mb-1 h6 text-center font-weight-bold">{{ monto.tipoCombustible }}</p>
+              <b-card no-body v-for="(monto, index) in orden.montos" :key="index" class="col main-background border-card shadow-sm col-main my-3 mb-4">
+                <h5 class="my-3 text-center text-dark font-weight-600">{{ monto.tipoCombustible.toUpperCase() }}</h5>
+                <hr/>
+                <!-- SVG de círculo completo -->
+                <div class="circular-progress-container" style="position: relative">
+                  <svg viewBox="0 0 100 100" class="circular-progress">
+                    <!-- Fondo gris (borde de la barra) -->
+                    <circle
+                      class="progress-background"
+                      cx="50"
+                      cy="50"
+                      r="40"
+                      stroke-width="10"
+                    ></circle>
 
-              <!-- SVG de círculo completo -->
-              <div class="circular-progress-container">
-                <svg viewBox="0 0 100 100" class="circular-progress">
-                  <!-- Fondo gris (borde de la barra) -->
-                  <circle
-                    class="progress-background"
-                    cx="50"
-                    cy="50"
-                    r="40"
-                    stroke-width="10"
-                  ></circle>
-
-                  <!-- Barra de progreso -->
-                  <circle
-                    class="progress-bar"
-                    cx="50"
-                    cy="50"
-                    r="40"
-                    :style="{ strokeDasharray: getProgreso(orden.saldos[index].saldo, monto.monto) }"
-                  ></circle>
-                </svg>
-                <FuelIcon class="fuel-icon icon-orange" style="height: 30px; width: 30px;"/>
-              </div>
+                    <!-- Barra de progreso -->
+                    <circle
+                      class="progress-bar"
+                      cx="50"
+                      cy="50"
+                      r="40"
+                      :style="{ strokeDasharray: getProgreso(orden.saldos[index].saldo, monto.monto) }"
+                    ></circle>
+                  </svg>
+                  <FuelIcon class="fuel-icon icon-orange" style="height: 30px; width: 30px;"/>
+                </div>
 
                 <!-- Monto en números -->
-                <div class="text-center">
-                  <small class="text-muted font-weight-bold mx-2 small">Total: {{ format(monto.monto) }}</small>
-                  <small class="text-success font-weight-bold small mx-2">Restante: {{ format(orden.saldos[index].saldo) }}</small>
+                <div class="text-center mb-3">
+                  <small class="text-dark font-weight-600 small mx-2">Restante: {{ format(orden.saldos[index].saldo) }}</small><br/>
+                  <small class="text-dark font-weight-400 mx-2 small">Total: {{ format(monto.monto) }}</small>
                 </div>
-              </div>
+              </b-card>
             </div>
-          </div>
         </div>
       </b-card>
     </template>
@@ -94,10 +94,12 @@
         <div class="container col-md-7 col-sm-10 card shadow-card mt-4 mb-3 mx-auto">
           <!-- Título -->
           <div class="col mx-auto">
-            <div class="container text-center mx-auto">
-              <h2 class="text-success mt-2"><b> Vales emitidos </b></h2>
-              <hr />
-            </div>
+            <h5 class="row mt-3 ml-1">
+              <b-icon-receipt class="icon-orange mt-4 ml-4" scale="2"/>
+              <a class="ml-3 mr-2 mt-2 separador" > | </a>
+              <h2 class="text-green mt-3"><b>Vales emitidos</b></h2>
+            </h5>
+            <hr />
           </div>
 
           <!-- Mostrar los enlaces a los vales -->
@@ -118,24 +120,36 @@
               </div>
             </div>
             <!-- Cards de los vales -->
-            <div class="row">
-              <div v-for="(vale, index) in paginatedVales" :key="index" class="col-md-6 mb-2">
-                <b-card no-body class="shadow-sm">
+            <div class="row mx-4">
+              <div v-for="(vale, index) in paginatedVales" :key="index" class="col-md-6 mb-3">
+                <b-card no-body class="border-card main-background shadow-card">
                   <div class="m-2">
                     <div class="row no-gutters align-items-center">
-                      <!-- Checkbox para seleccionar el vale -->
-                      <div class="col-auto" v-if="!vale.consumido">
-                        <input type="checkbox" :value="vale.id" v-model="valesSeleccionados" />
-                      </div>
-
-                      <div class="col ml-2">
-                        <p class="card-title mb-0 font-weight-bold text-success">
-                          Vale N° {{ (currentPage - 1) * itemsPerPage + index + 1 }}
-                        </p>
-                        <p class="card-text">Tipo de combustible: {{ vale.tipoCombustible }}</p>
-                        <p class="card-text">Importe: {{ format(vale.monto) }}</p>
-                        <p class="card-text">Fecha de emisión: {{ new Date(vale.fechaEmision).toLocaleDateString('es-AR') }}</p>
-                        <p class="card-text">
+                      <div class="col mt-2 ml-2">
+                        <div class="row d-flex justify-content-between align-items-center">
+                          <div class="d-flex align-items-center">
+                            <input v-if="!vale.consumido" type="checkbox" class="mb-2" :value="vale.id" v-model="valesSeleccionados" />
+                            <h4 class="mb-2 ml-3 font-weight-700 text-gray">
+                              VALE N° {{ (currentPage - 1) * itemsPerPage + index + 1 }}
+                            </h4>
+                          </div>
+                          <!-- Botones -->
+                          <div v-if="jefeCompras" class="d-flex mr-2">
+                            <button v-if="!vale.consumido" class="btn btn-success btn-sm mx-1" title="Marcar como utilizado" @click="marcarUtilizado(vale, (currentPage - 1) * itemsPerPage + index)">
+                              <b-icon-check />
+                            </button>
+                            <button v-if="!vale.consumido" class="btn btn-primary btn-sm mx-1" title="Reimprimir" @click="confirmarReimpresion(vale, index)">
+                              <b-icon-printer-fill />
+                            </button>
+                            <button v-if="!vale.consumido" class="btn btn-danger btn-sm mx-1" title="Eliminar" @click="confirmarEliminacion(vale.id)">
+                              <b-icon-trash-fill />
+                            </button>
+                          </div>
+                        </div>
+                        <p class="card-text ml-3 text-dark">Tipo de combustible: {{ vale.tipoCombustible }}</p>
+                        <p class="card-text ml-3 text-dark">Importe: {{ format(vale.monto) }}</p>
+                        <p class="card-text ml-3 text-dark">Fecha de emisión: {{ new Date(vale.fechaEmision).toLocaleDateString('es-AR') }}</p>
+                        <p class="card-text ml-3 text-dark">
                           Estado:
                           <span :class="vale.consumido ? 'text-danger' : 'text-success'">
                             <b>{{ vale.consumido ? 'No disponible' : 'Disponible' }}</b>
@@ -143,18 +157,7 @@
                         </p>
                       </div>
 
-                      <!-- Botones -->
-                      <div v-if="jefeCompras" class="d-flex">
-                        <button v-if="!vale.consumido" class="btn btn-success btn-sm mx-1" title="Marcar como utilizado" @click="marcarUtilizado(vale, (currentPage - 1) * itemsPerPage + index)">
-                          <b-icon-check />
-                        </button>
-                        <button v-if="!vale.consumido" class="btn btn-warning btn-sm mx-1" title="Reimprimir" @click="confirmarReimpresion(vale, index)">
-                          <b-icon-printer-fill />
-                        </button>
-                        <button v-if="!vale.consumido" class="btn btn-danger btn-sm mx-1" title="Eliminar" @click="confirmarEliminacion(vale.id)">
-                          <b-icon-trash-fill />
-                        </button>
-                      </div>
+
                     </div>
                   </div>
                 </b-card>
@@ -169,7 +172,7 @@
 
           <!-- Mensaje si no hay vales -->
           <div class="justify-content-center mx-auto" v-else>
-            <p class="h6 text-center"> No hay vales emitidos para esta orden de compra. </p>
+            <p class="h6 text-center my-5"> No hay vales emitidos para esta orden de compra. </p>
           </div>
         </div>
       </div>
@@ -651,12 +654,45 @@ export default {
 }
 </script>
 
+<style>
+.font-weight-100{
+  font-weight: 100;
+}
+.font-weight-200{
+  font-weight: 200;
+}
+.font-weight-300{
+  font-weight: 300;
+}
+.font-weight-400{
+  font-weight: 400;
+}
+.font-weight-500{
+  font-weight: 500;
+}
+.font-weight-600{
+  font-weight: 600;
+}
+.font-weight-700{
+  font-weight: 700;
+}
+.font-weight-800{
+  font-weight: 800;
+}
+.font-weight-900{
+  font-weight: 900;
+}
+.font-weight-1000{
+  font-weight: 1000;
+}
+</style>
+
 <style scoped>
 .fuel-icon {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-46%, -80%);
+  transform: translate(-50%, -50%);
 }
 /* Contenedor de la barra semicircular */
 .circular-progress-container {
@@ -670,6 +706,32 @@ export default {
   font-size: 16px;
 }
 
+.checkbox-container {
+  align-self: start;
+}
+
+.text-green{
+  color: #196B23;
+}
+
+.text-gray{
+  color:#505050;
+}
+
+.border-card{
+  border: #000 1px solid;
+}
+
+@media (max-width: 1200px) {
+.separador{
+    display: none;
+  }
+}
+.separador{
+  color:rgba(0, 0, 0, 0.5);
+  font-size: 35px;
+  opacity:0.3;
+}
 /* Estilo del SVG */
 .circular-progress {
   width: 120px; /* Aumento del tamaño del SVG */
@@ -688,7 +750,7 @@ export default {
 /* Barra de progreso */
 .progress-bar {
   fill: none;
-  stroke: #ef8918;
+  stroke: #e59335;
   stroke-linecap: round;
   stroke-dasharray: 314.16, 314.16; /* Longitud total del círculo (basado en el radio de 50) */
   transition: stroke-dasharray 1.5s ease-in-out;
@@ -706,7 +768,7 @@ export default {
   max-width: 80% !important;
 }
 .icon-orange{
-  color: #E27910;
+  color: #e08933;
 }
 
 .col strong{

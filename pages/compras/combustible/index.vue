@@ -176,7 +176,7 @@ export default {
         "Medio Ambiente",
         "Tránsito",
         "Turismo",
-        "Secretaría de Desarrollo de la C."
+        "Sec. de Desarrollo de la Comunidad"
       ]
     };
   },

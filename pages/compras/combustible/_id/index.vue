@@ -136,7 +136,7 @@
                           </div>
                           <!-- Botones -->
                           <div v-if="jefeCompras" class="d-flex mr-2">
-                            <button v-if="!vale.consumido" class="btn btn-success btn-sm mx-1" title="Marcar como utilizado" @click="marcarUtilizado(vale, (currentPage - 1) * itemsPerPage + index)">
+                            <button v-if="!vale.consumido" class="btn btn-success btn-sm mx-1" title="Marcar como utilizado" @click="confirmarMarcarUtilizado(vale, (currentPage - 1) * itemsPerPage + index)">
                               <b-icon-check />
                             </button>
                             <button v-if="!vale.consumido" class="btn btn-primary btn-sm mx-1" title="Reimprimir" @click="confirmarReimpresion(vale, index)">
@@ -189,46 +189,88 @@
       <p v-html="observaciones"></p>
     </b-modal>
 
+      <!-- Modal de Confirmación para utilización -->
+      <b-modal id="modalUtilizacion" header-class="justify-content-center" title-class="text-light" header-bg-variant="success" hide-footer centered>
+      <template #modal-header>
+        <b-iconstack class="my-3">
+          <b-icon-circle scale="2.7" variant="light"/>
+          <b-icon-exclamation scale="2" variant="light" />
+        </b-iconstack>
+      </template>
+      <p class="h5 text-center mt-3 mb-4 font-weight-500 text-dark">
+        ¿Estás seguro de que deseas marcar el vale N° {{ tempNroVale + 1 }} como utilizado?
+      </p>
+      <hr class="row col-9 mx-auto"/>
+      <div class="d-flex justify-content-center">
+        <button class="btn btn-success mx-2" @click="marcarUtilizado()">Aceptar</button>
+        <button class="btn btn-danger" @click="$bvModal.hide('modalUtilizacion')">Cancelar</button>
+      </div>
+    </b-modal>
 
     <!-- Modal de Confirmación para Reimpresión -->
-    <b-modal id="modalReimpresion" title-class="text-light text-center" header-bg-variant="success" hide-footer centered>
-      <template #modal-title>
-        <b-icon-printer-fill class="mr-2" /> Confirmar Reimpresión
+    <b-modal id="modalReimpresion" header-class="justify-content-center" title-class="text-light" header-bg-variant="success" hide-footer centered>
+      <template #modal-header>
+        <b-iconstack class="my-3">
+          <b-icon-circle scale="2.7" variant="light"/>
+          <b-icon-printer-fill scale="1.5" variant="light" />
+        </b-iconstack>
       </template>
-      <p>¿Estás seguro de que deseas reimprimir el vale?</p>
-      <div class="d-flex justify-content-end">
-        <button class="btn btn-danger mr-2" @click="$bvModal.hide('modalReimpresion')">Cancelar</button>
-        <button class="btn btn-success" @click="reimprimirVale(valeSeleccionado)">Aceptar</button>
+      <p class="h5 text-center mt-3 mb-4 font-weight-500 text-dark">Estás a punto de reimprimir el vale.</p>
+      <p class="h6 text-center mt-2 mb-3 font-weight-500 text-dark">¿Deseás continuar?</p>
+      <hr class="row col-9 mx-auto"/>
+      <div class="d-flex justify-content-center">
+        <button class="btn btn-success mx-2" @click="reimprimirVale(valeSeleccionado)">Aceptar</button>
+        <button class="btn btn-danger" @click="$bvModal.hide('modalReimpresion')">Cancelar</button>
       </div>
     </b-modal>
 
     <!-- Modal de confirmación para reimpresión múltiple -->
-    <b-modal id="modalReimpresionMasiva" header-bg-variant="success" title-class="text-light text-center" hide-footer centered title="Confirmar Reimpresión masiva">
-      <p class="h5 text-center mb-4">¿Estás seguro de que querés reimprimir los vales seleccionados?</p>
+    <b-modal id="modalReimpresionMasiva" header-class="justify-content-center" header-bg-variant="success" title-class="text-light text-center" hide-footer centered>
+      <template #modal-header>
+        <b-iconstack class="my-3">
+          <b-icon-circle scale="2.7" variant="light"/>
+          <b-icon-printer-fill scale="1.5" variant="light" />
+        </b-iconstack>
+      </template>
+      <p class="h5 text-center mt-3 mb-4 font-weight-500 text-dark">Estás a punto de reimprimir los vales.</p>
+      <p class="h6 text-center mt-2 mb-3 font-weight-500 text-dark">¿Deseás continuar?</p>
+      <hr/>
       <div class="row no-gutters justify-content-center">
-        <b-button variant="secondary" class="mx-2" @click="$bvModal.hide('modalReimpresionMasiva')">Cancelar</b-button>
         <b-button variant="success" @click="imprimirValesSeleccionados">Aceptar</b-button>
+        <b-button variant="danger" class="mx-2" @click="$bvModal.hide('modalReimpresionMasiva')">Cancelar</b-button>
       </div>
     </b-modal>
 
     <!-- Modal de confirmación para marcación como consumido masivamente -->
-    <b-modal id="modalUtilizacionMasiva" header-bg-variant="success" title-class="text-light text-center" hide-footer centered title="Confirmar utilización masiva">
-      <p class="h5 text-center mb-4">¿Estás seguro de que querés marcar los vales seleccionados como utilizados?</p>
+    <b-modal id="modalUtilizacionMasiva" header-class="justify-content-center" header-bg-variant="success" title-class="text-light text-center" hide-footer centered>
+      <template #modal-header>
+        <b-iconstack class="my-3">
+          <b-icon-circle scale="2.7" variant="light"/>
+          <b-icon-exclamation scale="1.9" variant="light" />
+        </b-iconstack>
+      </template>
+      <p class="h5 text-center mt-3 my-4 text-dark font-weight-500">¿Estás seguro/a de que querés marcar los vales seleccionados como utilizados?</p>
+      <hr class="row col-9 mx-auto justify-content-center"/>
       <div class="row no-gutters justify-content-center">
-        <b-button variant="secondary" class="mx-2" @click="$bvModal.hide('modalUtilizacionMasiva')">Cancelar</b-button>
         <b-button variant="success" @click="marcarValesSeleccionados">Aceptar</b-button>
+        <b-button variant="danger" class="mx-2" @click="$bvModal.hide('modalUtilizacionMasiva')">Cancelar</b-button>
       </div>
     </b-modal>
 
     <!-- Modal de Confirmación para Eliminación -->
-    <b-modal v-model="modalEliminacion" title="Confirmar Eliminación" title-class="text-light text-center" header-bg-variant="danger" hide-footer centered>
-      <template #modal-title>
-        <b-icon-trash-fill class="mr-2" /> Confirmar Eliminación
+    <b-modal v-model="modalEliminacion" header-class="justify-content-center" title-class="text-light text-center" header-bg-variant="danger" hide-footer centered>
+      <template #modal-header>
+        <b-iconstack class="my-3">
+          <b-icon-circle scale="2.7" variant="light"/>
+          <b-icon-trash-fill scale="1.5" variant="light" />
+        </b-iconstack>
       </template>
-      <p>¿Estás seguro de que deseas eliminar el vale?</p>
-      <div class="d-flex justify-content-end">
-        <button class="btn btn-secondary mr-2" @click="modalEliminacion = false">Cancelar</button>
-        <button class="btn btn-danger" @click="eliminarVale()">Aceptar</button>
+      <p class="h5 text-center mt-3 mb-4 font-weight-500 text-dark">Estás a punto de eliminar el vale.</p>
+      <p class="h6 text-center mt-2 mb-3 font-weight-500 text-dark">¿Deseás continuar?</p>
+      <hr class="row col-9 mx-auto"/>
+      <div class="row no-gutters justify-content-center">
+        <button class="btn btn-success mx-2" @click="eliminarVale()">Aceptar</button>
+        <button class="btn btn-danger mx-2" @click="modalEliminacion = false">Cancelar</button>
       </div>
     </b-modal>
 
@@ -244,17 +286,17 @@
     </b-modal>
 
       <!-- Modal de Confirmación para Eliminación -->
-    <b-modal v-model="modalModificado" title="Confirmar modificación" title-class="mx-auto text-light text-center" header-bg-variant="success" hide-footer centered>
-      <template #modal-title>
-        <b-icon-pencil-fill class="mr-2" /> Confirmar modificación
+    <b-modal id="modalUtilizacionSuccess" v-model="modalModificado" header-class="justify-content-center" header-bg-variant="success" hide-footer centered>
+      <template #modal-header>
+        <b-iconstack class="my-3">
+          <b-icon-circle scale="2.7" variant="light"/>
+          <b-icon-check scale="2" variant="light"/>
+        </b-iconstack>
       </template>
-      <div class="row justify-content-center">
-        <b-icon-check-circle-fill variant="success" scale="3.5" class="my-4"/>
+      <p class="h5 mt-3 text-center font-weight-500">Vale de combustible modificado.</p>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-primary mx-auto mr-2" @click="cerrarModalModificacion ">Aceptar</button>
       </div>
-      <p class="text-center font-weight-500">Vale de combustible modificado.</p>
-      <!-- <div class="d-flex justify-content-end">
-        <button class="btn btn-primary mx-auto mr-2" @click="modalModificado = false">Aceptar</button>
-      </div> -->
     </b-modal>
 
   </div>
@@ -277,6 +319,8 @@ export default {
       indexSeleccionado: null,
       showObservaciones: false,
       observaciones: '',
+      tempNroVale: null,
+      tempValeRef: null,
     }
   },
   computed: {
@@ -395,6 +439,8 @@ export default {
       // Cambiar el tamaño de la fuente solo para el monto
       ctx.font = "500 30px sans-serif";  // Fuente más pequeña
       ctx.fillText(montoTexto, 1100, 472);
+      ctx.fillText(`${vale.dominio}`, 1400, 623);
+
 
       //Volver a la fuente original para los demás campos
       ctx.font = "500 40px sans-serif";
@@ -410,6 +456,8 @@ export default {
       // Cambiar el tamaño de la fuente solo para el monto en el duplicado
       ctx.font = "500 30px sans-serif";  // Fuente más pequeña
       ctx.fillText(montoTexto, 2848, 472);
+      ctx.fillText(`${vale.dominio}`, 3148, 623);
+
 
       // 🔹 Convertir a imagen y descargar
       const imgData = canvas.toDataURL("image/png");
@@ -504,6 +552,9 @@ export default {
         // Cambiar el tamaño de la fuente solo para el monto
         ctx.font = "500 30px sans-serif";  // Fuente más pequeña
         ctx.fillText(montoTexto, 1100, 472);
+        ctx.fillText(`${vale.dominio}`, 1400, 623);
+
+
 
         // Volver a la fuente original para los demás campos
         ctx.font = "500 38px sans-serif";
@@ -520,6 +571,8 @@ export default {
         // Cambiar el tamaño de la fuente solo para el monto en el duplicado
         ctx.font = "500 30px sans-serif";  // Fuente más pequeña
         ctx.fillText(montoTexto, 2848, 472);
+        ctx.fillText(`${vale.dominio}`, 3148, 623);
+
 
         // Convertir canvas en imagen y agregarlo al PDF
         const imgData = canvas.toDataURL("image/jpeg", 0.7); // Calidad 0.7 (ajustable)
@@ -550,27 +603,17 @@ export default {
         alert("Ocurrió un error al eliminar el vale. Revisa la consola para más detalles.");
       }
     },
-    async marcarUtilizado(valeRef, index) {
-      const mensaje = `¿Estás seguro de que deseas marcar el vale N°${index +1} como utilizado?`;
-
-      // Mostrar el modal de confirmación con los botones de Aceptar y Cancelar
-      const confirmacion = await this.$bvModal.msgBoxConfirm(mensaje, {
-        title: "Confirmar acción",
-        size: "md",
-        buttonSize: "md",
-        okVariant: "success",
-        cancelVariant: "danger",
-        headerClass: "text-primary",
-        centered: true,
-        headerBgVariant: "success",
-        titleClass: "text-center mx-auto justify-content-center text-light",
-        okTitle: "Aceptar",
-        bodyClass: "mx-5 text-center font-weight-bold",
-        cancelTitle: "Cancelar",
-      });
-
-      if (confirmacion) {
-        const id = valeRef.id;
+    confirmarMarcarUtilizado(valeRef, index) {
+      this.tempValeRef = valeRef
+      this.tempNroVale = index
+      this.$bvModal.show('modalUtilizacion')
+    },
+    cerrarModalModificacion(){
+      this.$bvModal.hide('modalUtilizacionSuccess')
+      location.reload()
+    },
+    async marcarUtilizado(){
+      const id = this.tempValeRef.id;
         try {
           const userToken = this.$store.state.user.token;
 
@@ -584,14 +627,12 @@ export default {
           // Eliminar el vale de la lista en el frontend
           this.vales = this.vales.filter(v => v._id !== this.valeSeleccionado);
 
+          this.$bvModal.hide('modalUtilizacion')
           this.modalModificado = true;
-          await this.wait(1500)
-          location.reload()
         } catch (error) {
           console.error("Error al eliminar el vale:", error);
           alert("Ocurrió un error al eliminar el vale. Revisa la consola para más detalles.");
         }
-      }
     },
     async marcarValesSeleccionados() {
       if (this.valesSeleccionados.length === 0) return;
@@ -738,7 +779,7 @@ export default {
 .circular-progress {
   width: 120px; /* Aumento del tamaño del SVG */
   height: 120px; /* Aumento del tamaño del SVG */
-  transform: rotate(-260deg); /* Giramos el círculo para que empiece desde la parte superior */
+  transform: rotate(-270deg); /* Giramos el círculo para que empiece desde la parte superior */
 }
 
 /* Fondo gris del círculo */

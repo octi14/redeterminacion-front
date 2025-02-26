@@ -16,6 +16,7 @@ const formatVale = (ValeResponse) => ({
   monto: ValeResponse.monto,
   tipoCombustible: ValeResponse.tipoCombustible,
   area: ValeResponse.area,
+  dominio: ValeResponse.dominio,
   fechaEmision: new Date(ValeResponse.fechaEmision),
   consumido: ValeResponse.consumido,
 })

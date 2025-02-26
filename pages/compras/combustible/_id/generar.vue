@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page main-background">
     <Banner title="Compras" subtitle="Generar vales"/>
 
     <b-container class="mt-4" v-if="orden">
@@ -12,10 +12,14 @@
         <b-card-body>
           <div class="row justify-content-center">
             <h4 class="text-primary text-center mt-4 mx-2 font-weight-bold">Área asignada: </h4>
-            <h4 class="text-dark text-center mt-4 font-weight-bold"> {{ orden.area }}</h4>
+            <h4 class="text-dark text-center mt-4 font-weight-500"> {{ orden.area }}</h4>
           </div>
 
           <b-form @submit.prevent="generarVales" class="m-4">
+            <b-form-group label="Patente" label-for="patente">
+              <b-form-input id="patente" v-model.number="form.patente" type="text" min="1"></b-form-input>
+            </b-form-group>
+
             <b-form-group label="Cantidad de vales" label-for="cantidad">
               <b-form-input id="cantidad" v-model.number="form.cantidad" type="number" min="1" required></b-form-input>
             </b-form-group>
@@ -70,6 +74,7 @@ export default {
       form: {
         cantidad: 1,
         combustible: "Super",
+        patente: '',
         monto: null
       },
     };
@@ -122,6 +127,7 @@ export default {
         tipoCombustible: this.form.combustible,
         monto: this.form.monto,
         area: area,
+        dominio: this.form.patente,
       };
 
       try {
@@ -133,6 +139,7 @@ export default {
         this.form.cantidad = 1;
         this.form.combustible = "Super";
         this.form.monto = null;
+        this.form.patente = "";
       } catch (error) {
         console.error("Error al generar los vales:", error);
         alert("Hubo un error al generar los vales.");

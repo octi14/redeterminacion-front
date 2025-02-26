@@ -128,8 +128,9 @@
                       <div class="col mt-2 ml-2">
                         <div class="row d-flex justify-content-between align-items-center">
                           <div class="d-flex align-items-center">
-                            <input v-if="!vale.consumido" type="checkbox" class="mb-2" :value="vale.id" v-model="valesSeleccionados" />
-                            <h4 class="mb-2 ml-3 font-weight-700 text-gray">
+                            <input v-if="!vale.consumido" type="checkbox" class="mb-2 ml-2" :value="vale.id" v-model="valesSeleccionados" />
+
+                            <h4 class="mb-2 ml-2 font-weight-700 text-gray">
                               VALE N° {{ (currentPage - 1) * itemsPerPage + index + 1 }}
                             </h4>
                           </div>
@@ -148,6 +149,7 @@
                         </div>
                         <p class="card-text ml-3 text-dark">Tipo de combustible: {{ vale.tipoCombustible }}</p>
                         <p class="card-text ml-3 text-dark">Importe: {{ format(vale.monto) }}</p>
+                        <p class="card-text ml-3 text-dark">Patente: {{ vale.dominio }}</p>
                         <p class="card-text ml-3 text-dark">Fecha de emisión: {{ new Date(vale.fechaEmision).toLocaleDateString('es-AR') }}</p>
                         <p class="card-text ml-3 text-dark">
                           Estado:
@@ -189,13 +191,13 @@
 
 
     <!-- Modal de Confirmación para Reimpresión -->
-    <b-modal id="modalReimpresion" title="Confirmar Reimpresión" title-class="text-light text-center" header-bg-variant="success" hide-footer centered>
+    <b-modal id="modalReimpresion" title-class="text-light text-center" header-bg-variant="success" hide-footer centered>
       <template #modal-title>
         <b-icon-printer-fill class="mr-2" /> Confirmar Reimpresión
       </template>
       <p>¿Estás seguro de que deseas reimprimir el vale?</p>
       <div class="d-flex justify-content-end">
-        <button class="btn btn-secondary mr-2" @click="$bvModal.hide('modalReimpresion')">Cancelar</button>
+        <button class="btn btn-danger mr-2" @click="$bvModal.hide('modalReimpresion')">Cancelar</button>
         <button class="btn btn-success" @click="reimprimirVale(valeSeleccionado)">Aceptar</button>
       </div>
     </b-modal>
@@ -691,7 +693,7 @@ export default {
 .fuel-icon {
   position: absolute;
   top: 50%;
-  left: 50%;
+  left: 51%;
   transform: translate(-50%, -50%);
 }
 /* Contenedor de la barra semicircular */

@@ -35,7 +35,10 @@
     <b-modal v-model="showCargarOrden" hide-footer :header-bg-variant="'success'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
-          <b-icon-upload scale="2" variant="light" />
+          <b-iconstack class="my-3">
+            <b-icon-circle scale="2.7" variant="light"/>
+            <b-icon-upload scale="1.5" variant="light" />
+          </b-iconstack>
         </div>
       </template>
       <div class="confirmation-popup-body">
@@ -51,8 +54,8 @@
           <div class="mx-auto">
             <!-- Número de orden de compra -->
             <div class="row mt-4 mx-1">
-              <b-icon-caret-right-fill class="icon-orange ml-0" scale="1.2"/>
-              <h6 class="text-dark font-weight-600 ml-1">Número de Orden de Compra</h6>
+                <b-icon-caret-right-fill class="icon-orange ml-0" scale="1.2"/>
+              <h6 class="text-dark font-weight-500 ml-1">Número de Orden de Compra</h6>
             </div>
             <b-form-group class="col-12">
               <div class="numero-orden-container">
@@ -66,7 +69,7 @@
             <!-- Proveedor -->
             <div class="row mt-4 mx-1">
               <b-icon-caret-right-fill class="icon-orange ml-0" scale="1.2"/>
-              <h6 class="text-dark font-weight-600 ml-1">Proveedor</h6>
+              <h6 class="text-dark font-weight-500 ml-1">Proveedor</h6>
             </div>
             <b-form-group label-class="text-dark font-weight-bold" class="col-12">
               <b-form-input style="border-radius: 0;" size="sm" class="col-8" type="text" v-model="orden.proveedor"/>
@@ -75,26 +78,30 @@
             <!-- Área asignada -->
             <div class="row mt-4 mx-1">
               <b-icon-caret-right-fill class="icon-orange ml-0" scale="1.2"/>
-              <h6 class="text-dark font-weight-600 ml-1">Área asignada</h6>
+              <h6 class="text-dark font-weight-500 ml-1">Área asignada</h6>
             </div>
             <b-form-group label-class="text-dark font-weight-bold" class="col-12">
-              <b-form-input style="border-radius: 0;" size="sm" class="col-8" type="text" v-model="orden.area"/>
+              <b-form-select style="border-radius: 0;" size="sm" :options="areas" v-model="orden.area"/>
+              <!-- <b-form-input style="border-radius: 0;" size="sm" class="col-8" type="text" v-model="orden.area"/> -->
             </b-form-group>
             <!-- Combustibles -->
             <div class="row mt-4 mx-1">
               <b-icon-caret-right-fill class="icon-orange ml-0" scale="1.2"/>
-              <h6 class="text-dark font-weight-600 ml-1">Montos asignados por tipo de combustible</h6>
+              <h6 class="text-dark font-weight-500 ml-1">Montos asignados por tipo de combustible</h6>
             </div>
             <b-form-group class="col-12">
               <div v-for="(combustible, index) in orden.montos" :key="index" class="d-flex align-items-center mb-2">
                 <b-form-input style="border-radius: 0;" size="sm" class="col-5" type="text" placeholder="Tipo de combustible" v-model="combustible.tipoCombustible" />
-                <h6 class="font-weight-600 text-dark ml-3 mr-1 mt-1">$ </h6>
+                <h6 class="font-weight-500 text-dark ml-3 mr-1 mt-1">$ </h6>
                  <b-form-input style="border-radius: 0;" size="sm" class="col-5 ml-2" type="number" placeholder="Monto" no-wheel v-model="combustible.monto" />
-                <b-button v-if="orden.montos.length > 1" variant="danger" size="sm" class="ml-2" @click="removeCombustible(index)">X</b-button>
+                <b-button v-if="orden.montos.length > 1" variant="outline-danger" size="sm" class="ml-2" @click="removeCombustible(index)">
+                  <b-icon-trash-fill/>
+                </b-button>
               </div>
               <b-button variant="primary" :disabled="this.orden.montos.length >= 4" size="sm" @click="addCombustible">+ Agregar combustible</b-button>
             </b-form-group>
 
+            <hr/>
 
           </div>
 
@@ -152,6 +159,24 @@ export default {
         { key: 'saldoRestante', label: 'Saldo' },
         { key: 'detalles', label: 'Detalles' },
         { key: 'observaciones', label: 'Observaciones' },
+      ],
+      areas: [
+        "Intendente Municipal",
+        "Secretaría de Salud",
+        "Secretaría de Hacienda",
+        "Secretaría de Obras",
+        "Dirección de Deportes",
+        "Verificación en Playa",
+        "Juzgado de Faltas",
+        "Inspección General",
+        "Dir. Coordinación",
+        "Cementerio",
+        "Dirección de Obras Particulares",
+        "Seguridad en Playa",
+        "Medio Ambiente",
+        "Tránsito",
+        "Turismo",
+        "Secretaría de Desarrollo de la C."
       ]
     };
   },
@@ -268,6 +293,7 @@ export default {
 }
 
 .icon-orange{
+  padding-top: auto;
   color: #FF7A00;
 }
 

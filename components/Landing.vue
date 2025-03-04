@@ -6,6 +6,12 @@
           <LandingIcon :icon="link.icon" :title="link.title" :type="link.type" :to="link.to" />
         </div>
         <div v-if="adminHacienda" class="col-lg-4 col-md-6 mx-auto my-4 col-sm-12 mb-4">
+            <LandingIcon icon="car-front" title="Tránsito" :type="'bootstrap-icons'" to="/transito" />
+        </div>
+        <div class="col-lg-4 col-md-6 mx-auto my-4 col-sm-12 mb-4">
+            <LandingIcon icon="briefcase" title="Compras" :type="'bootstrap-vue'" to="/compras" />
+        </div>
+        <div v-if="adminHacienda" class="col-lg-4 col-md-6 mx-auto my-4 col-sm-12 mb-4">
           <LandingIcon icon="calculator" title="Obras" :type="'bootstrap-vue'" to="/obras" />
         </div>
       </div>
@@ -39,8 +45,8 @@ export default {
         { to: "/modernizacion", icon: "list-ul", title: "Modernización", type: "bootstrap-vue" },
         { to: "/consulta_tramite", icon: "search", title: "Consulta estado de trámite", type: "bootstrap-vue" },
         { to: "/abierto_anual", icon: "shop", title: "Comercio Abierto anual", type: "bootstrap-vue" },
-        { to: "/transito", icon: "car-front", title: "Tránsito", type: "bootstrap-icons" }, // 🚗 Usa Bootstrap Icons
-        { to: "/compras", icon: "briefcase", title: "Compras", type: "bootstrap-vue" }
+        // { to: "/transito", icon: "car-front", title: "Tránsito", type: "bootstrap-icons" }, // 🚗 Usa Bootstrap Icons
+        // { to: "/compras", icon: "briefcase", title: "Compras", type: "bootstrap-vue" }
       ]
     };
   },

@@ -21,6 +21,13 @@ const formatVale = (ValeResponse) => ({
   consumido: ValeResponse.consumido,
 })
 
+
+const formatProveedor = (ProveedorResponse) => ({
+  id: ProveedorResponse._id,
+  nombre: ProveedorResponse.nombre,
+  tiposCombustible: ProveedorResponse.tiposCombustible,
+})
+
 module.exports = {
   getLatest: async (axios) => {
     const response = await axios.$get('/ordenesCompra')
@@ -86,5 +93,10 @@ module.exports = {
     return await axios.$delete(`/valesCombustible/${id}`, {
       headers: { Authorization: `Bearer ${userToken}` },
     })
-  }
+  },
+
+  getProveedores: async (axios) => {
+    const response = await axios.$get('/proveedores')
+    return response.data.map(formatProveedor)
+  },
 }

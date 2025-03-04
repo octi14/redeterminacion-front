@@ -72,7 +72,9 @@
               <h6 class="text-dark font-weight-500 ml-1">Proveedor</h6>
             </div>
             <b-form-group label-class="text-dark font-weight-bold" class="col-12">
-              <b-form-input style="border-radius: 0;" size="sm" class="col-8" type="text" v-model="orden.proveedor"/>
+              <b-form-select style="border-radius: 0;" size="sm"
+               :options="proveedores.map(p => ({value: p.nombre, text: p.nombre}))"
+               v-model="orden.proveedor"/>
             </b-form-group>
 
             <!-- Área asignada -->
@@ -91,9 +93,16 @@
             </div>
             <b-form-group class="col-12">
               <div v-for="(combustible, index) in orden.montos" :key="index" class="d-flex align-items-center mb-2">
-                <b-form-input style="border-radius: 0;" size="sm" class="col-5" type="text" placeholder="Tipo de combustible" v-model="combustible.tipoCombustible" />
+                <b-form-select
+                  style="border-radius: 0;"
+                  size="sm"
+                  class="col-5"
+                  :options="tiposCombustibleProveedor"
+                  v-model="combustible.tipoCombustible"
+                  placeholder="Seleccione un tipo de combustible"
+                />
                 <h6 class="font-weight-500 text-dark ml-3 mr-1 mt-1">$ </h6>
-                 <b-form-input style="border-radius: 0;" size="sm" class="col-5 ml-2" type="number" placeholder="Monto" no-wheel v-model="combustible.monto" />
+                <b-form-input style="border-radius: 0;" size="sm" class="col-5 ml-2" type="number" placeholder="Monto" no-wheel v-model="combustible.monto" />
                 <b-button v-if="orden.montos.length > 1" variant="outline-danger" size="sm" class="ml-2" @click="removeCombustible(index)">
                   <b-icon-trash-fill/>
                 </b-button>
@@ -183,6 +192,7 @@ export default {
   async fetch() {
     await this.$store.dispatch('combustible/getOrdenesCompra')
     this.items = this.ordenesCompra
+    await this.$store.dispatch('combustible/getProveedores')
   },
   computed: {
     adminCompras(){
@@ -190,6 +200,15 @@ export default {
     },
     ordenesCompra() {
       return this.$store.state.combustible.all;
+    },
+    proveedores() {
+      return this.$store.state.combustible.proveedores;
+    },
+    tiposCombustibleProveedor() {
+      const proveedorSeleccionado = this.proveedores.find(p => p.nombre === this.orden.proveedor);
+      return proveedorSeleccionado
+        ? proveedorSeleccionado.tiposCombustible.map(tipo => ({ value: tipo, text: tipo }))
+        : [];
     },
     paginatedItems() {
       const start = (this.currentPage - 1) * this.perPage;

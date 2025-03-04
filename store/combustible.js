@@ -5,6 +5,7 @@ export const state = () => ({
   all: [],
   vales_creados: [],
   all_vales: [],
+  proveedores: [],
 })
 
 export const actions = {
@@ -64,6 +65,12 @@ export const actions = {
       throw error; // Esto hace que el error se propague al frontend
     }
   },
+
+  async getProveedores({ commit, state }) {
+    const found = await CombustibleService.getProveedores(this.$axios, {
+    })
+    commit('setProveedores', found)
+  },
 }
 
 export const mutations = {
@@ -82,5 +89,8 @@ export const mutations = {
   },
   removerVale(state, valeId) {
     state.vales_creados = state.vales_creados.filter(vale => vale.id !== valeId);
-  }
+  },
+  setProveedores(state, list){
+    state.proveedores = list
+  },
 }

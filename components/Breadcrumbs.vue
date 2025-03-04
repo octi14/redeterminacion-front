@@ -1,48 +1,30 @@
 <template>
   <nav v-if="$route.path !== '/'" class="breadcrumbs">
-    <b-breadcrumb :items="breadcrumbs" />
+    <b-breadcrumb>
+      <!-- Link al inicio -->
+      <b-breadcrumb-item :to="'/'">Inicio</b-breadcrumb-item>
+
+      <!-- Generación dinámica de los breadcrumbs -->
+      <span v-for="(breadcrumb, index) in breadcrumbs" :key="index" class="breadcrumb-wrapper">
+        <span class="separator">></span>
+        <b-breadcrumb-item :to="breadcrumb.to">{{ breadcrumb.text }}</b-breadcrumb-item>
+      </span>
+    </b-breadcrumb>
   </nav>
 </template>
 
 <script>
 export default {
-  data() {
-    return {
-      breadcrumbs: [],
-    };
-  },
   computed: {
     // Calcula las migas de pan basadas en la ruta actual
-    generateBreadcrumbs() {
+    breadcrumbs() {
       const routeSegments = this.$route.path.split('/').filter(segment => segment !== '');
 
-      const breadcrumbs = routeSegments.map((segment, index) => {
-        return {
-          text: segment,
-          to: `/${routeSegments.slice(0, index + 1).join('/')}`,
-        };
-      });
-      
-      return [
-        {
-          text: 'Inicio',
-          to: '/',
-        },
-        ...breadcrumbs,
-      ];
+      return routeSegments.map((segment, index) => ({
+        text: segment,
+        to: `/${routeSegments.slice(0, index + 1).join('/')}`,
+      }));
     },
-  },
-  watch: {
-    // Actualiza las migas de pan cuando cambia la ruta
-    $route: 'updateBreadcrumbs',
-  },
-  methods: {
-    updateBreadcrumbs() {
-      this.breadcrumbs = this.generateBreadcrumbs;
-    },
-  },
-  created() {
-    this.breadcrumbs = this.generateBreadcrumbs;
   },
 };
 </script>
@@ -52,10 +34,18 @@ export default {
   margin: 0 0 15px 0;
   background: none;
 }
-.breadcrumb a, .breadcrumb span, .breadcrumb-item::before{
-  color: #0c681a ;
+.separator {
+  margin: 0 0.5em;
+  color: #0c681a;
 }
-.breadcrumb a{
- font-weight: 600;
+.breadcrumb-wrapper {
+  display: inline-flex;
+  align-items: center;
+}
+.breadcrumb a, .breadcrumb span {
+  color: #0c681a;
+}
+.breadcrumb a {
+  font-weight: 600;
 }
 </style>

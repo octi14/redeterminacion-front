@@ -67,12 +67,6 @@ export default {
 .obra-icon:hover {
   transform: scale(1.15); /* Ajusta el valor según desees el efecto de escala */
 }
-.custom-row {
-  padding-top: 10px;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
-}
 
 .col{
   margin: 16px;

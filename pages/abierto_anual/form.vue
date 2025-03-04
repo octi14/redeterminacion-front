@@ -20,15 +20,15 @@
               <div v-if="$v.cuit.$error" class="validation-error col-12">
                 <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon>  'El CUIT/CUIT debe ser un número de 11 dígitos'
               </div>
-            </b-row>        
-            <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>    
+            </b-row>
+            <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
             <b-row>
               <label for="nroLegajo" class="col-6"> N° de legajo comercial: <b-icon-question-circle-fill @click="openPopup('A')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></label>
               <b-form-input class="col-6" v-model="nroLegajo" id="nroLegajo" type="number" placeholder="Ingrese un N° de Legajo Comercial" no-wheel></b-form-input>
               <div v-if="$v.nroLegajo.$error" class="validation-error col-12">
                 <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon>  'Completá este campo'
               </div>
-            </b-row>   
+            </b-row>
           </b-form>
           <div class="btn-container">
             <b-button class="btn-cancel" @click="onResetParams">Cancelar</b-button>
@@ -122,7 +122,6 @@
 
 
   <script>
-  import maestroComercial from "@/plugins/maestroComercial.js";  
   import { required, requiredIf, alpha, numeric, email, minLength, maxLength, sameAs } from 'vuelidate/lib/validators';
   export default {
     validations() {
@@ -222,7 +221,7 @@
           this.showClosedPopup = true;
         }
     },
-    
+
   },
     // computed: {
     //   areAllFieldsComplete(){

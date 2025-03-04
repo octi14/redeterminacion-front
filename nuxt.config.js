@@ -21,7 +21,11 @@ export default {
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: ['~/assets/css/style.scss'],
+  css: [
+    '~/assets/css/style.scss',
+    'bootstrap-icons/font/bootstrap-icons.css'
+  ],
+
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
@@ -46,8 +50,8 @@ export default {
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    baseURL: 'https://redeterminacion-back.herokuapp.com/',
-    // baseURL: 'http://localhost:5000/',  // Used as fallback if no runtime config is provided
+    // baseURL: 'https://redeterminacion-back.herokuapp.com/',
+    baseURL: 'http://localhost:5000/',  // Used as fallback if no runtime config is provided
   },
 
 

@@ -220,7 +220,7 @@ export default {
         //Original
         ctx.fillText(`${this.orden.proveedor}`, 600, 310);
         ctx.fillText(`${this.orden.nroOrden}`, 600, 367);
-        ctx.fillText(`${(i + 1).toString().padStart(3, '0')}`, 1600, 266);
+        ctx.fillText(`${this.valesCreados[i].nro_vale.toString().padStart(3, '0')}`, 1600, 266);
         ctx.fillText(`${this.valesCreados[i].area}`, 1400, 365);
         ctx.fillText(`${this.valesCreados[i].tipoCombustible}`, 600, 420);
         // ctx.fillText(`${this.valesCreados[i].fechaEmision.toLocaleDateString('es-AR')}`, 1400, 420);
@@ -237,7 +237,7 @@ export default {
         //Duplicado
         ctx.fillText(`${this.orden.proveedor}`, 2348, 310);
         ctx.fillText(`${this.orden.nroOrden}`, 2348, 367);
-        ctx.fillText(`${(i + 1).toString().padStart(3, '0')}`, 3348, 266);
+        ctx.fillText(`${this.valesCreados[i].nro_vale.toString().padStart(3, '0')}`, 3348, 266);
         ctx.fillText(`${this.valesCreados[i].area}`, 3148, 365);
         ctx.fillText(`${this.valesCreados[i].tipoCombustible}`, 2348, 420);
         // ctx.fillText(`${this.valesCreados[i].fechaEmision.toLocaleDateString('es-AR')}`, 3148, 420);

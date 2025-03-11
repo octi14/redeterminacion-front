@@ -131,7 +131,7 @@
                             <input v-if="!vale.consumido" type="checkbox" class="mb-2 ml-2" :value="vale.id" v-model="valesSeleccionados" />
 
                             <h4 class="mb-2 ml-2 font-weight-700 text-gray">
-                              VALE N° {{ (currentPage - 1) * itemsPerPage + index + 1 }}
+                              VALE N° {{ vale.nro_vale }}
                             </h4>
                           </div>
                           <!-- Botones -->
@@ -431,7 +431,7 @@ export default {
       //Original
       ctx.fillText(`${this.orden.nroOrden}`, 600, 368);
       ctx.fillText(`${this.orden.proveedor}`, 600, 310);
-      ctx.fillText(`${(this.indexSeleccionado + 1).toString().padStart(3, '0')}`, 1600, 266);
+      ctx.fillText(`${vale.nro_vale.toString().padStart(3, '0')}`, 1600, 266);
       ctx.fillText(`${vale.area}`, 1400, 365);
       ctx.fillText(`${vale.tipoCombustible}`, 600, 420);
       // ctx.fillText(`${vale.fechaEmision.toLocaleDateString('es-AR')}`, 1400, 420);
@@ -448,7 +448,7 @@ export default {
       //Duplicado
       ctx.fillText(`${this.orden.nroOrden}`, 2348, 368);
       ctx.fillText(`${this.orden.proveedor}`, 2348, 310);
-      ctx.fillText(`${(this.indexSeleccionado + 1).toString().padStart(3, '0')}`, 3348, 266);
+      ctx.fillText(`${vale.nro_vale.toString().padStart(3, '0')}`, 3348, 266);
       ctx.fillText(`${vale.area}`, 3148, 365);
       ctx.fillText(`${vale.tipoCombustible}`, 2348, 420);
       // ctx.fillText(`${vale.fechaEmision.toLocaleDateString('es-AR')}`, 3148, 420);
@@ -543,7 +543,7 @@ export default {
         ctx.font = "500 38px sans-serif";
         ctx.fillText(`${this.orden.proveedor}`, 600, 310);
         ctx.fillText(`${this.orden.nroOrden}`, 600, 368);
-        ctx.fillText(`${indiceOriginal.toString().padStart(3, '0')}`, 1600, 266);  // 🛠️ Aquí usamos el índice original
+        ctx.fillText(`${vale.nro_vale.toString().padStart(3, '0')}`, 1600, 266);  // 🛠️ Aquí usamos el índice original
         ctx.fillText(`${vale.area}`, 1400, 365);
         ctx.fillText(`${vale.tipoCombustible}`, 600, 420);
         // ctx.fillText(`${vale.fechaEmision.toLocaleDateString('es-AR')}`, 1400, 420);
@@ -562,7 +562,7 @@ export default {
         // Duplicado
         ctx.fillText(`${this.orden.nroOrden}`, 2348, 368);
         ctx.fillText(`${this.orden.proveedor}`, 2348, 310);
-        ctx.fillText(`${indiceOriginal.toString().padStart(3, '0')}`, 3348, 266);  // 🛠️ Aquí también usamos el índice original
+        ctx.fillText(`${vale.nro_vale.toString().padStart(3, '0')}`, 3348, 266);  // 🛠️ Aquí también usamos el índice original
         ctx.fillText(`${vale.area}`, 3148, 365);
         ctx.fillText(`${vale.tipoCombustible}`, 2348, 420);
         // ctx.fillText(`${vale.fechaEmision.toLocaleDateString('es-AR')}`, 3148, 420);

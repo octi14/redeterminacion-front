@@ -185,7 +185,12 @@ export default {
         "Medio Ambiente",
         "Tránsito",
         "Turismo",
-        "Sec. de Desarrollo de la Comunidad"
+        "Sec. de Desarrollo de la Comunidad",
+        "Corralón",
+        "Corralón Sur",
+        "Obras Sanitarias",
+        "Obras Públicas",
+        "Transporte"
       ]
     };
   },

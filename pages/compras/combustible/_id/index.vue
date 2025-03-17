@@ -123,7 +123,8 @@
                       <div class="col mt-2 ml-2">
                         <div class="row d-flex justify-content-between align-items-center">
                           <div class="d-flex align-items-center">
-                            <input v-if="!vale.consumido" type="checkbox" class="mb-2 ml-2" :value="vale.id" v-model="valesSeleccionados" />
+
+                            <input v-if="!vale.consumido && !vale.anulado" type="checkbox" class="mb-2 ml-2" :value="vale.id" v-model="valesSeleccionados" />
                             <b-icon-x-square v-else disabled="disabled" class="mb-2 ml-2"></b-icon-x-square>
 
                             <h4 class="mb-2 ml-2 font-weight-700 text-gray">
@@ -131,7 +132,7 @@
                             </h4>
                           </div>
                           <!-- Botones -->
-                          <div v-if="jefeCompras" class="d-flex mr-2">
+                          <div v-if="jefeCompras && !vale.anulado" class="d-flex mr-2">
                             <button v-if="!vale.consumido" class="btn btn-success btn-sm mx-1" title="Marcar como utilizado" @click="confirmarMarcarUtilizado(vale, (currentPage - 1) * itemsPerPage + index)">
                               <b-icon-check />
                             </button>
@@ -150,7 +151,8 @@
                         <p class="card-text ml-3 text-dark">
                           Estado:
                           <span :class="vale.consumido ? 'text-danger' : 'text-success'">
-                            <b>{{ vale.consumido ? 'No disponible' : 'Disponible' }}</b>
+                            <b v-if="!vale.anulado">{{ vale.consumido ? 'No disponible' : 'Disponible' }}</b>
+                            <b class="text-gray" v-else>Anulado</b>
                           </span>
                         </p>
                       </div>
@@ -276,7 +278,7 @@
       </template>
       <p>Vale de combustible eliminado.</p>
       <div class="d-flex justify-content-end">
-        <button class="btn btn-primary mr-2" @click="modalEliminado = false">Aceptar</button>
+        <button class="btn btn-primary mr-2" @click="cerrarModalEliminacion">Aceptar</button>
       </div>
     </b-modal>
 
@@ -586,15 +588,11 @@ export default {
         const userToken = this.$store.state.user.token;
 
         // Hacer la petición al backend para eliminar el vale
-        await this.$store.dispatch("combustible/eliminarVale", { id, userToken });
-
-        // Eliminar el vale de la lista en el frontend
-        this.vales = this.vales.filter(v => v._id !== this.valeSeleccionado);
+        await this.$store.dispatch("combustible/anularVale", { id, userToken });
 
         this.modalEliminacion = false;
         this.modalEliminado = true;
       } catch (error) {
-        console.error("Error al eliminar el vale:", error);
         alert("Ocurrió un error al eliminar el vale. Revisa la consola para más detalles.");
       }
     },
@@ -605,6 +603,10 @@ export default {
     },
     cerrarModalModificacion(){
       this.$bvModal.hide('modalUtilizacionSuccess')
+      location.reload()
+    },
+    cerrarModalEliminacion(){
+      this.modalEliminado = false
       location.reload()
     },
     async marcarUtilizado(){

@@ -20,6 +20,7 @@ const formatVale = (ValeResponse) => ({
   dominio: ValeResponse.dominio,
   fechaEmision: new Date(ValeResponse.fechaEmision),
   consumido: ValeResponse.consumido,
+  anulado: ValeResponse.anulado,
 })
 
 
@@ -88,6 +89,11 @@ module.exports = {
       { vale },
     )
     return formatVale(updated)
+  },
+  anularVale: async (axios, { id, userToken }) =>{
+    return await axios.$post(`/valesCombustible/anular/${id}`, {
+      headers: { Authorization: `Bearer ${userToken}` },
+    })
   },
   deleteVale: async (axios, { id, userToken }) =>{
     return await axios.$delete(`/valesCombustible/${id}`, {

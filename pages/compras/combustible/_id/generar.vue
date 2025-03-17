@@ -104,8 +104,10 @@ export default {
 
       const totalMonto = this.form.cantidad * this.form.monto;
       // Verificar si el total excede el saldo disponible según el tipo de combustible
-      const saldoDisponible =
-        this.form.combustible === "Super" ? this.orden.saldoSuper : this.orden.saldoVPower;
+
+        const saldoCombustible = this.orden.saldos.find((item) => item.tipoCombustible === this.form.combustible);
+
+        const saldoDisponible = saldoCombustible ? saldoCombustible.saldo : 0;
 
       if (totalMonto > saldoDisponible) {
         this.$bvModal.msgBoxOk(`El monto total excede el saldo disponible para ${this.form.combustible}.`, {

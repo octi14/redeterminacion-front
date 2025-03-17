@@ -54,6 +54,16 @@ export const actions = {
       throw new Error(e.message)
     }
   },
+  async anularVale({ commit }, { id, userToken }) {
+    try {
+      await CombustibleService.anularVale(this.$axios, { id, userToken });
+      // Si el backend responde correctamente, eliminamos el vale del store
+      // commit("removerVale", id);
+    } catch (error) {
+      console.error("Error del store de VueX", error);
+      throw error; // Esto hace que el error se propague al frontend
+    }
+  },
   async eliminarVale({ commit }, { id, userToken }) {
     try {
       const response = await CombustibleService.deleteVale(this.$axios, { id, userToken });

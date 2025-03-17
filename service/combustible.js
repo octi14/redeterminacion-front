@@ -12,6 +12,7 @@ const formatOrden = (OrdenResponse) => ({
 
 const formatVale = (ValeResponse) => ({
   id: ValeResponse._id,
+  nro_vale: ValeResponse.nro_vale,
   orden_id: ValeResponse.orden,
   monto: ValeResponse.monto,
   tipoCombustible: ValeResponse.tipoCombustible,
@@ -89,7 +90,6 @@ module.exports = {
     return formatVale(updated)
   },
   deleteVale: async (axios, { id, userToken }) =>{
-    console.log("Borrandolo...")
     return await axios.$delete(`/valesCombustible/${id}`, {
       headers: { Authorization: `Bearer ${userToken}` },
     })

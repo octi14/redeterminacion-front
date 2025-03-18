@@ -277,12 +277,19 @@
 
       <!-- Modal de Confirmación para Eliminación -->
       <b-modal v-model="modalEliminado" title="Confirmar Eliminación" title-class="text-light text-center" header-bg-variant="danger" hide-footer centered>
-      <template #modal-title>
-        <b-icon-trash-fill class="mr-2" /> Confirmar Eliminación
+      <template #modal-header>
+        <div class="confirmation-popup-header mx-auto">
+          <b-iconstack>
+            <b-icon-circle scale="3" variant="light"/>
+            <b-icon-trash-fill scale="2" variant="light"/>
+          </b-iconstack>
+        </div>
       </template>
-      <p>Vale de combustible eliminado.</p>
-      <div class="d-flex justify-content-end">
-        <button class="btn btn-primary mr-2" @click="cerrarModalEliminacion">Aceptar</button>
+      <div class="mt-4 mb-5">
+        <h4 class="text-center font-weight-500 text-dark">El vale de combustible se ha eliminado.</h4>
+      </div>
+      <div class="d-flex justify-content-center">
+        <button class="btn btn-success mr-2" @click="cerrarModalEliminacion">Aceptar</button>
       </div>
     </b-modal>
 

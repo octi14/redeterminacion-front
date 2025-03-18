@@ -35,19 +35,28 @@
     <b-modal v-model="showCargarOrden" hide-footer :header-bg-variant="'success'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
-          <b-iconstack class="my-3">
+          <b-iconstack v-if="!successMessage" class="my-3">
             <b-icon-circle scale="2.7" variant="light"/>
             <b-icon-upload scale="1.5" variant="light" />
+          </b-iconstack>
+          <b-iconstack class="my-3" v-else>
+            <b-icon-check-circle scale="2.5" variant="light"/>
           </b-iconstack>
         </div>
       </template>
       <div class="confirmation-popup-body">
-        <h3 class="landing-text text-center"><b>Cargar orden de compra</b></h3><hr/>
+        <h3 class="landing-text text-center" v-if="!successMessage"><b>Cargar orden de compra</b></h3><hr v-if="!successMessage"/>
 
         <!-- Mensaje de éxito -->
         <div v-if="successMessage" class="text-center">
-          <b-icon-check-circle scale="2" variant="success"></b-icon-check-circle>
-          <p class="text-success font-weight-bold mt-2">La Orden de compra fue cargada con éxito</p>
+          <p class="h5 font-weight-bold text-dark mt-2" style="font-size: 1.15rem;">La orden de compra fue cargada con éxito</p>
+
+          <!-- Botón de aceptar -->
+          <div class="text-center mt-5">
+            <b-btn style="border-radius: 0;" variant="success" @click="cerrarPopup()">
+              Aceptar
+            </b-btn>
+          </div>
         </div>
 
         <div v-else>
@@ -241,6 +250,11 @@ export default {
     onPageChange(newPage) {
       this.currentPage = newPage;
     },
+    cerrarPopup(){
+      this.showCargarOrden = false;  // Cerrar modal
+      this.successMessage = false,
+      location.reload();  // Refrescar página
+    },
     onShowObservaciones(index){
       if(this.ordenesCompra[index].observaciones){
         this.observaciones = this.ordenesCompra[index].observaciones.split('**').join('<br>').split(',').join('')
@@ -275,13 +289,9 @@ export default {
         });
 
         // Mostrar mensaje de éxito
-        this.successMessage = true;
+        this.showCargarOrden = false
+        this.successMessage = true
 
-        // Esperar 2 segundos antes de cerrar el modal y refrescar la página
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        this.showCargarOrden = false;  // Cerrar modal
-        this.successMessage = false,
-        location.reload();  // Refrescar página
       } catch (error) {
         this.$bvToast.toast("Error al crear la orden", { variant: "danger" });
       } finally {

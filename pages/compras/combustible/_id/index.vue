@@ -22,40 +22,32 @@
       </div>
 
       <!--Datos de orden de compra-->
-      <b-card no-body class="container col-md-7 col-sm-10 shadow-card mt-4 mx-auto">
-        <div class="container mt-4 ml-4 mx-auto">
+      <b-card no-body class="container big-container col-md-7 col-sm-10 shadow-card mt-4 mx-auto">
+        <div class="container mt-4">
           <h5 class="row">
-            <b-icon-receipt class="icon-orange mt-4 ml-4" scale="2"/>
+            <b-icon-receipt class="icon-orange mt-4 ml-4" scale="1.75"/>
             <a class="ml-3 mr-2 mt-2 separador" > | </a>
             <h2 class="text-green mt-3"><b>Datos de orden de compra</b></h2>
           </h5>
           <hr />
         </div>
-
-        <div class="container mb-3 mx-auto">
-          <div class="row mt-1 mx-4">
-            <b-icon-caret-right-fill class="icon-orange mt-1" scale="1.5"/>
-            <h5 class="font-weight-bold text-dark mx-2">Área asignada: </h5>
-            <h5 class="text-right text-dark">{{ orden.area }}</h5>
+        <div class="container mx-auto">
+          <div class="row mt-4 mx-5">
+            <b-icon-caret-right-fill class="icon-orange mt-1" scale="1.25"/>
+            <h5 class="text-dark mx-2">Área asignada: </h5>
+            <h5 class="text-right text-gray font-weight-bold" style="font-size: 1.75rem; line-height: 1.5rem">{{ orden.area }}</h5>
           </div>
-          <div class="row no-gutters mt-1 mx-4">
-            <b-icon-caret-right-fill class="icon-orange mt-1" scale="1.5"/>
-            <h5 class="font-weight-bold text-dark mx-2">Proveedor:</h5>
-            <h5 class="text-right text-dark">{{ orden.proveedor }}</h5>
+          <div class="row no-gutters mt-1 mx-5">
+            <b-icon-caret-right-fill class="icon-orange mt-1" scale="1.25"/>
+            <h5 class="text-dark mx-2">Proveedor:</h5>
+            <h5 class="text-right text-gray font-weight-bold" style="font-size: 1.75rem; line-height: 1.5rem">{{ orden.proveedor }}</h5>
           </div>
-          <!-- Título de la gráfica -->
-          <div class="row no-gutters mt-1 mx-4">
-            <b-icon-caret-right-fill class="icon-orange mt-1" scale="1.5"/>
-            <h5 class="font-weight-bold text-dark mx-2">Saldos por combustible:</h5>
-          </div>
-
-            <div class="layout">
-              <!-- Gráfica para cada combustible -->
-              <b-card no-body v-for="(monto, index) in orden.montos" :key="index" class="col main-background border-card shadow-sm col-main my-3 mb-4">
-                <h5 class="my-3 text-center text-dark font-weight-600">{{ monto.tipoCombustible.toUpperCase() }}</h5>
-                <hr/>
+          <div class="fuel-layout mt-5">.
+            <div class="fuel-container-h" v-for="(monto, index) in orden.montos" :key="index">
+              <div class="fuel-icon-wrapper">
                 <!-- SVG de círculo completo -->
-                <div class="circular-progress-container" style="position: relative">
+                <div class="circular-progress-container" style="position: relative">                
+                  <FuelIcon class="fuel-icon" :class="['fill-color-' + index]" style="height: 45px; width: 45px;"/>
                   <svg viewBox="0 0 100 100" class="circular-progress">
                     <!-- Fondo gris (borde de la barra) -->
                     <circle
@@ -65,33 +57,36 @@
                       r="40"
                       stroke-width="10"
                     ></circle>
-
                     <!-- Barra de progreso -->
                     <circle
                       class="progress-bar"
+                      :class="['stroke-color-' + index]"
                       cx="50"
                       cy="50"
                       r="40"
                       :style="{ strokeDasharray: getProgreso(orden.saldos[index].saldo, monto.monto) }"
                     ></circle>
                   </svg>
-                  <FuelIcon class="fuel-icon icon-orange" style="height: 30px; width: 30px;"/>
                 </div>
-
-                <!-- Monto en números -->
-                <div class="text-center mb-3">
-                  <small class="text-dark font-weight-600 small mx-2">Restante: {{ format(orden.saldos[index].saldo) }}</small><br/>
-                  <small class="text-dark font-weight-400 mx-2 small">Total: {{ format(monto.monto) }}</small>
+              </div>
+              <div class="fuel-info-h">
+                <div class="fuel-title-h">
+                  <p>{{ monto.tipoCombustible.toUpperCase() }}</p>
                 </div>
-              </b-card>
+                <div class="fuel-saldos-h">
+                  <p>Restante: <span :class="['text-color-' + index]">{{ format(orden.saldos[index].saldo) }}</span></p>
+                  <p>Total: {{ format(monto.monto) }}</p>
+                </div>
             </div>
+          </div>
+        </div>
         </div>
       </b-card>
     </template>
     <!-- Vales -->
     <template>
       <div v-if="orden">
-        <div class="container col-md-7 col-sm-10 card shadow-card mt-4 mb-3 mx-auto">
+        <div class="container big-container col-md-7 col-sm-10 card shadow-card mt-4 mb-3 mx-auto">
           <!-- Título -->
           <div class="col mx-auto">
             <h5 class="row mt-3 ml-1">
@@ -128,7 +123,9 @@
                       <div class="col mt-2 ml-2">
                         <div class="row d-flex justify-content-between align-items-center">
                           <div class="d-flex align-items-center">
+
                             <input v-if="!vale.consumido && !vale.anulado" type="checkbox" class="mb-2 ml-2" :value="vale.id" v-model="valesSeleccionados" />
+                            <b-icon-x-square v-else disabled="disabled" class="mb-2 ml-2"></b-icon-x-square>
 
                             <h4 class="mb-2 ml-2 font-weight-700 text-gray">
                               VALE N° {{ vale.nro_vale }}
@@ -149,7 +146,7 @@
                         </div>
                         <p class="card-text ml-3 text-dark">Tipo de combustible: {{ vale.tipoCombustible }}</p>
                         <p class="card-text ml-3 text-dark">Importe: {{ format(vale.monto) }}</p>
-                        <p class="card-text ml-3 text-dark">Patente: {{ vale.dominio }}</p>
+                        <p class="card-text ml-3 text-dark">Patente: {{ vale.dominio.toUpperCase() }}</p>
                         <p class="card-text ml-3 text-dark">Fecha de emisión: {{ new Date(vale.fechaEmision).toLocaleDateString('es-AR') }}</p>
                         <p class="card-text ml-3 text-dark">
                           Estado:
@@ -169,8 +166,7 @@
 
 
             <!-- Paginador -->
-            <b-pagination v-model="currentPage" :total-rows="vales.length" :per-page="itemsPerPage"
-             align="center" size="sm"/>
+            <b-pagination v-model="currentPage" :total-rows="vales.length" :per-page="itemsPerPage" class="mt-5" align="center" size="sm"/>
           </div>
 
           <!-- Mensaje si no hay vales -->
@@ -773,6 +769,10 @@ export default {
   border: #000 1px solid;
 }
 
+.big-container{
+  padding: 2rem 3rem;
+}
+
 @media (max-width: 1200px) {
 .separador{
     display: none;
@@ -785,8 +785,8 @@ export default {
 }
 /* Estilo del SVG */
 .circular-progress {
-  width: 120px; /* Aumento del tamaño del SVG */
-  height: 120px; /* Aumento del tamaño del SVG */
+  width: 140px; /* Aumento del tamaño del SVG */
+  height: 140px; /* Aumento del tamaño del SVG */
   transform: rotate(-270deg); /* Giramos el círculo para que empiece desde la parte superior */
 }
 
@@ -795,18 +795,116 @@ export default {
   fill: none;
   stroke: #e9e9e9;
   stroke-linecap: round;
-  stroke-width: 11;
+  stroke-width: 10;
 }
 
 /* Barra de progreso */
 .progress-bar {
   fill: none;
   stroke: #e59335;
-  stroke-linecap: round;
+  stroke-linecap: butt;
   stroke-dasharray: 314.16, 314.16; /* Longitud total del círculo (basado en el radio de 50) */
   transition: stroke-dasharray 1.5s ease-in-out;
-  stroke-width: 11;
+  stroke-width: 10;
 }
+.fuel-layout {
+  display: flex;
+  flex-wrap: wrap; /* Permitir que se acomoden en filas */
+}
+/* PRUEBA CLASES CARD HORIZONTAL */
+.fuel-container-h {
+  display: flex;
+  align-items: center;  /* Alinear los elementos verticalmente */
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  min-width: 400px;  /* Ajusta el tamaño de la tarjeta */
+  min-height: 150px; /* Ajusta la altura para que todas sean iguales */
+  border: 1px solid #333;
+  padding: 2rem 1rem;
+  margin: auto;
+  margin-bottom: 2rem;
+}
+
+.fuel-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 120px;
+  height: 120px;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.fuel-icon-h {
+  width: 80px;
+  height: 80px;
+}
+
+.fuel-info-h {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 8%;  /* Espacio entre el icono y el texto */
+  flex: 1; /* Para que se expanda y ocupe el espacio disponible */
+}
+
+.fuel-saldos-h {
+  font-size: 15px;
+  color: #333;
+  margin-top: 8px;
+}
+.fuel-title-h {
+  padding-bottom:1rem;
+  border-bottom: 1px solid #999;
+  white-space: nowrap;
+  margin: 0;
+}
+.fuel-title-h p{
+  font-size: 24px;
+  color: #333;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin: 0;
+}
+.fuel-saldos-h p {
+  margin: 2px 0;
+  font-weight: 501;
+}
+.fuel-saldos-h p:first-child {
+  color: #666;
+}
+
+/* Clases para stroke (bordes) */
+.stroke-color-0 { stroke: blue; }
+.stroke-color-1 { stroke: orange; }
+.stroke-color-2 { stroke: red; }
+.stroke-color-3 { stroke: green; }
+.stroke-color-4 { stroke: cadetblue; }
+.stroke-color-5 { stroke: darkmagenta; }
+.stroke-color-6 { stroke: gold; }
+.stroke-color-7 { stroke: lightcoral; }
+/* Clases para fill (relleno) */
+.fill-color-0 { fill: blue; }
+.fill-color-1 { fill: orange; }
+.fill-color-2 { fill: red; }
+.fill-color-3 { fill: green; }
+.fill-color-4 { fill: cadetblue; }
+.fill-color-5 { fill: darkmagenta; }
+.fill-color-6 { fill: gold; }
+.fill-color-7 { fill: lightcoral; }
+/* Clases para texto (color) */
+.text-color-0 { color: blue !important; }
+.text-color-1 { color: orange !important;; }
+.text-color-2 { color: red !important;; }
+.text-color-3 { color: green !important;; }
+.text-color-4 { color: cadetblue !important;; }
+.text-color-5 { color: darkmagenta !important;; }
+.text-color-6 { color: gold !important;; }
+.text-color-7 { color: lightcoral !important;; }
+
+
 .card-title{
   font-size: 20px;
 }

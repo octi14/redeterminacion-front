@@ -48,14 +48,17 @@
     </div>
 
     <!-- Modal de confirmación -->
-    <b-modal id="confirmacionModal" hide-footer header-bg-variant="success" title-class="text-center text-light" centered title="Vales generados">
-      <div class="row no-gutters justify-content-center">
-        <b-icon-check-circle-fill variant="success" scale="3" class="text-center my-4"/>
-      </div>
-      <p class="text-center font-weight-bold text-dark mb-4">Vales de combustible creados correctamente.</p>
+    <b-modal id="confirmacionModal" hide-footer header-bg-variant="success" title-class="text-center text-light" centered>
+      <template #modal-header>
+        <div class="confirmation-popup-header mx-auto">
+          <b-icon-check-circle scale="2.5" class="my-3" variant="light"/>
+        </div>
+      </template>
+      <p class="h5 text-center font-weight-bold text-dark mt-4 mb-5">Los vales de combustible
+        se han creado correctamente</p>
       <div class="d-flex justify-content-center">
-        <b-button variant="success" class="mr-2" @click="generarImpresion">Imprimir</b-button>
-        <b-button variant="danger" @click="cerrarModal">Salir</b-button>
+        <b-button size="sm" variant="success" class="mr-2 col-3" @click="generarImpresion">Imprimir</b-button>
+        <b-button size="sm" class="col-3" variant="danger" @click="cerrarModal">Salir</b-button>
       </div>
     </b-modal>
   </div>
@@ -110,13 +113,15 @@ export default {
         const saldoDisponible = saldoCombustible ? saldoCombustible.saldo : 0;
 
       if (totalMonto > saldoDisponible) {
-        this.$bvModal.msgBoxOk(`El monto total excede el saldo disponible para ${this.form.combustible}.`, {
+        this.$bvModal.msgBoxOk(`El monto total excede el saldo disponible para ${this.form.combustible}`, {
           title: "Saldo insuficiente",
           size: "md",
+          bodyClass: "text-center font-weight-bold text-dark h5 my-4",
           buttonSize: "md",
-          okVariant: "danger",
+          okVariant: "success",
           okTitle: "Aceptar",
-          titleClass: "text-center text-light",
+          footerClass: "mx-auto",
+          titleClass: "text-center font-weight-bold mx-auto text-light",
           headerBgVariant: "danger",
           centered: true,
         });

@@ -9,7 +9,7 @@
           <option v-for="estado in estados" :value="estado" :key="estado">{{ estado }}</option>
         </b-form-select>
       </b-form-group>
-      
+
       <b-form-group class="col-4 mx-auto mt-3" horizontal label-class="text-success">
         <label for="selectedTipoTramite" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><b-icon-funnel-fill></b-icon-funnel-fill> Filtrar por Tipo de Trámite</label>
           <b-form-select plain v-model="selectedTipoTramite">
@@ -198,7 +198,7 @@ export default{
       this.singleContent = turno[0].observaciones
       this.$fetch()
       this.singleModal = true
-      this.registrarActividad("Ver Observaciones", "Trámite nro: " + habilitacion.nroTramite);
+      this.registrarActividad("Ver Observaciones", "Trámite nro: " + turno[0].nroTramite);
     },
   },
 }

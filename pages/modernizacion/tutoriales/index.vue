@@ -19,6 +19,14 @@
             </b-button>
           </NuxtLink>
         </div>
+        <div class="text-center mx-5 my-auto">
+          <NuxtLink to="/modernizacion/tutoriales/otros">
+            <b-button variant="outline" class="mt-5">
+              <b-icon-folder class="h1 landing-icon" /> <br />
+              <h3 style="color:green"><b> Otros </b></h3>
+            </b-button>
+          </NuxtLink>
+        </div>
       </div>
     </div>
     <div class="container">

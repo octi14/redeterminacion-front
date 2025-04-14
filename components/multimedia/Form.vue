@@ -60,6 +60,9 @@ export default {
         },
         {
           nombre: "Obras",
+        },
+        {
+          nombre: "Otros",
         }
       ],
     }

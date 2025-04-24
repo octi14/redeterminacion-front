@@ -16,7 +16,7 @@
           </div>
         </div>
         <!--Datos de facturas-->
-        <div class="row justify-content-center">
+        <div class="row no-gutters justify-content-center">
           <b-col v-for="(periodo, index) in tramite.status" :key="index" cols="12" sm="8" md="6" lg="4" xl="4">
               <AbiertoAnualAdminCard
               :id="index"
@@ -29,8 +29,8 @@
         </div>
       </template>
 
-      <div class="text-center mt-3">
-        <NuxtLink to="/abierto_anual/registros">
+      <div class="text-center my-4">
+        <NuxtLink to="/comercio/abierto_anual/registros">
           <b-button variant="primary">Volver</b-button>
         </NuxtLink>
       </div>

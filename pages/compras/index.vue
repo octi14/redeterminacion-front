@@ -15,19 +15,7 @@
           </b-button>
         </a>
       </div>
-      <div class="row no-gutters justify-content-center mt-5">
-        <NuxtLink to="/compras/proveedores" class="col-md-5">
-          <b-button variant="outline" class="d-flex w-100 white shadow-card">
-            <div class="me-3">
-              <b-icon-pen class="mx-3 my-3 landing-icon"/>
-            </div>
-            <div class="col text-left my-auto">
-              <h3 class="landing-text"><b> Inscripción de proveedores </b></h3>
-              <h6>Información acerca de la inscripción como Proveedor Municipal</h6>
-            </div>
-          </b-button>
-        </NuxtLink>
-      </div>
+      <MenuItem to="/compras/proveedores" icon="pen" title="Inscripción de proveedores" description="Información acerca de la inscripción como Proveedor Municipal"/>
       <div class="row no-gutters justify-content-center mt-5" v-if="adminCompras">
         <NuxtLink to="/compras/combustible" class="col-md-5">
           <b-button variant="outline" class="d-flex w-100 white shadow-card">

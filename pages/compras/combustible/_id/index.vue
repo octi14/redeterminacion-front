@@ -46,7 +46,7 @@
             <div class="fuel-container-h" v-for="(monto, index) in orden.montos" :key="index">
               <div class="fuel-icon-wrapper">
                 <!-- SVG de círculo completo -->
-                <div class="circular-progress-container" style="position: relative">                
+                <div class="circular-progress-container" style="position: relative">
                   <FuelIcon class="fuel-icon" :class="['fill-color-' + index]" style="height: 45px; width: 45px;"/>
                   <svg viewBox="0 0 100 100" class="circular-progress">
                     <!-- Fondo gris (borde de la barra) -->
@@ -111,6 +111,11 @@
               <div class="text-center my-3" v-if="valesSeleccionados.length">
                 <button class="btn btn-success" @click="abrirModalUtilizarVales">
                   <b-icon-check/> Marcar como utilizados ({{ valesSeleccionados.length }})
+                </button>
+              </div>
+              <div class="text-center mx-3 my-3" v-if="valesSeleccionados.length">
+                <button class="btn btn-danger" @click="abrirModalEliminacionMasiva">
+                  <b-icon-trash/> Eliminar seleccionados ({{ valesSeleccionados.length }})
                 </button>
               </div>
             </div>
@@ -195,7 +200,7 @@
         </b-iconstack>
       </template>
       <p class="h5 text-center mt-3 mb-4 font-weight-500 text-dark">
-        ¿Estás seguro de que deseas marcar el vale N° {{ tempNroVale + 1 }} como utilizado?
+        ¿Estás seguro de que deseas marcar el vale como utilizado?
       </p>
       <hr class="row col-9 mx-auto"/>
       <div class="d-flex justify-content-center">
@@ -254,6 +259,41 @@
       </div>
     </b-modal>
 
+    <!-- Modal de confirmación para marcación como consumido masivamente -->
+    <b-modal id="modalEliminacionMasiva" header-class="justify-content-center" header-bg-variant="danger" title-class="text-light text-center" hide-footer centered>
+      <template #modal-header>
+        <b-iconstack class="my-3">
+          <b-icon-circle scale="2.7" variant="light"/>
+          <b-icon-exclamation scale="1.9" variant="light" />
+        </b-iconstack>
+      </template>
+      <p class="h5 text-center mt-3 my-4 text-dark font-weight-500">¿Estás seguro/a de que querés eliminar los vales seleccionados?</p>
+      <hr class="row col-9 mx-auto justify-content-center"/>
+      <div class="row no-gutters justify-content-center">
+        <b-button variant="success" @click="eliminarValesSeleccionados">Aceptar</b-button>
+        <b-button variant="danger" class="mx-2" @click="$bvModal.hide('modalEliminacionMasiva')">Cancelar</b-button>
+      </div>
+    </b-modal>
+
+
+      <!-- Modal de Confirmación para Eliminación -->
+      <b-modal id="modalEliminadoMasivo" title="Confirmar Eliminación" title-class="text-light text-center" header-bg-variant="danger" hide-footer centered>
+      <template #modal-header>
+        <div class="confirmation-popup-header mx-auto">
+          <b-iconstack>
+            <b-icon-circle scale="3" variant="light"/>
+            <b-icon-trash-fill scale="2" variant="light"/>
+          </b-iconstack>
+        </div>
+      </template>
+      <div class="mt-4 mb-5">
+        <h4 class="text-center font-weight-500 text-dark">Los vales de combustible se han eliminado.</h4>
+      </div>
+      <div class="d-flex justify-content-center">
+        <button class="btn btn-success mr-2" @click="cerrarModalEliminacionMasiva">Aceptar</button>
+      </div>
+    </b-modal>
+
     <!-- Modal de Confirmación para Eliminación -->
     <b-modal v-model="modalEliminacion" header-class="justify-content-center" title-class="text-light text-center" header-bg-variant="danger" hide-footer centered>
       <template #modal-header>
@@ -271,8 +311,8 @@
       </div>
     </b-modal>
 
-      <!-- Modal de Confirmación para Eliminación -->
-      <b-modal v-model="modalEliminado" title="Confirmar Eliminación" title-class="text-light text-center" header-bg-variant="danger" hide-footer centered>
+    <!-- Modal de Confirmación para Eliminación -->
+    <b-modal v-model="modalEliminado" title="Confirmar Eliminación" title-class="text-light text-center" header-bg-variant="danger" hide-footer centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
           <b-iconstack>
@@ -603,6 +643,23 @@ export default {
         alert("Ocurrió un error al eliminar el vale. Revisa la consola para más detalles.");
       }
     },
+    async eliminarValesSeleccionados(){
+      if (this.valesSeleccionados.length === 0) return;
+
+      for (let i = 0; i < this.valesSeleccionados.length; i++) {
+        try {
+          const id = this.valesSeleccionados[i];
+          const userToken = this.$store.state.user.token;
+
+          // Hacer la petición al backend para eliminar el vale
+          await this.$store.dispatch("combustible/anularVale", { id, userToken })
+        } catch(e) {
+          alert('No se pudieron eliminar todos los vales. Hubo un problema con alguno de ellos')
+        }
+      }
+      this.$bvModal.hide('modalEliminacionMasiva')
+      this.$bvModal.show('modalEliminadoMasivo')
+    },
     confirmarMarcarUtilizado(valeRef, index) {
       this.tempValeRef = valeRef
       this.tempNroVale = index
@@ -614,6 +671,10 @@ export default {
     },
     cerrarModalEliminacion(){
       this.modalEliminado = false
+      location.reload()
+    },
+    cerrarModalEliminacionMasiva(){
+      this.$bvModal.hide('modalEliminadoMasivo')
       location.reload()
     },
     async marcarUtilizado(){
@@ -668,6 +729,9 @@ export default {
     },
     abrirModalUtilizarVales() {
       this.$bvModal.show('modalUtilizacionMasiva');
+    },
+    abrirModalEliminacionMasiva() {
+      this.$bvModal.show('modalEliminacionMasiva');
     },
     //Métodos de sistema
     async volver(){

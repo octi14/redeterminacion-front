@@ -210,8 +210,8 @@
       </div>
     </b-modal>
 
-    <div class="text-center mt-3">
-      <NuxtLink to="/turnos/reservas">
+    <div class="text-center my-4">
+      <NuxtLink to="/comercio/turnos/reservas">
       <b-button variant="primary"> Volver </b-button>
       </NuxtLink>
     </div>

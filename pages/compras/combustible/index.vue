@@ -23,6 +23,11 @@
           <b-icon-eye/>
         </b-button>
       </template>
+      <template #cell(acciones)="row">
+        <b-button variant="outline-danger" title="Eliminar" @click="sendEliminarOrden(row.item)">
+          <b-icon-trash/>
+        </b-button>
+      </template>
     </b-table>
 
     <b-pagination class="mt-4" :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
@@ -32,7 +37,7 @@
       </NuxtLink>
     </div>
 
-    <b-modal v-model="showCargarOrden" hide-footer :header-bg-variant="'success'" centered>
+    <b-modal no-close-on-backdrop no-close-on-esc v-model="showCargarOrden" hide-footer :header-bg-variant="'success'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
           <b-iconstack v-if="!successMessage" class="my-3">
@@ -74,7 +79,7 @@
               </div>
 
             </b-form-group>
-            
+
             <!-- Proveedor -->
             <div class="row mt-4 mx-1">
               <b-icon-caret-right-fill class="icon-orange ml-0"/>
@@ -141,6 +146,36 @@
       </div>
     </b-modal>
 
+    <b-modal v-model="showEliminarOrden" hide-footer header-class="justify-content-center" :header-bg-variant="'danger'" centered>
+      <template #modal-header>
+        <b-iconstack class="my-3">
+          <b-icon-circle scale="2.7" variant="light"/>
+          <b-icon-trash-fill scale="1.5" variant="light" />
+        </b-iconstack>
+      </template>
+      <!-- Mensaje de éxito -->
+      <div v-if="eliminarSuccess" class="text-center">
+          <p class="h5 font-weight-bold text-dark mt-2" style="font-size: 1.15rem;">La orden de compra fue eliminada con éxito</p>
+
+          <!-- Botón de aceptar -->
+          <div class="text-center mt-5">
+            <b-btn style="border-radius: 0;" variant="success" @click="cerrarPopup()">
+              Aceptar
+            </b-btn>
+          </div>
+        </div>
+      <div v-else>
+        <p class="h5 text-center mt-3 mb-4 font-weight-500 text-dark">Estás a punto de eliminar la orden de compra.</p>
+        <p class="h6 text-center mt-2 mb-3 font-weight-500 text-dark">¿Deseás continuar?</p>
+        <hr class="row col-9 mx-auto"/>
+        <div class="row no-gutters justify-content-center">
+          <button class="btn btn-success mx-2" @click="sendEliminarOrden(tempElim)">Aceptar</button>
+          <button class="btn btn-danger mx-2" @click="showEliminarOrden = false">Cancelar</button>
+        </div>
+      </div>
+
+    </b-modal>
+
 
     <b-modal size="lg" v-model="showObservaciones" header-bg-variant="primary" title="Observaciones" title-class="text-light" hide-footer centered>
       <p v-html="observaciones"></p>
@@ -159,8 +194,11 @@ export default {
       showCargarOrden: false,
       isLoading: false,
       successMessage: false,
+      eliminarSuccess: false,
       observaciones: '',
       showObservaciones: false,
+      showEliminarOrden: false,
+      tempElim: '',
       orden: {
         nroOrden: "",
         area: "",
@@ -177,6 +215,7 @@ export default {
         { key: 'saldoRestante', label: 'Saldo' },
         { key: 'detalles', label: 'Detalles' },
         { key: 'observaciones', label: 'Observaciones' },
+        { key: 'acciones', label: 'Acciones'},
       ],
       areas: [
         "Intendente Municipal",
@@ -253,6 +292,8 @@ export default {
     cerrarPopup(){
       this.showCargarOrden = false;  // Cerrar modal
       this.successMessage = false,
+      this.eliminarSuccess = false,
+      this.showEliminarOrden = false,
       location.reload();  // Refrescar página
     },
     onShowObservaciones(index){
@@ -289,7 +330,7 @@ export default {
         });
 
         // Mostrar mensaje de éxito
-        this.showCargarOrden = false
+        // this.showCargarOrden = false
         this.successMessage = true
 
       } catch (error) {
@@ -306,6 +347,27 @@ export default {
         montoSuper: null,
         montoVPower: null,
       };
+    },
+    sendEliminarOrden(item){
+      if(!this.showEliminarOrden){
+        this.showEliminarOrden = true
+        this.tempElim = item
+      }
+      else{
+        this.eliminarOrden(item)
+      }
+    },
+    async eliminarOrden(item){
+      console.log(item)
+      const id = item.id
+      const userToken = this.$store.state.user.token
+      const success = await this.$store.dispatch('combustible/eliminarOrden',{
+        id,
+        userToken
+      })
+      if(success){
+        this.eliminarSuccess = true
+      }
     },
     format(value) {
       if (!value) return "$0";

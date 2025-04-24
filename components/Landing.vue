@@ -40,11 +40,9 @@ export default {
       showPopupAnuncio: false,
       links: [
         { to: "/normativa", icon: "receipt", title: "Normativa", type: "bootstrap-vue" },
-        { to: "/comercio", icon: "pen", title: "Trámites comerciales", type: "bootstrap-vue" },
-        { to: "/turnos", icon: "clock", title: "Turnos inspección", type: "bootstrap-vue" },
         { to: "/modernizacion", icon: "list-ul", title: "Modernización", type: "bootstrap-vue" },
-        { to: "/consulta_tramite", icon: "search", title: "Consulta estado de trámite", type: "bootstrap-vue" },
-        { to: "/abierto_anual", icon: "shop", title: "Comercio Abierto anual", type: "bootstrap-vue" },
+        { to: "/comercio", icon: "shop", title: "Comercio", type: "bootstrap-vue" },
+        { to: "/pagos", icon: "cash-coin", title: "Pagos", type: "bootstrap-vue" },
         // { to: "/transito", icon: "car-front", title: "Tránsito", type: "bootstrap-icons" }, // 🚗 Usa Bootstrap Icons
         // { to: "/compras", icon: "briefcase", title: "Compras", type: "bootstrap-vue" }
       ]

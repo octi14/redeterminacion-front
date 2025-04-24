@@ -90,7 +90,7 @@
       <div class="modal-info">
         <p class="destacado"><b-icon-caret-right-fill class="icon-orange" shift-v="" scale="1.5"></b-icon-caret-right-fill>Podés encontrar el número de <b>CUIM</b> y de <b>legajo comercial</b> en el encabezado de la notificación que recibiste. Hacé click en la imagen y verificá cómo se visualiza.</p>
         <div style="width: 100%">
-          <a href="http://haciendavgesell.gob.ar/_nuxt/img/ej-cedulanotificacion.edf6c18.jpg" target="_blank"><img src="../../assets/ej-cedulanotificacion.jpg" width="100%" height="fit-content" /></a>
+          <a href="http://haciendavgesell.gob.ar/_nuxt/img/ej-cedulanotificacion.edf6c18.jpg" target="_blank"><img src="../../../assets/ej-cedulanotificacion.jpg" width="100%" height="fit-content" /></a>
         </div>
       </div>
     </b-modal>
@@ -105,7 +105,7 @@
       <div class="closed-popup-body">
         <h2 class="icon-orange"><b>IMPORTANTE</b></h2>
         <p >El plazo para acreditar las facturas del año 2024 ha expirado.</p>
-  
+
         <div class="li-row">
           <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Por cualquier reclamo comunicate con <a href="mailto:dirarvige@gesell.gob.ar" class="text-success">ARVIGE</a> para conocer los pasos a seguir.</div>
         </div>
@@ -125,7 +125,7 @@
   import { required, requiredIf, alpha, numeric, email, minLength, maxLength, sameAs } from 'vuelidate/lib/validators';
   export default {
     validations() {
-      return {        
+      return {
         cuit: { required, numeric, maxLength: maxLength(12), minLength: minLength(11) },
         nroLegajo:{
           required, numeric
@@ -205,7 +205,7 @@
       }
     },
     onResetParams() {
-      this.$router.push('/abierto_anual');
+      this.$router.push('/comercio/abierto_anual');
       this.page = 0;
       this.printing = false;
       this.formOk = false;

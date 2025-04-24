@@ -48,7 +48,7 @@
         </div>
       </template>
       <template #cell(detalles)="row">
-        <NuxtLink :to="{ name: 'abierto_anual-registros-id', params: { id: row.item.id } }">
+        <NuxtLink :to="{ name: 'comercio-abierto_anual-registros-id', params: { id: row.item.id } }">
           <b-button variant="outline-secondary" size="sm" title="Editar">
             <b-icon-pen/>
           </b-button>

@@ -27,7 +27,7 @@
       </template>
       <!-- Plantilla personalizada para la columna "detalles" -->
       <template #cell(detalles)="row">
-      <NuxtLink :to="{ name: 'turnos-id', params: { id: row.item.id } }" @click.native="registrarActividad('Abrir Turno', 'Turno nro: ' + row.item.nroTramite)">
+      <NuxtLink :to="{ name: 'comercio-turnos-id', params: { id: row.item.id } }" @click.native="registrarActividad('Abrir Turno', 'Turno nro: ' + row.item.nroTramite)">
         <b-button variant="outline-secondary" size="sm" title="Editar" >
           <b-icon-pen/>
         </b-button>

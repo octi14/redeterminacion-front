@@ -4,7 +4,7 @@
     <div class="mx-auto">
       <div class="mt-3" v-if="page === 0">
         <div class="row justify-content-center banner-container" style="width: 100%">
-          <img src="../../assets/turnera-banner-1.png" style="max-width: 100%"/>
+          <img src="../../../assets/turnera-banner-1.png" style="max-width: 100%"/>
         </div>
         <b-card class="section-card col-md-6 mx-auto">
           <div class="li-row">
@@ -25,7 +25,7 @@
       <b-form class="mt-3">
         <div v-if="page === 1">
           <div class="row justify-content-center" style="width: 100%">
-            <img src="../../assets/turnera-banner-2.png" style="max-width: 100%"/>
+            <img src="../../../assets/turnera-banner-2.png" style="max-width: 100%"/>
           </div>
           <b-card class="section-card col-md-6 mx-auto">
             <h5>
@@ -65,9 +65,9 @@
         </div>
         <div v-if="page === 2">
           <div class="row justify-content-center" style="width: 100%">
-            <img src="../../assets/turnera-banner-3.png" style="max-width: 100%"/>
+            <img src="../../../assets/turnera-banner-3.png" style="max-width: 100%"/>
           </div>
-          <b-card class="section-card col-md-6 mx-auto">            
+          <b-card class="section-card col-md-6 mx-auto">
             <h5>
               <b-icon-clock class="icon-orange"></b-icon-clock>
               Selección de horario
@@ -83,11 +83,11 @@
               >
                 Franja horaria: {{ horariosDisponibles[index] }} - <span class="icon-orange">{{ horariosDisponibles[index]+ }}</span>
               </b-form-select-option> -->
-              <b-form-select-option :value="horariosDisponibles[0]" :disabled="timeDisabled(horariosDisponibles[0])" 
+              <b-form-select-option :value="horariosDisponibles[0]" :disabled="timeDisabled(horariosDisponibles[0])"
                 :class="{ 'disabled-option': timeDisabled(horariosDisponibles[0]) }">
                 Franja horaria: {{ horariosDisponibles[0] }} - <span class="icon-orange">{{ horariosDisponibles[1] }}</span>
               </b-form-select-option>
-              <b-form-select-option :value="horariosDisponibles[1]" :disabled="timeDisabled(horariosDisponibles[1])" 
+              <b-form-select-option :value="horariosDisponibles[1]" :disabled="timeDisabled(horariosDisponibles[1])"
                 :class="{ 'disabled-option': timeDisabled(horariosDisponibles[1]) }">
                 Franja horaria: {{ horariosDisponibles[1] }} - <span class="icon-orange"> 13:30 </span>
               </b-form-select-option>
@@ -100,10 +100,10 @@
         </div>
         <div v-if="page === 3">
           <div class="row justify-content-center" style="width: 100%">
-            <img src="../../assets/turnera-banner-4.png" style="max-width: 100%"/>
+            <img src="../../../assets/turnera-banner-4.png" style="max-width: 100%"/>
           </div>
           <b-card class="section-card col-md-6 mx-auto">
-            <h5><img class="bi-ticket" src="../../assets/icon-num-rifa.png" /> Confirmación de turno</h5>
+            <h5><img class="bi-ticket" src="../../../assets/icon-num-rifa.png" /> Confirmación de turno</h5>
             <div class="li-row">
               <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Completá los datos que te solicitamos a continuación.</p></div>
             </div>
@@ -136,7 +136,7 @@
             <div class="btn-container">
               <b-button @click="page-= 1" class="btn-cancel">Volver</b-button>
               <b-button :disabled="sendingForm || !areAllFieldsComplete"  @click="onSelectTurno">Continuar</b-button>
-            </div>            
+            </div>
             <div v-if="!areAllFieldsComplete" class="validation-error">
               <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Falta completar información.
             </div>
@@ -158,12 +158,12 @@
               <hr/>
              <div class="text-left">
               <div class="row">
-                <b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill>          
+                <b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill>
                 <p class="small"><small>Para consultar el estado de tu trámite ingresá en <a class="text-success">haciendavgesell.gob.ar</a>, hacé click en el ícono
                   correspondiente y escribí <br/>el número asignado en este comprobante. </small></p>
               </div>
               <div class="row">
-                <b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill>          
+                <b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill>
                 <p class="small"><small>Podés cancelar tu turno enviando un correo a divinspectores@gesell.gob.ar. </small></p>
               </div>
 
@@ -507,7 +507,7 @@ export default {
       this.time = null;
       this.datePicked = null,
       this.timePicked = null,
-      this.$router.push('/');
+      this.$router.push('/comercio');
       this.page = 0;
       this.nombre = null;
       this.domicilio = null;
@@ -550,7 +550,7 @@ export default {
   .card{
     width: 90% !important;
     margin-left: 5% !important;
-    margin-right: 5% !important; 
+    margin-right: 5% !important;
   }
   .btn{
     width: 9rem !important;

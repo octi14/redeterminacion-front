@@ -11,7 +11,7 @@
             @sliding-start="onSlideStart"
             @sliding-end="onSlideEnd"
             >
-                <b-carousel-slide img-src="../../assets/banner-abierto-anual.png"></b-carousel-slide>
+                <b-carousel-slide img-src="../../../assets/banner-abierto-anual.png"></b-carousel-slide>
             </b-carousel>
         </div>
         <div class="col-10 mobileCarrousel" style="margin: auto; margin-top: 2rem">
@@ -24,7 +24,7 @@
             @sliding-start="onSlideStart"
             @sliding-end="onSlideEnd"
             >
-                <b-carousel-slide img-src="../../assets/banner-abierto-anual-mobile.png"></b-carousel-slide>
+                <b-carousel-slide img-src="../../../assets/banner-abierto-anual-mobile.png"></b-carousel-slide>
             </b-carousel>
         </div>
     <b-row>
@@ -200,7 +200,7 @@
                     <p class="icon-orange">5. </p>
                   </div>
                   <div class="li-content">
-                    <p>Si la persona que solicita el beneficio desea <b>verificar el estado de carga de su boleta, podrá hacerlo en esta misma página</b>. Para eso, <b>deberá ingresar nuevamente los datos requeridos</b> y revisar en “carga de documentación” si la misma fue aceptada o rechazada:</p>   
+                    <p>Si la persona que solicita el beneficio desea <b>verificar el estado de carga de su boleta, podrá hacerlo en esta misma página</b>. Para eso, <b>deberá ingresar nuevamente los datos requeridos</b> y revisar en “carga de documentación” si la misma fue aceptada o rechazada:</p>
                     <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="0.75" class="icon-orange" shift-v="3px"></b-icon-caret-right-fill></div>
                       <div class="li-content mini-content"><p>Si la <u>factura es correcta</u> podrá ver la fecha en la que fue verificada por ARVIGE.</p></div>
                     </div>
@@ -268,7 +268,7 @@
       <div class="modal-info">
         <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>En el encabezado de cada factura se indica si tu partida registra deuda o no lo hace. Hacé click en la imagen y verificá cómo se visualiza.</p>
         <div style="width: 100%">
-          <a href="http://haciendavgesell.gob.ar/_nuxt/img/ej-libredeuda.78769c7.jpg" target="_blank"><img src="../../assets/ej-libredeuda.jpg" width="100%" height="fit-content" /></a>
+          <a href="http://haciendavgesell.gob.ar/_nuxt/img/ej-libredeuda.78769c7.jpg" target="_blank"><img src="../../../assets/ej-libredeuda.jpg" width="100%" height="fit-content" /></a>
         </div>
       </div>
     </b-modal>
@@ -283,7 +283,7 @@
       <div class="closed-popup-body">
         <h2 class="icon-orange"><b>IMPORTANTE</b></h2>
         <p >El plazo para acreditar las facturas del año 2024 ha expirado.</p>
-  
+
         <div class="li-row">
           <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Por cualquier reclamo comunicate con <a href="mailto:dirarvige@gesell.gob.ar" class="text-success">ARVIGE</a> para conocer los pasos a seguir.</div>
         </div>

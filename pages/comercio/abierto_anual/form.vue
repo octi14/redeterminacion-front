@@ -33,7 +33,8 @@
           <div class="btn-container">
             <b-button class="btn-cancel" @click="onResetParams">Cancelar</b-button>
             <!-- <b-button @click="sendData" :disabled="enterKeyPressed">Aceptar</b-button> -->
-            <b-button @click="openPopup('ClosedPeriod')" :disabled="enterKeyPressed">Aceptar</b-button>
+            <!-- <b-button @click="openPopup('ClosedPeriod')" :disabled="enterKeyPressed">Aceptar</b-button> -->
+            <b-button @click="sendData()" :disabled="enterKeyPressed">Aceptar</b-button>
           </div>
         </b-card>
       </div>
@@ -196,7 +197,7 @@
                 });
               }
               const id = this.$store.state.abiertoAnual.single.id;
-              await this.$router.push('/abierto_anual/periodos');
+              await this.$router.push('/comercio/abierto_anual/periodos');
           } else {
               this.showPopupFormError = true;
           }

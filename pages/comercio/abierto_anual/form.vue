@@ -32,8 +32,9 @@
           </b-form>
           <div class="btn-container">
             <b-button class="btn-cancel" @click="onResetParams">Cancelar</b-button>
-            <b-button @click="sendData" :disabled="enterKeyPressed">Aceptar</b-button>
+            <!-- <b-button @click="sendData" :disabled="enterKeyPressed">Aceptar</b-button> -->
             <!-- <b-button @click="openPopup('ClosedPeriod')" :disabled="enterKeyPressed">Aceptar</b-button> -->
+            <b-button @click="sendData()" :disabled="enterKeyPressed">Aceptar</b-button>
           </div>
         </b-card>
       </div>
@@ -90,7 +91,7 @@
       <div class="modal-info">
         <p class="destacado"><b-icon-caret-right-fill class="icon-orange" shift-v="" scale="1.5"></b-icon-caret-right-fill>Podés encontrar el número de <b>CUIM</b> y de <b>legajo comercial</b> en el encabezado de la notificación que recibiste. Hacé click en la imagen y verificá cómo se visualiza.</p>
         <div style="width: 100%">
-          <a href="http://haciendavgesell.gob.ar/_nuxt/img/ej-cedulanotificacion.edf6c18.jpg" target="_blank"><img src="../../assets/ej-cedulanotificacion.jpg" width="100%" height="fit-content" /></a>
+          <a href="http://haciendavgesell.gob.ar/_nuxt/img/ej-cedulanotificacion.edf6c18.jpg" target="_blank"><img src="../../../assets/ej-cedulanotificacion.jpg" width="100%" height="fit-content" /></a>
         </div>
       </div>
     </b-modal>
@@ -126,7 +127,7 @@
   import abiertoAnualConfig from '~/plugins/abiertoAnualConfig';
   export default {
     validations() {
-      return {        
+      return {
         cuit: { required, numeric, maxLength: maxLength(12), minLength: minLength(11) },
         nroLegajoInput:{
           required
@@ -202,7 +203,7 @@
                 });
               }
               const id = this.$store.state.abiertoAnual.single.id;
-              await this.$router.push('/abierto_anual/periodos');
+              await this.$router.push('/comercio/abierto_anual/periodos');
           } else {
               this.showPopupFormError = true;
           }
@@ -211,7 +212,7 @@
       }
     },
     onResetParams() {
-      this.$router.push('/abierto_anual');
+      this.$router.push('/comercio/abierto_anual');
       this.page = 0;
       this.printing = false;
       this.formOk = false;

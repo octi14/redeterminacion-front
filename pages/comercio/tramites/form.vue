@@ -673,7 +673,7 @@
     <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>Podés descargar tu última factura haciendo <a href="https://arvige.gob.ar/lpagos" target="_blank" >click aquí</a>.</p>
     <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>En el encabezado de cada factura se indica si tu partida registra deuda o no lo hace. Hacé click en la imagen y verificá cómo se visualiza.</p>
     <div style="width: 100%">
-      <a href="http://haciendavgesell.gob.ar/_nuxt/img/ej-libredeuda.78769c7.jpg" target="_blank"><img src="../../assets/ej-libredeuda.jpg" width="100%" height="fit-content" /></a>
+      <a href="http://haciendavgesell.gob.ar/_nuxt/img/ej-libredeuda.78769c7.jpg" target="_blank"><img src="../../../assets/ej-libredeuda.jpg" width="100%" height="fit-content" /></a>
     </div>
   </div>
 </b-modal>
@@ -761,7 +761,7 @@
         <p><b-icon-check scale="1.25" class="icon-orange"></b-icon-check>Podés ver un ejemplo haciendo click en la imagen. <i>Ahí te indicamos cómo identificar el tipo de plano y cómo señalar la unidad funcional donde se ubicará tu comercio.</i></p>
       </div>
       <div style="width: 35%; display: inline-block; max-width:165px; margin-top:1rem">
-        <a href="https://drive.google.com/file/d/16sXdLRDbHy-GwIhM4Er-EftM9-QpSGcy/view" target="_blank"><img src="../../assets/ej-plano.jpg" width="100%" height="fit-content" /></a>
+        <a href="https://drive.google.com/file/d/16sXdLRDbHy-GwIhM4Er-EftM9-QpSGcy/view" target="_blank"><img src="../../../assets/ej-plano.jpg" width="100%" height="fit-content" /></a>
       </div>
     </div>
   </div>
@@ -1481,7 +1481,7 @@ export default {
         }
     },
     onFinalizar(){
-      this.$router.push('/')
+      this.$router.push('/comercio')
       this.showPopupFormOk = false
       this.onResetParams()
     },
@@ -1571,7 +1571,7 @@ export default {
       this.showPopupFormLoading = false
       this.showPopupFormError = false
       this.printing= false
-      this.$router.push('/comercio')
+      this.$router.push('/comercio/tramites')
     },
     handleRubroChange() {
       if (this.inmueble.rubro != null) {

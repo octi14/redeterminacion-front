@@ -66,7 +66,7 @@
           <NuxtLink
             class="nav-link"
             active-class="active"
-            to="/turnos/reservas"
+            to="/comercio/turnos/reservas"
           >
               Turnos
           </NuxtLink>
@@ -75,7 +75,7 @@
           <NuxtLink
             class="nav-link"
             active-class="active"
-            to="/abierto_anual/registros"
+            to="/comercio/abierto_anual/registros"
           >
               Abierto anual
           </NuxtLink>

@@ -78,8 +78,8 @@ module.exports = {
     return formatCertif(updated.data)
   },
   delete: async (axios, { certificado }) => {
-    return await axios.$delete(`/certificados/${certificado.id}`
-    // headers: { Authorization: `Bearer ${userToken}` },
-    )
+    return await axios.$delete(`/certificados/${certificado.id}`,
+    { headers: { Authorization: `Bearer ${userToken}`}
+   })
   },
 }

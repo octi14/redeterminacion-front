@@ -4,7 +4,7 @@
     <div class="mx-auto">
       <div class="mt-3">
         <div class="row justify-content-center banner-container" style="width: 100%">
-          <img src="../../assets/consulta.png" style="max-width: 100%"/>
+          <img src="../../../assets/consulta.png" style="max-width: 100%"/>
         </div>
         <b-card class="section-card col-md-6 mx-auto">
           <div class="li-row">
@@ -365,7 +365,7 @@ export default {
       this.enterKeyPressed = false
     },
     onResetParams() {
-      this.$router.push('/');
+      this.$router.push('/comercio');
       this.nroTramite = null,
       this.token = null,
       this.formOk = false;

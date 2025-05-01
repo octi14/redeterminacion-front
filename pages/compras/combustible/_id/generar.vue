@@ -172,17 +172,14 @@ export default {
       backgroundImage.src = templateVale;
       backgroundImage.crossOrigin = "anonymous";
 
-      // Asegurar que la imagen esté cargada antes de continuar
       await new Promise((resolve, reject) => {
         backgroundImage.onload = resolve;
         backgroundImage.onerror = reject;
       });
 
-      // Dimensiones del vale individual
-      const valeWidth = backgroundImage.width;
-      const valeHeight = backgroundImage.height;
+      const fondoWidth = backgroundImage.width;
+      const fondoHeight = backgroundImage.height;
 
-      // Configuración del PDF (A4 apaisado)
       const pdf = new jsPDF({
         orientation: "landscape",
         unit: "mm",
@@ -192,76 +189,68 @@ export default {
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
 
-      // Reducimos el margen para aprovechar más el espacio
-      const margenHorizontal = 5; // Antes era 10
-      const margenVertical = 5;   // Antes era 10
+      const scaleFactor = (pageWidth) / fondoWidth;
+      const fondoWidthScaled = fondoWidth * scaleFactor;
+      const fondoHeightScaled = fondoHeight * scaleFactor;
 
-      // Ajustamos el factor de escala para que los vales ocupen más espacio
-      const scaleFactor = (pageWidth - margenHorizontal * 2) / valeWidth;
-      const valeWidthScaled = valeWidth * scaleFactor;
-      const valeHeightScaled = valeHeight * scaleFactor;
+      for (let i = 0; i < this.valesCreados.length; i += 4) {
+      if (i !== 0) pdf.addPage();
 
-      for (let i = 0; i < this.valesCreados.length; i++) {
-        if (i % 2 === 0 && i !== 0) pdf.addPage(); // Nueva página cada 2 vales
+      canvas.width = fondoWidth;
+      canvas.height = fondoHeight * 2; // 👈 duplicamos la altura para dos imágenes una debajo de otra
 
-        const posY = (i % 2) * (pageHeight / 2) + 10; // Posición vertical
+      ctx.fillStyle = "white";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Ajustar el tamaño del canvas
-        canvas.width = valeWidth;
-        canvas.height = valeHeight;
+      // Fila 1 (vales i y i+1)
+      ctx.drawImage(backgroundImage, 0, 0, fondoWidth, fondoHeight);
+      const vale1 = this.valesCreados[i];
+      if (vale1) this.dibujarValeEnMitad(ctx, vale1, "izquierda", 0);
+      const vale2 = this.valesCreados[i + 1];
+      if (vale2) this.dibujarValeEnMitad(ctx, vale2, "derecha", 0);
 
-        // Fondo blanco
-        ctx.fillStyle = "white";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      // Fila 2 (vales i+2 y i+3)
+      ctx.drawImage(backgroundImage, 0, fondoHeight, fondoWidth, fondoHeight);
+      const vale3 = this.valesCreados[i + 2];
+      if (vale3) this.dibujarValeEnMitad(ctx, vale3, "izquierda", fondoHeight);
+      const vale4 = this.valesCreados[i + 3];
+      if (vale4) this.dibujarValeEnMitad(ctx, vale4, "derecha", fondoHeight);
 
-        // Dibujar la imagen de fondo
-        ctx.drawImage(backgroundImage, 0, 0, valeWidth, valeHeight);
+      const imgData = canvas.toDataURL("image/jpeg", 0.7);
+      pdf.addImage(imgData, "JPEG", 0, 0, fondoWidthScaled, fondoHeightScaled * 2);
+    }
 
-        // Convertir monto a texto
-        const montoTexto = `Pesos ${numeroATexto(this.valesCreados[i].monto)}`;
-
-        // 🔹 Agregar texto sobre el vale
-        ctx.fillStyle = "black";
-        ctx.font = "500 38px sans-serif";
-
-        //Original
-        ctx.fillText(`${this.orden.proveedor}`, 600, 310);
-        ctx.fillText(`${this.orden.nroOrden}`, 600, 367);
-        ctx.fillText(`${this.valesCreados[i].nro_vale.toString().padStart(3, '0')}`, 1600, 266);
-        ctx.fillText(`${this.valesCreados[i].area}`, 1400, 365);
-        ctx.fillText(`${this.valesCreados[i].tipoCombustible}`, 600, 420);
-        // ctx.fillText(`${this.valesCreados[i].fechaEmision.toLocaleDateString('es-AR')}`, 1400, 420);
-        ctx.fillText(`${this.format(this.valesCreados[i].monto)}`, 600, 471);
-        // Cambiar el tamaño de la fuente solo para el monto
-        ctx.font = "500 30px sans-serif";  // Fuente más pequeña
-        ctx.fillText(montoTexto, 1100, 471);
-        ctx.fillText(`${this.valesCreados[i].dominio}`, 1400, 623);
-
-        //Volver a la fuente original para los demás campos
-        ctx.font = "500 38px sans-serif";
-        ctx.fillText(`${this.orden.nroOrden}`, 600, 368);
-
-        //Duplicado
-        ctx.fillText(`${this.orden.proveedor}`, 2348, 310);
-        ctx.fillText(`${this.orden.nroOrden}`, 2348, 367);
-        ctx.fillText(`${this.valesCreados[i].nro_vale.toString().padStart(3, '0')}`, 3348, 266);
-        ctx.fillText(`${this.valesCreados[i].area}`, 3148, 365);
-        ctx.fillText(`${this.valesCreados[i].tipoCombustible}`, 2348, 420);
-        // ctx.fillText(`${this.valesCreados[i].fechaEmision.toLocaleDateString('es-AR')}`, 3148, 420);
-        ctx.fillText(`${this.format(this.valesCreados[i].monto)}`, 2348, 471);
-        // Cambiar el tamaño de la fuente solo para el monto en el duplicado
-        ctx.font = "500 30px sans-serif";  // Fuente más pequeña
-        ctx.fillText(montoTexto, 2848, 471);
-        ctx.fillText(`${this.valesCreados[i].dominio}`, 3148, 623);
-
-        // Convertir canvas en imagen y agregarlo al PDF
-        const imgData = canvas.toDataURL("image/jpeg", 0.7); // Calidad 0.7 (ajustable)
-        pdf.addImage(imgData, "PNG", 5, posY - 9, valeWidthScaled, valeHeightScaled);
-      }
-
-      // Descargar el PDF
       pdf.save(`Vales_${this.orden.nroOrden}.pdf`);
     },
+
+    dibujarValeEnMitad(ctx, vale, lado, offsetY = 0) {
+      const offsetX = lado === "izquierda" ? 0 : 1748; // ⚠️ Asegurate que 1748 sea la mitad exacta de tu imagen
+      const pos = (x, y) => [offsetX + x, offsetY + y];
+
+      // Fondo blanco (opcional, si ya lo hiciste antes)
+      // ctx.fillStyle = "white";
+      // ctx.fillRect(offsetX, offsetY, 1748, altoDelVale);
+
+      const montoTexto = `Pesos ${numeroATexto(vale.monto)}`;
+
+      ctx.fillStyle = "black";
+      ctx.font = "500 38px sans-serif";
+
+      // Ejemplo de coordenadas, ajustalas si hace falta
+      ctx.fillText(`${this.orden.proveedor}`, ...pos(600, 310));
+      ctx.fillText(`${this.orden.nroOrden}`, ...pos(600, 367));
+      ctx.fillText(`${vale.nro_vale.toString().padStart(3, '0')}`, ...pos(1600, 266));
+      ctx.fillText(`${vale.area}`, ...pos(1340, 365));
+      ctx.fillText(`${vale.tipoCombustible}`, ...pos(600, 420));
+      ctx.fillText(`${this.format(vale.monto)}`, ...pos(600, 471));
+
+      ctx.font = "500 30px sans-serif";
+      ctx.fillText(montoTexto, ...pos(1100, 471));
+      ctx.fillText(`${vale.dominio}`, ...pos(1400, 623));
+
+      ctx.font = "500 38px sans-serif"; // volver al tamaño original si seguís con más texto
+    },
+
     format(value) {
       if (!value) return "$0";
       return `$${value.toLocaleString('es-AR')}`;

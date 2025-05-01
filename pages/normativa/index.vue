@@ -2,20 +2,8 @@
   <div class="page main-background">
     <Banner title="Normativa"/>
     <div class="mt-5">
-      <div class="row justify-content-center">
-        <NuxtLink to="/normativa/comercio" class="col-md-5">
-          <b-button variant="outline" class="d-flex align-items-center w-100 white shadow-card">
-            <div class="me-3">
-              <b-icon-shop class="mx-3 my-3 landing-icon" />
-            </div>
-            <div class="col text-left my-auto">
-              <h3 class="landing-text"><b> Digesto Comercial </b></h3>
-              <h6>Normativa vigente para los comercios de Villa Gesell</h6>
-            </div>
-          </b-button>
-        </NuxtLink>
-      </div>
-      <div class="row justify-content-center mt-5">
+      <MenuItem to="/normativa/comercio" icon="shop" title="Digesto Comercial" description="Normativa vigente para los comercios de Villa Gesell"/>
+      <div class="row no-gutters justify-content-center mt-5">
         <NuxtLink to="/normativa/obras" class="col-md-5">
           <b-button variant="outline" class="d-flex w-100 white shadow-card">
             <div class="me-3">
@@ -71,5 +59,4 @@ export default {
 .col{
   margin: 16px;
 }
-
 </style>

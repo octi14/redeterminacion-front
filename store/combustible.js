@@ -75,7 +75,18 @@ export const actions = {
       throw error; // Esto hace que el error se propague al frontend
     }
   },
+  async eliminarOrden({ commit }, { id, userToken }) {
+    try {
+      const response = await CombustibleService.delete(this.$axios, { id, userToken });
 
+      // Si el backend responde correctamente, eliminamos el vale del store
+      commit("removerOrden", id);
+      return true
+    } catch (error) {
+      console.error("Error del store de VueX", error);
+      throw error; // Esto hace que el error se propague al frontend
+    }
+  },
   async getProveedores({ commit, state }) {
     const found = await CombustibleService.getProveedores(this.$axios, {
     })
@@ -99,6 +110,9 @@ export const mutations = {
   },
   removerVale(state, valeId) {
     state.vales_creados = state.vales_creados.filter(vale => vale.id !== valeId);
+  },
+  removerOrden(state, ordenId) {
+    state.all = state.all.filter(orden => orden.id !== ordenId);
   },
   setProveedores(state, list){
     state.proveedores = list

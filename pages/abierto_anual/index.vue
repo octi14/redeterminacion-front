@@ -40,7 +40,7 @@
               <div v-show="isCardExpanded(0)">
                 <div class="li-row first-li">
                   <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">
-                    Es un <b>descuento del 60% </b>(sesenta por ciento) del valor <b>de la Tasa por Inspección de  Seguridad e Higiene</b>, otorgado en virtud del Artículo 182 de la <a href="https://arvige.gob.ar/legislacion/pdf/12" class="text-success">Ordenanza Fiscal 2156/08 (TO2023).</a></div>
+                    Es un <b>descuento del 60% </b>(sesenta por ciento) del valor <b>de la Tasa por Inspección de  Seguridad e Higiene</b> correspondiente al año fiscal 2026, otorgado en virtud del Artículo 182 de la <a href="https://arvige.gob.ar/legislacion/pdf/12" class="text-success">Ordenanza Fiscal 2156/08 (TO2025).</a></div>
                 </div>
               </div>
             </transition>
@@ -65,6 +65,10 @@
                   <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">
                     Sus <b>establecimientos</b> hayan permanecido <b>con actividad</b> en forma <b>permanente durante los fines de semana del ejercicio anterior y
                      no posean deudas</b> con la Municipalidad.</div>
+                </div>                
+                <div class="li-row">
+                  <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">
+                    Sus establecimientos dispongan de la <b>Renovación o Reempadronamiento</b> comercial correspondiente.</div>
                 </div>
               </div>
             </transition>
@@ -96,10 +100,10 @@
             <transition name="expand">
               <div v-show="isCardExpanded(3)">
                 <div class="li-row first-li"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                  <div class="li-content">Poseer una <b>Habilitación Comercial</b> en el Partido de Villa Gesell.</div>
+                  <div class="li-content">Poseer una <b>Habilitación Comercial</b> en el Partido de Villa Gesell, con su correspondiente <b>Renovación o Reempadronamiento comercial</b> correspondientes efectuados en tiempo y forma. </div>
                 </div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                  <div class="li-content"><b>No</b> encontrarse en <b>mora</b> en la <b>Tasa de Seguridad e Higiene</b>.</div>
+                  <div class="li-content"><b>No</b> poseer <b>deudas en  concepto de Tasas, Derechos, Contribuciones o Multas con el Municipio</b>.</div>
                 </div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
                   <div class="li-content">No ser un contribuyente excluido del beneficio acorde Ord. 2156/08 c/ Mod. </div>
@@ -121,13 +125,13 @@
                 <div class="li-row first-li mb-1"><p>Una <b>factura digital</b> o una <b>fotografía de la factura emitida en formato papel</b>, correspondiente a los
                    siguientes tres períodos del año en curso: </p></div>
                   <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                    <div class="li-content"><p><b>Período 1:</b> Se deberá cargar una factura emitida durante el mes de <i>Mayo</i>.</p></div>
+                    <div class="li-content"><p><b>Período 1 (2/5/25 al 31/5/25):</b> Se deberá cargar una factura emitida durante el mes de <i>Mayo</i>.</p></div>
                   </div>
                   <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                    <div class="li-content"><p><b>Período 2:</b> Se deberá cargar una factura emitida durante el mes de <i>Agosto</i>.</p></div>
+                    <div class="li-content"><p><b>Período 2 (1/8/25 al 31/8/25):</b> Se deberá cargar una factura emitida durante el mes de <i>Agosto</i>.</p></div>
                   </div>
                   <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                    <div class="li-content"><p><b>Período 3:</b> Se deberá cargar una factura emitida durante el mes de <i>Octubre</i>.</p></div>
+                    <div class="li-content"><p><b>Período 3 (1/10/25 al 31/10/25):</b> Se deberá cargar una factura emitida durante el mes de <i>Octubre</i>.</p></div>
                   </div>
                   <b-card border-variant="warning" align="center" class="importante-card" >
                     <b-card-text>
@@ -139,6 +143,7 @@
                         <b-col  md="10">
                           <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Las <b>facturas</b> deberán ser <b>digitales</b> (en caso de tenerlas en formato papel <b>podés escanearlos o sacarles una foto</b>) y deben ser <b>legibles</b>. Pueden encontrarse en formato pdf o imagen y tener un peso máximo de 15Mb.</div></div>
                           <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Los <b>periodos de recepción</b> de las facturas serán <b>definidos</b> por la <b>Autoridad de Aplicación</b> en el transcurso del año. Estos periodos <b>serán notificados al DFE</b> de la persona interesada <b>y publicitados en las vías oficiales</b> de comunicación <b>del Municipio</b>.</div></div>
+                          <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Las <b>facturas</b> deberán <b>corresponder a ventas efectivamente producidas en los períodos descriptos.</b>.</div></div>
                         </b-col>
                       </b-row>
                     </b-card-text>
@@ -216,14 +221,46 @@
                     <iframe width="560" height="315" src="https://www.youtube.com/embed/NKZWxjCh1l4?si=SCCPendq9R_daKRK" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                   </div>
                 </div>
-                <p class="first-li separador-top"><b>El trámite concluye a fin de año (2024) y es requisito que hayas cargado 3 facturas (una por cada período) para obtener el Beneficio de Comercio Abierto Anual.</b></p>
+                <p class="first-li separador-top"><b>El trámite concluye a fin de año (2025) y es requisito que hayas cargado 3 facturas (una por cada período) para obtener el Beneficio de Comercio Abierto Anual.</b></p>
+              </div>
+            </transition>
+          </b-card>
+          <b-card id="datos" class="section-card" v-bind:class="{ 'expanded': isCardExpanded(5) }">
+            <h4 class="section-title" @click="toggleCard(6)">
+              Preguntas frecuentes
+              <b-icon-chevron-compact-down v-if="!isCardExpanded(6)"></b-icon-chevron-compact-down>
+              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
+            </h4>
+            <transition name="expand">
+              <div v-show="isCardExpanded(6)">
+                <div class="li-row first-li">
+                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-content">
+                    <p class="li-title">¿Qué sucede si mi comercio se encontraba cerrado por causas justificadas durante el período a acreditar?</p>
+                    <p >En caso de no poder realizar el envío de alguna de las facturas en los períodos indicados (el establecimiento se encontraba cerrado por vacaciones, el comercio se encontraba en refacción ou otra causa justificada que haga que no se adecue a lo determinado en el Artículo citado en la Referencia) <u>deberá acreditarse la facturación completa (Resumen Z) efectuada el último día más próximo al que debió acreditarse la misma</u>. Por ejemplo: El local permaneció cerrado en Agosto por reparaciones; deberá presentarse el Resumen Z del 31 de Julio.</p>
+                  </div>
+                </div>
+                <div class="li-row">
+                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-content">
+                    <p class="li-title">¿Qué sucede si no envié a tiempo las tres facturas solicitadas?</p>
+                    <p>En caso de no cumplirse con el envío de las 3 facturas solicitadas en los períodos indicados previamente SE PODRÁN ACREDITAR desde el 1 al 30 DE NOVIEMBRE DE 2025 siendo este el último plazo de acreditación posible. <b>Extinguido el plazo no podrá reclamarse el beneficio.</b></p>
+                  </div>
+                </div>
+                <div class="li-row">
+                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-content">
+                    <p class="li-title">¿Qué sucede si fui categorizado/a como Gran Contribuyente?</p>
+                    <p>Aquellos/as contribuyentes que accedieron a la recategorización como Grandes Contribuyentes no son pasibles de gozar del beneficio.</p>
+                  </div>
+                </div>
               </div>
             </transition>
           </b-card>
           <b-row>
             <b-col>
-              <!-- <b-button variant="success" class="float-right btn-form" @click="openPopup('Form')" disabled="disabled">Iniciar Trámite</b-button> -->
-              <b-button variant="success" class="float-right btn-form" @click="openPopup('ClosedPeriod')">Iniciar Trámite</b-button>
+              <b-button variant="success" class="float-right btn-form" @click="openPopup('Form')">Iniciar Trámite</b-button>
+              <!-- <b-button variant="success" class="float-right btn-form" @click="openPopup('ClosedPeriod')">Iniciar Trámite</b-button> -->
             </b-col>
           </b-row>
         </b-col>
@@ -282,7 +319,7 @@
       </template>
       <div class="closed-popup-body">
         <h2 class="icon-orange"><b>IMPORTANTE</b></h2>
-        <p >El plazo para acreditar las facturas del año 2024 ha expirado.</p>
+        <p >El plazo para acreditar las facturas del año 2025 ha expirado.</p>
   
         <div class="li-row">
           <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Por cualquier reclamo comunicate con <a href="mailto:dirarvige@gesell.gob.ar" class="text-success">ARVIGE</a> para conocer los pasos a seguir.</div>
@@ -301,9 +338,11 @@
 
   <script>
   import rubros from "@/plugins/rubros.js";
+  import abiertoAnualConfig from '~/plugins/abiertoAnualConfig';
   export default {
     data:function() {
       return {
+        config: abiertoAnualConfig,
         slide: 0,
         sliding: null,
         filteredRubros: rubros,//.filter(rubro => rubro.requisitos.length > 0),
@@ -324,7 +363,7 @@
     },
     mounted() {
       this.filteredRubros.sort((a, b) => a.nombre.localeCompare(b.nombre));
-      this.showClosedPopup = true;
+      this.showClosedPopup = this.config.popUpAbiertoAnualCerrado;
     },
     methods: {
       onSlideStart(slide) {

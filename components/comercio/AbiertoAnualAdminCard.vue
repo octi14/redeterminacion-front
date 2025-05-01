@@ -188,7 +188,7 @@
                   <b-button @click="AprobarTicket" variant="success" class="btn-approve float-left"><span>Aprobar</span></b-button>
                   <b-button @click="RechazarTicket" variant="danger" class="btn-cancel float-right"><span>Rechazar</span></b-button>
               </div>
-              <div v-else-if="estadoActual == 4 || estadoActual == 5" style="width: 100%;">
+              <div v-else-if="estadoActual == 3 || estadoActual == 4 || estadoActual == 5" style="width: 100%;">
                   <b-icon-pencil-square variant="dark" scale="2" @click="RectificarTicket" class="btn-rectific"></b-icon-pencil-square>
               </div>
           </div>
@@ -360,7 +360,7 @@ export default {
       },
       RectificarTicket() {
           var nextCard = null;
-          if (this.estadoActual == 4 || this.estadoActual == 5){
+          if (this.estadoActual == 3 || this.estadoActual == 4 || this.estadoActual == 5){
               nextCard = 9;
               this.estadoPrevio = this.estadoActual;
           }

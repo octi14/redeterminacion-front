@@ -24,7 +24,7 @@
             <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
             <b-row>
               <label for="nroLegajo" class="col-6"> N° de legajo comercial: <b-icon-question-circle-fill @click="openPopup('A')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></label>
-              <b-form-input class="col-6" v-model="nroLegajo" id="nroLegajo" type="number" placeholder="Ingrese un N° de Legajo Comercial" no-wheel></b-form-input>
+              <b-form-input class="col-6" v-model="nroLegajoInput" id="nroLegajo" type="text" placeholder="Ingrese un N° de Legajo Comercial" no-wheel @input="sanitizeLegajo"></b-form-input>
               <div v-if="$v.nroLegajo.$error" class="validation-error col-12">
                 <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon>  'Completá este campo'
               </div>
@@ -32,8 +32,8 @@
           </b-form>
           <div class="btn-container">
             <b-button class="btn-cancel" @click="onResetParams">Cancelar</b-button>
-            <!-- <b-button @click="sendData" :disabled="enterKeyPressed">Aceptar</b-button> -->
-            <b-button @click="openPopup('ClosedPeriod')" :disabled="enterKeyPressed">Aceptar</b-button>
+            <b-button @click="sendData" :disabled="enterKeyPressed">Aceptar</b-button>
+            <!-- <b-button @click="openPopup('ClosedPeriod')" :disabled="enterKeyPressed">Aceptar</b-button> -->
           </div>
         </b-card>
       </div>
@@ -104,7 +104,7 @@
       </template>
       <div class="closed-popup-body">
         <h2 class="icon-orange"><b>IMPORTANTE</b></h2>
-        <p >El plazo para acreditar las facturas del año 2024 ha expirado.</p>
+        <p >El plazo para acreditar las facturas del año 2025 ha expirado.</p>
   
         <div class="li-row">
           <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Por cualquier reclamo comunicate con <a href="mailto:dirarvige@gesell.gob.ar" class="text-success">ARVIGE</a> para conocer los pasos a seguir.</div>
@@ -123,18 +123,24 @@
 
   <script>
   import { required, requiredIf, alpha, numeric, email, minLength, maxLength, sameAs } from 'vuelidate/lib/validators';
+  import abiertoAnualConfig from '~/plugins/abiertoAnualConfig';
   export default {
     validations() {
       return {        
         cuit: { required, numeric, maxLength: maxLength(12), minLength: minLength(11) },
-        nroLegajo:{
-          required, numeric
+        nroLegajoInput:{
+          required
+        },
+        nroLegajo: {
+          numeric
         }
       }
     },
     data() {
       return {
+        config: abiertoAnualConfig,
         cuit: null,
+        nroLegajoInput: '',
         nroLegajo: null,
         page: 0,
         formOk: false,
@@ -150,7 +156,7 @@
       };
     },
     mounted() {
-      this.showClosedPopup = true;
+      this.showClosedPopup = this.config.popUpAbiertoAnualCerrado;
     },
     computed: {
       maestro(){
@@ -211,6 +217,7 @@
       this.formOk = false;
       this.cuit = null;
       this.nroLegajo = null;
+      this.nroLegajoInput = null;
     },
     openPopup(type) {
       // Lógica para abrir el popup correspondiente según el tipo (A, B, C, D)
@@ -221,7 +228,16 @@
           this.showClosedPopup = true;
         }
     },
+    sanitizeLegajo() {
+      // Elimina cualquier caracter que no sea dígito
+      const cleanValue = this.nroLegajoInput.replace(/\D/g, '');
 
+      // Elimina ceros a la izquierda
+      this.nroLegajo = cleanValue.replace(/^0+/, '') || '0';
+
+      // Actualiza el input visible (opcional: si querés mostrarlo corregido)
+      //this.nroLegajoInput = cleanValue;
+    },
   },
     // computed: {
     //   areAllFieldsComplete(){

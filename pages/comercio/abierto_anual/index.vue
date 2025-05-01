@@ -283,7 +283,7 @@
               <label class="form-check-label" for="documentCheckbox">Ya tengo todos los documentos digitalizados y la información requerida.</label>
           </div>
           <div class="text-center mt-3">
-              <nuxt-link :class="{ 'disabled': !documentCheckboxChecked }" :to="{path: '/abierto_anual/form'}">
+              <nuxt-link :class="{ 'disabled': !documentCheckboxChecked }" :to="{path: '/comercio/abierto_anual/form'}">
               <b-btn variant="success" :disabled="!documentCheckboxChecked" @click="proceedToForm()" >
                   Aceptar
               </b-btn>

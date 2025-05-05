@@ -121,7 +121,7 @@
             </div>
             <!-- Cards de los vales -->
             <div class="row mx-4">
-              <div v-for="(vale, index) in paginatedVales" :key="index" class="col-md-6 mb-3">
+              <div v-for="(vale, index) in vales" :key="index" class="col-md-6 mb-3">
                 <b-card no-body class="border-card main-background shadow-card">
                   <div class="m-2">
                     <div class="row no-gutters align-items-center">
@@ -171,7 +171,7 @@
 
 
             <!-- Paginador -->
-            <b-pagination v-model="currentPage" :total-rows="vales.length" :per-page="itemsPerPage" class="mt-5" align="center" size="sm"/>
+            <!-- <b-pagination v-model="currentPage" :total-rows="vales.length" :per-page="itemsPerPage" class="mt-5" align="center" size="sm"/> -->
           </div>
 
           <!-- Mensaje si no hay vales -->
@@ -191,8 +191,8 @@
       <p v-html="observaciones"></p>
     </b-modal>
 
-      <!-- Modal de Confirmación para utilización -->
-      <b-modal id="modalUtilizacion" header-class="justify-content-center" title-class="text-light" header-bg-variant="success" hide-footer centered>
+    <!-- Modal de Confirmación para utilización -->
+    <b-modal id="modalUtilizacion" header-class="justify-content-center" title-class="text-light" header-bg-variant="success" hide-footer centered>
       <template #modal-header>
         <b-iconstack class="my-3">
           <b-icon-circle scale="2.7" variant="light"/>
@@ -329,7 +329,7 @@
       </div>
     </b-modal>
 
-      <!-- Modal de Confirmación para Eliminación -->
+    <!-- Modal de Confirmación para Eliminación -->
     <b-modal id="modalUtilizacionSuccess" v-model="modalModificado" header-class="justify-content-center" header-bg-variant="success" hide-footer centered>
       <template #modal-header>
         <b-iconstack class="my-3">
@@ -353,6 +353,7 @@ import jsPDF from "jspdf";
 export default {
   data() {
     return {
+      loading: false,
       currentPage: 1,
       itemsPerPage: 6,
       modalEliminacion: false,
@@ -445,6 +446,7 @@ export default {
       this.modalEliminacion = true;
     },
     async reimprimirVale(vale) {
+      this.loading = true
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");
 
@@ -510,6 +512,7 @@ export default {
       link.download = `Vale_${this.orden.nroOrden}_N${this.indexSeleccionado +1}.png`;
       link.click();
       await this.wait(400)
+      this.loading = false
       this.$bvModal.hide('modalReimpresion')
     },
     async imprimirValesSeleccionados() {

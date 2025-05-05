@@ -61,6 +61,17 @@
         <b-button size="sm" class="col-3" variant="danger" @click="cerrarModal">Salir</b-button>
       </div>
     </b-modal>
+
+      <!-- Modal de carga -->
+      <b-modal v-model="loading" hide-footer header-bg-variant="success" title-class="text-center text-light" centered>
+      <template #modal-header>
+        <div class="confirmation-popup-header mx-auto">
+          <b-spinner scale="2.5" class="my-3" variant="light"/>
+        </div>
+      </template>
+      <p class="h5 text-center font-weight-bold text-dark mt-4 mb-4">Generando vales...</p>
+      <p class="h6 text-center font-weight-400 text-dark mt-2 mb-5">Por favor, esperá un momento</p>
+    </b-modal>
   </div>
 </template>
 
@@ -74,6 +85,7 @@ import { numeroATexto } from "@/utils/numeroATexto";
 export default {
   data() {
     return {
+      loading: false,
       form: {
         cantidad: 1,
         combustible: "Super",
@@ -98,6 +110,7 @@ export default {
   },
   methods: {
     async generarVales() {
+      this.loading = true
       if (!this.orden) {
         alert("No hay una orden de compra válida.");
         return;
@@ -139,7 +152,7 @@ export default {
 
       try {
         await this.$store.dispatch('combustible/generarVales', { payload });
-        console.log("Vales generados correctamente.");
+        this.loading = false
         this.$bvModal.show("confirmacionModal"); // Mostrar modal de confirmación
 
         // Limpiar formulario después de generar los vales

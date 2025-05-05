@@ -11,22 +11,35 @@
       <template #cell(saldoRestante)="row">
         {{ format(row.item.saldos.reduce((acc, saldo) => acc + saldo.saldo, 0)) }}
       </template>
-      <template #cell(detalles)="row">
-        <NuxtLink :to="{ name: 'compras-combustible-id', params: { id: row.item.id } }">
-          <b-button variant="outline-secondary" size="sm" title="Editar">
-            <b-icon-pen/>
-          </b-button>
-        </NuxtLink>
-      </template>
-      <template #cell(observaciones)="row">
-        <b-button v-if="row.item.observaciones && row.item.observaciones != ''" @click="onShowObservaciones(row.index)" variant="outline-primary" size="sm" title="Observaciones">
-          <b-icon-eye/>
-        </b-button>
-      </template>
       <template #cell(acciones)="row">
-        <b-button variant="outline-danger" title="Eliminar" @click="sendEliminarOrden(row.item)">
-          <b-icon-trash/>
-        </b-button>
+        <b-button-group size="sm">
+          <b-button
+            variant="outline-secondary"
+            :to="{ name: 'compras-combustible-id', params: { id: row.item.id } }"
+            class="outline-secondary"
+            title="Detalles"
+          >
+            <b-icon-pen class="icon-hover" />
+          </b-button>
+
+
+          <b-button
+            v-if="row.item.observaciones && row.item.observaciones !== ''"
+            @click="onShowObservaciones(row.index)"
+            variant="outline-primary"
+            title="Observaciones"
+          >
+            <b-icon-eye />
+          </b-button>
+
+          <b-button
+            variant="outline-danger"
+            title="Eliminar"
+            @click="sendEliminarOrden(row.item)"
+          >
+            <b-icon-trash />
+          </b-button>
+        </b-button-group>
       </template>
     </b-table>
 
@@ -176,6 +189,28 @@
 
     </b-modal>
 
+    <!-- Modal de carga -->
+    <b-modal v-model="isLoading" hide-footer header-bg-variant="success" title-class="text-center text-light" centered>
+      <template #modal-header>
+        <div class="confirmation-popup-header mx-auto">
+          <b-spinner scale="2.5" class="my-3" variant="light"/>
+        </div>
+      </template>
+      <p class="h5 text-center font-weight-bold text-dark mt-4 mb-4">Se está borrando la orden de compra</p>
+      <p class="h6 text-center font-weight-400 text-dark mt-2 mb-5">Por favor, esperá un momento</p>
+    </b-modal>
+
+    <!-- Modal de carga (crear orden) -->
+    <b-modal v-model="loadingCargar" hide-footer header-bg-variant="success" title-class="text-center text-light" centered>
+      <template #modal-header>
+        <div class="confirmation-popup-header mx-auto">
+          <b-spinner scale="2.5" class="my-3" variant="light"/>
+        </div>
+      </template>
+      <p class="h5 text-center font-weight-bold text-dark mt-4 mb-4">Se está creando la orden de compra</p>
+      <p class="h6 text-center font-weight-400 text-dark mt-2 mb-5">Por favor, esperá un momento</p>
+    </b-modal>
+
 
     <b-modal size="lg" v-model="showObservaciones" header-bg-variant="primary" title="Observaciones" title-class="text-light" hide-footer centered>
       <p v-html="observaciones"></p>
@@ -213,8 +248,6 @@ export default {
         { key: 'monto', label: 'Importe' },
         { key: 'vales', label: 'Vales' },
         { key: 'saldoRestante', label: 'Saldo' },
-        { key: 'detalles', label: 'Detalles' },
-        { key: 'observaciones', label: 'Observaciones' },
         { key: 'acciones', label: 'Acciones'},
       ],
       areas: [
@@ -313,7 +346,7 @@ export default {
       }
     },
     async submitForm() {
-      this.isLoading = true;
+      this.loadingCargar = true;
       try {
         // const userToken = this.$store.state.user.token;
 
@@ -336,7 +369,7 @@ export default {
       } catch (error) {
         this.$bvToast.toast("Error al crear la orden", { variant: "danger" });
       } finally {
-        this.isLoading = false;
+        this.loadingCargar = false;
       }
     },
     resetForm() {
@@ -358,7 +391,8 @@ export default {
       }
     },
     async eliminarOrden(item){
-      console.log(item)
+      this.isLoading = true
+      this.showEliminarOrden = false
       const id = item.id
       const userToken = this.$store.state.user.token
       const success = await this.$store.dispatch('combustible/eliminarOrden',{
@@ -366,7 +400,9 @@ export default {
         userToken
       })
       if(success){
+        this.isLoading = false
         this.eliminarSuccess = true
+        this.showEliminarOrden = true
       }
     },
     format(value) {

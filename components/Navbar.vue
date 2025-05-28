@@ -80,6 +80,15 @@
               Abierto anual
           </NuxtLink>
         </b-navbar-nav>
+                <b-navbar-nav v-if="adminComercio" class="mr-2">
+          <NuxtLink
+            class="nav-link"
+            active-class="active"
+            to="/pagos/pagos_dobles/solicitudes"
+          >
+              Pagos dobles
+          </NuxtLink>
+        </b-navbar-nav>
         <b-navbar-nav v-if="adminArvige">
           <NuxtLink
             class="nav-link"

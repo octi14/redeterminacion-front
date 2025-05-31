@@ -36,21 +36,23 @@
                 <div class="li-row first-p">
                   <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Mediante este trámite <b>el Municipio verificará que la documentación solicitada</b> y el <b>pago de tasas correspondientes estén cumplimentadas.</b></div>
                 </div>
-                <div class="li-row">
+                <!-- <div class="li-row">
                   <div class="li-icon"><b-icon-info-circle font-scale="1" class="icon-orange"/></div>
                   <div class="li-content" style="width:100%">
                     <p class="li-title">El trámite de devolución de tributo por doble pago se encuentra regido por el Decreto 3064/2023. </p>
                   </div>
-                </div>
+                </div> -->
               </div>
             </transition>
           </b-card>
           <b-card class="section-card shadow-card my-2" id="card-habilitacion">
             <h4 class="section-title" @click="toggleCard(18)">
               ¿Quién puede solicitar la acreditación del saldo?
+              <b-icon-chevron-compact-down v-if="!isCardExpanded(18)"></b-icon-chevron-compact-down>
+              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
             </h4>
             <transition name="expand">
-              <div>
+              <div v-show="isCardExpanded(18)">
                 <div class="li-row first-li">
                   <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> El <b>Titular del inmueble por el cual se reclama</b> ó</div>
                 </div>
@@ -68,7 +70,7 @@
             </h4>
             <transition name="expand">
               <div v-show="isCardExpanded(19)">
-                <div class="li-row first-li"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">DNI del solicitante (imagen del frente y dorso)</i>.</div></div>
+                <div class="li-row first-li"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">DNI del solicitante (imagen del frente y dorso).</div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Comprobantes que demuestren que el pago se ha efectuado más de una vez.</div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Acreditación de titularidad de la cuenta. Esto puede realizarse a través de la presentación de la Escritura traslativa de dominio del inmueble / Boleto de Compraventa o afín, con el correspondiente Impuesto de Sellos Provincial y firma certificada por Escribano Público, Entidad Bancaria o Autoridad Administrativa / OTROS.</div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Planilla de Autorización de Trámite legalizada o poder autorizado por escribano (únicamente si el trámite es iniciado mediante representante o apoderado/a).</div></div>

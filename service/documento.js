@@ -13,4 +13,9 @@ module.exports = {
     const fileResponse = await axios.$get(`/habilitaciones/documentos/${id}`);
     return formatDocs(fileResponse.data);
   },
+
+  getPagosById: async (axios, { id }) => {
+    const fileResponse = await axios.$get(`/pagosDobles/documentos/${id}`);
+    return formatDocs(fileResponse.data);
+  },
 };

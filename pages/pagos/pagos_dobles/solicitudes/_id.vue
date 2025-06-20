@@ -1,36 +1,36 @@
 <template>
   <div class="page main-background">
     <Banner title="Detalles de solicitud"/>
-    <div v-if="!habilitacion" class="text-center mt-3">
+    <div v-if="!pago" class="text-center mt-3">
       <h2> Cargando </h2>
       <h4> Por favor espere unos segundos </h4>
     </div>
     <!-- Datos del solicitante -->
-    <template v-if="habilitacion">
+    <template v-if="pago">
       <div class="flex col" style="width: 96%">
         <div class="row justify-content-center mt-3">
-          <p class="h5"> Número de trámite: <b> {{ habilitacion.nroTramite }}  </b></p>
+          <p class="h5"> Número de trámite: <b> {{ pago.nroTramite }}  </b></p>
         </div>
         <div class="row justify-content-center mt-3">
           <div class="h5 row"> Estado:
-            <h5 :class="getStatusClass(habilitacion.status)" class="ml-2"> {{ habilitacion.status }}</h5>
+            <h5 :class="getStatusClass(pago.status)" class="ml-2"> {{ pago.status }}</h5>
           </div>
         </div>
-        <div class="col mx-auto" v-if="habilitacion.status === 'Finalizada'">
-          <div class="h5 row justify-content-center"> Número de expediente: <b class="text-success ml-1"> {{ habilitacion.nroExpediente }} </b> </div>
-          <div class="h5 row justify-content-center"> Alcance: <b class="text-success ml-1"> {{ habilitacion.alcance }} </b> </div>
+        <div class="col mx-auto" v-if="pago.status === 'Finalizada'">
+          <div class="h5 row justify-content-center"> Número de expediente: <b class="text-success ml-1"> {{ pago.nroExpediente }} </b> </div>
+          <div class="h5 row justify-content-center"> Alcance: <b class="text-success ml-1"> {{ pago.alcance }} </b> </div>
         </div>
       </div>
       <!--Botones-->
-      <div class="row col-10 mx-auto justify-content-center" v-if="jefeComercio">
-        <b-button @click="onShowAprobarSolicitud" variant="success" class="btn-4 mt-3 mx-1" v-if="habilitacion.status==='En revisión'"> Aprobar solicitud </b-button>
-        <b-button @click="onShowFinalizarSolicitud" variant="success" class="btn-4 mt-3 mx-1" v-if="habilitacion.status === 'Esperando documentación'"> Finalizar solicitud </b-button>
-        <b-button @click="onRestablecer" variant="secondary" class="btn-4 mt-3 mx-1" v-if="habilitacion.status != 'En revisión' && habilitacion.status != 'Rectificación'"> Volver a estado En Revisión </b-button>
+      <div class="row col-10 mx-auto justify-content-center">
+        <b-button @click="onShowAprobarSolicitud" variant="success" class="btn-4 mt-3 mx-1" v-if="pago.status==='En revisión'"> Aprobar solicitud </b-button>
+        <b-button @click="onShowFinalizarSolicitud" variant="success" class="btn-4 mt-3 mx-1" v-if="pago.status === 'Esperando documentación'"> Finalizar solicitud </b-button>
+        <b-button @click="onRestablecer" variant="secondary" class="btn-4 mt-3 mx-1" v-if="pago.status != 'En revisión'"> Volver a estado En Revisión </b-button>
         <b-button @click="onRechazarSolicitud" class="btn-3 mt-3 mx-1"> Rechazar solicitud </b-button>
         <b-button @click="onShowObservaciones" variant="primary" class="btn-2 mt-3 mx-1"> Ver observaciones </b-button>
       </div>
       <div class="row no-gutters">
-        <b-button @click="onDescargarHabilitacion(); registrarActividad('Descargar Trámite', 'Trámite Descargado', habilitacion.nroTramite)" v-if="adminComercio || adminArvige || adminModernizacion" variant="success" class="btn-4 mx-auto mt-3 mx-1">
+        <b-button @click="onDescargarHabilitacion(); registrarActividad('Descargar Trámite', 'Trámite Descargado', pago.nroTramite)" v-if="adminComercio || adminArvige || adminModernizacion" variant="success" class="btn-4 mx-auto mt-3 mx-1">
           <b-icon icon="download" class="mr-1"></b-icon> Descargar trámite
         </b-button>
       </div>
@@ -49,7 +49,7 @@
                 <strong>Nombre</strong><br>
               </p>
               <p class="col col-complementary" role="complementary">
-                <a>{{ habilitacion.nombre + " " + habilitacion.apellido}}</a>
+                <a>{{ pago.nombre + " " + pago.apellido}}</a>
               </p>
             </div>
             <div class="layout">
@@ -57,7 +57,7 @@
                 <strong>Número de documento</strong><br>
               </p>
               <p class="col col-complementary" role="complementary">
-                <a>{{ habilitacion.dni }}</a>
+                <a>{{ pago.dni }}</a>
               </p>
             </div>
             <div class="layout">
@@ -65,23 +65,31 @@
                 <strong>CUIT</strong><br>
               </p>
               <p class="col col-complementary" role="complementary">
-                <a>{{ habilitacion.cuit }}</a>
+                <a>{{ pago.cuit }}</a>
               </p>
             </div>
-            <!-- <div class="layout">
+                        <div class="layout">
+              <p class="col col-main">
+                <strong>Número de cuenta</strong><br>
+              </p>
+              <p class="col col-complementary" role="complementary">
+                <a>{{ pago.nroCuenta }}</a>
+              </p>
+            </div>
+            <div class="layout">
               <p class="col col-main">
                 <strong>Domicilio</strong><br>
               </p>
               <p class="col col-complementary" role="complementary">
-                <a>{{ habilitacion.domicilioReal + " (C.P. " + habilitacion.codigoPostal + "), " + habilitacion.localidad + ", " + habilitacion.provincia }}</a>
+                <a>{{ pago.domicilioReal + " (C.P. " + pago.codigoPostal + "), " + pago.localidad + ", " + pago.provincia }}</a>
               </p>
-            </div> -->
+            </div>
             <div class="layout">
               <p class="col col-main">
                 <strong>Número de teléfono</strong><br>
               </p>
               <p class="col col-complementary" role="complementary">
-                <a>{{ habilitacion.telefono }}</a>
+                <a>{{ pago.telefono }}</a>
               </p>
             </div>
             <div class="layout">
@@ -89,7 +97,7 @@
                 <strong>Mail</strong><br>
               </p>
               <p class="col col-complementary" role="complementary">
-                <a>{{ habilitacion.mail }}</a>
+                <a>{{ pago.mail }}</a>
               </p>
             </div>
             <br>
@@ -97,7 +105,7 @@
       </b-card>
     </template>
     <!-- Documentación -->
-    <template v-if="habilitacion">
+    <template v-if="pago">
       <div class="container col-md-6 col-sm-8 card shadow-card mt-4 mb-3 mx-auto">
         <!-- Resto del contenido del componente -->
         <div class="col mx-auto">
@@ -168,7 +176,7 @@
       <div class="confirmation-popup-body">
         <h2 class="icon-orange text-secondary text-center"><b>Aprobar solicitud</b></h2>
         <p style="margin: 3%"> Se aprobará la solicitud. Se deberá enviar un mail al solicitante indicando que el
-           trámite está completo y adjuntar el certificado de baja. </p>
+           trámite está completo y adjuntar el certificado de . </p>
         <!-- <p style="margin: 3%"> Ingresá el número de expediente asignado al expediente actual y su alcance. </p>
         <div class="mx-auto">
         <p style="margin: 3%"><b-icon-caret-right-fill class="icon-orange"/><b>Número de expediente:</b></p>
@@ -236,7 +244,7 @@
 
     <b-modal v-model="showDocumentoModal" id="documento-modal" hide-footer centered>
       <template #modal-header>
-        <h3 class="icon-orange text-primary text-center"><b>{{ DocumentoModalTitle + " - " + habilitacion.nroTramite }}</b></h3>
+        <h3 class="icon-orange text-primary text-center"><b>{{ DocumentoModalTitle + " - " + pago.nroTramite }}</b></h3>
       </template>
       <div class="modal-body">
 
@@ -257,7 +265,7 @@ export default {
       statusClasses: {
         'En revisión': 'text-primary',
         'Rechazada': 'text-danger',
-        'Finalizada': 'text-darkgreen'
+        'Aprobada': 'text-darkgreen'
       },
       showPrevApprove: false,
       showApprove: false,
@@ -265,7 +273,7 @@ export default {
       showRejectPopup: false,
       showRestoreDefault: false,
       showObservaciones: false,
-      habilitacion: null,
+      pago: null,
       observaciones: '',
       nroExpediente1: null,
       nroExpediente2: null,
@@ -275,37 +283,24 @@ export default {
     }
   },
   computed: {
-    baja(){
-      return this.habilitacion && this.habilitacion.tipoSolicitud === "Baja"
-    },
     adminComercio(){
       return this.$store.state.user.admin == "comercio" || this.$store.state.user.admin == "master"
-    },
-    adminArvige(){
-      return this.$store.state.user.admin == "arvige" || this.$store.state.user.admin == "master"
-    },
-    adminModernizacion(){
-      return this.$store.state.user.admin == "modernizacion" || this.$store.state.user.admin == "master"
-    },
-    jefeComercio(){
-      return (this.$store.state.user.username === "myriamalonso@gesell.gob.ar"
-              || this.$store.state.user.username === "mariaelisabetbahlcke@gesell.gob.ar"
-              || this.$store.state.user.username === "lujanperez@gesell.gob.ar") || this.$store.state.user.admin == "master"
     },
     documentos(){
       return this.$store.state.documentos.all
     }
   },
   async fetch() {
-    const habilitacionId = this.$route.params.id
-    await this.$store.dispatch('habilitaciones/getSingle',{
-      id: habilitacionId,
+    const pagoId = this.$route.params.id
+    await this.$store.dispatch('pagosDobles/getSingle',{
+      id: pagoId,
     })
-    this.habilitacion = this.$store.state.habilitaciones.single
+    this.pago = this.$store.state.pagosDobles.single
 
-    await this.$store.dispatch('documentos/getById', {
-      id: habilitacionId,
+    await this.$store.dispatch('documentos/getPagosById', {
+      id: pagoId,
     })
+
   },
   fetchOnServer: false,
   activated() {
@@ -315,7 +310,7 @@ export default {
     async registrarActividad(evento, result, nroSolicitud){
       const userId = this.$store.state.user.username; // Reemplaza con el ID del usuario real
       const actionType = evento;
-      const actionResult = "Trámite nro " + nroSolicitud + ' ' + result;
+      const actionResult = "Reclamo de pago doble nro " + nroSolicitud + ' ' + result;
 
       try {
           await this.$logUserActivity(userId, actionType, actionResult);
@@ -336,8 +331,8 @@ export default {
       this.showFinalizar = true
     },
     onShowObservaciones(){
-      if(this.habilitacion.observaciones){
-        this.observaciones = this.habilitacion.observaciones.split('-').join('<br>')
+      if(this.pago.observaciones){
+        this.observaciones = this.pago.observaciones.split('-').join('<br>')
       }else{
         this.observaciones = "No hay observaciones para mostrar."
       }
@@ -346,76 +341,63 @@ export default {
     async onSendFinalizar(){
       var nroExpediente = ''
       var alcance = ''
-      if(this.baja){
-        alcance = this.alcance
-      }
       nroExpediente = "4124-" + this.nroExpediente1 + "/" + this.nroExpediente2
-      const observaciones = this.habilitacion.observaciones || ""
-      const habilitacion = {
+      const observaciones = this.pago.observaciones || ""
+      const pago = {
         status: 'Finalizada',
         nroExpediente: nroExpediente,
         alcance: alcance,
         observaciones: observaciones + " - " + "Se finaliza el trámite el día " + new Date().toLocaleDateString('es-AR')
       }
-      const id = this.habilitacion.id
+      const id = this.pago.id
       const userToken = this.$store.state.user.token
-      await this.$store.dispatch('habilitaciones/update', {
+      await this.$store.dispatch('pagosDobles/update', {
         id,
-        habilitacion,
+        pago,
       })
-      if(this.baja){
-        this.registrarActividad('Finalizar Baja', 'Trámite Cerrado. Expediente: ' + nroExpediente + ". Alcance: " + alcance, this.habilitacion.nroTramite)
+      // this.registrarActividad('Finalizar Habilitación', 'Trámite Cerrado. Expediente: ' + nroExpediente + ". Alcance: " + alcance, this.pago.nroTramite)
 
-      }else{
-        this.registrarActividad('Finalizar Habilitación', 'Trámite Cerrado. Expediente: ' + nroExpediente + ". Alcance: " + alcance, this.habilitacion.nroTramite)
-      }
       this.wait(300)
-      this.habilitacion.status = habilitacion.status
+      this.pago.status = pago.status
       this.showFinalizar = false
-      if(this.baja){
-        this.showApprove = true
-      }
     },
     onRestablecer(){
       this.showRestoreDefault = !this.showRestoreDefault
     },
     async onSendRestablecer(){
 
-      const observaciones = this.habilitacion.observaciones || ""
-      const habilitacion = {
+      const observaciones = this.pago.observaciones || ""
+      const pago = {
         status: 'En revisión',
         observaciones: observaciones + " - " + "Se restablece el trámite a 'En revisión' el día " + new Date().toLocaleDateString('es-AR')
       }
 
-      const id = this.habilitacion.id
+      const id = this.pago.id
       const userToken = this.$store.state.user.token
-      await this.$store.dispatch('habilitaciones/update', {
+      await this.$store.dispatch('pagosDobles/update', {
         id,
-        habilitacion,
+        pago,
       })
-      this.registrarActividad('Volver a En Revisión', 'Solicitud Reestablecida. Observaciones: ' + observaciones, this.habilitacion.nroTramite)
+      this.registrarActividad('Volver a En Revisión', 'Solicitud Reestablecida. Observaciones: ' + observaciones, this.pago.nroTramite)
       this.wait(300)
-      this.habilitacion.status = habilitacion.status
+      this.pago.status = pago.status
       this.showRestoreDefault = false
     },
     async onSendApprove(){
-      const observaciones = this.habilitacion.observaciones || " "
-      const habilitacion = {
-        status: 'Esperando documentación',
+      const observaciones = this.pago.observaciones || " "
+      const pago = {
+        status: 'Aprobada',
         observaciones: observaciones + " - " + "Se aprueba la solicitud el " + new Date().toLocaleDateString('es-AR') + " " + new Date().toLocaleTimeString()
       }
-      if(this.inspeccion){
-        habilitacion.status = "Esperando turno"
-      }
-      const id = this.habilitacion.id
+      const id = this.pago.id
       const userToken = this.$store.state.user.token
-      await this.$store.dispatch('habilitaciones/update', {
+      await this.$store.dispatch('pagosDobles/update', {
         id,
-        habilitacion,
+        pago,
       })
-      this.registrarActividad('Aprobar Habilitación', 'Habilitación Aprobada. Inspeccion: ' + this.inspeccion, this.habilitacion.nroTramite)
+      this.registrarActividad('Aprobar reclamo por pago doble', 'Reclamo por Pago doble Aprobado.')
       this.wait(300)
-      this.habilitacion.status = habilitacion.status
+      this.pago.status = pago.status
       this.showPrevApprove = false
       this.showApprove = true
     },
@@ -423,39 +405,39 @@ export default {
       this.showRejectPopup = true
     },
     async onSendReject(){
-      const observaciones = this.habilitacion.observaciones || " "
-      const habilitacion = {
+      const observaciones = this.pago.observaciones || " "
+      const pago = {
         observaciones: observaciones + " - " + "Solicitud rechazada: " + this.observaciones + " " + new Date().toLocaleDateString(),
         status: 'Rechazada'
       }
-      const id = this.habilitacion.id
+      const id = this.pago.id
       const userToken = this.$store.state.user.token
-      await this.$store.dispatch('habilitaciones/update', {
+      await this.$store.dispatch('pagosDobles/update', {
         id,
-        habilitacion,
+        pago,
       })
-      this.registrarActividad('Rechazar Solicitud', 'Rechazado por: ' + observaciones, this.habilitacion.nroTramite)
+      this.registrarActividad('Rechazar Solicitud', 'Rechazado por: ' + observaciones, this.pago.nroTramite)
       this.wait(300)
-      this.habilitacion.status = habilitacion.status
+      this.pago.status = pago.status
       this.observaciones = ''
       this.showRejectPopup = false
     },
     async onDescargarHabilitacion() {
       try {
-        const id = this.habilitacion.id;
+        const id = this.pago.id;
 
         // Obtenemos los datos y documentos de la habilitación del store
-        const habilitacion = this.habilitacion;
+        const pago = this.pago;
         const documentos = this.documentos || {};
 
         const zip = new JSZip();
 
         // Convertir los datos de la habilitación a Excel
-        const datosHabilitacion = XLSX.utils.json_to_sheet([habilitacion]);
+        const datosHabilitacion = XLSX.utils.json_to_sheet([pago]);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, datosHabilitacion, 'Datos_Habilitacion');
         const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-        zip.file('datos_habilitacion.xlsx', excelBuffer);
+        zip.file('datos_pago.xlsx', excelBuffer);
 
         // Función para decodificar base64 y crear un buffer
         const crearBufferDesdeBase64 = (base64Data) => {
@@ -511,7 +493,7 @@ export default {
           }
         });
 
-        const nroTramite = this.habilitacion.nroTramite; // Cambiamos a nroTramite
+        const nroTramite = this.pago.nroTramite; // Cambiamos a nroTramite
 
         // Generar y descargar el archivo zip
         const zipContent = await zip.generateAsync({ type: 'blob' });
@@ -520,51 +502,6 @@ export default {
         console.error('Error al descargar la habilitación:', error);
       }
     },
-
-    //ESTE openDocumento es la prueba fallida de Nico para abrir los docs como modales dentro de la misma pagina
-    /*openDocumento(documento, nombreDocumento) {
-      const decodedData = atob(documento.data);
-      const arrayBuffer = new ArrayBuffer(decodedData.length);
-      const arrayBufferView = new Uint8Array(arrayBuffer);
-
-      for (let i = 0; i < decodedData.length; i++) {
-        arrayBufferView[i] = decodedData.charCodeAt(i);
-      }
-
-      const blob = new Blob([arrayBuffer], { type: documento.contentType });
-      const fileURL = URL.createObjectURL(blob);
-
-      this.$bvModal.show('documento-modal'); // Abre el modal
-      this.DocumentoModalTitle = nombreDocumento;
-
-      // Utiliza $nextTick para esperar hasta que el componente esté completamente montado
-      this.$nextTick(() => {
-        const modalContent = document.querySelector('#documento-modal .modal-body'); // Obtén el elemento modal-body
-
-        if (modalContent) {
-          if (documento.contentType === 'application/pdf') {
-            const embed = document.createElement('iframe');
-            embed.setAttribute('type', 'application/pdf');
-            embed.setAttribute('src', fileURL);
-            embed.setAttribute('width', '100%');
-            embed.setAttribute('height', '100%');
-            modalContent.appendChild(embed);
-          } else if (documento.contentType.startsWith('image/')) {
-            const img = document.createElement('img');
-            img.setAttribute('src', fileURL);
-            img.style.maxWidth = '100%';
-            img.style.maxHeight = '100%';
-            img.style.display = 'block';
-            img.style.margin = 'auto';
-            modalContent.appendChild(img);
-          } else {
-            console.log('Formato de contenido no compatible');
-          }
-        } else {
-          console.log('No se encontró modalContent en el DOM');
-        }
-      });
-    },*/
     openDocumento(documento, nombreDocumento) {
   const decodedData = atob(documento.data); // Decodificar la data de Base64
 

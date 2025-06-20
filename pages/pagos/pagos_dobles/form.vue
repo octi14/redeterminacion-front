@@ -20,7 +20,7 @@
       </b-card-body>
     </b-card>
   </div>
-  <b-form @submit.prevent="submitForm" class="my-3" style="margin-left:10px;margin-right:10px">
+  <b-form @submit.prevent="onSubmitForm" class="my-3" style="margin-left:10px;margin-right:10px">
     <!-- <b-card no-body class="col-8 mt-1 section-card"  style="margin: 0px auto">
       <h5 style="margin-top:0px; margin-bottom: 0px; text-align:center;" ><b-icon-exclamation-circle-fill class="icon-orange"></b-icon-exclamation-circle-fill> El siguiente formulario tiene carácter de declaración jurada.</h5>
     </b-card> -->
@@ -135,7 +135,7 @@
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Los correos deben coincidir.
         </div>
       </b-form-group>
-      <b-form-group label="Seleccioná el caso que corresponda *" label-for="esPropietario">
+      <!-- <b-form-group label="Seleccioná el caso que corresponda *" label-for="esPropietario">
         <b-form-checkbox v-model="solicitante.esTitular" name="esTitular" >
           <span>Soy o represento al titular del inmueble</span></b-form-checkbox>
         <b-form-checkbox v-model="solicitante.esPropietario" name="esPropietario" >
@@ -143,7 +143,7 @@
         <div v-if="$v.solicitante.esTitular.$error || $v.solicitante.esPropietario.$error" class="validation-error">
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe seleccionar por lo menos una opción.
         </div>
-      </b-form-group>
+      </b-form-group> -->
     </fieldset>
 
     <b-row>
@@ -202,7 +202,9 @@
         </b-col>
       </b-row>
       <b-form-group>
-        <label for="comprobantePago" class="rubro-label">Comprobante de pago<b-icon-question-circle-fill @click="openPopup('ComprobantePago')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
+        <label for="comprobantePago" class="rubro-label">Comprobante de pago
+          <!-- <b-icon-question-circle-fill @click="openPopup('ComprobantePago')" font-scale="1" variant="info"></b-icon-question-circle-fill> -->
+        </label>
         <b-form-file v-model="documentos.comprobantePago.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
         accept=".pdf, image/*"  :state="getFormFieldState('comprobantePago')"
         @change="handleDocumentUpdate('comprobantePago'); checkDocumentSize('comprobantePago', $event)"
@@ -212,7 +214,7 @@
         </div>
       </b-form-group>
       <b-form-group>
-        <label for="comprobantePago2" class="rubro-label">Comprobante de pago 2<b-icon-question-circle-fill @click="openPopup('ComprobantePago')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
+        <label for="comprobantePago2" class="rubro-label">Comprobante de pago duplicado</label>
         <b-form-file v-model="documentos.comprobantePago2.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
         accept=".pdf, image/*"  :state="getFormFieldState('comprobantePago2')"
         @change="handleDocumentUpdate('comprobantePago2'); checkDocumentSize('comprobantePago2', $event)"
@@ -241,8 +243,8 @@
             <p class="li-title"><u><b>¡Importante!</b></u></p>
           </b-col>
           <b-col  md="10">
-              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content"><span>Una vez completado el formulario, el Dpto. Comercio se comunicará a través del correo electrónico oficial (<a href="mailto:deptocomercio@gesell.gob.ar" class="external-link" target="_blank" >deptocomercio@gesell.gob.ar</a>), indicándote los costos administrativos del trámite.</span></div></div>
-              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content"><span><b>El trámite de baja comercial será efectivo una vez abonado el importe del mismo y obtenido el certificado respectivo.</b></span></div></div>
+              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content"><span>Una vez completado el formulario, el Dpto. Recaudaciones se comunicará a través del correo electrónico oficial (<a href="mailto:deptocomercio@gesell.gob.ar" class="external-link" target="_blank" >recaudaciones@gesell.gob.ar</a>).</span></div></div>
+              <!-- <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content"><span><b>El trámite de baja comercial será efectivo una vez abonado el importe del mismo y obtenido el certificado respectivo.</b></span></div></div> -->
           </b-col>
         </b-row>
       </b-card-text>
@@ -255,10 +257,18 @@
         </div>
       </b-form-group>
     </div>
+    <div class="centeredContainer" style="min-width: 304px;">
+      <b-form-group>
+        <div id="captchaContainer" class="g-recaptcha" :data-sitekey="recaptchaSiteKey"></div>
+        <div v-if="captchaError" class="validation-error">
+          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Por favor completa la verificación para continuar.
+        </div>
+      </b-form-group>
+    </div>
     <div class="centeredContainer">
       <fieldset>
         <b-button size="lg" @click="onResetParams" variant="danger" class="btn-cancel" >Cancelar</b-button>
-        <b-button size="lg" type="submit" variant="success" :disabled="!areAllFieldsComplete || !estaAbierto" class="" >Enviar</b-button>
+        <b-button size="lg" type="submit" variant="success" :disabled="!areAllFieldsComplete" class="" >Enviar</b-button>
       </fieldset>
         <div v-if="!areAllFieldsComplete" class="validation-error">
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Completar todos los campos marcados con (*).
@@ -394,12 +404,15 @@ export default{
         provincia: { required },
         mail: { required, email },
         mail2: { required, email, sameAs: sameAs( function(){return this.solicitante.mail } ) },
-        esPropietario: { requiredIfAtLeastOneChecked: (value) => {
-            return value || this.solicitante.esTitular || (this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Titular') || this.solicitante.tipoSolicitud === 'Renovación' || this.solicitante.tipoSolicitud === 'Reempadronamiento';
+        esApoderado: { requiredIfAtLeastOneChecked: (value) => {
+            return value || this.solicitante.esTitular;
           } },
-        esTitular: { requiredIfAtLeastOneChecked: (value) => {
-            return value || this.solicitante.esPropietario || (this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Titular') || this.solicitante.tipoSolicitud === 'Renovación' || this.solicitante.tipoSolicitud === 'Reempadronamiento';
-          } },
+        // esPropietario: { requiredIfAtLeastOneChecked: (value) => {
+        //     return value || this.solicitante.esTitular;
+        //   } },
+        // esTitular: { requiredIfAtLeastOneChecked: (value) => {
+        //     return value || this.solicitante.esPropietario;
+        //   } },
       },
       documentos: {
         //Validaciones compartidas
@@ -408,16 +421,10 @@ export default{
         planillaAutorizacion: { contenido:{requiredIf: requiredIf(function () {
           return this.solicitante.esApoderado === 'true' })}},
         //Validaciones exclusivas de Habilitación
-        comprobantePago: { contenido:{requiredIf: requiredIf(function () {
-          return ((this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Titular')) }) } },
-        comprobantePago2: { contenido:{requiredIf: requiredIf(function () {
-          return ((this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Titular')) }) } },
+        comprobantePago: { contenido:{required} },
+        comprobantePago2: { contenido:{required } },
         //Validaciones con varias condiciones
-        acreditacionTitularidad: { contenido:{ requiredIf: requiredIf(function () {
-          return ((this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Titular') || this.solicitante.tipoSolicitud === 'Renovación') || (
-            this.solicitante.tipoSolicitud === 'Baja' && this.solicitante.esPropietario && !this.solicitante.esTitular)
-          }) }},
-
+        acreditacionTitularidad: { contenido:{ required}},
       }
     }
     // Otras validaciones aquí...
@@ -427,6 +434,8 @@ export default{
       pago1: null,
       pago2: null,
       recaptchaSiteKey: "6LfNxggoAAAAANyfZ5a2Lg_Rx28HX_lINDYX7AU-",
+      captchaResponse: null,
+      captchaError: false,
       captchaResponse: null,
       captchaError: false,
       maxFileSize: 15 * 1024 * 1024, // 15MB in bytes,
@@ -473,7 +482,7 @@ export default{
           contenido: null
         },
         comprobantePago2:{
-          nombreDocumento: 'Comprobante de pago 2',
+          nombreDocumento: 'Comprobante de pago duplicado',
           contenido: null
         },
         acreditacionTitularidad:{
@@ -499,15 +508,181 @@ export default{
       endButton: false,
     }
   },
+  mounted() {
+    //CAMBIAR EL SITEKEY POR UNO DE VERDAD
+    grecaptcha.ready(() => {
+    grecaptcha.render('captchaContainer', {
+      sitekey: this.recaptchaSiteKey,
+      });
+    });
+  },
   methods: {
+    blobToBase64(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onloadend = () => {
+          resolve(reader.result.split(',')[1]);
+        };
+        reader.onerror = (error) => reject(error);
+      });
+    },
+    isCaptchaOK(){
+        console.log("isCAPTCHAOK?? = " + (typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0));
+        this.captchaError = !(typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0);
+        if(this.TEST_submit) return true;
+        return !this.captchaError;
+    },
+    openPopup(type) {
+      // Lógica para abrir el popup correspondiente según el tipo (A, B, C, D)
+      if (type === 'A') {
+        console.log("ShowPopup A")
+        this.showPopupA = true;
+      } else if (type === 'B') {
+        this.showPopupB = true;
+      } else if (type === 'C') {
+        this.showPopupC = true;
+      } else if (type === 'D') {
+        this.showPopupD = true;
+      } else if (type === 'E') {
+        this.showPopupE = true;
+      } else if (type === 'FormLoading') {
+        this.showPopupFormLoading = true;
+      } else if (type === 'FormError') {
+        this.showPopupFormError = true;
+      } else if (type === 'NroInmueble'){
+        this.showPopupNroInmueble = true;
+      }
+    },
     getFormFieldState(fieldName) {
       return this.formFieldStates[fieldName];
     },
     clearFormFieldState(fieldName) {
       this.formFieldStates[fieldName] = null;
     },
-    onSubmitForm(){
+    areAllFieldsComplete() {
+      if (this.TEST_submit){
+          return true;
+      }
+      else{
+        return this.solicitante.nombre && this.solicitante.apellido && this.solicitante.dni && this.solicitante.cuit && this.solicitante.domicilioReal &&
+              this.solicitante.telefono && this.solicitante.codigoPostal && this.solicitante.localidad && this.solicitante.provincia && this.solicitante.mail &&
+              this.documentos.dniFrente && this.documentos.dniDorso &&
+              (this.documentos.comprobantePago) &&
+              (this.documentos.comprobantePago2) &&
+              (this.documentos.acreditacionTitularidad)
+      }
+    },
+    areAllFieldsValid(){
+      console.log("areAllFieldsValid() CALLED");
+      if(this.areAllFieldsComplete){
+        console.log("areAllFieldsValid(): this.$v.$invalid: " + this.$v.$invalid + " Object.values(this.fileTooLargeError).some(error => !!error): " + Object.values(this.fileTooLargeError).some(error => !!error));
+        return !this.$v.$invalid && !Object.values(this.fileTooLargeError).some(error => !!error)
+      }
+      return true;
+    },
+    LoguearValidaciones(){
+      console.log("Validaciones compartidas ");
+      console.log("this.$v.solicitante.nombre.$error: " + this.$v.solicitante.nombre.$error);
+      console.log("this.$v.solicitante.apellido.$error: " + this.$v.solicitante.apellido.$error);
+      console.log("this.$v.solicitante.dni.$error: " + this.$v.solicitante.dni.$error);
+      console.log("this.$v.solicitante.cuit.$error: " + this.$v.solicitante.cuit.$error);
+      console.log("this.$v.solicitante.domicilioReal.$error: " + this.$v.solicitante.domicilioReal.$error);
+      console.log("this.$v.solicitante.telefono.$error: " + this.$v.solicitante.telefono.$error);
+      console.log("this.$v.solicitante.codigoPostal.$error: " + this.$v.solicitante.codigoPostal.$error);
+      console.log("this.$v.solicitante.localidad.$error: " + this.$v.solicitante.localidad.$error);
+      console.log("this.$v.solicitante.provincia.$error: " + this.$v.solicitante.provincia.$error);
+      console.log("this.$v.solicitante.mail.$error: " + this.$v.solicitante.mail.$error);
+      console.log("this.$v.solicitante.mail2.$error: " + this.$v.solicitante.mail2.$error);
 
+      console.log("Documentos compartidos ");
+      console.log("this.$v.documentos.dniFrente.contenido.$error: " + this.$v.documentos.dniFrente.contenido.$error);
+      console.log("this.$v.documentos.dniDorso.contenido.$error: " + this.$v.documentos.dniDorso.contenido.$error);
+      console.log("this.solicitante.esApoderado: " + this.solicitante.esApoderado);
+      console.log("this.$v.documentos.planillaAutorizacion.contenido.$error: " + this.$v.documentos.planillaAutorizacion.contenido.$error);
+      console.log("this.$v.documentos.acreditacionTitularidad.contenido.$error: " + this.$v.documentos.acreditacionTitularidad.contenido.$error);
+      console.log("this.$v.documentos.comprobantePago.contenido.$error: " + this.$v.documentos.comprobantePago.contenido.$error);
+      console.log("this.solicitante.esTitular: " + this.solicitante.esTitular);
+      console.log("this.solicitante.esPropietario: " + this.solicitante.esPropietario);
+      // console.log("this.$v.nroLegajo.$error: " + this.$v.nroLegajo.$error);
+      console.log("this.solicitante.esTitular: " + this.solicitante.esTitular);
+    },
+    async onSubmitForm() {
+      this.$v.$touch(); // Marca los campos como tocados para mostrar los errores
+      this.LoguearValidaciones()
+      if (!this.$v.$invalid && !Object.values(this.fileTooLargeError).some(error => !!error) && this.isCaptchaOK()) {
+        // Si no hay errores, envía el formulario
+        try {
+          this.openPopup('FormLoading');
+          const documentosParaGuardar = {};
+          // Recorrer los campos en this.documentos
+          for (const campo in this.documentos) {
+            const nombreDoc = this.documentos[campo].nombreDocumento;
+            const contenidoDoc = this.documentos[campo].contenido;
+
+            if (contenidoDoc instanceof Blob) {
+              // Verificar que el campo sea un Blob válido (archivo PDF seleccionado)
+              const fileBlob = new Blob([contenidoDoc], { type: contenidoDoc.type });
+
+                // Agregar el archivo PDF a documentosParaGuardar
+                documentosParaGuardar[campo] = {
+                  nombreDocumento: nombreDoc,
+                  contenido: {
+                    data: await this.blobToBase64(fileBlob),
+                    contentType: contenidoDoc.type,
+                  }
+                };
+              }
+            }
+          const pagoDoble = {
+            documentos: documentosParaGuardar,
+            solicitante: this.solicitante
+          };
+          // habilitacion.nroTramite = nroTramite
+          const response = await this.$store.dispatch('pagosDobles/create', {
+            pagoDoble,
+          });
+          //console.log(response.data)
+          this.nroTramite = response.data
+          this.openPopup('FormOk');
+        } catch (e) {
+          console.log(e)
+          this.openPopup('FormError');
+        }
+      }
+    },
+    handleDocumentUpdate(fieldName) {
+      const contenidoDoc = this.documentos[fieldName];
+
+
+      if (contenidoDoc instanceof Blob) {
+        // Verificar que el campo sea un Blob válido (archivo PDF o imagen seleccionado)
+        const fileBlob = new Blob([contenidoDoc], { type: contenidoDoc.type });
+
+        // Agregar el archivo PDF o imagen a documentosParaGuardar
+        this.documentos[fieldName] = {
+          name: contenidoDoc.name,
+          contentType: contenidoDoc.type,
+          file: fileBlob,
+        };
+      }
+    },
+    checkDocumentSize(field, event){
+      //console.log('checkDocumentSize CALLED');
+      const file = event.target.files[0];
+
+      //console.log('event.target.files[0]: ' + event.target.files[0]);
+
+      //console.log('file.size: ' + file.size + '> this.maxFileSize: ' + this.maxFileSize);
+       if (file && file.size > this.maxFileSize) {
+        // El archivo excede el tamaño máximo permitido
+        this.fileTooLargeError[field] = 'Tu archivo pesa '+ (file.size/1024/1024).toFixed(2) + 'MB'+ ', superando el límite de peso permitido (' + this.maxFileSize/1024/1024 + 'MB'+ '). Reducilo y volvé a cargarlo.' ;
+        return;
+      }else
+      this.fileTooLargeError[field] = null
+    },
+    async onResetParams(){
+      await this.$router.push('/pagos/pagos_dobles')
     }
   },
 }

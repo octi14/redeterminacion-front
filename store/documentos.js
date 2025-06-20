@@ -12,6 +12,13 @@ export const actions = {
     })
     commit('setAll', found)
   },
+  async getPagosById({ commit, state }, { id }) {
+    commit('setAll', null)
+    const found = await DocumentoService.getPagosById(this.$axios, {
+      id,
+    })
+    commit('setAll', found)
+  },
 }
 
 export const mutations = {

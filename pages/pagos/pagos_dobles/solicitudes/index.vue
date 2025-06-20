@@ -81,6 +81,10 @@ export default{
           label: 'CUIT',
         },
         {
+          key: 'nroCuenta',
+          label: 'N° de cuenta',
+        },
+        {
           key: 'mail',
           label: 'Mail',
         },
@@ -96,15 +100,15 @@ export default{
           key: 'observaciones'
         }
       ],
-      estados: ['Rechazada','En revisión', 'Finalizada']
+      estados: ['Rechazada','En revisión', 'Aprobada']
     };
   },
   async fetch() {
-    await this.$store.dispatch('habilitaciones/getAll')
-    this.items = this.habilitaciones
-
+    await this.$store.dispatch('pagosDobles/getAll')
+    this.items = this.pagosDobles
+    console.log(this.items)
     // Asignar el color adecuado según el estado
-    this.items.forEach(item => {
+    this.items?.forEach(item => {
       switch (item.status) {
         case 'En revisión':
           item.estadoColor = 'text-primary';
@@ -112,22 +116,26 @@ export default{
         case 'Rechazada':
           item.estadoColor = 'text-danger';
           break;
-        case 'Finalizada':
+        case 'Aprobada':
           item.estadoColor = 'text-darkgreen';
           break;
         default:
           item.estadoColor = 'text-secondary';
       }
     });
-    this.$store.commit('habilitaciones/ordenarHabilitaciones')
+    this.$store.commit('pagosDobles/ordenarPagos')
 
     const perPage = 10;
   },
   computed: {
-    habilitaciones(){
-      return this.$store.state.habilitaciones.all
+    pagosDobles(){
+      return this.$store.state.pagosDobles.all
     },
     paginatedItems() {
+      if (!this.filteredItems || this.filteredItems.length === 0) {
+        return [];
+      }
+
       const start = (this.currentPage - 1) * this.perPage;
       const end = start + this.perPage;
       return this.filteredItems.slice(start, end);
@@ -180,14 +188,14 @@ export default{
       this.currentPage = newPage;
     },
     async onShowObservaciones(id) {
-      const habilitacion = this.$store.state.habilitaciones.all.find(habilitacion => habilitacion.id === id);
+      const pago = this.$store.state.pagosDobles.all.find(pago => pago.id === id);
 
       // Dividir el texto en líneas en función del guión medio "-" y unirlo con etiquetas <br>
-      const observacionesDivididas = habilitacion.observaciones.split('-').join('<br>');
+      const observacionesDivididas = pago.observaciones.split('-').join('<br>');
 
       this.singleContent = observacionesDivididas;
       this.observacionesModal = true;
-      this.registrarActividad("Ver Observaciones", "Trámite nro: " + habilitacion.nroTramite);
+      this.registrarActividad("Ver Observaciones", "Trámite nro: " + pago.nroTramite);
     },
   },
 }

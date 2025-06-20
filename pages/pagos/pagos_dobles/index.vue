@@ -85,7 +85,7 @@
                         <p class="li-title"><u><b>¡Importante!</b></u></p>
                       </b-col>
                       <b-col  md="10">
-                          <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Una vez completado el formulario, el Dpto. Comercio se comunicará a través del correo electrónico oficial (recaudaciones@gesell.gob.ar), indicándote los pasos a seguir.</div></div>
+                          <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Una vez completado el formulario, el Dpto. Recaudaciones se comunicará a través del correo electrónico oficial (recaudaciones@gesell.gob.ar), indicándote los pasos a seguir.</div></div>
                       </b-col>
                     </b-row>
                   </b-card-text>
@@ -104,7 +104,7 @@
                   <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                   <div class="li-content">
                     <p class="li-title">¿Cómo finaliza el trámite?</p>
-                    <p>Una vez completado el formulario, el Dpto. Comercio se comunicará a través del correo electrónico oficial (<a href="mailto:recaudaciones@gesell.gob.ar" target="_blank" class="external-link">recaudaciones@gesell.gob.ar</a>), indicándote los pasos a seguir y los costos administrativos del trámite.</p>
+                    <p>Una vez completado el formulario, el Dpto. Recaudaciones se comunicará a través del correo electrónico oficial (<a href="mailto:recaudaciones@gesell.gob.ar" target="_blank" class="external-link">recaudaciones@gesell.gob.ar</a>), indicándote los pasos a seguir y los costos administrativos del trámite.</p>
                   </div>
                 </div>
                 <div class="li-row">
@@ -208,7 +208,7 @@
           <h2 class="icon-orange"><b>IMPORTANTE</b></h2>
           <p>Antes de continuar tené en cuenta lo siguiente:</p>
           <div class="li-row">
-            <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">La documentación presentada (certificaciones y libre deuda) deberá encontrarse actualizada, es decir que debe haber sido expedida dentro del plazo de los últimos 30 días.</div>
+            <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">La documentación presentada deberá encontrarse actualizada, es decir que debe haber sido expedida dentro del plazo de los últimos 30 días.</div>
           </div>
           <div class="li-row">
             <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Recordá que los documentos deben ser legibles, estar subidos en formato imagen o pdf y tener un peso máximo de 15 mb.</div>
@@ -257,6 +257,9 @@ export default({
     },
     isCardExpanded(cardIndex) {
       return this.expandedCards.includes(cardIndex);
+    },
+    proceedToForm() {
+      this.showConfirmationPopup = false;
     },
   }
 })

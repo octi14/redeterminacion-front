@@ -1,8 +1,8 @@
 <template>
   <div class="page main-background">
-    <Banner title="Pagos"/>
+    <Banner title="Recaudaciones"/>
     <template v-if="adminMaster">
-      <MenuItem icon="info-circle" to="/pagos/pagos_dobles" title="Informar pagos dobles" description="Realizar un reclamo por pago doble de tasas"/>
+      <MenuItem icon="info-circle" to="/recaudaciones/pagos_dobles" title="Informar pagos dobles" description="Realizar un reclamo por pago doble de tasas"/>
     <div class="row no-gutters">
       <b-button class="mx-auto mt-3" @click="$router.push('/')" variant="primary"> Volver </b-button>
     </div>

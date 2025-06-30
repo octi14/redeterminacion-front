@@ -148,30 +148,17 @@
 
     <b-row>
       <b-col lg="6" md="8" sm="8">
-        <h5>¿Sos representante o apoderado/a del solicitante? <b-icon-question-circle-fill @click="openPopup('ApoderadoRepresentante')" font-scale="1" variant="info"></b-icon-question-circle-fill></h5>
+        <h5>¿Sos titular del inmueble?</h5>
       </b-col>
       <b-col class="form-check-inline" sm="4">
         <b-col lg="3" sm="3">
-          <b-form-radio  id="esApoderado-no" v-model="solicitante.esApoderado" name="radio-esApoderado" checked="checked" value="false"> No</b-form-radio>
+          <b-form-radio  id="esTitular-no" v-model="solicitante.esTitular" name="radio-esTitular" checked="checked" value="false"> No</b-form-radio>
         </b-col>
         <b-col lg="3" sm="1">
-          <b-form-radio  id="esApoderado-si" v-model="solicitante.esApoderado" name="radio-esApoderado" value="true"> Sí</b-form-radio>
+          <b-form-radio  id="esTitular-si" v-model="solicitante.esTitular" name="radio-esTitular" value="true"> Sí</b-form-radio>
         </b-col>
       </b-col>
     </b-row>
-    <!-- Sección: Datos del Apoderado -->
-    <fieldset v-if="solicitante.esApoderado === 'true'">
-        <p>En este campo deberás cargar <span>la <a href="https://drive.google.com/file/d/1m5ouibBL4sWokhkSR5keTjbUVo-I4TOU/view" target="_blank" class="external-link">Planilla de autorización de trámite</a> o </span>el Poder autorizado por escribano que te indicamos que completes previamente.</p>
-        <b-form-group v-if="solicitante.esApoderado === 'true'" >
-          <label for="documentos.planillaAutorizacion.contenido">Planilla de autorización de trámite *</label>
-          <label for="documentos.planillaAutorizacion.contenido" >Poder Autorizado por Escribano *</label>
-
-        <b-form-file v-model="documentos.planillaAutorizacion.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('planillaAutorizacion')" @change="checkDocumentSize('planillaAutorizacion', $event)" @input="clearFormFieldState('planillaAutorizacion')"></b-form-file>
-        <div v-if="$v.documentos.planillaAutorizacion.contenido.$error || fileTooLargeError.planillaAutorizacion" class="validation-error">
-          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.planillaAutorizacion || 'Debe seleccionar un archivo.' }}
-        </div>
-      </b-form-group>
-    </fieldset>
   </b-card>
   <b-card no-body class="col-8 mt-1 section-card" style="margin: 0px auto">
     <fieldset >
@@ -223,16 +210,27 @@
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.comprobantePago2 || 'Debe seleccionar un archivo.' }}
         </div>
       </b-form-group>
-      <b-form-group >
-        <label for="acreditacionTitularidad"><span> Acreditación de titularidad de la cuenta: Escritura traslativa de Dominio del inmueble / </span>Contrato de locación / Boleto de Compraventa. <span v-if="!solicitante.esTitular && solicitante.esPropietario">* </span></label>
-        <b-form-file v-model="documentos.acreditacionTitularidad.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
-        accept=".pdf, image/*"  :state="getFormFieldState('acreditacionTitularidad')"
-        @change="handleDocumentUpdate('acreditacionTitularidad'); checkDocumentSize('acreditacionTitularidad', $event)"
-        @input="clearFormFieldState('acreditacionTitularidad')"></b-form-file>
-        <div v-if="$v.documentos.acreditacionTitularidad.contenido.$error || fileTooLargeError.acreditacionTitularidad" class="validation-error">
-          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.acreditacionTitularidad || 'Debe seleccionar un archivo.' }}
-        </div>
-      </b-form-group>
+
+      <!-- Documentos que solo se muestran si NO es titular -->
+      <div v-if="solicitante.esTitular !== 'true'">
+        <b-form-group>
+          <label for="planillaAutorizacion">Planilla de autorización de trámite *</label>
+          <b-form-file v-model="documentos.planillaAutorizacion.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('planillaAutorizacion')" @change="checkDocumentSize('planillaAutorizacion', $event)" @input="clearFormFieldState('planillaAutorizacion')"></b-form-file>
+          <div v-if="$v.documentos.planillaAutorizacion.contenido.$error || fileTooLargeError.planillaAutorizacion" class="validation-error">
+            <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.planillaAutorizacion || 'Debe seleccionar un archivo.' }}
+          </div>
+        </b-form-group>
+        <b-form-group >
+          <label for="acreditacionTitularidad"><span> Acreditación de titularidad de la cuenta: Escritura traslativa de Dominio del inmueble / </span>Contrato de locación / Boleto de Compraventa. *</label>
+          <b-form-file v-model="documentos.acreditacionTitularidad.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
+          accept=".pdf, image/*"  :state="getFormFieldState('acreditacionTitularidad')"
+          @change="handleDocumentUpdate('acreditacionTitularidad'); checkDocumentSize('acreditacionTitularidad', $event)"
+          @input="clearFormFieldState('acreditacionTitularidad')"></b-form-file>
+          <div v-if="$v.documentos.acreditacionTitularidad.contenido.$error || fileTooLargeError.acreditacionTitularidad" class="validation-error">
+            <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.acreditacionTitularidad || 'Debe seleccionar un archivo.' }}
+          </div>
+        </b-form-group>
+      </div>
     </fieldset>
 
     <b-card border-variant="warning" align="center" class="importante-card" >
@@ -249,14 +247,6 @@
         </b-row>
       </b-card-text>
     </b-card>
-    <div class="centeredContainer" style="min-width: 304px;">
-      <b-form-group>
-        <div id="captchaContainer" class="g-recaptcha" :data-sitekey="recaptchaSiteKey"></div>
-        <div v-if="captchaError" class="validation-error">
-          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Por favor completa la verificación para continuar.
-        </div>
-      </b-form-group>
-    </div>
     <div class="centeredContainer" style="min-width: 304px;">
       <b-form-group>
         <div id="captchaContainer" class="g-recaptcha" :data-sitekey="recaptchaSiteKey"></div>
@@ -295,27 +285,6 @@
     <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>El representante o apoderado/a de la persona interesada con documentación que acredite el carácter de tal.</p>
   </div>
 </b-modal>
-<b-modal v-model="showPopupApoderadoRepresentante" title="" :hide-footer="true" @click-outside="showPopupApoderadoRepresentante = false" :header-bg-variant="'success'"  centered>
-  <template #modal-header>
-    <div class="modal-info">
-      <h5>
-          <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
-          Información Adicional
-      </h5>
-    </div>
-    <button type="button" aria-label="Close" class="close" @click="showPopupApoderadoRepresentante = false">×</button>
-  </template>
-  <div class="modal-info popupApoderado">
-    <h3>Representante o Apoderado/a</h3>
-    <p class="destacado"><b-icon-caret-right-fill ></b-icon-caret-right-fill>Esta figura permite facultar a una persona para la realización de trámites, actos y gestiones en representación del/la contribuyente o responsable solicitante.</p>
-    <h6>Casos de Representación:</h6>
-    <p><span class="icon-orange">1) </span><b>Representante Voluntario:</b> Persona que actúa en nombre y por cuenta de otra, en virtud de la facultad que ella le confiere mediante un mandato (poder o autorización).</p>
-    <p><span class="icon-orange">2) </span><b>Representante Legal:</b> Persona que actúa en nombre y por cuenta de una Persona Jurídica en virtud del carácter que posee por integrar los órganos de mando. Asimismo, los padres que ejercen la patria potestad sobre sus hijos/as.</p>
-    <p><span class="icon-orange">3) </span><b>Representante Judicial:</b> Persona que actúa en nombre y por cuenta de otra (Humana o Jurídica) en virtud de una designación judicial, debido a una incapacidad legal que recae sobre aquella.</p>
-    <p><span class="icon-orange">4) </span><b>Sucesiones Indivisas:</b> Casos en que, existiendo varios/as herederos/as, todos/as son propietarios/as de los bienes, pero aún no se ha realizado la división de los mismos en la proporción que cada uno/a tiene derecho a heredar.</p>
-    <p><span class="icon-orange">5) </span><b>Herederos/as o Legatarios/as (Causahabientes):</b> Sucesor/a de una persona fallecida (actuación ante el Fisco previa al inicio de la sucesión o iniciada ésta, previa a la declaratoria de herederos/as).</p>
-    </div>
-</b-modal>
 <b-modal v-model="showPopupNroInmueble" title="" :hide-footer="true" @click-outside="showPopupNroInmueble = false" :header-bg-variant="'success'"  centered>
   <template #modal-header>
     <div class="modal-info">
@@ -350,7 +319,7 @@
     <p class="modal-subtitle">¡Tu solicitud ha sido enviada exitosamente!</p>
     <p class="">En los próximos días recibirás un correo electrónico del Departamento Comercio Municipal en el que te indicarán cómo continuar. Asegurate de revisar la bandeja de correos no deseados (Spam).</p>
     <p class=""><b>Tu número de trámite es: </b></p>
-    <p class="h3"><b> {{ nroTramite }} </b></p>
+    <p class="h3"><b> R{{ nroTramite }} </b></p>
     <p class="">Por favor, conservá este número. Será solicitado más adelante.</p>
   </div>
     <div class="centeredContainer" style="padding:0 1rem; padding-top: 1rem; border-top:1px solid #CCC; ">
@@ -404,9 +373,6 @@ export default{
         provincia: { required },
         mail: { required, email },
         mail2: { required, email, sameAs: sameAs( function(){return this.solicitante.mail } ) },
-        esApoderado: { requiredIfAtLeastOneChecked: (value) => {
-            return value || this.solicitante.esTitular;
-          } },
         // esPropietario: { requiredIfAtLeastOneChecked: (value) => {
         //     return value || this.solicitante.esTitular;
         //   } },
@@ -419,12 +385,13 @@ export default{
         dniFrente: { contenido:{ required} },
         dniDorso: { contenido:{ required} },
         planillaAutorizacion: { contenido:{requiredIf: requiredIf(function () {
-          return this.solicitante.esApoderado === 'true' })}},
+          return this.solicitante.esTitular !== 'true' })}},
         //Validaciones exclusivas de Habilitación
         comprobantePago: { contenido:{required} },
         comprobantePago2: { contenido:{required } },
         //Validaciones con varias condiciones
-        acreditacionTitularidad: { contenido:{ required}},
+        acreditacionTitularidad: { contenido:{ requiredIf: requiredIf(function () {
+          return this.solicitante.esTitular !== 'true' })}},
       }
     }
     // Otras validaciones aquí...
@@ -460,7 +427,6 @@ export default{
         localidad: '',
         provincia: '',
         mail: '',
-        esApoderado: false,
         esTitular: false,
         esPropietario: false,
       },
@@ -499,7 +465,6 @@ export default{
         acreditacionTitularidad: null,
       },
       showPopupDatosDelSolicitante: false,
-      showPopupApoderadoRepresentante: false,
       showPopupNroInmueble: false,
       showPopupFormOk: false,
       showPopupFormLoading: false,
@@ -565,12 +530,18 @@ export default{
           return true;
       }
       else{
-        return this.solicitante.nombre && this.solicitante.apellido && this.solicitante.dni && this.solicitante.cuit && this.solicitante.domicilioReal &&
+        const baseFields = this.solicitante.nombre && this.solicitante.apellido && this.solicitante.dni && this.solicitante.cuit && this.solicitante.domicilioReal &&
               this.solicitante.telefono && this.solicitante.codigoPostal && this.solicitante.localidad && this.solicitante.provincia && this.solicitante.mail &&
               this.documentos.dniFrente && this.documentos.dniDorso &&
               (this.documentos.comprobantePago) &&
-              (this.documentos.comprobantePago2) &&
-              (this.documentos.acreditacionTitularidad)
+              (this.documentos.comprobantePago2);
+
+        // Solo requerir documentos adicionales si NO es titular del inmueble
+        const noEsTitular = this.solicitante.esTitular !== 'true';
+        const documentosAdicionales = noEsTitular ?
+          (this.documentos.planillaAutorizacion && this.documentos.acreditacionTitularidad) : true;
+
+        return baseFields && documentosAdicionales;
       }
     },
     areAllFieldsValid(){
@@ -682,7 +653,7 @@ export default{
       this.fileTooLargeError[field] = null
     },
     async onResetParams(){
-      await this.$router.push('/pagos/pagos_dobles')
+      await this.$router.push('/recaudaciones/pagos_dobles')
     }
   },
 }

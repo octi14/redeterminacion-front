@@ -84,7 +84,7 @@
           <NuxtLink
             class="nav-link"
             active-class="active"
-            to="/pagos/pagos_dobles/solicitudes"
+            to="/recaudaciones/pagos_dobles/solicitudes"
           >
               Pagos dobles
           </NuxtLink>

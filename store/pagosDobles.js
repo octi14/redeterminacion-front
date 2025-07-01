@@ -83,7 +83,7 @@ export const mutations = {
   setSingle(state, singleFile) {
     state.single = singleFile
   },
-  ordenarPagosDobles(state) {
+  ordenarPagos(state) {
     state.all.sort((a, b) => b.nroTramite - a.nroTramite);
   },
 }

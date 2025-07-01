@@ -20,7 +20,7 @@
       </b-card-body>
     </b-card>
   </div>
-  <b-form @submit.prevent="onSubmitForm" class="my-3" style="margin-left:10px;margin-right:10px">
+  <b-form @submit.prevent="onSubmitForm" class="my-3" style="margin-left:10px;margin-right:10px" v-else>
     <!-- <b-card no-body class="col-8 mt-1 section-card"  style="margin: 0px auto">
       <h5 style="margin-top:0px; margin-bottom: 0px; text-align:center;" ><b-icon-exclamation-circle-fill class="icon-orange"></b-icon-exclamation-circle-fill> El siguiente formulario tiene carácter de declaración jurada.</h5>
     </b-card> -->

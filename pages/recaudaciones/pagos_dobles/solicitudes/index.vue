@@ -36,7 +36,7 @@
         <div :class="row.item.estadoColor"><b>{{ row.value }}</b></div>
       </template>
       <template #cell(detalles)="row">
-        <NuxtLink :to="{ name: 'pagos-pagos_dobles-solicitudes-id', params: { id: row.item.id } }" @click.native="registrarActividad('Abrir Trámite', 'Trámite nro: ' + row.item.nroTramite)">
+        <NuxtLink :to="{ name: 'recaudaciones-pagos_dobles-solicitudes-id', params: { id: row.item.id } }" @click.native="registrarActividad('Abrir Trámite', 'Trámite nro: ' + row.item.nroTramite)">
           <b-button variant="outline-secondary" size="sm" title="Editar">
             <b-icon-pen/>
           </b-button>
@@ -106,7 +106,6 @@ export default{
   async fetch() {
     await this.$store.dispatch('pagosDobles/getAll')
     this.items = this.pagosDobles
-    (this.items)
     // Asignar el color adecuado según el estado
     this.items?.forEach(item => {
       switch (item.status) {

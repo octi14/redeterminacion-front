@@ -466,7 +466,7 @@ export default{
       },
       showPopupDatosDelSolicitante: false,
       showPopupNroInmueble: false,
-      showPopupFormOk: true,
+      showPopupFormOk: false,
       showPopupFormLoading: false,
       showPopupFormError: false,
       printing: false,

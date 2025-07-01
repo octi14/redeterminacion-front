@@ -9,7 +9,7 @@
       </b-card-header>
       <b-card-body class="text-center">
         <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Día: </b> {{ new Date().toLocaleDateString('es-AR') }}</h5> </div>
-        <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Rubro: </b> {{ inmueble.rubro }}</h5> </div>
+        <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Número de cuenta: </b> {{ solicitante.nroCuenta }}</h5> </div>
         <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Nro de trámite:</b> {{ nroTramite }}</h5> </div>
         <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Solicitante: </b> {{ solicitante.nombre }}  {{ solicitante.apellido }}</h5> </div>
         <hr/>
@@ -466,7 +466,7 @@ export default{
       },
       showPopupDatosDelSolicitante: false,
       showPopupNroInmueble: false,
-      showPopupFormOk: false,
+      showPopupFormOk: true,
       showPopupFormLoading: false,
       showPopupFormError: false,
       printing: false,
@@ -580,7 +580,9 @@ export default{
     },
     async onSubmitForm() {
       this.$v.$touch(); // Marca los campos como tocados para mostrar los errores
-      this.LoguearValidaciones()
+      // this.LoguearValidaciones()
+      // ('isCaptchaOK():', this.isCaptchaOK());
+
       if (!this.$v.$invalid && !Object.values(this.fileTooLargeError).some(error => !!error) && this.isCaptchaOK()) {
         // Si no hay errores, envía el formulario
         try {
@@ -609,17 +611,24 @@ export default{
             documentos: documentosParaGuardar,
             solicitante: this.solicitante
           };
-          // habilitacion.nroTramite = nroTramite
+
+          // Usar el store como en tramites/form.vue
           const response = await this.$store.dispatch('pagosDobles/create', {
             pagoDoble,
           });
-          //console.log(response.data)
-          this.nroTramite = response.data
-          this.openPopup('FormOk');
+
+          // Manejar la respuesta como en tramites/form.vue
+          this.nroTramite = response.data;
+          this.showPopupFormLoading = false; // Cerrar popup de carga
+          this.showPopupFormOk = true;
+
         } catch (e) {
-          console.log(e)
-          this.openPopup('FormError');
+          console.error('Error al enviar el formulario:', e);
+          this.showPopupFormLoading = false; // Cerrar popup de carga
+          this.showPopupFormError = true;
         }
+      } else {
+        console.log('Validaciones fallaron - no se envía el formulario');
       }
     },
     handleDocumentUpdate(fieldName) {
@@ -639,12 +648,12 @@ export default{
       }
     },
     checkDocumentSize(field, event){
-      //console.log('checkDocumentSize CALLED');
+      //('checkDocumentSize CALLED');
       const file = event.target.files[0];
 
-      //console.log('event.target.files[0]: ' + event.target.files[0]);
+      //('event.target.files[0]: ' + event.target.files[0]);
 
-      //console.log('file.size: ' + file.size + '> this.maxFileSize: ' + this.maxFileSize);
+      //('file.size: ' + file.size + '> this.maxFileSize: ' + this.maxFileSize);
        if (file && file.size > this.maxFileSize) {
         // El archivo excede el tamaño máximo permitido
         this.fileTooLargeError[field] = 'Tu archivo pesa '+ (file.size/1024/1024).toFixed(2) + 'MB'+ ', superando el límite de peso permitido (' + this.maxFileSize/1024/1024 + 'MB'+ '). Reducilo y volvé a cargarlo.' ;
@@ -652,6 +661,17 @@ export default{
       }else
       this.fileTooLargeError[field] = null
     },
+    wait(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      },
+    async onPrintTicket() {
+        this.showPopupFormOk = false;
+        this.printing = true;
+        await this.wait(500);
+        print();
+        await this.wait(500);
+        this.endButton = true;
+      },
     async onResetParams(){
       await this.$router.push('/recaudaciones/pagos_dobles')
     }

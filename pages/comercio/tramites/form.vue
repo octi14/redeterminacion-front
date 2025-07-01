@@ -1428,7 +1428,7 @@
             this.isCaptchaOK();
 
           }else{
-            console.log("SUBMIT FORM CALLED:");
+            ("SUBMIT FORM CALLED:");
 
             this.$v.$touch(); // Marca los campos como tocados para mostrar los errores
             //this.LoguearValidaciones();
@@ -1471,7 +1471,7 @@
               const response = await this.$store.dispatch('habilitaciones/create', {
                 habilitacion,
               });
-              //console.log(response.data)
+              //(response.data)
               this.nroTramite = response.data
               this.openPopup('FormOk');
             } catch (e) {
@@ -1486,7 +1486,7 @@
         this.onResetParams()
       },
       resetFormFieldState(obj, field) {
-        //console.log("resetFormFieldState("+obj+", "+field+")");
+        //("resetFormFieldState("+obj+", "+field+")");
         this.fileTooLargeError[field] = null;
         if(obj == `documentos` && this.$v.documentos[field])
           this.$v.documentos[field].$reset();
@@ -1635,12 +1635,12 @@
         }
       },
       checkDocumentSize(field, event){
-        //console.log('checkDocumentSize CALLED');
+        //('checkDocumentSize CALLED');
         const file = event.target.files[0];
 
-        //console.log('event.target.files[0]: ' + event.target.files[0]);
+        //('event.target.files[0]: ' + event.target.files[0]);
 
-        //console.log('file.size: ' + file.size + '> this.maxFileSize: ' + this.maxFileSize);
+        //('file.size: ' + file.size + '> this.maxFileSize: ' + this.maxFileSize);
          if (file && file.size > this.maxFileSize) {
           // El archivo excede el tamaño máximo permitido
           this.fileTooLargeError[field] = 'Tu archivo pesa '+ (file.size/1024/1024).toFixed(2) + 'MB'+ ', superando el límite de peso permitido (' + this.maxFileSize/1024/1024 + 'MB'+ '). Reducilo y volvé a cargarlo.' ;

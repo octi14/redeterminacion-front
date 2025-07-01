@@ -65,7 +65,7 @@
                   <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">
                     Sus <b>establecimientos</b> hayan permanecido <b>con actividad</b> en forma <b>permanente durante los fines de semana del ejercicio anterior y
                      no posean deudas</b> con la Municipalidad.</div>
-                </div>                
+                </div>
                 <div class="li-row">
                   <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">
                     Sus establecimientos dispongan de la <b>Renovación o Reempadronamiento</b> comercial correspondiente.</div>
@@ -320,7 +320,7 @@
       <div class="closed-popup-body">
         <h2 class="icon-orange"><b>IMPORTANTE</b></h2>
         <p >El plazo para acreditar las facturas del año 2025 ha expirado.</p>
-  
+
         <div class="li-row">
           <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Por cualquier reclamo comunicate con <a href="mailto:dirarvige@gesell.gob.ar" class="text-success">ARVIGE</a> para conocer los pasos a seguir.</div>
         </div>
@@ -375,7 +375,7 @@
       openPopup(type) {
         // Lógica para abrir el popup correspondiente según el tipo (A, B, C, D)
         if (type === 'A') {
-          console.log("ShowPopup A")
+          ("ShowPopup A")
           this.showPopupA = true;
         } else if (type === 'B') {
           this.showPopupB = true;

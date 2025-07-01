@@ -574,7 +574,7 @@ export default {
 
         // 🔹 Obtener el índice original en el array principal
         const indiceOriginal = this.vales.findIndex(v => v.id === vale.id) + 1;
-        console.log(indiceOriginal)
+        (indiceOriginal)
 
         // Fondo blanco
         ctx.fillStyle = "white";

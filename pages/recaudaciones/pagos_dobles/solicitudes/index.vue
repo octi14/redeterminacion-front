@@ -1,7 +1,7 @@
 <template>
   <div class="page main-background">
     <Banner title="Reclamos de pago doble" subtitle="Uso interno" />
-    <div class="col-10 mx-auto" v-if="adminComercio">
+    <div class="col-10 mx-auto" v-if="adminRecaudaciones">
       <!-- Filtrar por estado -->
       <b-row>
         <b-form-group class="col-4 mx-6 mx-auto mt-4" label-class="text-success h6">
@@ -106,7 +106,7 @@ export default{
   async fetch() {
     await this.$store.dispatch('pagosDobles/getAll')
     this.items = this.pagosDobles
-    console.log(this.items)
+    (this.items)
     // Asignar el color adecuado según el estado
     this.items?.forEach(item => {
       switch (item.status) {
@@ -165,8 +165,8 @@ export default{
     totalPages() {
       return Math.ceil(this.filteredItems.length / this.perPage);
     },
-    adminComercio() {
-      return this.$store.state.user.admin === "comercio" || this.$store.state.user.admin == "master"
+    adminRecaudaciones() {
+      return this.$store.state.user.admin === "recaudaciones" || this.$store.state.user.admin == "master"
     },
     adminMaster() {
       return this.$store.state.user.admin == "master"

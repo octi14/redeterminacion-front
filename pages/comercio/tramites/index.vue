@@ -1495,7 +1495,7 @@ export default {
     openPopup(type) {
       // Lógica para abrir el popup correspondiente según el tipo (A, B, C, D)
       if (type === 'A') {
-        console.log("ShowPopup A")
+        ("ShowPopup A")
         this.showPopupA = true;
       } else if (type === 'B') {
         this.showPopupB = true;

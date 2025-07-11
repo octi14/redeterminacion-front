@@ -287,8 +287,8 @@ export default {
       if( this.$store.state.facturas.all && this.$store.state.facturas.all.length <= this.periodo){
           this.factura = this.$store.state.facturas.all[this.periodo]
       }else{
-          ("Mounted no se pudo traer nada para el período " + this.periodo)
-          ("A pesar de que el store tiene: " + this.$store.state.facturas.all)
+          console.log("Mounted no se pudo traer nada para el período " + this.periodo)
+          console.log("A pesar de que el store tiene: " + this.$store.state.facturas.all)
       }
       console.log(this.factura);
 

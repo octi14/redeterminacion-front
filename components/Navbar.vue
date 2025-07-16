@@ -80,7 +80,7 @@
               Abierto anual
           </NuxtLink>
         </b-navbar-nav>
-                <b-navbar-nav v-if="adminComercio" class="mr-2">
+        <b-navbar-nav v-if="adminRecaudaciones" class="mr-2">
           <NuxtLink
             class="nav-link"
             active-class="active"
@@ -141,6 +141,9 @@ export default {
     },
     adminInspeccion(){
       return this.$store.state.user.admin == "inspeccion"
+    },
+    adminRecaudaciones(){
+      return this.$store.state.user.admin == "recaudaciones"
     },
     username() {
       return this.$store.state.user.username

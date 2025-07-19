@@ -1333,7 +1333,7 @@
       </div>
     </b-modal>
     <!-- Popup de advertencia -->
-    <b-modal v-model="showConfirmationPopup" v-if="estaAbierto" hide-footer :header-bg-variant="'success'" centered>
+    <b-modal v-model="showConfirmationPopup" hide-footer :header-bg-variant="'success'" centered>
         <template #modal-header>
           <div class="confirmation-popup-header">
               <b-icon icon="exclamation-triangle" scale="2" variant="light" ></b-icon>
@@ -1362,7 +1362,7 @@
         </div>
     </b-modal>
     <!--Popup está cerrado-->
-    <b-modal v-model="showConfirmationPopup" v-if="!estaAbierto" hide-footer header-bg-variant="secondary" centered>
+    <!-- <b-modal v-model="showConfirmationPopup" hide-footer header-bg-variant="secondary" centered>
       <template #modal-header>
         <div class="confirmation-popup-header">
             <b-icon icon="exclamation-triangle" scale="2" variant="light" ></b-icon>
@@ -1380,7 +1380,7 @@
           </b-button>
         </div>
       </div>
-    </b-modal>
+    </b-modal> -->
     <!-- Popup de solicitud de libredeuda -->
     <b-modal v-model="showLibreDeudaPopup" title="" @hide="resetForm" :header-bg-variant="'success'" hide-footer centered>
       <template #modal-header>
@@ -1470,20 +1470,20 @@ export default {
     this.filteredRubros.sort((a, b) => a.nombre.localeCompare(b.nombre));
   },
   computed:{
-    estaAbierto(){
-      // Obtener fecha y hora actuales
-      const ahora = new Date();
+    // estaAbierto(){
+    //   // Obtener fecha y hora actuales
+    //   const ahora = new Date();
 
-      // Día y horario actual
-      const dia = ahora.getDay(); // 0 = Domingo, 1 = Lunes, ..., 6 = Sábado
-      const hora = ahora.getHours();
+    //   // Día y horario actual
+    //   const dia = ahora.getDay(); // 0 = Domingo, 1 = Lunes, ..., 6 = Sábado
+    //   const hora = ahora.getHours();
 
-      // Verificar si está dentro del rango permitido
-      const esDiaHabil = dia >= 1 && dia <= 5; // De lunes a viernes
-      const esHorarioPermitido = hora >= 8 && hora < 17; // Entre las 8 y las 17 hs (sin incluir 17)
+    //   // Verificar si está dentro del rango permitido
+    //   const esDiaHabil = dia >= 1 && dia <= 5; // De lunes a viernes
+    //   const esHorarioPermitido = hora >= 8 && hora < 17; // Entre las 8 y las 17 hs (sin incluir 17)
 
-      return esDiaHabil && esHorarioPermitido;
-    }
+    //   return esDiaHabil && esHorarioPermitido;
+    // }
   },
   methods: {
     onSlideStart(slide) {

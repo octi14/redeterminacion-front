@@ -5,7 +5,7 @@
   <div v-if="printing">
     <b-card no-body border-variant="success" style="margin-top: 80px" class="printing-modal shadow col-md-5 col-sm-8 mx-auto">
       <b-card-header class="row" header-class="green text-light">
-        <h5><b>Comprobante de Solicitud - </b> Comercio</h5>
+        <h5><b>Comprobante de Solicitud - </b> Recaudaciones</h5>
       </b-card-header>
       <b-card-body class="text-center">
         <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Día: </b> {{ new Date().toLocaleDateString('es-AR') }}</h5> </div>
@@ -13,7 +13,7 @@
         <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Nro de trámite:</b> {{ nroTramite }}</h5> </div>
         <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Solicitante: </b> {{ solicitante.nombre }}  {{ solicitante.apellido }}</h5> </div>
         <hr/>
-        <p class="" style="text-align: justify"><b-icon-caret-right-fill variant="success"></b-icon-caret-right-fill> Tené en cuenta que el Departamento Comercio puede solicitarte documentación adicional vía correo electrónico.</p>
+        <p class="" style="text-align: justify"><b-icon-caret-right-fill variant="success"></b-icon-caret-right-fill> Tené en cuenta que el Departamento Recaudaciones puede solicitarte documentación adicional vía correo electrónico.</p>
         <p class="" style="text-align: justify"><b-icon-caret-right-fill variant="success"></b-icon-caret-right-fill> Para consultar el estado de tu trámite ingresá en <a class="external-link" href="https://haciendavgesell.gob.ar/">haciendavgesell.gob.ar</a>, hacé click en el ícono correspondiente y escribí el número asignado en este comprobante.</p>
         <hr/>
         <b-button class="mt-2 btn-orange" v-if="endButton === true" @click="onResetParams">Volver</b-button>
@@ -317,13 +317,13 @@
   </template>
   <div class="centeredContainer">
     <p class="modal-subtitle">¡Tu solicitud ha sido enviada exitosamente!</p>
-    <p class="">En los próximos días recibirás un correo electrónico del Departamento Comercio Municipal en el que te indicarán cómo continuar. Asegurate de revisar la bandeja de correos no deseados (Spam).</p>
+    <p class="">En los próximos días recibirás un correo electrónico del Departamento Recaudaciones Municipal en el que te indicarán cómo continuar. Asegurate de revisar la bandeja de correos no deseados (Spam).</p>
     <p class=""><b>Tu número de trámite es: </b></p>
     <p class="h3"><b> R{{ nroTramite }} </b></p>
     <p class="">Por favor, conservá este número. Será solicitado más adelante.</p>
   </div>
     <div class="centeredContainer" style="padding:0 1rem; padding-top: 1rem; border-top:1px solid #CCC; ">
-      <p class="" style="text-align: justify; margin-bottom:0; font-size: 0.75rem "><b-icon-caret-right-fill variant="success"></b-icon-caret-right-fill> Tené en cuenta que el Departamento Comercio puede solicitarte documentación adicional vía correo electrónico.</p>
+      <p class="" style="text-align: justify; margin-bottom:0; font-size: 0.75rem "><b-icon-caret-right-fill variant="success"></b-icon-caret-right-fill> Tené en cuenta que el Departamento Recaudaciones puede solicitarte documentación adicional vía correo electrónico.</p>
       <p class="" style="text-align: justify; font-size: 0.75rem; margin-bottom:0; "><b-icon-caret-right-fill variant="success"></b-icon-caret-right-fill> Para consultar el estado de tu trámite ingresá en <a class="external-link" href="https://haciendavgesell.gob.ar/">haciendavgesell.gob.ar</a>, hacé click en el ícono correspondiente y escribí el número asignado en este comprobante.</p>
     </div>
   <template #modal-footer>

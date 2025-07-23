@@ -638,7 +638,7 @@ export default {
     jefeComercio(){
       return (this.$store.state.user.username === "myriamalonso@gesell.gob.ar"
               || this.$store.state.user.username === "nataliamegias@gesell.gob.ar"
-              || this.$store.state.user.username === "lujanperez@gesell.gob.ar") || this.$store.state.user.admin == "master"
+              || this.$store.state.user.username === "mariaelisabetbahlcke@gesell.gob.ar") || this.$store.state.user.admin == "master"
     },
     hoteleria(){
       for (const item of this.habilitacion.serviciosHoteleria) {

@@ -107,6 +107,8 @@ export default{
       }
     },
     async logout(){
+      // Emitir evento para indicar que es un logout manual
+      this.$nuxt.$emit('manual-logout');
       await this.$store.dispatch('user/logout')
       await this.$router.push('/login')
       this.showPopupChanged = false

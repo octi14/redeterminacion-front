@@ -17,6 +17,7 @@ export default {
   data() {
     return {
       sessionExpired: false,
+      manualLogout: false, // Bandera para detectar logout manual
     };
   },
   computed: {
@@ -28,8 +29,10 @@ export default {
     token(newToken) {
       if (newToken) {
         this.sessionExpired = this.checkTokenExpired(newToken);
+        this.manualLogout = false; // Resetear la bandera cuando hay token
       } else {
-        this.sessionExpired = true;
+        // Solo mostrar el popup si NO fue un logout manual
+        this.sessionExpired = !this.manualLogout;
       }
     },
   },
@@ -49,6 +52,11 @@ export default {
     if (this.token) {
       this.sessionExpired = this.checkTokenExpired(this.token);
     }
+
+    // Escuchar el evento de logout manual
+    this.$nuxt.$on('manual-logout', () => {
+      this.manualLogout = true;
+    });
   },
   methods: {
     checkTokenExpired(token) {

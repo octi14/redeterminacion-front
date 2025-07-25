@@ -163,6 +163,8 @@ export default {
     },
     onUserLogout() {
       this.registrarActividad("User Logout", "User Logout");
+      // Emitir evento para indicar que es un logout manual
+      this.$nuxt.$emit('manual-logout');
       this.$store.dispatch('user/logout')
     },
     onMyAccount(){

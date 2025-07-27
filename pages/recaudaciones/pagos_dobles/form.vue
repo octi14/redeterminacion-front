@@ -5,12 +5,11 @@
   <div v-if="printing">
     <b-card no-body border-variant="success" style="margin-top: 80px" class="printing-modal shadow col-md-5 col-sm-8 mx-auto">
       <b-card-header class="row" header-class="green text-light">
-        <h5><b>Comprobante de Solicitud - </b> Comercio</h5>
+        <h5><b>Comprobante de Solicitud - </b> Recaudaciones</h5>
       </b-card-header>
       <b-card-body class="text-center">
         <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Día: </b> {{ new Date().toLocaleDateString('es-AR') }}</h5> </div>
-        <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Rubro: </b> {{ inmueble.rubro }}</h5> </div>
-        <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Nro de trámite:</b> {{ nroTramite }}</h5> </div>
+        <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Nro de trámite:</b> R{{ nroTramite }}</h5> </div>
         <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Solicitante: </b> {{ solicitante.nombre }}  {{ solicitante.apellido }}</h5> </div>
         <hr/>
         <p class="" style="text-align: justify"><b-icon-caret-right-fill variant="success"></b-icon-caret-right-fill> Tené en cuenta que el Departamento Comercio puede solicitarte documentación adicional vía correo electrónico.</p>
@@ -20,7 +19,7 @@
       </b-card-body>
     </b-card>
   </div>
-  <b-form @submit.prevent="onSubmitForm" class="my-3" style="margin-left:10px;margin-right:10px">
+  <b-form v-else @submit.prevent="onSubmitForm" class="my-3" style="margin-left:10px;margin-right:10px">
     <!-- <b-card no-body class="col-8 mt-1 section-card"  style="margin: 0px auto">
       <h5 style="margin-top:0px; margin-bottom: 0px; text-align:center;" ><b-icon-exclamation-circle-fill class="icon-orange"></b-icon-exclamation-circle-fill> El siguiente formulario tiene carácter de declaración jurada.</h5>
     </b-card> -->
@@ -513,6 +512,8 @@ export default{
         this.showPopupE = true;
       } else if (type === 'FormLoading') {
         this.showPopupFormLoading = true;
+      } else if (type === 'FormOk') {
+        this.showPopupFormOk = true;
       } else if (type === 'FormError') {
         this.showPopupFormError = true;
       } else if (type === 'NroInmueble'){
@@ -615,6 +616,7 @@ export default{
           });
           //console.log(response.data)
           this.nroTramite = response.data
+          this.showPopupFormLoading = false;
           this.openPopup('FormOk');
         } catch (e) {
           console.log(e)
@@ -654,6 +656,18 @@ export default{
     },
     async onResetParams(){
       await this.$router.push('/recaudaciones/pagos_dobles')
+    },
+    wait(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    },
+    async onPrintTicket() {
+      this.showPopupFormOk = false;
+      this.showPopupFormLoading = false;
+      this.printing = true;
+      await this.wait(500);
+      print();
+      await this.wait(500);
+      this.endButton = true;
     }
   },
 }

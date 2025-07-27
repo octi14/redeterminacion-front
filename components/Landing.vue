@@ -11,6 +11,9 @@
         <div class="col-lg-4 col-md-6 mx-auto my-4 col-sm-12 mb-4">
             <LandingIcon icon="briefcase" title="Compras" :type="'bootstrap-vue'" to="/compras" />
         </div>
+        <div class="col-lg-4 col-md-6 mx-auto my-4 col-sm-12 mb-4">
+            <LandingIcon icon="tas.svg" title="ARVIGE" :type="'svg'" to="https://arvige.gob.ar" />
+        </div>
         <div v-if="adminHacienda" class="col-lg-4 col-md-6 mx-auto my-4 col-sm-12 mb-4">
           <LandingIcon icon="calculator" title="Obras" :type="'bootstrap-vue'" to="/obras" />
         </div>

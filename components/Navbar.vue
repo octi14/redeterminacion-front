@@ -1,7 +1,7 @@
 <template>
   <b-navbar toggleable="sm" type="dark" variant="success" fixed="top">
     <div class="col-xs-1 ml-2">
-      <a href="https://gesell.gob.ar/">
+      <a href="https://gesell.gob.ar/" target="_blank">
         <img src="https://arvige.gob.ar/assets/img/header.png" style="height: 58px; width: 42px">
       </a>
       <a class="ml-2 separador" > | </a>
@@ -80,7 +80,7 @@
               Abierto anual
           </NuxtLink>
         </b-navbar-nav>
-                <b-navbar-nav v-if="adminComercio" class="mr-2">
+        <b-navbar-nav v-if="adminRecaudaciones" class="mr-2">
           <NuxtLink
             class="nav-link"
             active-class="active"
@@ -141,6 +141,9 @@ export default {
     },
     adminInspeccion(){
       return this.$store.state.user.admin == "inspeccion"
+    },
+    adminRecaudaciones(){
+      return this.$store.state.user.admin == "recaudaciones" || this.$store.state.user.admin =="master"
     },
     username() {
       return this.$store.state.user.username

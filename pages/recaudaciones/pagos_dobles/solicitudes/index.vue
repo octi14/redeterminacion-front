@@ -36,7 +36,7 @@
         <div :class="row.item.estadoColor"><b>{{ row.value }}</b></div>
       </template>
       <template #cell(detalles)="row">
-        <NuxtLink :to="{ name: 'pagos-pagos_dobles-solicitudes-id', params: { id: row.item.id } }" @click.native="registrarActividad('Abrir Trámite', 'Trámite nro: ' + row.item.nroTramite)">
+        <NuxtLink :to="{ name: 'recaudaciones-pagos_dobles-solicitudes-id', params: { id: row.item.id } }" @click.native="registrarActividad('Abrir Trámite', 'Trámite nro: ' + row.item.nroTramite)">
           <b-button variant="outline-secondary" size="sm" title="Editar">
             <b-icon-pen/>
           </b-button>

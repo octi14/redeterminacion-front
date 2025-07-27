@@ -24,7 +24,6 @@
       <!--Botones-->
       <div class="row col-10 mx-auto justify-content-center">
         <b-button @click="onShowAprobarSolicitud" variant="success" class="btn-4 mt-3 mx-1" v-if="pago.status==='En revisión'"> Aprobar solicitud </b-button>
-        <b-button @click="onShowFinalizarSolicitud" variant="success" class="btn-4 mt-3 mx-1" v-if="pago.status === 'Esperando documentación'"> Finalizar solicitud </b-button>
         <b-button @click="onRestablecer" variant="secondary" class="btn-4 mt-3 mx-1" v-if="pago.status != 'En revisión'"> Volver a estado En Revisión </b-button>
         <b-button @click="onRechazarSolicitud" class="btn-3 mt-3 mx-1"> Rechazar solicitud </b-button>
         <b-button @click="onShowObservaciones" variant="primary" class="btn-2 mt-3 mx-1"> Ver observaciones </b-button>
@@ -155,11 +154,11 @@
         </template>
         <div class="confirmation-popup-body">
           <h2 class="icon-orange text-danger text-center"><b>Rechazar solicitud</b></h2>
-          <p>La solicitud será rechazada. Recordá notificar al solicitante a través de su correo electrónico indicando los motivos.</p>
-          <p>Observaciones:  </p>
-          <b-form-textarea v-model="observaciones" required type="text" />
+          <p>La solicitud será rechazada. Se enviará automáticamente un correo electrónico al solicitante con el motivo del rechazo.</p>
+          <p>Motivos de rechazo:</p>
+          <b-form-radio-group v-model="motivoRechazo" :options="motivosRechazo" name="motivo-rechazo" />
           <div class="text-center mt-3">
-            <b-btn variant="danger" @click="onSendReject()" >
+            <b-btn variant="danger" @click="onSendReject()" :disabled="!motivoRechazo">
                 Enviar
             </b-btn>
           </div>
@@ -175,23 +174,39 @@
       </template>
       <div class="confirmation-popup-body">
         <h2 class="icon-orange text-secondary text-center"><b>Aprobar solicitud</b></h2>
-        <p style="margin: 3%"> Se aprobará la solicitud. Se deberá enviar un mail al solicitante indicando que el
-           trámite está completo y adjuntar el certificado de . </p>
-        <!-- <p style="margin: 3%"> Ingresá el número de expediente asignado al expediente actual y su alcance. </p>
-        <div class="mx-auto">
-        <p style="margin: 3%"><b-icon-caret-right-fill class="icon-orange"/><b>Número de expediente:</b></p>
-        <p class="row mr-2" style="margin: 3%"> 4124 -
-          <b-form-input class="col-3 ml-2" type="number" no-wheel size="sm" v-model="nroExpediente1"/><a class="mx-3"> / </a>
-          <b-form-input size="sm" type="number" no-wheel class="col-3" v-model="nroExpediente2"/>
-        </p>
-        <p style="margin: 3%" class="row">
-          <b-icon-caret-right-fill class="icon-orange mt-1"/><b>Alcance:</b>
-          <b-form-input class="col-3 ml-2" type="number" no-wheel size="sm" v-model="alcance"/>
-        </p>
-        </div> -->
+        <p style="margin: 3%"> Se aprobará la solicitud. Se enviará automáticamente un correo electrónico al solicitante informando la aprobación. </p>
+        <p style="margin: 3%"> Ingresá el número de expediente asignado al expediente actual y su alcance. </p>
+        <div class="expediente-container">
+        <p class="expediente-label"><b-icon-caret-right-fill class="icon-orange"/><b>Número de expediente:</b></p>
+        <div class="row align-items-center">
+          <span class="expediente-text ml-4">4124-</span>
+          <b-form-input
+            class="col-3 expediente-input"
+            type="number"
+            no-wheel
+            size="sm"
+            v-model="nroExpediente1"
+            placeholder="XXXX"
+            style="max-width: 120px;"
+          />
+          <span class="expediente-text mx-1">/2025</span>
+        </div>
+        <p class="expediente-label mt-3"><b-icon-caret-right-fill class="icon-orange"/><b>Alcance:</b></p>
+        <div class="row ml-3">
+          <b-form-input
+            class="col-3 expediente-input"
+            type="number"
+            no-wheel
+            size="sm"
+            v-model="alcance"
+            placeholder="Número"
+            style="max-width: 120px;"
+          />
+        </div>
+        </div>
         <hr/>
         <div class="text-center mt-3">
-          <b-btn variant="primary" @click="onSendApprove()" >
+          <b-btn variant="primary" @click="onSendApprove()" :disabled="!nroExpediente1 || !alcance">
               Aceptar
           </b-btn>
         </div>
@@ -207,7 +222,7 @@
       </template>
       <div class="confirmation-popup-body">
         <h3 class="icon-orange text-success text-center"><b>Trámite finalizado</b></h3>
-        <p style="text-align: center">Recordá enviar un correo electrónico al solicitante indicando que el trámite ha sido finalizado.</p>
+        <p style="text-align: center">La solicitud ha sido aprobada exitosamente. Se ha enviado un correo electrónico al solicitante informando la aprobación.</p>
         <div class="text-center mt-3">
           <b-btn variant="success" @click="showApprove = false">
               Aceptar
@@ -258,6 +273,7 @@
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
+import MailerService from '~/service/mailer.js'
 
 export default {
   data() {
@@ -269,17 +285,21 @@ export default {
       },
       showPrevApprove: false,
       showApprove: false,
-      showFinalizar: false,
       showRejectPopup: false,
       showRestoreDefault: false,
       showObservaciones: false,
       pago: null,
       observaciones: '',
       nroExpediente1: null,
-      nroExpediente2: null,
       alcance: null,
       showDocumentoModal: false,
       DocumentoModalTitle: "",
+      motivoRechazo: '',
+      motivosRechazo: [
+        'No corresponde a una cuenta urbana',
+        'Los documentos no son legibles',
+        'Los comprobantes no indican el pago duplicado de la misma cuenta'
+      ],
     }
   },
   computed: {
@@ -326,9 +346,9 @@ export default {
     },
     async onShowAprobarSolicitud(){
       this.showPrevApprove = true
-    },
-    onShowFinalizarSolicitud(){
-      this.showFinalizar = true
+      // Limpiar campos del expediente
+      this.nroExpediente1 = null
+      this.alcance = null
     },
     onShowObservaciones(){
       if(this.pago.observaciones){
@@ -338,55 +358,13 @@ export default {
       }
       this.showObservaciones = true
     },
-    async onSendFinalizar(){
-      var nroExpediente = ''
-      var alcance = ''
-      nroExpediente = "4124-" + this.nroExpediente1 + "/" + this.nroExpediente2
-      const observaciones = this.pago.observaciones || ""
-      const pago = {
-        status: 'Finalizada',
-        nroExpediente: nroExpediente,
-        alcance: alcance,
-        observaciones: observaciones + " - " + "Se finaliza el trámite el día " + new Date().toLocaleDateString('es-AR')
-      }
-      const id = this.pago.id
-      const userToken = this.$store.state.user.token
-      await this.$store.dispatch('pagosDobles/update', {
-        id,
-        pago,
-      })
-      // this.registrarActividad('Finalizar Habilitación', 'Trámite Cerrado. Expediente: ' + nroExpediente + ". Alcance: " + alcance, this.pago.nroTramite)
-
-      this.wait(300)
-      this.pago.status = pago.status
-      this.showFinalizar = false
-    },
-    onRestablecer(){
-      this.showRestoreDefault = !this.showRestoreDefault
-    },
-    async onSendRestablecer(){
-
-      const observaciones = this.pago.observaciones || ""
-      const pago = {
-        status: 'En revisión',
-        observaciones: observaciones + " - " + "Se restablece el trámite a 'En revisión' el día " + new Date().toLocaleDateString('es-AR')
-      }
-
-      const id = this.pago.id
-      const userToken = this.$store.state.user.token
-      await this.$store.dispatch('pagosDobles/update', {
-        id,
-        pago,
-      })
-      this.registrarActividad('Volver a En Revisión', 'Solicitud Reestablecida. Observaciones: ' + observaciones, this.pago.nroTramite)
-      this.wait(300)
-      this.pago.status = pago.status
-      this.showRestoreDefault = false
-    },
     async onSendApprove(){
       const observaciones = this.pago.observaciones || " "
+      const nroExpediente = "4124-" + this.nroExpediente1 + "/2025"
       const pago = {
         status: 'Aprobada',
+        nroExpediente: nroExpediente,
+        alcance: this.alcance,
         observaciones: observaciones + " - " + "Se aprueba la solicitud el " + new Date().toLocaleDateString('es-AR') + " " + new Date().toLocaleTimeString()
       }
       const id = this.pago.id
@@ -398,8 +376,32 @@ export default {
       this.registrarActividad('Aprobar reclamo por pago doble', 'Reclamo por Pago doble Aprobado.')
       this.wait(300)
       this.pago.status = pago.status
+      this.pago.nroExpediente = pago.nroExpediente
+      this.pago.alcance = pago.alcance
       this.showPrevApprove = false
       this.showApprove = true
+
+      // --- Enviar correo al solicitante ---
+      try {
+        const destinatario = this.pago.mail || this.pago.solicitante?.mail
+        const asunto = `Aprobación de solicitud de pago doble N° ${this.pago.nroTramite}`
+        const mensaje = `Estimado/a,
+
+Su solicitud de pago doble ha sido aprobada exitosamente.
+
+Número de trámite: R${this.pago.nroTramite}
+Número de expediente: ${nroExpediente}
+Alcance: ${this.alcance}
+Fecha de aprobación: ${new Date().toLocaleDateString('es-AR')}
+
+Su solicitud será procesada y recibirá las instrucciones correspondientes en los próximos días.
+
+Si tiene dudas o necesita más información, por favor comuníquese con el área correspondiente.`
+        await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+        this.$bvToast.toast('Correo de aprobación enviado al solicitante.', { variant: 'success' })
+      } catch (e) {
+        this.$bvToast.toast('No se pudo enviar el correo de aprobación.', { variant: 'danger' })
+      }
     },
     onRechazarSolicitud(){
       this.showRejectPopup = true
@@ -407,19 +409,35 @@ export default {
     async onSendReject(){
       const observaciones = this.pago.observaciones || " "
       const pago = {
-        observaciones: observaciones + " - " + "Solicitud rechazada: " + this.observaciones + " " + new Date().toLocaleDateString(),
+        observaciones: observaciones + " - " + "Solicitud rechazada: " + this.motivoRechazo + " " + new Date().toLocaleDateString(),
         status: 'Rechazada'
       }
       const id = this.pago.id
-      const userToken = this.$store.state.user.token
       await this.$store.dispatch('pagosDobles/update', {
         id,
         pago,
       })
-      this.registrarActividad('Rechazar Solicitud', 'Rechazado por: ' + observaciones, this.pago.nroTramite)
+      this.registrarActividad('Rechazar Solicitud', 'Rechazado por: ' + this.motivoRechazo, this.pago.nroTramite)
       this.wait(300)
       this.pago.status = pago.status
-      this.observaciones = ''
+
+      // --- Enviar correo al solicitante ---
+      try {
+        const destinatario = this.pago.mail || this.pago.solicitante?.mail
+        const asunto = `Rechazo de solicitud de pago doble N° ${this.pago.nroTramite}`
+        const mensaje = `Estimado/a,
+
+Su solicitud de pago doble ha sido rechazada por el siguiente motivo:
+${this.motivoRechazo}
+
+Si tiene dudas o necesita más información, por favor comuníquese con el área correspondiente.`
+        await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+        this.$bvToast.toast('Correo de rechazo enviado al solicitante.', { variant: 'success' })
+      } catch (e) {
+        this.$bvToast.toast('No se pudo enviar el correo de rechazo.', { variant: 'danger' })
+      }
+
+      this.motivoRechazo = ''
       this.showRejectPopup = false
     },
     async onDescargarHabilitacion() {
@@ -546,6 +564,28 @@ export default {
     console.log('Formato de contenido no compatible');
   }
 },
+    onRestablecer(){
+      this.showRestoreDefault = !this.showRestoreDefault
+    },
+    async onSendRestablecer(){
+
+      const observaciones = this.pago.observaciones || ""
+      const pago = {
+        status: 'En revisión',
+        observaciones: observaciones + " - " + "Se restablece el trámite a 'En revisión' el día " + new Date().toLocaleDateString('es-AR')
+      }
+
+      const id = this.pago.id
+      const userToken = this.$store.state.user.token
+      await this.$store.dispatch('pagosDobles/update', {
+        id,
+        pago,
+      })
+      this.registrarActividad('Volver a En Revisión', 'Solicitud Reestablecida. Observaciones: ' + observaciones, this.pago.nroTramite)
+      this.wait(300)
+      this.pago.status = pago.status
+      this.showRestoreDefault = false
+    },
     onResetEdit() {
       this.editing = false
     },
@@ -554,6 +594,36 @@ export default {
 </script>
 
 <style scoped>
+.expediente-input {
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.expediente-input:focus {
+  border-color: #a0bd0a;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.expediente-label {
+  font-weight: 400;
+  color: #495057;
+  margin-bottom: 8px;
+}
+
+.expediente-text {
+  font-weight: 500;
+  color: #6c757d;
+  font-size: 0.95rem;
+}
+
+.expediente-container {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 15px;
+  margin: 10px 0;
+  border: 1px solid #dee2e6;
+}
+
 .modal-dialog {
   max-width: 80% !important;
 }

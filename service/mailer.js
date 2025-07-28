@@ -12,7 +12,7 @@ export default {
   getFooter() {
     return `
 
-Saludos.
+Saludos cordiales,
 Municipalidad de Villa Gesell
 
 ---

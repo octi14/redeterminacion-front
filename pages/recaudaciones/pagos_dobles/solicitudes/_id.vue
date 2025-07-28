@@ -9,7 +9,7 @@
     <template v-if="pago">
       <div class="flex col" style="width: 96%">
         <div class="row justify-content-center mt-3">
-          <p class="h5"> Número de trámite: <b> {{ pago.nroTramite }}  </b></p>
+          <p class="h5"> Número de trámite: <b> R{{ pago.nroTramite }}  </b></p>
         </div>
         <div class="row justify-content-center mt-3">
           <div class="h5 row"> Estado:
@@ -24,15 +24,15 @@
       <!--Botones-->
       <div class="row col-10 mx-auto justify-content-center">
         <b-button @click="onShowAprobarSolicitud" variant="success" class="btn-4 mt-3 mx-1" v-if="pago.status==='En revisión'"> Aprobar solicitud </b-button>
-        <b-button @click="onRestablecer" variant="secondary" class="btn-4 mt-3 mx-1" v-if="pago.status != 'En revisión'"> Volver a estado En Revisión </b-button>
+        <!-- <b-button @click="onRestablecer" variant="secondary" class="btn-4 mt-3 mx-1" v-if="pago.status != 'En revisión'"> Volver a estado En Revisión </b-button> -->
         <b-button @click="onRechazarSolicitud" class="btn-3 mt-3 mx-1"> Rechazar solicitud </b-button>
         <b-button @click="onShowObservaciones" variant="primary" class="btn-2 mt-3 mx-1"> Ver observaciones </b-button>
       </div>
-      <div class="row no-gutters">
+      <!-- <div class="row no-gutters">
         <b-button @click="onDescargarHabilitacion(); registrarActividad('Descargar Trámite', 'Trámite Descargado', pago.nroTramite)" v-if="adminComercio || adminArvige || adminModernizacion" variant="success" class="btn-4 mx-auto mt-3 mx-1">
           <b-icon icon="download" class="mr-1"></b-icon> Descargar trámite
         </b-button>
-      </div>
+      </div> -->
 
       <!--Datos del solicitante-->
       <b-card no-body class="container col-md-6 col-sm-8 shadow-card mt-4 mx-auto">
@@ -221,7 +221,7 @@
         </div>
       </template>
       <div class="confirmation-popup-body">
-        <h3 class="icon-orange text-success text-center"><b>Trámite finalizado</b></h3>
+        <h3 class="icon-orange text-success text-center"><b>Trámite aprobado</b></h3>
         <p style="text-align: center">La solicitud ha sido aprobada exitosamente. Se ha enviado un correo electrónico al solicitante informando la aprobación.</p>
         <div class="text-center mt-3">
           <b-btn variant="success" @click="showApprove = false">
@@ -384,19 +384,20 @@ export default {
       // --- Enviar correo al solicitante ---
       try {
         const destinatario = this.pago.mail || this.pago.solicitante?.mail
-        const asunto = `Aprobación de solicitud de pago doble N° ${this.pago.nroTramite}`
-        const mensaje = `Estimado/a,
+        const asunto = `Aprobación de reclamo de pago doble N° R${this.pago.nroTramite}`
+        const mensaje = `Estimado/a contribuyente,
 
-Su solicitud de pago doble ha sido aprobada exitosamente.
+Su reclamo de pago doble ha sido aprobado exitosamente.
+Su documentación será procesada y recibirá las instrucciones correspondientes en los próximos días.
 
 Número de trámite: R${this.pago.nroTramite}
 Número de expediente: ${nroExpediente}
 Alcance: ${this.alcance}
 Fecha de aprobación: ${new Date().toLocaleDateString('es-AR')}
 
-Su solicitud será procesada y recibirá las instrucciones correspondientes en los próximos días.
 
-Si tiene dudas o necesita más información, por favor comuníquese con el área correspondiente.`
+
+Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Recaudaciones Municipal (recaudaciones@gesell.gob.ar).`
         await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
         this.$bvToast.toast('Correo de aprobación enviado al solicitante.', { variant: 'success' })
       } catch (e) {
@@ -424,13 +425,13 @@ Si tiene dudas o necesita más información, por favor comuníquese con el área
       // --- Enviar correo al solicitante ---
       try {
         const destinatario = this.pago.mail || this.pago.solicitante?.mail
-        const asunto = `Rechazo de solicitud de pago doble N° ${this.pago.nroTramite}`
-        const mensaje = `Estimado/a,
+        const asunto = `Rechazo de solicitud de pago doble N° R${this.pago.nroTramite}`
+        const mensaje = `Estimado/a contribuyente,
 
-Su solicitud de pago doble ha sido rechazada por el siguiente motivo:
+Su reclamo de pago doble ha sido rechazado por el siguiente motivo:
 ${this.motivoRechazo}
 
-Si tiene dudas o necesita más información, por favor comuníquese con el área correspondiente.`
+Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Recaudaciones Municipal (recaudaciones@gesell.gob.ar).`
         await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
         this.$bvToast.toast('Correo de rechazo enviado al solicitante.', { variant: 'success' })
       } catch (e) {

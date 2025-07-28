@@ -12,8 +12,7 @@
         <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Nro de trámite:</b> R{{ nroTramite }}</h5> </div>
         <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Solicitante: </b> {{ solicitante.nombre }}  {{ solicitante.apellido }}</h5> </div>
         <hr/>
-        <p class="" style="text-align: justify"><b-icon-caret-right-fill variant="success"></b-icon-caret-right-fill> Tené en cuenta que el Departamento Comercio puede solicitarte documentación adicional vía correo electrónico.</p>
-        <p class="" style="text-align: justify"><b-icon-caret-right-fill variant="success"></b-icon-caret-right-fill> Para consultar el estado de tu trámite ingresá en <a class="external-link" href="https://haciendavgesell.gob.ar/">haciendavgesell.gob.ar</a>, hacé click en el ícono correspondiente y escribí el número asignado en este comprobante.</p>
+        <p class="" style="text-align: justify"><b-icon-caret-right-fill variant="success"></b-icon-caret-right-fill> Tené en cuenta que el Departamento Recaudaciones puede solicitarte documentación adicional vía correo electrónico.</p>
         <hr/>
         <b-button class="mt-2 btn-orange" v-if="endButton === true" @click="onResetParams">Volver</b-button>
       </b-card-body>
@@ -316,13 +315,13 @@
   </template>
   <div class="centeredContainer">
     <p class="modal-subtitle">¡Tu solicitud ha sido enviada exitosamente!</p>
-    <p class="">En los próximos días recibirás un correo electrónico del Departamento Comercio Municipal en el que te indicarán cómo continuar. Asegurate de revisar la bandeja de correos no deseados (Spam).</p>
+    <p class="">En los próximos días recibirás un correo electrónico del Departamento Recaudaciones Municipal en el que te indicarán cómo continuar. Asegurate de revisar la bandeja de correos no deseados (Spam).</p>
     <p class=""><b>Tu número de trámite es: </b></p>
     <p class="h3"><b> R{{ nroTramite }} </b></p>
     <p class="">Por favor, conservá este número. Será solicitado más adelante.</p>
   </div>
     <div class="centeredContainer" style="padding:0 1rem; padding-top: 1rem; border-top:1px solid #CCC; ">
-      <p class="" style="text-align: justify; margin-bottom:0; font-size: 0.75rem "><b-icon-caret-right-fill variant="success"></b-icon-caret-right-fill> Tené en cuenta que el Departamento Comercio puede solicitarte documentación adicional vía correo electrónico.</p>
+      <p class="" style="text-align: justify; margin-bottom:0; font-size: 0.75rem "><b-icon-caret-right-fill variant="success"></b-icon-caret-right-fill> Tené en cuenta que el Departamento Recaudaciones puede solicitarte documentación adicional vía correo electrónico.</p>
       <p class="" style="text-align: justify; font-size: 0.75rem; margin-bottom:0; "><b-icon-caret-right-fill variant="success"></b-icon-caret-right-fill> Para consultar el estado de tu trámite ingresá en <a class="external-link" href="https://haciendavgesell.gob.ar/">haciendavgesell.gob.ar</a>, hacé click en el ícono correspondiente y escribí el número asignado en este comprobante.</p>
     </div>
   <template #modal-footer>
@@ -355,6 +354,7 @@
 
 <script>
 import { required, requiredIf, alpha, numeric, email, minLength, maxLength, sameAs } from 'vuelidate/lib/validators';
+import MailerService from '~/service/mailer.js'
 
 export default{
     validations() {
@@ -614,6 +614,15 @@ export default{
           const response = await this.$store.dispatch('pagosDobles/create', {
             pagoDoble,
           });
+
+          await MailerService.enviarCorreo(this.$axios, {
+            destinatario: this.solicitante.mail,
+            asunto: 'Solicitud de pago doble recibida',
+            mensaje: `Estimado/a contribuyente,
+            Su reclamo por pago doble ha sido registrado correctamente.
+            En los próximos días recibirá un correo electrónico del Departamento Recaudaciones Municipal en el que le indicarán cómo continuar.
+            Asegúrese de revisar la bandeja de correos no deseados (Spam).`
+          });
           //console.log(response.data)
           this.nroTramite = response.data
           this.showPopupFormLoading = false;
@@ -656,6 +665,17 @@ export default{
     },
     async onResetParams(){
       await this.$router.push('/recaudaciones/pagos_dobles')
+      this.showPopupFormOk = false;
+      this.showPopupFormLoading = false;
+      this.printing = false;
+      this.endButton = false;
+      this.nroTramite = null;
+      this.nroLegajo = 0;
+      this.solicitante = {
+        nombre: '',
+        apellido: '',
+        dni: '',
+      }
     },
     wait(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));

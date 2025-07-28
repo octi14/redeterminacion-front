@@ -2,21 +2,32 @@
   <div class="page main-background">
     <Banner title="Recaudaciones" />
 
-    <!-- <div class="col-10 mainCarrousel" style="margin: auto; margin-top: 2rem">
-      <b-carousel
-        id="mainCarousel"
-        v-model="slide"
-        :interval="4000"
-        controls
-        indicators
-        img-width="100%"
-        style="text-shadow: 1px 1px 2px #333;"
-        @sliding-start="onSlideStart"
-        @sliding-end="onSlideEnd"
-      >
-        <b-carousel-slide img-src="../../../assets/habilita-en-simples-pasos-2.png"></b-carousel-slide>
-      </b-carousel>
-    </div> -->
+    <div class="col-10 mainCarrousel" style="margin: auto; margin-top: 2rem">
+            <b-carousel
+            id="mainCarousel"
+            v-model="slide"
+            :interval="4000"
+            img-width="100%"
+            style="text-shadow: 1px 1px 2px #333;"
+            @sliding-start="onSlideStart"
+            @sliding-end="onSlideEnd"
+            >
+                <b-carousel-slide img-src="../../../assets/banner-pago-doble.png"></b-carousel-slide>
+            </b-carousel>
+        </div>
+        <div class="col-10 mobileCarrousel" style="margin: auto; margin-top: 2rem">
+            <b-carousel
+            id="mainCarousel"
+            v-model="slide"
+            :interval="4000"
+            img-width="100%"
+            style="text-shadow: 1px 1px 2px #333;"
+            @sliding-start="onSlideStart"
+            @sliding-end="onSlideEnd"
+            >
+                <b-carousel-slide img-src="../../../assets/banner-pago-doble.png"></b-carousel-slide>
+            </b-carousel>
+        </div>
 
     <b-container class="col-8">
       <b-row>
@@ -274,7 +285,7 @@ export default({
 .mainCarrousel{
     display: block;
   }
-  .moblieCarrousel{
+  .mobileCarrousel{
     display: none;
   }
 @media (max-width: 1200px) {
@@ -300,7 +311,7 @@ export default({
   .mainCarrousel{
     display: block;
   }
-  .moblieCarrousel{
+  .mobileCarrousel{
     display: none;
   }
   .botonera-container .row div{
@@ -317,7 +328,7 @@ export default({
   .mainCarrousel{
     display: none;
   }
-  .moblieCarrousel{
+  .mobileCarrousel{
     display: block;
   }
   .col-8{

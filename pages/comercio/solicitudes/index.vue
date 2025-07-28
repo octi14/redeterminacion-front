@@ -240,12 +240,12 @@ export default{
         await this.$store.dispatch('habilitaciones/getAll')
         tramites = this.$store.state.habilitaciones.all
 
-        console.log("TRAMITES: ");
-        console.log(tramites);
+        ("TRAMITES: ");
+        (tramites);
         // Filtramos los trámites que no están finalizados
         const tramitesNoFinalizados = tramites.filter(tramite => tramite.status != "Finalizada" && tramite.status != "Rechazada");
-        console.log("tramitesNoFinalizados:")
-        console.log(tramitesNoFinalizados)
+        ("tramitesNoFinalizados:")
+        (tramitesNoFinalizados)
 
         if (tramitesNoFinalizados.length === 0) {
           this.registrarActividad("Descargar trámites no finalizados", "No Hay trámites no finalizados.");
@@ -289,7 +289,7 @@ export default{
         this.registrarActividad("Descargar trámites no finalizados", "Error al generar el Excel de trámites no finalizados: " + error);
       }
     },
-    onPageChange(newPage) {      
+    onPageChange(newPage) {
       this.currentPage = newPage;
     },
     async onShowObservaciones(id) {

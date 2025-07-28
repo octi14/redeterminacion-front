@@ -9,16 +9,19 @@
       </b-card-header>
       <b-card-body class="text-center">
         <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Día: </b> {{ new Date().toLocaleDateString('es-AR') }}</h5> </div>
+
         <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Nro de trámite:</b> R{{ nroTramite }}</h5> </div>
         <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Solicitante: </b> {{ solicitante.nombre }}  {{ solicitante.apellido }}</h5> </div>
         <hr/>
         <p class="" style="text-align: justify"><b-icon-caret-right-fill variant="success"></b-icon-caret-right-fill> Tené en cuenta que el Departamento Recaudaciones puede solicitarte documentación adicional vía correo electrónico.</p>
+
         <hr/>
         <b-button class="mt-2 btn-orange" v-if="endButton === true" @click="onResetParams">Volver</b-button>
       </b-card-body>
     </b-card>
   </div>
-  <b-form v-else @submit.prevent="onSubmitForm" class="my-3" style="margin-left:10px;margin-right:10px">
+
+  <b-form @submit.prevent="onSubmitForm" class="my-3" style="margin-left:10px;margin-right:10px" v-else>
     <!-- <b-card no-body class="col-8 mt-1 section-card"  style="margin: 0px auto">
       <h5 style="margin-top:0px; margin-bottom: 0px; text-align:center;" ><b-icon-exclamation-circle-fill class="icon-orange"></b-icon-exclamation-circle-fill> El siguiente formulario tiene carácter de declaración jurada.</h5>
     </b-card> -->
@@ -581,7 +584,9 @@ export default{
     },
     async onSubmitForm() {
       this.$v.$touch(); // Marca los campos como tocados para mostrar los errores
-      this.LoguearValidaciones()
+      // this.LoguearValidaciones()
+      // ('isCaptchaOK():', this.isCaptchaOK());
+
       if (!this.$v.$invalid && !Object.values(this.fileTooLargeError).some(error => !!error) && this.isCaptchaOK()) {
         // Si no hay errores, envía el formulario
         try {
@@ -610,7 +615,8 @@ export default{
             documentos: documentosParaGuardar,
             solicitante: this.solicitante
           };
-          // habilitacion.nroTramite = nroTramite
+
+          // Usar el store como en tramites/form.vue
           const response = await this.$store.dispatch('pagosDobles/create', {
             pagoDoble,
           });
@@ -627,10 +633,14 @@ export default{
           this.nroTramite = response.data
           this.showPopupFormLoading = false;
           this.openPopup('FormOk');
+
         } catch (e) {
-          console.log(e)
-          this.openPopup('FormError');
+          console.error('Error al enviar el formulario:', e);
+          this.showPopupFormLoading = false; // Cerrar popup de carga
+          this.showPopupFormError = true;
         }
+      } else {
+        console.log('Validaciones fallaron - no se envía el formulario');
       }
     },
     handleDocumentUpdate(fieldName) {
@@ -650,12 +660,12 @@ export default{
       }
     },
     checkDocumentSize(field, event){
-      //console.log('checkDocumentSize CALLED');
+      //('checkDocumentSize CALLED');
       const file = event.target.files[0];
 
-      //console.log('event.target.files[0]: ' + event.target.files[0]);
+      //('event.target.files[0]: ' + event.target.files[0]);
 
-      //console.log('file.size: ' + file.size + '> this.maxFileSize: ' + this.maxFileSize);
+      //('file.size: ' + file.size + '> this.maxFileSize: ' + this.maxFileSize);
        if (file && file.size > this.maxFileSize) {
         // El archivo excede el tamaño máximo permitido
         this.fileTooLargeError[field] = 'Tu archivo pesa '+ (file.size/1024/1024).toFixed(2) + 'MB'+ ', superando el límite de peso permitido (' + this.maxFileSize/1024/1024 + 'MB'+ '). Reducilo y volvé a cargarlo.' ;
@@ -663,6 +673,17 @@ export default{
       }else
       this.fileTooLargeError[field] = null
     },
+    wait(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      },
+    async onPrintTicket() {
+        this.showPopupFormOk = false;
+        this.printing = true;
+        await this.wait(500);
+        print();
+        await this.wait(500);
+        this.endButton = true;
+      },
     async onResetParams(){
       await this.$router.push('/recaudaciones/pagos_dobles')
       this.showPopupFormOk = false;

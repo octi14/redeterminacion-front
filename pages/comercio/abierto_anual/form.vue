@@ -106,7 +106,7 @@
       <div class="closed-popup-body">
         <h2 class="icon-orange"><b>IMPORTANTE</b></h2>
         <p >El plazo para acreditar las facturas del año 2025 ha expirado.</p>
-  
+
         <div class="li-row">
           <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Por cualquier reclamo comunicate con <a href="mailto:dirarvige@gesell.gob.ar" class="text-success">ARVIGE</a> para conocer los pasos a seguir.</div>
         </div>
@@ -223,7 +223,7 @@
     openPopup(type) {
       // Lógica para abrir el popup correspondiente según el tipo (A, B, C, D)
       if (type === 'A') {
-        console.log("ShowPopup A")
+        ("ShowPopup A")
         this.showPopupA = true;
       }else if (type === 'ClosedPeriod'){
           this.showClosedPopup = true;

@@ -1,7 +1,7 @@
 <template>
   <b-navbar toggleable="sm" type="dark" variant="success" fixed="top">
     <div class="col-xs-1 ml-2">
-      <a href="https://gesell.gob.ar/">
+      <a href="https://gesell.gob.ar/" target="_blank">
         <img src="https://arvige.gob.ar/assets/img/header.png" style="height: 58px; width: 42px">
       </a>
       <a class="ml-2 separador" > | </a>
@@ -143,7 +143,8 @@ export default {
       return this.$store.state.user.admin == "inspeccion"
     },
     adminRecaudaciones(){
-      return this.$store.state.user.admin == "recaudaciones"
+      return this.$store.state.user.admin == "recaudaciones" || this.$store.state.user.admin =="master"
+
     },
     username() {
       return this.$store.state.user.username

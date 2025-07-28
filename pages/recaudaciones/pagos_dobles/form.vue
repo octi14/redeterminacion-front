@@ -9,17 +9,18 @@
       </b-card-header>
       <b-card-body class="text-center">
         <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Día: </b> {{ new Date().toLocaleDateString('es-AR') }}</h5> </div>
-        <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Número de cuenta: </b> {{ solicitante.nroCuenta }}</h5> </div>
-        <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Nro de trámite:</b> {{ nroTramite }}</h5> </div>
+
+        <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Nro de trámite:</b> R{{ nroTramite }}</h5> </div>
         <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Solicitante: </b> {{ solicitante.nombre }}  {{ solicitante.apellido }}</h5> </div>
         <hr/>
         <p class="" style="text-align: justify"><b-icon-caret-right-fill variant="success"></b-icon-caret-right-fill> Tené en cuenta que el Departamento Recaudaciones puede solicitarte documentación adicional vía correo electrónico.</p>
-        <p class="" style="text-align: justify"><b-icon-caret-right-fill variant="success"></b-icon-caret-right-fill> Para consultar el estado de tu trámite ingresá en <a class="external-link" href="https://haciendavgesell.gob.ar/">haciendavgesell.gob.ar</a>, hacé click en el ícono correspondiente y escribí el número asignado en este comprobante.</p>
+
         <hr/>
         <b-button class="mt-2 btn-orange" v-if="endButton === true" @click="onResetParams">Volver</b-button>
       </b-card-body>
     </b-card>
   </div>
+
   <b-form @submit.prevent="onSubmitForm" class="my-3" style="margin-left:10px;margin-right:10px" v-else>
     <!-- <b-card no-body class="col-8 mt-1 section-card"  style="margin: 0px auto">
       <h5 style="margin-top:0px; margin-bottom: 0px; text-align:center;" ><b-icon-exclamation-circle-fill class="icon-orange"></b-icon-exclamation-circle-fill> El siguiente formulario tiene carácter de declaración jurada.</h5>
@@ -356,6 +357,7 @@
 
 <script>
 import { required, requiredIf, alpha, numeric, email, minLength, maxLength, sameAs } from 'vuelidate/lib/validators';
+import MailerService from '~/service/mailer.js'
 
 export default{
     validations() {
@@ -513,6 +515,8 @@ export default{
         this.showPopupE = true;
       } else if (type === 'FormLoading') {
         this.showPopupFormLoading = true;
+      } else if (type === 'FormOk') {
+        this.showPopupFormOk = true;
       } else if (type === 'FormError') {
         this.showPopupFormError = true;
       } else if (type === 'NroInmueble'){
@@ -617,10 +621,18 @@ export default{
             pagoDoble,
           });
 
-          // Manejar la respuesta como en tramites/form.vue
-          this.nroTramite = response.data;
-          this.showPopupFormLoading = false; // Cerrar popup de carga
-          this.showPopupFormOk = true;
+          await MailerService.enviarCorreo(this.$axios, {
+            destinatario: this.solicitante.mail,
+            asunto: 'Solicitud de pago doble recibida',
+            mensaje: `Estimado/a contribuyente,
+            Su reclamo por pago doble ha sido registrado correctamente.
+            En los próximos días recibirá un correo electrónico del Departamento Recaudaciones Municipal en el que le indicarán cómo continuar.
+            Asegúrese de revisar la bandeja de correos no deseados (Spam).`
+          });
+          //console.log(response.data)
+          this.nroTramite = response.data
+          this.showPopupFormLoading = false;
+          this.openPopup('FormOk');
 
         } catch (e) {
           console.error('Error al enviar el formulario:', e);
@@ -674,6 +686,29 @@ export default{
       },
     async onResetParams(){
       await this.$router.push('/recaudaciones/pagos_dobles')
+      this.showPopupFormOk = false;
+      this.showPopupFormLoading = false;
+      this.printing = false;
+      this.endButton = false;
+      this.nroTramite = null;
+      this.nroLegajo = 0;
+      this.solicitante = {
+        nombre: '',
+        apellido: '',
+        dni: '',
+      }
+    },
+    wait(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    },
+    async onPrintTicket() {
+      this.showPopupFormOk = false;
+      this.showPopupFormLoading = false;
+      this.printing = true;
+      await this.wait(500);
+      print();
+      await this.wait(500);
+      this.endButton = true;
     }
   },
 }

@@ -484,7 +484,7 @@
             </div>
           </b-form-group>
         </b-row>
-        <b-form-group v-if="solicitante.tipoSolicitud == 'Habilitación' || (solicitante.tipoSolicitud == 'Cambio de Titular' && solicitante.esModificacionesPlano=='true') || (solicitante.tipoSolicitud == 'Reempadronamiento')">
+        <b-form-group v-if="solicitante.tipoSolicitud == 'Habilitación' || (solicitante.tipoSolicitud == 'Cambio de Titular' && solicitante.esModificacionesPlano=='true')">
           <label for="plano" class="rubro-label">Plano o Informe técnico <span v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular')">. *</span><span v-if="(solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')"><i>(En caso de continuar en trámite)</i>.</span> <b-icon-question-circle-fill @click="openPopup('plano')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
           <b-form-file v-model="documentos.plano.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*"  :state="getFormFieldState('plano')"
           @change="handleDocumentUpdate('plano'); checkDocumentSize('plano', $event)"

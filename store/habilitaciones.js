@@ -61,11 +61,9 @@ export const actions = {
   },
   async descargar({ commit }, { id }) {
     try {
-      ("ID: " + id)
       // Llamamos al servicio y retornamos la respuesta para que el componente maneje el blob
       const response = await HabilitacionService.descargarHabilitacion(this.$axios, { id });
 
-      ("Response: " + response)
       // Devolvemos la respuesta completa para que el componente se encargue del procesamiento
       return response;
     } catch (error) {

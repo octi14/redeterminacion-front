@@ -788,7 +788,7 @@
     <div class="modal-info modal-plano">
       <div>
         <p class="my-3">Podés descargar el formulario de Declaración Jurada haciendo clic
-          <a href=""> aquí.</a></p>
+          <a href="https://drive.google.com/file/d/12e--P7naWPKltm7pzsskRymFxobBN4QU/view?usp=sharing" target="_blank"> aquí.</a></p>
       </div>
     </div>
   </b-modal>

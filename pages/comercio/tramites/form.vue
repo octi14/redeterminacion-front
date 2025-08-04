@@ -484,13 +484,22 @@
             </div>
           </b-form-group>
         </b-row>
-        <b-form-group v-if="solicitante.tipoSolicitud == 'Habilitación' || (solicitante.tipoSolicitud == 'Cambio de Titular' && solicitante.esModificacionesPlano=='true') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">
+        <b-form-group v-if="solicitante.tipoSolicitud == 'Habilitación' || (solicitante.tipoSolicitud == 'Cambio de Titular' && solicitante.esModificacionesPlano=='true')">
           <label for="plano" class="rubro-label">Plano o Informe técnico <span v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular')">. *</span><span v-if="(solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')"><i>(En caso de continuar en trámite)</i>.</span> <b-icon-question-circle-fill @click="openPopup('plano')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
           <b-form-file v-model="documentos.plano.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*"  :state="getFormFieldState('plano')"
           @change="handleDocumentUpdate('plano'); checkDocumentSize('plano', $event)"
           @input="clearFormFieldState('plano')"></b-form-file>
           <div v-if="$v.documentos.plano.contenido.$error || fileTooLargeError.plano" class="validation-error">
             <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.plano || 'Debe seleccionar un archivo.' }}
+          </div>
+        </b-form-group>
+        <b-form-group v-if="(solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">
+          <label for="decJurada" class="rubro-label">Declaración Jurada - Metros Establecimiento Habilitado *<b-icon-question-circle-fill @click="openPopup('decJurada')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
+          <b-form-file v-model="documentos.decJurada.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*"  :state="getFormFieldState('decJurada')"
+          @change="handleDocumentUpdate('decJurada'); checkDocumentSize('decJurada', $event)"
+          @input="clearFormFieldState('decJurada')"></b-form-file>
+          <div v-if="$v.documentos.decJurada.contenido.$error || fileTooLargeError.decJurada" class="validation-error">
+            <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.decJurada || 'Debe seleccionar un archivo.' }}
           </div>
         </b-form-group>
         <b-row>
@@ -766,6 +775,23 @@
       </div>
     </div>
   </b-modal>
+  <b-modal v-model="showPopupDecJurada" title="" :hide-footer="true" @click-outside="showPopupDecJurada = false" :header-bg-variant="'success'"  centered>
+    <template #modal-header>
+      <div class="modal-info">
+        <h5>
+            <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
+            Información Adicional
+        </h5>
+      </div>
+      <button type="button" aria-label="Close" class="close" @click="showPopupDecJurada = false">×</button>
+    </template>
+    <div class="modal-info modal-plano">
+      <div>
+        <p class="my-3">Podés descargar el formulario de Declaración Jurada haciendo clic
+          <a href="https://drive.google.com/file/d/12e--P7naWPKltm7pzsskRymFxobBN4QU/view?usp=sharing" target="_blank"> aquí.</a></p>
+      </div>
+    </div>
+  </b-modal>
   <b-modal v-model="showPopupFormLoading" no-close-on-backdrop title="" :header-bg-variant="'success'" hide-footer centered>
     <template #modal-header>
       <h5 class="centeredContainer">Solicitud en Proceso</h5>
@@ -931,6 +957,9 @@
           constanciaAFIP: { contenido:{requiredIf: requiredIf(function () {
             return (this.solicitante.tipoSolicitud === 'Renovación' || this.solicitante.tipoSolicitud === 'Reempadronamiento') }) }
           },
+          decJurada: { contenido:{requiredIf: requiredIf(function () {
+            return (this.solicitante.tipoSolicitud === 'Renovación' || this.solicitante.tipoSolicitud === 'Reempadronamiento') }) }
+          },
 
           //Validaciones con varias condiciones
           tituloPropiedad: { contenido:{ requiredIf: requiredIf(function () {
@@ -1080,6 +1109,10 @@
             nombreDocumento: 'Plano o Informe técnico',
             contenido: null
           },
+          decJurada:{
+            nombreDocumento: 'Declaración Jurada Metros Establecimiento habilitado',
+            contenido: null
+          },
           certificadoDomicilio:{
             nombreDocumento: 'Certificado de domicilio Ingresos Brutos',
             contenido: null
@@ -1108,6 +1141,7 @@
           tituloPropiedad: null,
           certificadoDomicilio: null,
           plano: null,
+          decJurada: null,
           croquis: null,
         },
         showPopupDatosDelSolicitante: false,
@@ -1121,6 +1155,7 @@
         showPopupConstanciaLibreDeudaSegHig: false,
         showPopupConstanciaCambioTitular: false,
         showPopupPlano: false,
+        showPopupDecJurada: false,
         showPopupFormOk: false,
         showPopupFormLoading: false,
         showPopupFormError: false,
@@ -1181,8 +1216,8 @@
                 (this.documentos.libreDeudaIB || this.solicitante.tipoSolicitud!='Baja') &&
                 (this.documentos.tituloPropiedad || this.solicitante.tipoSolicitud != 'Habilitación' && this.solicitante.tipoSolicitud != 'Renovación' && this.solicitante.tipoSolicitud != 'Reempadronamiento' && this.solicitante.tipoSolicitud != 'Cambio de Titular') &&
                 (this.documentos.plano || this.solicitante.tipoSolicitud != 'Habilitación' && this.solicitante.tipoSolicitud != 'Renovación' && this.solicitante.tipoSolicitud != 'Reempadronamiento' && this.solicitante.tipoSolicitud != 'Cambio de Titular') &&
-                (this.documentos.constanciaAFIP || this.solicitante.tipoSolicitud != 'Renovación' && this.solicitante.tipoSolicitud != 'Reempadronamiento')
-
+                (this.documentos.constanciaAFIP || this.solicitante.tipoSolicitud != 'Renovación' && this.solicitante.tipoSolicitud != 'Reempadronamiento') &&
+                (this.documentos.decJurada || this.solicitante.tipoSolicitud != 'Renovación' && this.solicitante.tipoSolicitud != 'Reempadronamiento')
         }
       },
       areAllFieldsValid(){
@@ -1332,6 +1367,8 @@
           this.showPopupCertificadoDomicilio = true;
         } else if (type === 'plano') {
           this.showPopupPlano = true;
+        } else if (type === 'decJurada') {
+          this.showPopupDecJurada = true;
         } else if (type === 'FormLoading') {
           this.showPopupFormLoading = true;
         } else if (type === 'FormOk') {
@@ -1404,6 +1441,10 @@
             nombreDocumento: 'Plano o Informe técnico',
             contenido: null
           },
+          decJurada:{
+            nombreDocumento: 'Declaración Jurada Metros Establecimiento habilitado',
+            contenido: null
+          },
           certificadoDomicilio:{
             nombreDocumento: 'Certificado de domicilio Ingresos Brutos - Punto de venta Villa Gesell ',
             contenido: null
@@ -1428,7 +1469,7 @@
             this.isCaptchaOK();
 
           }else{
-            ("SUBMIT FORM CALLED:");
+            console.log("SUBMIT FORM CALLED:");
 
             this.$v.$touch(); // Marca los campos como tocados para mostrar los errores
             //this.LoguearValidaciones();
@@ -1471,7 +1512,7 @@
               const response = await this.$store.dispatch('habilitaciones/create', {
                 habilitacion,
               });
-              //(response.data)
+              //console.log(response.data)
               this.nroTramite = response.data
               this.openPopup('FormOk');
             } catch (e) {
@@ -1486,7 +1527,7 @@
         this.onResetParams()
       },
       resetFormFieldState(obj, field) {
-        //("resetFormFieldState("+obj+", "+field+")");
+        //console.log("resetFormFieldState("+obj+", "+field+")");
         this.fileTooLargeError[field] = null;
         if(obj == `documentos` && this.$v.documentos[field])
           this.$v.documentos[field].$reset();
@@ -1557,6 +1598,7 @@
         this.documentos.tituloPropiedad.contenido = null
         this.documentos.certificadoDomicilio.contenido = null
         this.documentos.plano.contenido = null
+        this.documentos.decJurada.contenido = null
         this.documentos.croquis.contenido = null
 
         this.showPopupDatosDelSolicitante = false
@@ -1567,6 +1609,7 @@
         this.showPopupConstanciaLibreDeuda = false
         this.showPopupCertificadoDomicilio = false
         this.showPopupPlano = false
+        this.showPopupDecJurada = false
         this.showPopupFormOk = false
         this.showPopupFormLoading = false
         this.showPopupFormError = false
@@ -1635,12 +1678,12 @@
         }
       },
       checkDocumentSize(field, event){
-        //('checkDocumentSize CALLED');
+        //console.log('checkDocumentSize CALLED');
         const file = event.target.files[0];
 
-        //('event.target.files[0]: ' + event.target.files[0]);
+        //console.log('event.target.files[0]: ' + event.target.files[0]);
 
-        //('file.size: ' + file.size + '> this.maxFileSize: ' + this.maxFileSize);
+        //console.log('file.size: ' + file.size + '> this.maxFileSize: ' + this.maxFileSize);
          if (file && file.size > this.maxFileSize) {
           // El archivo excede el tamaño máximo permitido
           this.fileTooLargeError[field] = 'Tu archivo pesa '+ (file.size/1024/1024).toFixed(2) + 'MB'+ ', superando el límite de peso permitido (' + this.maxFileSize/1024/1024 + 'MB'+ '). Reducilo y volvé a cargarlo.' ;

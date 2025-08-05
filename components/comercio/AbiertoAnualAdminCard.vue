@@ -145,13 +145,14 @@
           <b-row>
               <b-col><div class="li-row"><b-icon-caret-right-fill class="li-icon icon-orange" font-scale="1" shift-v="-3px"></b-icon-caret-right-fill><p class="li-content texto-exp"><b>Seleccioná los motivos por los que la carga es incorrecta:</b></p></div></b-col>
           </b-row>
-          <b-row><b-radio-group>
-              <b-form-radio :id="'motivo-1-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="La factura no corresponde al período solicitado."> La factura no corresponde al período solicitado.</b-form-radio>
-              <b-form-radio :id="'motivo-2-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="La factura no corresponde al Legajo y/o CUIT/CUIM."> La factura no corresponde al Legajo y/o CUIT/CUIM.</b-form-radio>
-              <b-form-radio :id="'motivo-3-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="El documento no es legible."> El documento no es legible.</b-form-radio>
-              <b-form-radio :id="'motivo-4-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="El documento no es una factura."> El documento no es una factura.</b-form-radio>
-              <b-form-radio :id="'motivo-5-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="El contribuyente cambió de categoría tirbutaria."> El contribuyente cambió de categoría tributaria.</b-form-radio>
-              <b-form-radio :id="'motivo-6-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="La facturacion no es compatible con las reglamentaciones de AFIP."> La facturacion no es compatible con las reglamentaciones de AFIP.</b-form-radio>
+          <b-row><b-radio-group class="motivos-rechazo-group">
+              <b-form-radio class="motivo-rechazo-option" :id="'motivo-1-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="La factura no corresponde al período solicitado."> La factura no corresponde al período solicitado.</b-form-radio>
+              <b-form-radio class="motivo-rechazo-option" :id="'motivo-2-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="La factura no corresponde al Legajo y/o CUIT/CUIM."> La factura no corresponde al Legajo y/o CUIT/CUIM.</b-form-radio>
+              <b-form-radio class="motivo-rechazo-option" :id="'motivo-3-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="El documento no es legible."> El documento no es legible.</b-form-radio>
+              <b-form-radio class="motivo-rechazo-option" :id="'motivo-4-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="El documento no es una factura."> El documento no es una factura.</b-form-radio>
+              <b-form-radio class="motivo-rechazo-option" :id="'motivo-5-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="El contribuyente cambió de categoría tirbutaria."> El contribuyente cambió de categoría tributaria.</b-form-radio>
+              <b-form-radio class="motivo-rechazo-option" :id="'motivo-6-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="La facturacion no es compatible con las reglamentaciones de AFIP."> La facturacion no es compatible con las reglamentaciones de AFIP.</b-form-radio>
+              <b-form-radio class="motivo-rechazo-option" :id="'motivo-7-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="La factura no corresponde a una venta efectivamente efectuada."> La factura no corresponde a una venta efectivamente efectuada.</b-form-radio>
             </b-radio-group></b-row>
       </b-card-text>
       <b-card-text v-else-if="estadoActual == 12" class="action-confirmation-card">
@@ -772,6 +773,23 @@ width: 100%;
   width: 100%;
   padding: 0.5rem 20%;
   line-height: 20px;
+}
+
+.motivos-rechazo-group {
+  width: 100%;
+}
+
+.motivo-rechazo-option {
+  font-size: 14px;
+  line-height: 1.3;
+  margin-bottom: 0.5rem;
+  padding: 0.25rem 0;
+}
+
+.motivo-rechazo-option .custom-control-label {
+  font-size: 14px;
+  line-height: 1.3;
+  padding-left: 0.5rem;
 }
 @keyframes play-animation {
   0% {

@@ -1427,7 +1427,9 @@
       <div class="modal-info modal-plano">
         <div>
           <p class="my-3">Podés descargar el formulario de Declaración Jurada haciendo clic
-            <a href="https://drive.google.com/file/d/12e--P7naWPKltm7pzsskRymFxobBN4QU/view?usp=sharing" target="_blank"> aquí.</a></p>
+            <a v-if="tramiteSeleccionado === 'Reempadronamiento'" href="https://drive.google.com/file/d/199ziaawDJx8Uqy-hUh5bhad-jCrEke-Y/view?usp=sharing" target="_blank"> aquí.</a>
+            <a v-else-if="tramiteSeleccionado === 'Renovación'" href="https://drive.google.com/file/d/1L2G58QHP9xIq9FRcXBp7VBRxr-tyylOH/view?usp=sharing" target="_blank"> aquí.</a>
+            <a v-else href="https://drive.google.com/file/d/12e--P7naWPKltm7pzsskRymFxobBN4QU/view?usp=sharing" target="_blank"> aquí.</a></p>
         </div>
       </div>
     </b-modal>

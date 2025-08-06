@@ -550,6 +550,52 @@ export default {
               }, 1000); // Cambia 1000ms por la duración de tu animación
           }, 500); // Cambia 500ms por la mitad de la duración de tu animación
       },
+
+      downloadHeicFile() {
+          if (!this.currentDocumento) {
+              console.error('No hay documento HEIC para descargar');
+              return;
+          }
+
+          try {
+              // Decodificar la data de Base64
+              const decodedData = atob(this.currentDocumento.data);
+              const arrayBuffer = new Uint8Array(decodedData.length);
+
+              for (let i = 0; i < decodedData.length; i++) {
+                  arrayBuffer[i] = decodedData.charCodeAt(i);
+              }
+
+              // Crear el blob con el tipo MIME correcto para HEIC
+              const blob = new Blob([arrayBuffer], {
+                  type: this.currentDocumento.contentType || 'image/heic'
+              });
+
+              // Crear el enlace de descarga
+              const a = document.createElement('a');
+              a.href = URL.createObjectURL(blob);
+              a.download = this.currentDocumento.filename || 'archivo.heic';
+              a.style.display = 'none';
+
+              // Agregar al DOM, hacer clic y limpiar
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+
+              // Liberar la URL del objeto
+              URL.revokeObjectURL(a.href);
+
+              // Cerrar el modal
+              this.showHeicModal = false;
+
+          } catch (error) {
+              console.error('Error al descargar el archivo HEIC:', error);
+              this.$bvToast.toast('Error al descargar el archivo', {
+                  variant: 'danger',
+                  title: 'Error'
+              });
+          }
+      },
   }
 }
 </script>

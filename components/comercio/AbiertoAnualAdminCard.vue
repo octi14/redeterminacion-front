@@ -1,4 +1,5 @@
 <template>
+  <div>
   <transition name="flip">
   <b-card id="aaCard" ref="card" class="abierto-anual-card shadow-card" style="max-width: 20rem;">
       <div class="icon-container">
@@ -148,7 +149,7 @@
           <b-row><b-radio-group class="motivos-rechazo-group">
               <b-form-radio class="motivo-rechazo-option" :id="'motivo-1-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="La factura no corresponde al período solicitado."> La factura no corresponde al período solicitado.</b-form-radio>
               <b-form-radio class="motivo-rechazo-option" :id="'motivo-2-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="La factura no corresponde al Legajo y/o CUIT/CUIM."> La factura no corresponde al Legajo y/o CUIT/CUIM.</b-form-radio>
-              <b-form-radio class="motivo-rechazo-option" :id="'motivo-3-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="El documento no es legible."> El documento no es legible.</b-form-radio>
+              <b-form-radio class="motivo-rechazo-option" :id="'motivo-3-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="El documento no es legible o está dañado."> El documento no es legible o está dañado.</b-form-radio>
               <b-form-radio class="motivo-rechazo-option" :id="'motivo-4-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="El documento no es una factura."> El documento no es una factura.</b-form-radio>
               <b-form-radio class="motivo-rechazo-option" :id="'motivo-5-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="El contribuyente cambió de categoría tirbutaria."> El contribuyente cambió de categoría tributaria.</b-form-radio>
               <b-form-radio class="motivo-rechazo-option" :id="'motivo-6-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="La facturacion no es compatible con las reglamentaciones de AFIP."> La facturacion no es compatible con las reglamentaciones de AFIP.</b-form-radio>
@@ -196,6 +197,22 @@
       </div>
   </b-card>
   </transition>
+
+  <!-- Modal para archivos HEIC -->
+  <b-modal v-model="showHeicModal" header-bg-variant="warning" title="Archivo no compatible" title-class="text-light" hide-footer centered>
+    <div class="text-center">
+      <b-icon-exclamation-triangle-fill variant="warning" scale="3" class="my-3"></b-icon-exclamation-triangle-fill>
+      <h5 class="my-3">Este archivo no pudo ser abierto desde el navegador</h5>
+      <p class="mb-4">El formato HEIC no es compatible con tu navegador.<br/> Podés descargar el archivo para visualizarlo en tu dispositivo.</p>
+      <b-button @click="downloadHeicFile" variant="success" class="mr-2 btn-download-heic">
+        <b-icon-download></b-icon-download> Descargar
+      </b-button>
+      <b-button @click="showHeicModal = false" variant="secondary">
+        Cerrar
+      </b-button>
+    </div>
+  </b-modal>
+  </div>
 </template>
 
 <script>
@@ -226,6 +243,8 @@ export default {
       captchaResponse: null,
       captchaError: false,
       periodoActivo: false,
+      showHeicModal: false,
+      currentDocumento: null,
       };
   },
   async fetch(){
@@ -469,6 +488,14 @@ export default {
             return;
         }
 
+        // Verificar si es un archivo HEIC
+        if (documento.contentType === 'image/heic' || documento.contentType === 'image/heif' ||
+            (documento.filename && documento.filename.toLowerCase().endsWith('.heic'))) {
+            this.showHeicModal = true;
+            this.currentDocumento = documento;
+            return;
+        }
+
         const decodedData = atob(documento.data); // Decodificar la data de Base64
         const arrayBuffer = new Uint8Array(decodedData.length);
 
@@ -505,7 +532,6 @@ export default {
 
 
 
-
       playAnimation(callback, newState) {
           // Agregar clase para iniciar la animación
           this.$refs.card.classList.add('playing-animation');
@@ -523,7 +549,7 @@ export default {
                   }
               }, 1000); // Cambia 1000ms por la duración de tu animación
           }, 500); // Cambia 500ms por la mitad de la duración de tu animación
-      }
+      },
   }
 }
 </script>

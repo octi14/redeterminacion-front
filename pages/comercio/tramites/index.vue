@@ -685,7 +685,7 @@
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> <a href="https://sso.arba.gov.ar/Login/login?service=https%3A%2F%2Fapp.arba.gov.ar%3A443%2FWebTramites%2Fwelcome.do" target="_blank" class="external-link">Certificado de domicilio Ingresos Brutos (ARBA).</a></div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" class="external-link">Constancia de inscripción a Ingresos Brutos.</a></div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Libro de actas: se entrega en forma presencial al finalizar el trámite. (<i>En el caso de alojamientos se presentarán 2 libros: de quejas y de habilitación.</i>)</div></div>
-                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Declaración Jurada - Metros establecimiento habilitado.</div></div>
+                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Declaración Jurada - Metros establecimiento habilitado. <b-icon-question-circle-fill @click="openPopup('decJurada')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Contrato de locación con el correspondiente Impuesto de Sellos Provincial y firma certificada por Escribano Público, Entidad Bancaria o Autoridad Administrativa.</div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Planilla de Autorización de Trámite legalizada o poder autorizado por escribano <i>(únicamente si el trámite es iniciado mediante representante o apoderado/a)</i>.</div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> <b>Personas Jurídicas:</b> Escritura constitutiva de la misma con designación actual de sus representantes.</div></div>
@@ -867,7 +867,7 @@
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> <a href="https://sso.arba.gov.ar/Login/login?service=https%3A%2F%2Fapp.arba.gov.ar%3A443%2FWebTramites%2Fwelcome.do" target="_blank" class="external-link">Certificado de domicilio Ingresos Brutos (ARBA).</a></div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" class="external-link">Constancia de inscripción a Ingresos Brutos.</a></div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Libro de actas: se entrega en forma presencial al finalizar el trámite. (<i>En el caso de alojamientos se presentarán 2 libros: de quejas y de habilitación.</i>)</div></div>
-                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Declaración Jurada - Metros establecimiento habilitado. </div></div>
+                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Declaración Jurada - Metros establecimiento habilitado. <b-icon-question-circle-fill @click="openPopup('decJurada')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Contrato de locación con el correspondiente Impuesto de Sellos Provincial y firma certificada por Escribano Público, Entidad Bancaria o Autoridad Administrativa. <i>(Si el contrato original se encuentra finalizado el trámite a realizar es una <a href="#card-renovacion" id="btnR" class="external-link" @click="seleccionarTramite('Renovación')">renovación</a>, no un reempadronamiento)</i></div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Planilla de Autorización de Trámite legalizada o poder autorizado por escribano <i>(únicamente si el trámite es iniciado mediante representante o apoderado/a)</i>.</div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> <b>Personas Jurídicas:</b> Escritura constitutiva de la misma con designación actual de sus representantes.</div></div>
@@ -1413,6 +1413,24 @@
         <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>Podés consultar el número enviando un correo electrónico a <a href="mailto:catatro@gesell.gob.ar" target="_blank">catastro@gesell.gob.ar</a>, indicando nomenclatura catastral del bien que se encuentra en la escritura del mismo.</p>
       </div>
     </b-modal>
+    <!-- Modal para declaración jurada -->
+    <b-modal v-model="showPopupDecJurada" title="" :hide-footer="true" @click-outside="showPopupDecJurada = false" :header-bg-variant="'success'" centered>
+      <template #modal-header>
+        <div class="modal-info">
+          <h5>
+              <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
+              Información Adicional
+          </h5>
+        </div>
+        <button type="button" aria-label="Close" class="close" @click="showPopupDecJurada = false">×</button>
+      </template>
+      <div class="modal-info modal-plano">
+        <div>
+          <p class="my-3">Podés descargar el formulario de Declaración Jurada haciendo clic
+            <a href="https://drive.google.com/file/d/12e--P7naWPKltm7pzsskRymFxobBN4QU/view?usp=sharing" target="_blank"> aquí.</a></p>
+        </div>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -1433,6 +1451,7 @@ export default {
       showLibreDeudaPopup: false,
       showPopupNroInmueble: false,
       showPopupConstanciaLibreDeudaSegHig: false,
+      showPopupDecJurada: false,
       documentCheckboxChecked: false,
       tramiteSeleccionado: '',
       rubroSeleccionado: {
@@ -1513,6 +1532,8 @@ export default {
         this.showPopupNroInmueble = true;
       }else if (type === 'ConstanciaLibreDeudaSegHig'){
         this.showPopupConstanciaLibreDeudaSegHig = true;
+      }else if (type === 'decJurada'){
+        this.showPopupDecJurada = true;
       }
     },
     proceedToForm() {

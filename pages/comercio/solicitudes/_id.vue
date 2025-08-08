@@ -31,13 +31,13 @@
       </div>
       <!--Botones-->
       <div class="row col-10 mx-auto justify-content-center" v-if="jefeComercio">
-        <b-button @click="onShowSolicitarDocumentacion" variant="success" class="btn-4 mt-3 mx-1" v-if="habilitacion.status === 'Inspeccionado'"> Solicitar documentación </b-button>
-        <b-button @click="onShowAprobarBaja" variant="success" class="btn-4 mt-3 mx-1" v-if="baja && (habilitacion.status === 'En revisión' || habilitacion.status === 'Rectificación')"> Aprobar solicitud </b-button>
-        <b-button @click="onShowAprobarSolicitud" variant="success" class="btn-4 mt-3 mx-1" v-if="!baja && habilitacion.status==='En revisión'"> Aprobar solicitud </b-button>
-        <b-button @click="onShowRectificacion" variant="secondary " class="btn-4 mt-3 mx-1" v-if="habilitacion.status === 'En revisión'"> Rectificación </b-button>
-        <b-button @click="onShowFinalizarSolicitud" variant="success" class="btn-4 mt-3 mx-1" v-if="(!renovacion && !reempadronamiento) && (habilitacion.status === 'Esperando documentación' || habilitacion.status === 'Esperando pago')"> Finalizar solicitud </b-button>
-        <b-button @click="onShowFinalizarRenovacion" variant="success" class="btn-4 mt-3 mx-1" v-if="(renovacion || reempadronamiento) && habilitacion.status === 'Esperando documentación'"> Finalizar solicitud </b-button>
-        <b-button @click="onRestablecer" variant="secondary" class="btn-4 mt-3 mx-1" v-if="habilitacion.status != 'En revisión' && habilitacion.status != 'Rectificación'"> Volver a estado En Revisión </b-button>
+        <b-button @click="onShowSolicitarDocumentacion" variant="success" class="btn-4 mt-3 mx-1" v-if="habilitacion && habilitacion.status === 'Inspeccionado'"> Solicitar documentación </b-button>
+        <b-button @click="onShowAprobarBaja" variant="success" class="btn-4 mt-3 mx-1" v-if="baja && habilitacion && (habilitacion.status === 'En revisión' || habilitacion.status === 'Rectificación')"> Aprobar solicitud </b-button>
+        <b-button @click="onShowAprobarSolicitud" variant="success" class="btn-4 mt-3 mx-1" v-if="!baja && habilitacion && habilitacion.status==='En revisión'"> Aprobar solicitud </b-button>
+        <b-button @click="onShowRectificacion" variant="secondary " class="btn-4 mt-3 mx-1" v-if="habilitacion && habilitacion.status === 'En revisión'"> Rectificación </b-button>
+        <b-button @click="onShowFinalizarSolicitud" variant="success" class="btn-4 mt-3 mx-1" v-if="(!renovacion && !reempadronamiento) && habilitacion && (habilitacion.status === 'Esperando documentación' || habilitacion.status === 'Esperando pago')"> Finalizar solicitud </b-button>
+        <b-button @click="onShowFinalizarRenovacion" variant="success" class="btn-4 mt-3 mx-1" v-if="(renovacion || reempadronamiento) && habilitacion && habilitacion.status === 'Esperando documentación'"> Finalizar solicitud </b-button>
+        <b-button @click="onRestablecer" variant="secondary" class="btn-4 mt-3 mx-1" v-if="habilitacion && habilitacion.status != 'En revisión' && habilitacion.status != 'Rectificación'"> Volver a estado En Revisión </b-button>
         <b-button @click="onRechazarSolicitud" class="btn-3 mt-3 mx-1"> Rechazar solicitud </b-button>
         <b-button @click="onShowObservaciones" variant="primary" class="btn-2 mt-3 mx-1"> Ver observaciones </b-button>
       </div>
@@ -51,7 +51,28 @@
       <b-card no-body class="container col-md-6 col-sm-8 shadow-card mt-4 mx-auto">
           <div class="col mx-auto">
             <div class="container text-center mx-auto">
-              <h2 class="text-success mt-2"><b> Datos del solicitante </b></h2>
+              <div class="row align-items-center">
+                <div class="col">
+                  <h2 class="text-success mt-2"><b> Datos del solicitante </b></h2>
+                </div>
+                <!-- Controles de revisión para datos del solicitante -->
+                <div class="col-auto" v-if="jefeComercio && habilitacion && habilitacion.status === 'En revisión'">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="revisionSolicitante" id="solicitanteCorrecto"
+                           value="correcto" v-model="revisionSolicitante" @change="actualizarRevision('solicitante')">
+                    <label class="form-check-label text-success" for="solicitanteCorrecto">
+                      <b-icon-check-circle-fill></b-icon-check-circle-fill>
+                    </label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="revisionSolicitante" id="solicitanteIncorrecto"
+                           value="incorrecto" v-model="revisionSolicitante" @change="actualizarRevision('solicitante')">
+                    <label class="form-check-label text-danger" for="solicitanteIncorrecto">
+                      <b-icon-x-circle-fill></b-icon-x-circle-fill>
+                    </label>
+                  </div>
+                </div>
+              </div>
               <hr/>
             </div>
           </div>
@@ -116,12 +137,33 @@
           </div>
       </b-card>
     </template>
-    <!-- Datos del inmueble -->
+        <!-- Datos del inmueble -->
     <template v-if="habilitacion">
       <div class="container col-md-6 col-sm-8 card shadow-card mt-4 mx-auto">
           <div class="col mx-auto">
             <div class="container text-center mx-auto">
-              <h2 class="text-success mt-2"><b> Datos del inmueble </b></h2>
+              <div class="row align-items-center">
+                <div class="col">
+                  <h2 class="text-success mt-2"><b> Datos del inmueble </b></h2>
+                </div>
+                <!-- Controles de revisión para datos del inmueble -->
+                <div class="col-auto" v-if="jefeComercio && habilitacion && habilitacion.status === 'En revisión'">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="revisionInmueble" id="inmuebleCorrecto"
+                           value="correcto" v-model="revisionInmueble" @change="actualizarRevision('inmueble')">
+                    <label class="form-check-label text-success" for="inmuebleCorrecto">
+                      <b-icon-check-circle-fill></b-icon-check-circle-fill>
+                    </label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="revisionInmueble" id="inmuebleIncorrecto"
+                           value="incorrecto" v-model="revisionInmueble" @change="actualizarRevision('inmueble')">
+                    <label class="form-check-label text-danger" for="inmuebleIncorrecto">
+                      <b-icon-x-circle-fill></b-icon-x-circle-fill>
+                    </label>
+                  </div>
+                </div>
+              </div>
               <hr/>
             </div>
           </div>
@@ -220,20 +262,65 @@
             <hr/>
           </div>
         </div>
-        <!-- Mostrar los enlaces a los documentos -->
-        <div class="container justify-content-center mx-auto" v-if="documentos">
-          <div v-for="(documento, nombreDocumento) in documentos" :key="nombreDocumento">
-            <div class="layout" v-if="documento">
-              <p class="col col-main">
-                <strong>{{ nombreDocumento }}</strong><br>
-              </p>
-              <p class="col col-complementary" role="complementary">
-                <b-button size="sm" @click="openDocumento(documento, nombreDocumento)" variant="outline-primary" pill>
-                  <b-icon icon="eye" scale="1.2"></b-icon>
-                  Ver
-                </b-button>
-              </p>
+                <!-- Mostrar los enlaces a los documentos -->
+        <div class="container justify-content-center mx-auto mb-3" v-if="documentos">
+          <!-- Header con controles de revisión -->
+          <div class="row mb-2" v-if="jefeComercio && habilitacion && habilitacion.status === 'En revisión'">
+            <div class="col-8">
+              <strong>Documento</strong>
             </div>
+            <div class="col-2 text-center">
+              <strong>Ver</strong>
+            </div>
+            <div class="col-2 text-center">
+              <strong>Revisión</strong>
+              <div class="mt-1 d-flex justify-content-center">
+                <span class="text-success mr-3">
+                  <b-icon-check-circle-fill></b-icon-check-circle-fill>
+                </span>
+                <span class="text-danger mr-3">
+                  <b-icon-x-circle-fill></b-icon-x-circle-fill>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div v-for="(documento, nombreDocumento, index) in documentos" :key="nombreDocumento">
+            <div class="row align-items-center py-1" v-if="documento">
+              <div class="col-8">
+                <strong>{{ nombreDocumento }}</strong>
+              </div>
+              <div class="col-2 text-center">
+                <b-button size="sm" @click="openDocumento(documento, nombreDocumento)" variant="outline-primary" pill>
+                  <b-icon icon="eye-fill" scale="1.2"></b-icon>
+                </b-button>
+              </div>
+              <!-- Controles de revisión para cada documento -->
+              <div class="col-2 text-center" v-if="jefeComercio && habilitacion && habilitacion.status === 'En revisión'">
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio"
+                         :name="'revisionDoc_' + nombreDocumento"
+                         :id="'docCorrecto_' + nombreDocumento"
+                         value="correcto"
+                         v-model="revisionDocumentos[nombreDocumento]"
+                         @change="actualizarRevision('documento', nombreDocumento)">
+                  <label class="form-check-label" :for="'docCorrecto_' + nombreDocumento">
+                  </label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio"
+                         :name="'revisionDoc_' + nombreDocumento"
+                         :id="'docIncorrecto_' + nombreDocumento"
+                         value="incorrecto"
+                         v-model="revisionDocumentos[nombreDocumento]"
+                         @change="actualizarRevision('documento', nombreDocumento)">
+                  <label class="form-check-label" :for="'docIncorrecto_' + nombreDocumento">
+                  </label>
+                </div>
+              </div>
+            </div>
+            <!-- Línea separadora entre documentos -->
+            <hr v-if="documento && index < Object.keys(documentos).length - 1" class="my-1" style="border-color: #dee2e6; border-width: 1px;">
           </div>
         </div>
         <div class="justify-content-center mx-auto" v-else>
@@ -300,10 +387,11 @@
       </div>
     </template>
 
-    <div class="text-center mb-3">
+    <div class="text-center my-3">
       <NuxtLink to="/comercio/solicitudes">
-        <b-button variant="primary">Volver</b-button>
+        <b-button variant="primary" class="mx-2">Volver</b-button>
       </NuxtLink>
+      <b-button @click="onFinalizarRevision" variant="success" class="mx-2" v-if="jefeComercio && habilitacion && habilitacion.status === 'En revisión'"> Finalizar Revisión </b-button>
     </div>
 
     <!-- Modals -->
@@ -316,12 +404,24 @@
         </template>
         <div class="confirmation-popup-body">
           <h2 class="icon-orange text-danger text-center"><b>Rechazar solicitud</b></h2>
-          <p>La solicitud será rechazada. Recordá notificar al solicitante a través de su correo electrónico indicando los motivos.</p>
-          <p>Observaciones:  </p>
-          <b-form-textarea v-model="observaciones" required type="text" />
+          <p>La solicitud será rechazada automáticamente. Se enviará un correo electrónico al solicitante con los motivos del rechazo.</p>
+
+          <!-- Elementos marcados como incorrectos -->
+          <div v-if="elementosIncorrectos.length > 0" class="mt-3">
+            <h6 class="text-danger"><b>Elementos marcados como incorrectos:</b></h6>
+            <ul class="text-left">
+              <li v-for="elemento in elementosIncorrectos" :key="elemento" class="mb-1">
+                {{ elemento }}
+              </li>
+            </ul>
+          </div>
+
+          <!-- <p>Observaciones:  </p>
+          <b-form-textarea v-model="observaciones" required type="text" /> -->
+
           <div class="text-center mt-3">
             <b-btn variant="danger" @click="onSendReject()" >
-                Enviar
+                Confirmar Rechazo
             </b-btn>
           </div>
         </div>
@@ -556,6 +656,46 @@
       </div>
     </b-modal>
 
+    <!--Modal revisión incompleta-->
+    <b-modal v-model="showRevisionIncompleta" hide-footer :header-bg-variant="'warning'" centered>
+      <template #modal-header>
+        <div class="confirmation-popup-header mx-auto">
+          <b-icon-exclamation-triangle scale="2" variant="light" />
+        </div>
+      </template>
+      <div class="confirmation-popup-body text-center">
+        <h3 class="text-warning text-center mb-4"><b>Revisión Incompleta</b></h3>
+        <p style="color:black">No has revisado todo el trámite.</p>
+        <p style="color:black">Por favor, completa la revisión de todos los elementos antes de finalizar.</p>
+        <small>Debes revisar los datos del solicitante, datos del inmueble y todos los documentos presentados.</small>
+        <div class="text-center mt-4">
+          <b-btn variant="warning" @click="showRevisionIncompleta = false">
+              Entendido
+          </b-btn>
+        </div>
+      </div>
+    </b-modal>
+
+    <!--Modal rechazo automático-->
+    <b-modal v-model="showRechazoAutomatico" hide-footer :header-bg-variant="'danger'" centered>
+      <template #modal-header>
+        <div class="confirmation-popup-header mx-auto">
+          <b-icon-exclamation-triangle scale="2" variant="light" />
+        </div>
+      </template>
+      <div class="confirmation-popup-body text-center">
+        <h3 class="text-danger text-center mb-4"><b>Rechazo Automático</b></h3>
+        <p style="color:black">Se detectó al menos un documento o dato incorrecto.</p>
+        <p style="color:black">El trámite será rechazado automáticamente al finalizar la revisión.</p>
+        <small>Revisa todos los elementos marcados como incorrectos antes de continuar.</small>
+        <div class="text-center mt-4">
+          <b-btn variant="danger" @click="showRechazoAutomatico = false">
+              Entendido
+          </b-btn>
+        </div>
+      </div>
+    </b-modal>
+
   </div>
 </template>
 
@@ -600,6 +740,14 @@ export default {
       alcance: null,
       showDocumentoModal: false,
       DocumentoModalTitle: "",
+      showRevisionIncompleta: false,
+      showRechazoAutomatico: false,
+      // Variables para el sistema de revisión
+      revisionSolicitante: null,
+      revisionInmueble: null,
+      revisionDocumentos: {},
+      rechazoAutomaticoMostrado: false,
+      elementosIncorrectos: [],
     }
   },
   computed: {
@@ -650,6 +798,32 @@ export default {
     },
     documentos(){
       return this.$store.state.documentos.all
+    },
+
+        elementosIncorrectos() {
+      const elementos = [];
+
+      // Verificar datos del solicitante
+      if (this.revisionSolicitante === 'incorrecto') {
+        elementos.push('Datos del solicitante');
+      }
+
+      // Verificar datos del inmueble
+      if (this.revisionInmueble === 'incorrecto') {
+        elementos.push('Datos del inmueble');
+      }
+
+      // Verificar documentos incorrectos
+      if (this.revisionDocumentos) {
+        Object.entries(this.revisionDocumentos).forEach(([nombreDocumento, valor]) => {
+          if (valor === 'incorrecto') {
+            elementos.push(nombreDocumento);
+          }
+        });
+      }
+
+      console.log('Elementos incorrectos:', elementos);
+      return elementos;
     }
   },
   async fetch() {
@@ -658,6 +832,12 @@ export default {
       id: habilitacionId,
     })
     this.habilitacion = this.$store.state.habilitaciones.single
+
+    // Verificar que habilitacion existe antes de acceder a sus propiedades
+    if (!this.habilitacion) {
+      console.error('No se pudo cargar la habilitación')
+      return
+    }
 
     const nroTramite = this.habilitacion.nroTramite
     await this.$store.dispatch('turnos/getSingle', { nroTramite })
@@ -1080,6 +1260,91 @@ export default {
           return 0
         }
     },
+
+        // Método unificado para el sistema de revisión
+    actualizarRevision(tipo, valor = null) {
+      // Actualizar la lista de elementos incorrectos
+      this.actualizarElementosIncorrectos();
+      // Aquí se puede agregar lógica para guardar en el backend
+      this.verificarRechazoAutomatico();
+    },
+
+    // Método para actualizar la lista de elementos incorrectos
+    actualizarElementosIncorrectos() {
+      const elementos = [];
+
+      // Verificar datos del solicitante
+      if (this.revisionSolicitante === 'incorrecto') {
+        elementos.push('Datos del solicitante');
+      }
+
+      // Verificar datos del inmueble
+      if (this.revisionInmueble === 'incorrecto') {
+        elementos.push('Datos del inmueble');
+      }
+
+      // Verificar documentos incorrectos
+      if (this.revisionDocumentos) {
+        Object.entries(this.revisionDocumentos).forEach(([nombreDocumento, valor]) => {
+          if (valor === 'incorrecto') {
+            elementos.push(nombreDocumento);
+          }
+        });
+      }
+
+      this.elementosIncorrectos = elementos;
+      console.log('Elementos incorrectos actualizados:', elementos);
+    },
+
+            verificarRechazoAutomatico() {
+      // Verificar si hay algún documento marcado como incorrecto
+      const hayDocumentoIncorrecto = Object.values(this.revisionDocumentos).some(valor => valor === 'incorrecto');
+
+      // Verificar si hay datos incorrectos
+      const hayDatosIncorrectos = this.revisionSolicitante === 'incorrecto' || this.revisionInmueble === 'incorrecto';
+
+      if ((hayDocumentoIncorrecto || hayDatosIncorrectos) && !this.rechazoAutomaticoMostrado) {
+        // Mostrar modal de rechazo automático solo la primera vez
+        this.showRechazoAutomatico = true;
+        this.rechazoAutomaticoMostrado = true;
+      }
+    },
+
+    // Método para resetear el flag de rechazo automático
+    resetearRechazoAutomatico() {
+      this.rechazoAutomaticoMostrado = false;
+    },
+
+    onFinalizarRevision() {
+      // Verificar si se han revisado todos los elementos
+      const solicitanteRevisado = this.revisionSolicitante !== null;
+      const inmuebleRevisado = this.revisionInmueble !== null;
+
+      // Contar documentos revisados
+      const documentosRevisados = Object.values(this.revisionDocumentos).filter(valor => valor !== null && valor !== undefined).length;
+      const totalDocumentos = Object.keys(this.documentos || {}).length;
+
+      // Verificar si faltan elementos por revisar
+      if (!solicitanteRevisado || !inmuebleRevisado || documentosRevisados < totalDocumentos) {
+        this.showRevisionIncompleta = true;
+        return;
+      }
+
+      // Verificar si hay algo incorrecto
+      const hayDocumentoIncorrecto = Object.values(this.revisionDocumentos).some(valor => valor === 'incorrecto');
+      const hayDatosIncorrectos = this.revisionSolicitante === 'incorrecto' || this.revisionInmueble === 'incorrecto';
+
+      if (hayDocumentoIncorrecto || hayDatosIncorrectos) {
+        // Actualizar lista de elementos incorrectos antes de mostrar el modal
+        this.actualizarElementosIncorrectos();
+        // Mostrar popup de rechazo
+        console.log('Abriendo modal de rechazo con elementos incorrectos:', this.elementosIncorrectos);
+        this.onRechazarSolicitud();
+      } else {
+        // Mostrar popup de aprobación
+        this.onShowAprobarSolicitud();
+      }
+    },
   },
 }
 </script>
@@ -1145,5 +1410,34 @@ export default {
 .col {
   padding: 0.4em;
   margin: 0 2px 2px 40px;
+}
+
+/* Estilos para los controles de revisión */
+.form-check-inline {
+  margin-right: 0.5rem;
+}
+
+.form-check-input:checked {
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+.form-check-input[value="incorrecto"]:checked {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.form-check-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Estilos para los iconos de revisión */
+.form-check-label .bi-check-circle-fill {
+  color: #28a745;
+}
+
+.form-check-label .bi-x-circle-fill {
+  color: #dc3545;
 }
 </style>

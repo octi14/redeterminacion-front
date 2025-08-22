@@ -32,17 +32,12 @@
       <!--Botones-->
       <div class="row col-10 mx-auto justify-content-center" v-if="jefeComercio">
         <b-button @click="onShowSolicitarDocumentacion" variant="success" class="btn-4 mt-3 mx-1" v-if="habilitacion && habilitacion.status === 'Inspeccionado'"> Solicitar documentación </b-button>
-        <b-button @click="onShowAprobarBaja" variant="success" class="btn-4 mt-3 mx-1" v-if="baja && habilitacion && (habilitacion.status === 'En revisión' || habilitacion.status === 'Rectificación')"> Aprobar solicitud </b-button>
-        <b-button @click="onShowAprobarSolicitud" variant="success" class="btn-4 mt-3 mx-1" v-if="!baja && habilitacion && habilitacion.status==='En revisión'"> Aprobar solicitud </b-button>
         <b-button @click="onShowRectificacion" variant="secondary " class="btn-4 mt-3 mx-1" v-if="habilitacion && habilitacion.status === 'En revisión'"> Rectificación </b-button>
         <b-button @click="onShowFinalizarSolicitud" variant="success" class="btn-4 mt-3 mx-1" v-if="(!renovacion && !reempadronamiento) && habilitacion && (habilitacion.status === 'Esperando documentación' || habilitacion.status === 'Esperando pago')"> Finalizar solicitud </b-button>
         <b-button @click="onShowFinalizarRenovacion" variant="success" class="btn-4 mt-3 mx-1" v-if="(renovacion || reempadronamiento) && habilitacion && habilitacion.status === 'Esperando documentación'"> Finalizar solicitud </b-button>
-        <b-button @click="onRestablecer" variant="secondary" class="btn-4 mt-3 mx-1" v-if="habilitacion && habilitacion.status != 'En revisión' && habilitacion.status != 'Rectificación'"> Volver a estado En Revisión </b-button>
-        <b-button @click="onRechazarSolicitud" class="btn-3 mt-3 mx-1"> Rechazar solicitud </b-button>
+        <b-button @click="onRestablecer" variant="secondary" class="btn-4 mt-3 mx-1" v-if="adminMaster && habilitacion && habilitacion.status != 'En revisión' && habilitacion.status != 'Rectificación'"> Volver a estado En Revisión </b-button>
         <b-button @click="onShowObservaciones" variant="primary" class="btn-2 mt-3 mx-1"> Ver observaciones </b-button>
-      </div>
-      <div class="row no-gutters">
-        <b-button @click="onDescargarHabilitacion(); registrarActividad('Descargar Trámite', 'Trámite Descargado', habilitacion.nroTramite)" v-if="adminComercio || adminArvige || adminModernizacion" variant="success" class="btn-4 mx-auto mt-3 mx-1">
+        <b-button @click="onDescargarHabilitacion(); registrarActividad('Descargar Trámite', 'Trámite Descargado', habilitacion.nroTramite)" v-if="adminComercio || adminArvige || adminModernizacion" variant="success" class="btn-4 mt-3 mx-1">
           <b-icon icon="download" class="mr-1"></b-icon> Descargar trámite
         </b-button>
       </div>
@@ -387,11 +382,19 @@
       </div>
     </template>
 
+    <!-- Botón Finalizar Revisión - Prominente y en su propia fila -->
+    <div class="text-center my-4" v-if="jefeComercio && habilitacion && habilitacion.status === 'En revisión'">
+      <b-button @click="onFinalizarRevision" variant="success" class="px-4 py-2">
+        <b-icon-check-circle-fill class="mr-2"></b-icon-check-circle-fill>
+        Finalizar Revisión
+      </b-button>
+    </div>
+
+    <!-- Botón Volver - Abajo -->
     <div class="text-center my-3">
       <NuxtLink to="/comercio/solicitudes">
         <b-button variant="primary" class="mx-2">Volver</b-button>
       </NuxtLink>
-      <b-button @click="onFinalizarRevision" variant="success" class="mx-2" v-if="jefeComercio && habilitacion && habilitacion.status === 'En revisión'"> Finalizar Revisión </b-button>
     </div>
 
     <!-- Modals -->
@@ -459,7 +462,7 @@
         <h5 class="mb-3 text-center mr-3"> <b-icon-exclamation-octagon scale="0.8" variant="secondary"/><b> ¿El comercio requiere inspección? </b> </h5>
         <div class="form-check">
             <input class="form-check-input" type="checkbox" id="documentCheckbox" v-model="inspeccion"/>
-            <label class="form-check-label" for="documentCheckbox"><b> Si. </b> Enviá un mail indicando que la persona deberá solamente pedir un Turno Web para Inspección Comercial.</label>
+            <label class="form-check-label" for="documentCheckbox"><b> Si. </b> Se enviará automáticamente un mail indicando que la persona deberá pedir un Turno Web para Inspección Comercial.</label>
         </div>
         <div class="text-center mt-3">
           <b-btn variant="primary" @click="onSendApprove()" >
@@ -478,8 +481,9 @@
       </template>
       <div class="confirmation-popup-body">
         <h2 class="icon-orange text-secondary text-center"><b>Aprobar solicitud</b></h2>
-        <p style="margin: 3%"> Se aprobará la solicitud. Se deberá enviar un mail al solicitante indicando que el
-           trámite está completo y adjuntar el certificado de baja. </p>
+        <p style="margin: 3%" class="text-center">  Se enviará automáticamente un mail al solicitante indicando que el
+           trámite está completo.</p>
+        <small class="text-dark text-center">Recordá que deberás enviarle otro mail adjuntando el certificado de baja. </small>
         <!-- <p style="margin: 3%"> Ingresá el número de expediente asignado al expediente actual y su alcance. </p>
         <div class="mx-auto">
         <p style="margin: 3%"><b-icon-caret-right-fill class="icon-orange"/><b>Número de expediente:</b></p>
@@ -512,12 +516,13 @@
         <h3 class="icon-orange text-success text-center" v-if="!baja"><b>Aprobar solicitud</b></h3>
         <h3 class="icon-orange text-success text-center" v-else><b>Trámite finalizado</b></h3>
 
-        <p v-if="!baja">La solicitud fue aprobada con éxito. Se deberá  enviar un correo electrónico al solicitante indicando que en el plazo de 7 días hábiles:</p>
-        <p style="text-align: center" v-else>Recordá enviar un correo electrónico al solicitante indicando que el trámite ha sido finalizado.</p>
+        <p v-if="!baja">La solicitud fue aprobada con éxito. Se envió un correo electrónico al solicitante indicando que en el plazo de 7 días hábiles:</p>
+        <p style="text-align: center" v-else>Se envió un correo electrónico al solicitante indicando que el trámite ha sido finalizado.</p>
         <ul>
-          <li v-if="!baja">  Abone el canon de Habilitación Comercial previsto para el rubro. </li>
+          <!-- <li v-if="!baja">  Abone el canon de Habilitación Comercial previsto para el rubro. </li> -->
           <li v-if="!baja"> Abone el canon previsto para el rubro.</li>
-          <li v-if="!baja">  Concurra al Departamento de Comercio con la documentación original y el Libro de Actas. </li>
+          <li v-if="!baja && inspeccion"> Solicite un turno web para inspección comercial.</li>
+          <li v-if="!baja && !inspeccion">  Concurra al Departamento de Comercio con la documentación original y el Libro de Actas. </li>
           <li v-if="!baja">  Constituya el Domicilio Fiscal Electrónico (DFE). </li>
         </ul>
         <div class="text-center mt-3">
@@ -537,10 +542,10 @@
       </template>
       <div class="confirmation-popup-body">
         <h3 class="icon-orange text-success text-center"><b>Solicitar documentación</b></h3>
-        <p>La solicitud fue aprobada con éxito. Se deberá  enviar un correo electrónico al solicitante indicando que en el plazo de 7 días hábiles:</p>
+        <p>La inspección fue aprobada con éxito. Se enviará automáticamente un correo electrónico al solicitante indicando que en el plazo de 7 días hábiles:</p>
         <ul>
           <li>  Abone el canon de Habilitación Comercial previsto para el rubro. </li>
-          <li>  Concurra al Departamento de Comercio con la documentación original. </li>
+          <li>  Concurra al Departamento Comercio con la documentación original. </li>
           <li>  Constituya el Domicilio Fiscal Electrónico (DFE). </li>
         </ul>
         <div class="text-center mt-3">
@@ -562,16 +567,48 @@
         <h3 class="text-success text-center"><b>Finalizar trámite</b></h3>
         <p>El trámite será finalizado.</p>
         <p> Ingresa el número de expediente asignado a este trámite: </p>
-        <div class="row mx-auto">
-          <p style="margin: 3%"><b-icon-caret-right-fill class="icon-orange"/><b>Número de expediente:</b></p>
-        <p class="row mr-2" style="margin: 3%"> 4124 -
-          <b-form-input class="col-3" type="number" no-wheel size="sm" v-model="nroExpediente1"/><a class="mx-3"> / </a>
-          <b-form-input size="sm" type="number" no-wheel class="col-3" v-model="nroExpediente2"/>
-        </p>
-        <p class="row ml-1 mt-2" v-if="!esHabilitacion">
-          <b-icon-caret-right-fill class="icon-orange mt-1"/><b>Alcance:</b>
-          <b-form-input class="col-3 ml-2" type="number" no-wheel size="sm" v-model="alcance"/>
-        </p>
+        <div class="expediente-form-container">
+          <div class="form-group mb-3">
+            <label class="form-label">
+              <b-icon-caret-right-fill class="icon-orange me-2"/>
+              <strong>Número de expediente:</strong>
+            </label>
+            <div class="expediente-input-group">
+              <span class="expediente-prefix">4124 -</span>
+              <b-form-input
+                class="expediente-input"
+                type="number"
+                no-wheel
+                size="sm"
+                v-model="nroExpediente1"
+                placeholder="Número"
+              />
+              <span class="expediente-separator">/</span>
+              <b-form-input
+                class="expediente-input"
+                size="sm"
+                type="number"
+                no-wheel
+                v-model="nroExpediente2"
+                placeholder="Año"
+              />
+            </div>
+          </div>
+
+          <div class="form-group mb-3" v-if="!esHabilitacion">
+            <label class="form-label">
+              <b-icon-caret-right-fill class="icon-orange me-2"/>
+              <strong>Alcance:</strong>
+            </label>
+            <b-form-input
+              class="alcance-input"
+              type="number"
+              no-wheel
+              size="sm"
+              v-model="alcance"
+              placeholder="Ingrese el alcance"
+            />
+          </div>
         </div>
         <small> Recordá que más adelante podrás consultar los datos proporcionados en la sección de búsqueda. </small>
         <div class="text-center mt-3">
@@ -593,14 +630,48 @@
         <h3 class="text-success text-center"><b>Finalizar trámite</b></h3>
         <p>El trámite será finalizado.</p>
         <p> Ingresa el número de expediente asignado a este trámite: </p>
-        <div class="row mx-auto">
-          <b-icon-caret-right-fill class="icon-orange mt-1"/><p class="mr-2"> 4124 -</p>
-        <b-form-input class="col-3" type="number" no-wheel size="sm" v-model="nroExpediente1"/><a class="mx-3"> / </a>
-        <b-form-input size="sm" type="number" no-wheel class="col-3" v-model="nroExpediente2"/>
-        <p class="row ml-1 mt-2">
-          <b-icon-caret-right-fill class="icon-orange mt-1"/><b>Alcance:</b>
-          <b-form-input class="col-3 ml-2" type="number" no-wheel size="sm" v-model="alcance"/>
-        </p>
+        <div class="expediente-form-container">
+          <div class="form-group mb-3">
+            <label class="form-label">
+              <b-icon-caret-right-fill class="icon-orange me-2"/>
+              <strong>Número de expediente:</strong>
+            </label>
+            <div class="expediente-input-group">
+              <span class="expediente-prefix">4124 -</span>
+              <b-form-input
+                class="expediente-input"
+                type="number"
+                no-wheel
+                size="sm"
+                v-model="nroExpediente1"
+                placeholder="Número"
+              />
+              <span class="expediente-separator">/</span>
+              <b-form-input
+                class="expediente-input"
+                size="sm"
+                type="number"
+                no-wheel
+                v-model="nroExpediente2"
+                placeholder="Año"
+              />
+            </div>
+          </div>
+
+          <div class="form-group mb-3">
+            <label class="form-label">
+              <b-icon-caret-right-fill class="icon-orange me-2"/>
+              <strong>Alcance:</strong>
+            </label>
+            <b-form-input
+              class="alcance-input"
+              type="number"
+              no-wheel
+              size="sm"
+              v-model="alcance"
+              placeholder="Ingrese el alcance"
+            />
+          </div>
         </div>
         <small> Recordá que más adelante podrás consultar los datos proporcionados en la sección de búsqueda. </small>
         <div class="text-center mt-3">
@@ -670,7 +741,7 @@
         <small>Debes revisar los datos del solicitante, datos del inmueble y todos los documentos presentados.</small>
         <div class="text-center mt-4">
           <b-btn variant="warning" @click="showRevisionIncompleta = false">
-              Entendido
+              Aceptar
           </b-btn>
         </div>
       </div>
@@ -685,12 +756,12 @@
       </template>
       <div class="confirmation-popup-body text-center">
         <h3 class="text-danger text-center mb-4"><b>Rechazo Automático</b></h3>
-        <p style="color:black">Se detectó al menos un documento o dato incorrecto.</p>
+        <p class="font-weight-bold" style="color:black; font-size: 1.1rem;">Se detectó al menos un documento o dato incorrecto.</p>
         <p style="color:black">El trámite será rechazado automáticamente al finalizar la revisión.</p>
-        <small>Revisa todos los elementos marcados como incorrectos antes de continuar.</small>
+        <small>Revisá todos los elementos marcados como incorrectos<br/> antes de continuar.</small>
         <div class="text-center mt-4">
           <b-btn variant="danger" @click="showRechazoAutomatico = false">
-              Entendido
+              Aceptar
           </b-btn>
         </div>
       </div>
@@ -703,6 +774,7 @@
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
+import MailerService from "@/service/mailer.js";
 
 export default {
   data() {
@@ -774,6 +846,7 @@ export default {
     reempadronamiento(){
       return this.habilitacion && this.habilitacion.tipoSolicitud === "Reempadronamiento"
     },
+
     adminComercio(){
       return this.$store.state.user.admin == "comercio" || this.$store.state.user.admin == "master"
     },
@@ -782,6 +855,9 @@ export default {
     },
     adminModernizacion(){
       return this.$store.state.user.admin == "modernizacion" || this.$store.state.user.admin == "master"
+    },
+    adminMaster(){
+      return this.$store.state.user.admin == "master"
     },
     jefeComercio(){
       return (this.$store.state.user.username === "myriamalonso@gesell.gob.ar"
@@ -926,6 +1002,35 @@ export default {
         habilitacion,
       })
       this.registrarActividad('Solicitar Documentación', 'Documentación Solicitada', this.habilitacion.nroTramite)
+
+      // --- Enviar correo al solicitante ---
+      try {
+        if (!this.habilitacion.mail) {
+          console.error('No se encontró el email del solicitante')
+          this.$bvToast.toast('No se pudo enviar el correo: email del solicitante no disponible.', { variant: 'danger' })
+          return
+        }
+
+        const destinatario = this.habilitacion.mail
+        const asunto = `Documentación requerida - Trámite N° ${this.habilitacion.nroTramite}`
+        const mensaje = `Estimado/a contribuyente,
+
+Su trámite comercial requiere que presente los originales de los documentos que envió online.
+
+Número de trámite: ${this.habilitacion.nroTramite}
+Tipo de solicitud: ${this.habilitacion.tipoSolicitud}
+Rubro: ${this.habilitacion.rubro}
+
+Por favor, presente los documentos originales en el Departamento Comercio MVGesell para continuar con el trámite.
+
+Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
+
+        await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+        this.$bvToast.toast('Correo de solicitud de documentación enviado al solicitante.', { variant: 'success' })
+      } catch (e) {
+        this.$bvToast.toast('No se pudo enviar el correo de solicitud de documentación.', { variant: 'danger' })
+      }
+
       this.wait(300)
       this.habilitacion.status = habilitacion.status
       this.showSolicitarDoc = false
@@ -952,10 +1057,38 @@ export default {
       })
       if(this.baja){
         this.registrarActividad('Finalizar Baja', 'Trámite Cerrado. Expediente: ' + nroExpediente + ". Alcance: " + alcance, this.habilitacion.nroTramite)
-
       }else{
         this.registrarActividad('Finalizar Habilitación', 'Trámite Cerrado. Expediente: ' + nroExpediente + ". Alcance: " + alcance, this.habilitacion.nroTramite)
       }
+
+      // --- Enviar correo al solicitante ---
+      try {
+        if (!this.habilitacion.mail) {
+          console.error('No se encontró el email del solicitante para finalización')
+          this.$bvToast.toast('No se pudo enviar el correo: email del solicitante no disponible.', { variant: 'danger' })
+        } else {
+          const destinatario = this.habilitacion.mail
+          const asunto = `Trámite comercial finalizado - N° ${this.habilitacion.nroTramite}`
+          const mensaje = `Estimado/a contribuyente,
+
+Su trámite comercial ha sido finalizado exitosamente.
+
+Número de trámite: ${this.habilitacion.nroTramite}
+Tipo de solicitud: ${this.habilitacion.tipoSolicitud}
+Rubro: ${this.habilitacion.rubro}
+Número de expediente: ${nroExpediente}${alcance ? '\nAlcance: ' + alcance : ''}
+
+El trámite está completo. En los próximos días recibirá la documentación correspondiente.
+
+Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
+
+          await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+          this.$bvToast.toast('Correo de finalización enviado al solicitante.', { variant: 'success' })
+        }
+      } catch (e) {
+        this.$bvToast.toast('No se pudo enviar el correo de finalización.', { variant: 'danger' })
+      }
+
       this.wait(300)
       this.habilitacion.status = habilitacion.status
       this.showFinalizar = false
@@ -1001,6 +1134,63 @@ export default {
         habilitacion,
       })
       this.registrarActividad('Aprobar Habilitación', 'Habilitación Aprobada. Inspeccion: ' + this.inspeccion, this.habilitacion.nroTramite)
+
+      // --- Enviar correo al solicitante ---
+      try {
+        if (!this.habilitacion.mail) {
+          console.error('No se encontró el email del solicitante')
+          this.$bvToast.toast('No se pudo enviar el correo: email del solicitante no disponible.', { variant: 'danger' })
+          return
+        }
+
+        const destinatario = this.habilitacion.mail
+        let asunto, mensaje
+
+        if (this.inspeccion) {
+          asunto = `Solicitud de trámite comercial aprobada - Requiere inspección - N° ${this.habilitacion.nroTramite}`
+          mensaje = `Estimado/a contribuyente,
+
+Su solicitud de trámite comercial ha sido aprobada exitosamente. Ha finalizado la etapa de revisión y la documentación presentada es correcta.
+
+Importante: Su comercio requiere inspección para continuar con el trámite.
+
+Número de trámite: ${this.habilitacion.nroTramite}
+Tipo de solicitud: ${this.habilitacion.tipoSolicitud}
+Rubro: ${this.habilitacion.rubro}
+
+Para continuar con el trámite, debe solicitar un turno para inspección comercial en la página de turnos web.
+Puede acceder a la página de turnos en: https://haciendavgesell.gob.ar/comercio/turnos
+
+En los próximos días recibirá un correo electrónico con instrucciones adicionales sobre el proceso de inspección.
+
+Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
+        } else {
+          asunto = `Solicitud de trámite comercial aprobada - N° ${this.habilitacion.nroTramite}`
+          mensaje = `Estimado/a contribuyente,
+
+Su solicitud de trámite comercial ha sido aprobada exitosamente.
+
+Número de trámite: ${this.habilitacion.nroTramite}
+Tipo de solicitud: ${this.habilitacion.tipoSolicitud}
+Rubro: ${this.habilitacion.rubro}
+
+Para completar el trámite, en el plazo de 7 días hábiles debe:
+
+• Abonar el canon previsto para el rubro en el Departamento Comercio MVGesell
+• Concurrir al Departamento Comercio MVGesell con los originales de los documentos presentados online
+• Constituir el Domicilio Fiscal Electrónico (DFE)
+
+Una vez completados estos pasos, recibirá la documentación correspondiente.
+
+Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
+        }
+
+        await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+        this.$bvToast.toast('Correo de aprobación enviado al solicitante.', { variant: 'success' })
+      } catch (e) {
+        this.$bvToast.toast('No se pudo enviar el correo de aprobación.', { variant: 'danger' })
+      }
+
       this.wait(300)
       this.habilitacion.status = habilitacion.status
       this.showPrevApprove = false
@@ -1023,6 +1213,35 @@ export default {
         habilitacion,
       })
       this.registrarActividad('Aprobar Baja', 'Baja Aprobada', this.habilitacion.nroTramite)
+
+      // --- Enviar correo al solicitante ---
+      try {
+        if (!this.habilitacion.mail) {
+          console.error('No se encontró el email del solicitante para aprobación de baja')
+          this.$bvToast.toast('No se pudo enviar el correo: email del solicitante no disponible.', { variant: 'danger' })
+          return
+        }
+
+        const destinatario = this.habilitacion.mail
+        const asunto = `Solicitud de baja aprobada - N° ${this.habilitacion.nroTramite}`
+        const mensaje = `Estimado/a contribuyente,
+
+Su solicitud de baja ha sido aprobada exitosamente.
+
+Número de trámite: ${this.habilitacion.nroTramite}
+Tipo de solicitud: ${this.habilitacion.tipoSolicitud}
+Rubro: ${this.habilitacion.rubro}
+
+Para completar el trámite, debe abonar los cánones correspondientes en el Departamento Comercio MVGesell. Una vez realizado el pago, se le notificará la finalización del trámite.
+
+Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
+
+        await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+        this.$bvToast.toast('Correo de aprobación de baja enviado al solicitante.', { variant: 'success' })
+      } catch (e) {
+        this.$bvToast.toast('No se pudo enviar el correo de aprobación de baja.', { variant: 'danger' })
+      }
+
       this.wait(300)
       this.habilitacion.status = habilitacion.status
       this.showPrevApprove = false
@@ -1051,6 +1270,37 @@ export default {
       }else{
         this.registrarActividad('Finalizar Renovación', 'Renovación Finalizada', this.habilitacion.nroTramite)
       }
+
+      // --- Enviar correo al solicitante ---
+      try {
+        if (!this.habilitacion.mail) {
+          console.error('No se encontró el email del solicitante para finalización de renovación')
+          this.$bvToast.toast('No se pudo enviar el correo: email del solicitante no disponible.', { variant: 'danger' })
+        } else {
+          const destinatario = this.habilitacion.mail
+          const tipoTramite = this.reempadronamiento ? 'reempadronamiento' : 'renovación'
+          const asunto = `${tipoTramite.charAt(0).toUpperCase() + tipoTramite.slice(1)} finalizada - N° ${this.habilitacion.nroTramite}`
+          const mensaje = `Estimado/a contribuyente,
+
+Su trámite de ${tipoTramite} ha sido finalizado exitosamente.
+
+Número de trámite: ${this.habilitacion.nroTramite}
+Tipo de solicitud: ${this.habilitacion.tipoSolicitud}
+Rubro: ${this.habilitacion.rubro}
+Número de expediente: ${nroExpediente}
+Alcance: ${alcance}
+
+El trámite está completo. En los próximos días recibirá la documentación correspondiente.
+
+Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
+
+          await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+          this.$bvToast.toast(`Correo de finalización de ${tipoTramite} enviado al solicitante.`, { variant: 'success' })
+        }
+      } catch (e) {
+        this.$bvToast.toast('No se pudo enviar el correo de finalización.', { variant: 'danger' })
+      }
+
       this.wait(300)
       this.habilitacion.status = habilitacion.status
       this.showPrevApprove = false
@@ -1075,6 +1325,47 @@ export default {
         habilitacion,
       })
       this.registrarActividad('Rechazar Solicitud', 'Rechazado por: ' + observaciones, this.habilitacion.nroTramite)
+
+      // --- Enviar correo al solicitante ---
+      try {
+        if (!this.habilitacion.mail) {
+          console.error('No se encontró el email del solicitante para rechazo')
+          this.$bvToast.toast('No se pudo enviar el correo: email del solicitante no disponible.', { variant: 'danger' })
+          return
+        }
+
+        const destinatario = this.habilitacion.mail
+        const asunto = `Solicitud de trámite comercial rechazada - N° ${this.habilitacion.nroTramite}`
+
+        // Construir la lista de elementos incorrectos
+        let elementosIncorrectosTexto = ''
+        if (this.elementosIncorrectos && this.elementosIncorrectos.length > 0) {
+          elementosIncorrectosTexto = `
+${this.elementosIncorrectos.map(elemento => `• ${elemento}`).join('\n')}`
+        }
+
+        const mensaje = `Estimado/a contribuyente,
+
+Su solicitud de trámite comercial ha sido rechazada.
+
+Número de trámite: ${this.habilitacion.nroTramite}
+Tipo de solicitud: ${this.habilitacion.tipoSolicitud}
+Rubro: ${this.habilitacion.rubro}
+
+Se han detectado elementos incorrectos en la documentación presentada, los cuales se detallan a continuación:
+${elementosIncorrectosTexto}
+
+Deberá volver a presentar la solicitud una vez subsanados los errores detectados.
+
+Importante: La documentación que adjunte debe ser legible y en formato PDF o imagen.
+
+Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
+        await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+        this.$bvToast.toast('Correo de rechazo enviado al solicitante.', { variant: 'success' })
+      } catch (e) {
+        this.$bvToast.toast('No se pudo enviar el correo de rechazo.', { variant: 'danger' })
+      }
+
       this.wait(300)
       this.habilitacion.status = habilitacion.status
       this.observaciones = ''
@@ -1296,7 +1587,7 @@ export default {
       console.log('Elementos incorrectos actualizados:', elementos);
     },
 
-            verificarRechazoAutomatico() {
+    verificarRechazoAutomatico() {
       // Verificar si hay algún documento marcado como incorrecto
       const hayDocumentoIncorrecto = Object.values(this.revisionDocumentos).some(valor => valor === 'incorrecto');
 
@@ -1341,8 +1632,12 @@ export default {
         console.log('Abriendo modal de rechazo con elementos incorrectos:', this.elementosIncorrectos);
         this.onRechazarSolicitud();
       } else {
-        // Mostrar popup de aprobación
-        this.onShowAprobarSolicitud();
+        // Mostrar popup de aprobación según el tipo de trámite
+        if (this.baja) {
+          this.onShowAprobarBaja();
+        } else {
+          this.onShowAprobarSolicitud();
+        }
       }
     },
   },
@@ -1439,5 +1734,80 @@ export default {
 
 .form-check-label .bi-x-circle-fill {
   color: #dc3545;
+}
+
+/* Estilos para la sección de expediente y alcance */
+.expediente-form-container {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1rem 0;
+  border: 1px solid #e9ecef;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-label {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.expediente-input-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.expediente-prefix {
+  font-weight: 600;
+  color: #495057;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.expediente-input {
+  flex: 1;
+  min-width: 100px;
+  max-width: 120px;
+}
+
+.expediente-separator {
+  font-weight: 600;
+  color: #6c757d;
+  font-size: 1rem;
+  margin: 0 0.5rem;
+}
+
+.alcance-input {
+  width: 100%;
+  max-width: 150px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .expediente-input-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .expediente-input {
+    max-width: 100%;
+  }
+
+  .expediente-separator {
+    text-align: center;
+    margin: 0.5rem 0;
+  }
+
+  .alcance-input {
+    max-width: 100%;
+  }
 }
 </style>

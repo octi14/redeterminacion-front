@@ -578,7 +578,7 @@
       <div class="centeredContainer">
         <fieldset>
           <b-button size="lg" @click="onResetParams" variant="danger" class="btn-cancel" >Cancelar</b-button>
-          <b-button size="lg" type="submit" variant="success" :disabled="!areAllFieldsComplete || !estaAbierto" class="" >Enviar</b-button>
+          <b-button size="lg" type="submit" variant="success" :disabled="!areAllFieldsComplete" class="">Enviar</b-button>
         </fieldset>
           <div v-if="!areAllFieldsComplete" class="validation-error">
             <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Completar todos los campos marcados con (*).
@@ -812,7 +812,7 @@
     </template>
     <div class="centeredContainer">
       <p class="modal-subtitle">¡Tu solicitud ha sido enviada exitosamente!</p>
-      <p class="">En los próximos días recibirás un correo electrónico del Departamento Comercio Municipal en el que te indicarán cómo continuar. Asegurate de revisar la bandeja de correos no deseados (Spam).</p>
+      <p class="">Se ha enviado automáticamente un correo electrónico a tu dirección de email con los datos de tu trámite. En los próximos días recibirás otro correo del Departamento Comercio Municipal indicándote cómo continuar. Asegurate de revisar la bandeja de correos no deseados (Spam).</p>
       <p class=""><b>Tu número de trámite es: </b></p>
       <p class="h3"><b> {{ nroTramite }} </b></p>
       <p class="">Por favor, conservá este número. Será solicitado más adelante.</p>
@@ -854,6 +854,7 @@
   import rubros from "@/plugins/rubros.js";
   import { required, requiredIf, alpha, numeric, email, minLength, maxLength, sameAs } from 'vuelidate/lib/validators';
   import { helpers } from 'vuelidate/lib/validators';
+  import MailerService from "@/service/mailer.js";
   export default {
     validations() {
       return {
@@ -980,7 +981,7 @@
         captchaError: false,
         maxFileSize: 15 * 1024 * 1024, // 15MB in bytes,
         fileTooLargeError: {},
-        TEST_submit: true,
+        TEST_submit: false,
         listaRubros: rubros,
         rubroSeleccionado: {
           id: null,
@@ -1166,20 +1167,6 @@
         }
     },
     computed: {
-      estaAbierto(){
-        // Obtener fecha y hora actuales
-        const ahora = new Date();
-
-        // Día y horario actual
-        const dia = ahora.getDay(); // 0 = Domingo, 1 = Lunes, ..., 6 = Sábado
-        const hora = ahora.getHours();
-
-        // Verificar si está dentro del rango permitido
-        const esDiaHabil = dia >= 1 && dia <= 5; // De lunes a viernes
-        const esHorarioPermitido = hora >= 8 && hora < 17; // Entre las 8 y las 17 hs (sin incluir 17)
-
-        return esDiaHabil && esHorarioPermitido;
-      },
       tipoSolicitudSeleccionada: {
         get() {
           //console.log("tipoSolicitudSeleccionada: " + this.$route.query.tramite);
@@ -1204,22 +1191,21 @@
         return '';
       },
       areAllFieldsComplete() {
-        //console.log("areAllFieldsComplete() CALLED");
         if (this.TEST_submit){
             return true;
         }
         else{
           return this.solicitante.nombre && this.solicitante.apellido && this.solicitante.dni && this.solicitante.cuit && this.solicitante.domicilioReal &&
                 this.solicitante.telefono && this.solicitante.codigoPostal && this.solicitante.localidad && this.solicitante.provincia && this.solicitante.mail &&
-                this.inmueble.localidad && this.inmueble.calle && this.inmueble.nro && this.inmueble.rubro && this.documentos.dniFrente && this.documentos.dniDorso &&
-                (this.documentos.constanciaCuit || this.solicitante.tipoSolicitud != 'Habilitación' && this.solicitante.tipoSolicitud != 'Renovación' && this.solicitante.tipoSolicitud != 'Reempadronamiento' && this.solicitante.tipoSolicitud != 'Cambio de Titular') &&
-                this.documentos.libreDeudaUrbana &&
-                (this.documentos.libreDeudaSegHig || this.solicitante.tipoSolicitud!='Baja') &&
-                (this.documentos.libreDeudaIB || this.solicitante.tipoSolicitud!='Baja') &&
-                (this.documentos.tituloPropiedad || this.solicitante.tipoSolicitud != 'Habilitación' && this.solicitante.tipoSolicitud != 'Renovación' && this.solicitante.tipoSolicitud != 'Reempadronamiento' && this.solicitante.tipoSolicitud != 'Cambio de Titular') &&
-                (this.documentos.plano || this.solicitante.tipoSolicitud != 'Habilitación' && this.solicitante.tipoSolicitud != 'Renovación' && this.solicitante.tipoSolicitud != 'Reempadronamiento' && this.solicitante.tipoSolicitud != 'Cambio de Titular') &&
-                (this.documentos.constanciaAFIP || this.solicitante.tipoSolicitud != 'Renovación' && this.solicitante.tipoSolicitud != 'Reempadronamiento') &&
-                (this.documentos.decJurada || this.solicitante.tipoSolicitud != 'Renovación' && this.solicitante.tipoSolicitud != 'Reempadronamiento')
+                this.inmueble.localidad && this.inmueble.calle && this.inmueble.nro && this.inmueble.rubro && this.documentos.dniFrente.contenido && this.documentos.dniDorso.contenido &&
+                (this.documentos.constanciaCuit.contenido || this.solicitante.tipoSolicitud != 'Habilitación' && this.solicitante.tipoSolicitud != 'Renovación' && this.solicitante.tipoSolicitud != 'Reempadronamiento' && this.solicitante.tipoSolicitud != 'Cambio de Titular') &&
+                this.documentos.libreDeudaUrbana.contenido &&
+                (this.documentos.libreDeudaSegHig.contenido || this.solicitante.tipoSolicitud!='Baja') &&
+                (this.documentos.libreDeudaIB.contenido || this.solicitante.tipoSolicitud!='Baja') &&
+                (this.documentos.tituloPropiedad.contenido || this.solicitante.tipoSolicitud != 'Habilitación' && this.solicitante.tipoSolicitud != 'Renovación' && this.solicitante.tipoSolicitud != 'Reempadronamiento' && this.solicitante.tipoSolicitud != 'Cambio de Titular') &&
+                (this.documentos.plano.contenido || this.solicitante.tipoSolicitud != 'Habilitación' && this.solicitante.tipoSolicitud != 'Renovación' && this.solicitante.tipoSolicitud != 'Reempadronamiento' && this.solicitante.tipoSolicitud != 'Cambio de Titular') &&
+                (this.documentos.constanciaAFIP.contenido || this.solicitante.tipoSolicitud != 'Renovación' && this.solicitante.tipoSolicitud != 'Reempadronamiento') &&
+                (this.documentos.decJurada.contenido || this.solicitante.tipoSolicitud != 'Renovación' && this.solicitante.tipoSolicitud != 'Reempadronamiento');
         }
       },
       areAllFieldsValid(){
@@ -1516,6 +1502,27 @@
               });
               //console.log(response.data)
               this.nroTramite = response.data
+
+              // --- Enviar correo al solicitante ---
+              try {
+                const destinatario = this.solicitante.mail
+                const asunto = `Solicitud de trámite comercial recibida - N° ${this.nroTramite}`
+                const mensaje = `Estimado/a contribuyente,
+
+Su solicitud de trámite comercial ha sido registrada correctamente.
+En los próximos días recibirá un correo electrónico del Departamento Comercio Municipal en el que le indicarán cómo continuar.
+Asegúrese de revisar la bandeja de correos no deseados (Spam).
+
+Número de trámite: ${this.nroTramite}
+Tipo de solicitud: ${this.solicitante.tipoSolicitud}
+Rubro: ${this.inmueble.rubro}
+
+Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio Municipal (deptocomercio@gesell.gob.ar).`
+                await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+              } catch (e) {
+                console.error('Error al enviar correo de confirmación:', e)
+              }
+
               this.openPopup('FormOk');
             } catch (e) {
               this.openPopup('FormError');

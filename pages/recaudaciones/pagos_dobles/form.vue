@@ -318,7 +318,7 @@
   </template>
   <div class="centeredContainer">
     <p class="modal-subtitle">¡Tu solicitud ha sido enviada exitosamente!</p>
-    <p class="">En los próximos días recibirás un correo electrónico del Departamento Recaudaciones Municipal en el que te indicarán cómo continuar. Asegurate de revisar la bandeja de correos no deseados (Spam).</p>
+    <p class="">Se ha enviado automáticamente un correo electrónico a tu dirección de email con los datos de tu trámite. En los próximos días recibirás otro correo del Departamento Recaudaciones Municipal indicándote cómo continuar. Asegurate de revisar la bandeja de correos no deseados (Spam).</p>
     <p class=""><b>Tu número de trámite es: </b></p>
     <p class="h3"><b> R{{ nroTramite }} </b></p>
     <p class="">Por favor, conservá este número. Será solicitado más adelante.</p>

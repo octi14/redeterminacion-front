@@ -333,9 +333,8 @@ Fecha de inspección: ${this.turno.dia}
 Horario: ${this.turno.horario}
 Domicilio: ${this.turno.domicilio}
 
-El trámite continuará desde el Departamento Comercio MVGesell. En los próximos días recibirá un correo electrónico indicándole los pasos a seguir para finalizarlo.
-
-Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
+El trámite continuará desde el Departamento Comercio MVGesell. En los próximos días recibirá un correo electrónico indicándole los pasos
+a seguir para finalizar el trámite, incluyendo el pago de la/s tasa/s correspondiente/s.`
 
           await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
           this.$bvToast.toast('Correo de aprobación de inspección enviado al solicitante.', { variant: 'success' })

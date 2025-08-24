@@ -1078,9 +1078,8 @@ Tipo de solicitud: ${this.habilitacion.tipoSolicitud}
 Rubro: ${this.habilitacion.rubro}
 Número de expediente: ${nroExpediente}${alcance ? '\nAlcance: ' + alcance : ''}
 
-El trámite está completo. En los próximos días recibirá la documentación correspondiente.
-
-Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
+El trámite ha sido culminado exitosamente. Recuerde que en el plazo de 10 dias hábiles deberá acreditar
+los originales de la documentación en el Departamento Comercio sito en Avda 3 N° 820 Planta Baja - Villa Gesell.`
 
           await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
           this.$bvToast.toast('Correo de finalización enviado al solicitante.', { variant: 'success' })
@@ -1159,11 +1158,7 @@ Tipo de solicitud: ${this.habilitacion.tipoSolicitud}
 Rubro: ${this.habilitacion.rubro}
 
 Para continuar con el trámite, debe solicitar un turno para inspección comercial en la página de turnos web.
-Puede acceder a la página de turnos en: https://haciendavgesell.gob.ar/comercio/turnos
-
-En los próximos días recibirá un correo electrónico con instrucciones adicionales sobre el proceso de inspección.
-
-Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
+Puede acceder a la página de turnos en: https://haciendavgesell.gob.ar/comercio/turnos .`
         } else {
           asunto = `Solicitud de trámite comercial aprobada - N° ${this.habilitacion.nroTramite}`
           mensaje = `Estimado/a contribuyente,
@@ -1174,15 +1169,11 @@ Número de trámite: ${this.habilitacion.nroTramite}
 Tipo de solicitud: ${this.habilitacion.tipoSolicitud}
 Rubro: ${this.habilitacion.rubro}
 
-Para completar el trámite, en el plazo de 7 días hábiles debe:
+Para completar el trámite, en el plazo de 10 días hábiles debe:
 
-• Abonar el canon previsto para el rubro en el Departamento Comercio MVGesell
 • Concurrir al Departamento Comercio MVGesell con los originales de los documentos presentados online
-• Constituir el Domicilio Fiscal Electrónico (DFE)
-
-Una vez completados estos pasos, recibirá la documentación correspondiente.
-
-Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
+y proceder al pago de la Tasa de Habilitacion pertinente.
+• Constituir el Domicilio Fiscal Electrónico (DFE) solicitando datos a dirarvige@gesell.gob.ar.`
         }
 
         await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
@@ -1357,9 +1348,7 @@ ${elementosIncorrectosTexto}
 
 Deberá volver a presentar la solicitud una vez subsanados los errores detectados.
 
-Importante: La documentación que adjunte debe ser legible y en formato PDF o imagen.
-
-Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
+Importante: La documentación que adjunte debe ser legible y en formato PDF o imagen.`
         await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
         this.$bvToast.toast('Correo de rechazo enviado al solicitante.', { variant: 'success' })
       } catch (e) {

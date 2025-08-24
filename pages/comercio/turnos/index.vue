@@ -437,9 +437,7 @@ Nombre: ${this.nombre}
 IMPORTANTE:
 - El día de la inspección debe haber alguien presente en el local
 - Si necesita cancelar o reprogramar el turno, comuníquese con divinspectores@gesell.gob.ar
-- Solo puede cancelar el turno hasta 5 días antes de la inspección
-
-Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
+- Solo puede cancelar el turno hasta 5 días antes de la inspección.`
 
             await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
           } catch (e) {

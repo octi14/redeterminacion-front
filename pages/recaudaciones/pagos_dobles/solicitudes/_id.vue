@@ -175,38 +175,8 @@
       <div class="confirmation-popup-body">
         <h2 class="icon-orange text-secondary text-center"><b>Aprobar solicitud</b></h2>
         <p style="margin: 3%"> Se aprobará la solicitud. Se enviará automáticamente un correo electrónico al solicitante informando la aprobación. </p>
-        <p style="margin: 3%"> Ingresá el número de expediente asignado al expediente actual y su alcance. </p>
-        <div class="expediente-container">
-        <p class="expediente-label"><b-icon-caret-right-fill class="icon-orange"/><b>Número de expediente:</b></p>
-        <div class="row align-items-center">
-          <span class="expediente-text ml-4">4124-</span>
-          <b-form-input
-            class="col-3 expediente-input"
-            type="number"
-            no-wheel
-            size="sm"
-            v-model="nroExpediente1"
-            placeholder="XXXX"
-            style="max-width: 120px;"
-          />
-          <span class="expediente-text mx-1">/2025</span>
-        </div>
-        <p class="expediente-label mt-3"><b-icon-caret-right-fill class="icon-orange"/><b>Alcance:</b></p>
-        <div class="row ml-3">
-          <b-form-input
-            class="col-3 expediente-input"
-            type="number"
-            no-wheel
-            size="sm"
-            v-model="alcance"
-            placeholder="Número"
-            style="max-width: 120px;"
-          />
-        </div>
-        </div>
-        <hr/>
         <div class="text-center mt-3">
-          <b-btn variant="primary" @click="onSendApprove()" :disabled="!nroExpediente1 || !alcance">
+          <b-btn variant="primary" @click="onSendApprove()">
               Aceptar
           </b-btn>
         </div>
@@ -290,8 +260,6 @@ export default {
       showObservaciones: false,
       pago: null,
       observaciones: '',
-      nroExpediente1: null,
-      alcance: null,
       showDocumentoModal: false,
       DocumentoModalTitle: "",
       motivoRechazo: '',
@@ -346,9 +314,6 @@ export default {
     },
     async onShowAprobarSolicitud(){
       this.showPrevApprove = true
-      // Limpiar campos del expediente
-      this.nroExpediente1 = null
-      this.alcance = null
     },
     onShowObservaciones(){
       if(this.pago.observaciones){
@@ -360,11 +325,8 @@ export default {
     },
     async onSendApprove(){
       const observaciones = this.pago.observaciones || " "
-      const nroExpediente = "4124-" + this.nroExpediente1 + "/2025"
       const pago = {
         status: 'Aprobada',
-        nroExpediente: nroExpediente,
-        alcance: this.alcance,
         observaciones: observaciones + " - " + "Se aprueba la solicitud el " + new Date().toLocaleDateString('es-AR') + " " + new Date().toLocaleTimeString()
       }
       const id = this.pago.id
@@ -376,8 +338,6 @@ export default {
       this.registrarActividad('Aprobar reclamo por pago doble', 'Reclamo por Pago doble Aprobado.')
       this.wait(300)
       this.pago.status = pago.status
-      this.pago.nroExpediente = pago.nroExpediente
-      this.pago.alcance = pago.alcance
       this.showPrevApprove = false
       this.showApprove = true
 
@@ -391,8 +351,6 @@ Su reclamo de pago doble ha sido aprobado exitosamente.
 Su documentación será procesada y recibirá las instrucciones correspondientes en los próximos días.
 
 Número de trámite: R${this.pago.nroTramite}
-Número de expediente: ${nroExpediente}
-Alcance: ${this.alcance}
 Fecha de aprobación: ${new Date().toLocaleDateString('es-AR')}
 
 

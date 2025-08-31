@@ -5,7 +5,7 @@
       <h2> Cargando </h2>
       <h4> Por favor espere unos segundos </h4>
     </div>
-    <!-- Datos del solicitante -->
+    <!-- Datos generales -->
     <template v-if="habilitacion">
       <div class="flex col" style="width: 96%">
         <div class="row justify-content-center mt-3">
@@ -32,10 +32,10 @@
       <!--Botones-->
       <div class="row col-10 mx-auto justify-content-center" v-if="jefeComercio">
         <b-button @click="onShowSolicitarDocumentacion" variant="success" class="btn-4 mt-3 mx-1" v-if="habilitacion && habilitacion.status === 'Inspeccionado'"> Solicitar documentación </b-button>
-        <b-button @click="onShowRectificacion" variant="secondary " class="btn-4 mt-3 mx-1" v-if="habilitacion && habilitacion.status === 'En revisión'"> Rectificación </b-button>
+        <!-- <b-button @click="onShowRectificacion" variant="secondary " class="btn-4 mt-3 mx-1" v-if="habilitacion && habilitacion.status === 'En revisión'"> Rectificación </b-button> -->
         <b-button @click="onShowFinalizarSolicitud" variant="success" class="btn-4 mt-3 mx-1" v-if="(!renovacion && !reempadronamiento) && habilitacion && (habilitacion.status === 'Esperando documentación' || habilitacion.status === 'Esperando pago')"> Finalizar solicitud </b-button>
         <b-button @click="onShowFinalizarRenovacion" variant="success" class="btn-4 mt-3 mx-1" v-if="(renovacion || reempadronamiento) && habilitacion && habilitacion.status === 'Esperando documentación'"> Finalizar solicitud </b-button>
-        <b-button @click="onRestablecer" variant="secondary" class="btn-4 mt-3 mx-1" v-if="adminMaster && habilitacion && habilitacion.status != 'En revisión' && habilitacion.status != 'Rectificación'"> Volver a estado En Revisión </b-button>
+        <b-button @click="onRestablecer" variant="secondary" class="btn-4 mt-3 mx-1" v-if="adminMaster && habilitacion && habilitacion.status != 'En revisión'"> Volver a estado En Revisión </b-button>
         <b-button @click="onShowObservaciones" variant="primary" class="btn-2 mt-3 mx-1"> Ver observaciones </b-button>
         <b-button @click="onDescargarHabilitacion(); registrarActividad('Descargar Trámite', 'Trámite Descargado', habilitacion.nroTramite)" v-if="adminComercio || adminArvige || adminModernizacion" variant="success" class="btn-4 mt-3 mx-1">
           <b-icon icon="download" class="mr-1"></b-icon> Descargar trámite
@@ -398,7 +398,7 @@
     </div>
 
     <!-- Modals -->
-    <!--Modal previo a rechazar el turno-->
+    <!--Modal previo a rechazar el trámite-->
     <b-modal v-model="showRejectPopup" hide-footer :header-bg-variant="'danger'" centered>
         <template #modal-header>
           <div class="confirmation-popup-header mx-auto">
@@ -431,7 +431,7 @@
     </b-modal>
 
     <!--Modal solicitar rectificación de datos-->
-    <b-modal v-model="showRectificacion" hide-footer :header-bg-variant="'secondary'" centered>
+    <!-- <b-modal v-model="showRectificacion" hide-footer :header-bg-variant="'secondary'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
           <b-icon-exclamation-octagon scale="2" variant="light" />
@@ -447,7 +447,7 @@
           </b-btn>
         </div>
       </div>
-    </b-modal>
+    </b-modal> -->
 
     <!--Modal previo a aprobar(con y sin inspección)-->
     <b-modal v-model="showPrevApprove" hide-footer :header-bg-variant="'secondary'" centered>
@@ -482,20 +482,8 @@
       <div class="confirmation-popup-body">
         <h2 class="icon-orange text-secondary text-center"><b>Aprobar solicitud</b></h2>
         <p style="margin: 3%" class="text-center">  Se enviará automáticamente un mail al solicitante indicando que el
-           trámite está completo.</p>
-        <small class="text-dark text-center">Recordá que deberás enviarle otro mail adjuntando el certificado de baja. </small>
-        <!-- <p style="margin: 3%"> Ingresá el número de expediente asignado al expediente actual y su alcance. </p>
-        <div class="mx-auto">
-        <p style="margin: 3%"><b-icon-caret-right-fill class="icon-orange"/><b>Número de expediente:</b></p>
-        <p class="row mr-2" style="margin: 3%"> 4124 -
-          <b-form-input class="col-3 ml-2" type="number" no-wheel size="sm" v-model="nroExpediente1"/><a class="mx-3"> / </a>
-          <b-form-input size="sm" type="number" no-wheel class="col-3" v-model="nroExpediente2"/>
-        </p>
-        <p style="margin: 3%" class="row">
-          <b-icon-caret-right-fill class="icon-orange mt-1"/><b>Alcance:</b>
-          <b-form-input class="col-3 ml-2" type="number" no-wheel size="sm" v-model="alcance"/>
-        </p>
-        </div> -->
+           trámite está aprobado y que deberá concurrir al Departamento Comercio con la documentación original y
+           efectuar el pago de las deudas de tasas previstas para el rubro.</p>
         <hr/>
         <div class="text-center mt-3">
           <b-btn variant="primary" @click="onSendAprobarBaja()" >
@@ -519,8 +507,8 @@
         <p v-if="!baja">La solicitud fue aprobada con éxito. Se envió un correo electrónico al solicitante indicando que en el plazo de 7 días hábiles:</p>
         <p style="text-align: center" v-else>Se envió un correo electrónico al solicitante indicando que el trámite ha sido finalizado.</p>
         <ul>
-          <!-- <li v-if="!baja">  Abone el canon de Habilitación Comercial previsto para el rubro. </li> -->
-          <li v-if="!baja"> Abone el canon previsto para el rubro.</li>
+          <!-- <li v-if="!baja">  Abone la tasa de Habilitación Comercial prevista para el rubro. </li> -->
+          <li v-if="!baja"> Abone la tasa prevista para el rubro.</li>
           <li v-if="!baja && inspeccion"> Solicite un turno web para inspección comercial.</li>
           <li v-if="!baja && !inspeccion">  Concurra al Departamento de Comercio con la documentación original y el Libro de Actas. </li>
           <li v-if="!baja">  Constituya el Domicilio Fiscal Electrónico (DFE). </li>
@@ -544,7 +532,7 @@
         <h3 class="icon-orange text-success text-center"><b>Solicitar documentación</b></h3>
         <p>La inspección fue aprobada con éxito. Se enviará automáticamente un correo electrónico al solicitante indicando que en el plazo de 7 días hábiles:</p>
         <ul>
-          <li>  Abone el canon de Habilitación Comercial previsto para el rubro. </li>
+          <li>  Abone la tasa prevista para el rubro. </li>
           <li>  Concurra al Departamento Comercio con la documentación original. </li>
           <li>  Constituya el Domicilio Fiscal Electrónico (DFE). </li>
         </ul>

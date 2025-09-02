@@ -195,6 +195,7 @@
         </template>
         <div class="text-center modal-success">
           <p><b>{{ nombre }}</b>, solicitaste un turno para el día <b>{{ formattedDate }}</b> para la dirección especificada: <b>{{ domicilio }}</b>, en la franja horaria de las <b>{{ time }}.</b></p>
+          <p>Se ha enviado automáticamente un correo electrónico a tu dirección de email con los detalles del turno.</p>
           <p>Tu número de trámite es: <b>{{nroTramite}} </b></p>
           <div class="btn-container">
             <b-button @click="onResetParams" class="btn-cancel">Volver</b-button>
@@ -283,6 +284,8 @@
 </template>
 
 <script>
+import MailerService from "@/service/mailer.js";
+
 export default {
   data() {
     return {
@@ -411,6 +414,36 @@ export default {
             id: habilitacionId,
             habilitacion,
           });
+
+          // --- Enviar correo al solicitante ---
+          try {
+            const destinatario = this.$store.state.habilitaciones.single.mail
+            if (!destinatario) {
+              console.error('No se encontró el email del solicitante')
+              return
+            }
+
+            const asunto = `Turno de inspección confirmado - N° ${this.nroTramite}`
+            const mensaje = `Estimado/a contribuyente,
+
+Su turno de inspección comercial ha sido confirmado exitosamente.
+
+Número de trámite: ${this.nroTramite}
+Fecha de inspección: ${new Date(this.date).toLocaleDateString('es-AR')}
+Horario: ${this.time}
+Domicilio: ${this.domicilio}
+Nombre: ${this.nombre}
+
+IMPORTANTE:
+- El día de la inspección debe haber alguien presente en el local
+- Si necesita cancelar o reprogramar el turno, comuníquese con divinspectores@gesell.gob.ar
+- Solo puede cancelar el turno hasta 5 días antes de la inspección.`
+
+            await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+          } catch (e) {
+            console.error('Error al enviar correo de confirmación de turno:', e)
+          }
+
           this.sendingForm = false;
           this.formOk = true;
         }

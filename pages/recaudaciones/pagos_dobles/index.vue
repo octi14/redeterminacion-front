@@ -42,7 +42,7 @@
             <transition name="expand">
               <div v-show="isCardExpanded(0)">
                 <div class="li-row first-li">
-                  <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> El formulario de reclamo por <b>Pago doble</b> implica solicitar la acreditación de saldo excedente de <b>tasa urbana</b> para ser utilizado en futuros pagos u otras tasas impagas.</div>
+                  <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> El formulario de reclamo por <b>Pago doble</b> implica solicitar la acreditación de saldo excedente de <b>tasa urbana</b> para ser utilizado en futuros pagos.</div>
                 </div>
                 <div class="li-row first-p">
                   <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Mediante este trámite <b>el Municipio verificará que la documentación solicitada</b> y el <b>pago de tasas correspondientes estén cumplimentadas.</b></div>

@@ -219,6 +219,7 @@
 </template>
 
 <script>
+import MailerService from "@/service/mailer.js";
 
 export default {
   data() {
@@ -308,12 +309,44 @@ export default {
       await this.$store.dispatch('habilitaciones/getByNroTramite',{
         nroTramite
       })
+
+      // Guardar el email antes del update
+      const destinatario = this.$store.state.habilitaciones.single.mail
+
       const habId = this.$store.state.habilitaciones.single.id
       await this.$store.dispatch('habilitaciones/update', {
         id: habId,
         habilitacion,
       })
       this.registrarActividad('Arobar Inspección', 'Inspección Aprobada', this.turno.nroTramite)
+
+      // --- Enviar correo al solicitante ---
+      try {
+        if (destinatario) {
+          const asunto = `Inspección comercial aprobada - N° ${this.turno.nroTramite}`
+          const mensaje = `Estimado/a contribuyente,
+
+Su inspección comercial ha sido aprobada exitosamente.
+
+Número de trámite: ${this.turno.nroTramite}
+Fecha de inspección: ${this.turno.dia}
+Horario: ${this.turno.horario}
+Domicilio: ${this.turno.domicilio}
+
+El trámite continuará desde el Departamento Comercio MVGesell. En los próximos días recibirá un correo electrónico indicándole los pasos
+a seguir para finalizar el trámite, incluyendo el pago de la/s tasa/s correspondiente/s.`
+
+          await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+          this.$bvToast.toast('Correo de aprobación de inspección enviado al solicitante.', { variant: 'success' })
+        } else {
+          console.error('No se encontró el email del solicitante')
+          this.$bvToast.toast('No se pudo enviar el correo: email del solicitante no disponible.', { variant: 'danger' })
+        }
+      } catch (e) {
+        console.error('Error al enviar correo:', e)
+        this.$bvToast.toast('No se pudo enviar el correo de aprobación de inspección.', { variant: 'danger' })
+      }
+
       this.wait(300)
       this.$fetch()
       this.showPrevApprove = false
@@ -358,12 +391,43 @@ export default {
       await this.$store.dispatch('habilitaciones/getByNroTramite',{
         nroTramite
       })
+
+      // Guardar el email antes del update
+      const destinatario = this.$store.state.habilitaciones.single.mail
       const habId = this.$store.state.habilitaciones.single.id
       await this.$store.dispatch('habilitaciones/update', {
         id: habId,
         habilitacion,
       })
       this.registrarActividad('Otorgar Prorroga', this.turno.status + " Otorgada", this.turno.nroTramite)
+
+      // --- Enviar correo al solicitante ---
+      try {
+        if (destinatario) {
+          const asunto = `Prórroga otorgada - N° ${this.turno.nroTramite}`
+          const mensaje = `Estimado/a contribuyente,
+
+Se le ha otorgado una prórroga para su inspección comercial.
+
+Número de trámite: ${this.turno.nroTramite}
+Fecha de inspección: ${this.turno.dia}
+Horario: ${this.turno.horario}
+Domicilio: ${this.turno.domicilio}
+
+La prórroga es de 7 días a partir de la fecha de otorgación. Para continuar con el trámite, debe completar los requisitos pendientes antes del vencimiento de la misma.
+
+Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
+
+          await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+          this.$bvToast.toast('Correo de prórroga enviado al solicitante.', { variant: 'success' })
+        } else {
+          console.error('No se encontró el email del solicitante')
+          this.$bvToast.toast('No se pudo enviar el correo: email del solicitante no disponible.', { variant: 'danger' })
+        }
+      } catch (e) {
+        console.error('Error al enviar correo de prórroga:', e)
+        this.$bvToast.toast('No se pudo enviar el correo de prórroga.', { variant: 'danger' })
+      }
       this.wait(300)
       this.$fetch()
       this.showPrevProrroga = false
@@ -385,6 +449,8 @@ export default {
       await this.$store.dispatch('habilitaciones/getByNroTramite',{
         nroTramite
       })
+      // Guardar el email antes del update
+      const destinatario = this.$store.state.habilitaciones.single.mail
       const observaciones = this.$store.state.habilitaciones.single.observaciones
       const habilitacion = {
         status: 'Rechazada',
@@ -396,6 +462,33 @@ export default {
         habilitacion,
       })
       this.registrarActividad('Rechazar Inspección', 'Inspección Rechazada', this.turno.nroTramite)
+
+      // --- Enviar correo al solicitante ---
+      try {
+        if (destinatario) {
+          const asunto = `Inspección comercial rechazada - N° ${this.turno.nroTramite}`
+          const mensaje = `Estimado/a contribuyente,
+
+Su inspección comercial ha sido rechazada.
+
+Número de trámite: ${this.turno.nroTramite}
+Fecha de inspección: ${this.turno.dia}
+Horario: ${this.turno.horario}
+Domicilio: ${this.turno.domicilio}
+
+Motivo del rechazo: ${this.observaciones}
+
+Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
+
+          await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+          this.$bvToast.toast('Correo de rechazo de inspección enviado al solicitante.', { variant: 'success' })
+        } else {
+          console.error('No se encontró el email del solicitante')
+          this.$bvToast.toast('No se pudo enviar el correo: email del solicitante no disponible.', { variant: 'danger' })
+        }
+      } catch (e) {
+        this.$bvToast.toast('No se pudo enviar el correo de rechazo de inspección.', { variant: 'danger' })
+      }
       this.wait(300)
       this.observaciones = ''
       this.$fetch()
@@ -417,6 +510,8 @@ export default {
       await this.$store.dispatch('habilitaciones/getByNroTramite',{
         nroTramite
       })
+      // Guardar el email antes del update
+      const destinatario = this.$store.state.habilitaciones.single.mail
       const observaciones = this.$store.state.habilitaciones.single.observaciones
       const habilitacion = {
         status: "Esperando turno",
@@ -428,6 +523,35 @@ export default {
         habilitacion,
       })
       this.registrarActividad('Cancelar Turno Inspección', 'Inspección Cancelada', nroTramite)
+
+      // --- Enviar correo al solicitante ---
+      try {
+        if (destinatario) {
+          const asunto = `Turno de inspección cancelado - N° ${this.turno.nroTramite}`
+          const mensaje = `Estimado/a contribuyente,
+
+Su turno de inspección comercial ha sido cancelado.
+
+Número de trámite: ${this.turno.nroTramite}
+Fecha de inspección: ${this.turno.dia}
+Horario: ${this.turno.horario}
+Domicilio: ${this.turno.domicilio}
+
+Motivo de la cancelación: ${this.observaciones}
+
+Para continuar con el trámite, debe solicitar un nuevo turno de inspección en la página de turnos web.
+
+Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
+
+          await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+          this.$bvToast.toast('Correo de cancelación de turno enviado al solicitante.', { variant: 'success' })
+        } else {
+          console.error('No se encontró el email del solicitante')
+          this.$bvToast.toast('No se pudo enviar el correo: email del solicitante no disponible.', { variant: 'danger' })
+        }
+      } catch (e) {
+        this.$bvToast.toast('No se pudo enviar el correo de cancelación de turno.', { variant: 'danger' })
+      }
       this.wait(300)
       this.observaciones = ''
       this.$fetch()

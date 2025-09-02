@@ -504,7 +504,7 @@
         <h3 class="icon-orange text-success text-center" v-if="!baja"><b>Aprobar solicitud</b></h3>
         <h3 class="icon-orange text-success text-center" v-else><b>Trámite finalizado</b></h3>
 
-        <p v-if="!baja">La solicitud fue aprobada con éxito. Se envió un correo electrónico al solicitante indicando que en el plazo de 7 días hábiles:</p>
+        <p v-if="!baja">La solicitud fue aprobada con éxito. Se envió un correo electrónico al solicitante indicando que en el plazo de 10 días hábiles:</p>
         <p style="text-align: center" v-else>Se envió un correo electrónico al solicitante indicando que el trámite ha sido finalizado.</p>
         <ul>
           <!-- <li v-if="!baja">  Abone la tasa de Habilitación Comercial prevista para el rubro. </li> -->
@@ -530,7 +530,7 @@
       </template>
       <div class="confirmation-popup-body">
         <h3 class="icon-orange text-success text-center"><b>Solicitar documentación</b></h3>
-        <p>La inspección fue aprobada con éxito. Se enviará automáticamente un correo electrónico al solicitante indicando que en el plazo de 7 días hábiles:</p>
+        <p>La inspección fue aprobada con éxito. Se enviará automáticamente un correo electrónico al solicitante indicando que en el plazo de 10 días hábiles:</p>
         <ul>
           <li>  Abone la tasa prevista para el rubro. </li>
           <li>  Concurra al Departamento Comercio con la documentación original. </li>
@@ -664,16 +664,6 @@
         <small> Recordá que más adelante podrás consultar los datos proporcionados en la sección de búsqueda. </small>
         <div class="text-center mt-3">
           <b-btn variant="success" :disabled="!nroExpediente1 || !nroExpediente2 || !alcance" @click="onSendFinalizarRenovacion()" >
-              Aceptar
-          </b-btn>
-        </div>
-      </div>
-      <div v-else>
-        <h3 class="text-success text-center"><b>Finalizar trámite</b></h3>
-        <p>El trámite será finalizado. El comercio será dado de baja, y se agregarán los documentos al expediente original. </p>
-        <small> Recordá que más adelante podrás consultar los datos proporcionados en la sección de búsqueda. </small>
-        <div class="text-center mt-3">
-          <b-btn variant="success" @click="onSendFinalizar();" >
               Aceptar
           </b-btn>
         </div>
@@ -1283,10 +1273,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
       this.wait(300)
       this.habilitacion.status = habilitacion.status
       this.showPrevApprove = false
-      if(this.baja){
-        this.showAprobarBaja = false
-      }
-      this.showApprove = true
+      // this.showApprove = true
     },
     onRechazarSolicitud(){
       this.showRejectPopup = true

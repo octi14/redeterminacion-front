@@ -1,7 +1,7 @@
 <template>
   <div class="page main-background">
     <Banner title="Recaudaciones"/>
-    <template v-if="adminMaster">
+    <template v-if="adminMaster || adminRecaudaciones">
       <MenuItem icon="info-circle" to="/recaudaciones/pagos_dobles" title="Informar pagos dobles" description="Realizar un reclamo por pago doble de tasas"/>
     <div class="row no-gutters">
       <b-button class="mx-auto mt-3" @click="$router.push('/')" variant="primary"> Volver </b-button>
@@ -20,6 +20,9 @@ export default{
   computed:{
     adminMaster(){
       return this.$store.state.user.admin === "master"
+    },
+    adminRecaudaciones(){
+      return this.$store.state.user.admin === "recaudaciones" || this.$store.state.user.admin === "master"
     }
   }
 }

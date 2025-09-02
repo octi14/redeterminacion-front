@@ -1261,7 +1261,7 @@ Alcance: ${alcance}
 
 El trámite está completo. En los próximos días recibirá la documentación correspondiente.
 
-Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
+Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (renovacioncomercial@gesell.gob.ar).`
 
           await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
           this.$bvToast.toast(`Correo de finalización de ${tipoTramite} enviado al solicitante.`, { variant: 'success' })

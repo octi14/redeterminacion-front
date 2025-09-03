@@ -1191,22 +1191,136 @@
         return '';
       },
       areAllFieldsComplete() {
-        if (this.TEST_submit){
-            return true;
+        if (this.TEST_submit) {
+          return true;
         }
-        else{
-          return this.solicitante.nombre && this.solicitante.apellido && this.solicitante.dni && this.solicitante.cuit && this.solicitante.domicilioReal &&
-                this.solicitante.telefono && this.solicitante.codigoPostal && this.solicitante.localidad && this.solicitante.provincia && this.solicitante.mail &&
-                this.inmueble.localidad && this.inmueble.calle && this.inmueble.nro && this.inmueble.rubro && this.documentos.dniFrente.contenido && this.documentos.dniDorso.contenido &&
-                (this.documentos.constanciaCuit.contenido || this.solicitante.tipoSolicitud != 'Habilitación' && this.solicitante.tipoSolicitud != 'Renovación' && this.solicitante.tipoSolicitud != 'Reempadronamiento' && this.solicitante.tipoSolicitud != 'Cambio de Titular') &&
-                this.documentos.libreDeudaUrbana.contenido &&
-                (this.documentos.libreDeudaSegHig.contenido || this.solicitante.tipoSolicitud!='Baja') &&
-                (this.documentos.libreDeudaIB.contenido || this.solicitante.tipoSolicitud!='Baja') &&
-                (this.documentos.tituloPropiedad.contenido || this.solicitante.tipoSolicitud != 'Habilitación' && this.solicitante.tipoSolicitud != 'Renovación' && this.solicitante.tipoSolicitud != 'Reempadronamiento' && this.solicitante.tipoSolicitud != 'Cambio de Titular') &&
-                (this.documentos.plano.contenido || this.solicitante.tipoSolicitud != 'Habilitación' && this.solicitante.tipoSolicitud != 'Renovación' && this.solicitante.tipoSolicitud != 'Reempadronamiento' && this.solicitante.tipoSolicitud != 'Cambio de Titular') &&
-                (this.documentos.constanciaAFIP.contenido || this.solicitante.tipoSolicitud != 'Renovación' && this.solicitante.tipoSolicitud != 'Reempadronamiento') &&
-                (this.documentos.decJurada.contenido || this.solicitante.tipoSolicitud != 'Renovación' && this.solicitante.tipoSolicitud != 'Reempadronamiento');
+
+        // Usar Vuelidate para verificar que todos los campos requeridos estén completos
+        // Primero verificamos que no haya errores de validación
+        if (this.$v.$invalid) {
+          return false;
         }
+
+        // Verificar errores de archivos demasiado grandes
+        if (Object.values(this.fileTooLargeError).some(error => !!error)) {
+          return false;
+        }
+
+        // Verificar campos básicos del solicitante
+        const camposSolicitante =
+          this.solicitante.nombre &&
+          this.solicitante.apellido &&
+          this.solicitante.dni &&
+          this.solicitante.cuit &&
+          this.solicitante.domicilioReal &&
+          this.solicitante.telefono &&
+          this.solicitante.codigoPostal &&
+          this.solicitante.localidad &&
+          this.solicitante.provincia &&
+          this.solicitante.mail &&
+          this.solicitante.mail2;
+
+        if (!camposSolicitante) return false;
+
+        // Verificar campos del inmueble
+        const camposInmueble =
+          this.inmueble.localidad &&
+          this.inmueble.calle &&
+          this.inmueble.nro &&
+          this.inmueble.rubro;
+
+        if (!camposInmueble) return false;
+
+        // Verificar documentos siempre requeridos
+        const documentosBasicos =
+          this.documentos.dniFrente.contenido &&
+          this.documentos.dniDorso.contenido &&
+          this.documentos.libreDeudaUrbana.contenido;
+
+        if (!documentosBasicos) return false;
+
+        // Verificar campos condicionales según tipo de solicitud
+        if (this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Titular') {
+          if (!this.documentos.constanciaCuit.contenido ||
+              !this.documentos.constanciaIngresosBrutos.contenido ||
+              !this.documentos.certificadoDomicilio.contenido ||
+              !this.documentos.tituloPropiedad.contenido) {
+            return false;
+          }
+
+          // Verificar plano para habilitación o cambio con modificaciones
+          if (this.solicitante.tipoSolicitud === 'Habilitación' ||
+              (this.solicitante.tipoSolicitud === 'Cambio de Titular' && this.solicitante.esModificacionesPlano === 'true')) {
+            if (!this.documentos.plano.contenido) return false;
+          }
+
+          // Verificar croquis si es requerido
+          if (this.rubroSeleccionado.croquis && !this.isHoteleria) {
+            if (!this.documentos.croquis.contenido) return false;
+          }
+
+          // Verificar servicios de hotelería si aplica
+          if (this.isHoteleria) {
+            const serviciosSeleccionados = this.inmueble.serviciosHoteleria.some(servicio => servicio.value);
+            if (!serviciosSeleccionados) return false;
+
+            if (this.inmueble.serviciosHoteleria[11].value && !this.inmueble.otrosServicios) {
+              return false;
+            }
+          }
+
+          // Verificar al menos una opción de espacio público
+          const espacioPublico = this.inmueble.marquesina || this.inmueble.mercaderia ||
+                                this.inmueble.carteles || this.inmueble.mesas;
+          if (!espacioPublico) return false;
+        }
+
+        if (this.solicitante.tipoSolicitud === 'Baja') {
+          if (!this.nroLegajo) return false;
+
+          // Verificar que se seleccione al menos una opción
+          if (!this.solicitante.esTitular && !this.solicitante.esPropietario) return false;
+
+          if (this.solicitante.esTitular && !this.documentos.libreDeudaIB.contenido) return false;
+          if (this.solicitante.esPropietario && !this.documentos.tituloPropiedad.contenido) return false;
+
+          if (!this.documentos.libreDeudaSegHig.contenido) return false;
+        }
+
+        if (this.solicitante.tipoSolicitud === 'Renovación' || this.solicitante.tipoSolicitud === 'Reempadronamiento') {
+          if (!this.nroLegajo) return false;
+          if (!this.documentos.constanciaIngresosBrutos.contenido) return false;
+          if (!this.documentos.libreDeudaIB.contenido) return false;
+          if (!this.documentos.constanciaAFIP.contenido) return false;
+          if (!this.documentos.certificadoDomicilio.contenido) return false;
+          if (!this.documentos.libreDeudaSegHig.contenido) return false;
+          if (!this.documentos.decJurada.contenido) return false;
+
+          // tituloPropiedad solo es obligatorio en Renovación, no en Reempadronamiento
+          if (this.solicitante.tipoSolicitud === 'Renovación') {
+            if (!this.documentos.tituloPropiedad.contenido) return false;
+          }
+        }
+
+        if (this.solicitante.tipoSolicitud === 'Cambio de Titular') {
+          if (!this.documentos.dniAnteriorFrente.contenido ||
+              !this.documentos.dniAnteriorDorso.contenido ||
+              !this.documentos.constanciaCambioTitular.contenido) {
+            return false;
+          }
+        }
+
+        // Verificar campos condicionales del apoderado
+        if (this.solicitante.esApoderado === 'true') {
+          if (!this.documentos.planillaAutorizacion.contenido) return false;
+        }
+
+        // Verificar campos condicionales de persona jurídica
+        if (this.solicitante.esPersonaJuridica === 'true') {
+          if (!this.documentos.actaPersonaJuridica.contenido) return false;
+        }
+
+        return true;
       },
       areAllFieldsValid(){
         //console.log("areAllFieldsValid() CALLED");

@@ -46,6 +46,7 @@ const formatExtendedFile = (FileResponse) => ({
   mercaderia: FileResponse.inmueble.mercaderia,
   mesas: FileResponse.inmueble.mesas,
   carteles: FileResponse.inmueble.carteles,
+  medidasCartel: FileResponse.inmueble.medidasCartel,
   otrosServicios: FileResponse.inmueble.otrosServicios,
   // documentos: FileResponse.documentos,
   status: FileResponse.status,

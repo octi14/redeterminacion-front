@@ -228,7 +228,7 @@
             <b-form-group label="Nro de Legajo *" label-for="nroLegajo" >
                 <b-form-input id="nroLegajo" v-model="nroLegajo" no-wheel @blur="$v.nroLegajo.$touch()"></b-form-input>
               <div v-if="$v.nroLegajo.$error" class="validation-error">
-                <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El nro de legajo no puede estar vacío, contener letras o caracteres especiales, y debe tener entre 4 y 6 digítos.
+                <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El nro de legajo no puede estar vacío y debe contener solo números.
               </div>
             </b-form-group>
           </b-col>
@@ -340,7 +340,7 @@
       <fieldset  v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">
          <b-row>
                 <b-col lg="5" md="8" sm="7">
-                  <h5>Uso de espacio público</h5>
+                  <h5>Uso de espacio público *</h5>
                 </b-col>
          </b-row>
           <p>Indicá cuál de los siguientes ítems posee tu establecimiento:</p>
@@ -353,11 +353,56 @@
           <b-form-group label="" label-for="carteles" style="margin-bottom: 0">
               <b-form-checkbox  id="carteles" v-model="inmueble.carteles" scale=1.5 @change="$v.inmueble.carteles.$touch()">Carteles</b-form-checkbox>
           </b-form-group>
+          <!-- Campos de medidas del cartel -->
+          <div v-if="inmueble.carteles" class="ml-4 mt-2 mb-3">
+            <small class="text-muted mb-2 d-block">Por favor, especificá las dimensiones del cartel a utilizar</small>
+            <b-row>
+              <b-col lg="3" md="4" sm="6">
+                <b-form-group label="Ancho (cm)" label-for="cartelWidth">
+                  <b-form-input
+                    id="cartelWidth"
+                    v-model="inmueble.medidasCartel.width"
+                    type="number"
+                    min="0"
+                    step="0.1"
+                    @blur="$v.inmueble.medidasCartel.width.$touch()"
+                    placeholder="Ej: 50">
+                  </b-form-input>
+                  <div v-if="$v.inmueble.medidasCartel.width.$error" class="validation-error">
+                    <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon>
+                    <span v-if="$v.inmueble.medidasCartel.width.requiredIf">El ancho es requerido.</span>
+                    <span v-if="$v.inmueble.medidasCartel.width.numeric">El ancho debe ser un número válido.</span>
+                  </div>
+                </b-form-group>
+              </b-col>
+              <b-col lg="3" md="4" sm="6">
+                <b-form-group label="Alto (cm)" label-for="cartelHeight">
+                  <b-form-input
+                    id="cartelHeight"
+                    v-model="inmueble.medidasCartel.height"
+                    type="number"
+                    min="0"
+                    step="0.1"
+                    @blur="$v.inmueble.medidasCartel.height.$touch()"
+                    placeholder="Ej: 30">
+                  </b-form-input>
+                  <div v-if="$v.inmueble.medidasCartel.height.$error" class="validation-error">
+                    <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon>
+                    <span v-if="$v.inmueble.medidasCartel.height.requiredIf">El alto es requerido.</span>
+                    <span v-if="$v.inmueble.medidasCartel.height.numeric">El alto debe ser un número válido.</span>
+                  </div>
+                </b-form-group>
+              </b-col>
+            </b-row>
+          </div>
           <b-form-group label="" label-for="mesas" style="margin-bottom: 0">
               <b-form-checkbox  id="mesas" v-model="inmueble.mesas" scale=1.5 @change="$v.inmueble.mesas.$touch()">Mesas y Sillas</b-form-checkbox>
           </b-form-group>
+          <b-form-group label="" label-for="ningunaAnterior" style="margin-bottom: 0">
+              <b-form-checkbox  id="ningunaAnterior" v-model="inmueble.ningunaAnterior" scale=1.5 @change="$v.inmueble.ningunaAnterior.$touch()">Ninguna de las anteriores</b-form-checkbox>
+          </b-form-group>
       </fieldset>
-      <div v-if="$v.inmueble.marquesina.$error || $v.inmueble.mercaderia.$error || $v.inmueble.carteles.$error || $v.inmueble.mesas.$error" class="validation-error">
+      <div v-if="$v.inmueble.marquesina.$error || $v.inmueble.mercaderia.$error || $v.inmueble.carteles.$error || $v.inmueble.mesas.$error || $v.inmueble.ningunaAnterior.$error" class="validation-error">
         <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Selecciona al menos una opción.
       </div>
       </fieldset>
@@ -859,7 +904,7 @@
     validations() {
       return {
         nroLegajo: { requiredIf: requiredIf(function () {
-          return (this.solicitante.tipoSolicitud == 'Baja' || this.solicitante.tipoSolicitud == 'Renovación' || this.solicitante.tipoSolicitud == 'Reempadronamiento' || this.solicitante.tipoSolicitud == 'Cambio de Titular') }) , numeric, maxLength: maxLength(6),  minLength: minLength(4) },
+          return (this.solicitante.tipoSolicitud == 'Baja' || this.solicitante.tipoSolicitud == 'Renovación' || this.solicitante.tipoSolicitud == 'Reempadronamiento' || this.solicitante.tipoSolicitud == 'Cambio de Titular') }) , numeric },
         solicitante: {
           nombre: { required },
           apellido: { required },
@@ -902,22 +947,41 @@
           },
           marquesina: {
             requiredIfAtLeastOneChecked: (value) => {
-              return value || this.inmueble.mercaderia || this.inmueble.carteles || this.inmueble.mesas || this.solicitante.tipoSolicitud === 'Baja';
+              return value || this.inmueble.mercaderia || this.inmueble.carteles || this.inmueble.mesas || this.inmueble.ningunaAnterior || this.solicitante.tipoSolicitud === 'Baja';
             }
           },
           mercaderia: {
             requiredIfAtLeastOneChecked: (value) => {
-              return value || this.inmueble.marquesina || this.inmueble.carteles || this.inmueble.mesas || this.solicitante.tipoSolicitud == 'Baja';
+              return value || this.inmueble.marquesina || this.inmueble.carteles || this.inmueble.mesas || this.inmueble.ningunaAnterior || this.solicitante.tipoSolicitud == 'Baja';
             }
           },
           carteles: {
             requiredIfAtLeastOneChecked: (value) => {
-              return value || this.inmueble.mercaderia || this.inmueble.marquesina || this.inmueble.mesas || this.solicitante.tipoSolicitud === 'Baja';
+              return value || this.inmueble.mercaderia || this.inmueble.marquesina || this.inmueble.mesas || this.inmueble.ningunaAnterior || this.solicitante.tipoSolicitud === 'Baja';
+            }
+          },
+          medidasCartel: {
+            width: {
+              requiredIf: requiredIf(function () {
+                return this.inmueble.carteles === true;
+              }),
+              numeric
+            },
+            height: {
+              requiredIf: requiredIf(function () {
+                return this.inmueble.carteles === true;
+              }),
+              numeric
             }
           },
           mesas: {
             requiredIfAtLeastOneChecked: (value) => {
-              return value || this.inmueble.mercaderia || this.inmueble.carteles || this.inmueble.marquesina || this.solicitante.tipoSolicitud === 'Baja';
+              return value || this.inmueble.mercaderia || this.inmueble.carteles || this.inmueble.marquesina || this.inmueble.ningunaAnterior || this.solicitante.tipoSolicitud === 'Baja';
+            }
+          },
+          ningunaAnterior: {
+            requiredIfAtLeastOneChecked: (value) => {
+              return value || this.inmueble.mercaderia || this.inmueble.carteles || this.inmueble.marquesina || this.inmueble.mesas || this.solicitante.tipoSolicitud === 'Baja';
             }
           }
         },
@@ -1035,6 +1099,11 @@
           mercaderia: false,
           mesas: false,
           carteles: false,
+          medidasCartel: {
+            width: null,
+            height: null
+          },
+          ningunaAnterior: false,
           otrosServicios: '',
           serviciosHoteleria: [
             { id: "1", servicio: "Servicio de Mucama-Ropa Blanca", value: false},
@@ -1271,7 +1340,7 @@
 
           // Verificar al menos una opción de espacio público
           const espacioPublico = this.inmueble.marquesina || this.inmueble.mercaderia ||
-                                this.inmueble.carteles || this.inmueble.mesas;
+                                this.inmueble.carteles || this.inmueble.mesas || this.inmueble.ningunaAnterior;
           if (!espacioPublico) return false;
         }
 
@@ -1340,6 +1409,55 @@
         sitekey: this.recaptchaSiteKey,
         });
       });
+    },
+    watch: {
+      'inmueble.carteles'(newValue) {
+        // Si se deselecciona carteles, limpiar las medidas
+        if (!newValue) {
+          this.inmueble.medidasCartel.width = null;
+          this.inmueble.medidasCartel.height = null;
+          // Limpiar errores de validación
+          this.$v.inmueble.medidasCartel.width.$reset();
+          this.$v.inmueble.medidasCartel.height.$reset();
+        }
+        // Si se selecciona cualquier otra opción, deseleccionar "Ninguna de las anteriores"
+        if (newValue) {
+          this.inmueble.ningunaAnterior = false;
+        }
+      },
+      'inmueble.ningunaAnterior'(newValue) {
+        // Si se selecciona "Ninguna de las anteriores", deseleccionar todas las demás opciones
+        if (newValue) {
+          this.inmueble.marquesina = false;
+          this.inmueble.mercaderia = false;
+          this.inmueble.carteles = false;
+          this.inmueble.mesas = false;
+          // Limpiar medidas de cartel si estaba seleccionado
+          this.inmueble.medidasCartel.width = null;
+          this.inmueble.medidasCartel.height = null;
+          // Limpiar errores de validación
+          this.$v.inmueble.medidasCartel.width.$reset();
+          this.$v.inmueble.medidasCartel.height.$reset();
+        }
+      },
+      'inmueble.marquesina'(newValue) {
+        // Si se selecciona cualquier otra opción, deseleccionar "Ninguna de las anteriores"
+        if (newValue) {
+          this.inmueble.ningunaAnterior = false;
+        }
+      },
+      'inmueble.mercaderia'(newValue) {
+        // Si se selecciona cualquier otra opción, deseleccionar "Ninguna de las anteriores"
+        if (newValue) {
+          this.inmueble.ningunaAnterior = false;
+        }
+      },
+      'inmueble.mesas'(newValue) {
+        // Si se selecciona cualquier otra opción, deseleccionar "Ninguna de las anteriores"
+        if (newValue) {
+          this.inmueble.ningunaAnterior = false;
+        }
+      }
     },
     methods: {
       isCaptchaOK(){
@@ -1604,10 +1722,13 @@
                   }
                 }
 
+              // Crear copia del inmueble sin la propiedad ningunaAnterior
+              const { ningunaAnterior, ...inmuebleParaEnviar } = this.inmueble;
+
               const habilitacion = {
                 documentos: documentosParaGuardar,
                 solicitante: this.solicitante,
-                inmueble: this.inmueble,
+                inmueble: inmuebleParaEnviar,
                 nroLegajo: this.nroLegajo,
               };
               // habilitacion.nroTramite = nroTramite

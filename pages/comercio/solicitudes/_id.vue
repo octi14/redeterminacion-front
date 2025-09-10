@@ -206,26 +206,42 @@
             </div>
             <div class="layout" v-if="!baja">
               <p class="col col-main">
-                <strong class="text-primary">- Mesas y sillas: </strong> <b-icon-check-circle-fill variant="info" v-if="habilitacion.mesas"></b-icon-check-circle-fill>
-                  <b-icon-x-circle-fill variant="danger" v-else></b-icon-x-circle-fill><br>
+                <b-icon-check-circle-fill variant="success" v-if="habilitacion.mesas" class="mr-2"></b-icon-check-circle-fill>
+                <b-icon-x-circle-fill variant="danger" v-else class="mr-2"></b-icon-x-circle-fill>
+                <strong class="text-primary">Mesas y sillas</strong><br>
               </p>
             </div>
             <div class="layout" v-if="!baja">
               <p class="col col-main">
-                <strong class="text-primary">- Marquesina: </strong> <b-icon-check-circle-fill variant="info" v-if="habilitacion.marquesina"></b-icon-check-circle-fill>
-                  <b-icon-x-circle-fill variant="danger" v-else></b-icon-x-circle-fill><br>
+                <b-icon-check-circle-fill variant="success" v-if="habilitacion.marquesina" class="mr-2"></b-icon-check-circle-fill>
+                <b-icon-x-circle-fill variant="danger" v-else class="mr-2"></b-icon-x-circle-fill>
+                <strong class="text-primary">Marquesina</strong><br>
               </p>
             </div>
             <div class="layout" v-if="!baja">
               <p class="col col-main">
-                <strong class="text-primary">- Carteles: </strong> <b-icon-check-circle-fill variant="info" v-if="habilitacion.carteles"></b-icon-check-circle-fill>
-                  <b-icon-x-circle-fill variant="danger" v-else></b-icon-x-circle-fill><br>
+                <b-icon-check-circle-fill variant="success" v-if="habilitacion.carteles" class="mr-2"></b-icon-check-circle-fill>
+                <b-icon-x-circle-fill variant="danger" v-else class="mr-2"></b-icon-x-circle-fill>
+                <strong class="text-primary">Carteles</strong><br>
+              </p>
+            </div>
+            <!-- Mostrar medidas del cartel si está seleccionado -->
+            <div class="layout" v-if="!baja && habilitacion.carteles && habilitacion.medidasCartel">
+              <p class="col col-main ml-5">
+                <strong class="text-primary font-weight-normal">- Medidas del cartel: </strong>
+                <span v-if="habilitacion.medidasCartel.width && habilitacion.medidasCartel.height">
+                  {{ habilitacion.medidasCartel.width }} cm × {{ habilitacion.medidasCartel.height }} cm
+                </span>
+                <span v-else class="text-muted">
+                  Medidas no especificadas
+                </span>
               </p>
             </div>
             <div class="layout" v-if="!baja">
               <p class="col col-main">
-                <strong class="text-primary">- Mercadería: </strong> <b-icon-check-circle-fill variant="info" v-if="habilitacion.mercaderia"></b-icon-check-circle-fill>
-                  <b-icon-x-circle-fill variant="danger" v-else></b-icon-x-circle-fill><br>
+                <b-icon-check-circle-fill variant="success" v-if="habilitacion.mercaderia" class="mr-2"></b-icon-check-circle-fill>
+                <b-icon-x-circle-fill variant="danger" v-else class="mr-2"></b-icon-x-circle-fill>
+                <strong class="text-primary">Mercadería</strong><br>
               </p>
             </div>
             <div v-if="!baja && hoteleria">
@@ -1280,8 +1296,15 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
     },
     async onSendReject(){
       const observaciones = this.habilitacion.observaciones || " "
+
+      // Construir la lista de elementos incorrectos para las observaciones
+      let elementosIncorrectosTexto = ''
+      if (this.elementosIncorrectos && this.elementosIncorrectos.length > 0) {
+        elementosIncorrectosTexto = `Elementos incorrectos: ${this.elementosIncorrectos.join(', ')}`
+      }
+
       const habilitacion = {
-        observaciones: observaciones + " - " + "Solicitud rechazada: " + this.observaciones + " " + new Date().toLocaleDateString(),
+        observaciones: observaciones + " - " + "Solicitud rechazada el " + new Date().toLocaleDateString() + ". " + elementosIncorrectosTexto,
         status: 'Rechazada'
       }
       const id = this.habilitacion.id
@@ -1474,7 +1497,13 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
   const fileURL = URL.createObjectURL(blob);
 
   const newWindow = window.open('', '_blank');
-  newWindow.document.title = documento.filename || `Documento: ${nombreDocumento}`;
+
+  // Limpiar el nombre del archivo para eliminar rutas internas del servidor
+  const cleanFilename = documento.filename ?
+    documento.filename.split('/').pop().split('\\').pop() :
+    null;
+
+  newWindow.document.title = cleanFilename || `Documento: ${nombreDocumento}`;
 
   if (documento.contentType === 'application/pdf') {
     const embed = document.createElement('embed');

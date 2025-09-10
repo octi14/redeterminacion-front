@@ -1201,9 +1201,9 @@ Número de trámite: ${this.habilitacion.nroTramite}
 Tipo de solicitud: ${this.habilitacion.tipoSolicitud}
 Rubro: ${this.habilitacion.rubro}
 
-Para completar el trámite, debe abonar los cánones correspondientes en el Departamento Comercio MVGesell. Una vez realizado el pago, se le notificará la finalización del trámite.
+Para completar el trámite, debe abonar las deudas de tasas correspondientes en el Departamento Comercio MVGesell. Una vez realizado el pago, se le notificará la finalización del trámite.
 
-Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
+Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (habilitacioncomercial@gesell.gob.ar).`
 
         await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
         this.$bvToast.toast('Correo de aprobación de baja enviado al solicitante.', { variant: 'success' })

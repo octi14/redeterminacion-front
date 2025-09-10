@@ -45,7 +45,7 @@
         <b-row>
         <b-col lg="6">
             <b-form-group label="Nombre *" label-for="nombreSolicitante">
-              <b-form-input id="nombreSolicitante" v-model="solicitante.nombre"></b-form-input>
+              <b-form-input id="nombreSolicitante" v-model="solicitante.nombre" @blur="$v.solicitante.nombre.$touch()"></b-form-input>
               <div v-if="$v.solicitante.nombre.$error" class="validation-error">
                 <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El Nombre no puede estar vacío.
               </div>
@@ -53,7 +53,7 @@
           </b-col>
           <b-col lg="6">
             <b-form-group label="Apellido *" label-for="apellidoSolicitante" >
-              <b-form-input id="apellidoSolicitante" v-model="solicitante.apellido"></b-form-input>
+              <b-form-input id="apellidoSolicitante" v-model="solicitante.apellido" @blur="$v.solicitante.apellido.$touch()"></b-form-input>
               <div v-if="$v.solicitante.apellido.$error" class="validation-error">
                 <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El Apellido no puede estar vacío.
               </div>
@@ -63,7 +63,7 @@
         <b-row>
           <b-col lg="6">
             <b-form-group label="DNI / Pasaporte *" label-for="DNISolicitante" >
-              <b-form-input id="DNISolicitante" v-model="solicitante.dni"></b-form-input>
+              <b-form-input id="DNISolicitante" v-model="solicitante.dni" @blur="$v.solicitante.dni.$touch()"></b-form-input>
               <div v-if="$v.solicitante.dni.$error" class="validation-error">
                 <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Introduce un DNI válido.
               </div>
@@ -71,7 +71,7 @@
           </b-col>
           <b-col lg="6">
             <b-form-group label="CUIT *" label-for="cuit" >
-              <b-form-input id="cuit" v-model="solicitante.cuit"></b-form-input>
+              <b-form-input id="cuit" v-model="solicitante.cuit" @blur="$v.solicitante.cuit.$touch()"></b-form-input>
               <div v-if="$v.solicitante.cuit.$error" class="validation-error">
                 <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Introduce un CUIT válido, sin guiones ni caracteres especiales.
               </div>
@@ -83,7 +83,7 @@
           <b-form-input id="razon-social" v-model="solicitante.razonSocial" ></b-form-input>
         </b-form-group>
         <b-form-group label="Domicilio Real y/o Legal *" label-for="domicilio-real" >
-          <b-form-input id="domicilio-real" v-model="solicitante.domicilioReal" ></b-form-input>
+          <b-form-input id="domicilio-real" v-model="solicitante.domicilioReal" @blur="$v.solicitante.domicilioReal.$touch()"></b-form-input>
           <div v-if="$v.solicitante.domicilioReal.$error" class="validation-error">
             <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El Domicilio Real y/o Legal no puede estar vacío.
           </div>
@@ -91,7 +91,7 @@
         <b-row>
           <b-col lg="6">
             <b-form-group label="Teléfono *" label-for="telefonoTitular" >
-              <b-form-input id="telefonoTitular" v-model="solicitante.telefono" no-wheel ></b-form-input>
+              <b-form-input id="telefonoTitular" v-model="solicitante.telefono" no-wheel @blur="$v.solicitante.telefono.$touch()"></b-form-input>
               <div v-if="$v.solicitante.telefono.$error" class="validation-error">
                 <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El teléfono no puede estar vacío, contener letras o caracteres especiales.
               </div>
@@ -100,7 +100,7 @@
           <b-col lg="6">
             <b-form-group label="Código Postal *" label-for="codigoPostal" >
               <b-col lg="4" style="padding-left: 0px;">
-                <b-form-input id="codigoPostal" v-model="solicitante.codigoPostal" ></b-form-input>
+                <b-form-input id="codigoPostal" v-model="solicitante.codigoPostal" @blur="$v.solicitante.codigoPostal.$touch()"></b-form-input>
               </b-col>
               <b-col lg="12" style="padding-left: 0px;">
                 <div v-if="$v.solicitante.codigoPostal.$error" class="validation-error">
@@ -113,7 +113,7 @@
         <b-row>
           <b-col lg="6">
             <b-form-group label="Localidad *" label-for="localidadSolicitante" >
-              <b-form-input id="localidadSolicitante" v-model="solicitante.localidad" ></b-form-input>
+              <b-form-input id="localidadSolicitante" v-model="solicitante.localidad" @blur="$v.solicitante.localidad.$touch()"></b-form-input>
               <div v-if="$v.solicitante.localidad.$error" class="validation-error">
                 <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> La localidad no puede estar vacía.
               </div>
@@ -121,7 +121,7 @@
           </b-col>
           <b-col lg="6">
             <b-form-group label="Provincia *" label-for="provincia">
-              <b-form-select id="provincia" v-model="solicitante.provincia" >
+              <b-form-select id="provincia" v-model="solicitante.provincia" @change="$v.solicitante.provincia.$touch()">
                 <option value="" disabled>Selecciona una provincia</option>
                 <option v-for="(provincia, index) in provincias" :key="index" :value="provincia">
                   {{ provincia }}
@@ -134,21 +134,21 @@
           </b-col>
         </b-row>
         <b-form-group label="Correo Electrónico *" label-for="mail" >
-          <b-form-input id="mail" v-model="solicitante.mail" ></b-form-input>
+          <b-form-input id="mail" v-model="solicitante.mail" @blur="$v.solicitante.mail.$touch()"></b-form-input>
           <div v-if="$v.solicitante.mail.$error" class="validation-error">
             <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe introducir un email válido. Ejemplo: nombre@dominio.com
           </div>
         </b-form-group>
         <b-form-group label="Repita el Correo Electrónico *" label-for="mail" >
-          <b-form-input id="mail" v-model="solicitante.mail2" ></b-form-input>
+          <b-form-input id="mail" v-model="solicitante.mail2" @blur="$v.solicitante.mail2.$touch()"></b-form-input>
           <div v-if="$v.solicitante.mail2.$error" class="validation-error">
             <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Los correos deben coincidir.
           </div>
         </b-form-group>
         <b-form-group label="Seleccioná el caso que corresponda *" label-for="esPropietario" v-if="solicitante.tipoSolicitud=='Baja'">
-          <b-form-checkbox v-model="solicitante.esTitular" name="esTitular" >
+          <b-form-checkbox v-model="solicitante.esTitular" name="esTitular" @change="$v.solicitante.esTitular.$touch(); $v.solicitante.esPropietario.$touch()">
             <span>Soy o represento al titular de habilitación</span></b-form-checkbox>
-          <b-form-checkbox v-model="solicitante.esPropietario" name="esPropietario" >
+          <b-form-checkbox v-model="solicitante.esPropietario" name="esPropietario" @change="$v.solicitante.esPropietario.$touch(); $v.solicitante.esTitular.$touch()">
             <span>Soy o represento al propietario del inmueble</span></b-form-checkbox>
           <div v-if="$v.solicitante.esTitular.$error || $v.solicitante.esPropietario.$error" class="validation-error">
             <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe seleccionar por lo menos una opción.
@@ -226,7 +226,7 @@
         <b-row v-if="solicitante.tipoSolicitud == 'Baja' || solicitante.tipoSolicitud == 'Cambio de Titular' || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">
           <b-col lg="12" md="12">
             <b-form-group label="Nro de Legajo *" label-for="nroLegajo" >
-                <b-form-input id="nroLegajo" v-model="nroLegajo" no-wheel></b-form-input>
+                <b-form-input id="nroLegajo" v-model="nroLegajo" no-wheel @blur="$v.nroLegajo.$touch()"></b-form-input>
               <div v-if="$v.nroLegajo.$error" class="validation-error">
                 <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El nro de legajo no puede estar vacío, contener letras o caracteres especiales, y debe tener entre 4 y 6 digítos.
               </div>
@@ -236,7 +236,7 @@
         <b-row>
           <b-col lg="6" md="12">
             <b-form-group label="Localidad *" label-for="localidad" >
-              <b-form-select id="localidad" v-model="inmueble.localidad" >
+              <b-form-select id="localidad" v-model="inmueble.localidad" @change="$v.inmueble.localidad.$touch()">
                 <option value="" disabled>Seleccioná...</option>
                 <option value="villa-gesell">Villa Gesell</option>
                 <option value="mar-de-las-pampas">Mar de las Pampas</option>
@@ -276,7 +276,7 @@
         <b-row>
           <b-col lg="8" md="12">
             <b-form-group label="Calle *" label-for="direccion-inmueble-calle" >
-              <b-form-input id="direccion-inmueble-calle" v-model="inmueble.calle" ></b-form-input>
+              <b-form-input id="direccion-inmueble-calle" v-model="inmueble.calle" @blur="$v.inmueble.calle.$touch()"></b-form-input>
               <div v-if="$v.inmueble.calle.$error" class="validation-error">
                 <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> La calle no puede estar vacía.
               </div>
@@ -285,7 +285,7 @@
           <b-col lg="2" md="6">
             <b-form-group label="" label-for="direccion-inmbueble-nro" >
               <label for="direccion-inmbueble-nro" class="rubro-label">Número * <b-icon-question-circle-fill class="" @click="openPopup('NroInmueble')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
-              <b-form-input id="direccion-inmbueble-nro" v-model="inmueble.nro" ></b-form-input>
+              <b-form-input id="direccion-inmbueble-nro" v-model="inmueble.nro" @blur="$v.inmueble.nro.$touch()"></b-form-input>
               <div v-if="$v.inmueble.nro.$error" class="validation-error">
                 <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El número no puede estar vacío, contener letras ni caracteres especiales.
               </div>
@@ -305,7 +305,7 @@
         <p>Seleccioná los servicios que brinda tu establecimiento:</p>
 
           <b-form-group>
-          <b-form-checkbox v-for="servicio in inmueble.serviciosHoteleria" :key="servicio.id" :id="`servicio${servicio.id}`" :name="`servicio${servicio.id}`" v-model="servicio.value" scale=1.5 >
+          <b-form-checkbox v-for="servicio in inmueble.serviciosHoteleria" :key="servicio.id" :id="`servicio${servicio.id}`" :name="`servicio${servicio.id}`" v-model="servicio.value" scale=1.5 @change="$v.inmueble.serviciosHoteleria.$touch()">
             {{ servicio.servicio }}
           </b-form-checkbox>
           <div v-if="$v.inmueble.serviciosHoteleria.$error" class="validation-error">
@@ -313,7 +313,7 @@
           </div>
         </b-form-group>
         <b-form-group v-if="inmueble.serviciosHoteleria[11].value === true" label="Contanos que otros servicios brinda tu establecimiento: " label-for="otrosServicios" >
-          <b-form-textarea id="otrosServicios" v-model="inmueble.otrosServicios" rows="2" max-rows="4" ></b-form-textarea>
+          <b-form-textarea id="otrosServicios" v-model="inmueble.otrosServicios" rows="2" max-rows="4" @blur="$v.inmueble.otrosServicios.$touch()"></b-form-textarea>
           <div v-if="$v.inmueble.otrosServicios.$error" class="validation-error">
             <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe completar este campo, o desmarcar la casilla "Otros".
           </div>
@@ -345,16 +345,16 @@
          </b-row>
           <p>Indicá cuál de los siguientes ítems posee tu establecimiento:</p>
           <b-form-group label="" label-for="marquesina" style="margin-bottom: 0">
-              <b-form-checkbox  id="marquesina" v-model="inmueble.marquesina" scale=1.5>Marquesina - Toldo</b-form-checkbox>
+              <b-form-checkbox  id="marquesina" v-model="inmueble.marquesina" scale=1.5 @change="$v.inmueble.marquesina.$touch()">Marquesina - Toldo</b-form-checkbox>
           </b-form-group>
           <b-form-group label="" label-for="mercaderia" style="margin-bottom: 0">
-              <b-form-checkbox  id="mercaderia" v-model="inmueble.mercaderia" scale=1.5>Mercadería en la Vía Pública</b-form-checkbox>
+              <b-form-checkbox  id="mercaderia" v-model="inmueble.mercaderia" scale=1.5 @change="$v.inmueble.mercaderia.$touch()">Mercadería en la Vía Pública</b-form-checkbox>
           </b-form-group>
           <b-form-group label="" label-for="carteles" style="margin-bottom: 0">
-              <b-form-checkbox  id="carteles" v-model="inmueble.carteles" scale=1.5>Carteles</b-form-checkbox>
+              <b-form-checkbox  id="carteles" v-model="inmueble.carteles" scale=1.5 @change="$v.inmueble.carteles.$touch()">Carteles</b-form-checkbox>
           </b-form-group>
           <b-form-group label="" label-for="mesas" style="margin-bottom: 0">
-              <b-form-checkbox  id="mesas" v-model="inmueble.mesas" scale=1.5>Mesas y Sillas</b-form-checkbox>
+              <b-form-checkbox  id="mesas" v-model="inmueble.mesas" scale=1.5 @change="$v.inmueble.mesas.$touch()">Mesas y Sillas</b-form-checkbox>
           </b-form-group>
       </fieldset>
       <div v-if="$v.inmueble.marquesina.$error || $v.inmueble.mercaderia.$error || $v.inmueble.carteles.$error || $v.inmueble.mesas.$error" class="validation-error">
@@ -1740,6 +1740,9 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
         this.$router.push('/comercio/tramites')
       },
       handleRubroChange() {
+        // Activar validación del rubro
+        this.$v.inmueble.rubro.$touch();
+
         if (this.inmueble.rubro != null) {
         // Obtener los datos correspondientes al rubro seleccionado
         const i = this.listaRubros.findIndex(rubro => rubro.nombre === this.inmueble.rubro);
@@ -1830,6 +1833,38 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
         print();
         await this.wait(500);
         this.endButton = true;
+      },
+      // Método temporal para probar validaciones - se puede llamar desde la consola del navegador
+      testValidations() {
+        console.log('=== PRUEBA DE VALIDACIONES ===');
+
+        // Probar validaciones de campos básicos
+        this.$v.solicitante.nombre.$touch();
+        this.$v.solicitante.apellido.$touch();
+        this.$v.solicitante.dni.$touch();
+        this.$v.solicitante.cuit.$touch();
+        this.$v.solicitante.telefono.$touch();
+        this.$v.solicitante.mail.$touch();
+
+        // Probar validaciones del inmueble
+        this.$v.inmueble.localidad.$touch();
+        this.$v.inmueble.rubro.$touch();
+        this.$v.inmueble.calle.$touch();
+        this.$v.inmueble.nro.$touch();
+
+        console.log('Validaciones activadas. Revisa los mensajes de error en el formulario.');
+        console.log('Estado de validaciones:', {
+          nombre: this.$v.solicitante.nombre.$error,
+          apellido: this.$v.solicitante.apellido.$error,
+          dni: this.$v.solicitante.dni.$error,
+          cuit: this.$v.solicitante.cuit.$error,
+          telefono: this.$v.solicitante.telefono.$error,
+          mail: this.$v.solicitante.mail.$error,
+          localidad: this.$v.inmueble.localidad.$error,
+          rubro: this.$v.inmueble.rubro.$error,
+          calle: this.$v.inmueble.calle.$error,
+          nro: this.$v.inmueble.nro.$error
+        });
       },
     }
 

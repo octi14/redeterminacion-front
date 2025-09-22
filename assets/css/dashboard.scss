@@ -1,0 +1,260 @@
+// Estilos específicos para el Dashboard
+.dashboard-container {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  min-height: 100vh;
+}
+
+.dashboard-header {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  border-radius: 15px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 10px 30px rgba(40, 167, 69, 0.3);
+
+  h2 {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    opacity: 0.9;
+    margin-bottom: 0;
+  }
+}
+
+.dashboard-card {
+  background: white;
+  border-radius: 15px;
+  border: none;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  overflow: hidden;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  .card-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-bottom: 2px solid #dee2e6;
+    border-radius: 15px 15px 0 0 !important;
+    padding: 1.25rem 1.5rem;
+
+    h4, h5 {
+      margin: 0;
+      font-weight: 600;
+      color: #495057;
+    }
+
+    i {
+      font-size: 1.2em;
+    }
+  }
+
+  .card-body {
+    padding: 1.5rem;
+  }
+}
+
+.stat-card {
+  background: white;
+  border-radius: 15px;
+  border: none;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  height: 100%;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  }
+
+  .card-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-bottom: 2px solid #dee2e6;
+    border-radius: 15px 15px 0 0 !important;
+    padding: 1rem 1.25rem;
+
+    i {
+      font-size: 1.1em;
+    }
+  }
+
+  .card-body {
+    padding: 1.25rem;
+    text-align: center;
+
+    h2 {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      font-size: 2.5rem;
+    }
+
+    p {
+      color: #6c757d;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    small {
+      color: #adb5bd;
+    }
+  }
+
+  .card-footer {
+    background: rgba(0, 0, 0, 0.02);
+    border-top: 1px solid #dee2e6;
+    border-radius: 0 0 15px 15px;
+    padding: 0.75rem 1.25rem;
+
+    small {
+      color: #6c757d;
+      font-weight: 500;
+    }
+  }
+}
+
+.detail-card {
+  background: white;
+  border-radius: 15px;
+  border: none;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  overflow: hidden;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  }
+
+  .card-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-bottom: 2px solid #dee2e6;
+    border-radius: 15px 15px 0 0 !important;
+    padding: 1rem 1.25rem;
+
+    i {
+      font-size: 1.1em;
+    }
+  }
+
+  .card-body {
+    padding: 1.25rem;
+
+    h3 {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      color: #6c757d;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    small {
+      color: #adb5bd;
+    }
+  }
+}
+
+.btn-refresh {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  border: none;
+  border-radius: 25px;
+  padding: 0.5rem 1.5rem;
+  color: white;
+  font-weight: 600;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.section-title {
+  color: #495057;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e9ecef;
+
+  i {
+    color: #28a745;
+    margin-right: 0.5rem;
+  }
+}
+
+.alert-info {
+  border-radius: 15px;
+  border: none;
+  background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+  color: #0c5460;
+
+  .alert-heading {
+    color: #0c5460;
+    font-weight: 600;
+  }
+}
+
+.alert-danger {
+  border-radius: 15px;
+  border: none;
+  background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+  color: #721c24;
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .dashboard-header {
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+
+    h2 {
+      font-size: 1.5rem;
+    }
+  }
+
+  .stat-card .card-body h2 {
+    font-size: 2rem;
+  }
+
+  .dashboard-card .card-header {
+    padding: 1rem;
+  }
+}
+
+// Animaciones de entrada
+.fade-in {
+  animation: fadeIn 0.6s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -236,6 +236,21 @@
       </div>
     </b-modal>
 
+    <!-- Modal para archivos HEIC -->
+    <b-modal v-model="showHeicModal" header-bg-variant="warning" title="Archivo no compatible" title-class="text-light" hide-footer centered>
+      <div class="text-center">
+        <b-icon-exclamation-triangle-fill variant="warning" scale="3" class="my-3"></b-icon-exclamation-triangle-fill>
+        <h5 class="my-3">Este archivo no pudo ser abierto desde el navegador</h5>
+        <p class="mb-4">El formato HEIC no es compatible con tu navegador.<br/> Podés descargar el archivo para visualizarlo en tu dispositivo.</p>
+        <b-button @click="downloadHeicFile" variant="success" class="mr-2 btn-download-heic">
+          <b-icon-download></b-icon-download> Descargar
+        </b-button>
+        <b-button @click="showHeicModal = false" variant="secondary">
+          Cerrar
+        </b-button>
+      </div>
+    </b-modal>
+
   </div>
 </template>
 
@@ -263,6 +278,8 @@ export default {
       showDocumentoModal: false,
       DocumentoModalTitle: "",
       motivoRechazo: '',
+      showHeicModal: false,
+      currentDocumento: null,
       motivosRechazo: [
         'No corresponde a una cuenta urbana',
         'Los documentos no son legibles',
@@ -295,6 +312,14 @@ export default {
     this.$fetch()
   },
   methods: {
+    isValidBase64(str) {
+      try {
+        return btoa(atob(str)) === str;
+      } catch (e) {
+        return false;
+      }
+    },
+
     async registrarActividad(evento, result, nroSolicitud){
       const userId = this.$store.state.user.username; // Reemplaza con el ID del usuario real
       const actionType = evento;
@@ -480,49 +505,109 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
       }
     },
     openDocumento(documento, nombreDocumento) {
-  const decodedData = atob(documento.data); // Decodificar la data de Base64
+      if (!this.isValidBase64(documento.data)) {
+        console.error('La cadena Base64 no es válida');
+        return;
+      }
 
-  const arrayBuffer = new ArrayBuffer(decodedData.length);
-  const arrayBufferView = new Uint8Array(arrayBuffer);
+      // Verificar si es un archivo HEIC
+      if (documento.contentType === 'image/heic' || documento.contentType === 'image/heif' ||
+          (documento.filename && documento.filename.toLowerCase().endsWith('.heic'))) {
+        this.showHeicModal = true;
+        this.currentDocumento = documento;
+        return;
+      }
 
-  for (let i = 0; i < decodedData.length; i++) {
-    arrayBufferView[i] = decodedData.charCodeAt(i);
-  }
+      const decodedData = atob(documento.data); // Decodificar la data de Base64
 
-  const blob = new Blob([arrayBuffer], { type: documento.contentType });
-  const fileURL = URL.createObjectURL(blob);
+      const arrayBuffer = new ArrayBuffer(decodedData.length);
+      const arrayBufferView = new Uint8Array(arrayBuffer);
 
-  const newWindow = window.open('', '_blank');
-  newWindow.document.title = documento.filename || `Documento: ${nombreDocumento}`;
+      for (let i = 0; i < decodedData.length; i++) {
+        arrayBufferView[i] = decodedData.charCodeAt(i);
+      }
 
-  if (documento.contentType === 'application/pdf') {
-    const embed = document.createElement('embed');
-    embed.setAttribute('type', 'application/pdf');
-    embed.setAttribute('src', fileURL);
-    embed.setAttribute('width', '100%');
-    embed.setAttribute('height', '100%');
-    newWindow.document.body.appendChild(embed);
-  } else if (documento.contentType.startsWith('image/')) {
-    const img = document.createElement('img');
-    img.setAttribute('src', fileURL);
-    img.setAttribute('width', 'auto');
-    img.setAttribute('height', 'auto');
-    newWindow.document.body.appendChild(img);
-  } else if (
-    documento.contentType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
-    documento.contentType === 'application/msword'
-  ) {
-    // Crear un link de descarga automática
-    const link = document.createElement('a');
-    link.href = fileURL;
-    link.download = documento.filename || 'documento.docx';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  } else {
-    console.log('Formato de contenido no compatible');
-  }
-},
+      const blob = new Blob([arrayBuffer], { type: documento.contentType });
+      const fileURL = URL.createObjectURL(blob);
+
+      const newWindow = window.open('', '_blank');
+      newWindow.document.title = documento.filename || `Documento: ${nombreDocumento}`;
+
+      if (documento.contentType === 'application/pdf') {
+        const embed = document.createElement('embed');
+        embed.setAttribute('type', 'application/pdf');
+        embed.setAttribute('src', fileURL);
+        embed.setAttribute('width', '100%');
+        embed.setAttribute('height', '100%');
+        newWindow.document.body.appendChild(embed);
+      } else if (documento.contentType.startsWith('image/')) {
+        const img = document.createElement('img');
+        img.setAttribute('src', fileURL);
+        img.setAttribute('width', 'auto');
+        img.setAttribute('height', 'auto');
+        newWindow.document.body.appendChild(img);
+      } else if (
+        documento.contentType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+        documento.contentType === 'application/msword'
+      ) {
+        // Crear un link de descarga automática
+        const link = document.createElement('a');
+        link.href = fileURL;
+        link.download = documento.filename || 'documento.docx';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        console.log('Formato de contenido no compatible');
+      }
+    },
+
+    downloadHeicFile() {
+      if (!this.currentDocumento) {
+        console.error('No hay documento HEIC para descargar');
+        return;
+      }
+
+      try {
+        // Decodificar la data de Base64
+        const decodedData = atob(this.currentDocumento.data);
+        const arrayBuffer = new Uint8Array(decodedData.length);
+
+        for (let i = 0; i < decodedData.length; i++) {
+          arrayBuffer[i] = decodedData.charCodeAt(i);
+        }
+
+        // Crear el blob con el tipo MIME correcto para HEIC
+        const blob = new Blob([arrayBuffer], {
+          type: this.currentDocumento.contentType || 'image/heic'
+        });
+
+        // Crear el enlace de descarga
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = this.currentDocumento.filename || 'archivo.heic';
+        a.style.display = 'none';
+
+        // Agregar al DOM, hacer clic y limpiar
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        // Liberar la URL del objeto
+        URL.revokeObjectURL(a.href);
+
+        // Cerrar el modal
+        this.showHeicModal = false;
+
+      } catch (error) {
+        console.error('Error al descargar el archivo HEIC:', error);
+        this.$bvToast.toast('Error al descargar el archivo', {
+          variant: 'danger',
+          title: 'Error'
+        });
+      }
+    },
+
     onRestablecer(){
       this.showRestoreDefault = !this.showRestoreDefault
     },

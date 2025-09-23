@@ -312,6 +312,29 @@ const calcularEstadisticasCombustible = (ordenes, vales) => {
     ? estadisticasOrdenes.montoTotalOrdenes / ordenes.length
     : 0
 
+  // Calcular fecha de inicio de emisión de vales (fecha más antigua)
+  const fechasVales = vales
+    .map(vale => vale.fechaEmision || vale.createdAt || vale.fechaCreacion)
+    .filter(fecha => fecha)
+    .map(fecha => new Date(fecha))
+    .filter(fecha => !isNaN(fecha.getTime()))
+
+  const fechaInicioEmisionVales = fechasVales.length > 0
+    ? new Date(Math.min(...fechasVales.map(f => f.getTime())))
+    : null
+
+  console.log('📅 Debug fecha inicio emisión vales:', {
+    fechasValesCount: fechasVales.length,
+    fechaInicioEmisionVales: fechaInicioEmisionVales,
+    fechaInicioFormateada: fechaInicioEmisionVales ? fechaInicioEmisionVales.toLocaleDateString('es-AR') : 'N/A',
+    valesSample: vales.slice(0, 3).map(v => ({
+      id: v.id,
+      fechaEmision: v.fechaEmision,
+      createdAt: v.createdAt,
+      fechaCreacion: v.fechaCreacion
+    }))
+  })
+
 
   // Calcular estadísticas por tipo de combustible
   const porTipoCombustible = vales.reduce((acc, vale) => {
@@ -381,6 +404,7 @@ const calcularEstadisticasCombustible = (ordenes, vales) => {
     valorPromedioVale,
     promedioValesPorOrden,
     montoPromedioOrden,
+    fechaInicioEmisionVales,
     porTipoCombustible: Object.entries(porTipoCombustible).map(([tipo, stats]) => ({
       tipo,
       total: stats.total,
@@ -523,6 +547,7 @@ const calcularEjecucionObra = (obra) => {
 }
 
 
+
 // Función auxiliar para calcular estadísticas detalladas por módulo
 const calcularEstadisticasDetalladas = (items, tipo, valesCombustible = [], certificados = []) => {
   const ahora = new Date()
@@ -533,6 +558,23 @@ const calcularEstadisticasDetalladas = (items, tipo, valesCombustible = [], cert
     const fechaCreacion = new Date(item.createdAt)
     return fechaCreacion >= hace30Dias
   }).length
+
+  // Debug específico para últimos 30 días
+  if (tipo === 'combustible') {
+    console.log('📅 Debug últimos 30 días combustible:', {
+      ahora: ahora.toISOString(),
+      hace30Dias: hace30Dias.toISOString(),
+      totalOrdenes: items.length,
+      ultimos30Dias,
+      ordenesRecientes: items.slice(0, 5).map(orden => ({
+        id: orden.id,
+        nroOrden: orden.nroOrden,
+        createdAt: orden.createdAt,
+        fechaCreacionParsed: new Date(orden.createdAt).toISOString(),
+        esReciente: new Date(orden.createdAt) >= hace30Dias
+      }))
+    })
+  }
 
   // Estadísticas específicas por tipo
   let estadisticasEspecificas = {}
@@ -773,13 +815,28 @@ const calcularEstadisticasDetalladas = (items, tipo, valesCombustible = [], cert
     }, {})
 
     const porTipoTramite = items.reduce((acc, item) => {
-      acc[item.tipoTramite] = (acc[item.tipoTramite] || 0) + 1
+      const tipo = item.tipoTramite || 'Sin especificar'
+      acc[tipo] = (acc[tipo] || 0) + 1
       return acc
     }, {})
 
+    // Calcular estadísticas de enriquecimiento
+    const turnosSinTipo = items.filter(item => !item.tipoTramite || item.tipoTramite === 'Sin especificar').length
+    const turnosConTipo = items.length - turnosSinTipo
+
+    console.log('📊 Estadísticas de turnos:', {
+      totalTurnos: items.length,
+      turnosConTipo,
+      turnosSinTipo,
+      porTipoTramite: Object.entries(porTipoTramite).sort((a, b) => b[1] - a[1])
+    })
+
     estadisticasEspecificas = {
       porStatus,
-      porTipoTramite
+      porTipoTramite,
+      turnosConTipo,
+      turnosSinTipo,
+      porcentajeEnriquecimiento: items.length > 0 ? ((turnosConTipo / items.length) * 100).toFixed(1) : 0
     }
   } else if (tipo === 'combustible') {
     console.log('🔍 Debug combustible en calcularEstadisticasDetalladas:', {
@@ -788,28 +845,6 @@ const calcularEstadisticasDetalladas = (items, tipo, valesCombustible = [], cert
       itemsSample: items.slice(0, 2),
       valesCombustibleSample: valesCombustible.slice(0, 2)
     })
-
-    // Debug específico para últimos 30 días
-    const ahora = new Date()
-    const hace30Dias = new Date(ahora.getTime() - (30 * 24 * 60 * 60 * 1000))
-    const ultimos30DiasDebug = items.filter(item => {
-      const fechaCreacion = new Date(item.createdAt)
-      return fechaCreacion >= hace30Dias
-    })
-
-    console.log('📅 Debug últimos 30 días combustible:', {
-      ahora: ahora.toISOString(),
-      hace30Dias: hace30Dias.toISOString(),
-      totalOrdenes: items.length,
-      ultimos30Dias: ultimos30DiasDebug.length,
-      ordenesRecientes: ultimos30DiasDebug.slice(0, 3).map(orden => ({
-        id: orden.id,
-        nroOrden: orden.nroOrden,
-        createdAt: orden.createdAt,
-        fechaCreacionParsed: new Date(orden.createdAt).toISOString()
-      }))
-    })
-
     const estadisticasCombustible = calcularEstadisticasCombustible(items, valesCombustible)
 
     estadisticasEspecificas = {
@@ -830,6 +865,7 @@ const calcularEstadisticasDetalladas = (items, tipo, valesCombustible = [], cert
       valorPromedioVale: estadisticasCombustible.valorPromedioVale,
       promedioValesPorOrden: estadisticasCombustible.promedioValesPorOrden,
       montoPromedioOrden: estadisticasCombustible.montoPromedioOrden,
+      fechaInicioEmisionVales: estadisticasCombustible.fechaInicioEmisionVales,
       porTipoCombustible: estadisticasCombustible.porTipoCombustible,
       porAreaVales: estadisticasCombustible.porAreaVales
     }
@@ -1322,7 +1358,53 @@ module.exports = {
       const comercio = calcularEstadisticasDetalladas(habilitacionesExtendidas, 'habilitaciones')
       const abiertoAnualStats = calcularEstadisticasDetalladas(abiertoAnual, 'abiertoAnual')
       const estadisticasObras = calcularEstadisticasDetalladas(obrasCompletas, 'obras', [], certificados)
-      const estadisticasTurnos = calcularEstadisticasDetalladas(turnos, 'turnos')
+      // Enriquecer turnos con tipo de solicitud desde trámites comerciales
+      let turnosEnriquecidos = turnos
+      try {
+        // Crear un mapa de trámites por nroTramite para búsqueda rápida
+        const tramitesMap = new Map()
+        habilitacionesExtendidas.forEach(tramite => {
+          if (tramite.nroTramite) {
+            tramitesMap.set(tramite.nroTramite, tramite)
+          }
+        })
+
+        // Enriquecer turnos con información del trámite comercial
+        turnosEnriquecidos = turnos.map(turno => {
+          // Solo enriquecer si no tiene tipoTramite o está vacío/undefined
+          if (!turno.tipoTramite || turno.tipoTramite === 'undefined' || turno.tipoTramite === '') {
+            const tramiteComercial = tramitesMap.get(turno.nroTramite)
+            const tipoEnriquecido = tramiteComercial?.tipoSolicitud || 'Sin especificar'
+
+            return {
+              ...turno,
+              tipoTramite: tipoEnriquecido
+            }
+          }
+
+          // Si ya tiene tipoTramite, mantenerlo tal como está
+          return turno
+        })
+
+        // Calcular estadísticas del enriquecimiento
+        const turnosConTipoOriginal = turnos.filter(t => t.tipoTramite && t.tipoTramite !== 'undefined' && t.tipoTramite !== '').length
+        const turnosSinTipo = turnos.filter(t => !t.tipoTramite || t.tipoTramite === 'undefined' || t.tipoTramite === '').length
+        const turnosEnriquecidosCount = turnosEnriquecidos.filter(t => t.tipoTramite !== 'Sin especificar' && t.tipoTramite !== 'undefined').length
+
+        console.log('🔄 Enriquecimiento de turnos en estadísticas:', {
+          totalTurnos: turnos.length,
+          turnosConTipoOriginal,
+          turnosSinTipo,
+          turnosEnriquecidosCount,
+          tramitesDisponibles: tramitesMap.size,
+          mejora: turnosEnriquecidosCount - turnosConTipoOriginal
+        })
+      } catch (error) {
+        console.warn('Error al enriquecer turnos:', error)
+        turnosEnriquecidos = turnos
+      }
+
+      const estadisticasTurnos = calcularEstadisticasDetalladas(turnosEnriquecidos, 'turnos')
       const estadisticasRecaudaciones = calcularEstadisticasDetalladas(pagosDobles, 'pagosDobles')
       const estadisticasCombustible = calcularEstadisticasDetalladas(combustible, 'combustible', valesCombustible)
 

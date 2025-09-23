@@ -1,5 +1,33 @@
-import Chart from 'chart.js/auto'
+import {
+  Chart,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  BarController,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+  PointElement,
+  LineElement,
+  Filler,
+  PieController
+} from 'chart.js'
 
-export default ({ app }, inject) => {
-  inject('chart', Chart)
-}
+// Registrar todos los componentes necesarios
+Chart.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  BarController,
+  PieController,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+  PointElement,
+  LineElement,
+  Filler
+)
+
+export default Chart

@@ -268,6 +268,8 @@
 </template>
 
 <script>
+import Chart from '~/plugins/chart.js'
+
 export default {
   name: 'GraficosAbiertoAnual',
   props: {
@@ -361,7 +363,7 @@ export default {
       const ctx = this.$refs.chartBarrasConsolidado
       if (!ctx) return
 
-      this.chartBarrasConsolidado = new this.$chart(ctx, {
+      this.chartBarrasConsolidado = new Chart(ctx, {
         type: 'bar',
         data: this.datosBarras,
         options: {

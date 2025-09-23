@@ -279,6 +279,12 @@
                 <strong class="text-danger">${{ formatearNumeroArgentino(modulos.combustible.montoPromedioOrden || 0) }}</strong>
               </div>
             </div>
+            <div class="col-md-3" v-if="modulos.combustible.fechaInicioEmisionVales">
+              <div class="d-flex justify-content-between mb-1">
+                <span class="text-dark">Emisión vales desde:</span>
+                <strong class="text-info">{{ formatearFechaInicio(modulos.combustible.fechaInicioEmisionVales) }}</strong>
+              </div>
+            </div>
           </div>
         </b-col>
       </b-row>
@@ -359,6 +365,16 @@ export default {
         minimumFractionDigits: 0,
         maximumFractionDigits: 2
       }).format(numero)
+    },
+    formatearFechaInicio(fecha) {
+      if (!fecha) return 'N/A'
+      const fechaObj = new Date(fecha)
+      if (isNaN(fechaObj.getTime())) return 'N/A'
+      return fechaObj.toLocaleDateString('es-AR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      })
     }
   }
 }

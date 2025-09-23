@@ -137,6 +137,8 @@
 </template>
 
 <script>
+import Chart from '~/plugins/chart.js'
+
 export default {
   name: 'GraficosComercio',
   props: {
@@ -257,7 +259,7 @@ export default {
       const ctx = this.$refs.chartTramitesPorMes
       if (!ctx) return
 
-      this.chartTramitesPorMes = new this.$chart(ctx, {
+      this.chartTramitesPorMes = new Chart(ctx, {
         type: 'bar',
         data: {
           labels: this.tramitesPorMes.map(item => item.mes),
@@ -349,7 +351,7 @@ export default {
         return color
       })
 
-      this.chartRubros = new this.$chart(ctx, {
+      this.chartRubros = new Chart(ctx, {
         type: 'pie',
         data: {
           labels: this.rubros.map(item => item.label),
@@ -368,7 +370,28 @@ export default {
               position: 'bottom',
               labels: {
                 padding: 20,
-                usePointStyle: true
+                usePointStyle: true,
+                generateLabels: (chart) => {
+                  const data = chart.data
+                  if (data.labels.length && data.datasets.length) {
+                    const dataset = data.datasets[0]
+                    const total = dataset.data.reduce((a, b) => a + b, 0)
+                    return data.labels.map((label, index) => {
+                      const value = dataset.data[index]
+                      const percentage = ((value / total) * 100).toFixed(1)
+                      return {
+                        text: `${label}: ${value} (${percentage}%)`,
+                        fillStyle: dataset.backgroundColor[index],
+                        strokeStyle: dataset.borderColor || '#fff',
+                        lineWidth: dataset.borderWidth || 0,
+                        pointStyle: 'circle',
+                        hidden: false,
+                        index: index
+                      }
+                    })
+                  }
+                  return []
+                }
               }
             },
             tooltip: {
@@ -397,7 +420,7 @@ export default {
       const ctx = this.$refs.chartTiposSolicitud
       if (!ctx) return
 
-      this.chartTiposSolicitud = new this.$chart(ctx, {
+      this.chartTiposSolicitud = new Chart(ctx, {
         type: 'pie',
         data: {
           labels: this.tiposSolicitud.map(item => item.label),
@@ -425,7 +448,28 @@ export default {
               position: 'bottom',
               labels: {
                 padding: 20,
-                usePointStyle: true
+                usePointStyle: true,
+                generateLabels: (chart) => {
+                  const data = chart.data
+                  if (data.labels.length && data.datasets.length) {
+                    const dataset = data.datasets[0]
+                    const total = dataset.data.reduce((a, b) => a + b, 0)
+                    return data.labels.map((label, index) => {
+                      const value = dataset.data[index]
+                      const percentage = ((value / total) * 100).toFixed(1)
+                      return {
+                        text: `${label}: ${value} (${percentage}%)`,
+                        fillStyle: dataset.backgroundColor[index],
+                        strokeStyle: dataset.borderColor || '#fff',
+                        lineWidth: dataset.borderWidth || 0,
+                        pointStyle: 'circle',
+                        hidden: false,
+                        index: index
+                      }
+                    })
+                  }
+                  return []
+                }
               }
             },
             tooltip: {
@@ -454,7 +498,7 @@ export default {
       const ctx = this.$refs.chartLocalidadesSolicitante
       if (!ctx) return
 
-      this.chartLocalidadesSolicitante = new this.$chart(ctx, {
+      this.chartLocalidadesSolicitante = new Chart(ctx, {
         type: 'pie',
         data: {
           labels: this.localidadesSolicitante.map(item => item.label),
@@ -482,7 +526,28 @@ export default {
               position: 'bottom',
               labels: {
                 padding: 20,
-                usePointStyle: true
+                usePointStyle: true,
+                generateLabels: (chart) => {
+                  const data = chart.data
+                  if (data.labels.length && data.datasets.length) {
+                    const dataset = data.datasets[0]
+                    const total = dataset.data.reduce((a, b) => a + b, 0)
+                    return data.labels.map((label, index) => {
+                      const value = dataset.data[index]
+                      const percentage = ((value / total) * 100).toFixed(1)
+                      return {
+                        text: `${label}: ${value} (${percentage}%)`,
+                        fillStyle: dataset.backgroundColor[index],
+                        strokeStyle: dataset.borderColor || '#fff',
+                        lineWidth: dataset.borderWidth || 0,
+                        pointStyle: 'circle',
+                        hidden: false,
+                        index: index
+                      }
+                    })
+                  }
+                  return []
+                }
               }
             },
             tooltip: {
@@ -517,7 +582,7 @@ export default {
         'Fuera de Villa Gesell': '#dc3545'    // Rojo para fuera
       }
 
-      this.chartRegionesSolicitante = new this.$chart(ctx, {
+      this.chartRegionesSolicitante = new Chart(ctx, {
         type: 'pie',
         data: {
           labels: this.regionesSolicitante.map(item => item.label),
@@ -585,7 +650,7 @@ export default {
         'Prórroga 2': '#C9CBCF'
       }
 
-      this.chartEstados = new this.$chart(ctx, {
+      this.chartEstados = new Chart(ctx, {
         type: 'pie',
         data: {
           labels: this.estados.map(item => item.label),
@@ -606,7 +671,28 @@ export default {
               position: 'bottom',
               labels: {
                 padding: 20,
-                usePointStyle: true
+                usePointStyle: true,
+                generateLabels: (chart) => {
+                  const data = chart.data
+                  if (data.labels.length && data.datasets.length) {
+                    const dataset = data.datasets[0]
+                    const total = dataset.data.reduce((a, b) => a + b, 0)
+                    return data.labels.map((label, index) => {
+                      const value = dataset.data[index]
+                      const percentage = ((value / total) * 100).toFixed(1)
+                      return {
+                        text: `${label}: ${value} (${percentage}%)`,
+                        fillStyle: dataset.backgroundColor[index],
+                        strokeStyle: dataset.borderColor || '#fff',
+                        lineWidth: dataset.borderWidth || 0,
+                        pointStyle: 'circle',
+                        hidden: false,
+                        index: index
+                      }
+                    })
+                  }
+                  return []
+                }
               }
             },
             tooltip: {

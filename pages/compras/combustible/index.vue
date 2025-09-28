@@ -714,10 +714,10 @@ export default {
 
 /* Sección de filtros con color personalizado */
 .filtro-section {
-  background: #dfdfdf !important; /* Azul claro suave */
+  background: #b4c0f3 !important; /* Azul claro suave */
   padding: 1rem 0.5rem 1rem 1rem !important;
   border-radius: 3px !important;
-  border: 1px solid #d4d4d4 !important;
+  border: 1px solid #c3cae5 !important;
   box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
 }
 </style>

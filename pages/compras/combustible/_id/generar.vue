@@ -16,8 +16,38 @@
           </div>
 
           <b-form @submit.prevent="generarVales" class="m-4">
-            <b-form-group label="Patente" label-for="patente">
-              <b-form-input id="patente" v-model.number="form.patente" type="text" min="1"></b-form-input>
+            <b-form-group label="Patente del Vehículo" label-for="patente">
+              <!-- Mostrar dropdown si hay vehículos del área -->
+              <div v-if="vehiculosDelArea.length > 0">
+                <b-form-select
+                  id="patente"
+                  v-model="form.patente"
+                  :options="opcionesVehiculos"
+                  :disabled="loadingVehiculos"
+                  required
+                >
+                  <template #first>
+                    <b-form-select-option :value="''" disabled>Seleccione una patente...</b-form-select-option>
+                  </template>
+                </b-form-select>
+                <small class="form-text text-muted">
+                  Se muestran los vehículos registrados para el área {{ orden.area }}
+                </small>
+              </div>
+
+              <!-- Mostrar input si no hay vehículos del área -->
+              <div v-else>
+                <b-form-input
+                  id="patente"
+                  v-model="form.patente"
+                  type="text"
+                  placeholder="Ingrese la patente del vehículo"
+                  required
+                ></b-form-input>
+                <small class="form-text text-muted">
+                  No hay vehículos registrados para el área {{ orden.area }}
+                </small>
+              </div>
             </b-form-group>
 
             <b-form-group label="Cantidad de vales" label-for="cantidad">
@@ -32,7 +62,7 @@
               <b-form-input id="monto" v-model.number="form.monto" type="number" min="1" required></b-form-input>
             </b-form-group>
 
-            <b-button type="submit" variant="success" :disabled="!form.monto || !form.cantidad">Generar vales</b-button>
+            <b-button type="submit" variant="success" :disabled="!form.monto || !form.cantidad || !form.patente">Generar vales</b-button>
           </b-form>
         </b-card-body>
       </b-card>
@@ -72,6 +102,35 @@
       <p class="h5 text-center font-weight-bold text-dark mt-4 mb-4">Generando vales...</p>
       <p class="h6 text-center font-weight-400 text-dark mt-2 mb-5">Por favor, esperá un momento</p>
     </b-modal>
+
+    <!-- Modal para patente personalizada -->
+    <b-modal v-model="showPatentePersonalizada" hide-footer header-bg-variant="primary" title-class="text-center text-light" centered>
+      <template #modal-header>
+        <div class="confirmation-popup-header mx-auto">
+          <b-icon-car-front-fill scale="2.5" class="my-3" variant="light"/>
+        </div>
+      </template>
+      <h4 class="text-center text-primary mb-4">Patente Personalizada</h4>
+      <p class="text-center text-muted mb-4">Ingrese la patente del vehículo que no está en la lista</p>
+
+      <b-form-group label="Patente del Vehículo">
+        <b-form-input
+          v-model="patentePersonalizada"
+          type="text"
+          placeholder="Ej: ABC123"
+          @keyup.enter="registrarVehiculoPersonalizado"
+        ></b-form-input>
+      </b-form-group>
+
+      <div class="d-flex justify-content-center mt-4">
+        <b-button variant="success" class="mr-2" @click="registrarVehiculoPersonalizado" :disabled="!patentePersonalizada">
+          Crear
+        </b-button>
+        <b-button variant="secondary" @click="showPatentePersonalizada = false">
+          Cancelar
+        </b-button>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -86,6 +145,10 @@ export default {
   data() {
     return {
       loading: false,
+      loadingVehiculos: false,
+      vehiculos: [],
+      showPatentePersonalizada: false,
+      patentePersonalizada: '',
       form: {
         cantidad: 1,
         combustible: "Super",
@@ -106,13 +169,173 @@ export default {
       var tiposCombustible = []
       orden.montos.map((item) => tiposCombustible.push(item.tipoCombustible))
       return tiposCombustible
+    },
+    vehiculosDelArea() {
+      if (!this.orden || !this.vehiculos.length) return []
+      return this.vehiculos.filter(vehiculo => vehiculo.area === this.orden.area)
+    },
+    opcionesVehiculos() {
+      const vehiculosOptions = this.vehiculosDelArea.map(vehiculo => ({
+        value: vehiculo.patente,
+        text: vehiculo.patente
+      }))
+
+      // Agregar opción para patente personalizada
+      vehiculosOptions.push({
+        value: 'personalizada',
+        text: '➕ Ingresar patente personalizada...'
+      })
+
+      return vehiculosOptions
+    }
+  },
+  async mounted() {
+    // Cargar vehículos cuando se monta el componente
+    await this.cargarVehiculos()
+  },
+  watch: {
+    // Cargar vehículos cuando cambie la orden (área)
+    orden: {
+      handler: async function(newOrden) {
+        if (newOrden) {
+          await this.cargarVehiculos()
+        }
+      },
+      immediate: true
+    },
+    // Detectar cuando se selecciona patente personalizada
+    'form.patente': {
+      handler: function(newValue) {
+        if (newValue === 'personalizada') {
+          this.showPatentePersonalizada = true
+          this.form.patente = '' // Limpiar para que no quede 'personalizada'
+        }
+      }
     }
   },
   methods: {
+    async cargarVehiculos() {
+      if (!this.orden) return
+
+      this.loadingVehiculos = true
+      try {
+        await this.$store.dispatch('vehiculos/getAll')
+        this.vehiculos = this.$store.state.vehiculos ? this.$store.state.vehiculos.all : []
+      } catch (error) {
+        console.error('Error al cargar vehículos:', error)
+        this.vehiculos = []
+      } finally {
+        this.loadingVehiculos = false
+      }
+    },
+
+    async validarPatenteDuplicada(patente) {
+      try {
+        // Obtener todos los vehículos para verificar si la patente existe
+        await this.$store.dispatch('vehiculos/getAll')
+        const todosVehiculos = this.$store.state.vehiculos ? this.$store.state.vehiculos.all : []
+
+        // Buscar si la patente existe en alguna área (incluyendo la actual)
+        const patenteExiste = todosVehiculos.some(vehiculo =>
+          vehiculo.patente && vehiculo.patente.toUpperCase() === patente.toUpperCase()
+        )
+
+        return patenteExiste
+      } catch (error) {
+        console.error('Error al validar patente:', error)
+        // En caso de error, permitir continuar (fallback)
+        return false
+      }
+    },
+
+    async validarPatenteEnOtraArea(patente) {
+      try {
+        // Obtener todos los vehículos para verificar si la patente existe en otras áreas
+        await this.$store.dispatch('vehiculos/getAll')
+        const todosVehiculos = this.$store.state.vehiculos ? this.$store.state.vehiculos.all : []
+
+        // Buscar si la patente existe en alguna área
+        const vehiculoExistente = todosVehiculos.find(vehiculo =>
+          vehiculo.patente && vehiculo.patente.toUpperCase() === patente.toUpperCase()
+        )
+
+        return vehiculoExistente ? vehiculoExistente.area : null
+      } catch (error) {
+        console.error('Error al validar patente en otra área:', error)
+        return null
+      }
+    },
+
+    async registrarVehiculoPersonalizado() {
+      if (this.patentePersonalizada.trim()) {
+        const patente = this.patentePersonalizada.trim().toUpperCase()
+
+        // Validar que la patente no exista en ninguna área
+        const patenteExiste = await this.validarPatenteDuplicada(patente)
+
+        if (patenteExiste) {
+          const areaConflictiva = await this.validarPatenteEnOtraArea(patente)
+
+          this.$bvToast.toast(`La patente ${patente} ya existe en el área ${areaConflictiva}. Por favor, ingrese una patente diferente.`, {
+            variant: "warning",
+            title: "Patente duplicada",
+            solid: true,
+            autoHideDelay: 5000
+          })
+          return
+        }
+
+        try {
+          // Registrar el vehículo en la base de datos
+          const userToken = this.$store.state.user.token
+          const nuevoVehiculo = {
+            patente: patente,
+            area: this.orden.area
+          }
+
+          await this.$store.dispatch('vehiculos/create', {
+            vehiculo: nuevoVehiculo,
+            userToken
+          })
+
+          // Actualizar la lista de vehículos
+          await this.cargarVehiculos()
+
+          // Asignar la patente al formulario
+          this.form.patente = patente
+          this.showPatentePersonalizada = false
+          this.patentePersonalizada = ''
+
+          this.$bvToast.toast(`Vehículo ${patente} registrado exitosamente en el área ${this.orden.area}`, {
+            variant: "success",
+            title: "Vehículo registrado",
+            solid: true,
+            autoHideDelay: 3000
+          })
+
+        } catch (error) {
+          console.error('Error al registrar vehículo:', error)
+          this.$bvToast.toast("Error al registrar el vehículo. Por favor, intente nuevamente.", {
+            variant: "danger",
+            title: "Error",
+            solid: true,
+            autoHideDelay: 5000
+          })
+        }
+      }
+    },
     async generarVales() {
       this.loading = true
       if (!this.orden) {
         alert("No hay una orden de compra válida.");
+        this.loading = false
+        return;
+      }
+
+      // Validar que la patente esté presente
+      if (!this.form.patente || this.form.patente.trim() === '') {
+        alert("Por favor, seleccione o ingrese una patente válida.");
+        this.loading = false
         return;
       }
 
@@ -147,7 +370,7 @@ export default {
         tipoCombustible: this.form.combustible,
         monto: this.form.monto,
         area: area,
-        dominio: this.form.patente,
+        dominio: this.form.patente, // El backend espera 'dominio' pero internamente usamos 'patente'
       };
 
       try {

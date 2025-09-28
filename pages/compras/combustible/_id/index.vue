@@ -71,7 +71,7 @@
               </div>
               <div class="fuel-info-h">
                 <div class="fuel-title-h">
-                  <p>{{ monto.tipoCombustible.toUpperCase() }}</p>
+                  <p>{{ monto.tipoCombustible ? monto.tipoCombustible.toUpperCase() : 'Sin definir' }}</p>
                 </div>
                 <div class="fuel-saldos-h">
                   <p>Restante: <span :class="['text-color-' + index]">{{ format(orden.saldos[index].saldo) }}</span></p>
@@ -151,7 +151,7 @@
                         </div>
                         <p class="card-text ml-3 text-dark">Tipo de combustible: {{ vale.tipoCombustible }}</p>
                         <p class="card-text ml-3 text-dark">Importe: {{ format(vale.monto) }}</p>
-                        <p class="card-text ml-3 text-dark">Patente: {{ vale.dominio.toUpperCase() }}</p>
+                        <p class="card-text ml-3 text-dark">Patente: {{ vale.dominio ? vale.dominio.toUpperCase() : 'Sin patente' }}</p>
                         <p class="card-text ml-3 text-dark">Fecha de emisión: {{ new Date(vale.fechaEmision).toLocaleDateString('es-AR') }}</p>
                         <p class="card-text ml-3 text-dark">
                           Estado:
@@ -270,7 +270,9 @@
       <p class="h5 text-center mt-3 my-4 text-dark font-weight-500">¿Estás seguro/a de que querés eliminar los vales seleccionados?</p>
       <hr class="row col-9 mx-auto justify-content-center"/>
       <div class="row no-gutters justify-content-center">
-        <b-button variant="success" @click="eliminarValesSeleccionados">Aceptar</b-button>
+        <b-button variant="success" :disabled="eliminandoVales" @click="eliminarValesSeleccionados">
+          {{ eliminandoVales ? 'Eliminando...' : 'Aceptar' }}
+        </b-button>
         <b-button variant="danger" class="mx-2" @click="$bvModal.hide('modalEliminacionMasiva')">Cancelar</b-button>
       </div>
     </b-modal>
@@ -366,6 +368,7 @@ export default {
       observaciones: '',
       tempNroVale: null,
       tempValeRef: null,
+      eliminandoVales: false, // Control para deshabilitar botón de eliminar vales seleccionados
     }
   },
   computed: {
@@ -630,6 +633,8 @@ export default {
     async eliminarValesSeleccionados(){
       if (this.valesSeleccionados.length === 0) return;
 
+      this.eliminandoVales = true; // Deshabilitar botón
+
       for (let i = 0; i < this.valesSeleccionados.length; i++) {
         try {
           const id = this.valesSeleccionados[i];
@@ -641,6 +646,10 @@ export default {
           alert('No se pudieron eliminar todos los vales. Hubo un problema con alguno de ellos')
         }
       }
+
+      // Resetear estado del botón
+      this.eliminandoVales = false;
+
       this.$bvModal.hide('modalEliminacionMasiva')
       this.$bvModal.show('modalEliminadoMasivo')
     },
@@ -715,6 +724,7 @@ export default {
       this.$bvModal.show('modalUtilizacionMasiva');
     },
     abrirModalEliminacionMasiva() {
+      this.eliminandoVales = false; // Resetear estado al abrir modal
       this.$bvModal.show('modalEliminacionMasiva');
     },
     //Métodos de sistema

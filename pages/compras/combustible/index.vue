@@ -100,10 +100,9 @@
             <template #cell(acciones)="row">
               <b-button-group size="sm">
                 <b-button
-                  variant="outline-secondary"
-                  :to="{ name: 'compras-combustible-vehiculo-id', params: { id: row.item.id } }"
-                  class="outline-secondary"
-                  title="Detalles"
+                  variant="outline-primary"
+                  title="Editar"
+                  @click="editarVehiculo(row.item)"
                 >
                   <b-icon-pen class="icon-hover" />
                 </b-button>
@@ -400,6 +399,73 @@
       </div>
     </b-modal>
 
+    <!-- Modal para editar vehículo -->
+    <b-modal v-model="showEditarVehiculo" hide-footer header-class="justify-content-center" :header-bg-variant="'primary'" centered>
+      <template #modal-header>
+        <b-iconstack class="my-3">
+          <b-icon-circle scale="2.7" variant="light"/>
+          <b-icon-pencil-fill scale="1.5" variant="light" />
+        </b-iconstack>
+      </template>
+      <div class="text-center">
+        <h4 class="text-center mt-3 mb-4 font-weight-bold text-dark">Editar Vehículo</h4>
+
+        <b-form @submit.prevent="actualizarVehiculo">
+          <b-form-group label="Patente" label-for="patente-edit">
+            <b-form-input
+              id="patente-edit"
+              v-model="vehiculoEdit.patente"
+              type="text"
+              placeholder="Ingresá la patente"
+              required
+              :state="patenteEditState"
+            ></b-form-input>
+            <b-form-invalid-feedback v-if="patenteEditState === false">
+              La patente es requerida
+            </b-form-invalid-feedback>
+          </b-form-group>
+
+          <b-form-group label="Área" label-for="area-edit">
+            <b-form-select
+              id="area-edit"
+              v-model="vehiculoEdit.area"
+              :options="opcionesAreasVehiculos"
+              placeholder="Seleccioná el área"
+              required
+              :state="areaEditState"
+            >
+              <template #first>
+                <b-form-select-option :value="null">Seleccioná el área</b-form-select-option>
+              </template>
+            </b-form-select>
+            <b-form-invalid-feedback v-if="areaEditState === false">
+              El área es requerida
+            </b-form-invalid-feedback>
+          </b-form-group>
+
+          <hr class="row col-9 mx-auto"/>
+          <div class="row no-gutters justify-content-center">
+            <button
+              type="submit"
+              class="btn btn-primary mx-2"
+              :disabled="loadingEditarVehiculo"
+            >
+              <b-spinner v-if="loadingEditarVehiculo" small class="mr-2"></b-spinner>
+              {{ loadingEditarVehiculo ? 'Actualizando...' : 'Actualizar' }}
+            </button>
+            <button
+              type="button"
+              class="btn btn-secondary mx-2"
+              @click="cerrarModalEditar"
+              :disabled="loadingEditarVehiculo"
+            >
+              Cancelar
+            </button>
+          </div>
+        </b-form>
+      </div>
+    </b-modal>
+
   </div>
 </template>
 
@@ -450,6 +516,14 @@ export default {
       eliminarSuccessVehiculo: false,
       tempElimVehiculo: '',
       vehiculo: {
+        patente: '',
+        area: ''
+      },
+      // Variables para editar vehículo
+      showEditarVehiculo: false,
+      loadingEditarVehiculo: false,
+      vehiculoEdit: {
+        id: null,
         patente: '',
         area: ''
       },
@@ -536,6 +610,13 @@ export default {
         value: area,
         text: area
       }));
+    },
+    // Validaciones para editar vehículo
+    patenteEditState() {
+      return this.vehiculoEdit.patente.length > 0 ? null : false;
+    },
+    areaEditState() {
+      return this.vehiculoEdit.area && this.vehiculoEdit.area.length > 0 ? null : false;
     }
   },
   methods: {
@@ -698,6 +779,69 @@ export default {
         this.showEliminarVehiculo = true;
       }
     },
+    // Métodos para editar vehículo
+    editarVehiculo(vehiculo) {
+      this.vehiculoEdit = {
+        id: vehiculo.id,
+        patente: vehiculo.patente,
+        area: vehiculo.area
+      };
+      this.showEditarVehiculo = true;
+    },
+    cerrarModalEditar() {
+      this.showEditarVehiculo = false;
+      this.loadingEditarVehiculo = false;
+      this.vehiculoEdit = {
+        id: null,
+        patente: '',
+        area: ''
+      };
+    },
+    async actualizarVehiculo() {
+      // Validar campos
+      if (!this.vehiculoEdit.patente || !this.vehiculoEdit.area) {
+        return;
+      }
+
+      this.loadingEditarVehiculo = true;
+
+      try {
+        const userToken = this.$store.state.user.token;
+
+        const vehiculoData = {
+          patente: this.vehiculoEdit.patente,
+          area: this.vehiculoEdit.area
+        };
+
+        await this.$store.dispatch('vehiculos/update', {
+          id: this.vehiculoEdit.id,
+          vehiculo: vehiculoData,
+          userToken
+        });
+
+        // Cerrar modal y mostrar mensaje de éxito
+        this.cerrarModalEditar();
+        this.$bvToast.toast('Vehículo actualizado correctamente', {
+          title: 'Éxito',
+          variant: 'success',
+          solid: true
+        });
+
+        // Recargar vehículos
+        await this.$store.dispatch('vehiculos/getAll');
+        this.vehiculos = this.$store.state.vehiculos ? this.$store.state.vehiculos.all : [];
+
+      } catch (error) {
+        console.error('Error al actualizar vehículo:', error);
+        this.$bvToast.toast('Error al actualizar el vehículo', {
+          title: 'Error',
+          variant: 'danger',
+          solid: true
+        });
+      } finally {
+        this.loadingEditarVehiculo = false;
+      }
+    }
   }
 };
 </script>

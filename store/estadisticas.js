@@ -5,17 +5,46 @@ export const state = () => ({
   estadisticasUsuarios: null,
   estadisticasActividad: null,
   loading: false,
-  error: null
+  error: null,
+  // Datos sin filtrar para poder aplicar filtros localmente
+  rawData: {
+    habilitaciones: [],
+    obras: [],
+    turnos: [],
+    pagosDobles: [],
+    indices: [],
+    multimedias: [],
+    abiertoAnual: [],
+    certificados: [],
+    combustible: [],
+    valesCombustible: []
+  },
+  currentDateFilter: null
 })
 
 export const actions = {
 
 
-  async fetchEstadisticasModulos({ commit }) {
+  async fetchEstadisticasModulos({ commit, state }, { startDate, endDate } = {}) {
     commit('setLoading', true)
     commit('setError', null)
     try {
-      const data = await EstadisticasService.getEstadisticasPorModulo(this.$axios)
+      // Si no hay datos raw, cargarlos por primera vez
+      if (!state.rawData.habilitaciones.length) {
+        const rawData = await EstadisticasService.getRawData(this.$axios)
+        commit('setRawData', rawData)
+      }
+
+      // Aplicar filtro local si se proporcionan fechas
+      let data
+      if (startDate && endDate) {
+        data = await EstadisticasService.getEstadisticasPorModuloFiltered(state.rawData, { startDate, endDate })
+        commit('setCurrentDateFilter', { startDate, endDate })
+      } else {
+        data = await EstadisticasService.getEstadisticasPorModuloFromRaw(state.rawData)
+        commit('setCurrentDateFilter', null)
+      }
+
       commit('setEstadisticasModulos', data)
       return data
     } catch (error) {
@@ -56,10 +85,10 @@ export const actions = {
     }
   },
 
-  async fetchAllEstadisticas({ dispatch }) {
+  async fetchAllEstadisticas({ dispatch }, { startDate, endDate } = {}) {
     try {
       await Promise.all([
-        dispatch('fetchEstadisticasModulos'),
+        dispatch('fetchEstadisticasModulos', { startDate, endDate }),
         dispatch('fetchEstadisticasUsuarios')
       ])
     } catch (error) {
@@ -84,6 +113,12 @@ export const mutations = {
   },
   setError(state, error) {
     state.error = error
+  },
+  setRawData(state, data) {
+    state.rawData = data
+  },
+  setCurrentDateFilter(state, filter) {
+    state.currentDateFilter = filter
   }
 }
 

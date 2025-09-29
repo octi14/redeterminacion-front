@@ -185,15 +185,7 @@
       </template>
 
       <b-row>
-        <b-col md="3" class="mb-3">
-          <h6 class="text-dark mb-2 font-weight-bold">Top Proveedores</h6>
-          <div v-for="proveedor in modulos.combustible.porProveedor" :key="proveedor.nombre" class="d-flex justify-content-between mb-1">
-            <span class="text-truncate text-dark" :title="proveedor.nombre">{{ proveedor.nombre }}</span>
-            <strong class="text-danger">{{ proveedor.cantidadOrdenes }}</strong>
-          </div>
-        </b-col>
-
-        <b-col md="3" class="mb-3">
+        <b-col md="4" class="mb-3">
           <h6 class="text-dark mb-2 font-weight-bold">Estadísticas de Vales</h6>
           <div class="d-flex justify-content-between mb-1">
             <span class="text-dark">Total vales:</span>
@@ -217,11 +209,23 @@
           </div>
         </b-col>
 
-        <b-col md="3" class="mb-3">
+        <b-col md="4" class="mb-3">
           <h6 class="text-dark mb-2 font-weight-bold">Por Tipo Combustible</h6>
           <div v-for="tipo in modulos.combustible.porTipoCombustible" :key="tipo.tipo" class="d-flex justify-content-between mb-1">
             <span class="text-truncate text-dark" :title="tipo.tipo">{{ tipo.tipo }}</span>
             <strong class="text-danger">{{ tipo.total }}</strong>
+          </div>
+        </b-col>
+
+        <b-col md="4" class="mb-3">
+          <h6 class="text-dark mb-2 font-weight-bold">Resumen General</h6>
+          <div class="d-flex justify-content-between mb-1">
+            <span class="text-dark">Total órdenes:</span>
+            <strong class="text-danger">{{ modulos.combustible.total || 0 }}</strong>
+          </div>
+          <div class="d-flex justify-content-between mb-1">
+            <span class="text-dark">Últimos 30 días:</span>
+            <strong class="text-warning">{{ modulos.combustible.ultimos30Dias || 0 }}</strong>
           </div>
         </b-col>
 
@@ -267,12 +271,6 @@
               <div class="d-flex justify-content-between mb-1">
                 <span class="text-dark">Monto promedio orden:</span>
                 <strong class="text-danger">${{ formatearNumeroArgentino(modulos.combustible.montoPromedioOrden || 0) }}</strong>
-              </div>
-            </div>
-            <div class="col-md-3" v-if="modulos.combustible.fechaInicioEmisionVales">
-              <div class="d-flex justify-content-between mb-1">
-                <span class="text-dark">Emisión vales desde:</span>
-                <strong class="text-info">{{ formatearFechaInicio(modulos.combustible.fechaInicioEmisionVales) }}</strong>
               </div>
             </div>
           </div>
@@ -356,16 +354,6 @@ export default {
         maximumFractionDigits: 2
       }).format(numero)
     },
-    formatearFechaInicio(fecha) {
-      if (!fecha) return 'N/A'
-      const fechaObj = new Date(fecha)
-      if (isNaN(fechaObj.getTime())) return 'N/A'
-      return fechaObj.toLocaleDateString('es-AR', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      })
-    }
   }
 }
 </script>

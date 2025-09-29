@@ -155,6 +155,30 @@ const parsearFechaSegura = (fechaInput) => {
   return null
 }
 
+// Función auxiliar para normalizar fechas y evitar inconsistencias
+const normalizarFecha = (fecha) => {
+  if (!fecha) return null
+
+  // Si ya es un objeto Date válido, usarlo directamente
+  if (fecha instanceof Date && !isNaN(fecha.getTime())) {
+    const fechaNormalizada = new Date(fecha)
+    fechaNormalizada.setHours(0, 0, 0, 0)
+    return fechaNormalizada
+  }
+
+  // Intentar parsear con la función segura
+  const fechaParsed = parsearFechaSegura(fecha)
+  if (!fechaParsed) {
+    console.warn('No se pudo parsear fecha:', fecha)
+    return null
+  }
+
+  // Normalizar a inicio del día para comparaciones consistentes
+  const fechaNormalizada = new Date(fechaParsed)
+  fechaNormalizada.setHours(0, 0, 0, 0)
+  return fechaNormalizada
+}
+
 // Función helper para contar documentos (corregida)
 const contarDocumentos = (item, tipoModulo) => {
   let totalDocumentos = 0
@@ -557,7 +581,7 @@ const calcularEjecucionObra = (obra) => {
 
 
 // Función auxiliar para calcular estadísticas detalladas por módulo
-const calcularEstadisticasDetalladas = (items, tipo, valesCombustible = [], certificados = []) => {
+const calcularEstadisticasDetalladas = (items, tipo, valesCombustible = [], certificados = [], datosSinFiltrar = null) => {
   const ahora = new Date()
   const hace30Dias = new Date(ahora.getTime() - (30 * 24 * 60 * 60 * 1000))
 
@@ -641,7 +665,10 @@ const calcularEstadisticasDetalladas = (items, tipo, valesCombustible = [], cert
     }, {})
 
     // Calcular estadísticas por mes de ingreso usando función helper segura
-    const porMesIngreso = items.reduce((acc, item) => {
+    // NOTA: Para habilitaciones, el gráfico de trámites por mes se calcula con TODOS los datos
+    // (sin filtrar) para mantener la tendencia histórica completa
+    const datosParaGrafico = datosSinFiltrar && tipo === 'habilitaciones' ? datosSinFiltrar : items
+    const porMesIngreso = datosParaGrafico.reduce((acc, item) => {
       const fechaCreacion = parsearFechaSegura(item.createdAt)
       if (fechaCreacion) {
         const año = fechaCreacion.getFullYear()
@@ -1193,7 +1220,8 @@ module.exports = {
 
 
   // Obtener estadísticas por módulo usando endpoints existentes
-  getEstadisticasPorModulo: async (axios) => {
+  // Obtener datos raw sin filtros (una sola vez)
+  getRawData: async (axios) => {
     try {
       const [
         habilitaciones,
@@ -1276,10 +1304,6 @@ module.exports = {
         habilitacionesExtendidas = habilitaciones
       }
 
-      // Calcular estadísticas detalladas por módulo
-      const comercio = calcularEstadisticasDetalladas(habilitacionesExtendidas, 'habilitaciones')
-      const abiertoAnualStats = calcularEstadisticasDetalladas(abiertoAnual, 'abiertoAnual')
-      const estadisticasObras = calcularEstadisticasDetalladas(obrasCompletas, 'obras', [], certificados)
       // Enriquecer turnos con tipo de solicitud desde trámites comerciales
       let turnosEnriquecidos = turnos
       try {
@@ -1293,104 +1317,33 @@ module.exports = {
 
         // Enriquecer turnos con información del trámite comercial
         turnosEnriquecidos = turnos.map(turno => {
-          // Solo enriquecer si no tiene tipoTramite o está vacío/undefined
-          if (!turno.tipoTramite || turno.tipoTramite === 'undefined' || turno.tipoTramite === '') {
-            const tramiteComercial = tramitesMap.get(turno.nroTramite)
-            const tipoEnriquecido = tramiteComercial?.tipoSolicitud || 'Sin especificar'
-
-            return {
-              ...turno,
-              tipoTramite: tipoEnriquecido
-            }
+          const tramiteAsociado = tramitesMap.get(turno.nroTramite)
+          return {
+            ...turno,
+            tipoSolicitud: tramiteAsociado?.tipoSolicitud || 'No especificado'
           }
-
-          // Si ya tiene tipoTramite, mantenerlo tal como está
-          return turno
-        })
-
-        // Calcular estadísticas del enriquecimiento
-        const turnosConTipoOriginal = turnos.filter(t => t.tipoTramite && t.tipoTramite !== 'undefined' && t.tipoTramite !== '').length
-        const turnosSinTipo = turnos.filter(t => !t.tipoTramite || t.tipoTramite === 'undefined' || t.tipoTramite === '').length
-        const turnosEnriquecidosCount = turnosEnriquecidos.filter(t => t.tipoTramite !== 'Sin especificar' && t.tipoTramite !== 'undefined').length
-
-        console.log('🔄 Enriquecimiento de turnos en estadísticas:', {
-          totalTurnos: turnos.length,
-          turnosConTipoOriginal,
-          turnosSinTipo,
-          turnosEnriquecidosCount,
-          tramitesDisponibles: tramitesMap.size,
-          mejora: turnosEnriquecidosCount - turnosConTipoOriginal
         })
       } catch (error) {
-        console.warn('Error al enriquecer turnos:', error)
+        console.warn('No se pudieron enriquecer los turnos:', error)
         turnosEnriquecidos = turnos
       }
 
-      const estadisticasTurnos = calcularEstadisticasDetalladas(turnosEnriquecidos, 'turnos')
-      const estadisticasRecaudaciones = calcularEstadisticasDetalladas(pagosDobles, 'pagosDobles')
-      const estadisticasCombustible = calcularEstadisticasDetalladas(combustible, 'combustible', valesCombustible)
-
-      // Calcular evolución temporal de índices por categoría
-      const evolucionIndices = indices.reduce((acc, indice) => {
-        const categoria = indice.categoria || 'Sin categoría'
-        const periodo = `${indice.año}-${String(indice.mes).padStart(2, '0')}`
-
-        if (!acc[categoria]) {
-          acc[categoria] = []
-        }
-
-        acc[categoria].push({
-          periodo,
-          valor: parseFloat(indice.valor) || 0,
-          año: indice.año,
-          mes: indice.mes
-        })
-
-        return acc
-      }, {})
-
-      // Ordenar por período para cada categoría
-      Object.keys(evolucionIndices).forEach(categoria => {
-        evolucionIndices[categoria].sort((a, b) => {
-          if (a.año !== b.año) return a.año - b.año
-          return a.mes - b.mes
-        })
-      })
-
-      const estadisticasIndices = {
-        total: indices.length,
-        ultimos30Dias: indices.filter(i => {
-          const fechaCreacion = new Date(i.createdAt)
-          const hace30Dias = new Date(Date.now() - (30 * 24 * 60 * 60 * 1000))
-          return fechaCreacion >= hace30Dias
-        }).length,
-        ultimoActualizado: indices.length > 0 ? indices[indices.length - 1].año + '-' + indices[indices.length - 1].mes : 'N/A',
-        evolucionTemporal: evolucionIndices
-      }
-
-      const estadisticasMultimedia = {
-        total: multimedias.length,
-        ultimos30Dias: multimedias.filter(m => {
-          const fechaCreacion = new Date(m.createdAt)
-          const hace30Dias = new Date(Date.now() - (30 * 24 * 60 * 60 * 1000))
-          return fechaCreacion >= hace30Dias
-        }).length,
-        tamañoTotal: 'N/A' // No tenemos información de tamaño
-      }
-
+      // Devolver solo los datos raw, sin calcular estadísticas
       return {
-        comercio,
-        abiertoAnual: abiertoAnualStats,
-        obras: estadisticasObras,
-        recaudaciones: estadisticasRecaudaciones,
-        turnos: estadisticasTurnos,
-        combustible: estadisticasCombustible,
-        indices: estadisticasIndices,
-        multimedia: estadisticasMultimedia
+        habilitaciones: habilitacionesExtendidas || [],
+        obras: obrasCompletas || [],
+        turnos: turnosEnriquecidos || [],
+        pagosDobles: pagosDobles || [],
+        indices: indices || [],
+        multimedias: multimedias || [],
+        abiertoAnual: abiertoAnual || [],
+        certificados: certificados || [],
+        combustible: combustible || [],
+        valesCombustible: valesCombustible || []
       }
     } catch (error) {
-      console.error('Error al obtener estadísticas por módulo:', error);
-      throw error;
+      console.error('Error al obtener datos raw:', error)
+      throw error
     }
   },
 
@@ -1488,5 +1441,155 @@ module.exports = {
       }
     }
   },
+
+  // Obtener estadísticas desde datos raw (sin filtro)
+  getEstadisticasPorModuloFromRaw: async (rawData) => {
+    try {
+      const {
+        habilitaciones = [],
+        obras = [],
+        turnos = [],
+        pagosDobles = [],
+        indices = [],
+        multimedias = [],
+        abiertoAnual = [],
+        certificados = [],
+        combustible = [],
+        valesCombustible = []
+      } = rawData || {}
+
+      // Calcular estadísticas detalladas por módulo
+      const comercio = calcularEstadisticasDetalladas(habilitaciones, 'habilitaciones')
+      const abiertoAnualStats = calcularEstadisticasDetalladas(abiertoAnual, 'abiertoAnual')
+      const estadisticasObras = calcularEstadisticasDetalladas(obras, 'obras', [], certificados)
+      const estadisticasPagosDobles = calcularEstadisticasDetalladas(pagosDobles, 'pagosDobles')
+      const estadisticasCombustible = calcularEstadisticasDetalladas(combustible, 'combustible', valesCombustible)
+      const estadisticasTurnos = calcularEstadisticasDetalladas(turnos, 'turnos')
+      const estadisticasIndices = calcularEstadisticasDetalladas(indices, 'indices')
+      const estadisticasMultimedias = calcularEstadisticasDetalladas(multimedias, 'multimedias')
+      const estadisticasCertificados = calcularEstadisticasDetalladas(certificados, 'certificados')
+
+      return {
+        comercio,
+        abiertoAnual: abiertoAnualStats,
+        obras: estadisticasObras,
+        recaudaciones: estadisticasPagosDobles,
+        combustible: estadisticasCombustible,
+        turnos: estadisticasTurnos,
+        indices: estadisticasIndices,
+        multimedias: estadisticasMultimedias,
+        certificados: estadisticasCertificados
+      }
+    } catch (error) {
+      console.error('Error al calcular estadísticas desde datos raw:', error)
+      throw error
+    }
+  },
+
+  // Obtener estadísticas filtradas por fecha desde datos raw
+  getEstadisticasPorModuloFiltered: async (rawData, { startDate, endDate }) => {
+    try {
+      const {
+        habilitaciones = [],
+        obras = [],
+        turnos = [],
+        pagosDobles = [],
+        indices = [],
+        multimedias = [],
+        abiertoAnual = [],
+        certificados = [],
+        combustible = [],
+        valesCombustible = []
+      } = rawData || {}
+
+      // Función helper para filtrar por fecha con normalización
+      const filtrarPorFecha = (items, dateField = 'createdAt') => {
+        if (!Array.isArray(items)) return []
+        return items.filter(item => {
+          if (!item || !item[dateField]) return false
+
+          // Normalizar fechas para comparación consistente
+          const itemDate = normalizarFecha(item[dateField])
+          const startDateNormalized = normalizarFecha(startDate)
+          const endDateNormalized = normalizarFecha(endDate)
+
+          if (!itemDate || !startDateNormalized || !endDateNormalized) {
+            console.warn('Fecha inválida en filtrado:', {
+              itemId: item.id,
+              dateField,
+              itemDate: item[dateField],
+              parsedDate: itemDate,
+              startDate,
+              endDate
+            })
+            return false
+          }
+
+          return itemDate >= startDateNormalized && itemDate <= endDateNormalized
+        })
+      }
+
+      // Debug: Verificar formatos de fecha en los datos
+      console.log('🔍 Debug formatos de fecha:', {
+        habilitaciones: habilitaciones.slice(0, 2).map(h => ({ id: h.id, createdAt: h.createdAt, type: typeof h.createdAt })),
+        obras: obras.slice(0, 2).map(o => ({ id: o.id, createdAt: o.createdAt, type: typeof o.createdAt })),
+        turnos: turnos.slice(0, 2).map(t => ({ id: t.id, createdAt: t.createdAt, type: typeof t.createdAt })),
+        pagosDobles: pagosDobles.slice(0, 2).map(p => ({ id: p.id, createdAt: p.createdAt, type: typeof p.createdAt })),
+        combustible: combustible.slice(0, 2).map(c => ({ id: c.id, createdAt: c.createdAt, type: typeof c.createdAt }))
+      })
+
+      // Filtrar solo los módulos específicos que queremos filtrar por fecha:
+      // ✅ Comercio (habilitaciones) - SÍ filtrar
+      // ✅ Obras - SÍ filtrar
+      // ✅ Turnos - SÍ filtrar
+      // ✅ Recaudaciones (pagos dobles) - SÍ filtrar
+      // ✅ Combustible - SÍ filtrar
+      // ❌ Índices - NO filtrar (mantener todos)
+      // ❌ Multimedia - NO filtrar (mantener todos)
+      // ❌ Abierto Anual - NO filtrar (mantener todos)
+      // ❌ Certificados - NO filtrar (mantener todos)
+      // ❌ Usuarios - NO filtrar (mantener todos)
+
+      const habilitacionesFiltradas = filtrarPorFecha(habilitaciones)
+      const obrasFiltradas = filtrarPorFecha(obras)
+      const turnosFiltrados = filtrarPorFecha(turnos)
+      const pagosDoblesFiltrados = filtrarPorFecha(pagosDobles)
+      const combustibleFiltrado = filtrarPorFecha(combustible)
+      const valesCombustibleFiltrados = filtrarPorFecha(valesCombustible)
+
+      // Mantener sin filtrar: índices, multimedia, abierto anual, certificados
+      const indicesFiltrados = indices
+      const multimediasFiltradas = multimedias
+      const abiertoAnualFiltrado = abiertoAnual
+      const certificadosFiltrados = certificados
+
+      // Calcular estadísticas con datos filtrados
+      // Para comercio: usar datos filtrados pero pasar datos sin filtrar para el gráfico de trámites por mes
+      const comercio = calcularEstadisticasDetalladas(habilitacionesFiltradas, 'habilitaciones', [], [], habilitaciones)
+      const abiertoAnualStats = calcularEstadisticasDetalladas(abiertoAnualFiltrado, 'abiertoAnual')
+      const estadisticasObras = calcularEstadisticasDetalladas(obrasFiltradas, 'obras', [], certificadosFiltrados)
+      const estadisticasPagosDobles = calcularEstadisticasDetalladas(pagosDoblesFiltrados, 'pagosDobles')
+      const estadisticasCombustible = calcularEstadisticasDetalladas(combustibleFiltrado, 'combustible', valesCombustibleFiltrados)
+      const estadisticasTurnos = calcularEstadisticasDetalladas(turnosFiltrados, 'turnos')
+      const estadisticasIndices = calcularEstadisticasDetalladas(indicesFiltrados, 'indices')
+      const estadisticasMultimedias = calcularEstadisticasDetalladas(multimediasFiltradas, 'multimedias')
+      const estadisticasCertificados = calcularEstadisticasDetalladas(certificadosFiltrados, 'certificados')
+
+      return {
+        comercio,
+        abiertoAnual: abiertoAnualStats,
+        obras: estadisticasObras,
+        recaudaciones: estadisticasPagosDobles,
+        combustible: estadisticasCombustible,
+        turnos: estadisticasTurnos,
+        indices: estadisticasIndices,
+        multimedias: estadisticasMultimedias,
+        certificados: estadisticasCertificados
+      }
+    } catch (error) {
+      console.error('Error al calcular estadísticas filtradas:', error)
+      throw error
+    }
+  }
 
 };

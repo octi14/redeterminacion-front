@@ -78,7 +78,7 @@
                     <p class="mb-1"><b-icon-envelope class="mr-2"/>dirarvige@gesell.gob.ar / arvige@gesell.gob.ar</p>
                     <p class="mb-1"><b-icon-telephone class="mr-2"/>(02255) 456190</p>
                     <p class="mb-1"><b-icon-instagram class="mr-2"/><a href="https://instagram.com/a.r.vi.ge" target="_blank" class="text-light">a.r.vi.ge</a></p>
-                    <p class="mb-0"><b-icon-facebook class="mr-2"/><a href="https://facebook.com/AgenciaRecaudacionVillaGesell" target="_blank" class="text-light">Agencia de Recaudación Villa Gesell</a></p>
+                    <p class="mb-0"><b-icon-facebook class="mr-2"/><a href="https://www.facebook.com/a.r.vi.ge" target="_blank" class="text-light">Agencia de Recaudación Villa Gesell</a></p>
                   </div>
                 </div>
                 <div class="col-md-6 d-flex justify-content-end">

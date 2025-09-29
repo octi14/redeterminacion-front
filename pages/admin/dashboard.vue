@@ -1,6 +1,6 @@
 <template>
   <div class="page dashboard-container">
-    <div class="container-fluid py-4 mt-5" v-if="isAdminMaster">
+    <div class="container-fluid py-4 mt-5" v-if="adminMaster">
       <!-- Header del Dashboard -->
       <div class="dashboard-header fade-in">
         <div class="d-flex justify-content-between align-items-center">
@@ -50,10 +50,9 @@
     </b-alert>
 
     <!-- Contenido Principal con Pestañas -->
-    <div v-if="!loading || estadisticasGenerales">
+    <div v-if="!loading || estadisticasModulos">
       <DashboardTabs
         :modulos="estadisticasModulos"
-        :estadisticas-generales="estadisticasGenerales"
         :estadisticas-usuarios="estadisticasUsuarios"
       />
     </div>
@@ -78,16 +77,13 @@ export default {
     loading() {
       return this.$store.state.estadisticas.loading
     },
-    estadisticasGenerales() {
-      return this.$store.state.estadisticas.estadisticasGenerales
-    },
     estadisticasModulos() {
       return this.$store.state.estadisticas.estadisticasModulos
     },
     estadisticasUsuarios() {
       return this.$store.state.estadisticas.estadisticasUsuarios
     },
-    isAdminMaster() {
+    adminMaster() {
       return this.$store.state.user.admin === 'master'
     }
   },

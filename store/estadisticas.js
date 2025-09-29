@@ -1,7 +1,6 @@
 const EstadisticasService = require('../service/estadisticas')
 
 export const state = () => ({
-  estadisticasGenerales: null,
   estadisticasModulos: null,
   estadisticasUsuarios: null,
   estadisticasActividad: null,
@@ -10,20 +9,6 @@ export const state = () => ({
 })
 
 export const actions = {
-  async fetchEstadisticasGenerales({ commit }) {
-    commit('setLoading', true)
-    commit('setError', null)
-    try {
-      const data = await EstadisticasService.getEstadisticasGenerales(this.$axios)
-      commit('setEstadisticasGenerales', data)
-      return data
-    } catch (error) {
-      commit('setError', error.message)
-      throw error
-    } finally {
-      commit('setLoading', false)
-    }
-  },
 
 
   async fetchEstadisticasModulos({ commit }) {
@@ -74,7 +59,6 @@ export const actions = {
   async fetchAllEstadisticas({ dispatch }) {
     try {
       await Promise.all([
-        dispatch('fetchEstadisticasGenerales'),
         dispatch('fetchEstadisticasModulos'),
         dispatch('fetchEstadisticasUsuarios')
       ])
@@ -86,9 +70,6 @@ export const actions = {
 }
 
 export const mutations = {
-  setEstadisticasGenerales(state, data) {
-    state.estadisticasGenerales = data
-  },
   setEstadisticasModulos(state, data) {
     state.estadisticasModulos = data
   },

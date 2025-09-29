@@ -225,16 +225,6 @@
           </div>
         </b-col>
 
-        <b-col md="3" class="mb-3">
-          <h6 class="text-dark mb-2 font-weight-bold">Por Área</h6>
-          <div v-for="area in modulos.combustible.porAreaVales" :key="area.area" class="d-flex justify-content-between mb-1">
-            <span class="text-truncate text-dark" :title="area.area">{{ area.area }}</span>
-            <div class="text-right">
-              <strong class="text-danger d-block">{{ area.total }} vales</strong>
-              <small class="text-muted">${{ formatearNumeroArgentino(area.montoTotal) }}</small>
-            </div>
-          </div>
-        </b-col>
       </b-row>
 
       <b-row class="mt-3">

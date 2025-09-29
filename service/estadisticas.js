@@ -336,7 +336,7 @@ const calcularEstadisticasCombustible = (ordenes, vales) => {
   })
 
 
-  // Calcular estadísticas por tipo de combustible
+  // Calcular estadísticas por tipo de combustible (excluyendo vales anulados)
   const porTipoCombustible = vales.reduce((acc, vale) => {
     const tipo = vale.tipoCombustible || 'Sin especificar'
     if (!acc[tipo]) {
@@ -348,19 +348,23 @@ const calcularEstadisticasCombustible = (ordenes, vales) => {
         montoDisponible: 0
       }
     }
-    acc[tipo].total += 1
-    acc[tipo].montoTotal += parseFloat(vale.monto) || 0
 
-    if (esValeConsumido(vale)) {
-      acc[tipo].consumidos += 1
-    } else {
-      acc[tipo].disponibles += 1
-      acc[tipo].montoDisponible += parseFloat(vale.monto) || 0
+    // Solo contar vales no anulados
+    if (!esValeAnulado(vale)) {
+      acc[tipo].total += 1
+      acc[tipo].montoTotal += parseFloat(vale.monto) || 0
+
+      if (esValeConsumido(vale)) {
+        acc[tipo].consumidos += 1
+      } else {
+        acc[tipo].disponibles += 1
+        acc[tipo].montoDisponible += parseFloat(vale.monto) || 0
+      }
     }
     return acc
   }, {})
 
-  // Calcular estadísticas por área
+  // Calcular estadísticas por área (excluyendo vales anulados)
   const porArea = vales.reduce((acc, vale) => {
     const area = vale.area || 'Sin especificar'
     if (!acc[area]) {
@@ -372,14 +376,18 @@ const calcularEstadisticasCombustible = (ordenes, vales) => {
         montoDisponible: 0
       }
     }
-    acc[area].total += 1
-    acc[area].montoTotal += parseFloat(vale.monto) || 0
 
-    if (esValeConsumido(vale)) {
-      acc[area].consumidos += 1
-    } else {
-      acc[area].disponibles += 1
-      acc[area].montoDisponible += parseFloat(vale.monto) || 0
+    // Solo contar vales no anulados
+    if (!esValeAnulado(vale)) {
+      acc[area].total += 1
+      acc[area].montoTotal += parseFloat(vale.monto) || 0
+
+      if (esValeConsumido(vale)) {
+        acc[area].consumidos += 1
+      } else {
+        acc[area].disponibles += 1
+        acc[area].montoDisponible += parseFloat(vale.monto) || 0
+      }
     }
     return acc
   }, {})
@@ -1182,92 +1190,6 @@ const calcularEstadisticasDetalladas = (items, tipo, valesCombustible = [], cert
 }
 
 module.exports = {
-  // Obtener estadísticas generales del sistema usando endpoints existentes
-  getEstadisticasGenerales: async (axios) => {
-    try {
-      // Obtener datos de todos los módulos
-      const [
-        habilitaciones,
-        obras,
-        turnos,
-        pagosDobles,
-        indices,
-        multimedias,
-        abiertoAnual,
-        certificados,
-        usuarios
-      ] = await Promise.all([
-        HabilitacionService.getAll(axios).catch(() => []),
-        ObraService.getLatest(axios).catch(() => []),
-        TurnoService.getAll(axios).catch(() => []),
-        PagoDobleService.getAll(axios).catch(() => []),
-        IndiceService.getLatest(axios).catch(() => []),
-        MultimediaService.getLatest(axios).catch(() => []),
-        AbiertoAnualService.getAll(axios).catch(() => []),
-        CertificadoService.getLatest(axios).catch(() => []),
-        // Obtener usuarios desde endpoint no declarado
-        axios.$get('https://redeterminacion-back.herokuapp.com/users').then(response => Array.isArray(response) ? response : (response.data || [])).catch(() => [])
-      ])
-
-      // Para obtener datos completos de obras (incluyendo certificados)
-      let obrasCompletas = []
-      try {
-        const obrasResponse = await axios.$get('/obras')
-        obrasCompletas = obrasResponse.data.map(item => ({
-          id: item._id,
-          expediente: item.expediente,
-          objeto: item.objeto,
-          presup_oficial: item.presup_oficial,
-          adjudicado: item.adjudicado,
-          proveedor: item.proveedor,
-          cotizacion: item.cotizacion,
-          items: item.items,
-          certificados: item.certificados, // ✅ Incluir certificados completos
-          garantia_contrato: item.garantia_contrato,
-          adjudicacion: item.adjudicacion,
-          contrato: item.contrato,
-          fecha_contrato: item.fecha_contrato,
-          acta_inicio: item.acta_inicio,
-          ordenanza: item.ordenanza,
-          decreto: item.decreto,
-          plazo_obra: item.plazo_obra,
-          anticipo_finan: item.anticipo_finan,
-          ponderacion: item.ponderacion,
-          createdAt: new Date(item.createdAt)
-        }))
-      } catch (error) {
-        console.warn('No se pudieron obtener datos completos de obras:', error)
-        obrasCompletas = obras
-      }
-
-      // Calcular totales
-      const totalTramites = habilitaciones.length + obrasCompletas.length + turnos.length + pagosDobles.length + abiertoAnual.length + certificados.length
-      const totalUsuarios = usuarios.length || 'N/A'
-
-      // Calcular documentos totales (solo de módulos que los tienen)
-      const todosLosItems = [...habilitaciones, ...obrasCompletas, ...turnos, ...pagosDobles, ...abiertoAnual, ...certificados]
-      const totalDocumentos = todosLosItems.reduce((acc, item) => {
-        // Solo contar documentos de módulos que los tienen
-        if (item.facturas && Array.isArray(item.facturas)) {
-          return acc + item.facturas.length // Abierto anual
-        }
-        if (item.documentos && Array.isArray(item.documentos)) {
-          return acc + item.documentos.length // Pagos dobles
-        }
-        return acc
-      }, 0)
-
-      return {
-        totalUsuarios,
-        totalTramites,
-        totalDocumentos,
-        espacioUsado: 'N/A' // No tenemos información de espacio
-      }
-    } catch (error) {
-      console.error('Error al obtener estadísticas generales:', error);
-      throw error;
-    }
-  },
 
 
   // Obtener estadísticas por módulo usando endpoints existentes

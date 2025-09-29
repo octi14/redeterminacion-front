@@ -9,30 +9,6 @@
         nav-class="nav-pills"
         content-class="mt-4"
       >
-        <!-- Pestaña General -->
-        <b-tab title-link-class="tab-link-general">
-          <template #title>
-            <i class="bi bi-speedometer2 mr-2"></i>
-            <span class="d-none d-md-inline">General</span>
-          </template>
-
-          <div class="tab-content-general">
-            <!-- Estadísticas Generales -->
-            <div class="row mb-4">
-              <div class="col-12">
-                <EstadisticasGenerales :estadisticas="estadisticasGenerales" />
-              </div>
-            </div>
-
-            <!-- Estadísticas por Módulo -->
-            <div class="row mb-4">
-              <div class="col-12">
-                <EstadisticasModulos :modulos="modulos" />
-              </div>
-            </div>
-          </div>
-        </b-tab>
-
         <!-- Pestaña Comercio -->
         <b-tab title-link-class="tab-link-comercio">
           <template #title>
@@ -149,6 +125,20 @@
             <div class="row mb-4">
               <div class="col-12">
                 <EstadisticasDetalladas :modulos="{ combustible: modulos?.combustible }" />
+              </div>
+            </div>
+
+            <!-- Consumos por Área -->
+            <div class="row mb-4">
+              <div class="col-12">
+                <CombustiblePorArea :datos-combustible="modulos?.combustible || {}" />
+              </div>
+            </div>
+
+            <!-- Consumos por Patente -->
+            <div class="row mb-4">
+              <div class="col-12">
+                <EstadisticasPorPatente :datos-combustible="modulos?.combustible || {}" />
               </div>
             </div>
           </div>
@@ -297,29 +287,25 @@
 </template>
 
 <script>
-import EstadisticasGenerales from '~/components/dashboard/EstadisticasGenerales.vue'
-import EstadisticasModulos from '~/components/dashboard/EstadisticasModulos.vue'
 import EstadisticasDetalladas from '~/components/dashboard/EstadisticasDetalladas.vue'
 import GraficosComercio from '~/components/dashboard/GraficosComercio.vue'
 import GraficosAbiertoAnual from '~/components/dashboard/GraficosAbiertoAnual.vue'
 import GraficoIndices from '~/components/dashboard/GraficoIndices.vue'
+import CombustiblePorArea from '~/components/dashboard/CombustiblePorArea.vue'
+import EstadisticasPorPatente from '~/components/dashboard/EstadisticasPorPatente.vue'
 
 export default {
   name: 'DashboardTabs',
   components: {
-    EstadisticasGenerales,
-    EstadisticasModulos,
     EstadisticasDetalladas,
     GraficosComercio,
     GraficosAbiertoAnual,
-    GraficoIndices
+    GraficoIndices,
+    CombustiblePorArea,
+    EstadisticasPorPatente
   },
   props: {
     modulos: {
-      type: Object,
-      default: () => ({})
-    },
-    estadisticasGenerales: {
       type: Object,
       default: () => ({})
     },
@@ -370,12 +356,6 @@ export default {
 }
 
 /* Estilos específicos por pestaña */
-.tab-link-general.active {
-  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
-  border-color: #007bff !important;
-  box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3) !important;
-}
-
 .tab-link-comercio.active {
   background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%) !important;
   border-color: #ffc107 !important;
@@ -420,7 +400,6 @@ export default {
 }
 
 /* Contenido de las pestañas */
-.tab-content-general,
 .tab-content-comercio,
 .tab-content-abierto-anual,
 .tab-content-obras,

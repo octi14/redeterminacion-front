@@ -98,6 +98,16 @@
               Maestro
           </NuxtLink>
         </b-navbar-nav>
+        <b-navbar-nav v-if="isAuthenticated">
+          <NuxtLink
+            class="nav-link"
+            active-class="active"
+            to="/actividades"
+          >
+              <b-icon-activity class="mr-1" />
+              Actividades
+          </NuxtLink>
+        </b-navbar-nav>
       </div>
       <b-navbar-nav class="ml-auto">
         <template v-if="isAuthenticated">

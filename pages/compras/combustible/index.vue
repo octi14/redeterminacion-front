@@ -663,6 +663,13 @@ export default {
           },
         });
 
+        // Registrar actividad de creación de orden de compra
+        await this.$logUserActivity(
+          this.$store.state.user.email,
+          'Crear Orden de Compra',
+          `Orden de compra ${nroOrden} creada para el área ${this.orden.area}`
+        );
+
         // Mostrar mensaje de éxito
         // this.showCargarOrden = false
         this.successMessage = true
@@ -818,6 +825,13 @@ export default {
           vehiculo: vehiculoData,
           userToken
         });
+
+        // Registrar actividad de modificación de vehículo
+        await this.$logUserActivity(
+          this.$store.state.user.email,
+          'Modificar Vehículo',
+          `Vehículo ${this.vehiculoEdit.patente} actualizado en el área ${this.vehiculoEdit.area}`
+        );
 
         // Cerrar modal y mostrar mensaje de éxito
         this.cerrarModalEditar();

@@ -98,7 +98,7 @@
               Maestro
           </NuxtLink>
         </b-navbar-nav>
-        <b-navbar-nav v-if="isAuthenticated">
+        <b-navbar-nav v-if="adminMaster">
           <NuxtLink
             class="nav-link"
             active-class="active"
@@ -162,6 +162,9 @@ export default {
     userId() {
       return this.$store.state.user.id
     },
+    adminMaster(){
+      return this.$store.state.user.admin == "master"
+    }
   },
   methods: {
     async registrarActividad(evento, result){

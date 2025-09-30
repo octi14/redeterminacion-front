@@ -682,6 +682,13 @@ export default {
           // Hacer la petición al backend para eliminar el vale
           await this.$store.dispatch("combustible/consumirVale", { id, vale });
 
+          // Registrar actividad de uso de vale
+          await this.$logUserActivity(
+            this.$store.state.user.email,
+            'Marcar Vale como Utilizado',
+            `Vale ${this.tempValeRef.nro_vale} marcado como utilizado`
+          );
+
           // Eliminar el vale de la lista en el frontend
           this.vales = this.vales.filter(v => v._id !== this.valeSeleccionado);
 
@@ -710,6 +717,13 @@ export default {
         alert("Ocurrió un error al eliminar el vale. Revisa la consola para más detalles.");
         }
       }
+
+      // Registrar actividad de uso masivo de vales
+      await this.$logUserActivity(
+        this.$store.state.user.email,
+        'Marcar Vales como Utilizados',
+        `${this.valesSeleccionados.length} vales marcados como utilizados`
+      );
       await this.wait(500)
       this.$bvModal.hide('modalUtilizacionMasiva')
       location.reload()

@@ -1,7 +1,7 @@
 <template>
   <div class="page container-fluid">
     <Banner title="Actividad de Usuarios" />
-    <div class="row">
+    <div class="row" v-if="adminMaster">
       <div class="col-12">
 
         <!-- Filters and Controls -->
@@ -159,12 +159,12 @@ export default {
         { value: 'Abrir Trámite', text: 'Abrir Trámite' },
         { value: 'Abrir Turno', text: 'Abrir Turno' },
         { value: 'Aprobar', text: 'Aprobar trámite' },
-        { value: 'Finalizar', text: 'Finalizar trámite' },
-        { value: 'Rechazar', text: 'Rechazar' },
+        { value: 'Finalizar Trámite', text: 'Finalizar trámite' },
+        { value: 'Rechazar Solicitud', text: 'Rechazar' },
         { value: 'Crear', text: 'Crear' },
         { value: 'Editar', text: 'Editar' },
         { value: 'Eliminar', text: 'Eliminar' },
-        { value: 'Abrir observaciones', text: 'Visualización' }
+        { value: 'Ver Observaciones', text: 'Visualización' }
       ],
 
       limitOptions: [
@@ -247,6 +247,10 @@ export default {
 
     totalActivities() {
       return this.filteredActivities.length
+    },
+
+    adminMaster(){
+      return this.$store.state.user.admin == "master"
     }
 
   },

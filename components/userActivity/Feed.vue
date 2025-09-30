@@ -37,49 +37,60 @@
       </div>
 
       <div v-else class="activity-list">
-        <div
-          v-for="activity in activitiesList"
-          :key="activity.id"
-          class="activity-item"
-        >
+        <div class="activity-grid">
+          <div
+            v-for="activity in activitiesList"
+            :key="activity.id"
+            class="activity-item"
+          >
           <div class="activity-content">
-            <div class="activity-header">
+            <!-- Primera fila: Avatar, Usuario, Tipo de actividad, Fecha -->
+            <div class="activity-row activity-main">
               <div class="user-info">
                 <b-avatar
                   :text="getInitials(activity.userId)"
                   variant="primary"
                   size="sm"
-                  class="mr-2"
+                  class="mr-3"
                 />
-                <div>
-                  <div class="user-name">{{ activity.userId }}</div>
-                  <small class="text-muted">{{ formatDate(activity.timestamp) }}</small>
+                <div class="user-details">
+                  <div class="user-name">{{ getDisplayName(activity.userId) }}</div>
+                  <div class="activity-type">
+                    <b-badge
+                      :variant="getActivityVariant(activity.actionType)"
+                      class="text-uppercase"
+                      style="font-size: 0.7rem; padding: 0.25rem 0.5rem;"
+                    >
+                      {{ activity.actionType }}
+                    </b-badge>
+                  </div>
                 </div>
               </div>
-              <div class="activity-badge">
-                <b-badge
-                  :variant="getActivityVariant(activity.actionType)"
-                  class="text-uppercase"
-                  style="font-size: 0.7rem; padding: 0.25rem 0.5rem;"
-                >
-                  {{ activity.actionType }}
-                </b-badge>
+              <div class="activity-meta">
+                <div class="timestamp">{{ formatDate(activity.timestamp) }}</div>
               </div>
             </div>
 
-            <div class="activity-body">
-              <div class="activity-summary">
+            <!-- Segunda fila: Resultado de la acción -->
+            <div class="activity-row activity-result">
+              <div class="result-content">
                 <span :class="getResultClass(activity.actionResult)" class="result-text">
                   {{ activity.actionResult }}
                 </span>
-                <span v-if="activity.visitedUrl" class="url-info">
-                  <a :href="activity.visitedUrl" target="_blank" class="text-primary">
-                    {{ truncateUrl(activity.visitedUrl) }}
-                  </a>
-                </span>
+              </div>
+            </div>
+
+            <!-- Tercera fila: URL (si existe) -->
+            <div v-if="activity.visitedUrl" class="activity-row activity-url">
+              <div class="url-content">
+                <b-icon-link class="url-icon" />
+                <a :href="activity.visitedUrl" target="_blank" class="url-link">
+                  {{ truncateUrl(activity.visitedUrl) }}
+                </a>
               </div>
             </div>
           </div>
+        </div>
         </div>
       </div>
     </div>
@@ -173,6 +184,12 @@ export default {
       return name.charAt(0).toUpperCase()
     },
 
+    getDisplayName(userId) {
+      if (!userId) return 'Usuario'
+      // Extraer solo la parte antes del @ para mostrar
+      return userId.split('@')[0]
+    },
+
     formatDate(timestamp) {
       const date = new Date(timestamp)
 
@@ -253,12 +270,19 @@ export default {
   overflow-y: auto;
 }
 
+.activity-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 12px;
+  padding: 4px;
+}
+
 .activity-item {
   border: 1px solid #e9ecef;
-  border-radius: 6px;
-  margin-bottom: 8px;
+  border-radius: 8px;
   background: #fff;
   transition: all 0.2s ease;
+  min-height: 120px;
 }
 
 .activity-item:hover {
@@ -268,10 +292,24 @@ export default {
 
 .activity-content {
   padding: 12px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
-.activity-header {
+/* Filas de actividad */
+.activity-row {
   display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.activity-row:last-child {
+  margin-bottom: 0;
+}
+
+/* Fila principal: Avatar, Usuario, Tipo, Fecha */
+.activity-main {
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 8px;
@@ -279,39 +317,92 @@ export default {
 
 .user-info {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  flex: 1;
+  min-width: 0;
+}
+
+.user-details {
+  flex: 1;
+  min-width: 0;
 }
 
 .user-name {
   font-weight: 600;
   font-size: 0.9rem;
   line-height: 1.2;
+  margin-bottom: 3px;
 }
 
-.activity-body {
-  margin-bottom: 0;
+.activity-type {
+  margin-top: 3px;
 }
 
-.activity-summary {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+.activity-meta {
+  text-align: right;
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+.timestamp {
+  font-size: 0.75rem;
+  color: #6c757d;
+  white-space: nowrap;
+}
+
+/* Fila de resultado */
+.activity-result {
+  margin-left: 40px; /* Alineado con el texto del usuario */
+  margin-bottom: 6px;
+}
+
+.result-content {
+  flex: 1;
 }
 
 .result-text {
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.url-info {
   font-size: 0.8rem;
+  font-weight: 500;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.url-info a {
+/* Fila de URL */
+.activity-url {
+  margin-left: 40px; /* Alineado con el texto del usuario */
+  margin-top: auto; /* Empujar hacia abajo */
+}
+
+.url-content {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.url-icon {
+  font-size: 0.75rem;
+  color: #6c757d;
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+
+.url-link {
+  font-size: 0.7rem;
+  color: #007bff;
   text-decoration: none;
+  word-break: break-all;
+  flex: 1;
+  min-width: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.url-info a:hover {
+.url-link:hover {
   text-decoration: underline;
 }
 
@@ -325,18 +416,49 @@ export default {
 }
 
 /* Responsive */
+@media (max-width: 1200px) {
+  .activity-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+}
+
 @media (max-width: 768px) {
-  .activity-header {
+  .activity-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .activity-main {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .activity-badge {
-    margin-top: 8px;
+  .activity-meta {
+    margin-left: 0;
+    margin-top: 4px;
+    text-align: left;
+    align-self: flex-end;
+  }
+
+  .activity-result,
+  .activity-url {
+    margin-left: 0;
   }
 
   .activity-content {
-    padding: 12px;
+    padding: 10px;
+  }
+
+  .user-info {
+    width: 100%;
+  }
+
+  .user-details {
+    flex: 1;
+  }
+
+  .activity-type {
+    margin-top: 4px;
   }
 }
 </style>

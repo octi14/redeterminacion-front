@@ -2,7 +2,7 @@
   <div class="user-activity-feed">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h4 class="mb-0">
-        <b-icon-activity class="mr-2" />
+        <b-icon-list-task class="mr-2" />
         Actividad de Usuarios
       </h4>
       <div class="d-flex align-items-center">
@@ -19,7 +19,7 @@
     </div>
 
     <!-- Loading state -->
-    <div v-if="loading && activities.length === 0" class="text-center py-4">
+    <div v-if="loading && activitiesList.length === 0" class="text-center py-4">
       <b-spinner type="border" variant="primary" />
       <p class="mt-2 text-muted">Cargando actividades...</p>
     </div>
@@ -30,15 +30,15 @@
     </b-alert>
 
     <!-- Activities list -->
-    <div v-if="!loading || activities.length > 0">
-      <div v-if="activities.length === 0" class="text-center py-5">
+    <div v-if="!loading || activitiesList.length > 0">
+      <div v-if="activitiesList.length === 0" class="text-center py-5">
         <b-icon-inbox class="text-muted" size="3rem" />
         <p class="text-muted mt-3">No hay actividades registradas</p>
       </div>
 
       <div v-else class="activity-list">
         <div
-          v-for="activity in activities"
+          v-for="activity in activitiesList"
           :key="activity.id"
           class="activity-item"
         >
@@ -52,16 +52,15 @@
                   class="mr-2"
                 />
                 <div>
-                  <strong>{{ activity.userId }}</strong>
-                  <small class="text-muted d-block">
-                    {{ formatDate(activity.timestamp) }}
-                  </small>
+                  <div class="user-name">{{ activity.userId }}</div>
+                  <small class="text-muted">{{ formatDate(activity.timestamp) }}</small>
                 </div>
               </div>
               <div class="activity-badge">
                 <b-badge
                   :variant="getActivityVariant(activity.actionType)"
                   class="text-uppercase"
+                  style="font-size: 0.7rem; padding: 0.25rem 0.5rem;"
                 >
                   {{ activity.actionType }}
                 </b-badge>
@@ -69,34 +68,16 @@
             </div>
 
             <div class="activity-body">
-              <p class="mb-1">
-                <strong>Tipo de Acción:</strong> {{ activity.actionType }}
-              </p>
-              <p class="mb-1">
-                <strong>Resultado:</strong>
-                <span :class="getResultClass(activity.actionResult)">
+              <div class="activity-summary">
+                <span :class="getResultClass(activity.actionResult)" class="result-text">
                   {{ activity.actionResult }}
                 </span>
-              </p>
-              <div v-if="activity.visitedUrl" class="activity-details">
-                <small class="text-muted">
-                  <strong>URL:</strong>
+                <span v-if="activity.visitedUrl" class="url-info">
                   <a :href="activity.visitedUrl" target="_blank" class="text-primary">
                     {{ truncateUrl(activity.visitedUrl) }}
                   </a>
-                </small>
+                </span>
               </div>
-            </div>
-
-            <div class="activity-footer">
-              <small class="text-muted">
-                <b-icon-clock class="mr-1" />
-                {{ formatFullDate(activity.timestamp) }}
-              </small>
-              <small v-if="activity.sessionId" class="text-muted ml-3">
-                <b-icon-key class="mr-1" />
-                Sesión: {{ activity.sessionId }}
-              </small>
             </div>
           </div>
         </div>
@@ -118,13 +99,30 @@ export default {
     showRecent: {
       type: Boolean,
       default: true
+    },
+    dateRange: {
+      type: Object,
+      default: null
+    },
+    activities: {
+      type: Array,
+      default: null
     }
   },
 
   computed: {
-    ...mapState('userActivities', ['all', 'recent', 'loading', 'error']),
+    ...mapState('userActivities', ['all', 'recent', 'filtered', 'loading', 'error']),
 
-    activities() {
+    activitiesList() {
+      // Si se pasan actividades como prop, usarlas
+      if (this.activities) {
+        return this.activities.slice(0, this.limit)
+      }
+
+      // Si no, usar el store
+      if (this.dateRange) {
+        return this.filtered
+      }
       return this.showRecent ? this.recent : this.all
     }
   },
@@ -133,11 +131,31 @@ export default {
     await this.loadActivities()
   },
 
+  watch: {
+    dateRange: {
+      handler() {
+        this.loadActivities()
+      },
+      deep: true
+    }
+  },
+
   methods: {
-    ...mapActions('userActivities', ['getAll', 'getRecent', 'clearError']),
+    ...mapActions('userActivities', ['getAll', 'getRecent', 'getFiltered', 'clearError']),
 
     async loadActivities() {
-      if (this.showRecent) {
+      // Si se pasan actividades como prop, no cargar desde el store
+      if (this.activities) {
+        return
+      }
+
+      if (this.dateRange && this.dateRange.startDate && this.dateRange.endDate) {
+        await this.getFiltered({
+          startDate: this.dateRange.startDate,
+          endDate: this.dateRange.endDate,
+          limit: this.limit
+        })
+      } else if (this.showRecent) {
         await this.getRecent({ limit: this.limit })
       } else {
         await this.getAll()
@@ -157,27 +175,13 @@ export default {
 
     formatDate(timestamp) {
       const date = new Date(timestamp)
-      const now = new Date()
-      const diff = now - date
 
-      // Menos de 1 minuto
-      if (diff < 60000) {
-        return 'Hace un momento'
+      // Verificar que la fecha sea válida
+      if (isNaN(date.getTime())) {
+        return 'Fecha inválida'
       }
 
-      // Menos de 1 hora
-      if (diff < 3600000) {
-        const minutes = Math.floor(diff / 60000)
-        return `Hace ${minutes} minuto${minutes > 1 ? 's' : ''}`
-      }
-
-      // Menos de 24 horas
-      if (diff < 86400000) {
-        const hours = Math.floor(diff / 3600000)
-        return `Hace ${hours} hora${hours > 1 ? 's' : ''}`
-      }
-
-      // Más de 24 horas
+      // Mostrar siempre el horario
       return date.toLocaleString('es-ES', {
         day: '2-digit',
         month: '2-digit',
@@ -251,8 +255,8 @@ export default {
 
 .activity-item {
   border: 1px solid #e9ecef;
-  border-radius: 8px;
-  margin-bottom: 12px;
+  border-radius: 6px;
+  margin-bottom: 8px;
   background: #fff;
   transition: all 0.2s ease;
 }
@@ -263,14 +267,14 @@ export default {
 }
 
 .activity-content {
-  padding: 16px;
+  padding: 12px;
 }
 
 .activity-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .user-info {
@@ -278,27 +282,37 @@ export default {
   align-items: center;
 }
 
-.activity-body {
-  margin-bottom: 12px;
-}
-
-.activity-body p {
-  margin-bottom: 4px;
+.user-name {
+  font-weight: 600;
   font-size: 0.9rem;
+  line-height: 1.2;
 }
 
-.activity-details {
-  margin-top: 8px;
-  padding: 8px;
-  background: #f8f9fa;
-  border-radius: 4px;
-  border-left: 3px solid #007bff;
+.activity-body {
+  margin-bottom: 0;
 }
 
-.activity-footer {
-  border-top: 1px solid #e9ecef;
-  padding-top: 8px;
-  margin-top: 8px;
+.activity-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.result-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.url-info {
+  font-size: 0.8rem;
+}
+
+.url-info a {
+  text-decoration: none;
+}
+
+.url-info a:hover {
+  text-decoration: underline;
 }
 
 .spinning {

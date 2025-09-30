@@ -104,7 +104,7 @@
             active-class="active"
             to="/actividades"
           >
-              <b-icon-activity class="mr-1" />
+              <b-icon-list-task class="mr-1" />
               Actividades
           </NuxtLink>
         </b-navbar-nav>

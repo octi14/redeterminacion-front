@@ -1,17 +1,8 @@
 <template>
-  <div class="container-fluid py-4">
+  <div class="page container-fluid">
+    <Banner title="Actividad de Usuarios" />
     <div class="row">
       <div class="col-12">
-        <!-- Breadcrumbs -->
-        <Breadcrumbs :items="breadcrumbItems" />
-
-        <!-- Page Header -->
-        <div class="page-header mb-4">
-          <h2 class="page-title">
-            <b-icon-activity class="mr-2" />
-            Actividad de Usuarios
-          </h2>
-        </div>
 
         <!-- Filters and Controls -->
         <div class="filters-section mb-4">
@@ -43,85 +34,98 @@
           <div class="row mt-3">
             <div class="col-md-6">
               <div class="form-group">
-                <label for="dateFilter">Filtrar por fecha:</label>
-                <b-form-datepicker
-                  id="dateFilter"
-                  v-model="dateFilter"
-                  :max="new Date()"
-                  @input="filterActivities"
-                />
+                <label>Filtrar por rango de fechas:</label>
+                <div class="d-flex align-items-center">
+                  <b-form-datepicker
+                    v-model="startDate"
+                    placeholder="Fecha inicio"
+                    :max="endDate || new Date()"
+                    class="mr-2"
+                    size="sm"
+                  />
+                  <span class="mx-2 text-muted">hasta</span>
+                  <b-form-datepicker
+                    v-model="endDate"
+                    placeholder="Fecha fin"
+                    :min="startDate"
+                    :max="new Date()"
+                    size="sm"
+                  />
+                </div>
+                <div class="mt-2">
+                  <b-button
+                    variant="primary"
+                    size="sm"
+                    @click="applyDateFilter"
+                    :disabled="!startDate || !endDate"
+                    class="mr-2"
+                  >
+                    Aplicar Filtro
+                  </b-button>
+                  <b-button
+                    variant="outline-secondary"
+                    size="sm"
+                    @click="clearDateFilter"
+                    :disabled="!selectedDateRange"
+                  >
+                    Limpiar
+                  </b-button>
+                </div>
+                <div v-if="selectedDateRange" class="mt-2">
+                  <b-badge variant="info">
+                    {{ formatDateRange(selectedDateRange) }}
+                  </b-badge>
+                </div>
               </div>
             </div>
             <div class="col-md-6">
               <div class="form-group">
-                <label for="limitFilter">Mostrar:</label>
+                <label for="paginationFilter">Elementos por página:</label>
                 <b-form-select
-                  id="limitFilter"
-                  v-model="limit"
-                  :options="limitOptions"
-                  @change="changeLimit"
+                  id="paginationFilter"
+                  v-model="itemsPerPage"
+                  :options="paginationOptions"
+                  @change="changeItemsPerPage"
                 />
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Statistics Cards -->
-        <div class="stats-section mb-4">
-          <div class="row">
-            <div class="col-md-3">
-              <div class="stat-card">
-                <div class="stat-icon">
-                  <b-icon-people class="text-primary" />
-                </div>
-                <div class="stat-content">
-                  <h4>{{ totalUsers }}</h4>
-                  <p>Usuarios únicos</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-3">
-              <div class="stat-card">
-                <div class="stat-icon">
-                  <b-icon-activity class="text-success" />
-                </div>
-                <div class="stat-content">
-                  <h4>{{ totalActivities }}</h4>
-                  <p>Actividades totales</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-3">
-              <div class="stat-card">
-                <div class="stat-icon">
-                  <b-icon-clock class="text-warning" />
-                </div>
-                <div class="stat-content">
-                  <h4>{{ todayActivities }}</h4>
-                  <p>Hoy</p>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-3">
-              <div class="stat-card">
-                <div class="stat-icon">
-                  <b-icon-shield-check class="text-info" />
-                </div>
-                <div class="stat-content">
-                  <h4>{{ loginActivities }}</h4>
-                  <p>Inicios de sesión</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
         <!-- Activity Feed -->
         <div class="activity-section">
           <UserActivityFeed
-            :limit="limit"
+            :limit="itemsPerPage"
             :show-recent="showRecent"
+            :date-range="selectedDateRange"
+            :activities="paginatedActivities"
           />
+        </div>
+
+        <!-- Paginación -->
+        <div v-if="totalPages > 1" class="pagination-section mt-4">
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="pagination-info">
+              <span class="text-muted">
+                Mostrando {{ ((currentPage - 1) * itemsPerPage) + 1 }} -
+                {{ Math.min(currentPage * itemsPerPage, totalActivities) }}
+                de {{ totalActivities }} actividades
+              </span>
+            </div>
+
+            <div class="pagination-controls">
+              <b-pagination
+                v-model="currentPage"
+                :total-rows="totalActivities"
+                :per-page="itemsPerPage"
+                :limit="5"
+                size="sm"
+                @change="changePage"
+                class="mb-0"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -141,18 +145,26 @@ export default {
       userFilter: '',
       dateFilter: null,
       limit: 50,
-      showRecent: true,
+      showRecent: false, // Cambiar a false para mostrar todas las actividades por defecto
+      selectedDateRange: null,
+      startDate: null,
+      endDate: null,
+      currentPage: 1, // Agregar paginación
+      itemsPerPage: 50,
 
       activityOptions: [
         { value: null, text: 'Todas las actividades' },
         { value: 'LogIn', text: 'Inicio de sesión' },
-        { value: 'LogOut', text: 'Cierre de sesión' },
-        { value: 'Aprobar Renovación', text: 'Aprobar Renovación' },
+        { value: 'User Logout', text: 'Cierre de sesión' },
+        { value: 'Abrir Trámite', text: 'Abrir Trámite' },
+        { value: 'Abrir Turno', text: 'Abrir Turno' },
+        { value: 'Aprobar', text: 'Aprobar trámite' },
+        { value: 'Finalizar', text: 'Finalizar trámite' },
         { value: 'Rechazar', text: 'Rechazar' },
         { value: 'Crear', text: 'Crear' },
         { value: 'Editar', text: 'Editar' },
         { value: 'Eliminar', text: 'Eliminar' },
-        { value: 'View', text: 'Visualización' }
+        { value: 'Abrir observaciones', text: 'Visualización' }
       ],
 
       limitOptions: [
@@ -160,12 +172,19 @@ export default {
         { value: 50, text: '50 actividades' },
         { value: 100, text: '100 actividades' },
         { value: 200, text: '200 actividades' }
+      ],
+
+      paginationOptions: [
+        { value: 10, text: '10 por página' },
+        { value: 25, text: '25 por página' },
+        { value: 50, text: '50 por página' },
+        { value: 100, text: '100 por página' }
       ]
     }
   },
 
   computed: {
-    ...mapState('userActivities', ['all', 'recent']),
+    ...mapState('userActivities', ['all', 'recent', 'filtered']),
 
     breadcrumbItems() {
       return [
@@ -174,41 +193,79 @@ export default {
       ]
     },
 
-    totalUsers() {
-      const users = new Set()
-      const activities = this.showRecent ? this.recent : this.all
-      activities.forEach(activity => {
-        if (activity.userId) {
-          users.add(activity.userId)
-        }
+    // Obtener las actividades actuales (filtradas o no)
+    currentActivities() {
+      if (this.selectedDateRange) {
+        return this.filtered
+      }
+      return this.showRecent ? this.recent : this.all
+    },
+
+    // Aplicar filtros locales a las actividades
+    filteredActivities() {
+      let activities = this.currentActivities
+
+      console.log('🔍 Debug filteredActivities:', {
+        currentActivities: activities?.length || 0,
+        selectedDateRange: !!this.selectedDateRange,
+        selectedActivity: this.selectedActivity,
+        userFilter: this.userFilter,
+        filtered: this.filtered?.length || 0,
+        recent: this.recent?.length || 0,
+        all: this.all?.length || 0
       })
-      return users.size
+
+      // Filtrar por tipo de actividad
+      if (this.selectedActivity) {
+        activities = activities.filter(activity =>
+          activity.actionType === this.selectedActivity
+        )
+      }
+
+      // Filtrar por usuario
+      if (this.userFilter) {
+        const filter = this.userFilter.toLowerCase()
+        activities = activities.filter(activity =>
+          activity.userId && activity.userId.toLowerCase().includes(filter)
+        )
+      }
+
+      console.log('🔍 Debug filteredActivities result:', activities?.length || 0)
+      return activities
+    },
+
+    // Paginación
+    totalPages() {
+      return Math.ceil(this.filteredActivities.length / this.itemsPerPage)
+    },
+
+    paginatedActivities() {
+      const start = (this.currentPage - 1) * this.itemsPerPage
+      const end = start + this.itemsPerPage
+      return this.filteredActivities.slice(start, end)
     },
 
     totalActivities() {
-      return this.showRecent ? this.recent.length : this.all.length
-    },
-
-    todayActivities() {
-      const today = new Date().toDateString()
-      const activities = this.showRecent ? this.recent : this.all
-      return activities.filter(activity => {
-        return new Date(activity.timestamp).toDateString() === today
-      }).length
-    },
-
-    loginActivities() {
-      const activities = this.showRecent ? this.recent : this.all
-      return activities.filter(activity => activity.actionType === 'LogIn').length
+      return this.filteredActivities.length
     }
+
   },
 
   async mounted() {
     await this.loadActivities()
   },
 
+  watch: {
+    selectedActivity() {
+      // Los filtros se aplican automáticamente a través de computed properties
+    },
+    userFilter() {
+      // Los filtros se aplican automáticamente a través de computed properties
+    }
+  },
+
   methods: {
-    ...mapActions('userActivities', ['getAll', 'getRecent']),
+    ...mapActions('userActivities', ['getAll', 'getRecent', 'getFiltered']),
 
     async loadActivities() {
       if (this.showRecent) {
@@ -222,6 +279,35 @@ export default {
       await this.loadActivities()
     },
 
+    // Métodos de paginación
+    changePage(page) {
+      this.currentPage = page
+    },
+
+    changeItemsPerPage() {
+      this.currentPage = 1 // Reset a la primera página
+    },
+
+    goToFirstPage() {
+      this.currentPage = 1
+    },
+
+    goToLastPage() {
+      this.currentPage = this.totalPages
+    },
+
+    goToPreviousPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--
+      }
+    },
+
+    goToNextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.currentPage++
+      }
+    },
+
     filterActivities() {
       // Esta funcionalidad se puede implementar más adelante
       // para filtrar las actividades en tiempo real
@@ -230,6 +316,92 @@ export default {
         user: this.userFilter,
         date: this.dateFilter
       })
+    },
+
+    async applyDateFilter() {
+      if (this.startDate && this.endDate) {
+        this.selectedDateRange = {
+          startDate: this.startDate,
+          endDate: this.endDate
+        }
+
+        // Cargar actividades filtradas
+        try {
+          console.log('🔍 Aplicando filtro de fechas:', {
+            startDate: this.startDate,
+            endDate: this.endDate,
+            limit: this.limit
+          })
+
+          const result = await this.getFiltered({
+            startDate: this.startDate,
+            endDate: this.endDate,
+            limit: this.limit
+          })
+
+          console.log('🔍 Resultado del filtro:', result?.length || 0, 'actividades')
+
+          this.$bvToast.toast('Filtro de fechas aplicado', {
+            title: 'Filtro Aplicado',
+            variant: 'success',
+            solid: true,
+            toaster: 'b-toaster-top-right'
+          })
+        } catch (error) {
+          console.error('Error aplicando filtro de fechas:', error)
+          this.$bvToast.toast('Error al aplicar el filtro de fechas', {
+            title: 'Error',
+            variant: 'danger',
+            solid: true,
+            toaster: 'b-toaster-top-right'
+          })
+        }
+      }
+    },
+
+    async clearDateFilter() {
+      this.selectedDateRange = null
+      this.startDate = null
+      this.endDate = null
+
+      // Recargar actividades normales
+      await this.loadActivities()
+
+      this.$bvToast.toast('Filtro de fechas removido', {
+        title: 'Filtro Removido',
+        variant: 'info',
+        solid: true,
+        toaster: 'b-toaster-top-right'
+      })
+    },
+
+    formatDateRange(dateRange) {
+      if (!dateRange || !dateRange.startDate || !dateRange.endDate) return ''
+
+      try {
+        const startDate = dateRange.startDate instanceof Date ? dateRange.startDate : new Date(dateRange.startDate)
+        const endDate = dateRange.endDate instanceof Date ? dateRange.endDate : new Date(dateRange.endDate)
+
+        if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+          return 'Fechas inválidas'
+        }
+
+        const start = startDate.toLocaleDateString('es-ES', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        })
+        const end = endDate.toLocaleDateString('es-ES', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        })
+
+        return `${start} - ${end}`
+      } catch (error) {
+        console.warn('Error formateando rango de fechas:', error)
+        return 'Error en fechas'
+      }
     }
   }
 }
@@ -259,42 +431,6 @@ export default {
   border: 1px solid #e9ecef;
 }
 
-.stats-section {
-  margin-bottom: 2rem;
-}
-
-.stat-card {
-  background: #fff;
-  border: 1px solid #e9ecef;
-  border-radius: 8px;
-  padding: 1.5rem;
-  display: flex;
-  align-items: center;
-  transition: all 0.2s ease;
-}
-
-.stat-card:hover {
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  transform: translateY(-2px);
-}
-
-.stat-icon {
-  font-size: 2rem;
-  margin-right: 1rem;
-}
-
-.stat-content h4 {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 0.25rem;
-  color: #495057;
-}
-
-.stat-content p {
-  margin-bottom: 0;
-  color: #6c757d;
-  font-size: 0.9rem;
-}
 
 .activity-section {
   background: #fff;
@@ -303,24 +439,35 @@ export default {
   padding: 1.5rem;
 }
 
+.pagination-section {
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  padding: 1rem;
+}
+
+.pagination-info {
+  font-size: 0.9rem;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .filters-section {
     padding: 1rem;
   }
 
-  .stat-card {
-    padding: 1rem;
-    margin-bottom: 1rem;
+  .pagination-section .d-flex {
+    flex-direction: column;
+    gap: 1rem;
   }
 
-  .stat-icon {
-    font-size: 1.5rem;
-    margin-right: 0.75rem;
-  }
-
-  .stat-content h4 {
-    font-size: 1.5rem;
+  .pagination-controls {
+    justify-content: center;
   }
 }
 </style>

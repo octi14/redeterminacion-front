@@ -3,6 +3,7 @@ const UserActivityService = require('../service/userActivity')
 export const state = () => ({
   all: [],
   recent: [],
+  filtered: [],
   loading: false,
   error: null
 })
@@ -61,6 +62,23 @@ export const actions = {
 
   async refresh({ dispatch }) {
     await dispatch('getAll')
+  },
+
+  async getFiltered({ commit }, { startDate, endDate, limit = 50 }) {
+    try {
+      commit('setLoading', true)
+      commit('setError', null)
+      const activities = await UserActivityService.getFiltered(this.$axios, { startDate, endDate, limit })
+      commit('setFiltered', activities)
+      return activities
+    } catch (error) {
+      console.error('Error al cargar actividades filtradas:', error)
+      commit('setError', 'Error al cargar las actividades filtradas')
+      commit('setFiltered', [])
+      return []
+    } finally {
+      commit('setLoading', false)
+    }
   }
 }
 
@@ -71,6 +89,10 @@ export const mutations = {
 
   setRecent(state, activities) {
     state.recent = activities
+  },
+
+  setFiltered(state, activities) {
+    state.filtered = activities
   },
 
   setLoading(state, loading) {

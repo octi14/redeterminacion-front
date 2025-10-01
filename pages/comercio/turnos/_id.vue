@@ -2,7 +2,7 @@
   <div class="page main-background">
     <Banner title="Detalles de turno"/>
     <!-- Datos del solicitante -->
-    <template v-if="turno">
+    <template v-if="turno && (adminComercio || adminInspeccion)">
       <div class="text-center mt-3">
         <p class="h4"> Número de trámite: <b> {{ turno.nroTramite }}  </b></p>
         <h5> Tipo de trámite: <b> {{ tipoSolicitud }} </b></h5>
@@ -258,6 +258,9 @@ export default {
   computed: {
     adminInspeccion(){
       return this.$store.state.user.admin == "inspeccion" || this.$store.state.user.admin == "master"
+    },
+    adminComercio(){
+      return this.$store.state.user.admin == "comercio" || this.$store.state.user.admin == "master"
     }
   },
   methods: {

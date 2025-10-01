@@ -6,7 +6,7 @@
         <h4> Por favor espere unos segundos </h4>
       </div>
       <!-- Datos del solicitante -->
-      <template v-if="tramite">
+      <template v-if="tramite && adminArvige">
         <div class="flex col title-row" style="width: 96%">
           <div class="row justify-content-center mt-3">
             <p class="h5"> Número de legajo: <b> {{ tramite.nroLegajo }}  </b></p>
@@ -73,8 +73,8 @@
       }
     },
     computed: {
-      adminComercio(){
-        return this.$store.state.user.admin == "comercio" || this.$store.state.user.admin == "master"
+      adminArvige(){
+        return this.$store.state.user.admin == "arvige" || this.$store.state.user.admin == "master"
       },
       // facturas(){
       //   return this.$store.state.facturas.all

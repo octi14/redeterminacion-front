@@ -92,15 +92,24 @@
           </div>
         </div>
 
+        <!-- Main Content Row: Active Sessions (30%) + Activity Feed (70%) -->
+        <div class="row">
+          <!-- Active Sessions Column (30%) -->
+          <div class="col-lg-4 col-md-12 mb-4">
+            <ActiveSessions :activities="allActivities" />
+          </div>
 
-        <!-- Activity Feed -->
-        <div class="activity-section">
-          <UserActivityFeed
-            :limit="itemsPerPage"
-            :show-recent="showRecent"
-            :date-range="selectedDateRange"
-            :activities="paginatedActivities"
-          />
+          <!-- Activity Feed Column (70%) -->
+          <div class="col-lg-8 col-md-12">
+            <div class="activity-section">
+              <UserActivityFeed
+                :limit="itemsPerPage"
+                :show-recent="showRecent"
+                :date-range="selectedDateRange"
+                :activities="paginatedActivities"
+              />
+            </div>
+          </div>
         </div>
 
         <!-- Paginación -->
@@ -134,10 +143,14 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import ActiveSessions from '@/components/userActivity/ActiveSessions.vue'
 
 export default {
   name: 'ActividadesPage',
   middleware: 'authenticated',
+  components: {
+    ActiveSessions
+  },
 
   data() {
     return {
@@ -191,6 +204,11 @@ export default {
         { text: 'Inicio', to: '/' },
         { text: 'Actividades', active: true }
       ]
+    },
+
+    // Actividades completas para el componente de sesiones activas
+    allActivities() {
+      return this.all || []
     },
 
     // Obtener las actividades actuales (filtradas o no)

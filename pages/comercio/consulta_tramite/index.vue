@@ -302,6 +302,14 @@ export default {
       } else {
         try{
           const nroTramite = this.nroTramiteIngresado
+
+          // Registrar consulta anónima
+          await this.$logUserActivity(
+            'Usuario Anónimo',
+            'Consulta de Trámite',
+            `Consulta de trámite nro ${nroTramite}`
+          );
+
           await this.$store.dispatch('habilitaciones/getByNroTramite',  { nroTramite })
           if(this.$store.state.habilitaciones.single){
             const status = this.$store.state.habilitaciones.single.status

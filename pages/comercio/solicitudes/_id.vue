@@ -6,7 +6,7 @@
       <h4> Por favor espere unos segundos </h4>
     </div>
     <!-- Datos generales -->
-    <template v-if="habilitacion">
+    <template v-if="habilitacion && adminComercio">
       <div class="flex col" style="width: 96%">
         <div class="row justify-content-center mt-3">
           <p class="h5"> Número de trámite: <b> {{ habilitacion.nroTramite }}  </b></p>
@@ -133,7 +133,7 @@
       </b-card>
     </template>
         <!-- Datos del inmueble -->
-    <template v-if="habilitacion">
+    <template v-if="habilitacion && adminComercio">
       <div class="container col-md-6 col-sm-8 card shadow-card mt-4 mx-auto">
           <div class="col mx-auto">
             <div class="container text-center mx-auto">
@@ -264,7 +264,7 @@
       </div>
     </template>
     <!-- Documentación -->
-    <template v-if="habilitacion">
+    <template v-if="habilitacion && adminComercio">
       <div class="container col-md-6 col-sm-8 card shadow-card mt-4 mb-3 mx-auto">
         <!-- Resto del contenido del componente -->
         <div class="col mx-auto">
@@ -344,7 +344,7 @@
     </template>
 
     <!-- Turno (de existir) -->
-    <template v-if="habilitacion && turno">
+    <template v-if="habilitacion && turno && adminComercio">
       <div class="container col-md-6 col-sm-8 card shadow-card mt-4 mb-3 mx-auto">
         <!-- Resto del contenido del componente -->
         <div class="col mx-auto">

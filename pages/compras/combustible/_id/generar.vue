@@ -301,6 +301,13 @@ export default {
             userToken
           })
 
+          // Registrar actividad de creación de vehículo
+          await this.$logUserActivity(
+            this.$store.state.user.email,
+            'Crear Vehículo',
+            `Vehículo ${patente} creado en el área ${this.orden.area}`
+          );
+
           // Actualizar la lista de vehículos
           await this.cargarVehiculos()
 
@@ -378,6 +385,13 @@ export default {
 
       try {
         await this.$store.dispatch('combustible/generarVales', { payload });
+
+        // Registrar actividad de generación de vales
+        await this.$logUserActivity(
+          this.$store.state.user.email,
+          'Generar Vales',
+          `${this.form.cantidad} vales de ${this.form.combustible} generados para el vehículo ${this.form.patente}`
+        );
         this.loading = false
         this.$bvModal.show("confirmacionModal"); // Mostrar modal de confirmación
 

@@ -67,6 +67,21 @@ module.exports = {
     })
     return response.data
   },
+
+  getAll: async (axios) => {
+    try {
+      axios.setHeader('Access-Control-Allow-Origin', true)
+      const response = await axios.$get('/users')
+      return response.data.map(user => ({
+        id: user._id,
+        username: user.username,
+        admin: user.admin
+      }))
+    } catch (error) {
+      console.error('Error al obtener usuarios:', error)
+      return []
+    }
+  },
   // register: async (axios, { username, password }) => {
   //   const registerResponse = await axios.$post('/users/register', {
   //     username,

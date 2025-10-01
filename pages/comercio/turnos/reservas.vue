@@ -1,46 +1,49 @@
 <template>
   <div class="page main-background">
     <Banner title="Solicitudes de turnos" subtitle="Uso interno" />
-    <div class="row justify-content-center">
-      <b-form-group class="col-4 mx-auto mt-3" horizontal label-class="text-success">
-        <label for="selectedEstado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><b-icon-funnel-fill></b-icon-funnel-fill> Filtrar por Estado</label>
-          <b-form-select plain v-model="selectedEstado">
-          <option value="">Todos</option>
-          <option v-for="estado in estados" :value="estado" :key="estado">{{ estado }}</option>
-        </b-form-select>
-      </b-form-group>
+    <div v-if="adminComercio || adminInspeccion">
+      <div class="row justify-content-center">
+        <b-form-group class="col-4 mx-auto mt-3" horizontal label-class="text-success">
+          <label for="selectedEstado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><b-icon-funnel-fill></b-icon-funnel-fill> Filtrar por Estado</label>
+            <b-form-select plain v-model="selectedEstado">
+            <option value="">Todos</option>
+            <option v-for="estado in estados" :value="estado" :key="estado">{{ estado }}</option>
+          </b-form-select>
+        </b-form-group>
 
-      <b-form-group class="col-4 mx-auto mt-3" horizontal label-class="text-success">
-        <label for="selectedTipoTramite" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><b-icon-funnel-fill></b-icon-funnel-fill> Filtrar por Tipo de Trámite</label>
-          <b-form-select plain v-model="selectedTipoTramite">
-          <option value="">Todos</option>
-          <option v-for="tipo in tiposTramite" :value="tipo" :key="tipo">{{ tipo }}</option>
-        </b-form-select>
-      </b-form-group>
+        <b-form-group class="col-4 mx-auto mt-3" horizontal label-class="text-success">
+          <label for="selectedTipoTramite" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><b-icon-funnel-fill></b-icon-funnel-fill> Filtrar por Tipo de Trámite</label>
+            <b-form-select plain v-model="selectedTipoTramite">
+            <option value="">Todos</option>
+            <option v-for="tipo in tiposTramite" :value="tipo" :key="tipo">{{ tipo }}</option>
+          </b-form-select>
+        </b-form-group>
+      </div>
+
+      <b-form-checkbox class="text-center" v-model="hideFinalizados">Ocultar Inspeccionados/Cancelados</b-form-checkbox>
+
+      <b-table per-page="10" head-row-variant="primary" class="col-md-10 col-sm-8 mx-auto mt-4 shadow-card white" hover :items="paginatedItems" :fields="fields">
+        <template #cell(status)="row">
+          <div :class="row.item.estadoColor"><b>{{ row.value }}</b></div>
+        </template>
+        <!-- Plantilla personalizada para la columna "detalles" -->
+        <template #cell(detalles)="row">
+        <NuxtLink :to="{ name: 'comercio-turnos-id', params: { id: row.item.id } }" @click.native="registrarActividad('Abrir Turno', 'Turno nro: ' + row.item.nroTramite)">
+          <b-button variant="outline-secondary" size="sm" title="Editar" >
+            <b-icon-pen/>
+          </b-button>
+        </NuxtLink>
+        </template>
+        <template #cell(observaciones)="row">
+          <b-button v-if="row.item.observaciones != ''" @click="onShowObservaciones(row.item.id)" variant="outline-primary" size="sm" title="Observaciones">
+            <b-icon-eye/>
+          </b-button>
+        </template>
+      </b-table>
+
+      <b-pagination :total-rows="items.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
+
     </div>
-
-    <b-form-checkbox class="text-center" v-model="hideFinalizados">Ocultar Inspeccionados/Cancelados</b-form-checkbox>
-
-    <b-table per-page="10" head-row-variant="primary" class="col-md-10 col-sm-8 mx-auto mt-4 shadow-card white" hover :items="paginatedItems" :fields="fields">
-      <template #cell(status)="row">
-        <div :class="row.item.estadoColor"><b>{{ row.value }}</b></div>
-      </template>
-      <!-- Plantilla personalizada para la columna "detalles" -->
-      <template #cell(detalles)="row">
-      <NuxtLink :to="{ name: 'comercio-turnos-id', params: { id: row.item.id } }" @click.native="registrarActividad('Abrir Turno', 'Turno nro: ' + row.item.nroTramite)">
-        <b-button variant="outline-secondary" size="sm" title="Editar" >
-          <b-icon-pen/>
-        </b-button>
-      </NuxtLink>
-      </template>
-      <template #cell(observaciones)="row">
-        <b-button v-if="row.item.observaciones != ''" @click="onShowObservaciones(row.item.id)" variant="outline-primary" size="sm" title="Observaciones">
-          <b-icon-eye/>
-        </b-button>
-      </template>
-    </b-table>
-
-    <b-pagination :total-rows="items.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
 
     <b-modal v-model="singleModal" header-bg-variant="primary" :title="'Observaciones: Turno ' + nroObservaciones" title-class="text-light" hide-footer centered>
       <p> {{ singleContent }} </p>
@@ -166,6 +169,12 @@ export default{
         return estadoFiltered; // Sin filtro de tipo de trámite, mostrar todos los elementos
       }
     },
+    adminComercio(){
+      return this.$store.state.user.admin == "comercio" || this.$store.state.user.admin == "master"
+    },
+    adminInspeccion(){
+      return this.$store.state.user.admin == "inspeccion" || this.$store.state.user.admin == "master"
+    }
   },
   methods: {
     async registrarActividad(evento, result){

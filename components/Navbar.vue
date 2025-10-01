@@ -98,6 +98,16 @@
               Maestro
           </NuxtLink>
         </b-navbar-nav>
+        <b-navbar-nav v-if="adminMaster">
+          <NuxtLink
+            class="nav-link"
+            active-class="active"
+            to="/actividades"
+          >
+              <b-icon-list-task class="mr-1" />
+              Actividades
+          </NuxtLink>
+        </b-navbar-nav>
       </div>
       <b-navbar-nav class="ml-auto">
         <template v-if="isAuthenticated">
@@ -152,6 +162,9 @@ export default {
     userId() {
       return this.$store.state.user.id
     },
+    adminMaster(){
+      return this.$store.state.user.admin == "master"
+    }
   },
   methods: {
     async registrarActividad(evento, result){

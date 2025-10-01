@@ -62,7 +62,10 @@
               <b-form-input id="monto" v-model.number="form.monto" type="number" min="1" required></b-form-input>
             </b-form-group>
 
-            <b-button type="submit" variant="success" :disabled="!form.monto || !form.cantidad || !form.patente">Generar vales</b-button>
+            <b-button type="submit" variant="success" :disabled="!form.monto || !form.cantidad || !form.patente || loading">
+              <span v-if="loading">Generando...</span>
+              <span v-else>Generar vales</span>
+            </b-button>
           </b-form>
         </b-card-body>
       </b-card>
@@ -385,6 +388,7 @@ export default {
         this.form.patente = "";
       } catch (error) {
         console.error("Error al generar los vales:", error);
+        this.loading = false;
         alert("Hubo un error al generar los vales.");
       }
     },

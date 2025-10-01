@@ -98,7 +98,7 @@
           </div>
 
           <!-- Mostrar los enlaces a los vales -->
-          <div class="container justify-content-center mx-auto" v-if="vales && vales.length">
+          <div class="container justify-content-center mx-auto" v-if="paginatedVales && paginatedVales.length">
             <!-- Botones de utilización masiva -->
             <div class="row justify-content-center">
               <!-- Botón para reimprimir seleccionados -->
@@ -119,9 +119,34 @@
                 </button>
               </div>
             </div>
+
+            <!-- Paginador -->
+            <div class="row justify-content-center mt-4">
+              <div class="col-auto">
+                <b-pagination
+                  v-model="currentPage"
+                  :total-rows="vales.length"
+                  :per-page="itemsPerPage"
+                  class="mt-3"
+                  align="center"
+                  size="md"
+                  :hide-goto-end-buttons="true"
+                  :hide-ellipsis="true"
+                />
+              </div>
+            </div>
+            <!-- Información de rango de páginas -->
+            <div class="row justify-content-center mt-2">
+              <div class="col-auto">
+                <span class="text-muted">
+                  Mostrando vales {{ getPageRange().start }}-{{ getPageRange().end }} de {{ vales.length }}
+                </span>
+              </div>
+            </div>
+
             <!-- Cards de los vales -->
             <div class="row mx-4">
-              <div v-for="(vale, index) in vales" :key="index" class="col-md-6 mb-3">
+              <div v-for="(vale, index) in paginatedVales" :key="index" class="col-md-6 mb-3">
                 <b-card no-body class="border-card main-background shadow-card">
                   <div class="m-2">
                     <div class="row no-gutters align-items-center">
@@ -168,10 +193,6 @@
                 </b-card>
               </div>
             </div>
-
-
-            <!-- Paginador -->
-            <!-- <b-pagination v-model="currentPage" :total-rows="vales.length" :per-page="itemsPerPage" class="mt-5" align="center" size="sm"/> -->
           </div>
 
           <!-- Mensaje si no hay vales -->
@@ -357,7 +378,7 @@ export default {
     return {
       loading: false,
       currentPage: 1,
-      itemsPerPage: 6,
+      itemsPerPage: 100,
       modalEliminacion: false,
       modalEliminado: false,
       modalModificado: false,
@@ -391,13 +412,22 @@ export default {
       return this.$store.state.combustible.vales_creados
     },
     selectedVales() {
+      if (!this.vales || !Array.isArray(this.vales)) {
+        return [];
+      }
       return this.vales.filter(v => this.valesSeleccionados.includes(v.id));
     },
     paginatedVales() {
+      if (!this.vales || !Array.isArray(this.vales)) {
+        return [];
+      }
       const start = (this.currentPage - 1) * this.itemsPerPage;
       return this.vales.slice(start, start + this.itemsPerPage);
     },
     totalPages() {
+      if (!this.vales || !Array.isArray(this.vales)) {
+        return 0;
+      }
       return Math.ceil(this.vales.length / this.itemsPerPage);
     },
   },
@@ -754,6 +784,14 @@ export default {
     format(value) {
       if (!value) return "$0";
       return `$${value.toLocaleString('es-AR')}`;
+    },
+    getPageRange() {
+      if (!this.vales || !Array.isArray(this.vales)) {
+        return { start: 0, end: 0 };
+      }
+      const start = (this.currentPage - 1) * this.itemsPerPage + 1;
+      const end = Math.min(this.currentPage * this.itemsPerPage, this.vales.length);
+      return { start, end };
     },
   },
 }

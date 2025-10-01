@@ -45,7 +45,8 @@ export default {
         { to: "/normativa", icon: "receipt", title: "Normativa", type: "bootstrap-vue" },
         { to: "/modernizacion", icon: "list-ul", title: "Modernización", type: "bootstrap-vue" },
         { to: "/comercio", icon: "shop", title: "Comercio", type: "bootstrap-vue" },
-        { to: "/recaudaciones", icon: "cash-coin", title: "Recaudaciones", type: "bootstrap-vue" },
+        { to: "/recaudaciones", icon: "wallet", title: "Recaudaciones", type: "bootstrap-vue" },
+        { to: "https://arvige.gob.ar/lpagos", icon: "cash-coin", title: "Pagos", type: "bootstrap-vue" },
         // { to: "/transito", icon: "car-front", title: "Tránsito", type: "bootstrap-icons" }, // 🚗 Usa Bootstrap Icons
         // { to: "/compras", icon: "briefcase", title: "Compras", type: "bootstrap-vue" }
       ]

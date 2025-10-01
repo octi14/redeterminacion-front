@@ -1,5 +1,5 @@
 <template>
-  <div class="page main-background">
+  <div v-if="adminMaster || adminArvige" class="page main-background">
     <Banner title="Maestro comercial"/>
     <div class="form mx-auto mt-5">
       <b-form-group class="col-5 mx-6 mx-auto mt-4" label-class="text-success h6">
@@ -86,6 +86,12 @@ export default {
     },
     totalPages() {
       return Math.ceil(this.filteredItems.length / this.perPage);
+    },
+    adminMaster(){
+      return this.$store.state.user.admin == "master"
+    },
+    adminArvige(){
+      return this.$store.state.user.admin == "arvige" || this.$store.state.user.admin == "master"
     }
   },
   methods: {

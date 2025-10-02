@@ -102,6 +102,15 @@
           <NuxtLink
             class="nav-link"
             active-class="active"
+            to="/actividades"
+          >
+              <b-icon-list-task class="mr-1" />
+              Actividades
+          </NuxtLink>
+          <NuxtLink
+            class="nav-link"
+            active-class="active"
+
             to="/admin/dashboard"
           >
               Estadísticas
@@ -163,6 +172,9 @@ export default {
     userId() {
       return this.$store.state.user.id
     },
+    adminMaster(){
+      return this.$store.state.user.admin == "master"
+    }
   },
   methods: {
     async registrarActividad(evento, result){

@@ -43,7 +43,14 @@
             <h5 class="text-right text-gray font-weight-bold" style="font-size: 1.75rem; line-height: 1.5rem">{{ orden.proveedor }}</h5>
           </div>
           <div class="fuel-layout mt-5">.
-            <div class="fuel-container-h" v-for="(monto, index) in orden.montos" :key="index">
+            <div
+              class="fuel-container-h"
+              v-for="(monto, index) in orden.montos"
+              :key="index"
+              :class="{ 'fuel-container-selected': filtroTipoCombustible === monto.tipoCombustible }"
+              @click="filtrarPorTipoCombustible(monto.tipoCombustible)"
+              style="cursor: pointer; transition: all 0.3s ease;"
+            >
               <div class="fuel-icon-wrapper">
                 <!-- SVG de círculo completo -->
                 <div class="circular-progress-container" style="position: relative">
@@ -71,7 +78,7 @@
               </div>
               <div class="fuel-info-h">
                 <div class="fuel-title-h">
-                  <p>{{ monto.tipoCombustible.toUpperCase() }}</p>
+                  <p>{{ monto.tipoCombustible ? monto.tipoCombustible.toUpperCase() : 'Sin definir' }}</p>
                 </div>
                 <div class="fuel-saldos-h">
                   <p>Restante: <span :class="['text-color-' + index]">{{ format(orden.saldos[index].saldo) }}</span></p>
@@ -79,6 +86,7 @@
                 </div>
             </div>
           </div>
+
         </div>
         </div>
       </b-card>
@@ -98,7 +106,7 @@
           </div>
 
           <!-- Mostrar los enlaces a los vales -->
-          <div class="container justify-content-center mx-auto" v-if="vales && vales.length">
+          <div class="container justify-content-center mx-auto" v-if="paginatedVales && paginatedVales.length">
             <!-- Botones de utilización masiva -->
             <div class="row justify-content-center">
               <!-- Botón para reimprimir seleccionados -->
@@ -119,9 +127,37 @@
                 </button>
               </div>
             </div>
+
+            <!-- Paginador -->
+            <div class="row justify-content-center mt-4" v-if="getTotalValesFiltrados() > 0">
+              <div class="col-auto">
+                <b-pagination
+                  v-model="currentPage"
+                  :total-rows="getTotalValesFiltrados()"
+                  :per-page="itemsPerPage"
+                  class="mt-3"
+                  align="center"
+                  size="md"
+                  :hide-goto-end-buttons="true"
+                  :hide-ellipsis="true"
+                />
+              </div>
+            </div>
+            <!-- Información de rango de páginas -->
+            <div class="row justify-content-center mt-2" v-if="getTotalValesFiltrados() > 0">
+              <div class="col-auto">
+                <span class="text-muted">
+                  Mostrando vales {{ getPageRange().start }}-{{ getPageRange().end }} de {{ getTotalValesFiltrados() }}
+                  <span v-if="filtroTipoCombustible" class="text-primary">
+                    (filtrado por {{ filtroTipoCombustible }} - haz clic nuevamente para mostrar todos)
+                  </span>
+                </span>
+              </div>
+            </div>
+
             <!-- Cards de los vales -->
             <div class="row mx-4">
-              <div v-for="(vale, index) in vales" :key="index" class="col-md-6 mb-3">
+              <div v-for="(vale, index) in paginatedVales" :key="index" class="col-md-6 mb-3">
                 <b-card no-body class="border-card main-background shadow-card">
                   <div class="m-2">
                     <div class="row no-gutters align-items-center">
@@ -151,7 +187,7 @@
                         </div>
                         <p class="card-text ml-3 text-dark">Tipo de combustible: {{ vale.tipoCombustible }}</p>
                         <p class="card-text ml-3 text-dark">Importe: {{ format(vale.monto) }}</p>
-                        <p class="card-text ml-3 text-dark">Patente: {{ vale.dominio.toUpperCase() }}</p>
+                        <p class="card-text ml-3 text-dark">Patente: {{ vale.dominio ? vale.dominio.toUpperCase() : 'Sin patente' }}</p>
                         <p class="card-text ml-3 text-dark">Fecha de emisión: {{ new Date(vale.fechaEmision).toLocaleDateString('es-AR') }}</p>
                         <p class="card-text ml-3 text-dark">
                           Estado:
@@ -168,15 +204,17 @@
                 </b-card>
               </div>
             </div>
-
-
-            <!-- Paginador -->
-            <!-- <b-pagination v-model="currentPage" :total-rows="vales.length" :per-page="itemsPerPage" class="mt-5" align="center" size="sm"/> -->
           </div>
 
           <!-- Mensaje si no hay vales -->
           <div class="justify-content-center mx-auto" v-else>
-            <p class="h6 text-center my-5"> No hay vales emitidos para esta orden de compra. </p>
+            <p class="h6 text-center my-5" v-if="!filtroTipoCombustible">
+              No hay vales emitidos para esta orden de compra.
+            </p>
+            <div v-else class="text-center my-5">
+              <p class="h6 text-muted">No hay vales de {{ filtroTipoCombustible }} para esta orden.</p>
+              <p class="text-muted small">Haz clic en el tipo de combustible nuevamente para mostrar todos los vales.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -270,7 +308,9 @@
       <p class="h5 text-center mt-3 my-4 text-dark font-weight-500">¿Estás seguro/a de que querés eliminar los vales seleccionados?</p>
       <hr class="row col-9 mx-auto justify-content-center"/>
       <div class="row no-gutters justify-content-center">
-        <b-button variant="success" @click="eliminarValesSeleccionados">Aceptar</b-button>
+        <b-button variant="success" :disabled="eliminandoVales" @click="eliminarValesSeleccionados">
+          {{ eliminandoVales ? 'Eliminando...' : 'Aceptar' }}
+        </b-button>
         <b-button variant="danger" class="mx-2" @click="$bvModal.hide('modalEliminacionMasiva')">Cancelar</b-button>
       </div>
     </b-modal>
@@ -355,7 +395,7 @@ export default {
     return {
       loading: false,
       currentPage: 1,
-      itemsPerPage: 6,
+      itemsPerPage: 100,
       modalEliminacion: false,
       modalEliminado: false,
       modalModificado: false,
@@ -366,6 +406,8 @@ export default {
       observaciones: '',
       tempNroVale: null,
       tempValeRef: null,
+      eliminandoVales: false, // Control para deshabilitar botón de eliminar vales seleccionados
+      filtroTipoCombustible: null, // Filtro por tipo de combustible
     }
   },
   computed: {
@@ -388,14 +430,41 @@ export default {
       return this.$store.state.combustible.vales_creados
     },
     selectedVales() {
+      if (!this.vales || !Array.isArray(this.vales)) {
+        return [];
+      }
       return this.vales.filter(v => this.valesSeleccionados.includes(v.id));
     },
     paginatedVales() {
+      if (!this.vales || !Array.isArray(this.vales)) {
+        return [];
+      }
+
+      // Filtrar por tipo de combustible si está seleccionado
+      let valesFiltrados = this.vales;
+      if (this.filtroTipoCombustible) {
+        valesFiltrados = this.vales.filter(vale =>
+          vale.tipoCombustible === this.filtroTipoCombustible
+        );
+      }
+
       const start = (this.currentPage - 1) * this.itemsPerPage;
-      return this.vales.slice(start, start + this.itemsPerPage);
+      return valesFiltrados.slice(start, start + this.itemsPerPage);
     },
     totalPages() {
-      return Math.ceil(this.vales.length / this.itemsPerPage);
+      if (!this.vales || !Array.isArray(this.vales)) {
+        return 0;
+      }
+
+      // Usar vales filtrados para calcular total de páginas
+      let valesFiltrados = this.vales;
+      if (this.filtroTipoCombustible) {
+        valesFiltrados = this.vales.filter(vale =>
+          vale.tipoCombustible === this.filtroTipoCombustible
+        );
+      }
+
+      return Math.ceil(valesFiltrados.length / this.itemsPerPage);
     },
   },
   async fetch() {
@@ -630,6 +699,8 @@ export default {
     async eliminarValesSeleccionados(){
       if (this.valesSeleccionados.length === 0) return;
 
+      this.eliminandoVales = true; // Deshabilitar botón
+
       for (let i = 0; i < this.valesSeleccionados.length; i++) {
         try {
           const id = this.valesSeleccionados[i];
@@ -641,6 +712,10 @@ export default {
           alert('No se pudieron eliminar todos los vales. Hubo un problema con alguno de ellos')
         }
       }
+
+      // Resetear estado del botón
+      this.eliminandoVales = false;
+
       this.$bvModal.hide('modalEliminacionMasiva')
       this.$bvModal.show('modalEliminadoMasivo')
     },
@@ -673,6 +748,13 @@ export default {
           // Hacer la petición al backend para eliminar el vale
           await this.$store.dispatch("combustible/consumirVale", { id, vale });
 
+          // Registrar actividad de uso de vale
+          await this.$logUserActivity(
+            this.$store.state.user.email,
+            'Marcar Vale como Utilizado',
+            `Vale ${this.tempValeRef.nro_vale} marcado como utilizado`
+          );
+
           // Eliminar el vale de la lista en el frontend
           this.vales = this.vales.filter(v => v._id !== this.valeSeleccionado);
 
@@ -701,6 +783,13 @@ export default {
         alert("Ocurrió un error al eliminar el vale. Revisa la consola para más detalles.");
         }
       }
+
+      // Registrar actividad de uso masivo de vales
+      await this.$logUserActivity(
+        this.$store.state.user.email,
+        'Marcar Vales como Utilizados',
+        `${this.valesSeleccionados.length} vales marcados como utilizados`
+      );
       await this.wait(500)
       this.$bvModal.hide('modalUtilizacionMasiva')
       location.reload()
@@ -715,6 +804,7 @@ export default {
       this.$bvModal.show('modalUtilizacionMasiva');
     },
     abrirModalEliminacionMasiva() {
+      this.eliminandoVales = false; // Resetear estado al abrir modal
       this.$bvModal.show('modalEliminacionMasiva');
     },
     //Métodos de sistema
@@ -744,6 +834,54 @@ export default {
     format(value) {
       if (!value) return "$0";
       return `$${value.toLocaleString('es-AR')}`;
+    },
+    getPageRange() {
+      if (!this.vales || !Array.isArray(this.vales)) {
+        return { start: 0, end: 0 };
+      }
+
+      // Usar vales filtrados para calcular el rango
+      let valesFiltrados = this.vales;
+      if (this.filtroTipoCombustible) {
+        valesFiltrados = this.vales.filter(vale =>
+          vale.tipoCombustible === this.filtroTipoCombustible
+        );
+      }
+
+      const start = (this.currentPage - 1) * this.itemsPerPage + 1;
+      const end = Math.min(this.currentPage * this.itemsPerPage, valesFiltrados.length);
+      return { start, end };
+    },
+
+    getTotalValesFiltrados() {
+      if (!this.vales || !Array.isArray(this.vales)) {
+        return 0;
+      }
+
+      if (this.filtroTipoCombustible) {
+        const valesFiltrados = this.vales.filter(vale =>
+          vale.tipoCombustible === this.filtroTipoCombustible
+        );
+        return valesFiltrados.length;
+      }
+
+      return this.vales.length;
+    },
+
+    filtrarPorTipoCombustible(tipoCombustible) {
+      // Si ya está seleccionado el mismo tipo, desactivar el filtro
+      if (this.filtroTipoCombustible === tipoCombustible) {
+        this.filtroTipoCombustible = null;
+      } else {
+        // Si es un tipo diferente, aplicar el filtro
+        this.filtroTipoCombustible = tipoCombustible;
+      }
+      this.currentPage = 1; // Resetear a la primera página
+    },
+
+    limpiarFiltroCombustible() {
+      this.filtroTipoCombustible = null;
+      this.currentPage = 1; // Resetear a la primera página
     },
   },
 }
@@ -873,6 +1011,25 @@ export default {
   padding: 2rem 1rem;
   margin: auto;
   margin-bottom: 2rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.fuel-container-h:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.fuel-container-selected {
+  background: #e3f2fd !important;
+  border-color: #2196f3 !important;
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3) !important;
+  transform: translateY(-2px);
+}
+
+.fuel-container-selected .fuel-title-h p {
+  color: #1976d2;
+  font-weight: bold;
 }
 
 .fuel-icon-wrapper {

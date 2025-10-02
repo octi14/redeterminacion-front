@@ -276,11 +276,11 @@ const calcularEstadisticasCombustible = (ordenes, vales) => {
     }))
   })
 
-  // Calcular saldo restante desde las órdenes de compra
-  let saldoRestanteVales = ordenes.reduce((total, orden) => {
+  // Usar directamente el saldo restante de las órdenes (ya calculado por el backend)
+  const saldoRestanteVales = ordenes.reduce((total, orden) => {
     if (Array.isArray(orden.saldos)) {
       const saldoOrden = orden.saldos.reduce((sum, saldo) => {
-        // Manejar diferentes estructuras posibles: saldo.saldo o directamente saldo
+        // El saldo ya viene calculado por el backend (monto original - vales emitidos)
         const valorSaldo = saldo?.saldo || saldo || 0
         return sum + (parseFloat(valorSaldo) || 0)
       }, 0)
@@ -289,20 +289,19 @@ const calcularEstadisticasCombustible = (ordenes, vales) => {
     return total
   }, 0)
 
-  // Determinar qué método se usó para el cálculo
-  let metodoCalculoSaldo = 'ordenes'
-  let saldoDesdeOrdenes = saldoRestanteVales
+  // Método de cálculo: saldo restante directo de órdenes
+  const metodoCalculoSaldo = 'saldo_restante_ordenes'
+  const saldoDesdeOrdenes = saldoRestanteVales
 
-  // Si no hay saldo desde órdenes, usar vales no consumidos como fallback
-  if (saldoRestanteVales === 0) {
-    saldoRestanteVales = vales
-      .filter(vale => !esValeConsumido(vale))
-      .reduce((total, vale) => total + (parseFloat(vale.monto) || 0), 0)
-    metodoCalculoSaldo = 'vales'
-    console.log('⚠️ Saldo calculado usando método FALLBACK (vales disponibles):', saldoRestanteVales)
-  } else {
-    console.log('✅ Saldo calculado usando método NUEVO (órdenes de compra):', saldoRestanteVales)
-  }
+  console.log('✅ Saldo restante calculado directamente desde órdenes:', {
+    saldoRestanteVales,
+    ordenesCount: ordenes.length,
+    ordenesSample: ordenes.slice(0, 2).map(o => ({
+      id: o.id,
+      nroOrden: o.nroOrden,
+      saldos: o.saldos
+    }))
+  })
 
   // Calcular valor promedio de vales
   const valorPromedioVale = totalVales > 0
@@ -397,7 +396,8 @@ const calcularEstadisticasCombustible = (ordenes, vales) => {
         consumidos: 0,
         disponibles: 0,
         montoTotal: 0,
-        montoDisponible: 0
+        montoDisponible: 0,
+        saldoRestante: 0
       }
     }
 
@@ -415,6 +415,26 @@ const calcularEstadisticasCombustible = (ordenes, vales) => {
     }
     return acc
   }, {})
+
+  // Calcular saldo restante por área usando directamente el saldo restante de las órdenes
+  Object.keys(porArea).forEach(area => {
+    // Usar directamente el saldo restante de las órdenes para esta área
+    const saldoRestanteArea = ordenes
+      .filter(orden => orden.area === area)
+      .reduce((total, orden) => {
+        if (Array.isArray(orden.saldos)) {
+          const saldoOrden = orden.saldos.reduce((sum, saldo) => {
+            // El saldo ya viene calculado por el backend
+            const valorSaldo = saldo?.saldo || saldo || 0
+            return sum + (parseFloat(valorSaldo) || 0)
+          }, 0)
+          return total + saldoOrden
+        }
+        return total
+      }, 0)
+
+    porArea[area].saldoRestante = saldoRestanteArea
+  })
 
   return {
     // Estadísticas de órdenes (existentes)
@@ -902,7 +922,9 @@ const calcularEstadisticasDetalladas = (items, tipo, valesCombustible = [], cert
       montoPromedioOrden: estadisticasCombustible.montoPromedioOrden,
       fechaInicioEmisionVales: estadisticasCombustible.fechaInicioEmisionVales,
       porTipoCombustible: estadisticasCombustible.porTipoCombustible,
-      porAreaVales: estadisticasCombustible.porAreaVales
+      porAreaVales: estadisticasCombustible.porAreaVales,
+      // Incluir vales individuales para el componente de patentes
+      vales: valesCombustible
     }
   } else if (tipo === 'abiertoAnual') {
     // Estadísticas específicas para abierto anual
@@ -1061,11 +1083,11 @@ const calcularEstadisticasDetalladas = (items, tipo, valesCombustible = [], cert
     })
 
 
-    // Análisis específicos solicitados
-    let rechazoCategoriaPeroCargoPeriodo2 = 0
+    // Análisis específicos solicitados (actualizados para tercer período)
+    let rechazoCategoriaPeroCargaronPosteriormente = 0
     let noPudieronCargarFueraTermino = 0
-    let cargaronPeriodo1NoPeriodo2 = 0
-    let llegaronTardePeriodo1PeroSubieronDespues = 0
+    let cargaronPeriodo1NoPeriodosPosteriores = 0
+    let llegaronTardePeriodo1PeroSubieronPosteriormente = 0
     let llegaronATiempoPeroNoSubieron = {
       'Período 1 (Mayo)': 0,
       'Período 2 (Agosto)': 0,
@@ -1081,15 +1103,29 @@ const calcularEstadisticasDetalladas = (items, tipo, valesCombustible = [], cert
 
     items.forEach(item => {
       if (Array.isArray(item.status)) {
-        // 1. Su primer período fue rechazado por cambio de categoría tributaria, pero igual cargaron una factura en el segundo período
-        if (item.status[0] === 'Incorrecto' &&
-            item.facturas &&
-            item.facturas[0] &&
-            (item.facturas[0].observaciones === 'El contribuyente cambió de categoría tributaria.' ||
-             item.facturas[0].observaciones === 'El contribuyente cambió de categoría tirbutaria.') &&
-            item.status[1] &&
-            item.status[1] !== 'Incompleto') {
-          rechazoCategoriaPeroCargoPeriodo2++
+        // 1. Rechazados por cambio de categoría pero cargaron posteriormente
+        // Verificar si fue rechazado en período 1 o 2 por cambio de categoría
+        const rechazadoPorCategoriaPeriodo1 = item.status[0] === 'Incorrecto' &&
+          item.facturas &&
+          item.facturas[0] &&
+          (item.facturas[0].observaciones === 'El contribuyente cambió de categoría tributaria.' ||
+           item.facturas[0].observaciones === 'El contribuyente cambió de categoría tirbutaria.')
+
+        const rechazadoPorCategoriaPeriodo2 = item.status[1] === 'Incorrecto' &&
+          item.facturas &&
+          item.facturas[1] &&
+          (item.facturas[1].observaciones === 'El contribuyente cambió de categoría tributaria.' ||
+           item.facturas[1].observaciones === 'El contribuyente cambió de categoría tirbutaria.')
+
+        // Si fue rechazado por cambio de categoría en período 1 o 2, pero cargó en períodos posteriores
+        if ((rechazadoPorCategoriaPeriodo1 || rechazadoPorCategoriaPeriodo2)) {
+          // Verificar si cargó en algún período posterior al rechazo
+          const cargoPosteriormente = (rechazadoPorCategoriaPeriodo1 && (item.status[1] !== 'Incompleto' || item.status[2] !== 'Incompleto')) ||
+                                    (rechazadoPorCategoriaPeriodo2 && item.status[2] !== 'Incompleto')
+
+          if (cargoPosteriormente) {
+            rechazoCategoriaPeroCargaronPosteriormente++
+          }
         }
 
         // 2. No pudieron cargar facturas en algún período por haber creado su cuenta fuera de término
@@ -1125,13 +1161,13 @@ const calcularEstadisticasDetalladas = (items, tipo, valesCombustible = [], cert
           }
         }
 
-        // 3. Cargaron algo en el período 1, fue aprobado y aún así no subieron nada al período 2
+        // 3. Cargaron en período 1 pero no en períodos posteriores
         if (item.status[0] === 'Correcto' &&
-            item.status[1] === 'Incompleto') {
-          cargaronPeriodo1NoPeriodo2++
+            (item.status[1] === 'Incompleto' && item.status[2] === 'Incompleto')) {
+          cargaronPeriodo1NoPeriodosPosteriores++
         }
 
-        // 4. Llegaron tarde al primer período pero subieron algo en períodos posteriores
+        // 4. Llegaron tarde al período 1 pero subieron en períodos posteriores (incluye período 3)
         const fechaCreacion2 = parsearFechaSegura(item.createdAt)
         if (fechaCreacion2) {
           const añoActual = new Date().getFullYear()
@@ -1142,7 +1178,7 @@ const calcularEstadisticasDetalladas = (items, tipo, valesCombustible = [], cert
             // Verificar si subió algo en períodos posteriores (período 2 o 3)
             const subioEnPeriodosPosteriores = item.status[1] !== 'Incompleto' || item.status[2] !== 'Incompleto'
             if (subioEnPeriodosPosteriores) {
-              llegaronTardePeriodo1PeroSubieronDespues++
+              llegaronTardePeriodo1PeroSubieronPosteriormente++
             }
           }
         }
@@ -1199,13 +1235,57 @@ const calcularEstadisticasDetalladas = (items, tipo, valesCombustible = [], cert
       })).sort((a, b) => a.periodo.localeCompare(b.periodo)),
       rechazosPorMotivoYPeriodo: rechazosPorMotivoYPeriodo,
       analisisEspecificos: {
-        rechazoCategoriaPeroCargoPeriodo2,
+        rechazoCategoriaPeroCargaronPosteriormente,
         noPudieronCargarFueraTermino,
-        cargaronPeriodo1NoPeriodo2,
-        llegaronTardePeriodo1PeroSubieronDespues,
+        cargaronPeriodo1NoPeriodosPosteriores,
+        llegaronTardePeriodo1PeroSubieronPosteriormente,
         llegaronTardePorPeriodo: llegaronTardePorPeriodo,
         llegaronATiempoPeroNoSubieron: llegaronATiempoPeroNoSubieron
       }
+    }
+  } else if (tipo === 'indices') {
+    console.log('🔍 Debug índices en calcularEstadisticasDetalladas:', {
+      itemsCount: items.length,
+      itemsSample: items.slice(0, 2)
+    })
+
+    // Calcular evolución temporal de índices
+    const evolucionTemporal = {}
+
+    // Agrupar índices por categoría
+    items.forEach(indice => {
+      const categoria = indice.categoria || 'sin_categoria'
+      if (!evolucionTemporal[categoria]) {
+        evolucionTemporal[categoria] = []
+      }
+
+      evolucionTemporal[categoria].push({
+        año: indice.año,
+        mes: indice.mes,
+        valor: parseFloat(indice.valor) || 0,
+        periodo: `${indice.año}-${String(indice.mes).padStart(2, '0')}`
+      })
+    })
+
+    // Ordenar cada categoría por año y mes
+    Object.keys(evolucionTemporal).forEach(categoria => {
+      evolucionTemporal[categoria].sort((a, b) => {
+        if (a.año !== b.año) return a.año - b.año
+        return a.mes - b.mes
+      })
+    })
+
+    console.log('✅ Evolución temporal calculada:', {
+      categorias: Object.keys(evolucionTemporal),
+      totalIndices: items.length,
+      evolucionSample: Object.keys(evolucionTemporal).slice(0, 2).reduce((acc, cat) => {
+        acc[cat] = evolucionTemporal[cat].slice(0, 3)
+        return acc
+      }, {})
+    })
+
+    estadisticasEspecificas = {
+      evolucionTemporal
     }
   }
 

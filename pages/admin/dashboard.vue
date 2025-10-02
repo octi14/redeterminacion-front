@@ -1,6 +1,6 @@
 <template>
   <div class="page dashboard-container">
-    <div class="container-fluid py-4 mt-5" v-if="adminMaster">
+    <div class="container-fluid py-4 mt-4" v-if="adminMaster">
       <!-- Header del Dashboard -->
       <div class="dashboard-header fade-in">
         <div class="d-flex justify-content-between align-items-center">
@@ -43,10 +43,10 @@
     </b-alert>
 
     <!-- Información sobre datos disponibles -->
-    <b-alert variant="info" dismissible class="mb-4">
+    <b-alert variant="info" dismissible class="mb-4" show>
       <i class="bi bi-info-circle-fill mr-2"></i>
       <strong>Información:</strong> Este dashboard muestra estadísticas reales obtenidas de los endpoints existentes.
-      Algunos datos como información de usuarios y documentos S3 requieren endpoints adicionales en el backend.
+      Algunos datos como información de documentos S3 requieren endpoints adicionales en el backend.
     </b-alert>
 
     <!-- Selector de Rango de Fechas -->
@@ -105,6 +105,7 @@
       <DashboardTabs
         :modulos="estadisticasModulos"
         :estadisticas-usuarios="estadisticasUsuarios"
+        :vehiculos="vehiculos"
         :date-range="selectedDateRange"
       />
     </div>
@@ -139,6 +140,9 @@ export default {
     estadisticasUsuarios() {
       return this.$store.state.estadisticas.estadisticasUsuarios
     },
+    vehiculos() {
+      return this.$store.state.vehiculos.all || []
+    },
     adminMaster() {
       return this.$store.state.user.admin === 'master'
     }
@@ -151,6 +155,7 @@ export default {
     async cargarDatos() {
       try {
         await this.$store.dispatch('estadisticas/fetchAllEstadisticas')
+        await this.$store.dispatch('vehiculos/getAll')
       } catch (error) {
         this.error = 'Error al cargar las estadísticas. Verifique la conexión con el servidor.'
         console.error('Error cargando estadísticas:', error)

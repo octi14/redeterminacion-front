@@ -27,48 +27,6 @@
       </b-col>
     </b-row>
 
-    <!-- Resumen de Períodos -->
-    <b-row>
-      <b-col md="12" class="mb-4">
-        <b-card class="h-100">
-          <template #header>
-            <h6 class="mb-0">
-              <i class="bi bi-calendar-range-fill mr-2"></i>
-              Resumen por Período
-            </h6>
-          </template>
-
-          <div v-if="periodos.length > 0" class="periodo-summary">
-            <div v-for="periodo in periodos" :key="periodo.periodo" class="periodo-item mb-3">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <h6 class="mb-0 text-primary">{{ periodo.periodo }}</h6>
-                <span class="badge badge-info">{{ periodo.total }} total</span>
-              </div>
-              <div class="d-flex justify-content-between">
-                <span class="text-success">
-                  <i class="bi bi-check-circle-fill mr-1"></i>
-                  Con facturas: {{ periodo.conFacturas }}
-                </span>
-                <span class="text-danger">
-                  <i class="bi bi-x-circle-fill mr-1"></i>
-                  Sin facturas: {{ periodo.sinFacturas }}
-                </span>
-              </div>
-              <div class="progress mt-2" style="height: 8px;">
-                <div
-                  class="progress-bar bg-success"
-                  :style="{ width: (periodo.conFacturas / periodo.total * 100) + '%' }"
-                ></div>
-              </div>
-            </div>
-          </div>
-          <div v-else class="text-center text-muted py-4">
-            <i class="bi bi-graph-down display-4"></i>
-            <p class="mt-2">No hay datos disponibles</p>
-          </div>
-        </b-card>
-      </b-col>
-    </b-row>
 
     <!-- Análisis de Rechazos por Motivo y Período -->
     <b-row>
@@ -139,11 +97,11 @@
               <div class="d-flex align-items-center">
                 <i class="bi bi-arrow-clockwise text-primary mr-3" style="font-size: 1.5rem;"></i>
                 <div>
-                  <h6 class="mb-1 text-primary">Rechazados por cambio de categoría pero cargaron en período 2</h6>
-                  <p class="mb-0 text-muted">Contribuyentes que fueron rechazados en el primer período por cambio de categoría tributaria, pero igual cargaron facturas en el segundo período.</p>
+                  <h6 class="mb-1 text-primary">Rechazados por cambio de categoría pero cargaron posteriormente</h6>
+                  <p class="mb-0 text-muted">Contribuyentes que fueron rechazados en el primer período o el segundo por cambio de categoría tributaria, pero igual cargaron facturas en períodos siguientes.</p>
                 </div>
                 <div class="ml-auto">
-                  <span class="badge badge-primary badge-lg">{{ analisisEspecificos.rechazoCategoriaPeroCargoPeriodo2 }}</span>
+                  <span class="badge badge-primary badge-lg">{{ analisisEspecificos.rechazoCategoriaPeroCargaronPosteriormente }}</span>
                 </div>
               </div>
             </div>
@@ -165,11 +123,11 @@
               <div class="d-flex align-items-center">
                 <i class="bi bi-pause-circle text-danger mr-3" style="font-size: 1.5rem;"></i>
                 <div>
-                  <h6 class="mb-1 text-danger">Cargaron en período 1 pero no en período 2</h6>
-                  <p class="mb-0 text-muted">Contribuyentes que cargaron y fueron aprobados en el primer período, pero no subieron nada en el segundo período.</p>
+                  <h6 class="mb-1 text-danger">Cargaron en período 1 pero no en períodos posteriores</h6>
+                  <p class="mb-0 text-muted">Contribuyentes que cargaron y fueron aprobados en el primer período, pero no subieron nada en los períodos posteriores.</p>
                 </div>
                 <div class="ml-auto">
-                  <span class="badge badge-danger badge-lg">{{ analisisEspecificos.cargaronPeriodo1NoPeriodo2 }}</span>
+                  <span class="badge badge-danger badge-lg">{{ analisisEspecificos.cargaronPeriodo1NoPeriodosPosteriores }}</span>
                 </div>
               </div>
             </div>
@@ -178,11 +136,11 @@
               <div class="d-flex align-items-center">
                 <i class="bi bi-arrow-right-circle text-success mr-3" style="font-size: 1.5rem;"></i>
                 <div>
-                  <h6 class="mb-1 text-success">Llegaron tarde al período 1 pero subieron después</h6>
+                  <h6 class="mb-1 text-success">Llegaron tarde al período 1 pero subieron en períodos posteriores</h6>
                   <p class="mb-0 text-muted">Contribuyentes que crearon su cuenta después del cierre del primer período, pero igual subieron facturas en períodos posteriores.</p>
                 </div>
                 <div class="ml-auto">
-                  <span class="badge badge-success badge-lg">{{ analisisEspecificos.llegaronTardePeriodo1PeroSubieronDespues }}</span>
+                  <span class="badge badge-success badge-lg">{{ analisisEspecificos.llegaronTardePeriodo1PeroSubieronPosteriormente }}</span>
                 </div>
               </div>
             </div>

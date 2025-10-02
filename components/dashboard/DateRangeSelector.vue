@@ -142,7 +142,8 @@ export default {
     }
   },
   mounted() {
-    this.initializeDefaultRange()
+    // No inicializar ningún rango por defecto - mostrar todos los datos sin filtros
+    // this.initializeDefaultRange()
   },
   methods: {
     initializeDefaultRange() {

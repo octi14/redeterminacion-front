@@ -5,7 +5,6 @@
         <i class="bi bi-car-front-fill mr-2"></i>
         Consumo por Patente
       </h4>
-      <p class="section-subtitle">Top 10 vehículos con mayor consumo de combustible</p>
     </div>
 
     <!-- Resumen General -->
@@ -39,7 +38,7 @@
                 </div>
                 <div class="stat-content">
                   <h3 class="stat-number">{{ totalVales }}</h3>
-                  <p class="stat-label">Vales Consumidos</p>
+                  <p class="stat-label">Vales Emitidos</p>
                 </div>
               </div>
             </div>
@@ -51,7 +50,7 @@
                 </div>
                 <div class="stat-content">
                   <h3 class="stat-number">{{ formatCurrency(totalMonto) }}</h3>
-                  <p class="stat-label">Monto Total Consumido</p>
+                  <p class="stat-label">Monto Total Emitido</p>
                 </div>
               </div>
             </div>
@@ -79,7 +78,7 @@
           <template #header>
             <div class="d-flex align-items-center">
               <i class="bi bi-bar-chart-fill text-success mr-2"></i>
-              <h5 class="mb-0">Consumo por Patente</h5>
+              <h5 class="mb-0">Emisión por Patente</h5>
             </div>
           </template>
 
@@ -143,10 +142,10 @@
               <thead class="table-header">
                 <tr>
                   <th>Patente</th>
-                  <th>Vales Consumidos</th>
+                  <th>Vales Emitidos</th>
                   <th>Monto Total</th>
                   <th>Promedio por Vale</th>
-                  <th>Último Consumo</th>
+                  <th>Última Emisión</th>
                 </tr>
               </thead>
               <tbody>
@@ -154,11 +153,12 @@
                   v-for="patente in filteredPatentes"
                   :key="patente.dominio"
                   class="table-row"
+                  :class="{ 'sin-patente-row': patente.dominio === 'SIN PATENTE ASIGNADA' }"
                 >
                   <td class="patente-name">
                     <div class="d-flex align-items-center">
                       <div class="patente-icon">
-                        <i class="bi bi-car-front"></i>
+                        <i :class="patente.dominio === 'SIN PATENTE ASIGNADA' ? 'bi bi-question-circle' : 'bi bi-car-front'"></i>
                       </div>
                       <span class="font-weight-bold">{{ patente.dominio }}</span>
                     </div>
@@ -173,7 +173,7 @@
                     {{ formatCurrency(patente.promedioPorVale) }}
                   </td>
                   <td class="text-center">
-                    <span class="text-muted">{{ formatDate(patente.ultimoConsumo) }}</span>
+                    <span class="text-muted">{{ formatDate(patente.ultimaEmision) }}</span>
                   </td>
                 </tr>
               </tbody>
@@ -213,17 +213,17 @@ export default {
         return []
       }
 
-      const valesConsumidos = this.datosCombustible.vales.filter(vale =>
-        vale.consumido && vale.dominio && !vale.anulado
+      const valesEmitidos = this.datosCombustible.vales.filter(vale =>
+        !vale.anulado
       )
 
-      console.log('📊 Vales consumidos encontrados:', valesConsumidos.length)
+      console.log('📊 Vales emitidos (no anulados) encontrados:', valesEmitidos.length)
 
-      // Agrupar por patente
+      // Agrupar por patente (incluyendo vales sin patente)
       const patentesMap = new Map()
 
-      valesConsumidos.forEach(vale => {
-        const dominio = vale.dominio
+      valesEmitidos.forEach(vale => {
+        const dominio = vale.dominio || 'SIN PATENTE ASIGNADA'
         if (!patentesMap.has(dominio)) {
           patentesMap.set(dominio, {
             dominio,
@@ -245,14 +245,14 @@ export default {
           ? patente.montoTotal / patente.totalVales
           : 0
 
-        const ultimoConsumo = patente.fechasConsumo.length > 0
+        const ultimaEmision = patente.fechasConsumo.length > 0
           ? new Date(Math.max(...patente.fechasConsumo.map(d => d.getTime())))
           : null
 
         return {
           ...patente,
           promedioPorVale,
-          ultimoConsumo
+          ultimaEmision
         }
       }).sort((a, b) => b.montoTotal - a.montoTotal)
 
@@ -310,7 +310,7 @@ export default {
         data: {
           labels: labels,
           datasets: [{
-            label: 'Monto Consumido',
+            label: 'Monto Emitido',
             data: data,
             backgroundColor: 'rgba(54, 162, 235, 0.6)',
             borderColor: 'rgba(54, 162, 235, 1)',
@@ -381,7 +381,7 @@ export default {
     },
     formatCurrency(value) {
       if (!value) return "$0"
-      return `$${value.toLocaleString('es-AR')}`
+      return `$${value.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
     },
     formatDate(date) {
       if (!date) return 'N/A'
@@ -576,6 +576,20 @@ export default {
 .badge {
   font-size: 0.8rem;
   padding: 0.4rem 0.6rem;
+}
+
+.sin-patente-row {
+  background-color: #fff3cd !important;
+  border-left: 4px solid #ffc107;
+}
+
+.sin-patente-row:hover {
+  background-color: #ffeaa7 !important;
+}
+
+.sin-patente-row .patente-icon {
+  background: #ffc107 !important;
+  color: #856404 !important;
 }
 
 @media (max-width: 768px) {

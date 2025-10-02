@@ -165,6 +165,26 @@
         </b-tab>
 
 
+        <!-- Pestaña Vehículos -->
+        <b-tab title-link-class="tab-link-vehiculos">
+          <template #title>
+            <i class="bi bi-car-front-fill mr-2"></i>
+            <span class="d-none d-md-inline">Vehículos</span>
+            <b-badge v-if="vehiculos?.length" variant="secondary" class="ml-2">
+              {{ vehiculos.length }}
+            </b-badge>
+          </template>
+
+          <div class="tab-content-vehiculos">
+            <!-- Estadísticas de Vehículos -->
+            <div class="row mb-4">
+              <div class="col-12">
+                <EstadisticasVehiculos :vehiculos="vehiculos || []" />
+              </div>
+            </div>
+          </div>
+        </b-tab>
+
         <!-- Pestaña Usuarios -->
         <b-tab title-link-class="tab-link-usuarios">
           <template #title>
@@ -293,6 +313,7 @@ import GraficosAbiertoAnual from '~/components/dashboard/GraficosAbiertoAnual.vu
 import GraficoIndices from '~/components/dashboard/GraficoIndices.vue'
 import CombustiblePorArea from '~/components/dashboard/CombustiblePorArea.vue'
 import EstadisticasPorPatente from '~/components/dashboard/EstadisticasPorPatente.vue'
+import EstadisticasVehiculos from '~/components/dashboard/EstadisticasVehiculos.vue'
 
 export default {
   name: 'DashboardTabs',
@@ -302,7 +323,8 @@ export default {
     GraficosAbiertoAnual,
     GraficoIndices,
     CombustiblePorArea,
-    EstadisticasPorPatente
+    EstadisticasPorPatente,
+    EstadisticasVehiculos
   },
   props: {
     modulos: {
@@ -312,6 +334,10 @@ export default {
     estadisticasUsuarios: {
       type: Object,
       default: () => ({})
+    },
+    vehiculos: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -393,6 +419,12 @@ export default {
 }
 
 
+.tab-link-vehiculos.active {
+  background: linear-gradient(135deg, #6c757d 0%, #495057 100%) !important;
+  border-color: #6c757d !important;
+  box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3) !important;
+}
+
 .tab-link-usuarios.active {
   background: linear-gradient(135deg, #343a40 0%, #23272b 100%) !important;
   border-color: #343a40 !important;
@@ -406,6 +438,7 @@ export default {
 .tab-content-recaudaciones,
 .tab-content-combustible,
 .tab-content-turnos,
+.tab-content-vehiculos,
 .tab-content-usuarios {
   animation: fadeInTab 0.3s ease-in;
 }

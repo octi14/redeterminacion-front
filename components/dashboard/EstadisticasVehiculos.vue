@@ -1,11 +1,11 @@
 <template>
-  <div class="combustible-por-area">
+  <div class="estadisticas-vehiculos">
     <div class="header-section">
       <h4 class="section-title">
-        <i class="bi bi-building-fill mr-2"></i>
-        Emisión de vales de combustible por Área
+        <i class="bi bi-car-front-fill mr-2"></i>
+        Estadísticas de Vehículos
       </h4>
-      <p class="section-subtitle">Análisis detallado de la emisión de combustible por área municipal</p>
+      <p class="section-subtitle">Análisis de vehículos por área municipal</p>
     </div>
 
     <!-- Resumen General -->
@@ -15,47 +15,46 @@
           <template #header>
             <div class="d-flex align-items-center">
               <i class="bi bi-graph-up text-primary mr-2"></i>
-              <h5 class="mb-0">Resumen General</h5>
+              <h5 class="mb-0">Resumen de Vehículos</h5>
             </div>
           </template>
 
           <div class="row">
-            <div class="col-md-3 col-sm-6 mb-3">
+            <div class="col-md-4 col-sm-6 mb-3">
               <div class="stat-card">
                 <div class="stat-icon bg-primary">
+                  <i class="bi bi-car-front"></i>
+                </div>
+                <div class="stat-content">
+                  <h3 class="stat-number">{{ totalVehiculos }}</h3>
+                  <p class="stat-label">Total de Vehículos</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4 col-sm-6 mb-3">
+              <div class="stat-card">
+                <div class="stat-icon bg-success">
                   <i class="bi bi-building"></i>
                 </div>
                 <div class="stat-content">
                   <h3 class="stat-number">{{ totalAreas }}</h3>
-                  <p class="stat-label">Áreas Activas</p>
+                  <p class="stat-label">Áreas con Vehículos</p>
                 </div>
               </div>
             </div>
 
-            <div class="col-md-3 col-sm-6 mb-3">
+            <div class="col-md-4 col-sm-6 mb-3">
               <div class="stat-card">
-                <div class="stat-icon bg-success">
-                  <i class="bi bi-fuel-pump"></i>
+                <div class="stat-icon bg-info">
+                  <i class="bi bi-speedometer2"></i>
                 </div>
                 <div class="stat-content">
-                  <h3 class="stat-number">{{ totalVales }}</h3>
-                  <p class="stat-label">Vales Emitidos</p>
+                  <h3 class="stat-number">{{ promedioPorArea }}</h3>
+                  <p class="stat-label">Promedio por Área</p>
                 </div>
               </div>
             </div>
-
-            <div class="col-md-3 col-sm-6 mb-3">
-              <div class="stat-card">
-                <div class="stat-icon bg-warning">
-                  <i class="bi bi-currency-dollar"></i>
-                </div>
-                <div class="stat-content">
-                  <h3 class="stat-number">{{ formatCurrency(totalMonto) }}</h3>
-                  <p class="stat-label">Monto Total Emitido</p>
-                </div>
-              </div>
-            </div>
-
           </div>
         </b-card>
       </div>
@@ -88,14 +87,14 @@
               <thead class="table-header">
                 <tr>
                   <th>Área</th>
-                  <th>Vales Emitidos</th>
-                  <th>Monto Total Emitido</th>
+                  <th>Total Vehículos</th>
+                  <th>Porcentaje</th>
                 </tr>
               </thead>
               <tbody>
                 <tr
                   v-for="area in filteredAreas"
-                  :key="area.nombre"
+                  :key="area.area"
                   class="table-row"
                 >
                   <td class="area-name">
@@ -103,14 +102,14 @@
                       <div class="area-icon">
                         <i class="bi bi-building"></i>
                       </div>
-                      <span>{{ area.nombre }}</span>
+                      <span class="font-weight-bold">{{ area.area }}</span>
                     </div>
                   </td>
                   <td class="text-center">
-                    <span class="badge badge-primary">{{ area.vales }}</span>
+                    <span class="badge badge-primary">{{ area.total }}</span>
                   </td>
-                  <td class="text-right font-weight-bold">
-                    {{ formatCurrency(area.monto) }}
+                  <td class="text-right">
+                    {{ area.porcentaje }}%
                   </td>
                 </tr>
               </tbody>
@@ -123,12 +122,13 @@
 </template>
 
 <script>
+
 export default {
-  name: 'CombustiblePorArea',
+  name: 'EstadisticasVehiculos',
   props: {
-    datosCombustible: {
-      type: Object,
-      default: () => ({})
+    vehiculos: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -137,57 +137,65 @@ export default {
     }
   },
   computed: {
-    datosPorArea() {
-      // Debug: verificar qué datos están llegando
-      console.log('🔍 Datos de combustible recibidos:', this.datosCombustible)
-
-      // Usar los datos de vales por área (porAreaVales) que contienen la información de emisión
-      if (!this.datosCombustible || !this.datosCombustible.porAreaVales) {
-        console.log('⚠️ No hay datos de combustible o porAreaVales')
+    vehiculosPorArea() {
+      if (!this.vehiculos || this.vehiculos.length === 0) {
+        console.log('⚠️ No hay datos de vehículos')
         return []
       }
 
-      console.log('📊 Datos porAreaVales disponibles:', this.datosCombustible.porAreaVales)
+      console.log('📊 Vehículos recibidos:', this.vehiculos.length)
 
-      // Los datos de porAreaVales contienen la información de los vales emitidos por área
-      const areas = this.datosCombustible.porAreaVales.map(area => {
-        return {
-          nombre: area.area,
-          vales: area.total || 0,
-          monto: area.montoTotal || 0
+      // Agrupar vehículos por área
+      const areasMap = new Map()
+
+      this.vehiculos.forEach(vehiculo => {
+        const area = vehiculo.area || 'Sin Área Asignada'
+        if (!areasMap.has(area)) {
+          areasMap.set(area, {
+            area,
+            total: 0
+          })
         }
-      }).sort((a, b) => (b.monto || 0) - (a.monto || 0))
+        areasMap.get(area).total += 1
+      })
+
+      // Convertir a array y calcular porcentajes
+      const areas = Array.from(areasMap.values()).map(area => {
+        const porcentaje = this.totalVehiculos > 0
+          ? ((area.total / this.totalVehiculos) * 100).toFixed(1)
+          : 0
+        return {
+          ...area,
+          porcentaje: parseFloat(porcentaje)
+        }
+      }).sort((a, b) => b.total - a.total)
 
       console.log('✅ Áreas procesadas:', areas)
       return areas
     },
+    totalVehiculos() {
+      return this.vehiculos ? this.vehiculos.length : 0
+    },
     totalAreas() {
-      return this.datosPorArea.length
+      return this.vehiculosPorArea.length
     },
-    totalVales() {
-      return this.datosPorArea.reduce((total, area) => total + (area.vales || 0), 0)
-    },
-    totalMonto() {
-      return this.datosPorArea.reduce((total, area) => total + (area.monto || 0), 0)
+    promedioPorArea() {
+      return this.totalAreas > 0 ? Math.round(this.totalVehiculos / this.totalAreas) : 0
     },
     filteredAreas() {
-      if (!this.searchTerm) return this.datosPorArea
-      return this.datosPorArea.filter(area =>
-        area.nombre.toLowerCase().includes(this.searchTerm.toLowerCase())
+      if (!this.searchTerm) return this.vehiculosPorArea
+      return this.vehiculosPorArea.filter(area =>
+        area.area.toLowerCase().includes(this.searchTerm.toLowerCase())
       )
     }
   },
   methods: {
-    formatCurrency(value) {
-      if (!value) return "$0"
-      return `$${value.toLocaleString('es-AR')}`
-    }
   }
 }
 </script>
 
 <style scoped>
-.combustible-por-area {
+.estadisticas-vehiculos {
   padding: 1rem 0;
 }
 
@@ -255,68 +263,10 @@ export default {
   font-size: 0.9rem;
 }
 
-.ranking-card, .table-card {
+.table-card {
   border-radius: 15px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border: none;
-}
-
-.ranking-list {
-  max-height: 400px;
-  overflow-y: auto;
-}
-
-.ranking-item {
-  display: flex;
-  align-items: center;
-  padding: 1rem;
-  margin-bottom: 0.5rem;
-  border-radius: 8px;
-  background: #f8f9fa;
-  transition: all 0.2s ease;
-}
-
-.ranking-item:hover {
-  background: #e9ecef;
-  transform: translateX(5px);
-}
-
-.rank-number {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  color: white;
-  margin-right: 1rem;
-}
-
-.rank-1 .rank-number { background: #FFD700; }
-.rank-2 .rank-number { background: #C0C0C0; }
-.rank-3 .rank-number { background: #CD7F32; }
-.rank-4 .rank-number, .rank-5 .rank-number { background: #6c757d; }
-
-.rank-content {
-  flex: 1;
-}
-
-.rank-name {
-  font-weight: 600;
-  margin: 0;
-  color: #495057;
-}
-
-.rank-value {
-  font-size: 0.9rem;
-  color: #6c757d;
-  margin: 0;
-}
-
-.rank-percentage {
-  font-weight: bold;
-  color: #28a745;
 }
 
 .table-header {
@@ -343,7 +293,6 @@ export default {
   color: #6c757d;
 }
 
-
 .search-input {
   border-radius: 20px;
   border: 1px solid #ced4da;
@@ -366,16 +315,6 @@ export default {
   }
 
   .stat-icon {
-    margin-right: 0;
-    margin-bottom: 0.5rem;
-  }
-
-  .ranking-item {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .rank-number {
     margin-right: 0;
     margin-bottom: 0.5rem;
   }

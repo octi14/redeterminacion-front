@@ -43,7 +43,14 @@
             <h5 class="text-right text-gray font-weight-bold" style="font-size: 1.75rem; line-height: 1.5rem">{{ orden.proveedor }}</h5>
           </div>
           <div class="fuel-layout mt-5">.
-            <div class="fuel-container-h" v-for="(monto, index) in orden.montos" :key="index">
+            <div
+              class="fuel-container-h"
+              v-for="(monto, index) in orden.montos"
+              :key="index"
+              :class="{ 'fuel-container-selected': filtroTipoCombustible === monto.tipoCombustible }"
+              @click="filtrarPorTipoCombustible(monto.tipoCombustible)"
+              style="cursor: pointer; transition: all 0.3s ease;"
+            >
               <div class="fuel-icon-wrapper">
                 <!-- SVG de círculo completo -->
                 <div class="circular-progress-container" style="position: relative">
@@ -79,6 +86,7 @@
                 </div>
             </div>
           </div>
+
         </div>
         </div>
       </b-card>
@@ -121,11 +129,11 @@
             </div>
 
             <!-- Paginador -->
-            <div class="row justify-content-center mt-4">
+            <div class="row justify-content-center mt-4" v-if="getTotalValesFiltrados() > 0">
               <div class="col-auto">
                 <b-pagination
                   v-model="currentPage"
-                  :total-rows="vales.length"
+                  :total-rows="getTotalValesFiltrados()"
                   :per-page="itemsPerPage"
                   class="mt-3"
                   align="center"
@@ -136,10 +144,13 @@
               </div>
             </div>
             <!-- Información de rango de páginas -->
-            <div class="row justify-content-center mt-2">
+            <div class="row justify-content-center mt-2" v-if="getTotalValesFiltrados() > 0">
               <div class="col-auto">
                 <span class="text-muted">
-                  Mostrando vales {{ getPageRange().start }}-{{ getPageRange().end }} de {{ vales.length }}
+                  Mostrando vales {{ getPageRange().start }}-{{ getPageRange().end }} de {{ getTotalValesFiltrados() }}
+                  <span v-if="filtroTipoCombustible" class="text-primary">
+                    (filtrado por {{ filtroTipoCombustible }} - haz clic nuevamente para mostrar todos)
+                  </span>
                 </span>
               </div>
             </div>
@@ -197,7 +208,13 @@
 
           <!-- Mensaje si no hay vales -->
           <div class="justify-content-center mx-auto" v-else>
-            <p class="h6 text-center my-5"> No hay vales emitidos para esta orden de compra. </p>
+            <p class="h6 text-center my-5" v-if="!filtroTipoCombustible">
+              No hay vales emitidos para esta orden de compra.
+            </p>
+            <div v-else class="text-center my-5">
+              <p class="h6 text-muted">No hay vales de {{ filtroTipoCombustible }} para esta orden.</p>
+              <p class="text-muted small">Haz clic en el tipo de combustible nuevamente para mostrar todos los vales.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -390,6 +407,7 @@ export default {
       tempNroVale: null,
       tempValeRef: null,
       eliminandoVales: false, // Control para deshabilitar botón de eliminar vales seleccionados
+      filtroTipoCombustible: null, // Filtro por tipo de combustible
     }
   },
   computed: {
@@ -421,14 +439,32 @@ export default {
       if (!this.vales || !Array.isArray(this.vales)) {
         return [];
       }
+
+      // Filtrar por tipo de combustible si está seleccionado
+      let valesFiltrados = this.vales;
+      if (this.filtroTipoCombustible) {
+        valesFiltrados = this.vales.filter(vale =>
+          vale.tipoCombustible === this.filtroTipoCombustible
+        );
+      }
+
       const start = (this.currentPage - 1) * this.itemsPerPage;
-      return this.vales.slice(start, start + this.itemsPerPage);
+      return valesFiltrados.slice(start, start + this.itemsPerPage);
     },
     totalPages() {
       if (!this.vales || !Array.isArray(this.vales)) {
         return 0;
       }
-      return Math.ceil(this.vales.length / this.itemsPerPage);
+
+      // Usar vales filtrados para calcular total de páginas
+      let valesFiltrados = this.vales;
+      if (this.filtroTipoCombustible) {
+        valesFiltrados = this.vales.filter(vale =>
+          vale.tipoCombustible === this.filtroTipoCombustible
+        );
+      }
+
+      return Math.ceil(valesFiltrados.length / this.itemsPerPage);
     },
   },
   async fetch() {
@@ -803,9 +839,49 @@ export default {
       if (!this.vales || !Array.isArray(this.vales)) {
         return { start: 0, end: 0 };
       }
+
+      // Usar vales filtrados para calcular el rango
+      let valesFiltrados = this.vales;
+      if (this.filtroTipoCombustible) {
+        valesFiltrados = this.vales.filter(vale =>
+          vale.tipoCombustible === this.filtroTipoCombustible
+        );
+      }
+
       const start = (this.currentPage - 1) * this.itemsPerPage + 1;
-      const end = Math.min(this.currentPage * this.itemsPerPage, this.vales.length);
+      const end = Math.min(this.currentPage * this.itemsPerPage, valesFiltrados.length);
       return { start, end };
+    },
+
+    getTotalValesFiltrados() {
+      if (!this.vales || !Array.isArray(this.vales)) {
+        return 0;
+      }
+
+      if (this.filtroTipoCombustible) {
+        const valesFiltrados = this.vales.filter(vale =>
+          vale.tipoCombustible === this.filtroTipoCombustible
+        );
+        return valesFiltrados.length;
+      }
+
+      return this.vales.length;
+    },
+
+    filtrarPorTipoCombustible(tipoCombustible) {
+      // Si ya está seleccionado el mismo tipo, desactivar el filtro
+      if (this.filtroTipoCombustible === tipoCombustible) {
+        this.filtroTipoCombustible = null;
+      } else {
+        // Si es un tipo diferente, aplicar el filtro
+        this.filtroTipoCombustible = tipoCombustible;
+      }
+      this.currentPage = 1; // Resetear a la primera página
+    },
+
+    limpiarFiltroCombustible() {
+      this.filtroTipoCombustible = null;
+      this.currentPage = 1; // Resetear a la primera página
     },
   },
 }
@@ -935,6 +1011,25 @@ export default {
   padding: 2rem 1rem;
   margin: auto;
   margin-bottom: 2rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.fuel-container-h:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.fuel-container-selected {
+  background: #e3f2fd !important;
+  border-color: #2196f3 !important;
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3) !important;
+  transform: translateY(-2px);
+}
+
+.fuel-container-selected .fuel-title-h p {
+  color: #1976d2;
+  font-weight: bold;
 }
 
 .fuel-icon-wrapper {

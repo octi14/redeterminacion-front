@@ -335,10 +335,13 @@
           </div>
         </div>
         <div class="justify-content-center mx-auto" v-else>
-          <p class="h4 text-loading text-center"> Cargando... </p>
+          <p class="h4 text-loading text-center"> Cargando documentos... </p>
           <div class="row justify-content-center mb-3">
             <b-spinner variant="success"></b-spinner>
           </div>
+          <p class="text-muted text-center small">
+            Por favor, espere mientras se cargan los documentos antes de proceder con la revisión.
+          </p>
         </div>
       </div>
     </template>
@@ -400,10 +403,20 @@
 
     <!-- Botón Finalizar Revisión - Prominente y en su propia fila -->
     <div class="text-center my-4" v-if="jefeComercio && habilitacion && habilitacion.status === 'En revisión'">
-      <b-button @click="onFinalizarRevision" variant="success" class="px-4 py-2">
-        <b-icon-check-circle-fill class="mr-2"></b-icon-check-circle-fill>
-        Finalizar Revisión
+      <b-button
+        @click="onFinalizarRevision"
+        variant="success"
+        class="px-4 py-2"
+        :disabled="!documentos || documentos === null"
+      >
+        <b-icon-check-circle-fill class="mr-2" v-if="documentos && documentos !== null"></b-icon-check-circle-fill>
+        <b-spinner small class="mr-2" v-else></b-spinner>
+        <span v-if="documentos && documentos !== null">Finalizar Revisión</span>
+        <span v-else>Esperando documentos...</span>
       </b-button>
+      <p v-if="!documentos || documentos === null" class="text-muted small mt-2">
+        Los documentos se están cargando. El botón se habilitará cuando estén listos.
+      </p>
     </div>
 
     <!-- Botón Volver - Abajo -->
@@ -1016,6 +1029,8 @@ Tipo de solicitud: ${this.habilitacion.tipoSolicitud}
 Rubro: ${this.habilitacion.rubro}
 
 Por favor, presente los documentos originales en el Departamento Comercio MVGesell para continuar con el trámite.
+Adicionalmente, le comentamos que puede presentar su documentación en la Casa de Villa Gesell en Buenos Aires,
+ubicada en la Avenida Corrientes 1312, piso 11 oficina 42, CABA.
 
 Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
 
@@ -1167,7 +1182,10 @@ Para completar el trámite, en el plazo de 10 días hábiles debe:
 
 • Concurrir al Departamento Comercio MVGesell con los originales de los documentos presentados online
 y proceder al pago de la Tasa de Habilitacion pertinente.
-• Constituir el Domicilio Fiscal Electrónico (DFE) solicitando datos a dirarvige@gesell.gob.ar.`
+• Constituir el Domicilio Fiscal Electrónico (DFE) solicitando datos a dirarvige@gesell.gob.ar.
+
+Adicionalmente, le comentamos que puede presentar su documentación en la Casa de Villa Gesell en Buenos Aires,
+ubicada en la Avenida Corrientes 1312, piso 11 oficina 42, CABA.`
         }
 
         await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
@@ -1600,13 +1618,24 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
     },
 
     onFinalizarRevision() {
+      // Verificar que los documentos han terminado de cargar
+      if (!this.documentos || this.documentos === null) {
+        this.$bvToast.toast("Los documentos aún están cargando. Por favor, espere un momento antes de finalizar la revisión.", {
+          variant: "warning",
+          title: "Documentos cargando",
+          solid: true,
+          autoHideDelay: 5000
+        });
+        return;
+      }
+
       // Verificar si se han revisado todos los elementos
       const solicitanteRevisado = this.revisionSolicitante !== null;
       const inmuebleRevisado = this.revisionInmueble !== null;
 
       // Contar documentos revisados
       const documentosRevisados = Object.values(this.revisionDocumentos).filter(valor => valor !== null && valor !== undefined).length;
-      const totalDocumentos = Object.keys(this.documentos || {}).length;
+      const totalDocumentos = Object.keys(this.documentos).length;
 
       // Verificar si faltan elementos por revisar
       if (!solicitanteRevisado || !inmuebleRevisado || documentosRevisados < totalDocumentos) {

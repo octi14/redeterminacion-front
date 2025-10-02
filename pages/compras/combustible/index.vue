@@ -63,7 +63,7 @@
 
         <!-- Pestaña Vehículos -->
         <b-tab title="🚗 Vehículos" class="custom-tab">
-          <!-- Filtro por área -->
+          <!-- Filtros -->
           <div class="row no-gutters filtro-section">
             <div class="col-md-3">
               <b-form-group label-class="text-dark font-weight-bold" label="Filtrar por área" label-for="filtro-area-vehiculos">
@@ -80,6 +80,28 @@
                   </template>
                 </b-form-select>
               </b-form-group>
+            </div>
+            <div class="col-md-4 ml-3">
+              <b-form-group label-class="text-dark font-weight-bold" label="Filtrar por patente" label-for="filtro-patente-vehiculos">
+                <b-form-input
+                  id="filtro-patente-vehiculos"
+                  v-model="filtroPatenteVehiculos"
+                  placeholder="Buscar por patente..."
+                  size="sm"
+                  @input="onFiltroPatenteChange"
+                ></b-form-input>
+              </b-form-group>
+            </div>
+            <div class="col-md-2 ml-3 d-flex align-items-end">
+              <b-button
+                variant="outline-secondary"
+                size="sm"
+                @click="limpiarFiltros"
+                class="mb-3"
+              >
+                <b-icon-x-circle class="mr-1" />
+                Limpiar filtros
+              </b-button>
             </div>
           </div>
 
@@ -510,6 +532,7 @@ export default {
       perPageVehiculos: 10,
       showCargarVehiculo: false,
       filtroAreaVehiculos: '', // Filtro por área para vehículos
+      filtroPatenteVehiculos: '', // Filtro por patente para vehículos
       successMessageVehiculo: false,
       loadingCargarVehiculo: false,
       showEliminarVehiculo: false,
@@ -597,12 +620,23 @@ export default {
       return this.filteredVehiculos.slice(start, end);
     },
     filteredVehiculos() {
-      if (!this.filtroAreaVehiculos) {
-        return this.vehiculos;
+      let filtered = this.vehiculos;
+
+      // Filtrar por área
+      if (this.filtroAreaVehiculos) {
+        filtered = filtered.filter(vehiculo =>
+          vehiculo.area.toLowerCase().includes(this.filtroAreaVehiculos.toLowerCase())
+        );
       }
-      return this.vehiculos.filter(vehiculo =>
-        vehiculo.area.toLowerCase().includes(this.filtroAreaVehiculos.toLowerCase())
-      );
+
+      // Filtrar por patente
+      if (this.filtroPatenteVehiculos) {
+        filtered = filtered.filter(vehiculo =>
+          vehiculo.patente.toLowerCase().includes(this.filtroPatenteVehiculos.toLowerCase())
+        );
+      }
+
+      return filtered;
     },
     opcionesAreasVehiculos() {
       // Usar las áreas importadas
@@ -723,6 +757,15 @@ export default {
     },
     onFiltroAreaChange() {
       // Resetear a la primera página cuando cambia el filtro
+      this.currentPageVehiculos = 1;
+    },
+    onFiltroPatenteChange() {
+      // Resetear a la primera página cuando cambia el filtro
+      this.currentPageVehiculos = 1;
+    },
+    limpiarFiltros() {
+      this.filtroAreaVehiculos = '';
+      this.filtroPatenteVehiculos = '';
       this.currentPageVehiculos = 1;
     },
     cerrarPopupVehiculo() {

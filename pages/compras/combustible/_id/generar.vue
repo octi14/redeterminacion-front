@@ -17,35 +17,45 @@
 
           <b-form @submit.prevent="generarVales" class="m-4">
             <b-form-group label="Patente del Vehículo" label-for="patente">
-              <!-- Mostrar dropdown si hay vehículos del área -->
-              <div v-if="vehiculosDelArea.length > 0">
-                <b-form-select
-                  id="patente"
-                  v-model="form.patente"
-                  :options="opcionesVehiculos"
-                  :disabled="loadingVehiculos"
-                  required
-                >
-                  <template #first>
-                    <b-form-select-option :value="''" disabled>Seleccione una patente...</b-form-select-option>
-                  </template>
-                </b-form-select>
-                <small class="form-text text-muted">
-                  Se muestran los vehículos registrados para el área {{ orden.area }}
-                </small>
-              </div>
-
-              <!-- Mostrar input si no hay vehículos del área -->
-              <div v-else>
+              <div>
+                <!-- Input con autocompletado -->
                 <b-form-input
                   id="patente"
                   v-model="form.patente"
                   type="text"
-                  placeholder="Ingrese la patente del vehículo"
+                  placeholder="Escriba o seleccione la patente del vehículo"
                   required
+                  :disabled="loadingVehiculos"
+                  @input="onPatenteInput"
+                  @focus="showSugerencias = true"
+                  list="patentes-list"
+                  autocomplete="off"
                 ></b-form-input>
-                <small class="form-text text-muted">
-                  No hay vehículos registrados para el área {{ orden.area }}
+
+                <!-- Lista de sugerencias -->
+                <div v-if="showSugerencias && sugerenciasFiltradas.length > 0" class="sugerencias-dropdown">
+                  <div
+                    v-for="(sugerencia, index) in sugerenciasFiltradas"
+                    :key="index"
+                    class="sugerencia-item"
+                    @click="seleccionarPatente(sugerencia)"
+                  >
+                    {{ sugerencia }}
+                  </div>
+                  <div
+                    class="sugerencia-item sugerencia-personalizada"
+                    @click="abrirPatentePersonalizada"
+                  >
+                    <b-icon-plus-circle class="mr-2" />
+                    Ingresar patente personalizada...
+                  </div>
+                </div>
+
+                <small class="form-text text-muted" v-if="vehiculosDelArea.length > 0">
+                  {{ vehiculosDelArea.length }} vehículo{{ vehiculosDelArea.length !== 1 ? 's' : '' }} registrado{{ vehiculosDelArea.length !== 1 ? 's' : '' }} para el área {{ orden.area }}
+                </small>
+                <small class="form-text text-muted" v-else>
+                  No hay vehículos registrados para el área {{ orden.area }}. Ingrese una patente para continuar.
                 </small>
               </div>
             </b-form-group>
@@ -152,6 +162,7 @@ export default {
       vehiculos: [],
       showPatentePersonalizada: false,
       patentePersonalizada: '',
+      showSugerencias: false,
       form: {
         cantidad: 1,
         combustible: "Super",
@@ -190,6 +201,16 @@ export default {
       })
 
       return vehiculosOptions
+    },
+    sugerenciasFiltradas() {
+      if (!this.form.patente) {
+        return this.vehiculosDelArea.map(v => v.patente)
+      }
+
+      const busqueda = this.form.patente.toLowerCase()
+      return this.vehiculosDelArea
+        .map(v => v.patente)
+        .filter(patente => patente.toLowerCase().includes(busqueda))
     }
   },
   async mounted() {
@@ -205,16 +226,14 @@ export default {
         }
       },
       immediate: true
-    },
-    // Detectar cuando se selecciona patente personalizada
-    'form.patente': {
-      handler: function(newValue) {
-        if (newValue === 'personalizada') {
-          this.showPatentePersonalizada = true
-          this.form.patente = '' // Limpiar para que no quede 'personalizada'
-        }
-      }
     }
+  },
+  mounted() {
+    // Cerrar sugerencias al hacer clic fuera
+    document.addEventListener('click', this.handleClickOutside)
+  },
+  beforeDestroy() {
+    document.removeEventListener('click', this.handleClickOutside)
   },
   methods: {
     async cargarVehiculos() {
@@ -229,6 +248,31 @@ export default {
         this.vehiculos = []
       } finally {
         this.loadingVehiculos = false
+      }
+    },
+
+    onPatenteInput() {
+      this.showSugerencias = true
+    },
+
+    seleccionarPatente(patente) {
+      this.form.patente = patente
+      this.showSugerencias = false
+    },
+
+    abrirPatentePersonalizada() {
+      this.showPatentePersonalizada = true
+      this.showSugerencias = false
+    },
+
+    handleClickOutside(event) {
+      const patenteInput = document.getElementById('patente')
+      const sugerenciasDropdown = document.querySelector('.sugerencias-dropdown')
+
+      if (patenteInput && sugerenciasDropdown) {
+        if (!patenteInput.contains(event.target) && !sugerenciasDropdown.contains(event.target)) {
+          this.showSugerencias = false
+        }
       }
     },
 
@@ -518,5 +562,64 @@ export default {
 /* Quita el padding del body de la card */
 .card-body {
   padding: 0 !important;
+}
+
+/* Estilos para el dropdown de sugerencias */
+.sugerencias-dropdown {
+  position: absolute;
+  z-index: 1000;
+  width: calc(100% - 30px);
+  max-height: 300px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ced4da;
+  border-top: none;
+  border-radius: 0 0 0.25rem 0.25rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.sugerencia-item {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.sugerencia-item:hover {
+  background-color: #f8f9fa;
+}
+
+.sugerencia-item:last-child {
+  border-bottom: none;
+}
+
+.sugerencia-personalizada {
+  background-color: #e7f5ff;
+  color: #0c5460;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+
+.sugerencia-personalizada:hover {
+  background-color: #d0ebff;
+}
+
+/* Scrollbar personalizado para el dropdown */
+.sugerencias-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sugerencias-dropdown::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.sugerencias-dropdown::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.sugerencias-dropdown::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 </style>

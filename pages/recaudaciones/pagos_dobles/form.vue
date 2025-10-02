@@ -190,7 +190,7 @@
         </b-col>
       </b-row>
       <b-form-group>
-        <label for="comprobantePago" class="rubro-label">Comprobante de pago
+        <label for="comprobantePago" class="rubro-label">Comprobante de pago *
           <!-- <b-icon-question-circle-fill @click="openPopup('ComprobantePago')" font-scale="1" variant="info"></b-icon-question-circle-fill> -->
         </label>
         <b-form-file v-model="documentos.comprobantePago.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
@@ -202,7 +202,7 @@
         </div>
       </b-form-group>
       <b-form-group>
-        <label for="comprobantePago2" class="rubro-label">Comprobante de pago duplicado</label>
+        <label for="comprobantePago2" class="rubro-label">Comprobante de pago duplicado *</label>
         <b-form-file v-model="documentos.comprobantePago2.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
         accept=".pdf, image/*"  :state="getFormFieldState('comprobantePago2')"
         @change="handleDocumentUpdate('comprobantePago2'); checkDocumentSize('comprobantePago2', $event); $v.documentos.comprobantePago2.contenido.$touch()"
@@ -259,13 +259,19 @@
     <div class="centeredContainer">
       <fieldset>
         <b-button size="lg" @click="onResetParams" variant="danger" class="btn-cancel" >Cancelar</b-button>
-        <b-button size="lg" type="submit" variant="success" :disabled="!areAllFieldsComplete" class="" >Enviar</b-button>
+        <b-button size="lg" type="submit" variant="success" :disabled="!areAllFieldsComplete || formSubmitted" class="" >
+          <span v-if="formSubmitted">Enviado</span>
+          <span v-else>Enviar</span>
+        </b-button>
       </fieldset>
         <div v-if="!areAllFieldsComplete" class="validation-error">
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Completar todos los campos marcados con (*).
         </div>
         <div v-if="!areAllFieldsValid" class="validation-error">
           <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Por favor, revisa el formulario en busca de errores.
+        </div>
+        <div v-if="formSubmitted" class="validation-success">
+          <b-icon-check-circle variant="success"></b-icon-check-circle> Tu solicitud ha sido enviada exitosamente. No es necesario enviarla nuevamente.
         </div>
     </div>
   </b-card>
@@ -310,7 +316,7 @@
     <p>No cierres esta página</p>
   </div>
 </b-modal>
-<b-modal v-model="showPopupFormOk" title="" ok-only @click-outside="showPopupFormOk = false" :header-bg-variant="'success'" centered>
+<b-modal v-model="showPopupFormOk" title="" ok-only @click-outside="onPopupClose" @ok="onPopupClose" :header-bg-variant="'success'" centered>
   <template #modal-header>
     <div class="centeredContainer"><h3>
       <b-icon icon="check-circle-fill" scale="1.5" variant="light"></b-icon>
@@ -472,6 +478,7 @@ export default{
       showPopupFormError: false,
       printing: false,
       endButton: false,
+      formSubmitted: false, // Control para prevenir envíos duplicados
     }
   },
   computed: {
@@ -590,8 +597,9 @@ export default{
     async onSubmitForm() {
       this.$v.$touch(); // Marca los campos como tocados para mostrar los errores
 
-      if (!this.$v.$invalid && !Object.values(this.fileTooLargeError).some(error => !!error) && this.isCaptchaOK()) {
-        // Si no hay errores, envía el formulario
+      if (!this.$v.$invalid && !Object.values(this.fileTooLargeError).some(error => !!error) && this.isCaptchaOK() && !this.formSubmitted) {
+        // Si no hay errores y el formulario no fue enviado previamente, envía el formulario
+        this.formSubmitted = true; // Marcar como enviado para prevenir duplicados
         try {
           this.openPopup('FormLoading');
           const documentosParaGuardar = {};
@@ -695,11 +703,53 @@ export default{
       this.endButton = false;
       this.nroTramite = null;
       this.nroLegajo = 0;
+      this.formSubmitted = false; // Resetear estado de envío
       this.solicitante = {
         nombre: '',
         apellido: '',
         dni: '',
+        cuit: '',
+        nroCuenta: '',
+        domicilioReal: '',
+        telefono: '',
+        codigoPostal: '',
+        localidad: '',
+        provincia: '',
+        mail: '',
+        mail2: '',
+        esTitular: false,
+        esPropietario: false,
       }
+      this.documentos = {
+        planillaAutorizacion: {
+          nombreDocumento: 'Planilla de autorización de trámite',
+          contenido: null
+        },
+        dniFrente: {
+          nombreDocumento: 'DNI (Frente)',
+          contenido: null
+        },
+        dniDorso: {
+          nombreDocumento: 'DNI (Dorso)',
+          contenido: null
+        },
+        comprobantePago: {
+          nombreDocumento: 'Comprobante de pago',
+          contenido: null
+        },
+        comprobantePago2: {
+          nombreDocumento: 'Comprobante de pago duplicado',
+          contenido: null
+        },
+        acreditacionTitularidad: {
+          nombreDocumento: 'Acreditación de titularidad: Escritura traslativa de Dominio del inmueble / Contrato de locación / Boleto de Compraventa',
+          contenido: null
+        }
+      }
+    },
+    async onPopupClose() {
+      // Reutilizar la lógica de reset para evitar duplicación de código
+      await this.onResetParams();
     },
     wait(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
@@ -775,8 +825,13 @@ p, .li-content{
 }
 .validation-error {
   color: red;
-  font-size: 14px;
-  margin-top: 5px;
+}
+
+.validation-success {
+  color: #28a745;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  font-weight: 500;
 }
 .icon-orange{
   color: #E27910;

@@ -303,9 +303,10 @@ export default {
         try{
           const nroTramite = this.nroTramiteIngresado
 
-          // Registrar consulta anónima
+          // Registrar consulta - detectar si hay usuario autenticado
+          const userId = this.$store.state.user.username || 'Usuario Anónimo';
           await this.$logUserActivity(
-            'Usuario Anónimo',
+            userId,
             'Consulta de Trámite',
             `Consulta de trámite nro ${nroTramite}`
           );

@@ -304,7 +304,7 @@ export default {
           const nroTramite = this.nroTramiteIngresado
 
           // Registrar consulta - detectar si hay usuario autenticado
-          const userId = this.$store.state.user.username || 'Usuario Anónimo';
+          const userId = this.$store.state.user?.username || 'Usuario Anónimo';
           await this.$logUserActivity(
             userId,
             'Consulta de Trámite',

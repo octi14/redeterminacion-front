@@ -7,6 +7,7 @@ const formatOrden = (OrdenResponse) => ({
   proveedor: OrdenResponse.proveedor,
   vales: OrdenResponse.vales ? OrdenResponse.vales.length : 0,
   observaciones: String(OrdenResponse.observaciones || ""),
+  createdAt: OrdenResponse.createdAt, // Agregar campo de fecha de creación
 });
 
 

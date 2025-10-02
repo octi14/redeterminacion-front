@@ -20,6 +20,7 @@
     "bootstrap-icons": "^1.11.3",
     "bootstrap-vue": "^2.23.1",
     "bootswatch": "^5.1.3",
+    "chart.js": "^3.9.1",
     "core-js": "^3.19.3",
     "file-saver": "^2.0.5",
     "html2canvas": "^1.4.1",

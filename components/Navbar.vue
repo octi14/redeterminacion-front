@@ -107,6 +107,14 @@
               <b-icon-list-task class="mr-1" />
               Actividades
           </NuxtLink>
+          <NuxtLink
+            class="nav-link"
+            active-class="active"
+
+            to="/admin/dashboard"
+          >
+              Estadísticas
+          </NuxtLink>
         </b-navbar-nav>
       </div>
       <b-navbar-nav class="ml-auto">
@@ -154,7 +162,9 @@ export default {
     },
     adminRecaudaciones(){
       return this.$store.state.user.admin == "recaudaciones" || this.$store.state.user.admin =="master"
-
+    },
+    adminMaster(){
+      return this.$store.state.user.admin == "master"
     },
     username() {
       return this.$store.state.user.username

@@ -20,7 +20,8 @@ const areas = [
   "Corralón Sur",
   "Obras Sanitarias",
   "Obras Públicas",
-  "Transporte"
+  "Transporte",
+  "Secretaría de Planeamiento"
 ];
 
 export default areas;

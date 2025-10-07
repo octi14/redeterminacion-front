@@ -77,8 +77,15 @@
       <b-row>
         <b-col md="12" class="mb-3">
           <h6 class="text-dark mb-1 font-weight-bold">Por Estado</h6>
-          <div v-for="(count, status) in modulos.abiertoAnual.porEstado" :key="status" class="d-flex align-items-center mb-1">
-            <span class="text-dark">{{ status }}</span>
+          <div v-for="[status, count] in modulos.abiertoAnual.porEstado" :key="status" class="d-flex align-items-center mb-2">
+            <div class="d-flex align-items-center">
+              <span v-for="(estado, index) in status.split(',')" :key="index" class="mr-1" :style="{ color: estadoColor(estado.trim()) }">
+                <b-iconstack :title="estado.trim()">
+                  <b-icon-circle variant="dark"></b-icon-circle>
+                  <b-icon icon="circle-fill"></b-icon>
+                </b-iconstack>
+              </span>
+            </div>
             <strong class="text-info ml-3">{{ count }}</strong>
           </div>
         </b-col>
@@ -354,6 +361,18 @@ export default {
         maximumFractionDigits: 2
       }).format(numero)
     },
+    estadoColor(estado) {
+      switch (estado) {
+        case 'Incorrecto':
+          return 'red'
+        case 'Correcto':
+          return 'green'
+        case 'En revisión':
+          return '#FADD1A'
+        default:
+          return 'lightgrey'
+      }
+    }
   }
 }
 </script>

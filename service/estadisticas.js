@@ -233,9 +233,6 @@ const calcularEstadisticasCombustible = (ordenes, vales) => {
     return false
   }
 
-  const valesConsumidos = vales.filter(esValeConsumido).length
-  const valesDisponibles = vales.filter(vale => !esValeConsumido(vale)).length
-
   // Función helper para determinar si un vale está anulado
   const esValeAnulado = (vale) => {
     const anulado = vale.anulado
@@ -245,7 +242,10 @@ const calcularEstadisticasCombustible = (ordenes, vales) => {
     return false
   }
 
+  // Lógica corregida: los anulados tienen prioridad
   const valesAnulados = vales.filter(esValeAnulado).length
+  const valesConsumidos = vales.filter(vale => esValeConsumido(vale) && !esValeAnulado(vale)).length
+  const valesDisponibles = vales.filter(vale => !esValeConsumido(vale) && !esValeAnulado(vale)).length
 
   // Debug específico para vales consumidos y anulados
   console.log('🔍 Debug vales consumidos y anulados:', {
@@ -253,6 +253,8 @@ const calcularEstadisticasCombustible = (ordenes, vales) => {
     valesConsumidos,
     valesDisponibles,
     valesAnulados,
+    sumaTotal: valesConsumidos + valesDisponibles + valesAnulados,
+    coincideConTotal: (valesConsumidos + valesDisponibles + valesAnulados) === totalVales,
     valesConConsumidoTrue: vales.filter(vale => vale.consumido === true),
     valesConConsumidoFalse: vales.filter(vale => vale.consumido === false),
     valesConConsumidoUndefined: vales.filter(vale => vale.consumido === undefined),
@@ -1225,7 +1227,7 @@ const calcularEstadisticasDetalladas = (items, tipo, valesCombustible = [], cert
     })
 
     estadisticasEspecificas = {
-      porEstado,
+      porEstado: Object.entries(porEstado).sort((a, b) => b[1] - a[1]),
       porCuit: Object.entries(porCuit).sort((a, b) => b[1] - a[1]).slice(0, 10),
       porPeriodo: Object.entries(porPeriodo).map(([periodo, datos]) => ({
         periodo,

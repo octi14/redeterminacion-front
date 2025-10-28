@@ -182,6 +182,34 @@
                 <EstadisticasVehiculos :vehiculos="vehiculos || []" />
               </div>
             </div>
+
+            <!-- Lista de Vehículos por Área -->
+            <div class="row">
+              <div class="col-12">
+                <ListaVehiculosPorArea :vehiculos="vehiculos || []" />
+              </div>
+            </div>
+          </div>
+        </b-tab>
+
+        <!-- Pestaña Informes Solicitados -->
+        <b-tab title-link-class="tab-link-informes">
+          <template #title>
+            <i class="bi bi-graph-up-arrow mr-2"></i>
+            <span class="d-none d-md-inline">Informes Solicitados</span>
+            <b-badge v-if="habilitaciones?.length" variant="warning" class="ml-2">
+              <i class="bi bi-chart-line mr-1"></i>
+              Gráficos
+            </b-badge>
+          </template>
+
+          <div class="tab-content-informes">
+            <!-- Gráfico de Trámites Comerciales por Mes -->
+            <div class="row mb-4">
+              <div class="col-12">
+                <GraficoTramitesComerciales :habilitaciones="habilitaciones || []" />
+              </div>
+            </div>
           </div>
         </b-tab>
 
@@ -314,6 +342,8 @@ import GraficoIndices from '~/components/dashboard/GraficoIndices.vue'
 import CombustiblePorArea from '~/components/dashboard/CombustiblePorArea.vue'
 import EstadisticasPorPatente from '~/components/dashboard/EstadisticasPorPatente.vue'
 import EstadisticasVehiculos from '~/components/dashboard/EstadisticasVehiculos.vue'
+import ListaVehiculosPorArea from '~/components/dashboard/ListaVehiculosPorArea.vue'
+import GraficoTramitesComerciales from '~/components/dashboard/GraficoTramitesComerciales.vue'
 
 export default {
   name: 'DashboardTabs',
@@ -324,7 +354,9 @@ export default {
     GraficoIndices,
     CombustiblePorArea,
     EstadisticasPorPatente,
-    EstadisticasVehiculos
+    EstadisticasVehiculos,
+    ListaVehiculosPorArea,
+    GraficoTramitesComerciales
   },
   props: {
     modulos: {
@@ -336,6 +368,10 @@ export default {
       default: () => ({})
     },
     vehiculos: {
+      type: Array,
+      default: () => []
+    },
+    habilitaciones: {
       type: Array,
       default: () => []
     }
@@ -425,6 +461,12 @@ export default {
   box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3) !important;
 }
 
+.tab-link-informes.active {
+  background: linear-gradient(135deg, #fd7e14 0%, #e55a00 100%) !important;
+  border-color: #fd7e14 !important;
+  box-shadow: 0 5px 15px rgba(253, 126, 20, 0.3) !important;
+}
+
 .tab-link-usuarios.active {
   background: linear-gradient(135deg, #343a40 0%, #23272b 100%) !important;
   border-color: #343a40 !important;
@@ -439,6 +481,7 @@ export default {
 .tab-content-combustible,
 .tab-content-turnos,
 .tab-content-vehiculos,
+.tab-content-informes,
 .tab-content-usuarios {
   animation: fadeInTab 0.3s ease-in;
 }

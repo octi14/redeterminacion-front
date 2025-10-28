@@ -106,6 +106,7 @@
         :modulos="estadisticasModulos"
         :estadisticas-usuarios="estadisticasUsuarios"
         :vehiculos="vehiculos"
+        :habilitaciones="habilitaciones"
         :date-range="selectedDateRange"
       />
     </div>
@@ -143,6 +144,9 @@ export default {
     vehiculos() {
       return this.$store.state.vehiculos.all || []
     },
+    habilitaciones() {
+      return this.$store.state.habilitaciones.all || []
+    },
     adminMaster() {
       return this.$store.state.user.admin === 'master'
     }
@@ -156,6 +160,7 @@ export default {
       try {
         await this.$store.dispatch('estadisticas/fetchAllEstadisticas')
         await this.$store.dispatch('vehiculos/getAll')
+        await this.$store.dispatch('habilitaciones/getAll')
       } catch (error) {
         this.error = 'Error al cargar las estadísticas. Verifique la conexión con el servidor.'
         console.error('Error cargando estadísticas:', error)

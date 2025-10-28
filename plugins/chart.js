@@ -13,6 +13,7 @@ import {
   Filler,
   PieController
 } from 'chart.js'
+import ChartDataLabels from 'chartjs-plugin-datalabels'
 
 // Registrar todos los componentes necesarios
 Chart.register(
@@ -27,7 +28,8 @@ Chart.register(
   ArcElement,
   PointElement,
   LineElement,
-  Filler
+  Filler,
+  ChartDataLabels
 )
 
 export default Chart

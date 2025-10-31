@@ -40,7 +40,7 @@
 
           <b-button
             v-if="row.item.observaciones && row.item.observaciones !== ''"
-            @click="onShowObservaciones(row.index)"
+            @click="onShowObservaciones(row.item)"
             variant="outline-primary"
             title="Observaciones"
           >
@@ -664,9 +664,9 @@ export default {
       this.showEliminarOrden = false,
       location.reload();  // Refrescar página
     },
-    onShowObservaciones(index){
-      if(this.ordenesCompra[index].observaciones){
-        this.observaciones = this.ordenesCompra[index].observaciones.split('**').join('<br>').split(',').join('')
+    onShowObservaciones(item){
+      if(item.observaciones){
+        this.observaciones = item.observaciones.split('**').join('<br>').split(',').join('')
       }else{
         this.observaciones = "No hay observaciones para mostrar."
       }

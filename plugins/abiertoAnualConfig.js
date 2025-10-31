@@ -7,7 +7,7 @@ const abiertoAnualConfig = {
     maxDates: [
       "31/05/2025",
       "31/08/2025",
-      "31/10/2025",
+      "01/11/2025",
     ],
     rectificacion: false,
     popUpAbiertoAnualCerrado: false,

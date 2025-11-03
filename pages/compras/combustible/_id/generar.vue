@@ -347,7 +347,7 @@ export default {
 
           // Registrar actividad de creación de vehículo
           await this.$logUserActivity(
-            this.$store.state.user.email,
+            this.$store.state.user.username,
             'Crear Vehículo',
             `Vehículo ${patente} creado en el área ${this.orden.area}`
           );
@@ -432,7 +432,7 @@ export default {
 
         // Registrar actividad de generación de vales
         await this.$logUserActivity(
-          this.$store.state.user.email,
+          this.$store.state.user.username,
           'Generar Vales',
           `${this.form.cantidad} vales de ${this.form.combustible} generados para el vehículo ${this.form.patente}`
         );

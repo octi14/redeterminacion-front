@@ -101,6 +101,17 @@
               <b-icon-receipt class="icon-orange mt-4 ml-4" scale="2"/>
               <a class="ml-3 mr-2 mt-2 separador" > | </a>
               <h2 class="text-green mt-3"><b>Vales emitidos</b></h2>
+              <div class="ml-auto mr-4 mt-2">
+                <b-button
+                  :variant="ocultarAnulados ? 'primary' : 'outline-secondary'"
+                  size="sm"
+                  @click="toggleOcultarAnulados"
+                >
+                  <b-icon-eye-slash v-if="ocultarAnulados"/>
+                  <b-icon-eye v-else/>
+                  {{ ocultarAnulados ? 'Mostrar anulados' : 'Ocultar anulados' }}
+                </b-button>
+              </div>
             </h5>
             <hr />
           </div>
@@ -408,6 +419,7 @@ export default {
       tempValeRef: null,
       eliminandoVales: false, // Control para deshabilitar botón de eliminar vales seleccionados
       filtroTipoCombustible: null, // Filtro por tipo de combustible
+      ocultarAnulados: false, // Control para ocultar/mostrar vales anulados
     }
   },
   computed: {
@@ -448,6 +460,11 @@ export default {
         );
       }
 
+      // Filtrar anulados si está activo el filtro
+      if (this.ocultarAnulados) {
+        valesFiltrados = valesFiltrados.filter(vale => !vale.anulado);
+      }
+
       const start = (this.currentPage - 1) * this.itemsPerPage;
       return valesFiltrados.slice(start, start + this.itemsPerPage);
     },
@@ -462,6 +479,11 @@ export default {
         valesFiltrados = this.vales.filter(vale =>
           vale.tipoCombustible === this.filtroTipoCombustible
         );
+      }
+
+      // Filtrar anulados si está activo el filtro
+      if (this.ocultarAnulados) {
+        valesFiltrados = valesFiltrados.filter(vale => !vale.anulado);
       }
 
       return Math.ceil(valesFiltrados.length / this.itemsPerPage);
@@ -750,7 +772,7 @@ export default {
 
           // Registrar actividad de uso de vale
           await this.$logUserActivity(
-            this.$store.state.user.email,
+            this.$store.state.user.username,
             'Marcar Vale como Utilizado',
             `Vale ${this.tempValeRef.nro_vale} marcado como utilizado`
           );
@@ -786,7 +808,7 @@ export default {
 
       // Registrar actividad de uso masivo de vales
       await this.$logUserActivity(
-        this.$store.state.user.email,
+        this.$store.state.user.username,
         'Marcar Vales como Utilizados',
         `${this.valesSeleccionados.length} vales marcados como utilizados`
       );
@@ -848,6 +870,11 @@ export default {
         );
       }
 
+      // Filtrar anulados si está activo el filtro
+      if (this.ocultarAnulados) {
+        valesFiltrados = valesFiltrados.filter(vale => !vale.anulado);
+      }
+
       const start = (this.currentPage - 1) * this.itemsPerPage + 1;
       const end = Math.min(this.currentPage * this.itemsPerPage, valesFiltrados.length);
       return { start, end };
@@ -858,14 +885,20 @@ export default {
         return 0;
       }
 
+      let valesFiltrados = this.vales;
+
       if (this.filtroTipoCombustible) {
-        const valesFiltrados = this.vales.filter(vale =>
+        valesFiltrados = this.vales.filter(vale =>
           vale.tipoCombustible === this.filtroTipoCombustible
         );
-        return valesFiltrados.length;
       }
 
-      return this.vales.length;
+      // Filtrar anulados si está activo el filtro
+      if (this.ocultarAnulados) {
+        valesFiltrados = valesFiltrados.filter(vale => !vale.anulado);
+      }
+
+      return valesFiltrados.length;
     },
 
     filtrarPorTipoCombustible(tipoCombustible) {
@@ -881,6 +914,11 @@ export default {
 
     limpiarFiltroCombustible() {
       this.filtroTipoCombustible = null;
+      this.currentPage = 1; // Resetear a la primera página
+    },
+
+    toggleOcultarAnulados() {
+      this.ocultarAnulados = !this.ocultarAnulados;
       this.currentPage = 1; // Resetear a la primera página
     },
   },

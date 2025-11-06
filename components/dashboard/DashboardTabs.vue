@@ -210,6 +210,27 @@
                 <GraficoTramitesComerciales :habilitaciones="habilitaciones || []" />
               </div>
             </div>
+
+            <!-- Gráfico Comparativo 2024 vs 2025 -->
+            <div class="row mb-4">
+              <div class="col-12">
+                <GraficoComparativo2024vs2025 :habilitaciones="habilitaciones || []" />
+              </div>
+            </div>
+
+            <!-- Tabla de Trámites Comerciales 2025 -->
+            <div class="row mb-4">
+              <div class="col-12">
+                <TablaTramitesComerciales2025 :habilitaciones="habilitaciones || []" :anio="2025" />
+              </div>
+            </div>
+
+            <!-- Tabla de Trámites Comerciales 2024 -->
+            <div class="row mb-4">
+              <div class="col-12">
+                <TablaTramitesComerciales2025 :habilitaciones="habilitaciones || []" :anio="2024" />
+              </div>
+            </div>
           </div>
         </b-tab>
 
@@ -344,6 +365,8 @@ import EstadisticasPorPatente from '~/components/dashboard/EstadisticasPorPatent
 import EstadisticasVehiculos from '~/components/dashboard/EstadisticasVehiculos.vue'
 import ListaVehiculosPorArea from '~/components/dashboard/ListaVehiculosPorArea.vue'
 import GraficoTramitesComerciales from '~/components/dashboard/GraficoTramitesComerciales.vue'
+import TablaTramitesComerciales2025 from '~/components/dashboard/TablaTramitesComerciales2025.vue'
+import GraficoComparativo2024vs2025 from '~/components/dashboard/GraficoComparativo2024vs2025.vue'
 
 export default {
   name: 'DashboardTabs',
@@ -356,7 +379,9 @@ export default {
     EstadisticasPorPatente,
     EstadisticasVehiculos,
     ListaVehiculosPorArea,
-    GraficoTramitesComerciales
+    GraficoTramitesComerciales,
+    TablaTramitesComerciales2025,
+    GraficoComparativo2024vs2025
   },
   props: {
     modulos: {

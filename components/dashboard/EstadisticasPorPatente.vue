@@ -71,51 +71,6 @@
       </div>
     </div>
 
-    <!-- Gráfico de Barras por Patente -->
-    <div class="row mb-4">
-      <div class="col-md-8">
-        <b-card class="chart-card">
-          <template #header>
-            <div class="d-flex align-items-center">
-              <i class="bi bi-bar-chart-fill text-success mr-2"></i>
-              <h5 class="mb-0">Emisión por Patente</h5>
-            </div>
-          </template>
-
-          <div class="chart-container">
-            <canvas ref="chartConsumoPorPatente"></canvas>
-          </div>
-        </b-card>
-      </div>
-
-      <div class="col-md-4">
-        <b-card class="ranking-card">
-          <template #header>
-            <div class="d-flex align-items-center">
-              <i class="bi bi-trophy-fill text-warning mr-2"></i>
-              <h5 class="mb-0">Top 10 Patentes</h5>
-            </div>
-          </template>
-
-          <div class="ranking-list">
-            <div
-              v-for="(patente, index) in topPatentes"
-              :key="patente.dominio"
-              class="ranking-item"
-              :class="`rank-${index + 1}`"
-            >
-              <div class="rank-number">{{ index + 1 }}</div>
-              <div class="rank-content">
-                <h6 class="rank-name">{{ patente.dominio }}</h6>
-                <p class="rank-value">{{ formatCurrency(patente.montoTotal) }}</p>
-                <small class="rank-details">{{ patente.totalVales }} vales</small>
-              </div>
-            </div>
-          </div>
-        </b-card>
-      </div>
-    </div>
-
     <!-- Tabla Detallada -->
     <div class="row">
       <div class="col-md-12">
@@ -186,8 +141,6 @@
 </template>
 
 <script>
-import { Chart } from 'chart.js'
-
 export default {
   name: 'EstadisticasPorPatente',
   props: {
@@ -198,8 +151,7 @@ export default {
   },
   data() {
     return {
-      searchTerm: '',
-      chartConsumoPorPatente: null
+      searchTerm: ''
     }
   },
   computed: {
@@ -271,9 +223,6 @@ export default {
     promedioPorPatente() {
       return this.totalPatentes > 0 ? this.totalMonto / this.totalPatentes : 0
     },
-    topPatentes() {
-      return this.datosPorPatente.slice(0, 10)
-    },
     filteredPatentes() {
       if (!this.searchTerm) return this.datosPorPatente
       return this.datosPorPatente.filter(patente =>
@@ -281,104 +230,7 @@ export default {
       )
     }
   },
-  watch: {
-    datosPorPatente: {
-      handler() {
-        this.$nextTick(() => {
-          this.createChart()
-        })
-      },
-      immediate: true
-    }
-  },
   methods: {
-    createChart() {
-      if (this.chartConsumoPorPatente) {
-        this.chartConsumoPorPatente.destroy()
-      }
-
-      if (this.datosPorPatente.length === 0) return
-
-      const ctx = this.$refs.chartConsumoPorPatente
-      if (!ctx) return
-
-      const labels = this.topPatentes.map(patente => patente.dominio)
-      const data = this.topPatentes.map(patente => patente.montoTotal)
-
-      this.chartConsumoPorPatente = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: 'Monto Emitido',
-            data: data,
-            backgroundColor: 'rgba(54, 162, 235, 0.6)',
-            borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 2,
-            borderRadius: 8,
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              display: true,
-              position: 'top',
-              labels: {
-                usePointStyle: true,
-                padding: 20
-              }
-            },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  let label = context.dataset.label || ''
-                  if (label) {
-                    label += ': '
-                  }
-                  if (context.parsed.y !== null) {
-                    label += `$${context.parsed.y.toLocaleString('es-AR')}`
-                  }
-                  return label
-                }
-              }
-            }
-          },
-          scales: {
-            x: {
-              title: {
-                display: true,
-                text: 'Patentes',
-                font: {
-                  size: 14,
-                  weight: 'bold'
-                }
-              },
-              grid: {
-                display: false
-              }
-            },
-            y: {
-              beginAtZero: true,
-              title: {
-                display: true,
-                text: 'Monto ($)',
-                font: {
-                  size: 14,
-                  weight: 'bold'
-                }
-              },
-              ticks: {
-                callback: function(value) {
-                  return '$' + value.toLocaleString('es-AR')
-                }
-              }
-            }
-          }
-        }
-      })
-    },
     formatCurrency(value) {
       if (!value) return "$0"
       return `$${value.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
@@ -386,11 +238,6 @@ export default {
     formatDate(date) {
       if (!date) return 'N/A'
       return new Date(date).toLocaleDateString('es-AR')
-    }
-  },
-  beforeDestroy() {
-    if (this.chartConsumoPorPatente) {
-      this.chartConsumoPorPatente.destroy()
     }
   }
 }
@@ -465,78 +312,10 @@ export default {
   font-size: 0.9rem;
 }
 
-.chart-card, .ranking-card, .table-card {
+.table-card {
   border-radius: 15px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border: none;
-}
-
-.chart-container {
-  position: relative;
-  height: 400px;
-  width: 100%;
-}
-
-.ranking-list {
-  max-height: 500px;
-  overflow-y: auto;
-}
-
-.ranking-item {
-  display: flex;
-  align-items: center;
-  padding: 1rem;
-  margin-bottom: 0.5rem;
-  border-radius: 8px;
-  background: #f8f9fa;
-  transition: all 0.2s ease;
-}
-
-.ranking-item:hover {
-  background: #e9ecef;
-  transform: translateX(5px);
-}
-
-.rank-number {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  color: white;
-  margin-right: 1rem;
-}
-
-.rank-1 .rank-number { background: #FFD700; }
-.rank-2 .rank-number { background: #C0C0C0; }
-.rank-3 .rank-number { background: #CD7F32; }
-.rank-4 .rank-number, .rank-5 .rank-number,
-.rank-6 .rank-number, .rank-7 .rank-number,
-.rank-8 .rank-number, .rank-9 .rank-number,
-.rank-10 .rank-number { background: #6c757d; }
-
-.rank-content {
-  flex: 1;
-}
-
-.rank-name {
-  font-weight: 600;
-  margin: 0;
-  color: #495057;
-}
-
-.rank-value {
-  font-size: 0.9rem;
-  color: #6c757d;
-  margin: 0;
-}
-
-.rank-details {
-  font-size: 0.8rem;
-  color: #6c757d;
-  margin: 0;
 }
 
 .table-header {
@@ -599,16 +378,6 @@ export default {
   }
 
   .stat-icon {
-    margin-right: 0;
-    margin-bottom: 0.5rem;
-  }
-
-  .ranking-item {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .rank-number {
     margin-right: 0;
     margin-bottom: 0.5rem;
   }

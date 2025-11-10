@@ -141,6 +141,7 @@
                 <EstadisticasPorPatente :datos-combustible="modulos?.combustible || {}" />
               </div>
             </div>
+
           </div>
         </b-tab>
 

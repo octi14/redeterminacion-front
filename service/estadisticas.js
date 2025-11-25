@@ -9,6 +9,97 @@ const AbiertoAnualService = require('./abiertoAnual')
 const CertificadoService = require('./certificado')
 const CombustibleService = require('./combustible')
 
+const FINALIZACION_PATTERNS = [
+  /Se finaliza(?: la solicitud)?(?: el)?(?: trámite)?(?: [^0-9]*)?(\d{1,2}\/\d{1,2}\/\d{2,4})(?:\s+(\d{1,2}:\d{2}(?::\d{2})?))?/gi,
+  /Finalización[^0-9]*(\d{1,2}\/\d{1,2}\/\d{2,4})/gi,
+  /Renovación finalizada[^0-9]*(\d{1,2}\/\d{1,2}\/\d{2,4})/gi,
+  /Reempadronamiento finalizado[^0-9]*(\d{1,2}\/\d{1,2}\/\d{2,4})/gi
+]
+
+const normalizarAnio = (anio) => {
+  if (anio >= 1000) return anio
+  if (anio >= 50) return 1900 + anio
+  return 2000 + anio
+}
+
+const construirFecha = (fechaStr, horaStr) => {
+  if (!fechaStr) return null
+
+  const partesFecha = fechaStr.split('/').map(parte => parte.trim())
+  if (partesFecha.length !== 3) return null
+
+  const [diaStr, mesStr, anioStr] = partesFecha
+  const dia = parseInt(diaStr, 10)
+  const mes = parseInt(mesStr, 10)
+  let anio = parseInt(anioStr, 10)
+
+  if (Number.isNaN(dia) || Number.isNaN(mes) || Number.isNaN(anio)) return null
+
+  anio = normalizarAnio(anio)
+
+  let horas = 0
+  let minutos = 0
+  let segundos = 0
+
+  if (horaStr) {
+    const partesHora = horaStr.split(':').map(parte => parseInt(parte, 10))
+    if (partesHora.length >= 1 && !Number.isNaN(partesHora[0])) horas = partesHora[0]
+    if (partesHora.length >= 2 && !Number.isNaN(partesHora[1])) minutos = partesHora[1]
+    if (partesHora.length >= 3 && !Number.isNaN(partesHora[2])) segundos = partesHora[2]
+  }
+
+  const fecha = new Date(anio, mes - 1, dia, horas, minutos, segundos)
+  return Number.isNaN(fecha.getTime()) ? null : fecha
+}
+
+const extraerFechaFinalizacion = (observaciones) => {
+  if (!observaciones || typeof observaciones !== 'string') {
+    return { finalizadaAt: null, finalizadaAtISO: null }
+  }
+
+  let fechaEncontrada = null
+
+  for (const pattern of FINALIZACION_PATTERNS) {
+    const coincidencias = [...observaciones.matchAll(pattern)]
+    if (coincidencias.length > 0) {
+      const ultimaCoincidencia = coincidencias[coincidencias.length - 1]
+      const [, fechaStr, horaStr] = ultimaCoincidencia
+      const fecha = construirFecha(fechaStr, horaStr)
+      if (fecha) {
+        fechaEncontrada = fecha
+      }
+    }
+  }
+
+  if (!fechaEncontrada) {
+    return { finalizadaAt: null, finalizadaAtISO: null }
+  }
+
+  return {
+    finalizadaAt: fechaEncontrada.toLocaleDateString('es-AR'),
+    finalizadaAtISO: fechaEncontrada.toISOString()
+  }
+}
+
+const construirFechasFinalizacion = (item) => {
+  const { finalizadaAt, finalizadaAtISO } = extraerFechaFinalizacion(item?.observaciones)
+  if (finalizadaAtISO) {
+    return { finalizadaAt, finalizadaAtISO }
+  }
+
+  if (item?.status === 'Finalizada' && item?.updatedAt) {
+    const fecha = new Date(item.updatedAt)
+    if (!Number.isNaN(fecha.getTime())) {
+      return {
+        finalizadaAt: fecha.toLocaleDateString('es-AR'),
+        finalizadaAtISO: fecha.toISOString()
+      }
+    }
+  }
+
+  return { finalizadaAt: null, finalizadaAtISO: null }
+}
+
 
 // Función helper para normalizar nombres de localidades
 const normalizarLocalidad = (localidad) => {
@@ -1364,23 +1455,32 @@ module.exports = {
       let habilitacionesExtendidas = []
       try {
         const habilitacionesResponse = await axios.$get('/habilitaciones')
-        habilitacionesExtendidas = habilitacionesResponse.data.map(item => ({
-          id: item._id,
-          tipoSolicitud: item.solicitante?.tipoSolicitud,
-          dni: item.solicitante?.dni,
-          cuit: item.solicitante?.cuit,
-          nroLegajo: item.nroLegajo,
-          mail: item.solicitante?.mail,
-          rubro: item.inmueble?.rubro,
-          localidad: item.inmueble?.localidad,
-          telefono: item.solicitante?.telefono,
-          status: item.status,
-          observaciones: item.observaciones,
-          nroTramite: item.nroSolicitud,
-          nroExpediente: item.nroExpediente,
-          createdAt: new Date(item.createdAt).toLocaleDateString('es-AR'),
-          localidadSolicitante: item.solicitante?.localidad || null
-        }))
+        habilitacionesExtendidas = habilitacionesResponse.data.map(item => {
+          const { finalizadaAt, finalizadaAtISO } = construirFechasFinalizacion(item)
+
+          return {
+            id: item._id,
+            tipoSolicitud: item.solicitante?.tipoSolicitud,
+            dni: item.solicitante?.dni,
+            cuit: item.solicitante?.cuit,
+            nroLegajo: item.nroLegajo,
+            mail: item.solicitante?.mail,
+            rubro: item.inmueble?.rubro,
+            localidad: item.inmueble?.localidad,
+            telefono: item.solicitante?.telefono,
+            status: item.status,
+            observaciones: item.observaciones,
+            nroTramite: item.nroSolicitud,
+            nroExpediente: item.nroExpediente,
+            createdAt: new Date(item.createdAt).toLocaleDateString('es-AR'),
+            createdAtISO: item.createdAt,
+            updatedAt: item.updatedAt ? new Date(item.updatedAt).toLocaleDateString('es-AR') : null,
+            updatedAtISO: item.updatedAt || null,
+            finalizadaAt,
+            finalizadaAtISO,
+            localidadSolicitante: item.solicitante?.localidad || null
+          }
+        })
       } catch (error) {
         console.warn('No se pudieron obtener datos extendidos de habilitaciones:', error)
         habilitacionesExtendidas = habilitaciones

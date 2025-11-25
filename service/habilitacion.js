@@ -1,4 +1,98 @@
-const formatFile = (FileResponse) => ({
+const FINALIZACION_PATTERNS = [
+  /Se finaliza(?: la solicitud)?(?: el)?(?: trámite)?(?: [^0-9]*)?(\d{1,2}\/\d{1,2}\/\d{2,4})(?:\s+(\d{1,2}:\d{2}(?::\d{2})?))?/gi,
+  /Finalización[^0-9]*(\d{1,2}\/\d{1,2}\/\d{2,4})/gi,
+  /Renovación finalizada[^0-9]*(\d{1,2}\/\d{1,2}\/\d{2,4})/gi,
+  /Reempadronamiento finalizado[^0-9]*(\d{1,2}\/\d{1,2}\/\d{2,4})/gi
+]
+
+const normalizarAnio = (anio) => {
+  if (anio >= 1000) return anio
+  if (anio >= 50) return 1900 + anio
+  return 2000 + anio
+}
+
+const construirFecha = (fechaStr, horaStr) => {
+  if (!fechaStr) return null
+
+  const partesFecha = fechaStr.split('/').map(parte => parte.trim())
+  if (partesFecha.length !== 3) return null
+
+  const [diaStr, mesStr, anioStr] = partesFecha
+  const dia = parseInt(diaStr, 10)
+  const mes = parseInt(mesStr, 10)
+  let anio = parseInt(anioStr, 10)
+
+  if (Number.isNaN(dia) || Number.isNaN(mes) || Number.isNaN(anio)) return null
+
+  anio = normalizarAnio(anio)
+
+  let horas = 0
+  let minutos = 0
+  let segundos = 0
+
+  if (horaStr) {
+    const partesHora = horaStr.split(':').map(parte => parseInt(parte, 10))
+    if (partesHora.length >= 1 && !Number.isNaN(partesHora[0])) horas = partesHora[0]
+    if (partesHora.length >= 2 && !Number.isNaN(partesHora[1])) minutos = partesHora[1]
+    if (partesHora.length >= 3 && !Number.isNaN(partesHora[2])) segundos = partesHora[2]
+  }
+
+  const fecha = new Date(anio, mes - 1, dia, horas, minutos, segundos)
+  return Number.isNaN(fecha.getTime()) ? null : fecha
+}
+
+const extraerFechaFinalizacion = (observaciones) => {
+  if (!observaciones || typeof observaciones !== 'string') {
+    return { finalizadaAt: null, finalizadaAtISO: null }
+  }
+
+  let fechaEncontrada = null
+
+  for (const pattern of FINALIZACION_PATTERNS) {
+    const coincidencias = [...observaciones.matchAll(pattern)]
+    if (coincidencias.length > 0) {
+      const ultimaCoincidencia = coincidencias[coincidencias.length - 1]
+      const [, fechaStr, horaStr] = ultimaCoincidencia
+      const fecha = construirFecha(fechaStr, horaStr)
+      if (fecha) {
+        fechaEncontrada = fecha
+      }
+    }
+  }
+
+  if (!fechaEncontrada) {
+    return { finalizadaAt: null, finalizadaAtISO: null }
+  }
+
+  return {
+    finalizadaAt: fechaEncontrada.toLocaleDateString('es-AR'),
+    finalizadaAtISO: fechaEncontrada.toISOString()
+  }
+}
+
+const construirFechasFinalizacion = (fileResponse) => {
+  const { finalizadaAt, finalizadaAtISO } = extraerFechaFinalizacion(fileResponse.observaciones)
+  if (finalizadaAtISO) {
+    return { finalizadaAt, finalizadaAtISO }
+  }
+
+  if (fileResponse.status === 'Finalizada' && fileResponse.updatedAt) {
+    const fecha = new Date(fileResponse.updatedAt)
+    if (!Number.isNaN(fecha.getTime())) {
+      return {
+        finalizadaAt: fecha.toLocaleDateString('es-AR'),
+        finalizadaAtISO: fecha.toISOString()
+      }
+    }
+  }
+
+  return { finalizadaAt: null, finalizadaAtISO: null }
+}
+
+const formatFile = (FileResponse) => {
+  const { finalizadaAt, finalizadaAtISO } = construirFechasFinalizacion(FileResponse)
+
+  return {
   id: FileResponse._id,
   tipoSolicitud: FileResponse.solicitante.tipoSolicitud,
   dni: FileResponse.solicitante.dni,
@@ -15,9 +109,18 @@ const formatFile = (FileResponse) => ({
   // fecha_contrato: FileResponse.fecha_contrato.substr(0, 10),
   // acta_inicio: FileResponse.acta_inicio.substr(0,10),
   createdAt: new Date(FileResponse.createdAt).toLocaleDateString('es-AR'),
-})
+  createdAtISO: FileResponse.createdAt,
+  updatedAt: FileResponse.updatedAt ? new Date(FileResponse.updatedAt).toLocaleDateString('es-AR') : null,
+  updatedAtISO: FileResponse.updatedAt || null,
+  finalizadaAt,
+  finalizadaAtISO
+  }
+}
 
-const formatExtendedFile = (FileResponse) => ({
+const formatExtendedFile = (FileResponse) => {
+  const { finalizadaAt, finalizadaAtISO } = construirFechasFinalizacion(FileResponse)
+
+  return {
   id: FileResponse._id,
   tipoSolicitud: FileResponse.solicitante.tipoSolicitud,
   nombre: FileResponse.solicitante.nombre,
@@ -58,7 +161,13 @@ const formatExtendedFile = (FileResponse) => ({
   // fecha_contrato: FileResponse.fecha_contrato.substr(0, 10),
   // acta_inicio: FileResponse.acta_inicio.substr(0,10),
   createdAt: new Date(FileResponse.createdAt),
-})
+  createdAtISO: FileResponse.createdAt,
+  updatedAt: FileResponse.updatedAt ? new Date(FileResponse.updatedAt) : null,
+  updatedAtISO: FileResponse.updatedAt || null,
+  finalizadaAt: finalizadaAtISO ? new Date(finalizadaAtISO) : null,
+  finalizadaAtISO
+  }
+}
 
 module.exports = {
   getAll: async (axios,

@@ -58,7 +58,7 @@
                   </b-col>
                   <b-col v-if="maestro && maestro.dfe != '\r'" md="10" style="padding-left: 0;">
                       <p class="subtitle"><b>Tu solicitud de Abierto Anual fue aprobada.</b></p>
-                      <p>Esto significa que, en caso de cumplir con las condiciones del articulo 182 de la ordenanza 201656/02, obtendrás el beneficio correspondiente en tu Tasa se Seguridad e Higiene durante el año 2026.</p>
+                      <p>Esto significa que, en caso de cumplir con las condiciones del articulo 182 de la ordenanza 201656/02, obtendrás el beneficio correspondiente en tu Tasa de Seguridad e Higiene durante el año 2026.</p>
                   </b-col>
               </b-row>
             </div>

@@ -9,7 +9,7 @@ const abiertoAnualConfig = {
       "31/08/2025",
       "01/11/2025",
     ],
-    rectificacion: true,
+    rectificacion: false,
     popUpAbiertoAnualCerrado: false,
 }
 

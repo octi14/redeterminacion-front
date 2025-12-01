@@ -160,7 +160,9 @@ export default {
   computed: {
     tramitesPorMes() {
       if (!this.estadisticasComercio.porMesIngreso) return []
-      return this.estadisticasComercio.porMesIngreso
+      const todosLosMeses = this.estadisticasComercio.porMesIngreso
+      // Mostrar solo los últimos 18 meses
+      return todosLosMeses.slice(-18)
     },
     rubros() {
       if (!this.estadisticasComercio.porRubro) return []

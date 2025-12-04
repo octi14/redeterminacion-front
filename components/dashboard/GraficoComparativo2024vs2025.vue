@@ -30,39 +30,6 @@
           <canvas ref="comparativeChart" style="max-height: 400px;"></canvas>
         </div>
 
-        <!-- Resumen estadístico -->
-        <div class="mt-4 pt-4 border-top">
-          <h6 class="mb-3">
-            <i class="bi bi-bar-chart text-success mr-2"></i>
-            Resumen Estadístico
-          </h6>
-          <b-row>
-            <b-col md="3" sm="6" class="mb-3">
-              <div class="text-center p-3 border rounded bg-light">
-                <div class="h5 text-primary font-weight-bold mb-1">{{ promedio2024 }}</div>
-                <div class="text-muted small">Promedio mensual 2024</div>
-              </div>
-            </b-col>
-            <b-col md="3" sm="6" class="mb-3">
-              <div class="text-center p-3 border rounded bg-light">
-                <div class="h5 text-success font-weight-bold mb-1">{{ promedio2025 }}</div>
-                <div class="text-muted small">Promedio mensual 2025</div>
-              </div>
-            </b-col>
-            <b-col md="3" sm="6" class="mb-3">
-              <div class="text-center p-3 border rounded bg-light">
-                <div class="h5 text-info font-weight-bold mb-1">{{ diferencia }}</div>
-                <div class="text-muted small">Diferencia promedio</div>
-              </div>
-            </b-col>
-            <b-col md="3" sm="6" class="mb-3">
-              <div class="text-center p-3 border rounded bg-light">
-                <div class="h5 font-weight-bold mb-1" :class="variacionClass">{{ variacion }}</div>
-                <div class="text-muted small">Variación porcentual</div>
-              </div>
-            </b-col>
-          </b-row>
-        </div>
       </div>
     </b-card>
   </div>
@@ -207,33 +174,6 @@ export default {
 
     total2025() {
       return this.tramites2025.length
-    },
-
-    // Promedios
-    promedio2024() {
-      const mesesConDatos = this.datosPorMes2024.filter(d => d.total > 0).length
-      return mesesConDatos > 0 ? Math.round(this.total2024 / mesesConDatos) : 0
-    },
-
-    promedio2025() {
-      const mesesConDatos = this.datosPorMes2025.filter(d => d.total > 0).length
-      return mesesConDatos > 0 ? Math.round(this.total2025 / mesesConDatos) : 0
-    },
-
-    diferencia() {
-      return this.promedio2025 - this.promedio2024
-    },
-
-    variacion() {
-      if (this.promedio2024 === 0) return 'N/A'
-      const porcentaje = ((this.promedio2025 - this.promedio2024) / this.promedio2024) * 100
-      return porcentaje >= 0 ? `+${porcentaje.toFixed(1)}%` : `${porcentaje.toFixed(1)}%`
-    },
-
-    variacionClass() {
-      if (this.promedio2024 === 0) return 'text-muted'
-      const porcentaje = ((this.promedio2025 - this.promedio2024) / this.promedio2024) * 100
-      return porcentaje >= 0 ? 'text-success' : 'text-danger'
     }
   },
   watch: {

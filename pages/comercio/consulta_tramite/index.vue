@@ -577,5 +577,26 @@ export default {
     width: 100%; /* Ajusta el ancho según tus necesidades */
     padding: 0.375rem 0.75rem; /* Ajusta el padding según tus necesidades */
   }
+
+  /* Agregar márgenes laterales en mobile */
+  @media (max-width: 767.98px) {
+    .page {
+      overflow-x: hidden;
+    }
+    .section-card.col-md-6.mx-auto {
+      max-width: calc(100% - 30px) !important;
+      margin-left: 15px !important;
+      margin-right: 15px !important;
+      padding: 2rem 1.5rem !important;
+    }
+    .banner-container {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+    .mx-auto {
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+  }
 </style>
 

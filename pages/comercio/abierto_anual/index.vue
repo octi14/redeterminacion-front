@@ -461,6 +461,16 @@
     */
   }
 }
+@media (max-width: 767.98px) {
+  .page {
+    overflow-x: hidden;
+  }
+  .col-md-8.mx-auto {
+    max-width: calc(100% - 30px) !important;
+    margin-left: 15px !important;
+    margin-right: 15px !important;
+  }
+}
 @media (max-width: 720px){
   .mainCarrousel{
     display: none;
@@ -470,6 +480,11 @@
   }
   .col-8{
     max-width: 90%;
+  }
+  .col-md-8.mx-auto {
+    max-width: calc(100% - 30px) !important;
+    margin-left: 15px !important;
+    margin-right: 15px !important;
   }
   .botonera-container .row div{
     /*Opcion 1. 2 botones por fila*/

@@ -1,6 +1,6 @@
 <template>
   <div class="page main-background">
-    <Banner title="Habilitaciones comerciales" />
+    <Banner title="Trámites comerciales" />
     <!-- Comprobante (página 4) -->
     <div v-if="printing === true">
       <b-card no-body border-variant="success" style="margin-top: 80px" class="printing-modal shadow col-md-5 col-sm-8 mx-auto">
@@ -25,10 +25,10 @@
       <!-- <b-card v-if="solicitante.tipoSolicitud=='Baja'" no-body class="col-8 mt-1 section-card"  style="margin: 0px auto">
         <h5 style="margin-top:0px; margin-bottom: 0px; text-align:center;" ><b-icon-exclamation-circle-fill class="icon-orange"></b-icon-exclamation-circle-fill> El siguiente formulario tiene carácter de declaración jurada.</h5>
       </b-card> -->
-    <b-card no-body class="col-8 mt-1 section-card"  style="margin: 0px auto">
+    <b-card no-body class="col-10 mt-1 section-card"  style="margin: 0px auto">
       <!-- Sección: Datos del solicitante -->
       <fieldset >
-        <legend><h3>Datos del Solicitante <b-icon-question-circle-fill @click="openPopup('DatosDelSolicitante')" font-scale="1" variant="info"></b-icon-question-circle-fill></h3></legend>
+        <legend><h3 class="legend-title">Datos del Solicitante <b-icon-question-circle-fill @click="openPopup('DatosDelSolicitante')" font-scale="1" variant="info"></b-icon-question-circle-fill></h3></legend>
         <b-form-group label="Tipo de Solicitud *" label-for="tipo-solicitud" >
           <b-form-select title="Por el momento solo se pueden solicitar habilitaciones comerciales." id="tipo-solicitud" v-model="tipoSolicitudSeleccionada" >
             <b-form-select-option value="Habilitación">Habilitar nuevo comercio</b-form-select-option>
@@ -183,7 +183,7 @@
         </b-form-group>
       </fieldset>
     </b-card>
-    <b-card no-body class="col-8 mt-1 section-card" style="margin: 0px auto" v-if="solicitante.tipoSolicitud == 'Cambio de Titular'" >
+    <b-card no-body class="col-10 mt-1 section-card" style="margin: 0px auto" v-if="solicitante.tipoSolicitud == 'Cambio de Titular'" >
       <fieldset>
         <legend><h3>Datos del Titular Anterior</h3></legend>
         <b-row>
@@ -219,7 +219,7 @@
         </b-row>
       </fieldset>
     </b-card>
-    <b-card no-body class="col-8 mt-1 section-card"  style="margin: 0px auto">
+    <b-card no-body class="col-10 mt-1 section-card"  style="margin: 0px auto">
       <!-- Sección: Datos del inmueble -->
       <fieldset >
         <legend><h3>Datos del Inmueble</h3></legend>
@@ -408,7 +408,7 @@
       </fieldset>
 
     </b-card>
-    <b-card no-body class="col-8 mt-1 section-card" style="margin: 0px auto">
+    <b-card no-body class="col-10 mt-1 section-card" style="margin: 0px auto">
       <fieldset >
         <legend><h3>Carga de Documentación</h3></legend>
         <p>Aquí deberás cargar los documentos requeridos previamente. Tené en cuenta que deben ser <u>legibles</u>, estar subidos en <u>formato de imagen ó pdf</u> y tener un <u>peso máximo de 15 mb</u>.</p>
@@ -2194,6 +2194,29 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
     font-weight: bold;
     color: #0c681a !important;
     margin: 1rem 0;
+  }
+  .legend-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: nowrap;
+    word-break: keep-all;
+  }
+  fieldset {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 1rem;
+  }
+  legend {
+    width: auto;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 0 0.5rem;
+  }
+  legend h3 {
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: visible;
   }
   h5{
     margin: 1rem 0;

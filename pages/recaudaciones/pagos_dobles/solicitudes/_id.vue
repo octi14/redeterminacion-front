@@ -121,7 +121,7 @@
                 <strong>{{ nombreDocumento }}</strong><br>
               </p>
               <p class="col col-complementary" role="complementary">
-                <b-button size="sm" @click="openDocumento(documento, nombreDocumento)" variant="outline-primary" pill>
+                <b-button size="sm" @click="openDocumento(documento, nombreDocumento)" variant="outline-primary">
                   <b-icon icon="eye" scale="1.2"></b-icon>
                   Ver
                 </b-button>
@@ -672,21 +672,6 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
   max-width: 80% !important;
 }
 
-.col-main {
-  flex: 1;
-}
-
-.col-complementary {
-  flex: 1;
-}
-
-.icon-orange{
-  color: #E27910;
-}
-
-.col strong{
-  margin-bottom: 0%;
-}
 /* Responsive: */
 
 @media only screen and (min-width: 640px) {

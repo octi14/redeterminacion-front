@@ -177,9 +177,3 @@ export default {
   },
 }
 </script>
-
-<style>
-.col h6{
-  margin-bottom: 0%;
-}
-</style>

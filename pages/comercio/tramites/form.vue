@@ -869,7 +869,7 @@
     <template #modal-footer>
       <div class="" style="margin: auto">
         <b-button @click="onResetParams" class="btn-cancel">Volver</b-button>
-        <b-button @click="onPrintTicket">Imprimir</b-button>
+        <b-button @click="onPrintTicket" variant="success">Imprimir</b-button>
       </div>
     </template>
   </b-modal>
@@ -2023,13 +2023,6 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
   .green{
       background-color:#0b6919;
     }
-  .btn-orange{
-    background-color:#eb8a0a !important;
-    border: none;
-  }
-  .text-green{
-    color:#0c6919;
-  }
   .centeredContainer{
     width:  auto;
     margin: auto;
@@ -2053,35 +2046,13 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
     font-size: 14px;
     margin-top: 5px;
   }
-  .icon-orange{
-    color: #E27910;
-  }
-  .icon-green{
-    color: #0c681a;
-  }
   ul{
     list-style-type: none; /* Elimina los puntos por defecto */
     padding: 0;
   }
-  .btn{
-    background-color: #0c681a;
-    border-color: #0c681a;
-  }
-  .btn:hover{
-    background-color: green;
-    border-color: green;
-  }
   .btn.disabled{
     background-color: #619D6A;
     border-color: #619D6A;
-  }
-  .btn.disabled:hover{
-    background-color: #619D6A;
-    border-color: #619D6A;
-  }
-  .btn-cancel:hover{
-    background-color: #f09658;
-    border-color: #f09658;
   }
   .btn-cancel{
     background-color: #e53749;
@@ -2230,23 +2201,6 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
   }
   .modal-title{
     font-weight: bold;
-  }
-  /* Selector para ocultar las flechas en los inputs numéricos */
-  input[type="number"]::-webkit-inner-spin-button,
-  input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-
-  /* Opcional: Estilos adicionales para los inputs numéricos */
-  input[type="number"] {
-    -moz-appearance: textfield; /* Firefox */
-    appearance: textfield; /* Otros navegadores */
-    width: 100%; /* Ajusta el ancho según tus necesidades */
-    padding: 0.375rem 0.75rem; /* Ajusta el padding según tus necesidades */
-  }
-  .popup-link, .external-link {
-    color: #0c681a;
   }
   .rubro-label{
     width: 98%;

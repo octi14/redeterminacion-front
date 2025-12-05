@@ -925,38 +925,6 @@ export default {
 }
 </script>
 
-<style>
-.font-weight-100{
-  font-weight: 100;
-}
-.font-weight-200{
-  font-weight: 200;
-}
-.font-weight-300{
-  font-weight: 300;
-}
-.font-weight-400{
-  font-weight: 400;
-}
-.font-weight-500{
-  font-weight: 500;
-}
-.font-weight-600{
-  font-weight: 600;
-}
-.font-weight-700{
-  font-weight: 700;
-}
-.font-weight-800{
-  font-weight: 800;
-}
-.font-weight-900{
-  font-weight: 900;
-}
-.font-weight-1000{
-  font-weight: 1000;
-}
-</style>
 
 <style scoped>
 .fuel-icon {
@@ -981,9 +949,6 @@ export default {
   align-self: start;
 }
 
-.text-green{
-  color: #196B23;
-}
 
 .text-gray{
   color:#505050;
@@ -1159,13 +1124,7 @@ export default {
 .modal-dialog {
   max-width: 80% !important;
 }
-.icon-orange{
-  color: #e08933;
-}
 
-.col strong{
-  margin-bottom: 0%;
-}
 /* Responsive: */
 
 @media only screen and (min-width: 640px) {

@@ -34,7 +34,7 @@
             <b-button class="btn-cancel" @click="onResetParams">Cancelar</b-button>
             <!-- <b-button @click="sendData" :disabled="enterKeyPressed">Aceptar</b-button> -->
             <!-- <b-button @click="openPopup('ClosedPeriod')" :disabled="enterKeyPressed">Aceptar</b-button> -->
-            <b-button @click="sendData()" :disabled="enterKeyPressed">Aceptar</b-button>
+            <b-button @click="sendData()" :disabled="enterKeyPressed" variant="success">Aceptar</b-button>
           </div>
         </b-card>
       </div>
@@ -314,13 +314,6 @@
     .disabled-option {
       color: rgb(164, 163, 163);
     }
-    .btn-orange{
-      background-color:#eb8a0a !important;
-      border: none;
-    }
-    .text-green{
-      color:#0c6919;
-    }
     .centeredContainer{
       width:  auto;
       margin: auto;
@@ -472,18 +465,6 @@
       padding-left: 0;
       width: 10rem;
     }
-    .btn{
-      background-color: #0c681a;
-      border-color: #0c681a;
-    }
-    .btn:hover{
-      background-color: green;
-      border-color: green;
-    }
-    .btn-cancel:hover{
-      background-color: #f09658;
-      border-color: #f09658;
-    }
     .btn-cancel{
       background-color: #e53749;
       border-color: #e53749;
@@ -505,12 +486,6 @@
     }
     .section-card h5 .bi-ticket{
       width: 5%;
-    }
-    .icon-orange{
-      color: #E27910;
-    }
-    .icon-green{
-      color: #0c681a;
     }
     .li-icon, .li-title, label{
     font-weight: 600;
@@ -550,18 +525,5 @@
     }
     .bi-check{
       vertical-align: top;
-    }
-    /* Selector para ocultar las flechas en los inputs numéricos */
-    input[type="number"]::-webkit-inner-spin-button,
-    input[type="number"]::-webkit-outer-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-    /* Opcional: Estilos adicionales para los inputs numéricos */
-    input[type="number"] {
-      -moz-appearance: textfield; /* Firefox */
-      appearance: textfield; /* Otros navegadores */
-      width: 100%; /* Ajusta el ancho según tus necesidades */
-      padding: 0.375rem 0.75rem; /* Ajusta el padding según tus necesidades */
     }
   </style>

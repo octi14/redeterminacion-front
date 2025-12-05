@@ -503,10 +503,6 @@ export default {
     width: 10rem;
   }
 
-  .btn-cancel:hover{
-    background-color: #f09658;
-    border-color: #f09658;
-  }
   .btn-cancel{
     background-color: #e53749;
     border-color: #e53749;
@@ -514,10 +510,6 @@ export default {
   .btn-primary{
     background-color: #2A43A1;
     border-color: #2A43A1;
-  }
-  .btn-primary:hover{
-    background-color: #589ff0;
-    border-color: #589ff0;
   }
   .section-card h5{
     font-size: 2rem;
@@ -534,12 +526,6 @@ export default {
     padding-right: 0.75rem;
     border-right: 1px solid #999;
   }
-  .icon-green{
-    color: #0c681a;
-  }
-  .icon-orange{
-  color: #E27910;
-}
 
   .li-icon, .li-title, label{
   font-weight: 600;

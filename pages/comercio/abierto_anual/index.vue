@@ -547,10 +547,6 @@ p, .li-content{
   background-color: #0c681a;
   border-color: #0c681a;
 }
-.btn-success:hover{
-  background-color: green;
-  border-color: green;
-}
 .modal h5{
   color: white !important;
   font-weight: bold;
@@ -653,12 +649,6 @@ p, .li-content{
 .sangria{
   margin-left: 25px;
   margin-bottom: 10px;
-}
-.icon-orange{
-  color: #E27910;
-}
-.icon-green{
-  color: #0c681a;
 }
 .texto-introd{
   font-size: 1.3rem;

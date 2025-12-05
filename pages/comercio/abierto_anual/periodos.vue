@@ -260,40 +260,15 @@ export default {
       font-size: 14px;
       margin-top: 5px;
     }
-    .btn-orange{
-      background-color:#eb8a0a !important;
-      border: none;
-    }
-    .text-green{
-      color:#0c6919;
-    }
     p{
       font-family: Calibri, 'Trebuchet MS', sans-serif;
       font-size: 1.5rem;
       font-weight: 500;
       color: #666;
     }
-    .btn{
-      background-color: #0c681a;
-      border-color: #0c681a;
-    }
-    .btn:hover{
-      background-color: green;
-      border-color: green;
-    }
-    .btn-cancel:hover{
-      background-color: #f09658;
-      border-color: #f09658;
-    }
     .btn-cancel{
       background-color: #e53749;
       border-color: #e53749;
-    }
-    .icon-orange{
-      color: #E27910;
-    }
-    .icon-green{
-      color: #0c681a;
     }
     .importante-card{
       margin: 2rem auto;

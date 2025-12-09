@@ -65,6 +65,60 @@
       </div>
     </b-card>
 
+    <!-- Todos los Rubros de Comercio -->
+    <b-card class="mb-4 dashboard-card" v-if="modulos?.comercio && rubrosAgrupados.length > 0">
+      <template #header>
+        <div class="d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-list-ul text-primary mr-2"></i>
+            <strong>Todos los Rubros - Trámites por Rubro</strong>
+          </div>
+          <b-badge variant="primary">{{ totalTramites }} trámites</b-badge>
+        </div>
+      </template>
+
+      <div v-for="(grupo, grupoIndex) in rubrosAgrupadosPaginados" :key="grupoIndex" class="mb-4">
+        <h6 class="text-dark mb-3 font-weight-bold border-bottom pb-2">
+          <i class="bi bi-folder-fill mr-2"></i>{{ grupo.categoria }}
+          <b-badge variant="secondary" class="ml-2">{{ grupo.totalTramites }}</b-badge>
+        </h6>
+        <div class="table-responsive">
+          <b-table
+            :items="grupo.rubros"
+            :fields="rubrosFields"
+            striped
+            hover
+            small
+            class="mb-0"
+          >
+            <template #cell(rubro)="data">
+              <span :title="data.value">{{ data.value }}</span>
+            </template>
+            <template #cell(cantidad)="data">
+              <strong class="text-primary">{{ data.value }}</strong>
+            </template>
+          </b-table>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+        <div>
+          <small class="text-muted">
+            Mostrando categoría {{ (currentPageRubros - 1) * perPageRubros + 1 }} -
+            {{ Math.min(currentPageRubros * perPageRubros, rubrosAgrupados.length) }}
+            de {{ rubrosAgrupados.length }} categorías
+          </small>
+        </div>
+        <b-pagination
+          v-model="currentPageRubros"
+          :total-rows="rubrosAgrupados.length"
+          :per-page="perPageRubros"
+          size="sm"
+          class="mb-0"
+        />
+      </div>
+    </b-card>
+
     <!-- Abierto Anual Detallado -->
     <b-card class="mb-4 dashboard-card" v-if="modulos?.abiertoAnual">
       <template #header>
@@ -339,6 +393,50 @@ export default {
       default: () => ({})
     }
   },
+  data() {
+    return {
+      currentPageRubros: 1,
+      perPageRubros: 10,
+      rubrosFields: [
+        {
+          key: 'rubro',
+          label: 'Rubro',
+          sortable: true,
+          thClass: 'text-left',
+          tdClass: 'text-left'
+        },
+        {
+          key: 'cantidad',
+          label: 'Cantidad de Trámites',
+          sortable: true,
+          thClass: 'text-right',
+          tdClass: 'text-right'
+        }
+      ],
+      categoriasRubros: {
+        'HOTELERÍA': [
+          'apart-hotel', 'cabaña', 'cama y desayuno', 'casa o departamento con servicios',
+          'glamping', 'hostel', 'hotel', 'hostería', 'hotel boutique', 'residencial'
+        ],
+        'GASTRONÓMICOS': [
+          'café-concert', 'cafetería', 'bar', 'casa de té', 'panchería', 'hamburguesería',
+          'peña', 'restaurante', 'pizzería'
+        ],
+        'ELABORADOS': [
+          'comidas para llevar', 'heladería', 'panadería',
+          'elaboración y venta de pan'
+        ],
+        'FRESCOS / CÁRNICOS': [
+          'carnicería', 'pescadería', 'venta de productos de granja'
+        ],
+        'VENTA DE ARTÍCULOS REGIONALES': [
+          'venta de artículos regionales', 'elaboración y venta de alfajores', 'chocolates',
+          'elaboración y venta de bebidas alcohólicas artesanales'
+        ],
+        'OTROS': [] // Para rubros que no encajan en las categorías anteriores
+      }
+    }
+  },
   computed: {
             topRubros() {
               if (!this.modulos.comercio?.porRubroCompleto) return []
@@ -347,6 +445,81 @@ export default {
     topLocalidadesSolicitante() {
       if (!this.modulos.comercio?.porLocalidadSolicitante) return []
       return this.modulos.comercio.porLocalidadSolicitante.slice(0, 10)
+    },
+    todosLosRubros() {
+      if (!this.modulos.comercio?.porRubroCompleto) return []
+      return this.modulos.comercio.porRubroCompleto.map(([rubro, cantidad]) => ({
+        rubro,
+        cantidad
+      }))
+    },
+    rubrosAgrupados() {
+      if (!this.modulos.comercio?.porRubroCompleto) return []
+
+      const grupos = {}
+
+      // Inicializar grupos
+      Object.keys(this.categoriasRubros).forEach(categoria => {
+        grupos[categoria] = []
+      })
+
+      // Agrupar rubros
+      this.modulos.comercio.porRubroCompleto.forEach(([rubro, cantidad]) => {
+        let categoriaEncontrada = false
+        const rubroNormalizado = this.normalizarTexto(rubro)
+
+        // Buscar en cada categoría (excepto OTROS)
+        for (const [categoria, rubrosCategoria] of Object.entries(this.categoriasRubros)) {
+          if (categoria === 'OTROS') continue
+
+          // Buscar coincidencia exacta o parcial
+          const encontrado = rubrosCategoria.some(rubroCategoria => {
+            const categoriaNormalizada = this.normalizarTexto(rubroCategoria)
+            // Coincidencia exacta o si el rubro contiene palabras clave de la categoría
+            return rubroNormalizado === categoriaNormalizada ||
+                   rubroNormalizado.includes(categoriaNormalizada) ||
+                   categoriaNormalizada.includes(rubroNormalizado)
+          })
+
+          if (encontrado) {
+            grupos[categoria].push({ rubro, cantidad })
+            categoriaEncontrada = true
+            break
+          }
+        }
+
+        // Si no se encontró categoría, poner en OTROS
+        if (!categoriaEncontrada) {
+          grupos['OTROS'].push({ rubro, cantidad })
+        }
+      })
+
+      // Convertir a array y ordenar por cantidad total de trámites
+      const categoriasOrdenadas = Object.entries(grupos)
+        .filter(([categoria, rubros]) => rubros.length > 0)
+        .map(([categoria, rubros]) => ({
+          categoria,
+          rubros: rubros.sort((a, b) => b.cantidad - a.cantidad),
+          totalTramites: rubros.reduce((sum, r) => sum + r.cantidad, 0)
+        }))
+        .sort((a, b) => {
+          // Si una es OTROS, siempre va al final
+          if (a.categoria === 'OTROS') return 1
+          if (b.categoria === 'OTROS') return -1
+          // Ordenar por total de trámites (mayor a menor)
+          return b.totalTramites - a.totalTramites
+        })
+
+      return categoriasOrdenadas
+    },
+    rubrosAgrupadosPaginados() {
+      const inicio = (this.currentPageRubros - 1) * this.perPageRubros
+      const fin = inicio + this.perPageRubros
+      return this.rubrosAgrupados.slice(inicio, fin)
+    },
+    totalTramites() {
+      if (!this.modulos.comercio?.porRubroCompleto) return 0
+      return this.modulos.comercio.porRubroCompleto.reduce((sum, [, cantidad]) => sum + cantidad, 0)
     }
   },
   methods: {
@@ -372,6 +545,14 @@ export default {
         default:
           return 'lightgrey'
       }
+    },
+    normalizarTexto(texto) {
+      if (!texto) return ''
+      return texto
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '') // Eliminar acentos
+        .trim()
     }
   }
 }

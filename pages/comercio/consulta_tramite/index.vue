@@ -16,8 +16,11 @@
             <b-form-input :disabled="enterKeyPressed" @keydown.enter.native="consultar" v-model="nroTramiteIngresado" type="number" size="lg" class="col-md-6 col-sm-10 mt-4 mx-auto" placeholder="Número de trámite" no-wheel></b-form-input>
           </b-form>
           <div class="btn-container col-sm-10">
-            <b-button class="btn-cancel" @click="onResetParams">Cancelar</b-button>
-            <b-button variant="success" @click="consultar">Aceptar</b-button>
+            <b-button class="btn-cancel" @click="onResetParams" :disabled="isConsulting">Cancelar</b-button>
+            <b-button variant="success" @click="consultar" :disabled="isConsulting">
+              <b-spinner v-if="isConsulting" small class="mr-2"></b-spinner>
+              {{ isConsulting ? 'Consultando...' : 'Aceptar' }}
+            </b-button>
           </div>
         </b-card>
       </div>
@@ -270,6 +273,7 @@ export default {
       sendingForm: false,
       token: 0,
       enterKeyPressed: false,
+      isConsulting: false,
       showPopupFormError: false,
       showPopupNoEntry: false,
       showPopupInit: false,
@@ -296,82 +300,92 @@ export default {
       return this.addDays(new Date(), this.maxRange);
     },
     async consultar() {
+      if (this.isConsulting) return; // Prevenir múltiples clics
+      
       this.enterKeyPressed = true
+      this.isConsulting = true
+      
       if (!this.nroTramiteIngresado) {
         this.showPopupNoEntry = true
-      } else {
-        try{
-          const nroTramite = this.nroTramiteIngresado
-
-          // Registrar consulta - detectar si hay usuario autenticado
-          const userId = this.$store.state.user?.username || 'Usuario Anónimo';
-          await this.$logUserActivity(
-            userId,
-            'Consulta de Trámite',
-            `Consulta de trámite nro ${nroTramite}`
-          );
-
-          await this.$store.dispatch('habilitaciones/getByNroTramite',  { nroTramite })
-          if(this.$store.state.habilitaciones.single){
-            const status = this.$store.state.habilitaciones.single.status
-            switch (status) {
-              case "En revisión":
-                this.showPopupInit = true
-                break
-              case "Rechazada":
-                this.showPopupRejected = true
-                break
-              case "Finalizada":
-                this.nroExpediente = this.$store.state.habilitaciones.single.nroExpediente
-                this.showPopupFinished = true
-                break
-              case "Esperando turno":
-                this.showPopupWaiting = true
-                break
-              case "Prórroga 1":
-                this.showPopupProrroga = true
-                break
-              case "Prórroga 2":
-                this.showPopupProrroga = true
-                break
-              case "Esperando inspección":
-                await this.$store.dispatch('turnos/getSingle', { nroTramite })
-                this.showPopupAlready = true
-                break
-              case "Inspeccionado":
-                await this.$store.dispatch('turnos/getSingle', { nroTramite })
-                this.showPopupInspected = true
-                break
-
-              case "Esperando documentación":
-                this.showPopupWaitingDoc = true
-                break
-              case "Esperando pago":
-                this.showPopupWaitingPay = true
-                break
-              case "Rectificación":
-                this.showPopupResend = true
-                break
-              default:
-                // Handle any other cases or provide a default behavior
-                break
-            }
-          }else{
-            this.showPopupFormError = true
-          }
-        }catch(e){
-          console.log(e)
-          this.$bvToast.toast('Algo salió mal buscando la habilitación.', {
-            title: 'Error',
-            variant: 'danger',
-            appendToast: true,
-            solid: true,
-            toaster: 'b-toaster-top-center',
-          });
-        }
+        this.isConsulting = false
+        await this.wait(500)
+        this.enterKeyPressed = false
+        return
       }
-      this.wait(500)
-      this.enterKeyPressed = false
+      
+      try{
+        const nroTramite = this.nroTramiteIngresado
+
+        // Registrar consulta - detectar si hay usuario autenticado
+        const userId = this.$store.state.user?.username || 'Usuario Anónimo';
+        await this.$logUserActivity(
+          userId,
+          'Consulta de Trámite',
+          `Consulta de trámite nro ${nroTramite}`
+        );
+
+        await this.$store.dispatch('habilitaciones/getByNroTramite',  { nroTramite })
+        if(this.$store.state.habilitaciones.single){
+          const status = this.$store.state.habilitaciones.single.status
+          switch (status) {
+            case "En revisión":
+              this.showPopupInit = true
+              break
+            case "Rechazada":
+              this.showPopupRejected = true
+              break
+            case "Finalizada":
+              this.nroExpediente = this.$store.state.habilitaciones.single.nroExpediente
+              this.showPopupFinished = true
+              break
+            case "Esperando turno":
+              this.showPopupWaiting = true
+              break
+            case "Prórroga 1":
+              this.showPopupProrroga = true
+              break
+            case "Prórroga 2":
+              this.showPopupProrroga = true
+              break
+            case "Esperando inspección":
+              await this.$store.dispatch('turnos/getSingle', { nroTramite })
+              this.showPopupAlready = true
+              break
+            case "Inspeccionado":
+              await this.$store.dispatch('turnos/getSingle', { nroTramite })
+              this.showPopupInspected = true
+              break
+
+            case "Esperando documentación":
+              this.showPopupWaitingDoc = true
+              break
+            case "Esperando pago":
+              this.showPopupWaitingPay = true
+              break
+            case "Rectificación":
+              this.showPopupResend = true
+              break
+            default:
+              // Handle any other cases or provide a default behavior
+              break
+          }
+        }else{
+          this.showPopupFormError = true
+        }
+      }catch(e){
+        console.log(e)
+        this.$bvToast.toast('Algo salió mal buscando la habilitación.', {
+          title: 'Error',
+          variant: 'danger',
+          appendToast: true,
+          solid: true,
+          toaster: 'b-toaster-top-center',
+        });
+      }finally{
+        this.isConsulting = false
+        await this.wait(500)
+        this.enterKeyPressed = false
+      }
     },
     onResetParams() {
       this.$router.push('/comercio');

@@ -120,6 +120,12 @@
           <div class="container justify-content-center mx-auto" v-if="paginatedVales && paginatedVales.length">
             <!-- Botones de utilización masiva -->
             <div class="row justify-content-center">
+              <!-- Botón para deseleccionar todos -->
+              <div class="text-center mx-3 my-3" v-if="valesSeleccionados.length">
+                <button class="btn btn-secondary" @click="deseleccionarTodos">
+                  <b-icon-x-circle/> Deseleccionar todos
+                </button>
+              </div>
               <!-- Botón para reimprimir seleccionados -->
               <div class="text-center mx-3 my-3" v-if="valesSeleccionados.length">
                 <button class="btn btn-primary" @click="abrirModalReimpresion">
@@ -489,6 +495,21 @@ export default {
       return Math.ceil(valesFiltrados.length / this.itemsPerPage);
     },
   },
+  watch: {
+    // Limpiar vales seleccionados que ya no están disponibles (consumidos o anulados)
+    vales: {
+      handler(newVales) {
+        if (!newVales || !Array.isArray(newVales)) return;
+        
+        // Filtrar los vales seleccionados para mantener solo los que están disponibles
+        this.valesSeleccionados = this.valesSeleccionados.filter(valeId => {
+          const vale = newVales.find(v => v.id === valeId || v._id === valeId);
+          return vale && !vale.consumido && !vale.anulado;
+        });
+      },
+      deep: true
+    }
+  },
   async fetch() {
     const ordenId = this.$route.params.id
     await this.$store.dispatch('combustible/getSingle',{
@@ -712,6 +733,9 @@ export default {
         // Hacer la petición al backend para eliminar el vale
         await this.$store.dispatch("combustible/anularVale", { id, userToken });
 
+        // Remover el vale de los seleccionados si estaba seleccionado
+        this.valesSeleccionados = this.valesSeleccionados.filter(valeId => valeId !== id);
+
         this.modalEliminacion = false;
         this.modalEliminado = true;
       } catch (error) {
@@ -723,9 +747,11 @@ export default {
 
       this.eliminandoVales = true; // Deshabilitar botón
 
-      for (let i = 0; i < this.valesSeleccionados.length; i++) {
+      const valesAEliminar = [...this.valesSeleccionados]; // Copiar el array antes de limpiarlo
+
+      for (let i = 0; i < valesAEliminar.length; i++) {
         try {
-          const id = this.valesSeleccionados[i];
+          const id = valesAEliminar[i];
           const userToken = this.$store.state.user.token;
 
           // Hacer la petición al backend para eliminar el vale
@@ -734,6 +760,9 @@ export default {
           alert('No se pudieron eliminar todos los vales. Hubo un problema con alguno de ellos')
         }
       }
+
+      // Limpiar la selección después de eliminar
+      this.valesSeleccionados = [];
 
       // Resetear estado del botón
       this.eliminandoVales = false;
@@ -780,6 +809,9 @@ export default {
           // Eliminar el vale de la lista en el frontend
           this.vales = this.vales.filter(v => v._id !== this.valeSeleccionado);
 
+          // Remover el vale de los seleccionados si estaba seleccionado
+          this.valesSeleccionados = this.valesSeleccionados.filter(valeId => valeId !== id);
+
           this.$bvModal.hide('modalUtilizacion')
           this.modalModificado = true;
         } catch (error) {
@@ -790,9 +822,11 @@ export default {
     async marcarValesSeleccionados() {
       if (this.valesSeleccionados.length === 0) return;
 
-      for (let i = 0; i < this.valesSeleccionados.length; i++) {
+      const valesAMarcar = [...this.valesSeleccionados]; // Copiar el array antes de limpiarlo
+
+      for (let i = 0; i < valesAMarcar.length; i++) {
         try {
-          const id = this.valesSeleccionados[i];
+          const id = valesAMarcar[i];
           const userToken = this.$store.state.user.token;
 
           const vale = {
@@ -810,8 +844,12 @@ export default {
       await this.$logUserActivity(
         this.$store.state.user.username,
         'Marcar Vales como Utilizados',
-        `${this.valesSeleccionados.length} vales marcados como utilizados`
+        `${valesAMarcar.length} vales marcados como utilizados`
       );
+      
+      // Limpiar la selección después de marcar como utilizados
+      this.valesSeleccionados = [];
+      
       await this.wait(500)
       this.$bvModal.hide('modalUtilizacionMasiva')
       location.reload()
@@ -920,6 +958,10 @@ export default {
     toggleOcultarAnulados() {
       this.ocultarAnulados = !this.ocultarAnulados;
       this.currentPage = 1; // Resetear a la primera página
+    },
+
+    deseleccionarTodos() {
+      this.valesSeleccionados = [];
     },
   },
 }

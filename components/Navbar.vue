@@ -107,6 +107,15 @@
               Maestro
           </NuxtLink>
         </b-navbar-nav>
+        <b-navbar-nav v-if="adminMaster">
+          <NuxtLink
+            class="nav-link"
+            active-class="active"
+            to="/actividades"
+          >
+              Actividades
+          </NuxtLink>
+        </b-navbar-nav>
       </div>
       <b-navbar-nav class="ml-auto">
         <template v-if="isAuthenticated">
@@ -157,6 +166,9 @@ export default {
     },
     adminCementerio(){
       return this.$store.state.user.admin == "cementerio" || this.$store.state.user.admin =="master"
+    },
+    adminMaster(){
+      return this.$store.state.user.admin == "master"
     },
     username() {
       return this.$store.state.user.username

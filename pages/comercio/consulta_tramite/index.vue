@@ -517,10 +517,6 @@ export default {
     width: 10rem;
   }
 
-  .btn-cancel:hover{
-    background-color: #f09658;
-    border-color: #f09658;
-  }
   .btn-cancel{
     background-color: #e53749;
     border-color: #e53749;
@@ -528,10 +524,6 @@ export default {
   .btn-primary{
     background-color: #2A43A1;
     border-color: #2A43A1;
-  }
-  .btn-primary:hover{
-    background-color: #589ff0;
-    border-color: #589ff0;
   }
   .section-card h5{
     font-size: 2rem;
@@ -548,12 +540,6 @@ export default {
     padding-right: 0.75rem;
     border-right: 1px solid #999;
   }
-  .icon-green{
-    color: #0c681a;
-  }
-  .icon-orange{
-  color: #E27910;
-}
 
   .li-icon, .li-title, label{
   font-weight: 600;
@@ -604,6 +590,27 @@ export default {
     appearance: textfield; /* Otros navegadores */
     width: 100%; /* Ajusta el ancho según tus necesidades */
     padding: 0.375rem 0.75rem; /* Ajusta el padding según tus necesidades */
+  }
+
+  /* Agregar márgenes laterales en mobile */
+  @media (max-width: 767.98px) {
+    .page {
+      overflow-x: hidden;
+    }
+    .section-card.col-md-6.mx-auto {
+      max-width: calc(100% - 30px) !important;
+      margin-left: 15px !important;
+      margin-right: 15px !important;
+      padding: 2rem 1.5rem !important;
+    }
+    .banner-container {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+    .mx-auto {
+      max-width: 100%;
+      box-sizing: border-box;
+    }
   }
 </style>
 

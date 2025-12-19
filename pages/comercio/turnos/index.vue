@@ -18,7 +18,7 @@
           </b-form>
           <div class="btn-container">
             <b-button class="btn-cancel" @click="onResetParams">Cancelar</b-button>
-            <b-button @click="onNextPage">Aceptar</b-button>
+            <b-button @click="onNextPage" variant="success">Aceptar</b-button>
           </div>
         </b-card>
       </div>
@@ -59,7 +59,7 @@
             />
             <div class="btn-container">
               <b-button @click="page-= 1" class="btn-cancel">Volver</b-button>
-              <b-button @click="onNextPage">Continuar</b-button>
+              <b-button @click="onNextPage" variant="success">Continuar</b-button>
             </div>
           </b-card>
         </div>
@@ -94,7 +94,7 @@
             </b-form-select>
             <div class="btn-container">
               <b-button @click="page-= 1" class="btn-cancel">Volver</b-button>
-              <b-button @click="onNextPage">Continuar</b-button>
+              <b-button @click="onNextPage" variant="success">Continuar</b-button>
             </div>
           </b-card>
         </div>
@@ -135,7 +135,7 @@
             </b-card>
             <div class="btn-container">
               <b-button @click="page-= 1" class="btn-cancel">Volver</b-button>
-              <b-button :disabled="sendingForm || !areAllFieldsComplete"  @click="onSelectTurno">Continuar</b-button>
+              <b-button :disabled="sendingForm || !areAllFieldsComplete"  @click="onSelectTurno" variant="success">Continuar</b-button>
             </div>
             <div v-if="!areAllFieldsComplete" class="validation-error">
               <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Falta completar información.
@@ -199,7 +199,7 @@
           <p>Tu número de trámite es: <b>{{nroTramite}} </b></p>
           <div class="btn-container">
             <b-button @click="onResetParams" class="btn-cancel">Volver</b-button>
-            <b-button @click="onPrintTicket">Imprimir</b-button>
+            <b-button @click="onPrintTicket" variant="success">Imprimir</b-button>
           </div>
         </div>
       </b-modal>
@@ -611,13 +611,6 @@ IMPORTANTE:
   .disabled-option {
     color: rgb(164, 163, 163);
   }
-  .btn-orange{
-    background-color:#eb8a0a !important;
-    border: none;
-  }
-  .text-green{
-    color:#0c6919;
-  }
   .centeredContainer{
     width:  auto;
     margin: auto;
@@ -731,18 +724,6 @@ IMPORTANTE:
     padding-left: 0;
     width: 10rem;
   }
-  .btn{
-    background-color: #0c681a;
-    border-color: #0c681a;
-  }
-  .btn:hover{
-    background-color: green;
-    border-color: green;
-  }
-  .btn-cancel:hover{
-    background-color: #f09658;
-    border-color: #f09658;
-  }
   .btn-cancel{
     background-color: #e53749;
     border-color: #e53749;
@@ -764,12 +745,6 @@ IMPORTANTE:
   }
   .section-card h5 .bi-ticket{
     width: 5%;
-  }
-  .icon-orange{
-    color: #E27910;
-  }
-  .icon-green{
-    color: #0c681a;
   }
   .importante-card{
     margin: 2rem auto;
@@ -823,18 +798,5 @@ IMPORTANTE:
   }
   .bi-check{
     vertical-align: top;
-  }
-  /* Selector para ocultar las flechas en los inputs numéricos */
-  input[type="number"]::-webkit-inner-spin-button,
-  input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-  /* Opcional: Estilos adicionales para los inputs numéricos */
-  input[type="number"] {
-    -moz-appearance: textfield; /* Firefox */
-    appearance: textfield; /* Otros navegadores */
-    width: 100%; /* Ajusta el ancho según tus necesidades */
-    padding: 0.375rem 0.75rem; /* Ajusta el padding según tus necesidades */
   }
 </style>

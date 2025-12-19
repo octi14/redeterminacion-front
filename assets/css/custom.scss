@@ -1,3 +1,16 @@
+// ============================================
+// VARIABLES
+// ============================================
+$color-orange-primary: #E27910;
+$color-green-primary: #0c681a;
+$color-green-text: #0c6919;
+$color-orange-button: #eb8a0a;
+$color-gray-dark: #353535;
+$color-gray-light: #666;
+
+// ============================================
+// LAYOUT BASE
+// ============================================
 html, body, div#__nuxt, div#__layout {
   height: 100%;
 }
@@ -139,4 +152,152 @@ html, body, div#__nuxt, div#__layout {
 
 .lightblue{
   background-color: #1d96fe;
+}
+
+// ============================================
+// UTILIDADES DE ICONOS
+// ============================================
+.icon-orange {
+  color: $color-orange-primary;
+}
+
+.icon-green {
+  color: $color-green-primary;
+}
+
+.text-green {
+  color: $color-green-text !important;
+}
+
+// ============================================
+// BOTONES PERSONALIZADOS
+// ============================================
+// Font-weight global para todos los botones
+.btn, button {
+  font-weight: 400;
+}
+
+// Hover común para botones success (verde)
+.btn-success:hover {
+  background-color: green;
+  border-color: green;
+}
+
+
+// Hover común para botones de cancelar
+.btn-cancel:hover {
+  background-color: #f09658;
+  border-color: #f09658;
+}
+
+// Hover común para botones deshabilitados
+.btn.disabled:hover {
+  background-color: #619D6A;
+  border-color: #619D6A;
+}
+
+.btn-orange {
+  background-color: $color-orange-button !important;
+  border: none;
+}
+
+// ============================================
+// INPUTS Y FORMULARIOS
+// ============================================
+// Selector para ocultar las flechas en los inputs numéricos
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+// Estilos adicionales para los inputs numéricos
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+  appearance: textfield; /* Otros navegadores */
+  width: 100%;
+  padding: 0.375rem 0.75rem;
+}
+
+// ============================================
+// ENLACES
+// ============================================
+.popup-link,
+.external-link {
+  color: $color-green-primary;
+}
+
+// ============================================
+// UTILIDADES GENERALES
+// ============================================
+.col h6 {
+  margin-bottom: 0%;
+}
+
+.col strong {
+  margin-bottom: 0%;
+}
+
+.col-main {
+  flex: 1;
+}
+
+.col-complementary {
+  flex: 1;
+}
+
+// Clases de utilidad para font-weight
+.font-weight-100 {
+  font-weight: 100;
+}
+
+.font-weight-200 {
+  font-weight: 200;
+}
+
+.font-weight-300 {
+  font-weight: 300;
+}
+
+.font-weight-400 {
+  font-weight: 400;
+}
+
+.font-weight-500 {
+  font-weight: 500;
+}
+
+.font-weight-600 {
+  font-weight: 600;
+}
+
+.font-weight-700 {
+  font-weight: 700;
+}
+
+.font-weight-800 {
+  font-weight: 800;
+}
+
+.font-weight-900 {
+  font-weight: 900;
+}
+
+.font-weight-1000 {
+  font-weight: 1000;
+}
+
+// ============================================
+// TRANSICIONES VUE
+// ============================================
+// Transiciones para listas (usado en componentes Feed)
+.list-enter-active,
+.list-leave-active {
+  transition: all 1s;
+}
+
+.list-enter,
+.list-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
 }

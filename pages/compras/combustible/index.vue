@@ -921,9 +921,6 @@ export default {
   padding: 1.5rem;
 }
 
-.icon-orange {
-  color: #FF7A00;
-}
 
 /* Sección de filtros con color personalizado */
 .filtro-section {

@@ -83,9 +83,6 @@
   margin-left: 3rem;
   font-weight: bold;
 }
-.icon-orange{
-  color: #E27910;
-}
 .first-li{
   margin-top: 1rem;
 }

@@ -382,11 +382,18 @@ export default {
   border: none;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
+  position: relative;
+  overflow: visible;
 }
 
 .date-range-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.date-range-card .card-body {
+  position: relative;
+  overflow: visible;
 }
 
 .date-range-card .card-header {

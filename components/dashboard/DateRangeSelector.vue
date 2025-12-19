@@ -25,6 +25,9 @@
             :max="fechaFin || new Date()"
             placeholder="Seleccionar fecha inicio"
             class="date-picker"
+            menu-class="datepicker-dropdown"
+            calendar-width="100%"
+            locale="es"
             @input="onDateChange"
           />
         </b-col>
@@ -39,6 +42,9 @@
             :max="new Date()"
             placeholder="Seleccionar fecha fin"
             class="date-picker"
+            menu-class="datepicker-dropdown"
+            calendar-width="100%"
+            locale="es"
             @input="onDateChange"
           />
         </b-col>
@@ -271,6 +277,8 @@ export default {
   border-radius: 10px;
   padding: 1.5rem;
   border: 1px solid #e9ecef;
+  position: relative;
+  overflow: visible;
 }
 
 .quick-range-buttons {
@@ -295,6 +303,8 @@ export default {
   border-radius: 8px;
   padding: 1rem;
   border: 1px solid #dee2e6;
+  position: relative;
+  overflow: visible;
 }
 
 .form-label {
@@ -307,11 +317,66 @@ export default {
   border-radius: 6px;
   border: 1px solid #ced4da;
   transition: all 0.2s ease;
+  position: relative;
 }
 
 .date-picker:focus {
   border-color: #007bff;
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Estilos para el dropdown del calendario */
+.datepicker-dropdown {
+  z-index: 1050 !important;
+  position: absolute !important;
+}
+
+/* Asegurar que el calendario no se corte */
+::v-deep .b-form-datepicker {
+  position: relative;
+  width: 100%;
+}
+
+::v-deep .b-form-datepicker .dropdown-menu {
+  z-index: 1050 !important;
+  position: absolute !important;
+  transform: none !important;
+  margin-top: 0.25rem !important;
+  min-width: 290px;
+  max-width: 100%;
+}
+
+/* Asegurar que el calendario se muestre correctamente */
+::v-deep .b-calendar {
+  z-index: 1050 !important;
+  width: 100%;
+}
+
+/* Asegurar que el input del datepicker tenga el ancho correcto */
+::v-deep .b-form-datepicker .form-control {
+  width: 100%;
+}
+
+/* Asegurar que el dropdown no se corte en contenedores con overflow */
+::v-deep .b-form-datepicker .dropdown {
+  position: static;
+}
+
+::v-deep .b-form-datepicker .dropdown-menu.show {
+  display: block !important;
+  position: absolute !important;
+  top: 100% !important;
+  left: 0 !important;
+  right: auto !important;
+  transform: translateY(0) !important;
+  will-change: transform;
+}
+
+/* Asegurar que el contenedor del dropdown tenga el contexto correcto */
+::v-deep .b-form-datepicker > .dropdown {
+  position: relative;
+  display: block;
+  width: 100%;
 }
 
 .date-separator {

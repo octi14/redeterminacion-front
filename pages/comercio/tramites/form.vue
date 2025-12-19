@@ -503,8 +503,8 @@
             <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.libreDeudaUrbana || 'Debe seleccionar un archivo.' }}
           </div>
         </b-form-group>
-        <b-form-group >
-          <label v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')" for="tituloPropiedad"><span v-if="solicitante.tipoSolicitud != 'Renovación' && solicitante.tipoSolicitud != 'Reempadronamiento'">Escritura traslativa de Dominio del inmueble /</span> Contrato de locación / Otro. <span v-if="solicitante.tipoSolicitud != 'Reempadronamiento'">*</span><i v-else>(Sólo en caso que presente modificaciones desde la fecha en que se extendió el certificado de habilitación original)</i></label>
+        <b-form-group v-if="solicitante.tipoSolicitud != 'Reempadronamiento'">
+          <label v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación')" for="tituloPropiedad"><span v-if="solicitante.tipoSolicitud != 'Renovación' && solicitante.tipoSolicitud != 'Reempadronamiento'">Escritura traslativa de Dominio del inmueble /</span> Contrato de locación / Otro. <span v-if="solicitante.tipoSolicitud != 'Reempadronamiento'">*</span><i v-else>(Sólo en caso que presente modificaciones desde la fecha en que se extendió el certificado de habilitación original)</i></label>
           <label v-if="solicitante.tipoSolicitud=='Baja'" for="tituloPropiedad"><span v-if="solicitante.tipoSolicitud != 'Renovación' && solicitante.tipoSolicitud != 'Reempadronamiento'"> Escritura traslativa de Dominio del inmueble / </span>Contrato de locación / Boleto de Compraventa. <span v-if="!solicitante.esTitular && solicitante.esPropietario">* </span></label>
           <b-form-file v-model="documentos.tituloPropiedad.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
           accept=".pdf, image/*"  :state="getFormFieldState('tituloPropiedad')"

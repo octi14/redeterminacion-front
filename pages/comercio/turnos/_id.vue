@@ -19,10 +19,10 @@
         </div>
       </div>
       <div class="row col-10 mx-auto justify-content-center" v-if="adminInspeccion">
-        <b-button @click="onAprobar" variant="success" pill class="btn-4 mt-3 mx-1"> Aprobar inspección </b-button>
-        <b-button @click="onProrroga" variant="secondary" pill class="btn-4 mt-3 mx-1"> Prórroga </b-button>
-        <!-- <b-button @click="onRechazarTurno" pill class="btn-3 mt-3 mx-1"> Cancelar turno </b-button> -->
-        <b-button @click="onRechazarInsp" pill class="btn-3 mt-3 mx-1"> Rechazar inspección </b-button>
+        <b-button @click="onAprobar" variant="success" class="btn-4 mt-3 mx-1"> Aprobar inspección </b-button>
+        <b-button @click="onProrroga" variant="secondary" class="btn-4 mt-3 mx-1"> Prórroga </b-button>
+        <!-- <b-button @click="onRechazarTurno" class="btn-3 mt-3 mx-1"> Cancelar turno </b-button> -->
+        <b-button @click="onRechazarInsp" class="btn-3 mt-3 mx-1"> Rechazar inspección </b-button>
       </div>
       <!-- datos del turno -->
       <div class="container col-md-6 col-sm-8 card shadow-card mt-4 mx-auto">
@@ -40,7 +40,7 @@
             <p class="col col-complementary" role="complementary">
               <a>{{ turno.dia + " " + turno.horario}}</a>
             </p>
-          <b-btn v-if="turno.status != 'Cancelado'" @click="onRechazarTurno" style="height: 30px; width:85px" size="sm" pill variant="danger" class="mx-1"><b> Cancelar</b></b-btn>
+          <b-btn v-if="turno.status != 'Cancelado'" @click="onRechazarTurno" style="height: 30px; width:85px" size="sm" variant="danger" class="mx-1"> Cancelar</b-btn>
           </div>
           <div class="layout">
             <p class="col col-main">
@@ -578,17 +578,6 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
 <style type="text/css">
 /* Layout: */
 
-.col-main {
-  flex: 1;
-}
-
-.col-complementary {
-  flex: 1;
-}
-
-.col strong{
-  margin-bottom: 0%;
-}
 /* Responsive: */
 
 @media only screen and (min-width: 640px) {

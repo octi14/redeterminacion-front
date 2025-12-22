@@ -1,5 +1,7 @@
 const areas = [
   "Intendente Municipal",
+  "Dependencias policiales",
+  "PUM",
   "Secretaría de Salud",
   "Secretaría de Hacienda",
   "Secretaría de Obras",
@@ -20,7 +22,8 @@ const areas = [
   "Corralón Sur",
   "Obras Sanitarias",
   "Obras Públicas",
-  "Transporte"
+  "Transporte",
+  "Secretaría de Planeamiento"
 ];
 
 export default areas;

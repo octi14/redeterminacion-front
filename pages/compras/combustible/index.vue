@@ -40,7 +40,7 @@
 
           <b-button
             v-if="row.item.observaciones && row.item.observaciones !== ''"
-            @click="onShowObservaciones(row.index)"
+            @click="onShowObservaciones(row.item)"
             variant="outline-primary"
             title="Observaciones"
           >
@@ -548,7 +548,8 @@ export default {
       vehiculoEdit: {
         id: null,
         patente: '',
-        area: ''
+        area: '',
+        areaOriginal: '' // Para guardar el área original antes de editar
       },
       vehiculosFields: [
         { key: 'patente', label: 'Patente', sortable: true },
@@ -664,9 +665,9 @@ export default {
       this.showEliminarOrden = false,
       location.reload();  // Refrescar página
     },
-    onShowObservaciones(index){
-      if(this.ordenesCompra[index].observaciones){
-        this.observaciones = this.ordenesCompra[index].observaciones.split('**').join('<br>').split(',').join('')
+    onShowObservaciones(item){
+      if(item.observaciones){
+        this.observaciones = item.observaciones.split('**').join('<br>').split(',').join('')
       }else{
         this.observaciones = "No hay observaciones para mostrar."
       }
@@ -699,7 +700,7 @@ export default {
 
         // Registrar actividad de creación de orden de compra
         await this.$logUserActivity(
-          this.$store.state.user.email,
+          this.$store.state.user.username,
           'Crear Orden de Compra',
           `Orden de compra ${nroOrden} creada para el área ${this.orden.area}`
         );
@@ -834,7 +835,8 @@ export default {
       this.vehiculoEdit = {
         id: vehiculo.id,
         patente: vehiculo.patente,
-        area: vehiculo.area
+        area: vehiculo.area,
+        areaOriginal: vehiculo.area // Guardar el área original
       };
       this.showEditarVehiculo = true;
     },
@@ -844,7 +846,8 @@ export default {
       this.vehiculoEdit = {
         id: null,
         patente: '',
-        area: ''
+        area: '',
+        areaOriginal: ''
       };
     },
     async actualizarVehiculo() {
@@ -870,11 +873,20 @@ export default {
         });
 
         // Registrar actividad de modificación de vehículo
-        await this.$logUserActivity(
-          this.$store.state.user.email,
-          'Modificar Vehículo',
-          `Vehículo ${this.vehiculoEdit.patente} actualizado en el área ${this.vehiculoEdit.area}`
-        );
+        // Verificar si el área cambió para registrar específicamente el cambio de área
+        if (this.vehiculoEdit.areaOriginal !== this.vehiculoEdit.area) {
+          await this.$logUserActivity(
+            this.$store.state.user.username,
+            'Modificar Vehículo - Cambio de Área',
+            `Vehículo ${this.vehiculoEdit.patente}: área cambiada de ${this.vehiculoEdit.areaOriginal} a ${this.vehiculoEdit.area}`
+          );
+        } else {
+          await this.$logUserActivity(
+            this.$store.state.user.username,
+            'Modificar Vehículo',
+            `Vehículo ${this.vehiculoEdit.patente} actualizado en el área ${this.vehiculoEdit.area}`
+          );
+        }
 
         // Cerrar modal y mostrar mensaje de éxito
         this.cerrarModalEditar();
@@ -909,9 +921,6 @@ export default {
   padding: 1.5rem;
 }
 
-.icon-orange {
-  color: #FF7A00;
-}
 
 /* Sección de filtros con color personalizado */
 .filtro-section {

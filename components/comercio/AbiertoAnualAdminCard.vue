@@ -712,12 +712,6 @@ display: none;
   margin: 2rem auto !important;
   width: 100% !important;
 }
-.icon-orange{
-color: #E27910;
-}
-.icon-green{
-color: #0c681a;
-}
 .li-icon, .li-content{
 display: inline-block;
 }
@@ -822,20 +816,8 @@ width: 100%;
   margin: 1rem auto;
   text-align: center;
 }
-.btn-approve{
-  background-color: #0c681a;
-  border-color: #0c681a;
-}
-.btn-approve:hover{
-  background-color: green;
-  border-color: green;
-}
 .btn-rectific{
   cursor: pointer;
-}
-.btn-cancel:hover{
-  background-color: #f09658;
-  border-color: #f09658;
 }
 .btn-cancel{
   background-color: #e53749;

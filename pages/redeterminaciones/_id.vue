@@ -349,19 +349,6 @@ export default {
 </script>
 
 <style type="text/css">
-/* Layout: */
-
-.col-main {
-  flex: 1;
-}
-
-.col-complementary {
-  flex: 1;
-}
-
-.col strong{
-  margin-bottom: 0%;
-}
 /* Responsive: */
 
 @media only screen and (min-width: 640px) {

@@ -302,7 +302,7 @@
                 <strong>{{ nombreDocumento }}</strong>
               </div>
               <div class="col-2 text-center">
-                <b-button size="sm" @click="openDocumento(documento, nombreDocumento)" variant="outline-primary" pill>
+                <b-button size="sm" @click="openDocumento(documento, nombreDocumento)" variant="outline-primary">
                   <b-icon icon="eye-fill" scale="1.2"></b-icon>
                 </b-button>
               </div>
@@ -1671,21 +1671,6 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
   max-width: 80% !important;
 }
 
-.col-main {
-  flex: 1;
-}
-
-.col-complementary {
-  flex: 1;
-}
-
-.icon-orange{
-  color: #E27910;
-}
-
-.col strong{
-  margin-bottom: 0%;
-}
 /* Responsive: */
 
 @media only screen and (min-width: 640px) {

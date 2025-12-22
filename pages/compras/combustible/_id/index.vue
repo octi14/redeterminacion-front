@@ -101,6 +101,17 @@
               <b-icon-receipt class="icon-orange mt-4 ml-4" scale="2"/>
               <a class="ml-3 mr-2 mt-2 separador" > | </a>
               <h2 class="text-green mt-3"><b>Vales emitidos</b></h2>
+              <div class="ml-auto mr-4 mt-2">
+                <b-button
+                  :variant="ocultarAnulados ? 'primary' : 'outline-secondary'"
+                  size="sm"
+                  @click="toggleOcultarAnulados"
+                >
+                  <b-icon-eye-slash v-if="ocultarAnulados"/>
+                  <b-icon-eye v-else/>
+                  {{ ocultarAnulados ? 'Mostrar anulados' : 'Ocultar anulados' }}
+                </b-button>
+              </div>
             </h5>
             <hr />
           </div>
@@ -109,6 +120,12 @@
           <div class="container justify-content-center mx-auto" v-if="paginatedVales && paginatedVales.length">
             <!-- Botones de utilización masiva -->
             <div class="row justify-content-center">
+              <!-- Botón para deseleccionar todos -->
+              <div class="text-center mx-3 my-3" v-if="valesSeleccionados.length">
+                <button class="btn btn-secondary" @click="deseleccionarTodos">
+                  <b-icon-x-circle/> Deseleccionar todos
+                </button>
+              </div>
               <!-- Botón para reimprimir seleccionados -->
               <div class="text-center mx-3 my-3" v-if="valesSeleccionados.length">
                 <button class="btn btn-primary" @click="abrirModalReimpresion">
@@ -408,6 +425,7 @@ export default {
       tempValeRef: null,
       eliminandoVales: false, // Control para deshabilitar botón de eliminar vales seleccionados
       filtroTipoCombustible: null, // Filtro por tipo de combustible
+      ocultarAnulados: false, // Control para ocultar/mostrar vales anulados
     }
   },
   computed: {
@@ -448,6 +466,11 @@ export default {
         );
       }
 
+      // Filtrar anulados si está activo el filtro
+      if (this.ocultarAnulados) {
+        valesFiltrados = valesFiltrados.filter(vale => !vale.anulado);
+      }
+
       const start = (this.currentPage - 1) * this.itemsPerPage;
       return valesFiltrados.slice(start, start + this.itemsPerPage);
     },
@@ -464,8 +487,28 @@ export default {
         );
       }
 
+      // Filtrar anulados si está activo el filtro
+      if (this.ocultarAnulados) {
+        valesFiltrados = valesFiltrados.filter(vale => !vale.anulado);
+      }
+
       return Math.ceil(valesFiltrados.length / this.itemsPerPage);
     },
+  },
+  watch: {
+    // Limpiar vales seleccionados que ya no están disponibles (consumidos o anulados)
+    vales: {
+      handler(newVales) {
+        if (!newVales || !Array.isArray(newVales)) return;
+        
+        // Filtrar los vales seleccionados para mantener solo los que están disponibles
+        this.valesSeleccionados = this.valesSeleccionados.filter(valeId => {
+          const vale = newVales.find(v => v.id === valeId || v._id === valeId);
+          return vale && !vale.consumido && !vale.anulado;
+        });
+      },
+      deep: true
+    }
   },
   async fetch() {
     const ordenId = this.$route.params.id
@@ -690,6 +733,9 @@ export default {
         // Hacer la petición al backend para eliminar el vale
         await this.$store.dispatch("combustible/anularVale", { id, userToken });
 
+        // Remover el vale de los seleccionados si estaba seleccionado
+        this.valesSeleccionados = this.valesSeleccionados.filter(valeId => valeId !== id);
+
         this.modalEliminacion = false;
         this.modalEliminado = true;
       } catch (error) {
@@ -701,9 +747,11 @@ export default {
 
       this.eliminandoVales = true; // Deshabilitar botón
 
-      for (let i = 0; i < this.valesSeleccionados.length; i++) {
+      const valesAEliminar = [...this.valesSeleccionados]; // Copiar el array antes de limpiarlo
+
+      for (let i = 0; i < valesAEliminar.length; i++) {
         try {
-          const id = this.valesSeleccionados[i];
+          const id = valesAEliminar[i];
           const userToken = this.$store.state.user.token;
 
           // Hacer la petición al backend para eliminar el vale
@@ -712,6 +760,9 @@ export default {
           alert('No se pudieron eliminar todos los vales. Hubo un problema con alguno de ellos')
         }
       }
+
+      // Limpiar la selección después de eliminar
+      this.valesSeleccionados = [];
 
       // Resetear estado del botón
       this.eliminandoVales = false;
@@ -750,13 +801,16 @@ export default {
 
           // Registrar actividad de uso de vale
           await this.$logUserActivity(
-            this.$store.state.user.email,
+            this.$store.state.user.username,
             'Marcar Vale como Utilizado',
             `Vale ${this.tempValeRef.nro_vale} marcado como utilizado`
           );
 
           // Eliminar el vale de la lista en el frontend
           this.vales = this.vales.filter(v => v._id !== this.valeSeleccionado);
+
+          // Remover el vale de los seleccionados si estaba seleccionado
+          this.valesSeleccionados = this.valesSeleccionados.filter(valeId => valeId !== id);
 
           this.$bvModal.hide('modalUtilizacion')
           this.modalModificado = true;
@@ -768,9 +822,11 @@ export default {
     async marcarValesSeleccionados() {
       if (this.valesSeleccionados.length === 0) return;
 
-      for (let i = 0; i < this.valesSeleccionados.length; i++) {
+      const valesAMarcar = [...this.valesSeleccionados]; // Copiar el array antes de limpiarlo
+
+      for (let i = 0; i < valesAMarcar.length; i++) {
         try {
-          const id = this.valesSeleccionados[i];
+          const id = valesAMarcar[i];
           const userToken = this.$store.state.user.token;
 
           const vale = {
@@ -786,10 +842,14 @@ export default {
 
       // Registrar actividad de uso masivo de vales
       await this.$logUserActivity(
-        this.$store.state.user.email,
+        this.$store.state.user.username,
         'Marcar Vales como Utilizados',
-        `${this.valesSeleccionados.length} vales marcados como utilizados`
+        `${valesAMarcar.length} vales marcados como utilizados`
       );
+      
+      // Limpiar la selección después de marcar como utilizados
+      this.valesSeleccionados = [];
+      
       await this.wait(500)
       this.$bvModal.hide('modalUtilizacionMasiva')
       location.reload()
@@ -848,6 +908,11 @@ export default {
         );
       }
 
+      // Filtrar anulados si está activo el filtro
+      if (this.ocultarAnulados) {
+        valesFiltrados = valesFiltrados.filter(vale => !vale.anulado);
+      }
+
       const start = (this.currentPage - 1) * this.itemsPerPage + 1;
       const end = Math.min(this.currentPage * this.itemsPerPage, valesFiltrados.length);
       return { start, end };
@@ -858,14 +923,20 @@ export default {
         return 0;
       }
 
+      let valesFiltrados = this.vales;
+
       if (this.filtroTipoCombustible) {
-        const valesFiltrados = this.vales.filter(vale =>
+        valesFiltrados = this.vales.filter(vale =>
           vale.tipoCombustible === this.filtroTipoCombustible
         );
-        return valesFiltrados.length;
       }
 
-      return this.vales.length;
+      // Filtrar anulados si está activo el filtro
+      if (this.ocultarAnulados) {
+        valesFiltrados = valesFiltrados.filter(vale => !vale.anulado);
+      }
+
+      return valesFiltrados.length;
     },
 
     filtrarPorTipoCombustible(tipoCombustible) {
@@ -883,42 +954,19 @@ export default {
       this.filtroTipoCombustible = null;
       this.currentPage = 1; // Resetear a la primera página
     },
+
+    toggleOcultarAnulados() {
+      this.ocultarAnulados = !this.ocultarAnulados;
+      this.currentPage = 1; // Resetear a la primera página
+    },
+
+    deseleccionarTodos() {
+      this.valesSeleccionados = [];
+    },
   },
 }
 </script>
 
-<style>
-.font-weight-100{
-  font-weight: 100;
-}
-.font-weight-200{
-  font-weight: 200;
-}
-.font-weight-300{
-  font-weight: 300;
-}
-.font-weight-400{
-  font-weight: 400;
-}
-.font-weight-500{
-  font-weight: 500;
-}
-.font-weight-600{
-  font-weight: 600;
-}
-.font-weight-700{
-  font-weight: 700;
-}
-.font-weight-800{
-  font-weight: 800;
-}
-.font-weight-900{
-  font-weight: 900;
-}
-.font-weight-1000{
-  font-weight: 1000;
-}
-</style>
 
 <style scoped>
 .fuel-icon {
@@ -943,9 +991,6 @@ export default {
   align-self: start;
 }
 
-.text-green{
-  color: #196B23;
-}
 
 .text-gray{
   color:#505050;
@@ -1121,13 +1166,7 @@ export default {
 .modal-dialog {
   max-width: 80% !important;
 }
-.icon-orange{
-  color: #e08933;
-}
 
-.col strong{
-  margin-bottom: 0%;
-}
 /* Responsive: */
 
 @media only screen and (min-width: 640px) {

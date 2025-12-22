@@ -510,12 +510,6 @@ h3{
 .btn-success{
     width: 100%;
 }
-.icon-orange{
-  color: #E27910;
-}
-.icon-green{
-  color: #0c681a;
-}
 .li-icon, .li-content{
   display: inline-block;
 }

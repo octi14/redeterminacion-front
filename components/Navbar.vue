@@ -89,6 +89,15 @@
               Pagos dobles
           </NuxtLink>
         </b-navbar-nav>
+        <b-navbar-nav v-if="adminCementerio" class="mr-2">
+          <NuxtLink
+            class="nav-link"
+            active-class="active"
+            to="/cementerio/solicitudes"
+          >
+              Cementerio
+          </NuxtLink>
+        </b-navbar-nav>
         <b-navbar-nav v-if="adminArvige">
           <NuxtLink
             class="nav-link"
@@ -104,7 +113,6 @@
             active-class="active"
             to="/actividades"
           >
-              <b-icon-list-task class="mr-1" />
               Actividades
           </NuxtLink>
           <NuxtLink
@@ -166,15 +174,18 @@ export default {
     adminMaster(){
       return this.$store.state.user.admin == "master"
     },
+    adminCementerio(){
+      return this.$store.state.user.admin == "cementerio" || this.$store.state.user.admin =="master"
+    },
+    adminMaster(){
+      return this.$store.state.user.admin == "master"
+    },
     username() {
       return this.$store.state.user.username
     },
     userId() {
       return this.$store.state.user.id
     },
-    adminMaster(){
-      return this.$store.state.user.admin == "master"
-    }
   },
   methods: {
     async registrarActividad(evento, result){

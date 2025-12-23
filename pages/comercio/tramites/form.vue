@@ -1747,6 +1747,8 @@
 Su solicitud de trámite comercial ha sido registrada correctamente.
 En los próximos días recibirá un correo electrónico del Departamento Comercio Municipal en el que le indicarán cómo continuar.
 Asegúrese de revisar la bandeja de correos no deseados (Spam).
+Tené en cuenta que el trámite finalizará con la presentación de la documentación original en la oficina de comercio dentro
+ de los 10 días hábiles posteriores a recibir el mail de confirmación.
 
 Número de trámite: ${this.nroTramite}
 Tipo de solicitud: ${this.solicitante.tipoSolicitud}

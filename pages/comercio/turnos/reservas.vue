@@ -22,7 +22,7 @@
 
       <b-form-checkbox class="text-center" v-model="hideFinalizados">Ocultar Inspeccionados/Cancelados</b-form-checkbox>
 
-      <b-table per-page="10" head-row-variant="primary" class="col-md-10 col-sm-8 mx-auto mt-4 shadow-card white" hover :items="paginatedItems" :fields="fields">
+      <b-table per-page="10" head-row-variant="primary" class="col-md-10 col-sm-8 mx-auto mt-4 shadow-card white" hover :items="filteredItems" :fields="fields" :current-page="currentPage" :sort-compare="onSortCompare">
         <template #cell(status)="row">
           <div :class="row.item.estadoColor"><b>{{ row.value }}</b></div>
         </template>
@@ -41,7 +41,7 @@
         </template>
       </b-table>
 
-      <b-pagination :total-rows="items.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
+      <b-pagination :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
 
     </div>
 
@@ -69,6 +69,7 @@ export default{
         {
           key: 'nroTramite',
           label: 'Número de trámite',
+          sortable: true,
         },
         {
           key: 'tipoTramite',
@@ -77,6 +78,7 @@ export default{
         {
           key: 'dia',
           label: 'Fecha de inspección',
+          sortable: true,
         },
         {
           key: 'horario',
@@ -158,16 +160,24 @@ export default{
       }).slice(startIndex, endIndex);
     },
     filteredItems() {
-      let estadoFiltered = this.items;
+      let items = this.items;
+
+      // Filtrar por estado
       if (this.selectedEstado) {
-        estadoFiltered = this.items.filter(item => item.status == this.selectedEstado);
+        items = items.filter(item => item.status === this.selectedEstado);
       }
 
+      // Filtrar por tipo de trámite
       if (this.selectedTipoTramite) {
-        return estadoFiltered.filter(item => item.tipoTramite == this.selectedTipoTramite);
-      } else {
-        return estadoFiltered; // Sin filtro de tipo de trámite, mostrar todos los elementos
+        items = items.filter(item => item.tipoTramite === this.selectedTipoTramite);
       }
+
+      // Filtrar finalizados si está activo
+      if (this.hideFinalizados) {
+        items = items.filter(item => !["Cancelado", "Inspeccionado"].includes(item.status));
+      }
+
+      return items;
     },
     adminComercio(){
       return this.$store.state.user.admin == "comercio" || this.$store.state.user.admin == "master"
@@ -208,6 +218,49 @@ export default{
       this.$fetch()
       this.singleModal = true
       this.registrarActividad("Ver Observaciones", "Trámite nro: " + turno[0].nroTramite);
+    },
+    onSortCompare(a, b, key) {
+      // Ordenamiento personalizado para campos específicos
+      if (key === 'nroTramite') {
+        // Ordenar como número
+        const numA = Number(a[key]) || 0;
+        const numB = Number(b[key]) || 0;
+        return numA - numB;
+      }
+      
+      if (key === 'dia') {
+        // Convertir fecha DD/MM/YYYY a objeto Date para comparar
+        const parseDate = (dateStr) => {
+          if (!dateStr) return new Date(0);
+          // Asegurarse de que sea string
+          const str = String(dateStr).trim();
+          const parts = str.split('/');
+          if (parts.length === 3) {
+            const day = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10) - 1; // Los meses en Date son 0-indexed
+            const year = parseInt(parts[2], 10);
+            // Validar que los valores sean números válidos
+            if (isNaN(day) || isNaN(month + 1) || isNaN(year)) {
+              return new Date(0);
+            }
+            const date = new Date(year, month, day);
+            // Validar que la fecha sea válida
+            if (isNaN(date.getTime())) {
+              return new Date(0);
+            }
+            return date;
+          }
+          return new Date(0);
+        };
+        
+        const dateA = parseDate(a[key]);
+        const dateB = parseDate(b[key]);
+        const diff = dateA.getTime() - dateB.getTime();
+        return diff;
+      }
+      
+      // Retornar false para usar el ordenamiento por defecto de Bootstrap Vue
+      return false;
     },
   },
 }

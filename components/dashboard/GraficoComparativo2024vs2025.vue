@@ -6,7 +6,6 @@
           <div>
             <i class="bi bi-graph-up text-primary mr-2"></i>
             <strong>Comparación de Trámites Comerciales: 2024 vs 2025</strong>
-            <small class="text-muted ml-2">(Hasta {{ mesesAMostrarTexto }})</small>
           </div>
           <b-badge variant="info" class="ml-2 mt-2 mt-md-0">
             Total 2024: {{ total2024 }} | Total 2025: {{ total2025 }}
@@ -22,7 +21,6 @@
       <div v-else-if="chartData.labels.length === 0 || (chartData.datasets[0].data.every(d => d === 0) && chartData.datasets[1].data.every(d => d === 0))" class="text-center py-4">
         <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
         <p class="mt-2 text-muted">No hay datos suficientes para mostrar la comparación</p>
-        <small class="text-muted">Mostrando comparación hasta {{ mesesAMostrarTexto }}</small>
       </div>
 
       <div v-else>
@@ -36,7 +34,7 @@
 </template>
 
 <script>
-let Chart = null
+import Chart from '~/plugins/chart.js'
 
 export default {
   name: 'GraficoComparativo2024vs2025',
@@ -59,7 +57,15 @@ export default {
             backgroundColor: 'rgba(54, 162, 235, 0.6)',
             borderColor: 'rgba(54, 162, 235, 1)',
             borderWidth: 2,
-            tension: 0.4
+            tension: 0.4,
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            pointBackgroundColor: 'rgba(54, 162, 235, 1)',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
+            pointHoverBackgroundColor: 'rgba(54, 162, 235, 1)',
+            pointHoverBorderColor: '#ffffff',
+            pointHoverBorderWidth: 3
           },
           {
             label: '2025',
@@ -67,7 +73,15 @@ export default {
             backgroundColor: 'rgba(75, 192, 192, 0.6)',
             borderColor: 'rgba(75, 192, 192, 1)',
             borderWidth: 2,
-            tension: 0.4
+            tension: 0.4,
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
+            pointHoverBackgroundColor: 'rgba(75, 192, 192, 1)',
+            pointHoverBorderColor: '#ffffff',
+            pointHoverBorderWidth: 3
           }
         ]
       },
@@ -94,6 +108,108 @@ export default {
               label: function(context) {
                 return context.dataset.label + ': ' + context.parsed.y + ' trámites'
               }
+            }
+          },
+          datalabels: {
+            display: true,
+            color: '#212529',
+            anchor: function(context) {
+              try {
+                if (!context.chart || !context.chart.data || !context.chart.data.datasets) {
+                  return 'end'
+                }
+                const dataIndex = context.dataIndex
+                const datasets = context.chart.data.datasets
+                
+                if (datasets.length < 2) return 'end'
+                
+                const value0 = datasets[0].data[dataIndex] || 0
+                const value1 = datasets[1].data[dataIndex] || 0
+                const currentValue = context.parsed.y || 0
+                const currentDatasetIndex = context.datasetIndex
+                
+                if (currentDatasetIndex === 0) {
+                  return currentValue >= value1 ? 'end' : 'start'
+                } else {
+                  return currentValue >= value0 ? 'end' : 'start'
+                }
+              } catch (e) {
+                console.error('Error en anchor:', e)
+                return 'end'
+              }
+            },
+            align: function(context) {
+              try {
+                if (!context.chart || !context.chart.data || !context.chart.data.datasets) {
+                  return 'top'
+                }
+                const dataIndex = context.dataIndex
+                const datasets = context.chart.data.datasets
+                
+                if (datasets.length < 2) return 'top'
+                
+                const value0 = datasets[0].data[dataIndex] || 0
+                const value1 = datasets[1].data[dataIndex] || 0
+                const currentValue = context.parsed.y || 0
+                const currentDatasetIndex = context.datasetIndex
+                
+                if (currentDatasetIndex === 0) {
+                  return currentValue >= value1 ? 'top' : 'bottom'
+                } else {
+                  return currentValue >= value0 ? 'top' : 'bottom'
+                }
+              } catch (e) {
+                console.error('Error en align:', e)
+                return 'top'
+              }
+            },
+            offset: function(context) {
+              try {
+                if (!context.chart || !context.chart.data || !context.chart.data.datasets) {
+                  return 8
+                }
+                const dataIndex = context.dataIndex
+                const datasets = context.chart.data.datasets
+                
+                if (datasets.length < 2) return 8
+                
+                const value0 = datasets[0].data[dataIndex] || 0
+                const value1 = datasets[1].data[dataIndex] || 0
+                const currentValue = context.parsed.y || 0
+                const currentDatasetIndex = context.datasetIndex
+                
+                if (currentDatasetIndex === 0) {
+                  return currentValue >= value1 ? 8 : -8
+                } else {
+                  return currentValue >= value0 ? 8 : -8
+                }
+              } catch (e) {
+                console.error('Error en offset:', e)
+                return 8
+              }
+            },
+            formatter: function(value, context) {
+              if (context && context.parsed && context.parsed.y !== undefined) {
+                return context.parsed.y > 0 ? context.parsed.y : ''
+              }
+              return value > 0 ? value : ''
+            },
+            font: {
+              weight: 'bold',
+              size: 11
+            },
+            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            padding: {
+              top: 4,
+              bottom: 4,
+              left: 6,
+              right: 6
+            },
+            borderRadius: 4,
+            borderWidth: 1,
+            borderColor: function(context) {
+              const datasetIndex = context.datasetIndex || 0
+              return datasetIndex === 0 ? 'rgba(54, 162, 235, 0.5)' : 'rgba(75, 192, 192, 0.5)'
             }
           }
         },
@@ -282,20 +398,20 @@ export default {
         'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
       ]
 
-      // Solo mostrar hasta el mes actual (noviembre)
-      const mesesAMostrar = meses.slice(0, this.mesActual)
+      // Mostrar todos los meses del año
+      this.chartData.labels = meses
 
-      this.chartData.labels = mesesAMostrar
-
-      // Datos para 2024
-      const datos2024 = mesesAMostrar.map((mes, index) => {
-        const mesData = this.datosPorMes2024.find(d => d.mesNumero === index + 1)
+      // Datos para 2024 - mapear todos los meses usando mesNumero
+      const datos2024 = meses.map((mes, index) => {
+        const mesNumero = index + 1
+        const mesData = this.datosPorMes2024.find(d => d.mesNumero === mesNumero)
         return mesData ? mesData.total : 0
       })
 
-      // Datos para 2025
-      const datos2025 = mesesAMostrar.map((mes, index) => {
-        const mesData = this.datosPorMes2025.find(d => d.mesNumero === index + 1)
+      // Datos para 2025 - mapear todos los meses usando mesNumero
+      const datos2025 = meses.map((mes, index) => {
+        const mesNumero = index + 1
+        const mesData = this.datosPorMes2025.find(d => d.mesNumero === mesNumero)
         return mesData ? mesData.total : 0
       })
 
@@ -322,33 +438,6 @@ export default {
       if (!ctx) {
         console.error('No se pudo obtener el contexto del canvas')
         return
-      }
-
-      // Cargar Chart.js si no está cargado
-      if (!Chart) {
-        try {
-          // Intentar diferentes formas de importar Chart.js
-          try {
-            const ChartModule = await import('chart.js/auto')
-            Chart = ChartModule.Chart || ChartModule.default?.Chart || ChartModule.default
-          } catch (e1) {
-            try {
-              const ChartModule = await import('chart.js')
-              Chart = ChartModule.Chart || ChartModule.default?.Chart || ChartModule.default
-            } catch (e2) {
-              console.error('No se pudo cargar Chart.js:', e2)
-              return
-            }
-          }
-          
-          if (!Chart) {
-            console.error('Chart no está disponible')
-            return
-          }
-        } catch (error) {
-          console.error('Error al cargar Chart.js:', error)
-          return
-        }
       }
 
       // Destruir gráfico anterior si existe

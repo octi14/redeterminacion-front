@@ -205,72 +205,10 @@
           </template>
 
           <div class="tab-content-informes">
-            <!-- Gráfico de Trámites Comerciales por Mes -->
-            <div class="row mb-4">
-              <div class="col-12">
-                <GraficoTramitesComerciales :habilitaciones="habilitaciones || []" />
-              </div>
-            </div>
-
             <!-- Gráfico Comparativo 2024 vs 2025 -->
             <div class="row mb-4">
               <div class="col-12">
                 <GraficoComparativo2024vs2025 :habilitaciones="habilitaciones || []" />
-              </div>
-            </div>
-
-            <!-- Gráficos de finalizaciones por año -->
-            <div class="row mb-4">
-              <div class="col-12 col-lg-6 mb-4 mb-lg-0">
-                <GraficoFinalizacionesPorAnio
-                  :habilitaciones="habilitaciones || []"
-                  :anio="2024"
-                  titulo="Habilitaciones finalizadas en 2024"
-                  color="#0d6efd"
-                  background-color="rgba(13, 110, 253, 0.25)"
-                  :incluir-renovaciones="false"
-                  icono="bi bi-clipboard-check-fill"
-                  badge-variant="primary"
-                />
-              </div>
-              <div class="col-12 col-lg-6">
-                <GraficoFinalizacionesPorAnio
-                  :habilitaciones="habilitaciones || []"
-                  :anio="2025"
-                  titulo="Habilitaciones finalizadas en 2025"
-                  color="#198754"
-                  background-color="rgba(25, 135, 84, 0.25)"
-                  :incluir-renovaciones="false"
-                  icono="bi bi-clipboard-check-fill"
-                  badge-variant="success"
-                />
-              </div>
-            </div>
-
-            <div class="row mb-4">
-              <div class="col-12 col-lg-6 mb-4 mb-lg-0">
-                <GraficoFinalizacionesPorAnio
-                  :habilitaciones="habilitaciones || []"
-                  :anio="2024"
-                  titulo="Renovaciones finalizadas en 2024"
-                  color="#fd7e14"
-                  background-color="rgba(253, 126, 20, 0.25)"
-                  :solo-renovaciones="true"
-                  icono="bi bi-arrow-repeat"
-                  badge-variant="warning"
-                />
-              </div>
-              <div class="col-12 col-lg-6">
-                <GraficoFinalizacionesPorAnio
-                  :habilitaciones="habilitaciones || []"
-                  :anio="2025"
-                  titulo="Renovaciones finalizadas en 2025"
-                  color="#6f42c1"
-                  background-color="rgba(111, 66, 193, 0.25)"
-                  :solo-renovaciones="true"
-                  icono="bi bi-arrow-repeat"
-                  badge-variant="info"
-                />
               </div>
             </div>
 
@@ -420,10 +358,8 @@ import CombustiblePorArea from '~/components/dashboard/CombustiblePorArea.vue'
 import EstadisticasPorPatente from '~/components/dashboard/EstadisticasPorPatente.vue'
 import EstadisticasVehiculos from '~/components/dashboard/EstadisticasVehiculos.vue'
 import ListaVehiculosPorArea from '~/components/dashboard/ListaVehiculosPorArea.vue'
-import GraficoTramitesComerciales from '~/components/dashboard/GraficoTramitesComerciales.vue'
 import TablaTramitesComerciales2025 from '~/components/dashboard/TablaTramitesComerciales2025.vue'
 import GraficoComparativo2024vs2025 from '~/components/dashboard/GraficoComparativo2024vs2025.vue'
-import GraficoFinalizacionesPorAnio from '~/components/dashboard/GraficoFinalizacionesPorAnio.vue'
 
 export default {
   name: 'DashboardTabs',
@@ -436,10 +372,8 @@ export default {
     EstadisticasPorPatente,
     EstadisticasVehiculos,
     ListaVehiculosPorArea,
-    GraficoTramitesComerciales,
     TablaTramitesComerciales2025,
-    GraficoComparativo2024vs2025,
-    GraficoFinalizacionesPorAnio
+    GraficoComparativo2024vs2025
   },
   props: {
     modulos: {

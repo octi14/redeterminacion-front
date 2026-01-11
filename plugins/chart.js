@@ -10,6 +10,7 @@ import {
   ArcElement,
   PointElement,
   LineElement,
+  LineController,
   Filler,
   PieController
 } from 'chart.js'
@@ -21,6 +22,7 @@ Chart.register(
   LinearScale,
   BarElement,
   BarController,
+  LineController,
   PieController,
   Title,
   Tooltip,

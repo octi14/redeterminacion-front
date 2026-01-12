@@ -101,7 +101,16 @@
               <b-icon-receipt class="icon-orange mt-4 ml-4" scale="2"/>
               <a class="ml-3 mr-2 mt-2 separador" > | </a>
               <h2 class="text-green mt-3"><b>Vales emitidos</b></h2>
-              <div class="ml-auto mr-4 mt-2">
+              <div class="ml-auto mr-4 mt-2 d-flex align-items-center">
+                <b-button
+                  variant="success"
+                  size="sm"
+                  class="mr-2"
+                  @click="exportarValesAExcel"
+                >
+                  <b-icon-file-earmark-spreadsheet-fill/>
+                  Exportar a Excel
+                </b-button>
                 <b-button
                   :variant="ocultarAnulados ? 'primary' : 'outline-secondary'"
                   size="sm"
@@ -407,6 +416,8 @@
 import templateVale from "@/assets/TemplateValex2.png";
 import { numeroATexto } from "@/utils/numeroATexto";
 import jsPDF from "jspdf";
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 export default {
   data() {
     return {
@@ -962,6 +973,66 @@ export default {
 
     deseleccionarTodos() {
       this.valesSeleccionados = [];
+    },
+
+    async exportarValesAExcel() {
+      try {
+        if (!this.vales || !Array.isArray(this.vales) || this.vales.length === 0) {
+          this.$bvToast.toast('No hay vales para exportar', {
+            title: 'Información',
+            variant: 'info',
+            solid: true
+          });
+          return;
+        }
+
+        // Mapeamos los datos necesarios para el Excel
+        const datosExcel = this.vales.map(vale => ({
+          'Tipo de combustible': vale.tipoCombustible || '',
+          'Monto': vale.monto || 0,
+          'Patente': vale.dominio ? vale.dominio.toUpperCase() : 'Sin patente',
+          'Fecha de emisión': vale.fechaEmision ? new Date(vale.fechaEmision).toLocaleDateString('es-AR') : '',
+          'Estado': vale.anulado ? 'Anulado' : (vale.consumido ? 'No disponible' : 'Disponible')
+        }));
+
+        // Convertimos los datos a una hoja de Excel
+        const hojaVales = XLSX.utils.json_to_sheet(datosExcel);
+
+        // Ajustamos el ancho de las columnas
+        const columnas = Object.keys(datosExcel[0]);
+        const anchos = columnas.map(col => ({ wch: Math.max(col.length, 15) }));
+        hojaVales['!cols'] = anchos;
+
+        // Creamos un libro de Excel y agregamos la hoja
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, hojaVales, 'Vales');
+
+        // Convertimos el libro a un buffer
+        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+
+        // Creamos un Blob para descargar
+        const blob = new Blob([excelBuffer], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        });
+
+        // Usamos FileSaver.js para guardar el archivo
+        const fecha = new Date().toISOString().split('T')[0];
+        const nombreArchivo = `Vales_Orden_${this.orden.nroOrden}_${fecha}.xlsx`;
+        saveAs(blob, nombreArchivo);
+
+        this.$bvToast.toast('Archivo Excel generado exitosamente', {
+          title: 'Éxito',
+          variant: 'success',
+          solid: true
+        });
+      } catch (error) {
+        console.error('Error al generar el Excel:', error);
+        this.$bvToast.toast('Error al generar el archivo Excel', {
+          title: 'Error',
+          variant: 'danger',
+          solid: true
+        });
+      }
     },
   },
 }

@@ -101,7 +101,35 @@
               <b-icon-receipt class="icon-orange mt-4 ml-4" scale="2"/>
               <a class="ml-3 mr-2 mt-2 separador" > | </a>
               <h2 class="text-green mt-3"><b>Vales emitidos</b></h2>
-              <div class="ml-auto mr-4 mt-2">
+              <div class="ml-auto mr-4 mt-2 d-flex align-items-center">
+                <!-- Selector de vista -->
+                <div class="btn-group mr-2" role="group">
+                  <b-button
+                    :variant="vistaVales === 'grid' ? 'primary' : 'outline-secondary'"
+                    size="sm"
+                    @click="cambiarVistaVales('grid')"
+                    title="Vista cuadrícula"
+                  >
+                    <b-icon-grid/>
+                  </b-button>
+                  <b-button
+                    :variant="vistaVales === 'list' ? 'primary' : 'outline-secondary'"
+                    size="sm"
+                    @click="cambiarVistaVales('list')"
+                    title="Vista lista"
+                  >
+                    <b-icon-list/>
+                  </b-button>
+                </div>
+                <b-button
+                  variant="success"
+                  size="sm"
+                  class="mr-2"
+                  @click="exportarValesAExcel"
+                >
+                  <b-icon-file-earmark-spreadsheet-fill/>
+                  Exportar a Excel
+                </b-button>
                 <b-button
                   :variant="ocultarAnulados ? 'primary' : 'outline-secondary'"
                   size="sm"
@@ -172,8 +200,8 @@
               </div>
             </div>
 
-            <!-- Cards de los vales -->
-            <div class="row mx-4">
+            <!-- Vista Cuadrícula -->
+            <div v-if="vistaVales === 'grid'" class="row mx-4">
               <div v-for="(vale, index) in paginatedVales" :key="index" class="col-md-6 mb-3">
                 <b-card no-body class="border-card main-background shadow-card">
                   <div class="m-2">
@@ -219,6 +247,93 @@
                     </div>
                   </div>
                 </b-card>
+              </div>
+            </div>
+
+            <!-- Vista Lista -->
+            <div v-if="vistaVales === 'list'" class="mx-4">
+              <div class="table-responsive">
+                <table class="table table-hover vales-list-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 40px;" class="text-center">
+                        <input 
+                          type="checkbox" 
+                          :checked="todosValesPaginaSeleccionados"
+                          @change="toggleSeleccionarTodosPagina"
+                          class="vale-checkbox"
+                          title="Seleccionar todos los vales disponibles de esta página"
+                        />
+                      </th>
+                      <th>N° Vale</th>
+                      <th>Tipo Combustible</th>
+                      <th>Importe</th>
+                      <th>Patente</th>
+                      <th>Fecha Emisión</th>
+                      <th>Estado</th>
+                      <th v-if="jefeCompras" style="width: 120px;">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr 
+                      v-for="(vale, index) in paginatedVales" 
+                      :key="index"
+                      :class="{ 'vale-disabled': vale.consumido || vale.anulado }"
+                      class="vale-row"
+                    >
+                      <td class="text-center">
+                        <input 
+                          v-if="!vale.consumido && !vale.anulado" 
+                          type="checkbox" 
+                          :value="vale.id" 
+                          v-model="valesSeleccionados"
+                          class="vale-checkbox"
+                        />
+                        <b-icon-x-square v-else disabled="disabled" class="text-muted"></b-icon-x-square>
+                      </td>
+                      <td class="font-weight-bold">{{ vale.nro_vale }}</td>
+                      <td>{{ vale.tipoCombustible }}</td>
+                      <td>{{ format(vale.monto) }}</td>
+                      <td>{{ vale.dominio ? vale.dominio.toUpperCase() : 'Sin patente' }}</td>
+                      <td>{{ new Date(vale.fechaEmision).toLocaleDateString('es-AR') }}</td>
+                      <td>
+                        <span :class="vale.consumido ? 'text-danger' : 'text-success'">
+                          <b v-if="!vale.anulado">{{ vale.consumido ? 'No disponible' : 'Disponible' }}</b>
+                          <b class="text-gray" v-else>Anulado</b>
+                        </span>
+                      </td>
+                      <td v-if="jefeCompras && !vale.anulado" class="text-center">
+                        <div class="d-flex justify-content-center align-items-center">
+                          <button 
+                            v-if="!vale.consumido" 
+                            class="btn btn-success btn-sm mx-1" 
+                            title="Marcar como utilizado" 
+                            @click="confirmarMarcarUtilizado(vale, (currentPage - 1) * itemsPerPage + index)"
+                          >
+                            <b-icon-check />
+                          </button>
+                          <button 
+                            v-if="!vale.consumido" 
+                            class="btn btn-primary btn-sm mx-1" 
+                            title="Reimprimir" 
+                            @click="confirmarReimpresion(vale, index)"
+                          >
+                            <b-icon-printer-fill />
+                          </button>
+                          <button 
+                            v-if="!vale.consumido" 
+                            class="btn btn-danger btn-sm mx-1" 
+                            title="Eliminar" 
+                            @click="confirmarEliminacion(vale.id)"
+                          >
+                            <b-icon-trash-fill />
+                          </button>
+                        </div>
+                      </td>
+                      <td v-else-if="jefeCompras"></td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
@@ -326,9 +441,10 @@
       <hr class="row col-9 mx-auto justify-content-center"/>
       <div class="row no-gutters justify-content-center">
         <b-button variant="success" :disabled="eliminandoVales" @click="eliminarValesSeleccionados">
+          <b-spinner v-if="eliminandoVales" small class="mr-2"></b-spinner>
           {{ eliminandoVales ? 'Eliminando...' : 'Aceptar' }}
         </b-button>
-        <b-button variant="danger" class="mx-2" @click="$bvModal.hide('modalEliminacionMasiva')">Cancelar</b-button>
+        <b-button variant="danger" class="mx-2" :disabled="eliminandoVales" @click="$bvModal.hide('modalEliminacionMasiva')">Cancelar</b-button>
       </div>
     </b-modal>
 
@@ -363,8 +479,11 @@
       <p class="h6 text-center mt-2 mb-3 font-weight-500 text-dark">¿Deseás continuar?</p>
       <hr class="row col-9 mx-auto"/>
       <div class="row no-gutters justify-content-center">
-        <button class="btn btn-success mx-2" @click="eliminarVale()">Aceptar</button>
-        <button class="btn btn-danger mx-2" @click="modalEliminacion = false">Cancelar</button>
+        <button class="btn btn-success mx-2" :disabled="eliminandoVale" @click="eliminarVale()">
+          <b-spinner v-if="eliminandoVale" small class="mr-2"></b-spinner>
+          {{ eliminandoVale ? 'Eliminando...' : 'Aceptar' }}
+        </button>
+        <button class="btn btn-danger mx-2" :disabled="eliminandoVale" @click="modalEliminacion = false">Cancelar</button>
       </div>
     </b-modal>
 
@@ -407,6 +526,8 @@
 import templateVale from "@/assets/TemplateValex2.png";
 import { numeroATexto } from "@/utils/numeroATexto";
 import jsPDF from "jspdf";
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 export default {
   data() {
     return {
@@ -423,9 +544,11 @@ export default {
       observaciones: '',
       tempNroVale: null,
       tempValeRef: null,
+      eliminandoVale: false, // Control para deshabilitar botón de eliminar vale individual
       eliminandoVales: false, // Control para deshabilitar botón de eliminar vales seleccionados
       filtroTipoCombustible: null, // Filtro por tipo de combustible
       ocultarAnulados: false, // Control para ocultar/mostrar vales anulados
+      vistaVales: 'grid', // 'grid' o 'list' - Vista actual de los vales
     }
   },
   computed: {
@@ -494,6 +617,26 @@ export default {
 
       return Math.ceil(valesFiltrados.length / this.itemsPerPage);
     },
+    todosValesPaginaSeleccionados() {
+      if (!this.paginatedVales || !Array.isArray(this.paginatedVales)) {
+        return false;
+      }
+      
+      // Obtener solo los vales disponibles de la página actual (no consumidos y no anulados)
+      const valesDisponiblesPagina = this.paginatedVales.filter(
+        vale => !vale.consumido && !vale.anulado
+      );
+      
+      // Si no hay vales disponibles, retornar false
+      if (valesDisponiblesPagina.length === 0) {
+        return false;
+      }
+      
+      // Verificar si todos los vales disponibles están seleccionados
+      return valesDisponiblesPagina.every(vale => 
+        this.valesSeleccionados.includes(vale.id)
+      );
+    },
   },
   watch: {
     // Limpiar vales seleccionados que ya no están disponibles (consumidos o anulados)
@@ -555,6 +698,7 @@ export default {
     },
     confirmarEliminacion(id) {
       this.valeSeleccionado = id;
+      this.eliminandoVale = false; // Resetear estado al abrir modal
       this.modalEliminacion = true;
     },
     async reimprimirVale(vale) {
@@ -724,9 +868,11 @@ export default {
       ctx.font = "500 38px sans-serif"; // volver al tamaño original si seguís con más texto
     },
     async eliminarVale() {
-      if (!this.valeSeleccionado) return;
+      if (!this.valeSeleccionado || this.eliminandoVale) return;
 
       const id = this.valeSeleccionado;
+      this.eliminandoVale = true;
+      
       try {
         const userToken = this.$store.state.user.token;
 
@@ -739,36 +885,50 @@ export default {
         this.modalEliminacion = false;
         this.modalEliminado = true;
       } catch (error) {
+        console.error("Error al eliminar el vale:", error);
         alert("Ocurrió un error al eliminar el vale. Revisa la consola para más detalles.");
+      } finally {
+        this.eliminandoVale = false;
       }
     },
     async eliminarValesSeleccionados(){
-      if (this.valesSeleccionados.length === 0) return;
+      if (this.valesSeleccionados.length === 0 || this.eliminandoVales) return;
 
       this.eliminandoVales = true; // Deshabilitar botón
 
       const valesAEliminar = [...this.valesSeleccionados]; // Copiar el array antes de limpiarlo
+      let errores = 0;
 
-      for (let i = 0; i < valesAEliminar.length; i++) {
-        try {
-          const id = valesAEliminar[i];
-          const userToken = this.$store.state.user.token;
+      try {
+        for (let i = 0; i < valesAEliminar.length; i++) {
+          try {
+            const id = valesAEliminar[i];
+            const userToken = this.$store.state.user.token;
 
-          // Hacer la petición al backend para eliminar el vale
-          await this.$store.dispatch("combustible/anularVale", { id, userToken })
-        } catch(e) {
-          alert('No se pudieron eliminar todos los vales. Hubo un problema con alguno de ellos')
+            // Hacer la petición al backend para eliminar el vale
+            await this.$store.dispatch("combustible/anularVale", { id, userToken })
+          } catch(e) {
+            console.error(`Error al eliminar vale ${valesAEliminar[i]}:`, e);
+            errores++;
+          }
         }
+
+        // Limpiar la selección después de eliminar
+        this.valesSeleccionados = [];
+
+        if (errores > 0) {
+          alert(`No se pudieron eliminar ${errores} vale(s). Hubo un problema con alguno(s) de ellos.`);
+        }
+
+        this.$bvModal.hide('modalEliminacionMasiva')
+        this.$bvModal.show('modalEliminadoMasivo')
+      } catch (error) {
+        console.error("Error general en eliminación masiva:", error);
+        alert("Ocurrió un error al eliminar los vales. Revisa la consola para más detalles.");
+      } finally {
+        // Resetear estado del botón siempre, incluso si hay errores
+        this.eliminandoVales = false;
       }
-
-      // Limpiar la selección después de eliminar
-      this.valesSeleccionados = [];
-
-      // Resetear estado del botón
-      this.eliminandoVales = false;
-
-      this.$bvModal.hide('modalEliminacionMasiva')
-      this.$bvModal.show('modalEliminadoMasivo')
     },
     confirmarMarcarUtilizado(valeRef, index) {
       this.tempValeRef = valeRef
@@ -962,6 +1122,108 @@ export default {
 
     deseleccionarTodos() {
       this.valesSeleccionados = [];
+    },
+
+    toggleSeleccionarTodosPagina() {
+      if (!this.paginatedVales || !Array.isArray(this.paginatedVales)) {
+        return;
+      }
+
+      // Obtener solo los vales disponibles de la página actual (no consumidos y no anulados)
+      const valesDisponiblesPagina = this.paginatedVales.filter(
+        vale => !vale.consumido && !vale.anulado
+      );
+
+      // Obtener los IDs de los vales disponibles de la página
+      const idsValesPagina = valesDisponiblesPagina.map(vale => vale.id);
+
+      // Verificar si todos ya están seleccionados
+      const todosSeleccionados = idsValesPagina.every(id => 
+        this.valesSeleccionados.includes(id)
+      );
+
+      if (todosSeleccionados) {
+        // Si todos están seleccionados, deseleccionar solo los de esta página
+        this.valesSeleccionados = this.valesSeleccionados.filter(
+          id => !idsValesPagina.includes(id)
+        );
+      } else {
+        // Si no todos están seleccionados, agregar todos los de esta página
+        // Combinar los seleccionados actuales con los de la página (sin duplicados)
+        const nuevosSeleccionados = [...this.valesSeleccionados];
+        idsValesPagina.forEach(id => {
+          if (!nuevosSeleccionados.includes(id)) {
+            nuevosSeleccionados.push(id);
+          }
+        });
+        this.valesSeleccionados = nuevosSeleccionados;
+      }
+    },
+
+    cambiarVistaVales(vista) {
+      this.vistaVales = vista;
+    },
+
+    async exportarValesAExcel() {
+      try {
+        if (!this.vales || !Array.isArray(this.vales) || this.vales.length === 0) {
+          this.$bvToast.toast('No hay vales para exportar', {
+            title: 'Información',
+            variant: 'info',
+            solid: true
+          });
+          return;
+        }
+
+        // Mapeamos los datos necesarios para el Excel
+        const datosExcel = this.vales.map(vale => ({
+          'Número de orden': this.orden.nroOrden || '',
+          'Número de vale': vale.nro_vale || '',
+          'Tipo de combustible': vale.tipoCombustible || '',
+          'Monto': vale.monto || 0,
+          'Patente': vale.dominio ? vale.dominio.toUpperCase() : 'Sin patente',
+          'Fecha de emisión': vale.fechaEmision ? new Date(vale.fechaEmision).toLocaleDateString('es-AR') : '',
+          'Estado': vale.anulado ? 'Anulado' : (vale.consumido ? 'No disponible' : 'Disponible')
+        }));
+
+        // Convertimos los datos a una hoja de Excel
+        const hojaVales = XLSX.utils.json_to_sheet(datosExcel);
+
+        // Ajustamos el ancho de las columnas
+        const columnas = Object.keys(datosExcel[0]);
+        const anchos = columnas.map(col => ({ wch: Math.max(col.length, 15) }));
+        hojaVales['!cols'] = anchos;
+
+        // Creamos un libro de Excel y agregamos la hoja
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, hojaVales, 'Vales');
+
+        // Convertimos el libro a un buffer
+        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+
+        // Creamos un Blob para descargar
+        const blob = new Blob([excelBuffer], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        });
+
+        // Usamos FileSaver.js para guardar el archivo
+        const fecha = new Date().toISOString().split('T')[0];
+        const nombreArchivo = `Vales_Orden_${this.orden.nroOrden}_${fecha}.xlsx`;
+        saveAs(blob, nombreArchivo);
+
+        this.$bvToast.toast('Archivo Excel generado exitosamente', {
+          title: 'Éxito',
+          variant: 'success',
+          solid: true
+        });
+      } catch (error) {
+        console.error('Error al generar el Excel:', error);
+        this.$bvToast.toast('Error al generar el archivo Excel', {
+          title: 'Error',
+          variant: 'danger',
+          solid: true
+        });
+      }
     },
   },
 }
@@ -1204,5 +1466,91 @@ export default {
 
 p{
   font-size: 18px;
+}
+
+/* Estilos para vista lista de vales */
+.vales-list-table {
+  margin-bottom: 0;
+  background-color: #fff;
+}
+
+.vales-list-table thead th {
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 12px 8px;
+  color: #505050;
+  text-align: left;
+}
+
+.vales-list-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+/* Filas alternadas: blanco y gris */
+.vales-list-table tbody tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.vales-list-table tbody tr:nth-child(odd) {
+  background-color: #fff;
+}
+
+.vales-list-table tbody tr:hover {
+  background-color: #e9ecef !important;
+}
+
+.vales-list-table tbody tr.vale-disabled {
+  opacity: 0.6;
+}
+
+.vales-list-table tbody tr.vale-disabled:nth-child(even) {
+  background-color: #f0f0f0;
+}
+
+.vales-list-table tbody tr.vale-disabled:nth-child(odd) {
+  background-color: #f8f8f8;
+}
+
+.vales-list-table tbody tr.vale-disabled:hover {
+  background-color: #e0e0e0 !important;
+}
+
+.vales-list-table tbody td {
+  padding: 12px 8px;
+  vertical-align: middle;
+  font-size: 14px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.vale-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.vale-row {
+  cursor: default;
+}
+
+/* Responsive para vista lista */
+@media (max-width: 768px) {
+  .vales-list-table {
+    font-size: 12px;
+  }
+  
+  .vales-list-table thead th,
+  .vales-list-table tbody td {
+    padding: 8px 4px;
+    font-size: 12px;
+  }
+  
+  .vales-list-table thead th:nth-child(3),
+  .vales-list-table tbody td:nth-child(3),
+  .vales-list-table thead th:nth-child(4),
+  .vales-list-table tbody td:nth-child(4) {
+    display: none;
+  }
 }
 </style>

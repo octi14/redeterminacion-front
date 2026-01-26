@@ -78,8 +78,10 @@
             </b-form-group>
           </b-col>
         </b-row>
-        <b-form-group>
-              <label for="razon-social">Razón Social <i>(completar sólo si se trata de una Persona Jurídica)</i></label>
+        <b-form-group label-for="razon-social">
+          <template #label>
+            Razón Social <i>(completar sólo si se trata de una Persona Jurídica)</i>
+          </template>
           <b-form-input id="razon-social" v-model="solicitante.razonSocial" ></b-form-input>
         </b-form-group>
         <b-form-group label="Domicilio Real y/o Legal *" label-for="domicilio-real" >
@@ -99,14 +101,10 @@
           </b-col>
           <b-col lg="6">
             <b-form-group label="Código Postal *" label-for="codigoPostal" >
-              <b-col lg="4" style="padding-left: 0px;">
-                <b-form-input id="codigoPostal" v-model="solicitante.codigoPostal" @blur="$v.solicitante.codigoPostal.$touch()"></b-form-input>
-              </b-col>
-              <b-col lg="12" style="padding-left: 0px;">
-                <div v-if="$v.solicitante.codigoPostal.$error" class="validation-error">
-                  <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El código postal no puede estar vacío, contener letras o caracteres especiales.
-                </div>
-              </b-col>
+              <b-form-input id="codigoPostal" v-model="solicitante.codigoPostal" @blur="$v.solicitante.codigoPostal.$touch()"></b-form-input>
+              <div v-if="$v.solicitante.codigoPostal.$error" class="validation-error">
+                <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El código postal no puede estar vacío, contener letras o caracteres especiales.
+              </div>
             </b-form-group>
           </b-col>
         </b-row>
@@ -172,11 +170,8 @@
       <!-- Sección: Datos del Apoderado -->
       <fieldset v-if="solicitante.esApoderado === 'true'">
           <p>En este campo deberás cargar <span v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">la <a href="https://drive.google.com/file/d/1m5ouibBL4sWokhkSR5keTjbUVo-I4TOU/view" target="_blank" class="external-link">Planilla de autorización de trámite</a> o </span>el Poder autorizado por escribano que te indicamos que completes previamente.</p>
-          <b-form-group v-if="solicitante.esApoderado === 'true'" >
-            <label for="documentos.planillaAutorizacion.contenido" v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">Planilla de autorización de trámite *</label>
-            <label for="documentos.planillaAutorizacion.contenido" v-else>Poder Autorizado por Escribano *</label>
-
-          <b-form-file v-model="documentos.planillaAutorizacion.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('planillaAutorizacion')" @change="checkDocumentSize('planillaAutorizacion', $event)" @input="clearFormFieldState('planillaAutorizacion')"></b-form-file>
+          <b-form-group v-if="solicitante.esApoderado === 'true'" :label="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento') ? 'Planilla de autorización de trámite *' : 'Poder Autorizado por Escribano *'" label-for="documentos.planillaAutorizacion.contenido">
+          <b-form-file id="documentos.planillaAutorizacion.contenido" v-model="documentos.planillaAutorizacion.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('planillaAutorizacion')" @change="checkDocumentSize('planillaAutorizacion', $event)" @input="clearFormFieldState('planillaAutorizacion')"></b-form-file>
           <div v-if="$v.documentos.planillaAutorizacion.contenido.$error || fileTooLargeError.planillaAutorizacion" class="validation-error">
             <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.planillaAutorizacion || 'Debe seleccionar un archivo.' }}
           </div>
@@ -188,18 +183,16 @@
         <legend><h3>Datos del Titular Anterior</h3></legend>
         <b-row>
           <b-col lg="6">
-            <b-form-group>
-              <label for="documentos.dniAnteriorFrente.contenido">DNI del titular anterior (Frente) *</label>
-              <b-form-file v-model="documentos.dniAnteriorFrente.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('dniAnteriorFrente')" @change="checkDocumentSize('dniAnteriorFrente', $event)" @input="clearFormFieldState('dniAnteriorFrente')"></b-form-file>
+            <b-form-group label="DNI del titular anterior (Frente) *" label-for="documentos.dniAnteriorFrente.contenido">
+              <b-form-file id="documentos.dniAnteriorFrente.contenido" v-model="documentos.dniAnteriorFrente.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('dniAnteriorFrente')" @change="checkDocumentSize('dniAnteriorFrente', $event)" @input="clearFormFieldState('dniAnteriorFrente')"></b-form-file>
               <div v-if="$v.documentos.dniAnteriorFrente.contenido.$error || fileTooLargeError.dniAnteriorFrente" class="validation-error">
                 <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.dniAnteriorFrente || 'Debe seleccionar un archivo.' }}
               </div>
             </b-form-group>
           </b-col>
           <b-col lg="6">
-            <b-form-group>
-              <label for="documentos.dniAnteriorDorso.contenido">DNI del titular anterior (Dorso) *</label>
-              <b-form-file v-model="documentos.dniAnteriorDorso.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('dniAnteriorDorso')" @change="checkDocumentSize('dniAnteriorDorso', $event)" @input="clearFormFieldState('dniAnteriorDorso')"></b-form-file>
+            <b-form-group label="DNI del titular anterior (Dorso) *" label-for="documentos.dniAnteriorDorso.contenido">
+              <b-form-file id="documentos.dniAnteriorDorso.contenido" v-model="documentos.dniAnteriorDorso.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('dniAnteriorDorso')" @change="checkDocumentSize('dniAnteriorDorso', $event)" @input="clearFormFieldState('dniAnteriorDorso')"></b-form-file>
               <div v-if="$v.documentos.dniAnteriorDorso.contenido.$error || fileTooLargeError.dniAnteriorDorso" class="validation-error">
                 <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.dniAnteriorDorso || 'Debe seleccionar un archivo.' }}
               </div>
@@ -208,9 +201,11 @@
         </b-row>
         <b-row>
           <b-col lg="12">
-            <b-form-group>
-              <label for="documentos.constanciaCambioTitular.contenido">Constancia de Conformidad de Cambio de Titularidad * <b-icon-question-circle-fill @click="openPopup('CertificadoCambioTitular')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
-              <b-form-file v-model="documentos.constanciaCambioTitular.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('constanciaCambioTitular')" @change="checkDocumentSize('constanciaCambioTitular', $event)" @input="clearFormFieldState('constanciaCambioTitular')"></b-form-file>
+            <b-form-group label="Constancia de Conformidad de Cambio de Titularidad *" label-for="documentos.constanciaCambioTitular.contenido">
+              <template #label>
+                Constancia de Conformidad de Cambio de Titularidad * <b-icon-question-circle-fill @click="openPopup('CertificadoCambioTitular')" font-scale="1" variant="info"></b-icon-question-circle-fill>
+              </template>
+              <b-form-file id="documentos.constanciaCambioTitular.contenido" v-model="documentos.constanciaCambioTitular.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('constanciaCambioTitular')" @change="checkDocumentSize('constanciaCambioTitular', $event)" @input="clearFormFieldState('constanciaCambioTitular')"></b-form-file>
               <div v-if="$v.documentos.constanciaCambioTitular.contenido.$error || fileTooLargeError.constanciaCambioTitular" class="validation-error">
                 <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.constanciaCambioTitular || 'Debe seleccionar un archivo.' }}
               </div>
@@ -436,9 +431,11 @@
             </b-form-group>
           </b-col>
         </b-row>
-        <b-form-group v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular')">
-          <label for="constanciaCuit" class="rubro-label">Constancia de CUIT actualizada / Inscripción a AFIP * <b-icon-question-circle-fill @click="openPopup('ConstanciaCUIT')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
-          <b-form-file v-model="documentos.constanciaCuit.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
+        <b-form-group v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular')" label-for="constanciaCuit">
+          <template #label>
+            <span class="rubro-label">Constancia de CUIT actualizada / Inscripción a AFIP * <b-icon-question-circle-fill @click="openPopup('ConstanciaCUIT')" font-scale="1" variant="info"></b-icon-question-circle-fill></span>
+          </template>
+          <b-form-file id="constanciaCuit" v-model="documentos.constanciaCuit.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
           accept=".pdf, image/*"  :state="getFormFieldState('constanciaCuit')"
           @change="handleDocumentUpdate('constanciaCuit'); checkDocumentSize('constanciaCuit', $event)"
           @input="clearFormFieldState('constanciaCuit')"></b-form-file>
@@ -446,18 +443,22 @@
             <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.constanciaCuit || 'Debe seleccionar un archivo.' }}
           </div>
         </b-form-group>
-        <b-form-group v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">
-          <label for="constanciaIngresosBrutos" class="rubro-label">Constancia de inscripción a Ingresos Brutos * <b-icon-question-circle-fill @click="openPopup('ConstanciaIngresosBrutos')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
-          <b-form-file v-model="documentos.constanciaIngresosBrutos.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('constanciaIngresosBrutos')"
+        <b-form-group v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')" label-for="constanciaIngresosBrutos">
+          <template #label>
+            <span class="rubro-label">Constancia de inscripción a Ingresos Brutos * <b-icon-question-circle-fill @click="openPopup('ConstanciaIngresosBrutos')" font-scale="1" variant="info"></b-icon-question-circle-fill></span>
+          </template>
+          <b-form-file id="constanciaIngresosBrutos" v-model="documentos.constanciaIngresosBrutos.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('constanciaIngresosBrutos')"
           @change="handleDocumentUpdate('constanciaIngresosBrutos'); checkDocumentSize('constanciaIngresosBrutos', $event)"
           @input="clearFormFieldState('constanciaIngresosBrutos')"></b-form-file>
           <div v-if="$v.documentos.constanciaIngresosBrutos.contenido.$error || fileTooLargeError.constanciaIngresosBrutos" class="validation-error">
             <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.constanciaIngresosBrutos || 'Debe seleccionar un archivo.' }}
           </div>
         </b-form-group>
-        <b-form-group v-if="solicitante.tipoSolicitud=='Baja' || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">
-          <label for="libreDeudaIB" class="rubro-label">Libre Deuda de Ingresos Brutos <span v-if="solicitante.esTitular || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">* </span><b-icon-question-circle-fill @click="openPopup('ConstanciaLibreDeudaIB')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
-          <b-form-file v-model="documentos.libreDeudaIB.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
+        <b-form-group v-if="solicitante.tipoSolicitud=='Baja' || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')" label-for="libreDeudaIB">
+          <template #label>
+            <span class="rubro-label">Libre Deuda de Ingresos Brutos <span v-if="solicitante.esTitular || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">* </span><b-icon-question-circle-fill @click="openPopup('ConstanciaLibreDeudaIB')" font-scale="1" variant="info"></b-icon-question-circle-fill></span>
+          </template>
+          <b-form-file id="libreDeudaIB" v-model="documentos.libreDeudaIB.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
           accept=".pdf, image/*"  :state="getFormFieldState('libreDeudaIB')"
           @change="handleDocumentUpdate('libreDeudaIB'); checkDocumentSize('libreDeudaIB', $event)"
           @input="clearFormFieldState('libreDeudaIB')"></b-form-file>
@@ -465,9 +466,11 @@
             <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.libreDeudaIB || 'Debe seleccionar un archivo.' }}
           </div>
         </b-form-group>
-        <b-form-group v-if="(solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">
-          <label for="constanciaAFIP" class="rubro-label">Constancia de inscripción de AFIP <span v-if="solicitante.esTitular || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">* </span></label>
-          <b-form-file v-model="documentos.constanciaAFIP.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
+        <b-form-group v-if="(solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')" label-for="constanciaAFIP">
+          <template #label>
+            <span class="rubro-label">Constancia de inscripción de AFIP <span v-if="solicitante.esTitular || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">* </span></span>
+          </template>
+          <b-form-file id="constanciaAFIP" v-model="documentos.constanciaAFIP.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
           accept=".pdf, image/*"  :state="getFormFieldState('constanciaAFIP')"
           @change="handleDocumentUpdate('constanciaAFIP'); checkDocumentSize('constanciaAFIP', $event)"
           @input="clearFormFieldState('constanciaAFIP')"></b-form-file>
@@ -475,18 +478,22 @@
             <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.constanciaAFIP || 'Debe seleccionar un archivo.' }}
           </div>
         </b-form-group>
-        <b-form-group v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">
-          <label for="certificadoDomicilio" class="rubro-label">Certificado de domicilio Ingresos Brutos * <b-icon-question-circle-fill @click="openPopup('certificadoDomicilio')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
-          <b-form-file v-model="documentos.certificadoDomicilio.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('certificadoDomicilio')"
+        <b-form-group v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')" label-for="certificadoDomicilio">
+          <template #label>
+            <span class="rubro-label">Certificado de domicilio Ingresos Brutos * <b-icon-question-circle-fill @click="openPopup('certificadoDomicilio')" font-scale="1" variant="info"></b-icon-question-circle-fill></span>
+          </template>
+          <b-form-file id="certificadoDomicilio" v-model="documentos.certificadoDomicilio.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('certificadoDomicilio')"
           @change="handleDocumentUpdate('certificadoDomicilio'); checkDocumentSize('certificadoDomicilio', $event)"
           @input="clearFormFieldState('certificadoDomicilio')"></b-form-file>
           <div v-if="$v.documentos.certificadoDomicilio.contenido.$error || fileTooLargeError.certificadoDomicilio" class="validation-error">
             <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.certificadoDomicilio || 'Debe seleccionar un archivo.' }}
           </div>
         </b-form-group>
-        <b-form-group v-if="solicitante.tipoSolicitud=='Baja' || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">
-          <label for="libreDeudaSegHig" class="rubro-label">Libre Deuda de Tasa de Inspección de Seguridad e Higiene. * <b-icon-question-circle-fill @click="openPopup('ConstanciaLibreDeudaSegHig')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
-          <b-form-file v-model="documentos.libreDeudaSegHig.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
+        <b-form-group v-if="solicitante.tipoSolicitud=='Baja' || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')" label-for="libreDeudaSegHig">
+          <template #label>
+            <span class="rubro-label">Libre Deuda de Tasa de Inspección de Seguridad e Higiene. * <b-icon-question-circle-fill @click="openPopup('ConstanciaLibreDeudaSegHig')" font-scale="1" variant="info"></b-icon-question-circle-fill></span>
+          </template>
+          <b-form-file id="libreDeudaSegHig" v-model="documentos.libreDeudaSegHig.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
           accept=".pdf, image/*"  :state="getFormFieldState('libreDeudaSegHig')"
           @change="handleDocumentUpdate('libreDeudaSegHig'); checkDocumentSize('libreDeudaSegHig', $event)"
           @input="clearFormFieldState('libreDeudaSegHig')"></b-form-file>
@@ -494,19 +501,23 @@
             <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.libreDeudaSegHig || 'Debe seleccionar un archivo.' }}
           </div>
         </b-form-group>
-        <b-form-group>
-          <label for="libreDeudaUrbana" class="rubro-label">Libre Deuda de Tasa por Servicios Urbanos <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. * <b-icon-question-circle-fill @click="openPopup('ConstanciaLibreDeuda')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
-          <b-form-file v-model="documentos.libreDeudaUrbana.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*"  :state="getFormFieldState('libreDeudaUrbana')"
+        <b-form-group label-for="libreDeudaUrbana">
+          <template #label>
+            <span class="rubro-label">Libre Deuda de Tasa por Servicios Urbanos <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. * <b-icon-question-circle-fill @click="openPopup('ConstanciaLibreDeuda')" font-scale="1" variant="info"></b-icon-question-circle-fill></span>
+          </template>
+          <b-form-file id="libreDeudaUrbana" v-model="documentos.libreDeudaUrbana.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*"  :state="getFormFieldState('libreDeudaUrbana')"
           @change="handleDocumentUpdate('libreDeudaUrbana'); checkDocumentSize('libreDeudaUrbana', $event)"
           @input="clearFormFieldState('libreDeudaUrbana')"></b-form-file>
           <div v-if="$v.documentos.libreDeudaUrbana.contenido.$error || fileTooLargeError.libreDeudaUrbana" class="validation-error">
             <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.libreDeudaUrbana || 'Debe seleccionar un archivo.' }}
           </div>
         </b-form-group>
-        <b-form-group v-if="solicitante.tipoSolicitud != 'Reempadronamiento'">
-          <label v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación')" for="tituloPropiedad"><span v-if="solicitante.tipoSolicitud != 'Renovación' && solicitante.tipoSolicitud != 'Reempadronamiento'">Escritura traslativa de Dominio del inmueble /</span> Contrato de locación / Otro. <span v-if="solicitante.tipoSolicitud != 'Reempadronamiento'">*</span><i v-else>(Sólo en caso que presente modificaciones desde la fecha en que se extendió el certificado de habilitación original)</i></label>
-          <label v-if="solicitante.tipoSolicitud=='Baja'" for="tituloPropiedad"><span v-if="solicitante.tipoSolicitud != 'Renovación' && solicitante.tipoSolicitud != 'Reempadronamiento'"> Escritura traslativa de Dominio del inmueble / </span>Contrato de locación / Boleto de Compraventa. <span v-if="!solicitante.esTitular && solicitante.esPropietario">* </span></label>
-          <b-form-file v-model="documentos.tituloPropiedad.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
+        <b-form-group v-if="solicitante.tipoSolicitud != 'Reempadronamiento'" label-for="tituloPropiedad">
+          <template #label>
+            <span v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación')"><span v-if="solicitante.tipoSolicitud != 'Renovación' && solicitante.tipoSolicitud != 'Reempadronamiento'">Escritura traslativa de Dominio del inmueble /</span> Contrato de locación / Otro. <span v-if="solicitante.tipoSolicitud != 'Reempadronamiento'">*</span><i v-else>(Sólo en caso que presente modificaciones desde la fecha en que se extendió el certificado de habilitación original)</i></span>
+            <span v-if="solicitante.tipoSolicitud=='Baja'"><span v-if="solicitante.tipoSolicitud != 'Renovación' && solicitante.tipoSolicitud != 'Reempadronamiento'"> Escritura traslativa de Dominio del inmueble / </span>Contrato de locación / Boleto de Compraventa. <span v-if="!solicitante.esTitular && solicitante.esPropietario">* </span></span>
+          </template>
+          <b-form-file id="tituloPropiedad" v-model="documentos.tituloPropiedad.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
           accept=".pdf, image/*"  :state="getFormFieldState('tituloPropiedad')"
           @change="handleDocumentUpdate('tituloPropiedad'); checkDocumentSize('tituloPropiedad', $event)"
           @input="clearFormFieldState('tituloPropiedad')"></b-form-file>
@@ -529,18 +540,22 @@
             </div>
           </b-form-group>
         </b-row>
-        <b-form-group v-if="solicitante.tipoSolicitud == 'Habilitación' || (solicitante.tipoSolicitud == 'Cambio de Titular' && solicitante.esModificacionesPlano=='true')">
-          <label for="plano" class="rubro-label">Plano o Informe técnico <span v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular')">. *</span><span v-if="(solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')"><i>(En caso de continuar en trámite)</i>.</span> <b-icon-question-circle-fill @click="openPopup('plano')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
-          <b-form-file v-model="documentos.plano.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*"  :state="getFormFieldState('plano')"
+        <b-form-group v-if="solicitante.tipoSolicitud == 'Habilitación' || (solicitante.tipoSolicitud == 'Cambio de Titular' && solicitante.esModificacionesPlano=='true')" label-for="plano">
+          <template #label>
+            <span class="rubro-label">Plano o Informe técnico <span v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular')">. *</span><span v-if="(solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')"><i>(En caso de continuar en trámite)</i>.</span> <b-icon-question-circle-fill @click="openPopup('plano')" font-scale="1" variant="info"></b-icon-question-circle-fill></span>
+          </template>
+          <b-form-file id="plano" v-model="documentos.plano.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*"  :state="getFormFieldState('plano')"
           @change="handleDocumentUpdate('plano'); checkDocumentSize('plano', $event)"
           @input="clearFormFieldState('plano')"></b-form-file>
           <div v-if="$v.documentos.plano.contenido.$error || fileTooLargeError.plano" class="validation-error">
             <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.plano || 'Debe seleccionar un archivo.' }}
           </div>
         </b-form-group>
-        <b-form-group v-if="(solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">
-          <label for="decJurada" class="rubro-label">Declaración Jurada - Metros Establecimiento Habilitado *<b-icon-question-circle-fill @click="openPopup('decJurada')" font-scale="1" variant="info"></b-icon-question-circle-fill></label>
-          <b-form-file v-model="documentos.decJurada.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*"  :state="getFormFieldState('decJurada')"
+        <b-form-group v-if="(solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')" label-for="decJurada">
+          <template #label>
+            <span class="rubro-label">Declaración Jurada - Metros Establecimiento Habilitado *<b-icon-question-circle-fill @click="openPopup('decJurada')" font-scale="1" variant="info"></b-icon-question-circle-fill></span>
+          </template>
+          <b-form-file id="decJurada" v-model="documentos.decJurada.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*"  :state="getFormFieldState('decJurada')"
           @change="handleDocumentUpdate('decJurada'); checkDocumentSize('decJurada', $event)"
           @input="clearFormFieldState('decJurada')"></b-form-file>
           <div v-if="$v.documentos.decJurada.contenido.$error || fileTooLargeError.decJurada" class="validation-error">
@@ -571,9 +586,11 @@
             <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.actaPersonaJuridica || 'Debe seleccionar un archivo.' }}
           </div>
         </b-form-group>
-        <b-form-group label="" label-for="actaDirectorio" >
-          <label for="actaDirectorio" class="actaDirectorio-label">Acta de Directorio Actualizada <i>(En caso que corresponda)</i> </label>
-          <b-form-file v-model="documentos.actaDirectorio.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('actaDirectorio')"
+        <b-form-group label-for="actaDirectorio">
+          <template #label>
+            <span class="actaDirectorio-label">Acta de Directorio Actualizada <i>(En caso que corresponda)</i> </span>
+          </template>
+          <b-form-file id="actaDirectorio" v-model="documentos.actaDirectorio.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('actaDirectorio')"
           @change="handleDocumentUpdate('actaDirectorio'); checkDocumentSize('actaDirectorio', $event)"
           @input="clearFormFieldState('actaDirectorio')"></b-form-file>
           <div v-if="fileTooLargeError.actaDirectorio" class="validation-error">
@@ -1747,6 +1764,8 @@
 Su solicitud de trámite comercial ha sido registrada correctamente.
 En los próximos días recibirá un correo electrónico del Departamento Comercio Municipal en el que le indicarán cómo continuar.
 Asegúrese de revisar la bandeja de correos no deseados (Spam).
+Tené en cuenta que el trámite finalizará con la presentación de la documentación original en la oficina de comercio dentro
+ de los 10 días hábiles posteriores a recibir el mail de confirmación.
 
 Número de trámite: ${this.nroTramite}
 Tipo de solicitud: ${this.solicitante.tipoSolicitud}

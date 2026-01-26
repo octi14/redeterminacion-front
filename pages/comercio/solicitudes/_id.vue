@@ -1031,6 +1031,8 @@ Rubro: ${this.habilitacion.rubro}
 Por favor, presente los documentos originales en el Departamento Comercio MVGesell para continuar con el trámite.
 Adicionalmente, le comentamos que puede presentar su documentación en la Casa de Villa Gesell en Buenos Aires,
 ubicada en la Avenida Corrientes 1312, piso 11 oficina 42, CABA.
+Deberá presentar los documentos originales en la oficina de comercio dentro de los próximos 10 días hábiles.
+En caso contrario, el trámite caerá y deberá iniciarlo nuevamente.
 
 Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
 

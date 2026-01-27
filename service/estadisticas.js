@@ -4,9 +4,7 @@ const ObraService = require('./obra')
 const TurnoService = require('./turno')
 const PagoDobleService = require('./pagoDoble')
 const IndiceService = require('./indice')
-const MultimediaService = require('./multimedia')
 const AbiertoAnualService = require('./abiertoAnual')
-const CertificadoService = require('./certificado')
 const CombustibleService = require('./combustible')
 
 const FINALIZACION_PATTERNS = [
@@ -260,7 +258,6 @@ const normalizarFecha = (fecha) => {
   // Intentar parsear con la función segura
   const fechaParsed = parsearFechaSegura(fecha)
   if (!fechaParsed) {
-    console.warn('No se pudo parsear fecha:', fecha)
     return null
   }
 
@@ -296,32 +293,15 @@ const contarDocumentos = (item, tipoModulo) => {
 
 // Función helper para calcular estadísticas de combustible (órdenes + vales)
 const calcularEstadisticasCombustible = (ordenes, vales) => {
-  console.log('🚀 Iniciando cálculo estadísticas combustible:', {
-    ordenesCount: ordenes.length,
-    valesCount: vales.length,
-    ordenesSample: ordenes.slice(0, 2), // Primeras 2 órdenes
-    valesSample: vales.slice(0, 2) // Primeros 2 vales
-  })
-
-  console.log('🚀 Valores específicos iniciales:', {
-    'ordenes.length ===': ordenes.length,
-    'vales.length ===': vales.length,
-    '¿ordenes es array?': Array.isArray(ordenes),
-    '¿vales es array?': Array.isArray(vales)
-  })
-
   const estadisticasOrdenes = calcularEstadisticasOrdenesCompra(ordenes)
 
   // Calcular estadísticas de vales (manejo robusto de diferentes tipos de datos)
   const totalVales = vales.length
 
   // Función helper para determinar si un vale está consumido
+  // Solo cuenta cuando consumido es estrictamente true (booleano)
   const esValeConsumido = (vale) => {
-    const consumido = vale.consumido
-    if (consumido === true || consumido === 1 || consumido === 'true' || consumido === '1') {
-      return true
-    }
-    return false
+    return vale.consumido === true
   }
 
   // Función helper para determinar si un vale está anulado
@@ -337,37 +317,6 @@ const calcularEstadisticasCombustible = (ordenes, vales) => {
   const valesAnulados = vales.filter(esValeAnulado).length
   const valesConsumidos = vales.filter(vale => esValeConsumido(vale) && !esValeAnulado(vale)).length
   const valesDisponibles = vales.filter(vale => !esValeConsumido(vale) && !esValeAnulado(vale)).length
-
-  // Debug específico para vales consumidos y anulados
-  console.log('🔍 Debug vales consumidos y anulados:', {
-    totalVales,
-    valesConsumidos,
-    valesDisponibles,
-    valesAnulados,
-    sumaTotal: valesConsumidos + valesDisponibles + valesAnulados,
-    coincideConTotal: (valesConsumidos + valesDisponibles + valesAnulados) === totalVales,
-    valesConConsumidoTrue: vales.filter(vale => vale.consumido === true),
-    valesConConsumidoFalse: vales.filter(vale => vale.consumido === false),
-    valesConConsumidoUndefined: vales.filter(vale => vale.consumido === undefined),
-    valesConConsumidoNull: vales.filter(vale => vale.consumido === null),
-    valesConConsumidoString: vales.filter(vale => typeof vale.consumido === 'string'),
-    valesConConsumidoNuevoMetodo: vales.filter(esValeConsumido),
-    valesConAnuladoTrue: vales.filter(vale => vale.anulado === true),
-    valesConAnuladoFalse: vales.filter(vale => vale.anulado === false),
-    valesConAnuladoUndefined: vales.filter(vale => vale.anulado === undefined),
-    valesConAnuladoNull: vales.filter(vale => vale.anulado === null),
-    valesConAnuladoString: vales.filter(vale => typeof vale.anulado === 'string'),
-    valesConAnuladoNuevoMetodo: vales.filter(esValeAnulado),
-    muestraVales: vales.slice(0, 10).map(vale => ({
-      id: vale.id,
-      consumido: vale.consumido,
-      tipoConsumido: typeof vale.consumido,
-      esConsumidoNuevoMetodo: esValeConsumido(vale),
-      anulado: vale.anulado,
-      tipoAnulado: typeof vale.anulado,
-      esAnuladoNuevoMetodo: esValeAnulado(vale)
-    }))
-  })
 
   // Usar directamente el saldo restante de las órdenes (ya calculado por el backend)
   const saldoRestanteVales = ordenes.reduce((total, orden) => {
@@ -386,16 +335,6 @@ const calcularEstadisticasCombustible = (ordenes, vales) => {
   const metodoCalculoSaldo = 'saldo_restante_ordenes'
   const saldoDesdeOrdenes = saldoRestanteVales
 
-  console.log('✅ Saldo restante calculado directamente desde órdenes:', {
-    saldoRestanteVales,
-    ordenesCount: ordenes.length,
-    ordenesSample: ordenes.slice(0, 2).map(o => ({
-      id: o.id,
-      nroOrden: o.nroOrden,
-      saldos: o.saldos
-    }))
-  })
-
   // Calcular valor promedio de vales
   const valorPromedioVale = totalVales > 0
     ? vales.reduce((total, vale) => total + (parseFloat(vale.monto) || 0), 0) / totalVales
@@ -405,23 +344,6 @@ const calcularEstadisticasCombustible = (ordenes, vales) => {
   const promedioValesPorOrden = ordenes.length > 0
     ? totalVales / ordenes.length
     : 0
-
-  console.log('🔢 Debug promedio vales/orden:', {
-    totalVales,
-    totalOrdenes: ordenes.length,
-    promedioValesPorOrden,
-    estadisticasOrdenesTotal: estadisticasOrdenes.totalOrdenes,
-    ordenesArray: ordenes,
-    valesArray: vales.slice(0, 3) // Solo los primeros 3 vales para no saturar el log
-  })
-
-  console.log('🔢 Valores específicos:', {
-    'totalVales ===': totalVales,
-    'ordenes.length ===': ordenes.length,
-    'promedioValesPorOrden ===': promedioValesPorOrden,
-    '¿Es totalVales > 0?': totalVales > 0,
-    '¿Es ordenes.length > 0?': ordenes.length > 0
-  })
 
   // Calcular monto promedio por orden de compra
   const montoPromedioOrden = ordenes.length > 0
@@ -438,19 +360,6 @@ const calcularEstadisticasCombustible = (ordenes, vales) => {
   const fechaInicioEmisionVales = fechasVales.length > 0
     ? new Date(Math.min(...fechasVales.map(f => f.getTime())))
     : null
-
-  console.log('📅 Debug fecha inicio emisión vales:', {
-    fechasValesCount: fechasVales.length,
-    fechaInicioEmisionVales: fechaInicioEmisionVales,
-    fechaInicioFormateada: fechaInicioEmisionVales ? fechaInicioEmisionVales.toLocaleDateString('es-AR') : 'N/A',
-    valesSample: vales.slice(0, 3).map(v => ({
-      id: v.id,
-      fechaEmision: v.fechaEmision,
-      createdAt: v.createdAt,
-      fechaCreacion: v.fechaCreacion
-    }))
-  })
-
 
   // Calcular estadísticas por tipo de combustible (excluyendo vales anulados)
   const porTipoCombustible = vales.reduce((acc, vale) => {
@@ -705,22 +614,6 @@ const calcularEstadisticasDetalladas = (items, tipo, valesCombustible = [], cert
   }).length
 
   // Debug específico para últimos 30 días
-  if (tipo === 'combustible') {
-    console.log('📅 Debug últimos 30 días combustible:', {
-      ahora: ahora.toISOString(),
-      hace30Dias: hace30Dias.toISOString(),
-      totalOrdenes: items.length,
-      ultimos30Dias,
-      ordenesRecientes: items.slice(0, 5).map(orden => ({
-        id: orden.id,
-        nroOrden: orden.nroOrden,
-        createdAt: orden.createdAt,
-        fechaCreacionParsed: new Date(orden.createdAt).toISOString(),
-        esReciente: new Date(orden.createdAt) >= hace30Dias
-      }))
-    })
-  }
-
   // Estadísticas específicas por tipo
   let estadisticasEspecificas = {}
 
@@ -972,13 +865,6 @@ const calcularEstadisticasDetalladas = (items, tipo, valesCombustible = [], cert
     const turnosSinTipo = items.filter(item => !item.tipoTramite || item.tipoTramite === 'Sin especificar').length
     const turnosConTipo = items.length - turnosSinTipo
 
-    console.log('📊 Estadísticas de turnos:', {
-      totalTurnos: items.length,
-      turnosConTipo,
-      turnosSinTipo,
-      porTipoTramite: Object.entries(porTipoTramite).sort((a, b) => b[1] - a[1])
-    })
-
     estadisticasEspecificas = {
       porStatus,
       porTipoTramite,
@@ -987,12 +873,6 @@ const calcularEstadisticasDetalladas = (items, tipo, valesCombustible = [], cert
       porcentajeEnriquecimiento: items.length > 0 ? ((turnosConTipo / items.length) * 100).toFixed(1) : 0
     }
   } else if (tipo === 'combustible') {
-    console.log('🔍 Debug combustible en calcularEstadisticasDetalladas:', {
-      itemsCount: items.length,
-      valesCombustibleCount: valesCombustible.length,
-      itemsSample: items.slice(0, 2),
-      valesCombustibleSample: valesCombustible.slice(0, 2)
-    })
     const estadisticasCombustible = calcularEstadisticasCombustible(items, valesCombustible)
 
     estadisticasEspecificas = {
@@ -1176,17 +1056,7 @@ const calcularEstadisticasDetalladas = (items, tipo, valesCombustible = [], cert
     })
 
 
-    // Análisis específicos solicitados (actualizados para tercer período)
-    let rechazoCategoriaPeroCargaronPosteriormente = 0
-    let noPudieronCargarFueraTermino = 0
-    let cargaronPeriodo1NoPeriodosPosteriores = 0
-    let llegaronTardePeriodo1PeroSubieronPosteriormente = 0
-    let llegaronATiempoPeroNoSubieron = {
-      'Período 1 (Mayo)': 0,
-      'Período 2 (Agosto)': 0,
-      'Período 3 (Octubre)': 0
-    }
-
+    // Análisis específicos: llegaron tarde por período
     // Contador de cuántos llegaron tarde por período
     const llegaronTardePorPeriodo = {
       'Período 1 (Mayo)': 0,
@@ -1196,121 +1066,18 @@ const calcularEstadisticasDetalladas = (items, tipo, valesCombustible = [], cert
 
     items.forEach(item => {
       if (Array.isArray(item.status)) {
-        // 1. Rechazados por cambio de categoría pero cargaron posteriormente
-        // Verificar si fue rechazado en período 1 o 2 por cambio de categoría
-        const rechazadoPorCategoriaPeriodo1 = item.status[0] === 'Incorrecto' &&
-          item.facturas &&
-          item.facturas[0] &&
-          (item.facturas[0].observaciones === 'El contribuyente cambió de categoría tributaria.' ||
-           item.facturas[0].observaciones === 'El contribuyente cambió de categoría tirbutaria.')
-
-        const rechazadoPorCategoriaPeriodo2 = item.status[1] === 'Incorrecto' &&
-          item.facturas &&
-          item.facturas[1] &&
-          (item.facturas[1].observaciones === 'El contribuyente cambió de categoría tributaria.' ||
-           item.facturas[1].observaciones === 'El contribuyente cambió de categoría tirbutaria.')
-
-        // Si fue rechazado por cambio de categoría en período 1 o 2, pero cargó en períodos posteriores
-        if ((rechazadoPorCategoriaPeriodo1 || rechazadoPorCategoriaPeriodo2)) {
-          // Verificar si cargó en algún período posterior al rechazo
-          const cargoPosteriormente = (rechazadoPorCategoriaPeriodo1 && (item.status[1] !== 'Incompleto' || item.status[2] !== 'Incompleto')) ||
-                                    (rechazadoPorCategoriaPeriodo2 && item.status[2] !== 'Incompleto')
-
-          if (cargoPosteriormente) {
-            rechazoCategoriaPeroCargaronPosteriormente++
-          }
-        }
-
-        // 2. No pudieron cargar facturas en algún período por haber creado su cuenta fuera de término
+        // Llegaron tarde por período (contribuyentes que crearon cuenta después del cierre y no cargaron)
         const fechaCreacion = parsearFechaSegura(item.createdAt)
         if (fechaCreacion) {
-          // Definir fechas de períodos para verificar si creó cuenta fuera de término
           const añoActual = new Date().getFullYear()
           const fechasPeriodos = [
-            { inicio: new Date(añoActual, 4, 1), fin: new Date(añoActual, 4, 31), nombre: 'Período 1 (Mayo)', index: 0 }, // Mayo
-            { inicio: new Date(añoActual, 7, 1), fin: new Date(añoActual, 7, 31), nombre: 'Período 2 (Agosto)', index: 1 }, // Agosto
-            { inicio: new Date(añoActual, 9, 1), fin: new Date(añoActual, 9, 31), nombre: 'Período 3 (Octubre)', index: 2 }  // Octubre
+            { inicio: new Date(añoActual, 4, 1), fin: new Date(añoActual, 4, 31), nombre: 'Período 1 (Mayo)', index: 0 },
+            { inicio: new Date(añoActual, 7, 1), fin: new Date(añoActual, 7, 31), nombre: 'Período 2 (Agosto)', index: 1 },
+            { inicio: new Date(añoActual, 9, 1), fin: new Date(añoActual, 9, 31), nombre: 'Período 3 (Octubre)', index: 2 }
           ]
-
-          let creacionFueraTermino = false
-
-          // Verificar para cada período si llegó tarde
           fechasPeriodos.forEach(fechas => {
-            if (fechaCreacion > fechas.fin) {
-              creacionFueraTermino = true
-              // Llegó tarde a este período, verificar si no pudo cargar
-              if (item.status[fechas.index] === 'Incompleto') {
-                llegaronTardePorPeriodo[fechas.nombre]++
-              }
-            }
-          })
-
-          if (creacionFueraTermino) {
-            // Verificar si no pudieron cargar en algún período
-            const tieneAlgunPeriodoIncompleto = item.status.some(estado => estado === 'Incompleto')
-            if (tieneAlgunPeriodoIncompleto) {
-              noPudieronCargarFueraTermino++
-            }
-          }
-        }
-
-        // 3. Cargaron en período 1 pero no en períodos posteriores
-        if (item.status[0] === 'Correcto' &&
-            (item.status[1] === 'Incompleto' && item.status[2] === 'Incompleto')) {
-          cargaronPeriodo1NoPeriodosPosteriores++
-        }
-
-        // 4. Llegaron tarde al período 1 pero subieron en períodos posteriores (incluye período 3)
-        const fechaCreacion2 = parsearFechaSegura(item.createdAt)
-        if (fechaCreacion2) {
-          const añoActual = new Date().getFullYear()
-          const finPeriodo1 = new Date(añoActual, 4, 31) // 31 de Mayo
-
-          // Verificar si llegó tarde al período 1 (creó cuenta después del 31 de mayo)
-          if (fechaCreacion2 > finPeriodo1) {
-            // Verificar si subió algo en períodos posteriores (período 2 o 3)
-            const subioEnPeriodosPosteriores = item.status[1] !== 'Incompleto' || item.status[2] !== 'Incompleto'
-            if (subioEnPeriodosPosteriores) {
-              llegaronTardePeriodo1PeroSubieronPosteriormente++
-            }
-          }
-        }
-
-        // 5. Llegaron a tiempo para cada período pero no subieron nada
-        const fechaCreacion3 = parsearFechaSegura(item.createdAt)
-        if (fechaCreacion3) {
-          const añoActual = new Date().getFullYear()
-
-          // Definir rangos de fechas para cada período (incluyendo meses intermedios)
-          const rangosPeriodos = [
-            {
-              inicio: new Date(añoActual, 4, 1),
-              fin: new Date(añoActual, 4, 31),
-              nombre: 'Período 1 (Mayo)',
-              index: 0
-            }, // 1-31 Mayo
-            {
-              inicio: new Date(añoActual, 5, 1), // 1 Junio
-              fin: new Date(añoActual, 7, 31),   // 31 Agosto
-              nombre: 'Período 2 (Agosto)',
-              index: 1
-            }, // 1 Junio - 31 Agosto
-            {
-              inicio: new Date(añoActual, 8, 1), // 1 Septiembre
-              fin: new Date(añoActual, 9, 31),   // 31 Octubre
-              nombre: 'Período 3 (Octubre)',
-              index: 2
-            }  // 1 Septiembre - 31 Octubre
-          ]
-
-          // Para cada período, verificar si creó cuenta en el rango correspondiente pero no subió nada
-          rangosPeriodos.forEach(rango => {
-            // Creó cuenta en el rango de fechas correspondiente a este período
-            if (fechaCreacion3 >= rango.inicio && fechaCreacion3 <= rango.fin) {
-              // Pero no subió nada (estado es Incompleto)
-              if (item.status[rango.index] === 'Incompleto') {
-                llegaronATiempoPeroNoSubieron[rango.nombre]++
-              }
+            if (fechaCreacion > fechas.fin && item.status[fechas.index] === 'Incompleto') {
+              llegaronTardePorPeriodo[fechas.nombre]++
             }
           })
         }
@@ -1328,20 +1095,10 @@ const calcularEstadisticasDetalladas = (items, tipo, valesCombustible = [], cert
       })).sort((a, b) => a.periodo.localeCompare(b.periodo)),
       rechazosPorMotivoYPeriodo: rechazosPorMotivoYPeriodo,
       analisisEspecificos: {
-        rechazoCategoriaPeroCargaronPosteriormente,
-        noPudieronCargarFueraTermino,
-        cargaronPeriodo1NoPeriodosPosteriores,
-        llegaronTardePeriodo1PeroSubieronPosteriormente,
-        llegaronTardePorPeriodo: llegaronTardePorPeriodo,
-        llegaronATiempoPeroNoSubieron: llegaronATiempoPeroNoSubieron
+        llegaronTardePorPeriodo
       }
     }
   } else if (tipo === 'indices') {
-    console.log('🔍 Debug índices en calcularEstadisticasDetalladas:', {
-      itemsCount: items.length,
-      itemsSample: items.slice(0, 2)
-    })
-
     // Calcular evolución temporal de índices
     const evolucionTemporal = {}
 
@@ -1366,15 +1123,6 @@ const calcularEstadisticasDetalladas = (items, tipo, valesCombustible = [], cert
         if (a.año !== b.año) return a.año - b.año
         return a.mes - b.mes
       })
-    })
-
-    console.log('✅ Evolución temporal calculada:', {
-      categorias: Object.keys(evolucionTemporal),
-      totalIndices: items.length,
-      evolucionSample: Object.keys(evolucionTemporal).slice(0, 2).reduce((acc, cat) => {
-        acc[cat] = evolucionTemporal[cat].slice(0, 3)
-        return acc
-      }, {})
     })
 
     estadisticasEspecificas = {
@@ -1402,9 +1150,7 @@ module.exports = {
         turnos,
         pagosDobles,
         indices,
-        multimedias,
         abiertoAnual,
-        certificados,
         combustible,
         valesCombustible
       ] = await Promise.all([
@@ -1413,9 +1159,7 @@ module.exports = {
         TurnoService.getAll(axios).catch(() => []),
         PagoDobleService.getAll(axios).catch(() => []),
         IndiceService.getLatest(axios).catch(() => []),
-        MultimediaService.getLatest(axios).catch(() => []),
         AbiertoAnualService.getAll(axios).catch(() => []),
-        CertificadoService.getLatest(axios).catch(() => []),
         CombustibleService.getLatest(axios).catch(() => []),
         CombustibleService.getAllVales(axios).catch(() => [])
       ])
@@ -1447,7 +1191,6 @@ module.exports = {
           createdAt: new Date(item.createdAt)
         }))
       } catch (error) {
-        console.warn('No se pudieron obtener datos completos de obras:', error)
         obrasCompletas = obras
       }
 
@@ -1482,7 +1225,6 @@ module.exports = {
           }
         })
       } catch (error) {
-        console.warn('No se pudieron obtener datos extendidos de habilitaciones:', error)
         habilitacionesExtendidas = habilitaciones
       }
 
@@ -1506,25 +1248,44 @@ module.exports = {
           }
         })
       } catch (error) {
-        console.warn('No se pudieron enriquecer los turnos:', error)
         turnosEnriquecidos = turnos
       }
 
       // Devolver solo los datos raw, sin calcular estadísticas
+      // Nota: multimedias y certificados se eliminaron porque no se usan en el dashboard
       return {
         habilitaciones: habilitacionesExtendidas || [],
         obras: obrasCompletas || [],
         turnos: turnosEnriquecidos || [],
         pagosDobles: pagosDobles || [],
         indices: indices || [],
-        multimedias: multimedias || [],
         abiertoAnual: abiertoAnual || [],
-        certificados: certificados || [],
         combustible: combustible || [],
         valesCombustible: valesCombustible || []
       }
     } catch (error) {
       console.error('Error al obtener datos raw:', error)
+      throw error
+    }
+  },
+
+  // Obtener solo datos raw de combustible (optimizado para dashboard de compras)
+  getRawDataCombustible: async (axios) => {
+    try {
+      const [
+        combustible,
+        valesCombustible
+      ] = await Promise.all([
+        CombustibleService.getLatest(axios).catch(() => []),
+        CombustibleService.getAllVales(axios).catch(() => [])
+      ])
+
+      return {
+        combustible: combustible || [],
+        valesCombustible: valesCombustible || []
+      }
+    } catch (error) {
+      console.error('Error al obtener datos raw de combustible:', error)
       throw error
     }
   },
@@ -1633,23 +1394,20 @@ module.exports = {
         turnos = [],
         pagosDobles = [],
         indices = [],
-        multimedias = [],
         abiertoAnual = [],
-        certificados = [],
         combustible = [],
         valesCombustible = []
       } = rawData || {}
 
       // Calcular estadísticas detalladas por módulo
+      // Nota: multimedias y certificados se eliminaron porque no se usan en el dashboard
       const comercio = calcularEstadisticasDetalladas(habilitaciones, 'habilitaciones')
       const abiertoAnualStats = calcularEstadisticasDetalladas(abiertoAnual, 'abiertoAnual')
-      const estadisticasObras = calcularEstadisticasDetalladas(obras, 'obras', [], certificados)
+      const estadisticasObras = calcularEstadisticasDetalladas(obras, 'obras', [], [])
       const estadisticasPagosDobles = calcularEstadisticasDetalladas(pagosDobles, 'pagosDobles')
       const estadisticasCombustible = calcularEstadisticasDetalladas(combustible, 'combustible', valesCombustible)
       const estadisticasTurnos = calcularEstadisticasDetalladas(turnos, 'turnos')
       const estadisticasIndices = calcularEstadisticasDetalladas(indices, 'indices')
-      const estadisticasMultimedias = calcularEstadisticasDetalladas(multimedias, 'multimedias')
-      const estadisticasCertificados = calcularEstadisticasDetalladas(certificados, 'certificados')
 
       return {
         comercio,
@@ -1658,9 +1416,7 @@ module.exports = {
         recaudaciones: estadisticasPagosDobles,
         combustible: estadisticasCombustible,
         turnos: estadisticasTurnos,
-        indices: estadisticasIndices,
-        multimedias: estadisticasMultimedias,
-        certificados: estadisticasCertificados
+        indices: estadisticasIndices
       }
     } catch (error) {
       console.error('Error al calcular estadísticas desde datos raw:', error)
@@ -1677,9 +1433,7 @@ module.exports = {
         turnos = [],
         pagosDobles = [],
         indices = [],
-        multimedias = [],
         abiertoAnual = [],
-        certificados = [],
         combustible = [],
         valesCombustible = []
       } = rawData || {}
@@ -1696,29 +1450,12 @@ module.exports = {
           const endDateNormalized = normalizarFecha(endDate)
 
           if (!itemDate || !startDateNormalized || !endDateNormalized) {
-            console.warn('Fecha inválida en filtrado:', {
-              itemId: item.id,
-              dateField,
-              itemDate: item[dateField],
-              parsedDate: itemDate,
-              startDate,
-              endDate
-            })
             return false
           }
 
           return itemDate >= startDateNormalized && itemDate <= endDateNormalized
         })
       }
-
-      // Debug: Verificar formatos de fecha en los datos
-      console.log('🔍 Debug formatos de fecha:', {
-        habilitaciones: habilitaciones.slice(0, 2).map(h => ({ id: h.id, createdAt: h.createdAt, type: typeof h.createdAt })),
-        obras: obras.slice(0, 2).map(o => ({ id: o.id, createdAt: o.createdAt, type: typeof o.createdAt })),
-        turnos: turnos.slice(0, 2).map(t => ({ id: t.id, createdAt: t.createdAt, type: typeof t.createdAt })),
-        pagosDobles: pagosDobles.slice(0, 2).map(p => ({ id: p.id, createdAt: p.createdAt, type: typeof p.createdAt })),
-        combustible: combustible.slice(0, 2).map(c => ({ id: c.id, createdAt: c.createdAt, type: typeof c.createdAt }))
-      })
 
       // Filtrar solo los módulos específicos que queremos filtrar por fecha:
       // ✅ Comercio (habilitaciones) - SÍ filtrar
@@ -1739,23 +1476,20 @@ module.exports = {
       const combustibleFiltrado = filtrarPorFecha(combustible)
       const valesCombustibleFiltrados = filtrarPorFecha(valesCombustible)
 
-      // Mantener sin filtrar: índices, multimedia, abierto anual, certificados
+      // Mantener sin filtrar: índices, abierto anual
       const indicesFiltrados = indices
-      const multimediasFiltradas = multimedias
       const abiertoAnualFiltrado = abiertoAnual
-      const certificadosFiltrados = certificados
 
       // Calcular estadísticas con datos filtrados
       // Para comercio: usar datos filtrados pero pasar datos sin filtrar para el gráfico de trámites por mes
+      // Nota: multimedias y certificados se eliminaron porque no se usan en el dashboard
       const comercio = calcularEstadisticasDetalladas(habilitacionesFiltradas, 'habilitaciones', [], [], habilitaciones)
       const abiertoAnualStats = calcularEstadisticasDetalladas(abiertoAnualFiltrado, 'abiertoAnual')
-      const estadisticasObras = calcularEstadisticasDetalladas(obrasFiltradas, 'obras', [], certificadosFiltrados)
+      const estadisticasObras = calcularEstadisticasDetalladas(obrasFiltradas, 'obras', [], [])
       const estadisticasPagosDobles = calcularEstadisticasDetalladas(pagosDoblesFiltrados, 'pagosDobles')
       const estadisticasCombustible = calcularEstadisticasDetalladas(combustibleFiltrado, 'combustible', valesCombustibleFiltrados)
       const estadisticasTurnos = calcularEstadisticasDetalladas(turnosFiltrados, 'turnos')
       const estadisticasIndices = calcularEstadisticasDetalladas(indicesFiltrados, 'indices')
-      const estadisticasMultimedias = calcularEstadisticasDetalladas(multimediasFiltradas, 'multimedias')
-      const estadisticasCertificados = calcularEstadisticasDetalladas(certificadosFiltrados, 'certificados')
 
       return {
         comercio,
@@ -1764,12 +1498,114 @@ module.exports = {
         recaudaciones: estadisticasPagosDobles,
         combustible: estadisticasCombustible,
         turnos: estadisticasTurnos,
-        indices: estadisticasIndices,
-        multimedias: estadisticasMultimedias,
-        certificados: estadisticasCertificados
+        indices: estadisticasIndices
       }
     } catch (error) {
       console.error('Error al calcular estadísticas filtradas:', error)
+      throw error
+    }
+  },
+
+  // Obtener estadísticas de combustible filtradas por fecha (para dashboard de compras)
+  getEstadisticasCombustibleFiltered: async (rawDataCombustible, { startDate, endDate }) => {
+    try {
+      const {
+        combustible = [],
+        valesCombustible = []
+      } = rawDataCombustible || {}
+
+      // Función helper para filtrar órdenes de compra por createdAt
+      const filtrarOrdenesPorFecha = (ordenes) => {
+        if (!Array.isArray(ordenes)) return []
+        const startDateNormalized = normalizarFecha(startDate)
+        const endDateNormalized = normalizarFecha(endDate)
+
+        if (!startDateNormalized || !endDateNormalized) {
+          return ordenes
+        }
+
+        const filtradas = ordenes.filter(orden => {
+          if (!orden || !orden.createdAt) {
+            return false
+          }
+
+          const itemDate = normalizarFecha(orden.createdAt)
+          if (!itemDate) {
+            return false
+          }
+
+          return itemDate >= startDateNormalized && itemDate <= endDateNormalized
+        })
+
+        return filtradas
+      }
+
+      // Función helper para filtrar vales por fechaEmision (con fallback)
+      const filtrarValesPorFecha = (vales) => {
+        if (!Array.isArray(vales)) return []
+        const startDateNormalized = normalizarFecha(startDate)
+        const endDateNormalized = normalizarFecha(endDate)
+
+        if (!startDateNormalized || !endDateNormalized) {
+          return vales
+        }
+
+        const filtrados = vales.filter(vale => {
+          // Los vales usan fechaEmision, con fallback a createdAt o fechaCreacion
+          const fecha = vale.fechaEmision || vale.createdAt || vale.fechaCreacion
+          if (!fecha) {
+            return false
+          }
+
+          const itemDate = normalizarFecha(fecha)
+          if (!itemDate) {
+            return false
+          }
+
+          return itemDate >= startDateNormalized && itemDate <= endDateNormalized
+        })
+
+        return filtrados
+      }
+
+      // Filtrar órdenes y vales por fecha usando las funciones específicas
+      const combustibleFiltrado = filtrarOrdenesPorFecha(combustible)
+      const valesCombustibleFiltrados = filtrarValesPorFecha(valesCombustible)
+
+      // Calcular estadísticas solo de combustible
+      const estadisticasCombustible = calcularEstadisticasDetalladas(combustibleFiltrado, 'combustible', valesCombustibleFiltrados)
+
+      // Eliminar promedioValesPorOrden del resultado para el dashboard de compras
+      const { promedioValesPorOrden, ...estadisticasSinPromedio } = estadisticasCombustible
+
+      return {
+        combustible: estadisticasSinPromedio
+      }
+    } catch (error) {
+      console.error('Error al calcular estadísticas de combustible filtradas:', error)
+      throw error
+    }
+  },
+
+  // Obtener estadísticas de combustible sin filtro (para dashboard de compras)
+  getEstadisticasCombustibleFromRaw: async (rawDataCombustible) => {
+    try {
+      const {
+        combustible = [],
+        valesCombustible = []
+      } = rawDataCombustible || {}
+
+      // Calcular estadísticas solo de combustible sin filtro
+      const estadisticasCombustible = calcularEstadisticasDetalladas(combustible, 'combustible', valesCombustible)
+
+      // Eliminar promedioValesPorOrden del resultado para el dashboard de compras
+      const { promedioValesPorOrden, ...estadisticasSinPromedio } = estadisticasCombustible
+
+      return {
+        combustible: estadisticasSinPromedio
+      }
+    } catch (error) {
+      console.error('Error al calcular estadísticas de combustible:', error)
       throw error
     }
   }

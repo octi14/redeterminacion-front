@@ -20,7 +20,7 @@
 
           <div class="row">
             <div class="col-md-3 col-sm-6 mb-3">
-              <div class="stat-card">
+              <div class="stat-block">
                 <div class="stat-icon bg-primary">
                   <i class="bi bi-car-front"></i>
                 </div>
@@ -31,8 +31,8 @@
               </div>
             </div>
 
-            <div class="col-md-3 col-sm-6 mb-3">
-              <div class="stat-card">
+            <div v-if="!hideComprasInfo" class="col-md-3 col-sm-6 mb-3">
+              <div class="stat-block">
                 <div class="stat-icon bg-success">
                   <i class="bi bi-fuel-pump"></i>
                 </div>
@@ -44,7 +44,7 @@
             </div>
 
             <div class="col-md-3 col-sm-6 mb-3">
-              <div class="stat-card">
+              <div class="stat-block">
                 <div class="stat-icon bg-warning">
                   <i class="bi bi-currency-dollar"></i>
                 </div>
@@ -55,8 +55,8 @@
               </div>
             </div>
 
-            <div class="col-md-3 col-sm-6 mb-3">
-              <div class="stat-card">
+            <div v-if="!hideComprasInfo" class="col-md-3 col-sm-6 mb-3">
+              <div class="stat-block">
                 <div class="stat-icon bg-info">
                   <i class="bi bi-speedometer2"></i>
                 </div>
@@ -105,7 +105,7 @@
               </thead>
               <tbody>
                 <tr
-                  v-for="patente in filteredPatentes"
+                  v-for="patente in paginatedPatentes"
                   :key="patente.dominio"
                   class="table-row"
                   :class="{ 'sin-patente-row': patente.dominio === 'SIN PATENTE ASIGNADA' }"
@@ -134,6 +134,21 @@
               </tbody>
             </table>
           </div>
+
+          <!-- Paginación -->
+          <div v-if="totalPages > 1" class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+            <div class="text-muted">
+              Mostrando {{ startItem }} - {{ endItem }} de {{ filteredPatentes.length }} patentes
+            </div>
+            <b-pagination
+              v-model="currentPage"
+              :total-rows="filteredPatentes.length"
+              :per-page="perPage"
+              aria-controls="patentes-table"
+              size="sm"
+              class="mb-0"
+            />
+          </div>
         </b-card>
       </div>
     </div>
@@ -147,11 +162,17 @@ export default {
     datosCombustible: {
       type: Object,
       default: () => ({})
+    },
+    hideComprasInfo: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
-      searchTerm: ''
+      searchTerm: '',
+      currentPage: 1,
+      perPage: 20
     }
   },
   computed: {
@@ -228,6 +249,27 @@ export default {
       return this.datosPorPatente.filter(patente =>
         patente.dominio.toLowerCase().includes(this.searchTerm.toLowerCase())
       )
+    },
+    totalPages() {
+      return Math.ceil(this.filteredPatentes.length / this.perPage)
+    },
+    startItem() {
+      return this.filteredPatentes.length === 0 ? 0 : (this.currentPage - 1) * this.perPage + 1
+    },
+    endItem() {
+      const end = this.currentPage * this.perPage
+      return end > this.filteredPatentes.length ? this.filteredPatentes.length : end
+    },
+    paginatedPatentes() {
+      const start = (this.currentPage - 1) * this.perPage
+      const end = start + this.perPage
+      return this.filteredPatentes.slice(start, end)
+    }
+  },
+  watch: {
+    searchTerm() {
+      // Resetear a la primera página cuando cambia el término de búsqueda
+      this.currentPage = 1
     }
   },
   methods: {
@@ -253,75 +295,6 @@ export default {
   margin-bottom: 2rem;
 }
 
-.section-title {
-  color: #495057;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-
-.section-subtitle {
-  color: #6c757d;
-  font-size: 1.1rem;
-}
-
-.summary-card {
-  border-radius: 15px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border: none;
-}
-
-.stat-card {
-  display: flex;
-  align-items: center;
-  padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 10px;
-  transition: transform 0.2s ease;
-}
-
-.stat-card:hover {
-  transform: translateY(-2px);
-}
-
-.stat-icon {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 1rem;
-  color: white;
-  font-size: 1.2rem;
-}
-
-.stat-content {
-  flex: 1;
-}
-
-.stat-number {
-  font-size: 1.8rem;
-  font-weight: bold;
-  margin: 0;
-  color: #495057;
-}
-
-.stat-label {
-  color: #6c757d;
-  margin: 0;
-  font-size: 0.9rem;
-}
-
-.table-card {
-  border-radius: 15px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border: none;
-}
-
-.table-header {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-}
-
 .table-row:hover {
   background-color: #f8f9fa;
 }
@@ -342,16 +315,6 @@ export default {
   color: #6c757d;
 }
 
-.search-input {
-  border-radius: 20px;
-  border: 1px solid #ced4da;
-}
-
-.search-input:focus {
-  border-color: #28a745;
-  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
-}
-
 .badge {
   font-size: 0.8rem;
   padding: 0.4rem 0.6rem;
@@ -369,17 +332,5 @@ export default {
 .sin-patente-row .patente-icon {
   background: #ffc107 !important;
   color: #856404 !important;
-}
-
-@media (max-width: 768px) {
-  .stat-card {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .stat-icon {
-    margin-right: 0;
-    margin-bottom: 0.5rem;
-  }
 }
 </style>

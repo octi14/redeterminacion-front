@@ -21,7 +21,7 @@
 
           <div class="row">
             <div class="col-md-4 col-sm-6 mb-3">
-              <div class="stat-card">
+              <div class="stat-block">
                 <div class="stat-icon bg-primary">
                   <i class="bi bi-car-front"></i>
                 </div>
@@ -33,7 +33,7 @@
             </div>
 
             <div class="col-md-4 col-sm-6 mb-3">
-              <div class="stat-card">
+              <div class="stat-block">
                 <div class="stat-icon bg-success">
                   <i class="bi bi-building"></i>
                 </div>
@@ -45,7 +45,7 @@
             </div>
 
             <div class="col-md-4 col-sm-6 mb-3">
-              <div class="stat-card">
+              <div class="stat-block">
                 <div class="stat-icon bg-info">
                   <i class="bi bi-speedometer2"></i>
                 </div>
@@ -204,75 +204,6 @@ export default {
   margin-bottom: 2rem;
 }
 
-.section-title {
-  color: #495057;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-
-.section-subtitle {
-  color: #6c757d;
-  font-size: 1.1rem;
-}
-
-.summary-card {
-  border-radius: 15px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border: none;
-}
-
-.stat-card {
-  display: flex;
-  align-items: center;
-  padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 10px;
-  transition: transform 0.2s ease;
-}
-
-.stat-card:hover {
-  transform: translateY(-2px);
-}
-
-.stat-icon {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 1rem;
-  color: white;
-  font-size: 1.2rem;
-}
-
-.stat-content {
-  flex: 1;
-}
-
-.stat-number {
-  font-size: 1.8rem;
-  font-weight: bold;
-  margin: 0;
-  color: #495057;
-}
-
-.stat-label {
-  color: #6c757d;
-  margin: 0;
-  font-size: 0.9rem;
-}
-
-.table-card {
-  border-radius: 15px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border: none;
-}
-
-.table-header {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-}
-
 .table-row:hover {
   background-color: #f8f9fa;
 }
@@ -293,30 +224,8 @@ export default {
   color: #6c757d;
 }
 
-.search-input {
-  border-radius: 20px;
-  border: 1px solid #ced4da;
-}
-
-.search-input:focus {
-  border-color: #28a745;
-  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
-}
-
 .badge {
   font-size: 0.8rem;
   padding: 0.4rem 0.6rem;
-}
-
-@media (max-width: 768px) {
-  .stat-card {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .stat-icon {
-    margin-right: 0;
-    margin-bottom: 0.5rem;
-  }
 }
 </style>

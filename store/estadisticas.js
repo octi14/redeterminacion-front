@@ -95,6 +95,40 @@ export const actions = {
       console.error('Error al cargar todas las estadísticas:', error)
       throw error
     }
+  },
+
+  async fetchEstadisticasCombustible({ commit, state }, { startDate, endDate } = {}) {
+    commit('setLoading', true)
+    commit('setError', null)
+    try {
+      // Cargar solo datos de combustible
+      const rawDataCombustible = await EstadisticasService.getRawDataCombustible(this.$axios)
+      
+      // Aplicar filtro de fecha si se proporcionan fechas
+      let data
+      if (startDate && endDate) {
+        data = await EstadisticasService.getEstadisticasCombustibleFiltered(rawDataCombustible, { startDate, endDate })
+        commit('setCurrentDateFilter', { startDate, endDate })
+      } else {
+        // Si no hay filtro, calcular estadísticas sin filtrar
+        data = await EstadisticasService.getEstadisticasCombustibleFromRaw(rawDataCombustible)
+        commit('setCurrentDateFilter', null)
+      }
+
+      // Actualizar solo la parte de combustible en estadisticasModulos
+      const currentModulos = state.estadisticasModulos || {}
+      commit('setEstadisticasModulos', {
+        ...currentModulos,
+        combustible: data.combustible
+      })
+      
+      return data
+    } catch (error) {
+      commit('setError', error.message)
+      throw error
+    } finally {
+      commit('setLoading', false)
+    }
   }
 }
 

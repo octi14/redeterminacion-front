@@ -1,7 +1,7 @@
 <template>
   <div>
     <h4 class="section-title">
-      <i class="bi bi-bar-chart-line mr-2"></i>
+      <i class="bi bi-bar-chart-fill mr-2"></i>
       Análisis Detallado por Módulo
     </h4>
 
@@ -264,7 +264,7 @@
             <span class="text-dark">Anulados:</span>
             <strong class="text-secondary">{{ modulos.combustible.valesAnulados || 0 }}</strong>
           </div>
-          <div class="d-flex justify-content-between mb-1">
+          <div v-if="!hideComprasInfo" class="d-flex justify-content-between mb-1">
             <span class="text-dark">Promedio vale:</span>
             <strong class="text-info">${{ formatearNumeroArgentino(modulos.combustible.valorPromedioVale || 0) }}</strong>
           </div>
@@ -320,7 +320,7 @@
                 <strong class="text-danger">{{ modulos.combustible.totalValesGenerados || 0 }}</strong>
               </div>
             </div>
-            <div class="col-md-3">
+            <div v-if="!hideComprasInfo" class="col-md-3">
               <div class="d-flex justify-content-between mb-1">
                 <span class="text-dark">Promedio vales/orden:</span>
                 <strong class="text-danger">{{ (modulos.combustible.promedioValesPorOrden || 0).toFixed(1) }}</strong>
@@ -338,7 +338,7 @@
         </b-col>
       </b-row>
 
-      <div class="mt-3 pt-3 border-top">
+      <div v-if="!hideComprasInfo" class="mt-3 pt-3 border-top">
         <small class="text-dark">
           <i class="bi bi-info-circle mr-1"></i>
           Total: {{ modulos.combustible.total }} | Últimos 30 días: {{ modulos.combustible.ultimos30Dias }}
@@ -391,6 +391,10 @@ export default {
     modulos: {
       type: Object,
       default: () => ({})
+    },
+    hideComprasInfo: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -559,43 +563,8 @@ export default {
 </script>
 
 <style scoped>
-.dashboard-card {
-  background: white;
-  border-radius: 15px;
-  border: none;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
-  overflow: hidden;
-}
-
-.dashboard-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-}
-
-.dashboard-card .card-header {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border-bottom: 2px solid #dee2e6;
-  border-radius: 15px 15px 0 0 !important;
-  padding: 1.25rem 1.5rem;
-}
-
-.dashboard-card .card-header h4, .dashboard-card .card-header h5 {
-  margin: 0;
-  font-weight: 600;
-  color: #495057;
-}
-
-.dashboard-card .card-header i {
-  font-size: 1.2em;
-}
-
-.dashboard-card .card-body {
-  padding: 1.5rem;
-}
-
 .section-title {
-  color: #495057;
+  color: #000000;
   font-weight: 600;
   margin-bottom: 1.5rem;
   padding-bottom: 0.5rem;
@@ -614,5 +583,4 @@ export default {
 .text-truncate {
   max-width: 150px;
 }
-
 </style>

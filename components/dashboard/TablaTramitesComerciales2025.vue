@@ -363,8 +363,4 @@ export default {
   background-color: #f1f3f5;
   transition: background-color 0.2s;
 }
-
-.shadow-sm {
-  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
-}
 </style>

@@ -62,7 +62,7 @@
     <!-- Gráfico principal -->
     <div class="row">
       <div class="col-12">
-        <b-card class="chart-card">
+        <b-card class="table-card">
           <template #header>
             <div class="d-flex justify-content-between align-items-center">
               <h5 class="mb-0">
@@ -421,23 +421,6 @@ export default {
   margin-bottom: 2rem;
 }
 
-.section-title {
-  color: #495057;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-
-.section-subtitle {
-  color: #6c757d;
-  font-size: 1.1rem;
-}
-
-.summary-card {
-  border-radius: 15px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border: none;
-}
-
 .summary-content {
   padding: 0.5rem 0;
 }
@@ -464,12 +447,6 @@ export default {
   font-size: 1.1rem;
 }
 
-.chart-card {
-  border-radius: 15px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border: none;
-}
-
 .chart-container {
   position: relative;
   height: 400px;
@@ -492,16 +469,6 @@ export default {
   width: 20px;
   height: 20px;
   border-radius: 3px;
-}
-
-.table-card {
-  border-radius: 15px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border: none;
-}
-
-.table-header {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
 }
 
 .year-comparison,

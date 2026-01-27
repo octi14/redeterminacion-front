@@ -5,7 +5,6 @@
         <i class="bi bi-list-ul mr-2"></i>
         Lista de Vehículos por Área
       </h4>
-      <p class="section-subtitle">Vehículos municipales organizados por área de trabajo</p>
     </div>
 
     <!-- Controles de búsqueda y filtrado -->

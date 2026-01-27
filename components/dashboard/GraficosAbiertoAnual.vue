@@ -81,78 +81,6 @@
       </b-col>
     </b-row>
 
-    <!-- Análisis Específicos -->
-    <b-row>
-      <b-col md="12" class="mb-4">
-        <b-card class="h-100">
-          <template #header>
-            <h6 class="mb-0">
-              <i class="bi bi-search mr-2"></i>
-              Análisis Específicos
-            </h6>
-          </template>
-
-          <div v-if="analisisEspecificos" class="analisis-summary">
-            <div class="analisis-item mb-3 p-3 border rounded">
-              <div class="d-flex align-items-center">
-                <i class="bi bi-arrow-clockwise text-primary mr-3" style="font-size: 1.5rem;"></i>
-                <div>
-                  <h6 class="mb-1 text-primary">Rechazados por cambio de categoría pero cargaron posteriormente</h6>
-                  <p class="mb-0 text-muted">Contribuyentes que fueron rechazados en el primer período o el segundo por cambio de categoría tributaria, pero igual cargaron facturas en períodos siguientes.</p>
-                </div>
-                <div class="ml-auto">
-                  <span class="badge badge-primary badge-lg">{{ analisisEspecificos.rechazoCategoriaPeroCargaronPosteriormente }}</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="analisis-item mb-3 p-3 border rounded">
-              <div class="d-flex align-items-center">
-                <i class="bi bi-calendar-x text-warning mr-3" style="font-size: 1.5rem;"></i>
-                <div>
-                  <h6 class="mb-1 text-warning">No pudieron cargar por crear cuenta fuera de término</h6>
-                  <p class="mb-0 text-muted">Contribuyentes que crearon su cuenta después del cierre de algún período y no pudieron cargar facturas en períodos anteriores.</p>
-                </div>
-                <div class="ml-auto">
-                  <span class="badge badge-warning badge-lg">{{ analisisEspecificos.noPudieronCargarFueraTermino }}</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="analisis-item mb-3 p-3 border rounded">
-              <div class="d-flex align-items-center">
-                <i class="bi bi-pause-circle text-danger mr-3" style="font-size: 1.5rem;"></i>
-                <div>
-                  <h6 class="mb-1 text-danger">Cargaron en período 1 pero no en períodos posteriores</h6>
-                  <p class="mb-0 text-muted">Contribuyentes que cargaron y fueron aprobados en el primer período, pero no subieron nada en los períodos posteriores.</p>
-                </div>
-                <div class="ml-auto">
-                  <span class="badge badge-danger badge-lg">{{ analisisEspecificos.cargaronPeriodo1NoPeriodosPosteriores }}</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="analisis-item mb-3 p-3 border rounded">
-              <div class="d-flex align-items-center">
-                <i class="bi bi-arrow-right-circle text-success mr-3" style="font-size: 1.5rem;"></i>
-                <div>
-                  <h6 class="mb-1 text-success">Llegaron tarde al período 1 pero subieron en períodos posteriores</h6>
-                  <p class="mb-0 text-muted">Contribuyentes que crearon su cuenta después del cierre del primer período, pero igual subieron facturas en períodos posteriores.</p>
-                </div>
-                <div class="ml-auto">
-                  <span class="badge badge-success badge-lg">{{ analisisEspecificos.llegaronTardePeriodo1PeroSubieronPosteriormente }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div v-else class="text-center text-muted py-4">
-            <i class="bi bi-graph-down display-4"></i>
-            <p class="mt-2">No hay datos de análisis disponibles</p>
-          </div>
-        </b-card>
-      </b-col>
-    </b-row>
-
     <!-- Cantidad de Llegaron Tarde por Período -->
     <b-row>
       <b-col md="12" class="mb-4">
@@ -173,44 +101,6 @@
                   </div>
                   <h6 class="mb-1 text-info">{{ nombrePeriodo }}</h6>
                   <small class="text-muted">contribuyentes llegaron tarde</small>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div v-else class="text-center text-muted py-4">
-            <i class="bi bi-graph-down display-4"></i>
-            <p class="mt-2">No hay datos de análisis disponibles</p>
-          </div>
-        </b-card>
-      </b-col>
-    </b-row>
-
-    <!-- Cantidad de Crearon Cuenta en el Rango del Período pero No Subieron -->
-    <b-row>
-      <b-col md="12" class="mb-4">
-        <b-card class="h-100">
-          <template #header>
-            <h6 class="mb-0">
-              <i class="bi bi-clock mr-2"></i>
-              Contribuyentes que Crearon Cuenta en el Rango del Período pero No Subieron
-            </h6>
-          </template>
-
-          <div v-if="analisisEspecificos && analisisEspecificos.llegaronATiempoPeroNoSubieron" class="llegaron-tiempo-summary">
-            <div class="row">
-              <div v-for="(cantidad, nombrePeriodo) in analisisEspecificos.llegaronATiempoPeroNoSubieron" :key="nombrePeriodo" class="col-md-4 mb-3">
-                <div class="periodo-tiempo text-center p-3">
-                  <div class="periodo-count mb-2">
-                    <strong class="text-secondary" style="font-size: 2rem;">{{ cantidad }}</strong>
-                  </div>
-                  <h6 class="mb-1 text-secondary">{{ nombrePeriodo }}</h6>
-                  <small class="text-muted">
-                    <span v-if="nombrePeriodo.includes('Mayo')">crearon cuenta en mayo</span>
-                    <span v-else-if="nombrePeriodo.includes('Agosto')">crearon cuenta entre junio-agosto</span>
-                    <span v-else-if="nombrePeriodo.includes('Octubre')">crearon cuenta entre septiembre-octubre</span>
-                    <span v-else>crearon cuenta en el período</span>
-                    <br>pero no subieron
-                  </small>
                 </div>
               </div>
             </div>
@@ -511,26 +401,6 @@ export default {
   font-weight: bold;
 }
 
-.analisis-summary {
-  max-height: 600px;
-  overflow-y: auto;
-}
-
-.analisis-item {
-  transition: all 0.3s ease;
-  background: #f8f9fa;
-}
-
-.analisis-item:hover {
-  background: #e9ecef;
-  transform: translateX(5px);
-}
-
-.badge-lg {
-  font-size: 1rem;
-  padding: 0.5rem 0.75rem;
-}
-
 .badge-primary {
   background-color: #007bff;
 }
@@ -561,24 +431,6 @@ export default {
 }
 
 .periodo-tarde:hover {
-  background: #e9ecef;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.llegaron-tiempo-summary {
-  max-height: 400px;
-  overflow-y: auto;
-}
-
-.periodo-tiempo {
-  border: 1px solid #e9ecef;
-  border-radius: 8px;
-  background: #f8f9fa;
-  transition: all 0.3s ease;
-}
-
-.periodo-tiempo:hover {
   background: #e9ecef;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);

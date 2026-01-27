@@ -502,40 +502,6 @@ export default {
 </script>
 
 <style scoped>
-.section-title {
-  color: #495057;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid #e9ecef;
-}
-
-.section-title i {
-  color: #28a745;
-  margin-right: 0.5rem;
-}
-
-.dashboard-card {
-  background: white;
-  border-radius: 15px;
-  border: none;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
-  overflow: hidden;
-}
-
-.dashboard-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-}
-
-.dashboard-card .card-header {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border-bottom: 2px solid #dee2e6;
-  border-radius: 15px 15px 0 0 !important;
-  padding: 1.25rem 1.5rem;
-}
-
 .chart-container {
   min-height: 300px;
 }

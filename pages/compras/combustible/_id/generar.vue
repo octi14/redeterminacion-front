@@ -403,6 +403,7 @@ export default {
         const saldoDisponible = saldoCombustible ? saldoCombustible.saldo : 0;
 
       if (totalMonto > saldoDisponible) {
+        this.loading = false;
         this.$bvModal.msgBoxOk(`El monto total excede el saldo disponible para ${this.form.combustible}`, {
           title: "Saldo insuficiente",
           size: "md",
@@ -415,7 +416,7 @@ export default {
           headerBgVariant: "danger",
           centered: true,
         });
-        return; // Detener la ejecución si el saldo es insuficiente
+        return;
       }
 
       const payload = {
@@ -429,6 +430,10 @@ export default {
 
       try {
         await this.$store.dispatch('combustible/generarVales', { payload });
+
+        // Refrescar la orden en el store para que el saldo y la UI se actualicen
+        await this.$store.dispatch('combustible/getSingle', { id: this.orden.id });
+        await this.$store.dispatch('combustible/getValesSingle', { id: this.orden.id });
 
         // Registrar actividad de generación de vales
         await this.$logUserActivity(

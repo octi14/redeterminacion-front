@@ -71,7 +71,7 @@
                       cx="50"
                       cy="50"
                       r="40"
-                      :style="{ strokeDasharray: getProgreso(orden.saldos[index].saldo, monto.monto) }"
+                      :style="{ strokeDasharray: getProgreso(getSaldoPorTipo(monto.tipoCombustible), monto.monto) }"
                     ></circle>
                   </svg>
                 </div>
@@ -81,7 +81,7 @@
                   <p>{{ monto.tipoCombustible ? monto.tipoCombustible.toUpperCase() : 'Sin definir' }}</p>
                 </div>
                 <div class="fuel-saldos-h">
-                  <p>Restante: <span :class="['text-color-' + index]">{{ format(orden.saldos[index].saldo) }}</span></p>
+                  <p>Restante: <span :class="['text-color-' + index]">{{ format(getSaldoPorTipo(monto.tipoCombustible)) }}</span></p>
                   <p>Total: {{ format(monto.monto) }}</p>
                 </div>
             </div>
@@ -664,6 +664,11 @@ export default {
     })
   },
   methods: {
+    getSaldoPorTipo(tipoCombustible) {
+      if (!this.orden || !this.orden.saldos) return 0;
+      const item = this.orden.saldos.find(s => s.tipoCombustible === tipoCombustible);
+      return item ? item.saldo : 0;
+    },
     getProgreso(saldo, monto) {
       const porcentaje = (saldo / monto) * 100; // Obtiene el porcentaje restante
       const circunferencia = 2 * Math.PI * 40; // Longitud total del círculo (basado en el radio de 40)

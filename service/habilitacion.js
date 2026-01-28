@@ -8,6 +8,7 @@ const formatFile = (FileResponse) => ({
   rubro: FileResponse.inmueble.rubro,
   localidad: FileResponse.inmueble.localidad,
   telefono: FileResponse.solicitante.telefono,
+  nombreFantasia: FileResponse.inmueble.nombreFantasia,
   status: FileResponse.status,
   observaciones: FileResponse.observaciones,
   nroTramite: FileResponse.nroSolicitud,

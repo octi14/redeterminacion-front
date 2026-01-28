@@ -95,11 +95,6 @@ module.exports = {
       headers: { Authorization: `Bearer ${userToken}` },
     })
   },
-  deleteVale: async (axios, { id, userToken }) =>{
-    return await axios.$delete(`/valesCombustible/${id}`, {
-      headers: { Authorization: `Bearer ${userToken}` },
-    })
-  },
 
   getProveedores: async (axios) => {
     const response = await axios.$get('/proveedores')

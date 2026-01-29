@@ -160,6 +160,7 @@ export default {
       loading: false,
       loadingVehiculos: false,
       vehiculos: [],
+      valesParaImprimir: [],
       showPatentePersonalizada: false,
       patentePersonalizada: '',
       showSugerencias: false,
@@ -431,6 +432,8 @@ export default {
       try {
         await this.$store.dispatch('combustible/generarVales', { payload });
 
+        this.valesParaImprimir = [...(this.$store.state.combustible.vales_creados || [])];
+
         // Refrescar la orden en el store para que el saldo y la UI se actualicen
         await this.$store.dispatch('combustible/getSingle', { id: this.orden.id });
         await this.$store.dispatch('combustible/getValesSingle', { id: this.orden.id });
@@ -457,6 +460,7 @@ export default {
     },
 
     cerrarModal() {
+      this.valesParaImprimir = [];
       this.$bvModal.hide("confirmacionModal");
       this.$router.push("/compras/combustible");
     },
@@ -465,8 +469,7 @@ export default {
       await this.crearPDFVales();
     },
     async crearPDFVales() {
-      const cantidad = this.form.cantidad;
-      if (cantidad === 0) return;
+      if (!this.valesParaImprimir?.length) return;
 
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");
@@ -496,7 +499,7 @@ export default {
       const fondoWidthScaled = fondoWidth * scaleFactor;
       const fondoHeightScaled = fondoHeight * scaleFactor;
 
-      for (let i = 0; i < this.valesCreados.length; i += 4) {
+      for (let i = 0; i < this.valesParaImprimir.length; i += 4) {
       if (i !== 0) pdf.addPage();
 
       canvas.width = fondoWidth;
@@ -507,16 +510,16 @@ export default {
 
       // Fila 1 (vales i y i+1)
       ctx.drawImage(backgroundImage, 0, 0, fondoWidth, fondoHeight);
-      const vale1 = this.valesCreados[i];
+      const vale1 = this.valesParaImprimir[i];
       if (vale1) this.dibujarValeEnMitad(ctx, vale1, "izquierda", 0);
-      const vale2 = this.valesCreados[i + 1];
+      const vale2 = this.valesParaImprimir[i + 1];
       if (vale2) this.dibujarValeEnMitad(ctx, vale2, "derecha", 0);
 
       // Fila 2 (vales i+2 y i+3)
       ctx.drawImage(backgroundImage, 0, fondoHeight, fondoWidth, fondoHeight);
-      const vale3 = this.valesCreados[i + 2];
+      const vale3 = this.valesParaImprimir[i + 2];
       if (vale3) this.dibujarValeEnMitad(ctx, vale3, "izquierda", fondoHeight);
-      const vale4 = this.valesCreados[i + 3];
+      const vale4 = this.valesParaImprimir[i + 3];
       if (vale4) this.dibujarValeEnMitad(ctx, vale4, "derecha", fondoHeight);
 
       const imgData = canvas.toDataURL("image/jpeg", 0.7);

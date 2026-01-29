@@ -285,13 +285,24 @@
             </div>
             <div class="col-2 text-center">
               <strong>Revisión</strong>
-              <div class="mt-1 d-flex justify-content-center">
-                <span class="text-success mr-3">
-                  <b-icon-check-circle-fill></b-icon-check-circle-fill>
-                </span>
-                <span class="text-danger mr-3">
-                  <b-icon-x-circle-fill></b-icon-x-circle-fill>
-                </span>
+              <div class="mt-1 d-flex flex-column align-items-center">
+                <small class="text-muted mb-1">Todos:</small>
+                <div class="d-flex justify-content-center flex-wrap">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="revisionTodosDocumentos" id="todosDocumentosCorrecto"
+                           @change="marcarTodosDocumentos('correcto')">
+                    <label class="form-check-label text-success" for="todosDocumentosCorrecto" title="Marcar todos los documentos como correctos">
+                      <b-icon-check-circle-fill></b-icon-check-circle-fill>
+                    </label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="revisionTodosDocumentos" id="todosDocumentosIncorrecto"
+                           @change="marcarTodosDocumentos('incorrecto')">
+                    <label class="form-check-label text-danger" for="todosDocumentosIncorrecto" title="Marcar todos los documentos como incorrectos">
+                      <b-icon-x-circle-fill></b-icon-x-circle-fill>
+                    </label>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1563,6 +1574,17 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
         }else{
           return 0
         }
+    },
+
+
+    // Marcar todos los documentos como correctos o incorrectos (similar a "seleccionar todos" en combustible)
+    marcarTodosDocumentos(valor) {
+      if (!this.documentos || typeof this.documentos !== 'object') return;
+      Object.keys(this.documentos).forEach((nombreDocumento) => {
+        this.$set(this.revisionDocumentos, nombreDocumento, valor);
+      });
+      this.actualizarElementosIncorrectos();
+      this.verificarRechazoAutomatico();
     },
 
         // Método unificado para el sistema de revisión

@@ -23,8 +23,8 @@
       <template #cell(monto)="row">
         {{ format(row.item.montos.reduce((acc, combustible) => acc + combustible.monto, 0)) }}
       </template>
-      <template #cell(saldoRestante)="row">
-        {{ format(row.item.saldos.reduce((acc, saldo) => acc + saldo.saldo, 0)) }}
+      <template #cell(area)="row">
+        {{ row.item.area || '—' }}
       </template>
       <template #cell(acciones)="row">
         <b-button-group size="sm">
@@ -523,7 +523,7 @@ export default {
         { key: 'nroOrden', label: 'Nro. orden' },
         { key: 'monto', label: 'Importe' },
         { key: 'vales', label: 'Vales' },
-        { key: 'saldoRestante', label: 'Saldo' },
+        { key: 'area', label: 'Área asignada' },
         { key: 'acciones', label: 'Acciones'},
       ],
       // Datos para vehículos
@@ -592,14 +592,7 @@ export default {
     paginatedItems() {
       const start = (this.currentPage - 1) * this.perPage;
       const end = start + this.perPage;
-
-      // Mapear los datos para calcular los valores necesarios antes de mostrar en la tabla
-      return this.filteredItems.slice(start, end).map(item => ({
-        ...item,
-        monto: (item.montoSuper || 0) + (item.montoVPower || 0),
-        vales: item.vales,
-        saldoRestante: (item.saldoSuper || 0) + (item.saldoVPower || 0)
-      }));
+      return this.filteredItems.slice(start, end);
     },
     filteredItems() {
       let items = this.items;

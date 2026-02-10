@@ -555,11 +555,25 @@ export default {
     orden(){
       return this.$store.state.combustible.single
     },
+    // Saldo por tipo = monto del tipo − suma de vales no anulados de ese tipo
+    saldosCalculados() {
+      if (!this.orden || !this.orden.montos) return [];
+      const vales = this.vales || [];
+      const noAnulados = vales.filter(v => !v.anulado);
+      return this.orden.montos.map((m) => {
+        const emitido = noAnulados
+          .filter(v => v.tipoCombustible === m.tipoCombustible)
+          .reduce((sum, v) => sum + (Number(v.monto) || 0), 0);
+        const saldo = (Number(m.monto) || 0) - emitido;
+        return { tipoCombustible: m.tipoCombustible, saldo };
+      });
+    },
     totalMonto() {
-      return this.orden.montos.reduce((total, m) => total + m.monto, 0);
+      if (!this.orden || !this.orden.montos) return 0;
+      return this.orden.montos.reduce((total, m) => total + (Number(m.monto) || 0), 0);
     },
     totalSaldo() {
-      return this.orden.saldos.reduce((total, s) => total + s.saldo, 0);
+      return this.saldosCalculados.reduce((total, s) => total + (Number(s.saldo) || 0), 0);
     },
     adminCompras(){
       return this.$store.state.user.admin == "compras" || this.$store.state.user.admin == "master"
@@ -665,9 +679,8 @@ export default {
   },
   methods: {
     getSaldoPorTipo(tipoCombustible) {
-      if (!this.orden || !this.orden.saldos) return 0;
-      const item = this.orden.saldos.find(s => s.tipoCombustible === tipoCombustible);
-      return item ? item.saldo : 0;
+      const item = this.saldosCalculados.find(s => s.tipoCombustible === tipoCombustible);
+      return item ? Number(item.saldo) || 0 : 0;
     },
     getProgreso(saldo, monto) {
       const porcentaje = (saldo / monto) * 100; // Obtiene el porcentaje restante

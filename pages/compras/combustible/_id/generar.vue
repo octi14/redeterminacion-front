@@ -181,9 +181,21 @@ export default {
     },
     tiposCombustible(){
       const orden = this.$store.state.combustible.single
-      var tiposCombustible = []
-      orden.montos.map((item) => tiposCombustible.push(item.tipoCombustible))
-      return tiposCombustible
+      if (!orden || !orden.montos) return []
+      return orden.montos.map((item) => item.tipoCombustible)
+    },
+    // Saldo por tipo = monto del tipo − suma de vales no anulados de ese tipo
+    saldosCalculados() {
+      if (!this.orden || !this.orden.montos) return []
+      const vales = this.valesCreados || []
+      const noAnulados = vales.filter(v => !v.anulado)
+      return this.orden.montos.map((m) => {
+        const emitido = noAnulados
+          .filter(v => v.tipoCombustible === m.tipoCombustible)
+          .reduce((sum, v) => sum + (Number(v.monto) || 0), 0)
+        const saldo = (Number(m.monto) || 0) - emitido
+        return { tipoCombustible: m.tipoCombustible, saldo }
+      })
     },
     vehiculosDelArea() {
       if (!this.orden || !this.vehiculos.length) return []
@@ -397,11 +409,8 @@ export default {
       const area = this.orden.area;
 
       const totalMonto = this.form.cantidad * this.form.monto;
-      // Verificar si el total excede el saldo disponible según el tipo de combustible
-
-        const saldoCombustible = this.orden.saldos.find((item) => item.tipoCombustible === this.form.combustible);
-
-        const saldoDisponible = saldoCombustible ? saldoCombustible.saldo : 0;
+      const saldoItem = this.saldosCalculados.find((s) => s.tipoCombustible === this.form.combustible);
+      const saldoDisponible = saldoItem ? Number(saldoItem.saldo) || 0 : 0;
 
       if (totalMonto > saldoDisponible) {
         this.loading = false;

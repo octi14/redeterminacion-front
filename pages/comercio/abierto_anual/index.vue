@@ -11,7 +11,7 @@
             @sliding-start="onSlideStart"
             @sliding-end="onSlideEnd"
             >
-                <b-carousel-slide img-src="../../../assets/banner-abierto-anual.png"></b-carousel-slide>
+                <b-carousel-slide img-src="../../../assets/3. Banner 2026.png"></b-carousel-slide>
             </b-carousel>
         </div>
         <div class="col-10 mobileCarrousel" style="margin: auto; margin-top: 2rem">
@@ -188,8 +188,8 @@
                     <p class="icon-orange">4. </p>
                   </div>
                   <div class="li-content">
-                    <p>Una vez cargada, <b>ARVIGE revisará</b> que <b>la factura</b> sea correcta:</p>
-                    <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="0.75" class="icon-orange" shift-v="3px"></b-icon-caret-right-fill></div>
+                    <p>Una vez cargada, <b>ARVIGE revisará</b> que <b>la factura</b> sea correcta.</p>
+                    <!-- <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="0.75" class="icon-orange" shift-v="3px"></b-icon-caret-right-fill></div>
                       <div class="li-content mini-content"><p>Si la <u>factura es correcta</u>, <b>no recibirás notificaciones en tu Domicilio Fiscal Electrónico (DFE)</b>. Para más información lee atentamente el paso 5.</p></div>
                     </div>
                     <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="0.75" class="icon-orange" shift-v="3px"></b-icon-caret-right-fill></div>
@@ -197,7 +197,7 @@
                     </div>
                     <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="0.75" class="icon-orange" shift-v="3px"></b-icon-caret-right-fill></div>
                       <div class="li-content mini-content"><p><i>En caso que no dispongas de DFE no se te notificará el error y deberás continuar en el paso 5.</i></p></div>
-                    </div>
+                    </div> -->
                   </div>
                 </div>
                 <div class="li-row other-li">

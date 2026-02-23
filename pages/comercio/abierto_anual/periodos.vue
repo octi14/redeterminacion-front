@@ -54,11 +54,16 @@
             <div class="li-row DFE-card todos-correctos">
               <b-row style="width:100%; margin-top: 20px;">
                   <b-col md="2" style="padding-right: 0; text-align: center;">
-                    <b-icon-check-circle variant="success" font-scale="8"></b-icon-check-circle>
+                    <img src="../../../assets/0. Verificación.svg" alt="Verificación" class="icon-verificacion-grande" />
                   </b-col>
-                  <b-col v-if="maestro && maestro.dfe != '\r'" md="10" style="padding-left: 0;">
-                      <p class="subtitle"><b>Tu solicitud de Abierto Anual fue aprobada.</b></p>
-                      <p>Esto significa que, en caso de cumplir con las condiciones del articulo 182 de la ordenanza 201656/02, obtendrás el beneficio correspondiente en tu Tasa de Seguridad e Higiene durante el año 2026.</p>
+                  <b-col md="10" style="padding-left: 0;">
+                      <p class="subtitle"><b>Las facturas se recibieron correctamente.</b></p>
+                      <p class="arvige-revisara"><i>ARVIGE revisará:</i></p>
+                      <ul class="lista-revision">
+                        <li>Que no tengas deudas por Tasas, Derechos, Contribuciones o Multas</li>
+                        <li>Que hayas renovado o reempadronado en fecha</li>
+                        <li>Que todos los trámites se hayan realizado dentro del año fiscal 2026.</li>
+                      </ul>
                   </b-col>
               </b-row>
             </div>
@@ -328,6 +333,19 @@ export default {
       padding-right: 1%;
       vertical-align: top;
     }
+    .icon-verificacion{
+      width: 2.85rem;
+      height: auto;
+      object-fit: contain;
+      transform: rotate(-45deg);
+    }
+    .icon-verificacion-grande{
+      width: 8.5rem;
+      margin-top: 2.5rem;
+      height: auto;
+      object-fit: contain;
+      transform: rotate(-25deg);
+    }
     .li-row{
       display: flex;
       width: 100%;
@@ -354,5 +372,20 @@ export default {
     }
     .todos-correctos p{
       font-size: 1.25rem;
+    }
+    .arvige-revisara{
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+      font-style: italic;
+    }
+    .lista-revision{
+      margin-left: 1rem;
+      padding-left: 1rem;
+    }
+    .lista-revision li{
+      font-family: Calibri, 'Trebuchet MS', sans-serif;
+      font-size: 1.25rem;
+      color: #666;
+      margin-bottom: 0.25rem;
     }
   </style>

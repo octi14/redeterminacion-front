@@ -185,13 +185,12 @@
                 <b-icon-caret-right-fill class="icon-orange ml-0"/>
               <h6 class="text-dark font-weight-500 ml-1">Número de Orden de Compra</h6>
             </div>
-            <b-form-group class="col-12 ml-2">
+            <b-form-group class="col-12 ml-2" :state="nroOrdenDuplicado ? false : null" invalid-feedback="Ya existe una orden de compra con este número.">
               <div class="numero-orden-container">
                 <b-form-input size="sm" style="border-radius: 0;" type="number" class="col-7" no-wheel v-model="nroOrden1"/>
                 <span>/</span>
                 <b-form-input size="sm" style="border-radius: 0;" type="number" class="col-3" no-wheel v-model="nroOrden2"/>
               </div>
-
             </b-form-group>
 
             <!-- Proveedor -->
@@ -245,7 +244,7 @@
           <div class="row justify-content-end">
             <!-- Botón de aceptar -->
             <div class="text-center mt-3 mx-2">
-              <b-btn variant="success" :disabled="!nroOrden1 || !nroOrden2 || !orden.area || !orden.montos.length" @click="submitForm">
+              <b-btn variant="success" :disabled="!nroOrden1 || !nroOrden2 || !orden.area || !orden.montos.length || nroOrdenDuplicado" @click="submitForm">
                 Aceptar
               </b-btn>
             </div>
@@ -645,6 +644,12 @@ export default {
     },
     areaEditState() {
       return this.vehiculoEdit.area && this.vehiculoEdit.area.length > 0 ? null : false;
+    },
+    /** true si el número de orden ya existe en la lista (no se puede crear). */
+    nroOrdenDuplicado() {
+      if (!this.nroOrden1 || !this.nroOrden2) return false;
+      const nro = `${String(this.nroOrden1).trim()}/${String(this.nroOrden2).trim()}`;
+      return this.items.some(item => item.nroOrden && String(item.nroOrden).trim() === nro);
     }
   },
   methods: {
@@ -675,6 +680,10 @@ export default {
       }
     },
     async submitForm() {
+      if (this.nroOrdenDuplicado) {
+        this.$bvToast.toast("Ya existe una orden de compra con ese número.", { variant: "warning" });
+        return;
+      }
       this.loadingCargar = true;
       try {
         // const userToken = this.$store.state.user.token;

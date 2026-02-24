@@ -302,27 +302,25 @@ export default {
       }
   },
   fetchOnServer: false,
+  /**
+   * Hook created(): inicializa la tarjeta del período de Abierto Anual.
+   * 1) Calcula estadoActual (1-13) a partir del estado del trámite y las fechas.
+   * 2) Guarda estadoPrevio y motivo; si viene hardEstado por prop, fuerza ese estado.
+   * (Las facturas/documentos se cargan después vía fetch() y se usan desde la computed facturas.)
+   */
   async created() {
-      const contenedor = document.getElementById('aaCard');
-      if( this.$store.state.facturas.all && this.$store.state.facturas.all.length <= this.periodo){
-          this.factura = this.$store.state.facturas.all[this.periodo]
-      }else{
-          console.log("Mounted no se pudo traer nada para el período " + this.periodo)
-          console.log("A pesar de que el store tiene: " + this.$store.state.facturas.all)
-      }
-      console.log(this.factura);
-
-
-      //DETERMINAR ESATDO INICIAL
-      console.log("this.config.rectificacion: " + this.config.rectificacion);
-      console.log("this.estado: " + this.estado);
-      console.log("Motivo de rechazo " + this.observaciones)
+      // Determinar estado inicial (estadoActual) según el estado del trámite.
+      // estado viene del backend (Correcto | Incorrecto | Incompleto | En revisión).
+      // estadoActual es el número que usa el template para mostrar mensajes e íconos (1-13).
       switch(this.estado){
           case "Correcto": {
+                  // Período ya aprobado: no se puede volver a subir.
                   this.estadoActual = 3;
                   break
               };
           case "Incorrecto": {
+                  // Rechazado: si está en rectificación o config lo permite → estado 7 (habilitado para subir rectificación).
+                  // Si no → estado 4 (incorrecto, sin rectificación habilitada).
                   if (this.tramite.facturas[this.periodo] && (this.tramite.facturas[this.periodo].rectificando || this.config.rectificacion)){
                       this.estadoActual =  7;
                       break
@@ -332,6 +330,7 @@ export default {
                   }
               };
           case "Incompleto": {
+                  // Aún no hay carga correcta: depende de la fecha actual vs ventana del período.
                   await this.$store.dispatch('fechas/get')
                   const now = new Date(this.$store.state.fechas.fecha.fecha);
                   const maxDateParts = this.config.maxDates[this.periodo].split('/');
@@ -339,6 +338,7 @@ export default {
                   const maxDate = new Date(maxDateParts[2], maxDateParts[1] - 1, maxDateParts[0]);
                   const minDate = new Date(minDateParts[2], minDateParts[1] - 1, minDateParts[0]);
                   if (now && now > maxDate){
+                      // Pasó la fecha máxima: período vencido. Si hay rectificación habilitada → 7; si no → 5 (vencido sin rectificación).
                       if(this.config.rectificacion){
                           this.estadoActual = 7;
                           break;
@@ -347,13 +347,16 @@ export default {
                       break;
                   }
                   if (now && now < minDate){
+                      // Antes de la ventana: no se puede cargar aún.
                       this.estadoActual =  1;
                       break;
                   }
+                  // Dentro de la ventana: se puede cargar por primera vez.
                   this.estadoActual =  6;
                   break
               };
           case "En revisión":{
+              // Cargó documentos y están siendo revisados.
               this.estadoActual =  2;
               break
           }
@@ -361,6 +364,7 @@ export default {
      this.estadoPrevio = this.estadoActual;
      this.motivo = this.observaciones;
 
+     // Override: si el padre pasa hardEstado, se fuerza ese estado (útil para pruebas o flujos especiales).
      if (this.hardEstado != null)
           this.estadoActual = this.hardEstado;
   },

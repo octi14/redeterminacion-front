@@ -485,8 +485,6 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
             const extension = obtenerExtension(contentType);
             const nombreConExtension = `${filename}${extension}`;
 
-            console.log(`Añadiendo documento ${index + 1}: ${nombreConExtension}`);
-
             // Decodificar el contenido de Base64 a ArrayBuffer y añadirlo al zip
             const buffer = crearBufferDesdeBase64(data);
             zip.file(nombreConExtension, buffer, { binary: true });
@@ -558,7 +556,12 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
         link.click();
         document.body.removeChild(link);
       } else {
-        console.log('Formato de contenido no compatible');
+        this.$bvToast.toast('Formato de contenido no compatible', {
+          variant: 'danger',
+          title: 'Error',
+          solid: true,
+          autoHideDelay: 5000
+        });
       }
     },
 

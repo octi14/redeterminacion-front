@@ -129,8 +129,6 @@ export default {
     preventReload(event) {
       if (event.key === 'F5' || (event.ctrlKey && event.key === 'r')) {
         event.preventDefault();
-        // Aquí puedes agregar cualquier lógica adicional que necesites.
-        console.log('Intento de recarga bloqueado');
       }
     },
     async volver(){

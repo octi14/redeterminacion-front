@@ -115,7 +115,7 @@ export default {
             color: '#212529',
             anchor: function(context) {
               try {
-                if (!context.chart || !context.chart.data || !context.chart.data.datasets) {
+                if (!context || !context.parsed || !context.chart || !context.chart.data || !context.chart.data.datasets) {
                   return 'end'
                 }
                 const dataIndex = context.dataIndex
@@ -125,7 +125,7 @@ export default {
                 
                 const value0 = datasets[0].data[dataIndex] || 0
                 const value1 = datasets[1].data[dataIndex] || 0
-                const currentValue = context.parsed.y || 0
+                const currentValue = context.parsed.y ?? 0
                 const currentDatasetIndex = context.datasetIndex
                 
                 if (currentDatasetIndex === 0) {
@@ -134,13 +134,12 @@ export default {
                   return currentValue >= value0 ? 'end' : 'start'
                 }
               } catch (e) {
-                console.error('Error en anchor:', e)
                 return 'end'
               }
             },
             align: function(context) {
               try {
-                if (!context.chart || !context.chart.data || !context.chart.data.datasets) {
+                if (!context || !context.parsed || !context.chart || !context.chart.data || !context.chart.data.datasets) {
                   return 'top'
                 }
                 const dataIndex = context.dataIndex
@@ -150,7 +149,7 @@ export default {
                 
                 const value0 = datasets[0].data[dataIndex] || 0
                 const value1 = datasets[1].data[dataIndex] || 0
-                const currentValue = context.parsed.y || 0
+                const currentValue = context.parsed.y ?? 0
                 const currentDatasetIndex = context.datasetIndex
                 
                 if (currentDatasetIndex === 0) {
@@ -159,13 +158,12 @@ export default {
                   return currentValue >= value0 ? 'top' : 'bottom'
                 }
               } catch (e) {
-                console.error('Error en align:', e)
                 return 'top'
               }
             },
             offset: function(context) {
               try {
-                if (!context.chart || !context.chart.data || !context.chart.data.datasets) {
+                if (!context || !context.parsed || !context.chart || !context.chart.data || !context.chart.data.datasets) {
                   return 8
                 }
                 const dataIndex = context.dataIndex
@@ -175,7 +173,7 @@ export default {
                 
                 const value0 = datasets[0].data[dataIndex] || 0
                 const value1 = datasets[1].data[dataIndex] || 0
-                const currentValue = context.parsed.y || 0
+                const currentValue = context.parsed.y ?? 0
                 const currentDatasetIndex = context.datasetIndex
                 
                 if (currentDatasetIndex === 0) {
@@ -184,7 +182,6 @@ export default {
                   return currentValue >= value0 ? 8 : -8
                 }
               } catch (e) {
-                console.error('Error en offset:', e)
                 return 8
               }
             },

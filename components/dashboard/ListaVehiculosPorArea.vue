@@ -102,7 +102,6 @@
                     </div>
                     <div class="vehiculo-details">
                       <h6 class="vehiculo-patente">{{ vehiculo.patente }}</h6>
-                      <small class="vehiculo-id">ID: {{ vehiculo.id }}</small>
                     </div>
                   </div>
                 </div>

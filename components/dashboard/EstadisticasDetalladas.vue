@@ -304,18 +304,6 @@
             </div>
             <div class="col-md-3">
               <div class="d-flex justify-content-between mb-1">
-                <span class="text-dark">Saldo restante órdenes:</span>
-                <div class="text-right">
-                  <strong class="text-danger">${{ formatearNumeroArgentino(modulos.combustible.saldoRestanteVales || 0) }}</strong>
-                  <small class="text-muted d-block">
-                    <i class="bi bi-info-circle mr-1"></i>
-                    {{ modulos.combustible.metodoCalculoSaldo === 'ordenes' ? 'Calculado desde órdenes' : 'Calculado desde vales disponibles' }}
-                  </small>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-3">
-              <div class="d-flex justify-content-between mb-1">
                 <span class="text-dark">Vales generados:</span>
                 <strong class="text-danger">{{ modulos.combustible.totalValesGenerados || 0 }}</strong>
               </div>
@@ -324,14 +312,6 @@
               <div class="d-flex justify-content-between mb-1">
                 <span class="text-dark">Promedio vales/orden:</span>
                 <strong class="text-danger">{{ (modulos.combustible.promedioValesPorOrden || 0).toFixed(1) }}</strong>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-3">
-              <div class="d-flex justify-content-between mb-1">
-                <span class="text-dark">Monto promedio orden:</span>
-                <strong class="text-danger">${{ formatearNumeroArgentino(modulos.combustible.montoPromedioOrden || 0) }}</strong>
               </div>
             </div>
           </div>

@@ -138,15 +138,11 @@ export default {
   computed: {
     datosPorArea() {
       // Debug: verificar qué datos están llegando
-      console.log('🔍 Datos de combustible recibidos:', this.datosCombustible)
 
       // Usar los datos de vales por área (porAreaVales) que contienen la información de emisión
       if (!this.datosCombustible || !this.datosCombustible.porAreaVales) {
-        console.log('⚠️ No hay datos de combustible o porAreaVales')
         return []
       }
-
-      console.log('📊 Datos porAreaVales disponibles:', this.datosCombustible.porAreaVales)
 
       // Los datos de porAreaVales contienen la información de los vales emitidos por área
       const areas = this.datosCombustible.porAreaVales.map(area => {
@@ -157,7 +153,6 @@ export default {
         }
       }).sort((a, b) => (b.monto || 0) - (a.monto || 0))
 
-      console.log('✅ Áreas procesadas:', areas)
       return areas
     },
     totalAreas() {

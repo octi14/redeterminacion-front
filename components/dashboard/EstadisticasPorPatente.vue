@@ -177,20 +177,14 @@ export default {
   },
   computed: {
     datosPorPatente() {
-      // Debug: verificar qué datos están llegando
-      console.log('🔍 Datos de combustible para patentes:', this.datosCombustible)
-
       // Procesar vales consumidos por patente
       if (!this.datosCombustible || !this.datosCombustible.vales) {
-        console.log('⚠️ No hay datos de vales de combustible')
         return []
       }
 
       const valesEmitidos = this.datosCombustible.vales.filter(vale =>
         !vale.anulado
       )
-
-      console.log('📊 Vales emitidos (no anulados) encontrados:', valesEmitidos.length)
 
       // Agrupar por patente (incluyendo vales sin patente)
       const patentesMap = new Map()
@@ -229,7 +223,6 @@ export default {
         }
       }).sort((a, b) => b.montoTotal - a.montoTotal)
 
-      console.log('✅ Patentes procesadas:', patentes)
       return patentes
     },
     totalPatentes() {

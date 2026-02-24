@@ -345,11 +345,6 @@ const calcularEstadisticasCombustible = (ordenes, vales) => {
     ? totalVales / ordenes.length
     : 0
 
-  // Calcular monto promedio por orden de compra
-  const montoPromedioOrden = ordenes.length > 0
-    ? estadisticasOrdenes.montoTotalOrdenes / ordenes.length
-    : 0
-
   // Calcular fecha de inicio de emisión de vales (fecha más antigua)
   const fechasVales = vales
     .map(vale => vale.fechaEmision || vale.createdAt || vale.fechaCreacion)
@@ -457,7 +452,6 @@ const calcularEstadisticasCombustible = (ordenes, vales) => {
     saldoDesdeOrdenes,
     valorPromedioVale,
     promedioValesPorOrden,
-    montoPromedioOrden,
     fechaInicioEmisionVales,
     porTipoCombustible: Object.entries(porTipoCombustible).map(([tipo, stats]) => ({
       tipo,
@@ -892,7 +886,6 @@ const calcularEstadisticasDetalladas = (items, tipo, valesCombustible = [], cert
       saldoDesdeOrdenes: estadisticasCombustible.saldoDesdeOrdenes,
       valorPromedioVale: estadisticasCombustible.valorPromedioVale,
       promedioValesPorOrden: estadisticasCombustible.promedioValesPorOrden,
-      montoPromedioOrden: estadisticasCombustible.montoPromedioOrden,
       fechaInicioEmisionVales: estadisticasCombustible.fechaInicioEmisionVales,
       porTipoCombustible: estadisticasCombustible.porTipoCombustible,
       porAreaVales: estadisticasCombustible.porAreaVales,

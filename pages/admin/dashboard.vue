@@ -171,7 +171,6 @@ export default {
     },
     onDateRangeChanged(dateRange) {
       this.selectedDateRange = dateRange
-      console.log('Rango de fechas seleccionado:', dateRange)
 
       // Mostrar toast de confirmación
       this.$bvToast.toast('Filtro de fechas aplicado correctamente', {
@@ -235,12 +234,6 @@ export default {
         await this.$store.dispatch('estadisticas/fetchAllEstadisticas', {
           startDate: dateRange.startDate,
           endDate: dateRange.endDate
-        })
-
-        console.log('Datos recargados con filtro:', {
-          desde: dateRange.startDate,
-          hasta: dateRange.endDate,
-          días: dateRange.days
         })
 
       } catch (error) {

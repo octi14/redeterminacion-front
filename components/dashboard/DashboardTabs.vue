@@ -177,13 +177,6 @@
           </template>
 
           <div class="tab-content-vehiculos">
-            <!-- Estadísticas de Vehículos -->
-            <div class="row mb-4">
-              <div class="col-12">
-                <EstadisticasVehiculos :vehiculos="vehiculos || []" />
-              </div>
-            </div>
-
             <!-- Lista de Vehículos por Área -->
             <div class="row">
               <div class="col-12">
@@ -356,7 +349,6 @@ import GraficosAbiertoAnual from '~/components/dashboard/GraficosAbiertoAnual.vu
 import GraficoIndices from '~/components/dashboard/GraficoIndices.vue'
 import CombustiblePorArea from '~/components/dashboard/CombustiblePorArea.vue'
 import EstadisticasPorPatente from '~/components/dashboard/EstadisticasPorPatente.vue'
-import EstadisticasVehiculos from '~/components/dashboard/EstadisticasVehiculos.vue'
 import ListaVehiculosPorArea from '~/components/dashboard/ListaVehiculosPorArea.vue'
 import TablaTramitesComerciales2025 from '~/components/dashboard/TablaTramitesComerciales2025.vue'
 import GraficoComparativo2024vs2025 from '~/components/dashboard/GraficoComparativo2024vs2025.vue'
@@ -370,7 +362,6 @@ export default {
     GraficoIndices,
     CombustiblePorArea,
     EstadisticasPorPatente,
-    EstadisticasVehiculos,
     ListaVehiculosPorArea,
     TablaTramitesComerciales2025,
     GraficoComparativo2024vs2025

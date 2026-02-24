@@ -640,13 +640,7 @@ export default {
       const endDate = new Date()
       endDate.setHours(23, 59, 59, 999)
 
-      console.log('📅 Filtro de fechas aplicado:', {
-        startDate: startDate.toISOString(),
-        endDate: endDate.toISOString()
-      })
-
       await this.$store.dispatch('estadisticas/fetchEstadisticasCombustible', { startDate, endDate })
-      console.log('✅ Estadísticas de combustible cargadas:', this.datosCombustible)
     } catch (error) {
       console.error('Error al cargar estadísticas de combustible:', error)
       this.errorEstadisticas = 'Error al cargar las estadísticas. Por favor, intenta recargar la página.'
@@ -732,6 +726,7 @@ export default {
       if (!this.nroOrden1 || !this.nroOrden2) return false;
       const nro = `${String(this.nroOrden1).trim()}/${String(this.nroOrden2).trim()}`;
       return this.items.some(item => item.nroOrden && String(item.nroOrden).trim() === nro);
+    },
     // Computed property para obtener datos de combustible desde el store
     datosCombustible() {
       const datos = this.$store.state.estadisticas.estadisticasModulos?.combustible || {}

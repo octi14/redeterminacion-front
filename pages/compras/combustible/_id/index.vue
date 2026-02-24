@@ -71,7 +71,7 @@
                       cx="50"
                       cy="50"
                       r="40"
-                      :style="{ strokeDasharray: getProgreso(orden.saldos[index].saldo, monto.monto) }"
+                      :style="{ strokeDasharray: getProgreso(getSaldoPorTipo(monto.tipoCombustible), monto.monto) }"
                     ></circle>
                   </svg>
                 </div>
@@ -81,7 +81,7 @@
                   <p>{{ monto.tipoCombustible ? monto.tipoCombustible.toUpperCase() : 'Sin definir' }}</p>
                 </div>
                 <div class="fuel-saldos-h">
-                  <p>Restante: <span :class="['text-color-' + index]">{{ format(orden.saldos[index].saldo) }}</span></p>
+                  <p>Restante: <span :class="['text-color-' + index]">{{ format(getSaldoPorTipo(monto.tipoCombustible)) }}</span></p>
                   <p>Total: {{ format(monto.monto) }}</p>
                 </div>
             </div>
@@ -555,11 +555,25 @@ export default {
     orden(){
       return this.$store.state.combustible.single
     },
+    // Saldo por tipo = monto del tipo − suma de vales no anulados de ese tipo
+    saldosCalculados() {
+      if (!this.orden || !this.orden.montos) return [];
+      const vales = this.vales || [];
+      const noAnulados = vales.filter(v => !v.anulado);
+      return this.orden.montos.map((m) => {
+        const emitido = noAnulados
+          .filter(v => v.tipoCombustible === m.tipoCombustible)
+          .reduce((sum, v) => sum + (Number(v.monto) || 0), 0);
+        const saldo = (Number(m.monto) || 0) - emitido;
+        return { tipoCombustible: m.tipoCombustible, saldo };
+      });
+    },
     totalMonto() {
-      return this.orden.montos.reduce((total, m) => total + m.monto, 0);
+      if (!this.orden || !this.orden.montos) return 0;
+      return this.orden.montos.reduce((total, m) => total + (Number(m.monto) || 0), 0);
     },
     totalSaldo() {
-      return this.orden.saldos.reduce((total, s) => total + s.saldo, 0);
+      return this.saldosCalculados.reduce((total, s) => total + (Number(s.saldo) || 0), 0);
     },
     adminCompras(){
       return this.$store.state.user.admin == "compras" || this.$store.state.user.admin == "master"
@@ -664,6 +678,10 @@ export default {
     })
   },
   methods: {
+    getSaldoPorTipo(tipoCombustible) {
+      const item = this.saldosCalculados.find(s => s.tipoCombustible === tipoCombustible);
+      return item ? Number(item.saldo) || 0 : 0;
+    },
     getProgreso(saldo, monto) {
       const porcentaje = (saldo / monto) * 100; // Obtiene el porcentaje restante
       const circunferencia = 2 * Math.PI * 40; // Longitud total del círculo (basado en el radio de 40)

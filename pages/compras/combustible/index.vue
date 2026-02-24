@@ -23,8 +23,8 @@
       <template #cell(monto)="row">
         {{ format(row.item.montos.reduce((acc, combustible) => acc + combustible.monto, 0)) }}
       </template>
-      <template #cell(saldoRestante)="row">
-        {{ format(row.item.saldos.reduce((acc, saldo) => acc + saldo.saldo, 0)) }}
+      <template #cell(area)="row">
+        {{ row.item.area || '—' }}
       </template>
       <template #cell(acciones)="row">
         <b-button-group size="sm">
@@ -232,13 +232,12 @@
                 <b-icon-caret-right-fill class="icon-orange ml-0"/>
               <h6 class="text-dark font-weight-500 ml-1">Número de Orden de Compra</h6>
             </div>
-            <b-form-group class="col-12 ml-2">
+            <b-form-group class="col-12 ml-2" :state="nroOrdenDuplicado ? false : null" invalid-feedback="Ya existe una orden de compra con este número.">
               <div class="numero-orden-container">
                 <b-form-input size="sm" style="border-radius: 0;" type="number" class="col-7" no-wheel v-model="nroOrden1"/>
                 <span>/</span>
                 <b-form-input size="sm" style="border-radius: 0;" type="number" class="col-3" no-wheel v-model="nroOrden2"/>
               </div>
-
             </b-form-group>
 
             <!-- Proveedor -->
@@ -292,7 +291,7 @@
           <div class="row justify-content-end">
             <!-- Botón de aceptar -->
             <div class="text-center mt-3 mx-2">
-              <b-btn variant="success" :disabled="!nroOrden1 || !nroOrden2 || !orden.area || !orden.montos.length" @click="submitForm">
+              <b-btn variant="success" :disabled="!nroOrden1 || !nroOrden2 || !orden.area || !orden.montos.length || nroOrdenDuplicado" @click="submitForm">
                 Aceptar
               </b-btn>
             </div>
@@ -578,7 +577,7 @@ export default {
         { key: 'nroOrden', label: 'Nro. orden' },
         { key: 'monto', label: 'Importe' },
         { key: 'vales', label: 'Vales' },
-        { key: 'saldoRestante', label: 'Saldo' },
+        { key: 'area', label: 'Área asignada' },
         { key: 'acciones', label: 'Acciones'},
       ],
       // Datos para vehículos
@@ -674,14 +673,7 @@ export default {
     paginatedItems() {
       const start = (this.currentPage - 1) * this.perPage;
       const end = start + this.perPage;
-
-      // Mapear los datos para calcular los valores necesarios antes de mostrar en la tabla
-      return this.filteredItems.slice(start, end).map(item => ({
-        ...item,
-        monto: (item.montoSuper || 0) + (item.montoVPower || 0),
-        vales: item.vales,
-        saldoRestante: (item.saldoSuper || 0) + (item.saldoVPower || 0)
-      }));
+      return this.filteredItems.slice(start, end);
     },
     filteredItems() {
       let items = this.items;
@@ -735,6 +727,11 @@ export default {
     areaEditState() {
       return this.vehiculoEdit.area && this.vehiculoEdit.area.length > 0 ? null : false;
     },
+    /** true si el número de orden ya existe en la lista (no se puede crear). */
+    nroOrdenDuplicado() {
+      if (!this.nroOrden1 || !this.nroOrden2) return false;
+      const nro = `${String(this.nroOrden1).trim()}/${String(this.nroOrden2).trim()}`;
+      return this.items.some(item => item.nroOrden && String(item.nroOrden).trim() === nro);
     // Computed property para obtener datos de combustible desde el store
     datosCombustible() {
       const datos = this.$store.state.estadisticas.estadisticasModulos?.combustible || {}
@@ -770,6 +767,10 @@ export default {
       }
     },
     async submitForm() {
+      if (this.nroOrdenDuplicado) {
+        this.$bvToast.toast("Ya existe una orden de compra con ese número.", { variant: "warning" });
+        return;
+      }
       this.loadingCargar = true;
       try {
         // const userToken = this.$store.state.user.token;

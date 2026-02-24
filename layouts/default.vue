@@ -4,7 +4,8 @@
       <Navbar />
     </div>
     <div id="app-content" class="mt-5">
-      <Nuxt keep-alive />
+     <!-- <Nuxt keep-alive /> -->
+      <Nuxt />
       <ModalSessionTimeout :mostrarModal="sessionExpired" />
     </div>
     <Foot />

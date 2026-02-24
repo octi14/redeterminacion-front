@@ -3,7 +3,7 @@ const formatOrden = (OrdenResponse) => ({
   nroOrden: OrdenResponse.nroOrden,
   area: OrdenResponse.area,
   montos: OrdenResponse.monto || [],  // Dejamos montos como array
-  saldos: OrdenResponse.saldoRestante || [],  // Dejamos saldos como array
+  saldos: [],  // Saldo se calcula en front (monto − vales no anulados); ya no se usa saldoRestante
   proveedor: OrdenResponse.proveedor,
   vales: OrdenResponse.vales ? OrdenResponse.vales.length : 0,
   observaciones: String(OrdenResponse.observaciones || ""),
@@ -50,17 +50,6 @@ module.exports = {
     )
     return formatOrden(createdOrden.data)
   },
-  update: async (axios, { obra, userToken }) => {
-    axios.setHeader('Access-Control-Allow-Origin', true)
-    const updated = await axios.$put(
-      `/ordenesCompra/${obra.id}`,
-      { obra },
-      // {
-      //   headers: { Authorization: `Bearer ${userToken}` },
-      // }
-    )
-    return formatOrden(updated.data)
-  },
   delete: async (axios, { id, userToken }) => {
     return await axios.$delete(`/ordenesCompra/${id}`, {
       headers: { Authorization: `Bearer ${userToken}` },
@@ -93,11 +82,6 @@ module.exports = {
   },
   anularVale: async (axios, { id, userToken }) =>{
     return await axios.$post(`/valesCombustible/anular/${id}`, {
-      headers: { Authorization: `Bearer ${userToken}` },
-    })
-  },
-  deleteVale: async (axios, { id, userToken }) =>{
-    return await axios.$delete(`/valesCombustible/${id}`, {
       headers: { Authorization: `Bearer ${userToken}` },
     })
   },

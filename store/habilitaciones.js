@@ -6,9 +6,10 @@ export const state = () => ({
 })
 
 export const actions = {
-  async getAll({ commit, state }) {
+  async getAll({ commit, state, rootState }) {
+    const userToken = rootState?.user?.token
     const found = await HabilitacionService.getAll(this.$axios, {
-      // skip: state.latest.length,
+      userToken,
     })
     commit('setAll', found)
   },
@@ -80,6 +81,11 @@ export const mutations = {
   },
   setSingle(state, singleFile) {
     state.single = singleFile
+  },
+  setSingleVisible(state, visible) {
+    if (state.single) {
+      state.single.visible = visible
+    }
   },
   ordenarHabilitaciones(state) {
     state.all.sort((a, b) => b.nroTramite - a.nroTramite);

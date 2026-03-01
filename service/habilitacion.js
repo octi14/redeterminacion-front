@@ -10,6 +10,7 @@ const formatFile = (FileResponse) => ({
   telefono: FileResponse.solicitante.telefono,
   nombreFantasia: FileResponse.inmueble.nombreFantasia,
   status: FileResponse.status,
+  visible: FileResponse.visible !== false,
   observaciones: FileResponse.observaciones,
   nroTramite: FileResponse.nroSolicitud,
   nroExpediente: FileResponse.nroExpediente,
@@ -51,6 +52,7 @@ const formatExtendedFile = (FileResponse) => ({
   otrosServicios: FileResponse.inmueble.otrosServicios,
   // documentos: FileResponse.documentos,
   status: FileResponse.status,
+  visible: FileResponse.visible !== false,
   nroTramite: FileResponse.nroSolicitud,
   nroExpediente: FileResponse.nroExpediente,
   alcance: FileResponse.alcance,
@@ -62,15 +64,12 @@ const formatExtendedFile = (FileResponse) => ({
 })
 
 module.exports = {
-  getAll: async (axios,
-    //  { skip = 0, limit = 6 }
-     ) => {
-    const filesResponse = await axios.$get('/habilitaciones', {
-      // params: {
-      //   skip,
-      //   limit,
-      // },
-    })
+  getAll: async (axios, { userToken } = {}) => {
+    const config = {};
+    if (userToken) {
+      config.headers = { Authorization: `Bearer ${userToken}` };
+    }
+    const filesResponse = await axios.$get('/habilitaciones', config);
     return filesResponse.data.map(formatFile)
   },
   getByNroTramite: async (axios, { nroTramite }) => {

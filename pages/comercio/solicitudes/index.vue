@@ -67,6 +67,12 @@
 
     <b-table per-page="10" head-row-variant="warning" class="col-md-10 white col-sm-8 mx-auto mt-4 shadow-card" :items="paginatedItems" :fields="fields">
       <!-- Plantilla personalizada para la columna "detalles" -->
+      <template #cell(nroTramite)="row">
+        <span>{{ row.value }}</span>
+        <span v-if="adminMaster && row.item.visible === false" title="Trámite invisible para no administradores">
+          <b-icon-eye-slash class="text-danger mr-1" style="margin-left: 1rem;" />
+        </span>
+      </template>
       <template #cell(status)="row">
         <div :class="row.item.estadoColor"><b>{{ row.value }}</b></div>
       </template>
@@ -195,6 +201,10 @@ export default{
     filteredItems() {
       let items = this.items;
 
+      if (!this.adminMaster) {
+        items = items.filter(item => item.visible !== false);
+      }
+
       // Filtrar los finalizados
       if (this.hideFinalizados) {
         items = items.filter(item => !["Rechazada", "Finalizada"].includes(item.status));
@@ -239,14 +249,14 @@ export default{
       return Math.ceil(this.filteredItems.length / this.perPage);
     },
     adminComercio() {
-      return this.$store.state.user.admin === "comercio" || this.$store.state.user.admin == "master"
+      return this.$store.state.user.admin === "comercio" || this.$store.state.user.admin === "master"
     },
     adminMaster() {
-      return this.$store.state.user.admin == "master"
+      return this.$store.state.user.admin === "master" || this.$store.state.user.username === "gracielabularte@gesell.gob.ar"
     },
     jefeComercio() {
-      return this.$store.state.user.username == "nataliamegias@gesell.gob.ar" ||
-      this.$store.state.user.username == "gracielabularte@gesell.gob.ar" || this.$store.state.user.admin == "master"
+      return this.$store.state.user.username === "nataliamegias@gesell.gob.ar" ||
+      this.$store.state.user.username === "gracielabularte@gesell.gob.ar" || this.$store.state.user.admin === "master"
     }
   },
   methods: {

@@ -325,8 +325,13 @@ export default {
         );
 
         await this.$store.dispatch('habilitaciones/getByNroTramite',  { nroTramite })
-        if(this.$store.state.habilitaciones.single){
-          const status = this.$store.state.habilitaciones.single.status
+        const tramite = this.$store.state.habilitaciones.single
+        if(tramite){
+          if (tramite.visible === false) {
+            this.showPopupFormError = true
+            return
+          }
+          const status = tramite.status
           switch (status) {
             case "En revisión":
               this.showPopupInit = true

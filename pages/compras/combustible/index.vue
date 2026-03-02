@@ -61,6 +61,53 @@
           <b-pagination class="mt-4" :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
         </b-tab>
 
+        <!-- Pestaña Dashboard: solo visible para jefeCompras (martinjordan@gesell.gob.ar o master) -->
+        <b-tab v-if="jefeCompras" title="📊 Estadísticas" class="custom-tab">
+          <div class="dashboard-combustible">
+            <!-- Estado de carga -->
+            <div v-if="loadingEstadisticas" class="text-center py-5">
+              <b-spinner variant="primary" label="Cargando..."></b-spinner>
+              <p class="mt-3 text-muted">Cargando estadísticas de combustible...</p>
+            </div>
+
+            <!-- Estado de error -->
+            <b-alert
+              v-else-if="errorEstadisticas"
+              variant="danger"
+              dismissible
+              @dismissed="errorEstadisticas = null"
+              class="mb-4"
+            >
+              <i class="bi bi-exclamation-triangle-fill mr-2"></i>
+              <strong>Error:</strong> {{ errorEstadisticas }}
+            </b-alert>
+
+            <!-- Contenido del dashboard -->
+            <template v-else>
+              <!-- Análisis Detallado de Combustible -->
+              <div class="row mb-4">
+                <div class="col-12">
+                  <EstadisticasDetalladas :modulos="{ combustible: datosCombustible }" :hide-compras-info="true" />
+                </div>
+              </div>
+
+              <!-- Consumos por Área -->
+              <div class="row mb-4">
+                <div class="col-12">
+                  <CombustiblePorArea :datos-combustible="datosCombustible || {}" />
+                </div>
+              </div>
+
+              <!-- Consumos por Patente -->
+              <div class="row mb-4">
+                <div class="col-12">
+                  <EstadisticasPorPatente :datos-combustible="datosCombustible || {}" :hide-compras-info="true" />
+                </div>
+              </div>
+            </template>
+          </div>
+        </b-tab>
+
         <!-- Pestaña Vehículos -->
         <b-tab title="🚗 Vehículos" class="custom-tab">
           <!-- Filtros -->
@@ -492,8 +539,16 @@
 
 <script>
 import areas from "@/plugins/areas.js";
+import EstadisticasDetalladas from '~/components/dashboard/EstadisticasDetalladas.vue'
+import CombustiblePorArea from '~/components/dashboard/CombustiblePorArea.vue'
+import EstadisticasPorPatente from '~/components/dashboard/EstadisticasPorPatente.vue'
 
 export default {
+  components: {
+    EstadisticasDetalladas,
+    CombustiblePorArea,
+    EstadisticasPorPatente
+  },
   data() {
     return {
       areas: areas, // Agregar las áreas importadas
@@ -556,6 +611,8 @@ export default {
         { key: 'acciones', label: 'Acciones', sortable: false },
       ],
       // areas: ahora se obtiene del plugin $areas
+      loadingEstadisticas: false,
+      errorEstadisticas: null
     };
   },
   async fetch() {
@@ -571,10 +628,34 @@ export default {
       console.error('Error al cargar vehículos:', error)
       this.vehiculos = []
     }
+
+    // Cargar estadísticas de combustible solo para quien puede ver el dashboard (jefeCompras)
+    const user = this.$store.state.user
+    const puedeVerDashboard = (user && user.admin === 'compras' && user.username === 'martinjordan@gesell.gob.ar') || (user && user.admin === 'master')
+    if (puedeVerDashboard) {
+      try {
+        this.loadingEstadisticas = true
+        this.errorEstadisticas = null
+        const startDate = new Date(2026, 0, 1)
+        startDate.setHours(0, 0, 0, 0)
+        const endDate = new Date()
+        endDate.setHours(23, 59, 59, 999)
+        await this.$store.dispatch('estadisticas/fetchEstadisticasCombustible', { startDate, endDate })
+      } catch (error) {
+        console.error('Error al cargar estadísticas de combustible:', error)
+        this.errorEstadisticas = 'Error al cargar las estadísticas. Por favor, intenta recargar la página.'
+      } finally {
+        this.loadingEstadisticas = false
+      }
+    }
   },
   computed: {
     adminCompras(){
       return this.$store.state.user.admin === "compras" || this.$store.state.user.admin === "master"
+    },
+    /** Solo martinjordan@gesell.gob.ar (o master) puede ver el dashboard de estadísticas de combustible. */
+    jefeCompras() {
+      return (this.$store.state.user.admin === "compras" && this.$store.state.user.username === "martinjordan@gesell.gob.ar") || this.$store.state.user.admin === "master"
     },
     ordenesCompra() {
       return this.$store.state.combustible.all;
@@ -650,6 +731,12 @@ export default {
       if (!this.nroOrden1 || !this.nroOrden2) return false;
       const nro = `${String(this.nroOrden1).trim()}/${String(this.nroOrden2).trim()}`;
       return this.items.some(item => item.nroOrden && String(item.nroOrden).trim() === nro);
+    },
+    // Computed property para obtener datos de combustible desde el store
+    datosCombustible() {
+      const datos = this.$store.state.estadisticas.estadisticasModulos?.combustible || {}
+
+      return datos
     }
   },
   methods: {
@@ -931,5 +1018,10 @@ export default {
   border-radius: 3px !important;
   border: 1px solid #c3cae5 !important;
   box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
+}
+
+/* Estilos para el dashboard de combustible */
+.dashboard-combustible {
+  padding: 1rem 0;
 }
 </style>

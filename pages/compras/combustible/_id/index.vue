@@ -218,7 +218,7 @@
                             </h4>
                           </div>
                           <!-- Botones -->
-                          <div v-if="jefeCompras && !vale.anulado" class="d-flex mr-2">
+                          <div v-if="adminCompras && !vale.anulado" class="d-flex mr-2">
                             <button v-if="!vale.consumido" class="btn btn-success btn-sm mx-1" title="Marcar como utilizado" @click="confirmarMarcarUtilizado(vale, (currentPage - 1) * itemsPerPage + index)">
                               <b-icon-check />
                             </button>
@@ -257,8 +257,8 @@
                   <thead>
                     <tr>
                       <th style="width: 40px;" class="text-center">
-                        <input 
-                          type="checkbox" 
+                        <input
+                          type="checkbox"
                           :checked="todosValesPaginaSeleccionados"
                           @change="toggleSeleccionarTodosPagina"
                           class="vale-checkbox"
@@ -271,21 +271,21 @@
                       <th>Patente</th>
                       <th>Fecha Emisión</th>
                       <th>Estado</th>
-                      <th v-if="jefeCompras" style="width: 120px;">Acciones</th>
+                      <th v-if="adminCompras" style="width: 120px;">Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr 
-                      v-for="(vale, index) in paginatedVales" 
+                    <tr
+                      v-for="(vale, index) in paginatedVales"
                       :key="index"
                       :class="{ 'vale-disabled': vale.consumido || vale.anulado }"
                       class="vale-row"
                     >
                       <td class="text-center">
-                        <input 
-                          v-if="!vale.consumido && !vale.anulado" 
-                          type="checkbox" 
-                          :value="vale.id" 
+                        <input
+                          v-if="!vale.consumido && !vale.anulado"
+                          type="checkbox"
+                          :value="vale.id"
                           v-model="valesSeleccionados"
                           class="vale-checkbox"
                         />
@@ -302,35 +302,35 @@
                           <b class="text-gray" v-else>Anulado</b>
                         </span>
                       </td>
-                      <td v-if="jefeCompras && !vale.anulado" class="text-center">
+                      <td v-if="adminCompras && !vale.anulado" class="text-center">
                         <div class="d-flex justify-content-center align-items-center">
-                          <button 
-                            v-if="!vale.consumido" 
-                            class="btn btn-success btn-sm mx-1" 
-                            title="Marcar como utilizado" 
+                          <button
+                            v-if="!vale.consumido"
+                            class="btn btn-success btn-sm mx-1"
+                            title="Marcar como utilizado"
                             @click="confirmarMarcarUtilizado(vale, (currentPage - 1) * itemsPerPage + index)"
                           >
                             <b-icon-check />
                           </button>
-                          <button 
-                            v-if="!vale.consumido" 
-                            class="btn btn-primary btn-sm mx-1" 
-                            title="Reimprimir" 
+                          <button
+                            v-if="!vale.consumido"
+                            class="btn btn-primary btn-sm mx-1"
+                            title="Reimprimir"
                             @click="confirmarReimpresion(vale, index)"
                           >
                             <b-icon-printer-fill />
                           </button>
-                          <button 
-                            v-if="!vale.consumido" 
-                            class="btn btn-danger btn-sm mx-1" 
-                            title="Eliminar" 
+                          <button
+                            v-if="!vale.consumido"
+                            class="btn btn-danger btn-sm mx-1"
+                            title="Eliminar"
                             @click="confirmarEliminacion(vale.id)"
                           >
                             <b-icon-trash-fill />
                           </button>
                         </div>
                       </td>
-                      <td v-else-if="jefeCompras"></td>
+                      <td v-else-if="adminCompras"></td>
                     </tr>
                   </tbody>
                 </table>
@@ -578,9 +578,6 @@ export default {
     adminCompras(){
       return this.$store.state.user.admin == "compras" || this.$store.state.user.admin == "master"
     },
-    jefeCompras(){
-      return (this.$store.state.user.admin == "compras" && this.$store.state.user.username == "martinjordan@gesell.gob.ar") || this.$store.state.user.admin == "master"
-    },
     vales(){
       return this.$store.state.combustible.vales_creados
     },
@@ -635,19 +632,19 @@ export default {
       if (!this.paginatedVales || !Array.isArray(this.paginatedVales)) {
         return false;
       }
-      
+
       // Obtener solo los vales disponibles de la página actual (no consumidos y no anulados)
       const valesDisponiblesPagina = this.paginatedVales.filter(
         vale => !vale.consumido && !vale.anulado
       );
-      
+
       // Si no hay vales disponibles, retornar false
       if (valesDisponiblesPagina.length === 0) {
         return false;
       }
-      
+
       // Verificar si todos los vales disponibles están seleccionados
-      return valesDisponiblesPagina.every(vale => 
+      return valesDisponiblesPagina.every(vale =>
         this.valesSeleccionados.includes(vale.id)
       );
     },
@@ -657,7 +654,7 @@ export default {
     vales: {
       handler(newVales) {
         if (!newVales || !Array.isArray(newVales)) return;
-        
+
         // Filtrar los vales seleccionados para mantener solo los que están disponibles
         this.valesSeleccionados = this.valesSeleccionados.filter(valeId => {
           const vale = newVales.find(v => v.id === valeId || v._id === valeId);
@@ -870,7 +867,6 @@ export default {
       ctx.fillStyle = "black";
       ctx.font = "500 38px sans-serif";
 
-      console.log(vale)
       // Ejemplo de coordenadas, ajustalas si hace falta
       ctx.fillText(`${this.orden.proveedor}`, ...pos(600, 310));
       ctx.fillText(`${this.orden.nroOrden}`, ...pos(600, 367));
@@ -890,7 +886,7 @@ export default {
 
       const id = this.valeSeleccionado;
       this.eliminandoVale = true;
-      
+
       try {
         const userToken = this.$store.state.user.token;
 
@@ -1024,10 +1020,10 @@ export default {
         'Marcar Vales como Utilizados',
         `${valesAMarcar.length} vales marcados como utilizados`
       );
-      
+
       // Limpiar la selección después de marcar como utilizados
       this.valesSeleccionados = [];
-      
+
       await this.wait(500)
       this.$bvModal.hide('modalUtilizacionMasiva')
       location.reload()
@@ -1156,7 +1152,7 @@ export default {
       const idsValesPagina = valesDisponiblesPagina.map(vale => vale.id);
 
       // Verificar si todos ya están seleccionados
-      const todosSeleccionados = idsValesPagina.every(id => 
+      const todosSeleccionados = idsValesPagina.every(id =>
         this.valesSeleccionados.includes(id)
       );
 
@@ -1557,13 +1553,13 @@ p{
   .vales-list-table {
     font-size: 12px;
   }
-  
+
   .vales-list-table thead th,
   .vales-list-table tbody td {
     padding: 8px 4px;
     font-size: 12px;
   }
-  
+
   .vales-list-table thead th:nth-child(3),
   .vales-list-table tbody td:nth-child(3),
   .vales-list-table thead th:nth-child(4),

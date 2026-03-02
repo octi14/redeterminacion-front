@@ -223,16 +223,6 @@ export default {
     filteredActivities() {
       let activities = this.currentActivities
 
-      console.log('🔍 Debug filteredActivities:', {
-        currentActivities: activities?.length || 0,
-        selectedDateRange: !!this.selectedDateRange,
-        selectedActivity: this.selectedActivity,
-        userFilter: this.userFilter,
-        filtered: this.filtered?.length || 0,
-        recent: this.recent?.length || 0,
-        all: this.all?.length || 0
-      })
-
       // Filtrar por tipo de actividad
       if (this.selectedActivity) {
         activities = activities.filter(activity =>
@@ -248,7 +238,6 @@ export default {
         )
       }
 
-      console.log('🔍 Debug filteredActivities result:', activities?.length || 0)
       return activities
     },
 
@@ -330,16 +319,6 @@ export default {
       }
     },
 
-    filterActivities() {
-      // Esta funcionalidad se puede implementar más adelante
-      // para filtrar las actividades en tiempo real
-      console.log('Filtrando actividades:', {
-        activity: this.selectedActivity,
-        user: this.userFilter,
-        date: this.dateFilter
-      })
-    },
-
     async applyDateFilter() {
       if (this.startDate && this.endDate) {
         this.selectedDateRange = {
@@ -349,19 +328,11 @@ export default {
 
         // Cargar actividades filtradas
         try {
-          console.log('🔍 Aplicando filtro de fechas:', {
-            startDate: this.startDate,
-            endDate: this.endDate,
-            limit: this.limit
-          })
-
           const result = await this.getFiltered({
             startDate: this.startDate,
             endDate: this.endDate,
             limit: this.limit
           })
-
-          console.log('🔍 Resultado del filtro:', result?.length || 0, 'actividades')
 
           this.$bvToast.toast('Filtro de fechas aplicado', {
             title: 'Filtro Aplicado',

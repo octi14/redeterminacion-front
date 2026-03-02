@@ -533,9 +533,7 @@ export default{
       return true;
     },
     areAllFieldsValid(){
-      console.log("areAllFieldsValid() CALLED");
       if(this.areAllFieldsComplete){
-        console.log("areAllFieldsValid(): this.$v.$invalid: " + this.$v.$invalid + " Object.values(this.fileTooLargeError).some(error => !!error): " + Object.values(this.fileTooLargeError).some(error => !!error));
         return !this.$v.$invalid && !Object.values(this.fileTooLargeError).some(error => !!error)
       }
       return true;
@@ -568,7 +566,6 @@ export default{
     openPopup(type) {
       // Lógica para abrir el popup correspondiente según el tipo (A, B, C, D)
       if (type === 'A') {
-        console.log("ShowPopup A")
         this.showPopupA = true;
       } else if (type === 'B') {
         this.showPopupB = true;
@@ -640,7 +637,6 @@ export default{
             En los próximos días recibirá un correo electrónico del Departamento Recaudaciones Municipal en el que le indicarán cómo continuar.
             Asegúrese de revisar la bandeja de correos no deseados (Spam).`
           });
-          //console.log(response.data)
           this.nroTramite = response.data
           this.showPopupFormLoading = false;
           this.openPopup('FormOk');

@@ -171,14 +171,11 @@ export default {
     adminRecaudaciones(){
       return this.$store.state.user.admin == "recaudaciones" || this.$store.state.user.admin =="master"
     },
-    adminMaster(){
-      return this.$store.state.user.admin == "master"
-    },
     adminCementerio(){
       return this.$store.state.user.admin == "cementerio" || this.$store.state.user.admin =="master"
     },
-    adminMaster(){
-      return this.$store.state.user.admin == "master"
+    adminMaster() {
+      return this.$store.state.user.admin === 'master'
     },
     username() {
       return this.$store.state.user.username

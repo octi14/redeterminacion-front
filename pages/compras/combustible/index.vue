@@ -61,8 +61,8 @@
           <b-pagination class="mt-4" :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
         </b-tab>
 
-        <!-- Pestaña Dashboard -->
-        <b-tab title="📊 Estadísticas" class="custom-tab">
+        <!-- Pestaña Dashboard: solo visible para jefeCompras (martinjordan@gesell.gob.ar o master) -->
+        <b-tab v-if="jefeCompras" title="📊 Estadísticas" class="custom-tab">
           <div class="dashboard-combustible">
             <!-- Estado de carga -->
             <div v-if="loadingEstadisticas" class="text-center py-5">
@@ -629,28 +629,33 @@ export default {
       this.vehiculos = []
     }
 
-    // Cargar estadísticas de combustible con filtro desde 1 de enero de 2026
-    try {
-      this.loadingEstadisticas = true
-      this.errorEstadisticas = null
-      // Crear fecha de inicio: 1 de enero de 2026 a las 00:00:00
-      const startDate = new Date(2026, 0, 1) // Mes 0 = enero
-      startDate.setHours(0, 0, 0, 0)
-      // Fecha de fin: fecha actual
-      const endDate = new Date()
-      endDate.setHours(23, 59, 59, 999)
-
-      await this.$store.dispatch('estadisticas/fetchEstadisticasCombustible', { startDate, endDate })
-    } catch (error) {
-      console.error('Error al cargar estadísticas de combustible:', error)
-      this.errorEstadisticas = 'Error al cargar las estadísticas. Por favor, intenta recargar la página.'
-    } finally {
-      this.loadingEstadisticas = false
+    // Cargar estadísticas de combustible solo para quien puede ver el dashboard (jefeCompras)
+    const user = this.$store.state.user
+    const puedeVerDashboard = (user && user.admin === 'compras' && user.username === 'martinjordan@gesell.gob.ar') || (user && user.admin === 'master')
+    if (puedeVerDashboard) {
+      try {
+        this.loadingEstadisticas = true
+        this.errorEstadisticas = null
+        const startDate = new Date(2026, 0, 1)
+        startDate.setHours(0, 0, 0, 0)
+        const endDate = new Date()
+        endDate.setHours(23, 59, 59, 999)
+        await this.$store.dispatch('estadisticas/fetchEstadisticasCombustible', { startDate, endDate })
+      } catch (error) {
+        console.error('Error al cargar estadísticas de combustible:', error)
+        this.errorEstadisticas = 'Error al cargar las estadísticas. Por favor, intenta recargar la página.'
+      } finally {
+        this.loadingEstadisticas = false
+      }
     }
   },
   computed: {
     adminCompras(){
       return this.$store.state.user.admin === "compras" || this.$store.state.user.admin === "master"
+    },
+    /** Solo martinjordan@gesell.gob.ar (o master) puede ver el dashboard de estadísticas de combustible. */
+    jefeCompras() {
+      return (this.$store.state.user.admin === "compras" && this.$store.state.user.username === "martinjordan@gesell.gob.ar") || this.$store.state.user.admin === "master"
     },
     ordenesCompra() {
       return this.$store.state.combustible.all;

@@ -218,7 +218,7 @@
                             </h4>
                           </div>
                           <!-- Botones -->
-                          <div v-if="jefeCompras && !vale.anulado" class="d-flex mr-2">
+                          <div v-if="adminCompras && !vale.anulado" class="d-flex mr-2">
                             <button v-if="!vale.consumido" class="btn btn-success btn-sm mx-1" title="Marcar como utilizado" @click="confirmarMarcarUtilizado(vale, (currentPage - 1) * itemsPerPage + index)">
                               <b-icon-check />
                             </button>
@@ -271,7 +271,7 @@
                       <th>Patente</th>
                       <th>Fecha Emisión</th>
                       <th>Estado</th>
-                      <th v-if="jefeCompras" style="width: 120px;">Acciones</th>
+                      <th v-if="adminCompras" style="width: 120px;">Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -302,7 +302,7 @@
                           <b class="text-gray" v-else>Anulado</b>
                         </span>
                       </td>
-                      <td v-if="jefeCompras && !vale.anulado" class="text-center">
+                      <td v-if="adminCompras && !vale.anulado" class="text-center">
                         <div class="d-flex justify-content-center align-items-center">
                           <button
                             v-if="!vale.consumido"
@@ -330,7 +330,7 @@
                           </button>
                         </div>
                       </td>
-                      <td v-else-if="jefeCompras"></td>
+                      <td v-else-if="adminCompras"></td>
                     </tr>
                   </tbody>
                 </table>
@@ -577,9 +577,6 @@ export default {
     },
     adminCompras(){
       return this.$store.state.user.admin == "compras" || this.$store.state.user.admin == "master"
-    },
-    jefeCompras(){
-      return (this.$store.state.user.admin == "compras" && this.$store.state.user.username == "martinjordan@gesell.gob.ar") || this.$store.state.user.admin == "master"
     },
     vales(){
       return this.$store.state.combustible.vales_creados

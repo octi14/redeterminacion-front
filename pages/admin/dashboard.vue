@@ -1,6 +1,21 @@
 <template>
-  <div class="page dashboard-container">
-    <div class="container-fluid py-4 mt-4" v-if="adminMaster">
+  <div class="page main-background dashboard-container">
+    <!-- Sin permisos: cartel de sección no disponible -->
+    <div v-if="!adminMaster" class="dashboard-no-access">
+      <div class="no-access-card">
+        <div class="no-access-icon">
+          <i class="bi bi-shield-lock-fill"></i>
+        </div>
+        <h1 class="no-access-title">Esta sección no está disponible</h1>
+        <p class="no-access-subtitle">No tenés acceso a esta sección.</p>
+        <NuxtLink to="/" class="btn btn-back-home">
+          <i class="bi bi-house-door-fill mr-2"></i>
+          Volver al inicio
+        </NuxtLink>
+      </div>
+    </div>
+
+    <div class="container-fluid py-4 mt-4" v-else>
       <!-- Header del Dashboard -->
       <div class="dashboard-header fade-in">
         <div class="d-flex justify-content-between align-items-center">
@@ -152,8 +167,10 @@ export default {
     }
   },
   async mounted() {
-    // Cargar datos iniciales
-    await this.cargarDatos()
+    // Cargar datos solo si tiene permisos de admin master
+    if (this.adminMaster) {
+      await this.cargarDatos()
+    }
   },
   methods: {
     async cargarDatos() {
@@ -260,6 +277,83 @@ export default {
 <style scoped>
 .container-fluid {
   padding-top: 80px; /* Espacio para el navbar fijo */
+}
+
+/* Cartel de sección no disponible (solo adminMaster) */
+.dashboard-no-access {
+  min-height: calc(100vh - 80px);
+  padding-top: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.no-access-card {
+  max-width: 520px;
+  padding: 3rem 2.5rem;
+  text-align: center;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  animation: noAccessFadeIn 0.5s ease-out;
+}
+
+@keyframes noAccessFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.no-access-icon {
+  margin-bottom: 1.5rem;
+}
+
+.no-access-icon i {
+  font-size: 4.5rem;
+  color: #64748b;
+  opacity: 0.9;
+  display: inline-block;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+}
+
+.no-access-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+}
+
+.no-access-subtitle {
+  font-size: 1.05rem;
+  color: #475569;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.btn-back-home {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.6rem 1.25rem;
+  background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+  color: #fff !important;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 14px rgba(15, 118, 110, 0.35);
+}
+
+.btn-back-home:hover {
+  color: #fff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(15, 118, 110, 0.45);
 }
 
 /* Estilos para el selector de fechas */

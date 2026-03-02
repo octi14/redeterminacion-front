@@ -27,7 +27,29 @@
           <div class="h5 row justify-content-center"> Número de expediente: <b class="text-success ml-1"> {{ habilitacion.nroExpediente }} </b> </div>
           <div class="h5 row justify-content-center" v-if="!esHabilitacion"> Alcance: <b class="text-success ml-1"> {{ habilitacion.alcance }} </b> </div>
           <div class="h5 row justify-content-center" v-if="!esHabilitacion"> Legajo: <b class="text-success ml-1"> {{ habilitacion.nroLegajo }} </b> </div>
+        </div>        
+        <div class="row justify-content-center mt-3" v-if="adminMaster && visibleLocal">
+          <div class="h5 row"> Visibilidad:
+            <h5 :class="getStatusClass(habilitacion.status)" class="ml-2"> 
+              <b-icon-eye-slash v-if="visibleLocal" class="ml-1 text-success" title="Trámite visible" />
+              <b-icon-eye-slash v-else class="ml-1 text-danger" title="Trámite invisible" />
+              <span v-if="visibleLocal">Visible</span>
+              <span v-else>Invisible</span>
+            </h5>
+          </div>
         </div>
+      </div>
+      <div class="row justify-content-center mt-2" v-if="adminMaster">
+        <b-form-checkbox
+          switch
+          v-model="visibleLocal"
+          @change="onToggleVisibilidad"
+        >
+          Visibilidad del trámite
+          
+        <b-icon-eye v-if="visibleLocal" class="ml-1 text-success" title="Trámite visible" />
+        <b-icon-eye-slash v-else class="ml-1 text-danger" title="Trámite invisible" />
+        </b-form-checkbox>
       </div>
       <!--Botones-->
       <div class="row col-10 mx-auto justify-content-center" v-if="jefeComercio">
@@ -832,6 +854,7 @@ export default {
       DocumentoModalTitle: "",
       showRevisionIncompleta: false,
       showRechazoAutomatico: false,
+      visibleLocal: false,
       // Variables para el sistema de revisión
       revisionSolicitante: null,
       revisionInmueble: null,
@@ -933,6 +956,18 @@ export default {
       return
     }
 
+    if (!this.adminMaster && this.habilitacion.visible === false) {
+      this.$bvToast.toast('El trámite no está disponible para este usuario.', {
+        title: 'Trámite no disponible',
+        variant: 'warning',
+        solid: true,
+      })
+      this.$router.replace('/comercio/solicitudes')
+      return
+    }
+
+    this.visibleLocal = this.habilitacion.visible !== false
+
     const nroTramite = this.habilitacion.nroTramite
     await this.$store.dispatch('turnos/getSingle', { nroTramite })
     this.turno = this.$store.state.turnos.single
@@ -955,6 +990,39 @@ export default {
           await this.$logUserActivity(userId, actionType, actionResult);
       } catch (error) {
           console.error('Error al registrar la actividad:', error);
+      }
+    },
+    async onToggleVisibilidad() {
+      if (!this.adminMaster || !this.habilitacion) {
+        return;
+      }
+
+      const id = this.habilitacion.id;
+      const visible = !!this.visibleLocal;
+
+      try {
+        await this.$store.dispatch('habilitaciones/updateLazy', {
+          id,
+          habilitacion: { visible },
+        });
+        this.$store.commit('habilitaciones/setSingleVisible', visible);
+        this.$bvToast.toast(
+          visible
+            ? 'El trámite ahora es visible para usuarios no administradores.'
+            : 'El trámite ahora es invisible para usuarios no administradores.',
+          {
+            title: 'Visibilidad actualizada',
+            variant: 'success',
+            solid: true,
+          }
+        );
+      } catch (e) {
+        this.$bvToast.toast('No se pudo actualizar la visibilidad del trámite.', {
+          title: 'Error',
+          variant: 'danger',
+          solid: true,
+        });
+        this.visibleLocal = this.habilitacion.visible !== false;
       }
     },
     getStatusClass(status) {

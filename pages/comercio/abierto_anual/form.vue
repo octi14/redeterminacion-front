@@ -124,7 +124,6 @@
 
   <script>
   import { required, requiredIf, alpha, numeric, email, minLength, maxLength, sameAs } from 'vuelidate/lib/validators';
-  import abiertoAnualConfig from '~/plugins/abiertoAnualConfig';
   export default {
     validations() {
       return {
@@ -139,7 +138,6 @@
     },
     data() {
       return {
-        config: abiertoAnualConfig,
         cuit: null,
         nroLegajoInput: '',
         nroLegajo: null,
@@ -156,10 +154,15 @@
         showClosedPopup: false,
       };
     },
-    mounted() {
-      this.showClosedPopup = this.config.popUpAbiertoAnualCerrado;
+    async mounted() {
+      await this.$store.dispatch('config/getAbiertoAnualPeriodos');
+      const config = this.$store.getters['config/abiertoAnualPeriodos'];
+      this.showClosedPopup = config && config.popUpAbiertoAnualCerrado;
     },
     computed: {
+      config() {
+        return this.$store.getters['config/abiertoAnualPeriodos'];
+      },
       maestro(){
         return this.$store.state.maestro.all
       }

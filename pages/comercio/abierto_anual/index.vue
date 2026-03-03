@@ -338,11 +338,9 @@
 
   <script>
   import rubros from "@/plugins/rubros.js";
-  import abiertoAnualConfig from '~/plugins/abiertoAnualConfig';
   export default {
     data:function() {
       return {
-        config: abiertoAnualConfig,
         slide: 0,
         sliding: null,
         filteredRubros: rubros,//.filter(rubro => rubro.requisitos.length > 0),
@@ -361,9 +359,15 @@
         expandedCards: [],
       };
     },
-    mounted() {
+    computed: {
+      config() {
+        return this.$store.getters['config/abiertoAnualPeriodos'];
+      },
+    },
+    async mounted() {
+      await this.$store.dispatch('config/getAbiertoAnualPeriodos');
+      this.showClosedPopup = this.config && this.config.popUpAbiertoAnualCerrado;
       this.filteredRubros.sort((a, b) => a.nombre.localeCompare(b.nombre));
-      this.showClosedPopup = this.config.popUpAbiertoAnualCerrado;
     },
     methods: {
       onSlideStart(slide) {

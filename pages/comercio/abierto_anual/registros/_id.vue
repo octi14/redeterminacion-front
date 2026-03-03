@@ -81,6 +81,7 @@
       // }
     },
     async fetch() {
+      await this.$store.dispatch('config/getAbiertoAnualPeriodos');
       const tramiteId = this.$route.params.id
       await this.$store.dispatch('abiertoAnual/getSingle',{
         id: tramiteId,

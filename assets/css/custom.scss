@@ -288,6 +288,24 @@ input[type="number"] {
 }
 
 // ============================================
+// TARJETAS SECCIÓN (ACORDEÓN COMERCIO / ABIERTO ANUAL)
+// Quita la línea gris interior del desplegable y el espacio que ocupaba.
+// ============================================
+.section-card .card-body {
+  border-top: none !important;
+  border-bottom: none !important;
+  padding-bottom: 12px !important;
+}
+.section-card .section-title {
+  border-bottom: none !important;
+  margin-bottom: 0 !important;
+}
+.section-card .card-body > div {
+  border-top: none !important;
+  border-bottom: none !important;
+}
+
+// ============================================
 // TRANSICIONES VUE
 // ============================================
 // Transiciones para listas (usado en componentes Feed)

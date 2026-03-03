@@ -105,7 +105,8 @@ export default {
   components: {
     AbiertoAnualCard
   },
-  mounted() {
+  async mounted() {
+    await this.$store.dispatch('config/getAbiertoAnualPeriodos');
     window.addEventListener('keydown', this.preventReload);
   },
   beforeDestroy() {

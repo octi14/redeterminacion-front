@@ -166,7 +166,6 @@
 
   <script>
   import { requiredIf } from 'vuelidate/lib/validators';
-  import abiertoAnualConfig from '~/plugins/abiertoAnualConfig';
   export default {
     props: {
       id:{
@@ -183,7 +182,6 @@
     },
     data() {
         return {
-        config: abiertoAnualConfig,
         archivo: null,
         estadoActual: null,
 
@@ -196,6 +194,9 @@
         };
     },
     computed: {
+        config() {
+          return this.$store.getters['config/abiertoAnualPeriodos'];
+        },
         periodoTexto() {
             // Lógica para asignar un texto al periodo
             // Por ejemplo, puedes tener un array de textos correspondientes a cada periodo
@@ -260,7 +261,7 @@
                 now = new Date(this.$store.state.fechas.fecha.fecha);
                 const maxDateParts = this.config.maxDates[this.periodo].split('/');
                 const minDateParts = this.config.minDates[this.periodo].split('/');
-                const maxDate = new Date(maxDateParts[2], maxDateParts[1] - 1, maxDateParts[0]);
+                const maxDate = new Date(maxDateParts[2], maxDateParts[1] - 1, maxDateParts[0], 23, 59, 59, 999);
                 const minDate = new Date(minDateParts[2], minDateParts[1] - 1, minDateParts[0]);
             if (now > maxDate){
                 if(this.config.rectificacion){

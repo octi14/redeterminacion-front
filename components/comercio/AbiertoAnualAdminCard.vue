@@ -216,7 +216,6 @@
 </template>
 
 <script>
-import abiertoAnualConfig from "@/plugins/abiertoAnualConfig.js";
 import { requiredIf } from 'vuelidate/lib/validators';
 export default {
   props: {
@@ -233,7 +232,6 @@ export default {
   },
   data() {
       return {
-      config: abiertoAnualConfig,
       archivo: null,
       estadoActual: null,
       estadoPrevio: null,
@@ -254,6 +252,9 @@ export default {
     })
   },
   computed: {
+    config() {
+      return this.$store.getters['config/abiertoAnualPeriodos'];
+    },
     periodoTexto() {
       // Lógica para asignar un texto al periodo
       // Por ejemplo, puedes tener un array de textos correspondientes a cada periodo
@@ -335,7 +336,7 @@ export default {
                   const now = new Date(this.$store.state.fechas.fecha.fecha);
                   const maxDateParts = this.config.maxDates[this.periodo].split('/');
                   const minDateParts = this.config.minDates[this.periodo].split('/');
-                  const maxDate = new Date(maxDateParts[2], maxDateParts[1] - 1, maxDateParts[0]);
+                  const maxDate = new Date(maxDateParts[2], maxDateParts[1] - 1, maxDateParts[0], 23, 59, 59, 999);
                   const minDate = new Date(minDateParts[2], minDateParts[1] - 1, minDateParts[0]);
                   if (now && now > maxDate){
                       // Pasó la fecha máxima: período vencido. Si hay rectificación habilitada → 7; si no → 5 (vencido sin rectificación).

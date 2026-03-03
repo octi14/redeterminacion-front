@@ -1,9 +1,9 @@
 <template>
-  <div v-if="adminCompras" class="page main-background">
+  <div v-if="puedeVerPaginaCombustible" class="page main-background">
     <Banner title="Compras" subtitle="Combustible"/>
 
-    <!-- Botones de acción -->
-    <div class="row no-gutters justify-content-center mt-4">
+    <!-- Botones de acción: ocultos para quien solo ve el dashboard -->
+    <div v-if="!soloDashboardCombustible" class="row no-gutters justify-content-center mt-4">
       <b-button variant="success" class="text-center mx-3" @click="showCargarOrden = true">
         <b-icon-plus-circle class="mr-2"></b-icon-plus-circle>
         Cargar Orden de Compra
@@ -14,11 +14,11 @@
       </b-button>
     </div>
 
-    <!-- Pestañas justo encima de las tablas -->
+    <!-- Pestañas: Órdenes y Vehículos ocultas para quien solo ve dashboard (gustavociriaco) -->
     <div class="col-md-10 mx-auto mt-4">
       <b-tabs content-class="mt-0" fill class="custom-tabs">
-        <!-- Pestaña Órdenes de Compra -->
-        <b-tab title="📋 Órdenes de Compra" active class="custom-tab">
+        <!-- Pestaña Órdenes de Compra: oculta para quien solo ve dashboard -->
+        <b-tab v-if="!soloDashboardCombustible" title="📋 Órdenes de Compra" active class="custom-tab">
           <b-table per-page="10" head-row-variant="success" class="white shadow-card" :items="paginatedItems" :fields="fields">
       <template #cell(monto)="row">
         {{ format(row.item.montos.reduce((acc, combustible) => acc + combustible.monto, 0)) }}
@@ -61,8 +61,8 @@
           <b-pagination class="mt-4" :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
         </b-tab>
 
-        <!-- Pestaña Dashboard: solo visible para jefeCompras (martinjordan@gesell.gob.ar o master) -->
-        <b-tab v-if="jefeCompras" title="📊 Estadísticas" class="custom-tab">
+        <!-- Pestaña Estadísticas: mismo dashboard para jefeCompras y gustavociriaco -->
+        <b-tab v-if="jefeCompras || soloDashboardCombustible" title="📊 Estadísticas" :active="soloDashboardCombustible" class="custom-tab">
           <div class="dashboard-combustible">
             <!-- Estado de carga -->
             <div v-if="loadingEstadisticas" class="text-center py-5">
@@ -108,8 +108,8 @@
           </div>
         </b-tab>
 
-        <!-- Pestaña Vehículos -->
-        <b-tab title="🚗 Vehículos" class="custom-tab">
+        <!-- Pestaña Vehículos: oculta para quien solo ve dashboard -->
+        <b-tab v-if="!soloDashboardCombustible" title="🚗 Vehículos" class="custom-tab">
           <!-- Filtros -->
           <div class="row no-gutters filtro-section">
             <div class="col-md-3">
@@ -616,22 +616,29 @@ export default {
     };
   },
   async fetch() {
-    await this.$store.dispatch('combustible/getOrdenesCompra')
-    this.items = this.ordenesCompra
-    await this.$store.dispatch('combustible/getProveedores')
+    const soloDashboard = this.$store.state.user.username === 'gustavociriaco@gesell.gob.ar'
 
-    // Cargar vehículos
-    try {
-      await this.$store.dispatch('vehiculos/getAll')
-      this.vehiculos = this.$store.state.vehiculos ? this.$store.state.vehiculos.all : []
-    } catch (error) {
-      console.error('Error al cargar vehículos:', error)
-      this.vehiculos = []
+    if (!soloDashboard) {
+      await this.$store.dispatch('combustible/getOrdenesCompra')
+      this.items = this.ordenesCompra
+      await this.$store.dispatch('combustible/getProveedores')
+
+      try {
+        await this.$store.dispatch('vehiculos/getAll')
+        this.vehiculos = this.$store.state.vehiculos ? this.$store.state.vehiculos.all : []
+      } catch (error) {
+        console.error('Error al cargar vehículos:', error)
+        this.vehiculos = []
+      }
     }
 
-    // Cargar estadísticas de combustible solo para quien puede ver el dashboard (jefeCompras)
+    // Cargar estadísticas de combustible para jefeCompras o para quien solo ve el dashboard (gustavociriaco)
     const user = this.$store.state.user
-    const puedeVerDashboard = (user && user.admin === 'compras' && user.username === 'martinjordan@gesell.gob.ar') || (user && user.admin === 'master')
+    const puedeVerDashboard = user && (
+      (user.admin === 'compras' && user.username === 'martinjordan@gesell.gob.ar') ||
+      user.admin === 'master' ||
+      user.username === 'gustavociriaco@gesell.gob.ar'
+    )
     if (puedeVerDashboard) {
       try {
         this.loadingEstadisticas = true
@@ -653,7 +660,15 @@ export default {
     adminCompras(){
       return this.$store.state.user.admin === "compras" || this.$store.state.user.admin === "master"
     },
-    /** Solo martinjordan@gesell.gob.ar (o master) puede ver el dashboard de estadísticas de combustible. */
+    /** Puede entrar a la página combustible: admin compras o usuario con solo dashboard. */
+    puedeVerPaginaCombustible() {
+      return this.adminCompras || this.$store.state.user.username === "gustavociriaco@gesell.gob.ar"
+    },
+    /** Solo ve el dashboard de combustible (sin órdenes ni vehículos). */
+    soloDashboardCombustible() {
+      return this.$store.state.user.username === "gustavociriaco@gesell.gob.ar"
+    },
+    /** Solo martinjordan@gesell.gob.ar (o master) puede ver la pestaña Estadísticas dentro de la vista completa. */
     jefeCompras() {
       return (this.$store.state.user.admin === "compras" && this.$store.state.user.username === "martinjordan@gesell.gob.ar") || this.$store.state.user.admin === "master"
     },

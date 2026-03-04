@@ -325,7 +325,11 @@
           </div>
         </div>
       <div v-else>
-        <p class="h5 text-center mt-3 mb-4 font-weight-500 text-dark">Estás a punto de eliminar la orden de compra.</p>
+        <p class="h5 text-center mt-3 mb-2 font-weight-500 text-dark">Estás a punto de eliminar la orden de compra.</p>
+        <p class="d-flex align-items-center justify-content-center mt-2 mb-2 px-3 py-2 rounded bg-light border border-warning">
+          <b-icon-exclamation-circle-fill scale="1.2" class="text-warning mr-2 flex-shrink-0" />
+          <span class="text-dark font-weight-600" style="font-size: 0.95rem;">Se eliminarán también todos los vales asociados a esta orden.</span>
+        </p>
         <p class="h6 text-center mt-2 mb-3 font-weight-500 text-dark">¿Deseás continuar?</p>
         <hr class="row col-9 mx-auto"/>
         <div class="row no-gutters justify-content-center">

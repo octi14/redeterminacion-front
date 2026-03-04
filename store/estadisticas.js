@@ -1,7 +1,7 @@
 const EstadisticasService = require('../service/estadisticas')
 
 export const state = () => ({
-  estadisticasModulos: null,
+  estadisticasModulos: {},
   estadisticasUsuarios: null,
   estadisticasActividad: null,
   loading: false,
@@ -25,11 +25,11 @@ export const state = () => ({
 export const actions = {
 
 
+  // Carga monolítica (legacy): usa getRawData + getEstadisticasPorModuloFromRaw. Preferir fetchAllEstadisticas (carga progresiva por módulo).
   async fetchEstadisticasModulos({ commit, state }, { startDate, endDate } = {}) {
     commit('setLoading', true)
     commit('setError', null)
     try {
-      // Si no hay datos raw, cargarlos por primera vez
       if (!state.rawData.habilitaciones.length) {
         const rawData = await EstadisticasService.getRawData(this.$axios)
         commit('setRawData', rawData)
@@ -85,15 +85,111 @@ export const actions = {
     }
   },
 
-  async fetchAllEstadisticas({ dispatch }, { startDate, endDate } = {}) {
+  async fetchAllEstadisticas({ commit, dispatch }, { startDate, endDate } = {}) {
+    commit('setLoading', true)
+    commit('setError', null)
+    const filter = (startDate && endDate) ? { startDate, endDate } : {}
+    if (startDate && endDate) {
+      commit('setCurrentDateFilter', { startDate, endDate })
+    } else {
+      commit('setCurrentDateFilter', null)
+    }
+    dispatch('fetchModuloComercio', filter)
+    dispatch('fetchModuloObras', filter)
+    dispatch('fetchModuloTurnos', filter)
+    dispatch('fetchModuloRecaudaciones', filter)
+    dispatch('fetchModuloCombustible', filter)
+    dispatch('fetchModuloAbiertoAnual', filter)
+    dispatch('fetchModuloIndices', filter)
+    dispatch('fetchEstadisticasUsuarios')
+  },
+
+  async fetchModuloComercio({ commit }, { startDate, endDate } = {}) {
     try {
-      await Promise.all([
-        dispatch('fetchEstadisticasModulos', { startDate, endDate }),
-        dispatch('fetchEstadisticasUsuarios')
-      ])
+      const raw = await EstadisticasService.getRawDataComercio(this.$axios)
+      const data = EstadisticasService.getEstadisticasComercioFromRaw(raw, { startDate, endDate })
+      commit('setModulo', { name: 'comercio', data })
     } catch (error) {
-      console.error('Error al cargar todas las estadísticas:', error)
-      throw error
+      commit('setError', error.message)
+    } finally {
+      commit('setLoading', false)
+    }
+  },
+
+  async fetchModuloObras({ commit }, { startDate, endDate } = {}) {
+    try {
+      const raw = await EstadisticasService.getRawDataObras(this.$axios)
+      const data = EstadisticasService.getEstadisticasObrasFromRaw(raw, { startDate, endDate })
+      commit('setModulo', { name: 'obras', data })
+    } catch (error) {
+      commit('setError', error.message)
+    } finally {
+      commit('setLoading', false)
+    }
+  },
+
+  async fetchModuloTurnos({ commit }, { startDate, endDate } = {}) {
+    try {
+      const raw = await EstadisticasService.getRawDataTurnos(this.$axios)
+      const data = EstadisticasService.getEstadisticasTurnosFromRaw(raw, { startDate, endDate })
+      commit('setModulo', { name: 'turnos', data })
+    } catch (error) {
+      commit('setError', error.message)
+    } finally {
+      commit('setLoading', false)
+    }
+  },
+
+  async fetchModuloRecaudaciones({ commit }, { startDate, endDate } = {}) {
+    try {
+      const raw = await EstadisticasService.getRawDataRecaudaciones(this.$axios)
+      const data = EstadisticasService.getEstadisticasRecaudacionesFromRaw(raw, { startDate, endDate })
+      commit('setModulo', { name: 'recaudaciones', data })
+    } catch (error) {
+      commit('setError', error.message)
+    } finally {
+      commit('setLoading', false)
+    }
+  },
+
+  async fetchModuloCombustible({ commit }, { startDate, endDate } = {}) {
+    try {
+      const raw = await EstadisticasService.getRawDataCombustible(this.$axios)
+      let result
+      if (startDate && endDate) {
+        result = await EstadisticasService.getEstadisticasCombustibleFiltered(raw, { startDate, endDate })
+      } else {
+        result = await EstadisticasService.getEstadisticasCombustibleFromRaw(raw)
+      }
+      commit('setModulo', { name: 'combustible', data: result.combustible })
+    } catch (error) {
+      commit('setError', error.message)
+    } finally {
+      commit('setLoading', false)
+    }
+  },
+
+  async fetchModuloAbiertoAnual({ commit }, { startDate, endDate } = {}) {
+    try {
+      const raw = await EstadisticasService.getRawDataAbiertoAnual(this.$axios)
+      const data = EstadisticasService.getEstadisticasAbiertoAnualFromRaw(raw, { startDate, endDate })
+      commit('setModulo', { name: 'abiertoAnual', data })
+    } catch (error) {
+      commit('setError', error.message)
+    } finally {
+      commit('setLoading', false)
+    }
+  },
+
+  async fetchModuloIndices({ commit }) {
+    try {
+      const raw = await EstadisticasService.getRawDataIndices(this.$axios)
+      const data = EstadisticasService.getEstadisticasIndicesFromRaw(raw)
+      commit('setModulo', { name: 'indices', data })
+    } catch (error) {
+      commit('setError', error.message)
+    } finally {
+      commit('setLoading', false)
     }
   },
 
@@ -135,6 +231,9 @@ export const actions = {
 export const mutations = {
   setEstadisticasModulos(state, data) {
     state.estadisticasModulos = data
+  },
+  setModulo(state, { name, data }) {
+    state.estadisticasModulos = { ...(state.estadisticasModulos || {}), [name]: data }
   },
   setEstadisticasUsuarios(state, data) {
     state.estadisticasUsuarios = data

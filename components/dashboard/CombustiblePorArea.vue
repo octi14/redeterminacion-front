@@ -5,6 +5,7 @@
         <i class="bi bi-building-fill mr-2"></i>
         Emisión de vales de combustible por Área
       </h4>
+      <p class="section-subtitle text-muted mb-0">Sobre vales emitidos desde el 1/1/2026</p>
     </div>
 
     <!-- Resumen General -->
@@ -188,6 +189,11 @@ export default {
 .header-section {
   text-align: center;
   margin-bottom: 2rem;
+}
+
+.section-subtitle {
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
 }
 
 .ranking-list {

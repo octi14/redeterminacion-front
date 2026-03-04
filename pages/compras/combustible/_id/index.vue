@@ -200,50 +200,45 @@
               </div>
             </div>
 
-            <!-- Vista Cuadrícula -->
-            <div v-if="vistaVales === 'grid'" class="row mx-4">
-              <div v-for="(vale, index) in paginatedVales" :key="index" class="col-md-6 mb-3">
-                <b-card no-body class="border-card main-background shadow-card">
-                  <div class="m-2">
+            <!-- Vista Cuadrícula: menos margen para que el grid use más ancho del contenedor -->
+            <div v-if="vistaVales === 'grid'" class="row vale-grid-row">
+              <div v-for="(vale, index) in paginatedVales" :key="index" class="col-12 col-md-4 mb-3">
+                <b-card no-body class="border-card main-background shadow-card vale-card-compact">
+                  <div class="vale-card-body">
                     <div class="row no-gutters align-items-center">
-                      <div class="col mt-2 ml-2">
-                        <div class="row d-flex justify-content-between align-items-center">
-                          <div class="d-flex align-items-center">
-
-                            <input v-if="!vale.consumido && !vale.anulado" type="checkbox" class="mb-2 ml-2" :value="vale.id" v-model="valesSeleccionados" />
-                            <b-icon-x-square v-else disabled="disabled" class="mb-2 ml-2"></b-icon-x-square>
-
-                            <h4 class="mb-2 ml-2 font-weight-700 text-gray">
-                              VALE N° {{ vale.nro_vale }}
-                            </h4>
+                      <div class="col no-gutters">
+                        <div class="row d-flex justify-content-between align-items-center vale-card-header">
+                          <div class="d-flex row align-items-center">
+                            <input v-if="!vale.consumido && !vale.anulado" type="checkbox" class="vale-checkbox-input mr-2" :value="vale.id" v-model="valesSeleccionados" />
+                            <b-icon-x-square v-else disabled="disabled" class="mr-2 vale-icon-disabled"></b-icon-x-square>
+                            <h5 class="mb-0 ml-1 font-weight-700 text-gray vale-card-title">VALE N° {{ vale.nro_vale }}</h5>
                           </div>
-                          <!-- Botones -->
-                          <div v-if="adminCompras && !vale.anulado" class="d-flex mr-2">
-                            <button v-if="!vale.consumido" class="btn btn-success btn-sm mx-1" title="Marcar como utilizado" @click="confirmarMarcarUtilizado(vale, (currentPage - 1) * itemsPerPage + index)">
-                              <b-icon-check />
+                          <div v-if="adminCompras && !vale.anulado" class="d-flex vale-card-actions">
+                            <button v-if="!vale.consumido" class="btn btn-success vale-card-btn" title="Marcar como utilizado" @click="confirmarMarcarUtilizado(vale, (currentPage - 1) * itemsPerPage + index)">
+                              <b-icon-check scale="0.85" />
                             </button>
-                            <button v-if="!vale.consumido" class="btn btn-primary btn-sm mx-1" title="Reimprimir" @click="confirmarReimpresion(vale, index)">
-                              <b-icon-printer-fill />
+                            <button v-if="!vale.consumido" class="btn btn-primary vale-card-btn" title="Reimprimir" @click="confirmarReimpresion(vale, index)">
+                              <b-icon-printer-fill scale="0.85" />
                             </button>
-                            <button v-if="!vale.consumido" class="btn btn-danger btn-sm mx-1" title="Eliminar" @click="confirmarEliminacion(vale.id)">
-                              <b-icon-trash-fill />
+                            <button v-if="!vale.consumido" class="btn btn-danger vale-card-btn" title="Eliminar" @click="confirmarEliminacion(vale.id)">
+                              <b-icon-trash-fill scale="0.85" />
                             </button>
                           </div>
                         </div>
-                        <p class="card-text ml-3 text-dark">Tipo de combustible: {{ vale.tipoCombustible }}</p>
-                        <p class="card-text ml-3 text-dark">Importe: {{ format(vale.monto) }}</p>
-                        <p class="card-text ml-3 text-dark">Patente: {{ vale.dominio ? vale.dominio.toUpperCase() : 'Sin patente' }}</p>
-                        <p class="card-text ml-3 text-dark">Fecha de emisión: {{ new Date(vale.fechaEmision).toLocaleDateString('es-AR') }}</p>
-                        <p class="card-text ml-3 text-dark">
-                          Estado:
-                          <span :class="vale.consumido ? 'text-danger' : 'text-success'">
-                            <b v-if="!vale.anulado">{{ vale.consumido ? 'No disponible' : 'Disponible' }}</b>
-                            <b class="text-gray" v-else>Anulado</b>
-                          </span>
-                        </p>
+                        <div class="vale-card-details">
+                          <p class="vale-card-line text-dark mb-0">Tipo de combustible: {{ vale.tipoCombustible }}</p>
+                          <p class="vale-card-line text-dark mb-0">Importe: {{ format(vale.monto) }}</p>
+                          <p class="vale-card-line text-dark mb-0">Patente: {{ vale.dominio ? vale.dominio.toUpperCase() : 'Sin patente' }}</p>
+                          <p class="vale-card-line text-dark mb-0">Fecha de emisión: {{ new Date(vale.fechaEmision).toLocaleDateString('es-AR') }}</p>
+                          <p class="vale-card-line text-dark mb-0">
+                            Estado:
+                            <span :class="vale.consumido ? 'text-danger' : 'text-success'">
+                              <b v-if="!vale.anulado">{{ vale.consumido ? 'No disponible' : 'Disponible' }}</b>
+                              <b class="text-gray" v-else>Anulado</b>
+                            </span>
+                          </p>
+                        </div>
                       </div>
-
-
                     </div>
                   </div>
                 </b-card>
@@ -357,8 +352,8 @@
     </div>
 
     <!-- Modals -->
-    <b-modal v-model="showObservaciones" size="lg" header-bg-variant="primary" title="Observaciones" title-class="text-light" hide-footer centered>
-      <p v-html="observaciones"></p>
+    <b-modal v-model="showObservaciones" size="lg" header-bg-variant="primary" title="Observaciones" title-class="text-light" hide-footer centered body-class="observaciones-modal-body">
+      <div class="observaciones-modal-content" v-html="observaciones"></div>
     </b-modal>
 
     <!-- Modal de Confirmación para utilización -->
@@ -604,6 +599,13 @@ export default {
       if (this.ocultarAnulados) {
         valesFiltrados = valesFiltrados.filter(vale => !vale.anulado);
       }
+
+      // Ordenar por fecha de creación (más antiguos primero). Usar createdAt o fechaEmision como fallback.
+      valesFiltrados = [...valesFiltrados].sort((a, b) => {
+        const dateA = new Date(a.createdAt || a.fechaEmision || 0).getTime();
+        const dateB = new Date(b.createdAt || b.fechaEmision || 0).getTime();
+        return dateA - dateB;
+      });
 
       const start = (this.currentPage - 1) * this.itemsPerPage;
       return valesFiltrados.slice(start, start + this.itemsPerPage);
@@ -1274,6 +1276,59 @@ export default {
 
 .border-card{
   border: #000 1px solid;
+}
+
+/* Popup de observaciones: texto más compacto */
+.observaciones-modal-content {
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+/* Cards de vales — tamaño intermedio, más uso del espacio (sobre todo a la izquierda) */
+.vale-card-compact {
+  font-size: 1rem;
+}
+.vale-card-body {
+  padding: 0.55rem 0.77rem 0.75rem 0;
+}
+.vale-card-header {
+  margin-bottom: 0.5rem;
+}
+.vale-card-title {
+  font-size: 1.15rem;
+  line-height: 1.3;
+}
+.vale-checkbox-input,
+.vale-icon-disabled {
+  flex-shrink: 0;
+}
+.vale-card-actions {
+  gap: 0.2rem;
+}
+.vale-card-btn {
+  padding: 0.1rem 0.15rem;
+  min-width: 1.6rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.vale-card-details {
+  padding-left: 0;
+}
+.vale-card-line {
+  font-size: 0.9rem;
+  line-height: 1.45;
+  margin-bottom: 0.2rem;
+}
+.vale-card-line:last-child {
+  margin-bottom: 0;
+}
+
+/* Grid de vales: usar más ancho del contenedor (menos margen lateral) */
+.vale-grid-row {
+  margin-left: 0.25rem;
+  margin-right: 0.25rem;
 }
 
 .big-container{

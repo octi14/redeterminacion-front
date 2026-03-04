@@ -267,6 +267,20 @@ const normalizarFecha = (fecha) => {
   return fechaNormalizada
 }
 
+// Helper para filtrar items por rango de fechas (usado por getEstadisticas*FromRaw por módulo)
+const filtrarPorFecha = (items, startDate, endDate, dateField = 'createdAt') => {
+  if (!Array.isArray(items)) return []
+  if (!startDate || !endDate) return items
+  const startDateNormalized = normalizarFecha(startDate)
+  const endDateNormalized = normalizarFecha(endDate)
+  if (!startDateNormalized || !endDateNormalized) return items
+  return items.filter(item => {
+    if (!item || !item[dateField]) return false
+    const itemDate = normalizarFecha(item[dateField])
+    return itemDate && itemDate >= startDateNormalized && itemDate <= endDateNormalized
+  })
+}
+
 // Función helper para contar documentos (corregida)
 const contarDocumentos = (item, tipoModulo) => {
   let totalDocumentos = 0
@@ -1130,11 +1144,47 @@ const calcularEstadisticasDetalladas = (items, tipo, valesCombustible = [], cert
   }
 }
 
+// Helper para obtener habilitaciones extendidas (usado por getRawDataComercio y getRawDataTurnos)
+async function getHabilitacionesExtendidas(axios) {
+  const habilitaciones = await HabilitacionService.getAll(axios).catch(() => [])
+  try {
+    const res = await axios.$get('/habilitaciones')
+    const data = res.data || res || []
+    return (Array.isArray(data) ? data : []).map(item => {
+      const { finalizadaAt, finalizadaAtISO } = construirFechasFinalizacion(item)
+      return {
+        id: item._id,
+        tipoSolicitud: item.solicitante?.tipoSolicitud,
+        dni: item.solicitante?.dni,
+        cuit: item.solicitante?.cuit,
+        nroLegajo: item.nroLegajo,
+        mail: item.solicitante?.mail,
+        rubro: item.inmueble?.rubro,
+        localidad: item.inmueble?.localidad,
+        telefono: item.solicitante?.telefono,
+        status: item.status,
+        observaciones: item.observaciones,
+        nroTramite: item.nroSolicitud,
+        nroExpediente: item.nroExpediente,
+        createdAt: new Date(item.createdAt).toLocaleDateString('es-AR'),
+        createdAtISO: item.createdAt,
+        updatedAt: item.updatedAt ? new Date(item.updatedAt).toLocaleDateString('es-AR') : null,
+        updatedAtISO: item.updatedAt || null,
+        finalizadaAt,
+        finalizadaAtISO,
+        localidadSolicitante: item.solicitante?.localidad || null
+      }
+    })
+  } catch (e) {
+    return Array.isArray(habilitaciones) ? habilitaciones : []
+  }
+}
+
 module.exports = {
 
 
   // Obtener estadísticas por módulo usando endpoints existentes
-  // Obtener datos raw sin filtros (una sola vez)
+  // Carga raw monolítica (legacy). Para carga progresiva usar getRawDataComercio, getRawDataObras, etc.
   getRawData: async (axios) => {
     try {
       const [
@@ -1281,6 +1331,143 @@ module.exports = {
       console.error('Error al obtener datos raw de combustible:', error)
       throw error
     }
+  },
+
+  // --- Get raw por módulo (carga progresiva) ---
+  getRawDataComercio: async (axios) => {
+    try {
+      const habilitaciones = await getHabilitacionesExtendidas(axios)
+      return { habilitaciones }
+    } catch (error) {
+      console.error('Error getRawDataComercio:', error)
+      throw error
+    }
+  },
+
+  getRawDataObras: async (axios) => {
+    try {
+      const obras = await ObraService.getLatest(axios).catch(() => [])
+      let obrasCompletas = obras
+      try {
+        const obrasResponse = await axios.$get('/obras')
+        const data = obrasResponse.data || obrasResponse || []
+        obrasCompletas = (Array.isArray(data) ? data : []).map(item => ({
+          id: item._id,
+          expediente: item.expediente,
+          objeto: item.objeto,
+          presup_oficial: item.presup_oficial,
+          adjudicado: item.adjudicado,
+          proveedor: item.proveedor,
+          cotizacion: item.cotizacion,
+          items: item.items,
+          certificados: item.certificados,
+          garantia_contrato: item.garantia_contrato,
+          adjudicacion: item.adjudicacion,
+          contrato: item.contrato,
+          fecha_contrato: item.fecha_contrato,
+          acta_inicio: item.acta_inicio,
+          ordenanza: item.ordenanza,
+          decreto: item.decreto,
+          plazo_obra: item.plazo_obra,
+          anticipo_finan: item.anticipo_finan,
+          ponderacion: item.ponderacion,
+          createdAt: new Date(item.createdAt)
+        }))
+      } catch (e) {
+        obrasCompletas = obras
+      }
+      return { obras: obrasCompletas }
+    } catch (error) {
+      console.error('Error getRawDataObras:', error)
+      throw error
+    }
+  },
+
+  getRawDataTurnos: async (axios) => {
+    try {
+      const [turnos, habilitacionesExtendidas] = await Promise.all([
+        TurnoService.getAll(axios).catch(() => []),
+        getHabilitacionesExtendidas(axios).catch(() => [])
+      ])
+      const tramitesMap = new Map()
+      ;(habilitacionesExtendidas || []).forEach(tramite => {
+        if (tramite.nroTramite) tramitesMap.set(tramite.nroTramite, tramite)
+      })
+      const turnosEnriquecidos = (turnos || []).map(turno => {
+        const tramiteAsociado = tramitesMap.get(turno.nroTramite)
+        return { ...turno, tipoSolicitud: tramiteAsociado?.tipoSolicitud || 'No especificado' }
+      })
+      return { turnos: turnosEnriquecidos }
+    } catch (error) {
+      console.error('Error getRawDataTurnos:', error)
+      throw error
+    }
+  },
+
+  getRawDataRecaudaciones: async (axios) => {
+    try {
+      const pagosDobles = await PagoDobleService.getAll(axios).catch(() => [])
+      return { pagosDobles: pagosDobles || [] }
+    } catch (error) {
+      console.error('Error getRawDataRecaudaciones:', error)
+      throw error
+    }
+  },
+
+  getRawDataAbiertoAnual: async (axios) => {
+    try {
+      const abiertoAnual = await AbiertoAnualService.getAll(axios).catch(() => [])
+      return { abiertoAnual: abiertoAnual || [] }
+    } catch (error) {
+      console.error('Error getRawDataAbiertoAnual:', error)
+      throw error
+    }
+  },
+
+  getRawDataIndices: async (axios) => {
+    try {
+      const indices = await IndiceService.getLatest(axios).catch(() => [])
+      return { indices: indices || [] }
+    } catch (error) {
+      console.error('Error getRawDataIndices:', error)
+      throw error
+    }
+  },
+
+  // --- Estadísticas por módulo desde raw (con soporte de fechas) ---
+  getEstadisticasComercioFromRaw: (raw, { startDate, endDate } = {}) => {
+    const habilitaciones = raw.habilitaciones || []
+    const filtered = startDate && endDate ? filtrarPorFecha(habilitaciones, startDate, endDate) : habilitaciones
+    const datosSinFiltrar = startDate && endDate ? habilitaciones : null
+    return calcularEstadisticasDetalladas(filtered, 'habilitaciones', [], [], datosSinFiltrar)
+  },
+
+  getEstadisticasObrasFromRaw: (raw, { startDate, endDate } = {}) => {
+    const obras = raw.obras || []
+    const filtered = startDate && endDate ? filtrarPorFecha(obras, startDate, endDate) : obras
+    return calcularEstadisticasDetalladas(filtered, 'obras', [], [])
+  },
+
+  getEstadisticasTurnosFromRaw: (raw, { startDate, endDate } = {}) => {
+    const turnos = raw.turnos || []
+    const filtered = startDate && endDate ? filtrarPorFecha(turnos, startDate, endDate) : turnos
+    return calcularEstadisticasDetalladas(filtered, 'turnos')
+  },
+
+  getEstadisticasRecaudacionesFromRaw: (raw, { startDate, endDate } = {}) => {
+    const pagosDobles = raw.pagosDobles || []
+    const filtered = startDate && endDate ? filtrarPorFecha(pagosDobles, startDate, endDate) : pagosDobles
+    return calcularEstadisticasDetalladas(filtered, 'pagosDobles')
+  },
+
+  getEstadisticasAbiertoAnualFromRaw: (raw, { startDate, endDate } = {}) => {
+    const abiertoAnual = raw.abiertoAnual || []
+    return calcularEstadisticasDetalladas(abiertoAnual, 'abiertoAnual')
+  },
+
+  getEstadisticasIndicesFromRaw: (raw) => {
+    const indices = raw.indices || []
+    return calcularEstadisticasDetalladas(indices, 'indices')
   },
 
   // Obtener estadísticas de usuarios desde endpoint no declarado

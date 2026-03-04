@@ -298,7 +298,9 @@
           <div class="row">
             <div class="col-md-3">
               <div class="d-flex justify-content-between mb-1">
-                <span class="text-dark">Total órdenes:</span>
+                <span class="text-dark" :title="hideComprasInfo ? 'Solo incluye órdenes de compra creadas a partir del 1 de enero de 2026' : ''">
+                  Total órdenes{{ hideComprasInfo ? ' (desde 01/2026)' : '' }}:
+                </span>
                 <strong class="text-danger">${{ formatearNumeroArgentino(modulos.combustible.montoTotalOrdenes || 0) }}</strong>
               </div>
             </div>

@@ -39,8 +39,8 @@
         </div>
       </div>
 
-    <!-- Loading State -->
-    <div v-if="loading && !estadisticasGenerales" class="text-center py-5">
+    <!-- Loading State: solo cuando está cargando y aún no llegó ningún módulo -->
+    <div v-if="loading && !tieneAlgunModulo" class="text-center py-5">
       <b-spinner variant="primary" label="Cargando..."></b-spinner>
       <p class="mt-3 text-muted">Cargando estadísticas del sistema...</p>
     </div>
@@ -115,8 +115,8 @@
       </b-card>
     </div>
 
-    <!-- Contenido Principal con Pestañas -->
-    <div v-if="!loading || estadisticasModulos">
+    <!-- Contenido Principal con Pestañas: se muestra en cuanto hay permisos (carga progresiva por pestaña) -->
+    <div>
       <DashboardTabs
         :modulos="estadisticasModulos"
         :estadisticas-usuarios="estadisticasUsuarios"
@@ -153,6 +153,10 @@ export default {
     estadisticasModulos() {
       return this.$store.state.estadisticas.estadisticasModulos
     },
+    tieneAlgunModulo() {
+      const modulos = this.$store.state.estadisticas.estadisticasModulos
+      return modulos && Object.keys(modulos).length > 0
+    },
     estadisticasUsuarios() {
       return this.$store.state.estadisticas.estadisticasUsuarios
     },
@@ -166,25 +170,22 @@ export default {
       return this.$store.state.user.admin === 'master'
     }
   },
-  async mounted() {
-    // Cargar datos solo si tiene permisos de admin master
+  mounted() {
     if (this.adminMaster) {
-      await this.cargarDatos()
+      this.cargarDatos()
     }
   },
   methods: {
-    async cargarDatos() {
-      try {
-        await this.$store.dispatch('estadisticas/fetchAllEstadisticas')
-        await this.$store.dispatch('vehiculos/getAll')
-        await this.$store.dispatch('habilitaciones/getAll')
-      } catch (error) {
+    cargarDatos(payload = {}) {
+      this.$store.dispatch('estadisticas/fetchAllEstadisticas', payload).catch((err) => {
         this.error = 'Error al cargar las estadísticas. Verifique la conexión con el servidor.'
-        console.error('Error cargando estadísticas:', error)
-      }
+        console.error('Error cargando estadísticas:', err)
+      })
+      this.$store.dispatch('vehiculos/getAll').catch(() => {})
+      this.$store.dispatch('habilitaciones/getAll').catch(() => {})
     },
-    async actualizarDatos() {
-      await this.cargarDatos()
+    actualizarDatos() {
+      this.cargarDatos()
     },
     onDateRangeChanged(dateRange) {
       this.selectedDateRange = dateRange
@@ -238,32 +239,23 @@ export default {
       })
 
       // Recargar datos sin filtro
-      await this.cargarDatos()
+      this.cargarDatos()
     },
 
-    async cargarDatosConFiltro(dateRange) {
-      try {
-        // Mostrar loading
-        this.$store.commit('estadisticas/setLoading', true)
-
-        // Aquí puedes implementar la lógica para filtrar por fechas
-        // Por ejemplo, pasar los parámetros de fecha al store
-        await this.$store.dispatch('estadisticas/fetchAllEstadisticas', {
-          startDate: dateRange.startDate,
-          endDate: dateRange.endDate
-        })
-
-      } catch (error) {
+    cargarDatosConFiltro(dateRange) {
+      this.$store.dispatch('estadisticas/fetchAllEstadisticas', {
+        startDate: dateRange.startDate,
+        endDate: dateRange.endDate
+      }).catch((error) => {
         this.error = 'Error al aplicar el filtro de fechas'
         console.error('Error aplicando filtro:', error)
-
         this.$bvToast.toast('Error al aplicar el filtro', {
           title: 'Error',
           variant: 'danger',
           solid: true,
           toaster: 'b-toaster-top-right'
         })
-      }
+      })
     },
   },
   head() {

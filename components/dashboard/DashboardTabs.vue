@@ -20,19 +20,22 @@
           </template>
 
           <div class="tab-content-comercio">
-            <!-- Análisis Detallado de Comercio -->
-            <div class="row mb-4">
-              <div class="col-12">
-                <EstadisticasDetalladas :modulos="{ comercio: modulos?.comercio }" />
-              </div>
+            <div v-if="!modulos || modulos.comercio === undefined" class="tab-loading py-5 text-center">
+              <b-spinner variant="primary" label="Cargando..."></b-spinner>
+              <p class="mt-2 text-muted mb-0">Cargando estadísticas de Comercio...</p>
             </div>
-
-            <!-- Gráficos de Comercio -->
-            <div class="row mb-4">
-              <div class="col-12">
-                <GraficosComercio :estadisticas-comercio="modulos?.comercio || {}" />
+            <template v-else>
+              <div class="row mb-4">
+                <div class="col-12">
+                  <EstadisticasDetalladas :modulos="{ comercio: modulos.comercio }" />
+                </div>
               </div>
-            </div>
+              <div class="row mb-4">
+                <div class="col-12">
+                  <GraficosComercio :estadisticas-comercio="modulos.comercio || {}" />
+                </div>
+              </div>
+            </template>
           </div>
         </b-tab>
 
@@ -47,19 +50,22 @@
           </template>
 
           <div class="tab-content-abierto-anual">
-            <!-- Análisis Detallado de Abierto Anual -->
-            <div class="row mb-4">
-              <div class="col-12">
-                <EstadisticasDetalladas :modulos="{ abiertoAnual: modulos?.abiertoAnual }" />
-              </div>
+            <div v-if="!modulos || modulos.abiertoAnual === undefined" class="tab-loading py-5 text-center">
+              <b-spinner variant="info" label="Cargando..."></b-spinner>
+              <p class="mt-2 text-muted mb-0">Cargando estadísticas de Abierto Anual...</p>
             </div>
-
-            <!-- Gráficos de Abierto Anual -->
-            <div class="row mb-4">
-              <div class="col-12">
-                <GraficosAbiertoAnual :estadisticas-abierto-anual="modulos?.abiertoAnual || {}" />
+            <template v-else>
+              <div class="row mb-4">
+                <div class="col-12">
+                  <EstadisticasDetalladas :modulos="{ abiertoAnual: modulos.abiertoAnual }" />
+                </div>
               </div>
-            </div>
+              <div class="row mb-4">
+                <div class="col-12">
+                  <GraficosAbiertoAnual :estadisticas-abierto-anual="modulos.abiertoAnual || {}" />
+                </div>
+              </div>
+            </template>
           </div>
         </b-tab>
 
@@ -74,19 +80,22 @@
           </template>
 
           <div class="tab-content-obras">
-            <!-- Análisis Detallado de Obras -->
-            <div class="row mb-4">
-              <div class="col-12">
-                <EstadisticasDetalladas :modulos="{ obras: modulos?.obras }" />
-              </div>
+            <div v-if="!modulos || modulos.obras === undefined" class="tab-loading py-5 text-center">
+              <b-spinner variant="success" label="Cargando..."></b-spinner>
+              <p class="mt-2 text-muted mb-0">Cargando estadísticas de Obras...</p>
             </div>
-
-            <!-- Gráfico de Índices -->
-            <div class="row mb-4">
-              <div class="col-12">
-                <GraficoIndices :evolucion-indices="modulos?.indices?.evolucionTemporal || {}" />
+            <template v-else>
+              <div class="row mb-4">
+                <div class="col-12">
+                  <EstadisticasDetalladas :modulos="{ obras: modulos.obras }" />
+                </div>
               </div>
-            </div>
+              <div class="row mb-4">
+                <div class="col-12">
+                  <GraficoIndices :evolucion-indices="modulos?.indices?.evolucionTemporal || {}" />
+                </div>
+              </div>
+            </template>
           </div>
         </b-tab>
 
@@ -101,12 +110,17 @@
           </template>
 
           <div class="tab-content-recaudaciones">
-            <!-- Análisis Detallado de Recaudaciones -->
-            <div class="row mb-4">
-              <div class="col-12">
-                <EstadisticasDetalladas :modulos="{ recaudaciones: modulos?.recaudaciones }" />
-              </div>
+            <div v-if="!modulos || modulos.recaudaciones === undefined" class="tab-loading py-5 text-center">
+              <b-spinner variant="warning" label="Cargando..."></b-spinner>
+              <p class="mt-2 text-muted mb-0">Cargando estadísticas de Recaudaciones...</p>
             </div>
+            <template v-else>
+              <div class="row mb-4">
+                <div class="col-12">
+                  <EstadisticasDetalladas :modulos="{ recaudaciones: modulos.recaudaciones }" />
+                </div>
+              </div>
+            </template>
           </div>
         </b-tab>
 
@@ -121,27 +135,27 @@
           </template>
 
           <div class="tab-content-combustible">
-            <!-- Análisis Detallado de Combustible -->
-            <div class="row mb-4">
-              <div class="col-12">
-                <EstadisticasDetalladas :modulos="{ combustible: modulos?.combustible }" />
-              </div>
+            <div v-if="!modulos || modulos.combustible === undefined" class="tab-loading py-5 text-center">
+              <b-spinner variant="danger" label="Cargando..."></b-spinner>
+              <p class="mt-2 text-muted mb-0">Cargando estadísticas de Combustible...</p>
             </div>
-
-            <!-- Consumos por Área -->
-            <div class="row mb-4">
-              <div class="col-12">
-                <CombustiblePorArea :datos-combustible="modulos?.combustible || {}" />
+            <template v-else>
+              <div class="row mb-4">
+                <div class="col-12">
+                  <EstadisticasDetalladas :modulos="{ combustible: modulos.combustible }" />
+                </div>
               </div>
-            </div>
-
-            <!-- Consumos por Patente -->
-            <div class="row mb-4">
-              <div class="col-12">
-                <EstadisticasPorPatente :datos-combustible="modulos?.combustible || {}" />
+              <div class="row mb-4">
+                <div class="col-12">
+                  <CombustiblePorArea :datos-combustible="modulos.combustible || {}" />
+                </div>
               </div>
-            </div>
-
+              <div class="row mb-4">
+                <div class="col-12">
+                  <EstadisticasPorPatente :datos-combustible="modulos.combustible || {}" />
+                </div>
+              </div>
+            </template>
           </div>
         </b-tab>
 
@@ -156,12 +170,17 @@
           </template>
 
           <div class="tab-content-turnos">
-            <!-- Análisis Detallado de Turnos -->
-            <div class="row mb-4">
-              <div class="col-12">
-                <EstadisticasDetalladas :modulos="{ turnos: modulos?.turnos }" />
-              </div>
+            <div v-if="!modulos || modulos.turnos === undefined" class="tab-loading py-5 text-center">
+              <b-spinner variant="info" label="Cargando..."></b-spinner>
+              <p class="mt-2 text-muted mb-0">Cargando estadísticas de Turnos...</p>
             </div>
+            <template v-else>
+              <div class="row mb-4">
+                <div class="col-12">
+                  <EstadisticasDetalladas :modulos="{ turnos: modulos.turnos }" />
+                </div>
+              </div>
+            </template>
           </div>
         </b-tab>
 

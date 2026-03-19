@@ -228,28 +228,6 @@ export default {
   margin-bottom: 2rem;
 }
 
-.section-title {
-  color: #495057;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-
-.section-subtitle {
-  color: #6c757d;
-  font-size: 1.1rem;
-}
-
-.search-input {
-  border-radius: 25px;
-  border: 2px solid #e9ecef;
-  transition: all 0.3s ease;
-}
-
-.search-input:focus {
-  border-color: #28a745;
-  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
-}
-
 .area-select {
   border-radius: 25px;
   border: 2px solid #e9ecef;
@@ -277,27 +255,6 @@ export default {
   border: none;
   background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
   color: #0c5460;
-}
-
-.area-group {
-  background: white;
-  border-radius: 15px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-.area-group:hover {
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
-}
-
-.area-header {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  padding: 1rem 1.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #dee2e6;
 }
 
 .area-info {
@@ -418,11 +375,6 @@ export default {
 }
 
 @media (max-width: 768px) {
-  .area-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
   .area-actions {
     margin-top: 1rem;
     width: 100%;

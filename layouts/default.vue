@@ -7,6 +7,7 @@
      <!-- <Nuxt keep-alive /> -->
       <Nuxt />
       <ModalSessionTimeout :mostrarModal="sessionExpired" />
+      <ModalMoratoria2026 :mostrarModal="mostrarMoratoria" @close="mostrarMoratoria = false" />
     </div>
     <Foot />
   </div>
@@ -19,6 +20,7 @@ export default {
     return {
       sessionExpired: false,
       manualLogout: false, // Bandera para detectar logout manual
+      mostrarMoratoria: false,
     };
   },
   computed: {
@@ -52,6 +54,16 @@ export default {
     // También chequeamos si el token ya está vencido al cargar
     if (this.token) {
       this.sessionExpired = this.checkTokenExpired(this.token);
+    }
+
+    // Popup de Moratoria 2026 al inicio de la página (`/`) una sola vez
+    if (process.client && this.$route && this.$route.path === '/') {
+      try {
+        const seen = localStorage.getItem('moratoria2026_seen');
+        if (!seen) this.mostrarMoratoria = true;
+      } catch (e) {
+        this.mostrarMoratoria = true; // Si falla localStorage, igual mostramos el popup.
+      }
     }
 
     // Escuchar el evento de logout manual

@@ -8,7 +8,7 @@
     <!-- Gráfico de Barras Consolidado -->
     <b-row>
       <b-col md="12" class="mb-4">
-        <b-card class="h-100">
+        <b-card class="h-100 dashboard-card">
           <template #header>
             <h6 class="mb-0">
               <i class="bi bi-bar-chart-fill mr-2"></i>
@@ -31,7 +31,7 @@
     <!-- Análisis de Rechazos por Motivo y Período -->
     <b-row>
       <b-col md="12" class="mb-4">
-        <b-card class="h-100">
+        <b-card class="h-100 dashboard-card">
           <template #header>
             <h6 class="mb-0">
               <i class="bi bi-exclamation-triangle-fill mr-2"></i>
@@ -84,7 +84,7 @@
     <!-- Cantidad de Llegaron Tarde por Período -->
     <b-row>
       <b-col md="12" class="mb-4">
-        <b-card class="h-100">
+        <b-card class="h-100 dashboard-card">
           <template #header>
             <h6 class="mb-0">
               <i class="bi bi-clock-history mr-2"></i>
@@ -344,44 +344,6 @@ export default {
 
 .badge {
   font-size: 0.75rem;
-}
-
-.section-title {
-  color: #495057;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid #e9ecef;
-}
-
-.section-title i {
-  color: #17a2b8;
-  margin-right: 0.5rem;
-}
-
-.card {
-  border-radius: 15px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease;
-}
-
-.card:hover {
-  transform: translateY(-2px);
-}
-
-.card-header {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border-bottom: 1px solid #dee2e6;
-  border-radius: 15px 15px 0 0 !important;
-}
-
-.card-header h6 {
-  color: #495057;
-  font-weight: 600;
-}
-
-.card-header i {
-  color: #17a2b8;
 }
 
 .rechazos-summary {

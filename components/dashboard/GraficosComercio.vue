@@ -8,7 +8,7 @@
     <!-- Gráfico de Barras por Mes -->
     <b-row>
       <b-col md="12" class="mb-4">
-        <b-card class="h-100">
+        <b-card class="h-100 dashboard-card">
           <template #header>
             <h6 class="mb-0">
               <i class="bi bi-bar-chart-fill mr-2"></i>
@@ -31,7 +31,7 @@
 
       <!-- Gráfico por Rubro -->
       <b-col md="6" class="mb-4">
-        <b-card class="h-100">
+        <b-card class="h-100 dashboard-card">
           <template #header>
             <h6 class="mb-0">
               <i class="bi bi-tags-fill mr-2"></i>
@@ -51,7 +51,7 @@
 
       <!-- Gráfico por Tipo de Solicitud -->
       <b-col md="6" class="mb-4">
-        <b-card class="h-100">
+        <b-card class="h-100 dashboard-card">
           <template #header>
             <h6 class="mb-0">
               <i class="bi bi-list-ul mr-2"></i>
@@ -73,7 +73,7 @@
     <b-row>
       <!-- Gráfico por Localidad del Solicitante -->
       <b-col md="6" class="mb-4">
-        <b-card class="h-100">
+        <b-card class="h-100 dashboard-card">
           <template #header>
             <h6 class="mb-0">
               <i class="bi bi-geo-alt-fill mr-2"></i>
@@ -95,7 +95,7 @@
     <b-row>
       <!-- Gráfico por Región del Solicitante -->
       <b-col md="6" class="mb-4">
-        <b-card class="h-100">
+        <b-card class="h-100 dashboard-card">
           <template #header>
             <h6 class="mb-0">
               <i class="bi bi-map-fill mr-2"></i>
@@ -115,7 +115,7 @@
 
       <!-- Gráfico por Estado -->
       <b-col md="6" class="mb-4">
-        <b-card class="h-100">
+        <b-card class="h-100 dashboard-card">
           <template #header>
             <h6 class="mb-0">
               <i class="bi bi-check-circle-fill mr-2"></i>
@@ -747,43 +747,5 @@ export default {
   position: relative;
   height: 400px;
   width: 100%;
-}
-
-.section-title {
-  color: #495057;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid #e9ecef;
-}
-
-.section-title i {
-  color: #28a745;
-  margin-right: 0.5rem;
-}
-
-.card {
-  border-radius: 15px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease;
-}
-
-.card:hover {
-  transform: translateY(-2px);
-}
-
-.card-header {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border-bottom: 1px solid #dee2e6;
-  border-radius: 15px 15px 0 0 !important;
-}
-
-.card-header h6 {
-  color: #495057;
-  font-weight: 600;
-}
-
-.card-header i {
-  color: #28a745;
 }
 </style>

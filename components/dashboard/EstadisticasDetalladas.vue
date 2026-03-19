@@ -545,19 +545,6 @@ export default {
 </script>
 
 <style scoped>
-.section-title {
-  color: #000000;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid #e9ecef;
-}
-
-.section-title i {
-  color: #28a745;
-  margin-right: 0.5rem;
-}
-
 .badge {
   font-size: 0.75rem;
 }

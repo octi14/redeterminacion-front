@@ -191,11 +191,6 @@ export default {
   margin-bottom: 2rem;
 }
 
-.section-subtitle {
-  font-size: 0.9rem;
-  margin-top: 0.25rem;
-}
-
 .ranking-list {
   max-height: 400px;
   overflow-y: auto;

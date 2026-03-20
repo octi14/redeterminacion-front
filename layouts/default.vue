@@ -38,6 +38,12 @@ export default {
         this.sessionExpired = !this.manualLogout;
       }
     },
+    // Cuando navegamos dentro de la SPA, `mounted()` no vuelve a correr.
+    // Este watcher asegura que el popup se muestre cada vez que entramos a `/`.
+    '$route.path'(newPath) {
+      if (!process.client) return;
+      this.mostrarMoratoria = newPath === '/';
+    },
   },
   mounted() {
     // Si existe usuario en localStorage, lo levanto
@@ -56,14 +62,9 @@ export default {
       this.sessionExpired = this.checkTokenExpired(this.token);
     }
 
-    // Popup de Moratoria 2026 al inicio de la página (`/`) una sola vez
+    // Popup de Moratoria 2026 al inicio de la página (`/`)
     if (process.client && this.$route && this.$route.path === '/') {
-      try {
-        const seen = localStorage.getItem('moratoria2026_seen');
-        if (!seen) this.mostrarMoratoria = true;
-      } catch (e) {
-        this.mostrarMoratoria = true; // Si falla localStorage, igual mostramos el popup.
-      }
+      this.mostrarMoratoria = true;
     }
 
     // Escuchar el evento de logout manual

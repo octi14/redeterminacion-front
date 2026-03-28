@@ -157,13 +157,13 @@ export default {}
 }
 
 .footer-contact .text-big {
-  font-size: 2rem;
+  font-size: 1.8rem;
   text-align: center;
   font-weight: 700;
 }
 
 .footer-contact .text-main {
-  font-size: 3rem;
+  font-size: 1.9rem;
   text-align: center;
   font-weight: 700;
 }
@@ -179,18 +179,18 @@ export default {}
 .footer-contact h6 {
   color: #f8f9fa !important;
   font-weight: 500;
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   font-family: 'Roboto', sans-serif;
-  letter-spacing: 0.2px;
+  letter-spacing: 0.18px;
 }
 
 .footer-contact p {
   margin-bottom: 0.2rem;
   padding-bottom: 0;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 400;
   color: #e9ecef !important;
-  letter-spacing: 0.25px;
+  letter-spacing: 0.3px;
   line-height: 1.2;
   font-family: 'Roboto', sans-serif;
 }

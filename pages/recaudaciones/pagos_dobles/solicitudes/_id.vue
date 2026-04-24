@@ -156,9 +156,22 @@
           <h2 class="icon-orange text-danger text-center"><b>Rechazar solicitud</b></h2>
           <p>La solicitud será rechazada. Se enviará automáticamente un correo electrónico al solicitante con el motivo del rechazo.</p>
           <p>Motivos de rechazo:</p>
-          <b-form-radio-group v-model="motivoRechazo" :options="motivosRechazo" name="motivo-rechazo" />
+          <b-form-radio-group
+            v-model="motivoRechazo"
+            :options="motivosRechazo"
+            name="motivo-rechazo"
+            stacked
+          />
+          <b-form-textarea
+            v-show="motivoRechazo === 'Otro'"
+            v-model="otroMotivoRechazo"
+            class="mt-2"
+            rows="4"
+            max-rows="8"
+            placeholder='Escriba el motivo (obligatorio si elige "Otro")'
+          />
           <div class="text-center mt-3">
-            <b-btn variant="danger" @click="onSendReject()" :disabled="!motivoRechazo">
+            <b-btn variant="danger" @click="onSendReject()" :disabled="!puedeEnviarRechazo">
                 Enviar
             </b-btn>
           </div>
@@ -175,8 +188,23 @@
       <div class="confirmation-popup-body">
         <h2 class="icon-orange text-secondary text-center"><b>Aprobar solicitud</b></h2>
         <p style="margin: 3%"> Se aprobará la solicitud. Se enviará automáticamente un correo electrónico al solicitante informando la aprobación. </p>
+        <b-form-radio-group
+          v-model="aprobComentMode"
+          :options="opcionesAprobComent"
+          name="aprob-coment"
+          class="text-left"
+          stacked
+        />
+        <b-form-textarea
+          v-show="aprobComentMode === 'comentario'"
+          v-model="aprobComentTexto"
+          class="mt-2"
+          rows="4"
+          max-rows="8"
+          placeholder='Comentario para el solicitante (obligatorio si elige "Agregar comentario")'
+        />
         <div class="text-center mt-3">
-          <b-btn variant="primary" @click="onSendApprove()">
+          <b-btn variant="primary" @click="onSendApprove()" :disabled="!puedeEnviarAprob">
               Aceptar
           </b-btn>
         </div>
@@ -278,12 +306,16 @@ export default {
       showDocumentoModal: false,
       DocumentoModalTitle: "",
       motivoRechazo: '',
+      otroMotivoRechazo: '',
+      aprobComentMode: 'ninguno',
+      aprobComentTexto: '',
       showHeicModal: false,
       currentDocumento: null,
       motivosRechazo: [
         'No corresponde a una cuenta urbana',
         'Los documentos no son legibles',
-        'Los comprobantes no indican el pago duplicado de la misma cuenta'
+        'Los comprobantes no indican el pago duplicado de la misma cuenta',
+        'Otro'
       ],
     }
   },
@@ -293,7 +325,28 @@ export default {
     },
     documentos(){
       return this.$store.state.documentos.all
-    }
+    },
+    puedeEnviarRechazo() {
+      if (!this.motivoRechazo) {
+        return false
+      }
+      if (this.motivoRechazo === 'Otro') {
+        return Boolean((this.otroMotivoRechazo || '').trim())
+      }
+      return true
+    },
+    puedeEnviarAprob() {
+      if (this.aprobComentMode === 'comentario') {
+        return Boolean((this.aprobComentTexto || '').trim())
+      }
+      return true
+    },
+    opcionesAprobComent() {
+      return [
+        { text: 'Aprobar sin comentario adicional', value: 'ninguno' },
+        { text: 'Agregar comentario', value: 'comentario' }
+      ]
+    },
   },
   async fetch() {
     const pagoId = this.$route.params.id
@@ -338,7 +391,15 @@ export default {
       return new Promise(resolve => setTimeout(resolve, ms));
     },
     async onShowAprobarSolicitud(){
+      this.aprobComentMode = 'ninguno'
+      this.aprobComentTexto = ''
       this.showPrevApprove = true
+    },
+    textoRechazoParaGuardarYCorreo() {
+      if (this.motivoRechazo === 'Otro') {
+        return (this.otroMotivoRechazo || '').trim()
+      }
+      return this.motivoRechazo
     },
     onShowObservaciones(){
       if(this.pago.observaciones){
@@ -350,9 +411,13 @@ export default {
     },
     async onSendApprove(){
       const observaciones = this.pago.observaciones || " "
+      const comentAprob = this.aprobComentMode === 'comentario' ? (this.aprobComentTexto || '').trim() : ''
+      const lineaAprob =
+        "Se aprueba la solicitud el " + new Date().toLocaleDateString('es-AR') + " " + new Date().toLocaleTimeString() +
+        (comentAprob ? " — Comentario: " + comentAprob : '')
       const pago = {
         status: 'Aprobada',
-        observaciones: observaciones + " - " + "Se aprueba la solicitud el " + new Date().toLocaleDateString('es-AR') + " " + new Date().toLocaleTimeString()
+        observaciones: observaciones + " - " + lineaAprob
       }
       const id = this.pago.id
       const userToken = this.$store.state.user.token
@@ -363,7 +428,10 @@ export default {
       this.registrarActividad('Aprobar reclamo por pago doble', 'Reclamo por Pago doble Aprobado.')
       this.wait(300)
       this.pago.status = pago.status
+      this.pago.observaciones = pago.observaciones
       this.showPrevApprove = false
+      this.aprobComentMode = 'ninguno'
+      this.aprobComentTexto = ''
       this.showApprove = true
 
       // --- Enviar correo al solicitante ---
@@ -377,9 +445,7 @@ Su documentación será procesada y recibirá las instrucciones correspondientes
 
 Número de trámite: R${this.pago.nroTramite}
 Fecha de aprobación: ${new Date().toLocaleDateString('es-AR')}
-
-
-
+${comentAprob ? `\nComentario:\n${comentAprob}\n` : ''}
 Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Recaudaciones Municipal (recaudaciones@gesell.gob.ar).`
         await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
         this.$bvToast.toast('Correo de aprobación enviado al solicitante.', { variant: 'success' })
@@ -388,12 +454,15 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
       }
     },
     onRechazarSolicitud(){
+      this.motivoRechazo = ''
+      this.otroMotivoRechazo = ''
       this.showRejectPopup = true
     },
     async onSendReject(){
+      const motivoTexto = this.textoRechazoParaGuardarYCorreo()
       const observaciones = this.pago.observaciones || " "
       const pago = {
-        observaciones: observaciones + " - " + "Solicitud rechazada: " + this.motivoRechazo + " " + new Date().toLocaleDateString(),
+        observaciones: observaciones + " - " + "Solicitud rechazada: " + motivoTexto + " " + new Date().toLocaleDateString(),
         status: 'Rechazada'
       }
       const id = this.pago.id
@@ -401,9 +470,10 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
         id,
         pago,
       })
-      this.registrarActividad('Rechazar Solicitud', 'Rechazado por: ' + this.motivoRechazo, this.pago.nroTramite)
+      this.registrarActividad('Rechazar Solicitud', 'Rechazado por: ' + motivoTexto, this.pago.nroTramite)
       this.wait(300)
       this.pago.status = pago.status
+      this.pago.observaciones = pago.observaciones
 
       // --- Enviar correo al solicitante ---
       try {
@@ -412,7 +482,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
         const mensaje = `Estimado/a contribuyente,
 
 Su reclamo de pago doble ha sido rechazado por el siguiente motivo:
-${this.motivoRechazo}
+${motivoTexto}
 
 Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Recaudaciones Municipal (recaudaciones@gesell.gob.ar).`
         await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
@@ -422,6 +492,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
       }
 
       this.motivoRechazo = ''
+      this.otroMotivoRechazo = ''
       this.showRejectPopup = false
     },
     async onDescargarHabilitacion() {

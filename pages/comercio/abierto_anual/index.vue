@@ -27,7 +27,7 @@
                 <b-carousel-slide img-src="../../../assets/banner-abierto-anual-mobile.png"></b-carousel-slide>
             </b-carousel>
         </div>
-    <b-row>
+    <div class="row-no-gutters">
         <b-col class="col-md-8 mx-auto">
           <br />
           <b-card class="section-card" id="card-baja" v-bind:class="{ 'expanded': isCardExpanded(0) }">
@@ -40,7 +40,12 @@
               <div v-show="isCardExpanded(0)">
                 <div class="li-row first-li">
                   <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">
-                    Es un <b>descuento del 60% </b>(sesenta por ciento) del valor <b>de la Tasa por Inspección de  Seguridad e Higiene</b> correspondiente al año fiscal 2026, otorgado en virtud del Artículo 182 de la <a href="https://arvige.gob.ar/legislacion/pdf/12" class="text-success">Ordenanza Fiscal 2156/08 (TO2025).</a></div>
+                    Es un <b>descuento del 60% </b>(sesenta por ciento) del valor <b>de la Tasa por Inspección de Seguridad e Higiene</b> correspondiente al año fiscal siguiente 2027, otorgado en virtud del Artículo 182 de la <a href="https://arvige.gob.ar/legislacion/pdf/12" class="text-success">Ordenanza Fiscal 2156/08 (TO2025).</a></div>
+                </div>
+                <div class="li-row warning-li">
+                  <div class="li-icon"><b-icon-exclamation-circle-fill font-scale="0.75" class="icon-orange"></b-icon-exclamation-circle-fill></div><div class="li-content">
+                    El beneficio es una excepción al pago total y acreditarlo es de exclusiva responsabilidad del contribuyente.
+                  </div>
                 </div>
               </div>
             </transition>
@@ -58,13 +63,7 @@
                 </div>
                 <div class="li-row">
                   <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">
-                    Sus <b>establecimientos</b> hayan permanecido <b>con actividad</b> en forma <b>permanente durante el ejercicio fiscal anterior y no
-                    posean deudas</b> con la Municipalidad.</div>
-                </div>
-                <div class="li-row">
-                  <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">
-                    Sus <b>establecimientos</b> hayan permanecido <b>con actividad</b> en forma <b>permanente durante los fines de semana del ejercicio anterior y
-                     no posean deudas</b> con la Municipalidad.</div>
+                    Sus <b>establecimientos</b> hayan permanecido <b>con actividad</b> en forma <b>permanente y/o durante los fines de semana del ejercicio fiscal anterior</b> y <b>no posean deudas en concepto de Tasas, Derechos, Contribuciones o Multas con el municipio</b>.</div>
                 </div>
                 <div class="li-row">
                   <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">
@@ -85,7 +84,7 @@
                   <div class="li-content mb-1"> Están <b>excluidos</b> del Beneficio: </div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
                   <div class="li-content">Aquellos/as <b>contribuyentes que no hayan acreditado</b>, ante la evaluación del Municipio, <b>contar con un comercio con
-                   actividad permanente durante el ejercicio fiscal anterior</b>. </div></div>
+                   actividad permanente y/o durante los fines de semana del ejercicio fiscal anterior</b>. </div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
                   <div class="li-content"> Los <b>Grandes Contribuyentes</b> incluidos en los Artículos 181 bis a 181 noveno de la <a href="https://arvige.gob.ar/legislacion/pdf/12" class="text-success">Ordenanza Fiscal 2156/08 c/ Mod</a>. </div>
                 </div>
@@ -93,14 +92,15 @@
             </transition>
           </b-card>
           <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(3) }">
-            <h4 class="section-title" @click="toggleCard(3)">¿Qué requisitos se necesitan para obtener el beneficio de Abierto Anual?
+            <h4 class="section-title" @click="toggleCard(3)">
+              ¿Qué requisitos se necesitan para obtener el beneficio de Abierto Anual?
               <b-icon-chevron-compact-down v-if="!isCardExpanded(3)"></b-icon-chevron-compact-down>
               <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
             </h4>
             <transition name="expand">
               <div v-show="isCardExpanded(3)">
                 <div class="li-row first-li"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                  <div class="li-content">Poseer una <b>Habilitación Comercial</b> en el Partido de Villa Gesell, con su correspondiente <b>Renovación o Reempadronamiento comercial</b> correspondientes efectuados en tiempo y forma. </div>
+                  <div class="li-content">Poseer una <b>Habilitación Comercial</b> en el Partido de Villa Gesell, con su <b>Renovación o Reempadronamiento comercial</b> correspondientes efectuados en tiempo y forma. </div>
                 </div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
                   <div class="li-content"><b>No</b> poseer <b>deudas en  concepto de Tasas, Derechos, Contribuciones o Multas con el Municipio</b>.</div>
@@ -110,6 +110,9 @@
                 </div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
                   <div class="li-content"><b>Realizar</b> el procedimiento de <b>carga de datos</b> según lo previsto por la Autoridad de Aplicación.</div>
+                </div>
+                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                  <div class="li-content">Haber permanecido con la <b>CUIT vigente durante todo el año fiscal en curso</b> -condición indispensable para no dar de baja la habilitación-.</div>
                 </div>
               </div>
             </transition>
@@ -125,13 +128,16 @@
                 <div class="li-row first-li mb-1"><p>Una <b>factura digital</b> o una <b>fotografía de la factura emitida en formato papel</b>, correspondiente a los
                    siguientes tres períodos del año en curso: </p></div>
                   <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                    <div class="li-content"><p><b>Período 1 (2/5/25 al 31/5/25):</b> Se deberá cargar una factura emitida durante el mes de <i>Mayo</i>.</p></div>
+                    <div class="li-content"><p><b>Período 1 (2/5/26 al 31/5/26):</b> Se deberá cargar una factura emitida durante el mes de <i>Mayo</i>.</p></div>
                   </div>
                   <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                    <div class="li-content"><p><b>Período 2 (1/8/25 al 31/8/25):</b> Se deberá cargar una factura emitida durante el mes de <i>Agosto</i>.</p></div>
+                    <div class="li-content"><p><b>Período 2 (1/8/26 al 31/8/26):</b> Se deberá cargar una factura emitida durante el mes de <i>Agosto</i>.</p></div>
                   </div>
                   <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                    <div class="li-content"><p><b>Período 3 (1/10/25 al 31/10/25):</b> Se deberá cargar una factura emitida durante el mes de <i>Octubre</i>.</p></div>
+                    <div class="li-content"><p><b>Período 3 (1/10/26 al 31/10/26):</b> Se deberá cargar una factura emitida durante el mes de <i>Octubre</i>.</p></div>
+                  </div>
+                  <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                    <div class="li-content"><p><b>Período de rectificación (1/11/26 al 30/11/26):</b> Podrán acreditarse las facturas pendientes y rectificar aquellas marcadas como incorrectas.</p></div>
                   </div>
                   <b-card border-variant="warning" align="center" class="importante-card" >
                     <b-card-text>
@@ -221,7 +227,6 @@
                     <iframe width="560" height="315" src="https://www.youtube.com/embed/NKZWxjCh1l4?si=SCCPendq9R_daKRK" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                   </div>
                 </div>
-                <p class="first-li separador-top"><b>El trámite concluye a fin de año (2025) y es requisito que hayas cargado 3 facturas (una por cada período) para obtener el Beneficio de Comercio Abierto Anual.</b></p>
               </div>
             </transition>
           </b-card>
@@ -244,7 +249,7 @@
                   <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                   <div class="li-content">
                     <p class="li-title">¿Qué sucede si no envié a tiempo las tres facturas solicitadas?</p>
-                    <p>En caso de no cumplirse con el envío de las 3 facturas solicitadas en los períodos indicados previamente SE PODRÁN ACREDITAR desde el 1 al 30 DE NOVIEMBRE DE 2025 siendo este el último plazo de acreditación posible. <b>Extinguido el plazo no podrá reclamarse el beneficio.</b></p>
+                    <p>En caso de no cumplirse con el envío de las 3 facturas solicitadas en los períodos indicados, podrán acreditarse durante el período de rectificación, que se extiende desde el 1 al 30 de noviembre del año en curso, siendo esta la última instancia de acreditación posible. <b>Extinguido el plazo no podrá reclamarse el beneficio.</b></p>
                   </div>
                 </div>
                 <div class="li-row">
@@ -257,14 +262,14 @@
               </div>
             </transition>
           </b-card>
-          <b-row>
+          <b-row class="no-gutters">
             <b-col>
               <b-button variant="success" class="float-right btn-form" @click="openPopup('Form')">Iniciar Trámite</b-button>
               <!-- <b-button variant="success" class="float-right btn-form" @click="openPopup('ClosedPeriod')">Iniciar Trámite</b-button> -->
             </b-col>
           </b-row>
         </b-col>
-      </b-row>
+    </div>
      <!-- Popup de advertencia -->
      <b-modal v-model="showConfirmationPopup" hide-footer :header-bg-variant="'success'" centered>
         <template #modal-header>
@@ -730,6 +735,9 @@ ul{
 }
 .li-title{
   margin-bottom: 0.3rem;
+}
+.warning-li .li-icon{
+  margin-top: -0.1rem;
 }
 .li-icon{
   margin-right: 1%;

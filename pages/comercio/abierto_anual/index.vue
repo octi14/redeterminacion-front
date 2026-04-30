@@ -3,20 +3,23 @@
         <Banner title="Comercio Abierto Anual"/>
         <div class="col-10 mainCarrousel" style="margin: auto; margin-top: 2rem">
             <b-carousel
-            id="mainCarousel"
+            id="mainCarouselDesktop"
             v-model="slide"
             :interval="4000"
+            controls
+            indicators
             img-width="100%"
             style="text-shadow: 1px 1px 2px #333;"
             @sliding-start="onSlideStart"
             @sliding-end="onSlideEnd"
             >
-                <b-carousel-slide img-src="../../../assets/3. Banner 2026.png"></b-carousel-slide>
+                <b-carousel-slide img-src="../../../assets/2. Desktop períodos.png"></b-carousel-slide>
+                <b-carousel-slide img-src="../../../assets/1. Desktop requisitos.png"></b-carousel-slide>
             </b-carousel>
         </div>
         <div class="col-10 mobileCarrousel" style="margin: auto; margin-top: 2rem">
             <b-carousel
-            id="mainCarousel"
+            id="mainCarouselMobile"
             v-model="slide"
             :interval="4000"
             img-width="100%"
@@ -24,7 +27,9 @@
             @sliding-start="onSlideStart"
             @sliding-end="onSlideEnd"
             >
-                <b-carousel-slide img-src="../../../assets/banner-abierto-anual-mobile.png"></b-carousel-slide>
+                <b-carousel-slide img-src="../../../assets/1. Carrousel Mobile 1. AANUAL 2026.png"></b-carousel-slide>
+                <b-carousel-slide img-src="../../../assets/2. Carrousel Mobile 2. AANUAL 2026.png"></b-carousel-slide>
+                <b-carousel-slide img-src="../../../assets/3. Carrousel Mobile 3. AANUAL 2026.png"></b-carousel-slide>
             </b-carousel>
         </div>
     <div class="row-no-gutters">

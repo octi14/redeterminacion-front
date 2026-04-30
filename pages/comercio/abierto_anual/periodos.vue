@@ -63,6 +63,7 @@
                         <li>Que no tengas deudas por Tasas, Derechos, Contribuciones o Multas</li>
                         <li>Que hayas renovado o reempadronado en fecha</li>
                         <li>Que todos los trámites se hayan realizado dentro del año fiscal 2026.</li>
+                        <li>Que tu CUIT se haya encontrado vigente durante todo el año fiscal en curso.</li>
                       </ul>
                   </b-col>
               </b-row>

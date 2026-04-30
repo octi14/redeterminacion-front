@@ -42,6 +42,7 @@
                   <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">
                     Es un <b>descuento del 60% </b>(sesenta por ciento) del valor <b>de la Tasa por Inspección de Seguridad e Higiene</b> correspondiente al año fiscal siguiente 2027, otorgado en virtud del Artículo 182 de la <a href="https://arvige.gob.ar/legislacion/pdf/12" class="text-success">Ordenanza Fiscal 2156/08 (TO2025).</a></div>
                 </div>
+                <hr>
                 <div class="li-row warning-li">
                   <div class="li-icon"><b-icon-exclamation-circle-fill font-scale="0.75" class="icon-orange"></b-icon-exclamation-circle-fill></div><div class="li-content">
                     El beneficio es una excepción al pago total y acreditarlo es de exclusiva responsabilidad del contribuyente.
@@ -61,6 +62,7 @@
                 <div class="li-row first-li"><div class="li-content">
                     Los/las <b>contribuyentes</b> que ante evaluacion del Municipio <b>acrediten</b> que:</div>
                 </div>
+                <br>
                 <div class="li-row">
                   <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">
                     Sus <b>establecimientos</b> hayan permanecido <b>con actividad</b> en forma <b>permanente y/o durante los fines de semana del ejercicio fiscal anterior</b> y <b>no posean deudas en concepto de Tasas, Derechos, Contribuciones o Multas con el municipio</b>.</div>
@@ -149,7 +151,7 @@
                         <b-col  md="10">
                           <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Las <b>facturas</b> deberán ser <b>digitales</b> (en caso de tenerlas en formato papel <b>podés escanearlos o sacarles una foto</b>) y deben ser <b>legibles</b>. Pueden encontrarse en formato pdf o imagen y tener un peso máximo de 15Mb.</div></div>
                           <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Los <b>periodos de recepción</b> de las facturas serán <b>definidos</b> por la <b>Autoridad de Aplicación</b> en el transcurso del año. Estos periodos <b>serán notificados al DFE</b> de la persona interesada <b>y publicitados en las vías oficiales</b> de comunicación <b>del Municipio</b>.</div></div>
-                          <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Las <b>facturas</b> deberán <b>corresponder a ventas efectivamente producidas en los períodos descriptos.</b>.</div></div>
+                          <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Las <b>facturas</b> deberán <b>corresponder a ventas efectivamente producidas en los períodos descriptos.</b></div></div>
                         </b-col>
                       </b-row>
                     </b-card-text>

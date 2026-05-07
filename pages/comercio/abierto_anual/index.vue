@@ -1,11 +1,12 @@
 <template>
     <div class="page main-background">
         <Banner title="Comercio Abierto Anual"/>
-        <div class="col-10 mainCarrousel" style="margin: auto; margin-top: 2rem">
+        <b-row class="justify-content-center mx-0 main-carrousel-desktop-row">
+            <b-col cols="10" class="mainCarrousel px-0">
             <b-carousel
             id="mainCarouselDesktop"
-            v-model="slide"
-            :interval="4000"
+            v-model="slideDesktop"
+            :interval="carouselInterval"
             controls
             indicators
             img-width="100%"
@@ -16,12 +17,17 @@
                 <b-carousel-slide img-src="../../../assets/2. Desktop períodos.png"></b-carousel-slide>
                 <b-carousel-slide img-src="../../../assets/1. Desktop requisitos.png"></b-carousel-slide>
             </b-carousel>
-        </div>
-        <div class="col-10 mobileCarrousel" style="margin: auto; margin-top: 2rem">
+            </b-col>
+        </b-row>
+    <div class="row-no-gutters">
+        <b-col class="col-md-8 mx-auto">
+          <div class="mobileCarrousel">
             <b-carousel
             id="mainCarouselMobile"
-            v-model="slide"
-            :interval="4000"
+            v-model="slideMobile"
+            :interval="carouselInterval"
+            controls
+            indicators
             img-width="100%"
             style="text-shadow: 1px 1px 2px #333;"
             @sliding-start="onSlideStart"
@@ -31,9 +37,7 @@
                 <b-carousel-slide img-src="../../../assets/2. Carrousel Mobile 2. AANUAL 2026.png"></b-carousel-slide>
                 <b-carousel-slide img-src="../../../assets/3. Carrousel Mobile 3. AANUAL 2026.png"></b-carousel-slide>
             </b-carousel>
-        </div>
-    <div class="row-no-gutters">
-        <b-col class="col-md-8 mx-auto">
+          </div>
           <br />
           <b-card class="section-card" id="card-baja" v-bind:class="{ 'expanded': isCardExpanded(0) }">
             <h4 class="section-title" @click="toggleCard(0)">
@@ -353,7 +357,10 @@
   export default {
     data:function() {
       return {
-        slide: 0,
+        slideDesktop: 0,
+        slideMobile: 0,
+        /** ms entre avances automáticos (desktop y mobile llevan índices separados) */
+        carouselInterval: 9000,
         sliding: null,
         filteredRubros: rubros,//.filter(rubro => rubro.requisitos.length > 0),
         showPopupA: false,
@@ -435,6 +442,9 @@
   </script>
 
 <style scoped>
+.main-carrousel-desktop-row {
+  margin-top: 2rem;
+}
 .mainCarrousel{
     display: block;
   }
@@ -493,6 +503,21 @@
   }
   .mobileCarrousel{
     display: block;
+    width: 100%;
+    margin-top: 2rem;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  .mobileCarrousel >>> .carousel {
+    width: 100%;
+  }
+  /* Todas las placas visibles: img a ancho completo sin recortes raros */
+  .mobileCarrousel >>> .carousel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
   }
   .col-8{
     max-width: 90%;

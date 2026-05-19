@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <h4 class="section-title">
       <i class="bi bi-graph-up-arrow-fill mr-2"></i>
@@ -590,3 +590,4 @@ export default {
   background-color: rgba(220, 53, 69, 0.1) !important;
 }
 </style>
+

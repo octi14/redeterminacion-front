@@ -6,7 +6,7 @@
       <b-row class="flex-nowrap align-items-end mt-4">
         <b-form-group class="col mt-0 mb-0" label-class="text-success h6">
           <label for="inputNroTramite" class="bv-no-focus-ring col-form-label pt-0 text-success h6">
-            <b-icon-search></b-icon-search> Buscar por N° de Trámite
+            <i class="bi bi-search"></i> Buscar por N° de Trámite
           </label>
           <b-form-input
             id="inputNroTramite"
@@ -18,7 +18,7 @@
         </b-form-group>
         <b-form-group class="col mt-0 mb-0" label-class="text-success h6">
           <label for="inputCUIT" class="bv-no-focus-ring col-form-label pt-0 text-success h6">
-            <b-icon-search></b-icon-search> Buscar por CUIT
+            <i class="bi bi-search"></i> Buscar por CUIT
           </label>
           <b-form-input
             id="inputCUIT"
@@ -30,7 +30,7 @@
         </b-form-group>
         <b-form-group class="col mt-0 mb-0" label-class="text-success h6">
           <label for="inputNombre" class="bv-no-focus-ring col-form-label pt-0 text-success h6">
-            <b-icon-search></b-icon-search> Buscar por nombre
+            <i class="bi bi-search"></i> Buscar por nombre
           </label>
           <b-form-input
             id="inputNombre"
@@ -40,14 +40,14 @@
           />
         </b-form-group>
         <b-form-group class="col mt-0 mb-0" label-class="text-success h6">
-          <label for="selectedEstado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><b-icon-funnel-fill></b-icon-funnel-fill> Filtrar por Estado</label>
+          <label for="selectedEstado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><i class="bi bi-funnel-fill"></i> Filtrar por Estado</label>
           <b-form-select plain v-model="selectedEstado">
             <option value="">Todos</option>
             <option v-for="estado in estados" :value="estado" :key="estado">{{ estado }}</option>
           </b-form-select>
         </b-form-group>
         <b-form-group class="col mt-0 mb-0" label-class="text-success h6">
-          <label for="selectedTipo" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><b-icon-funnel-fill></b-icon-funnel-fill> Filtrar por tipo de trámite</label>
+          <label for="selectedTipo" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><i class="bi bi-funnel-fill"></i> Filtrar por tipo de trámite</label>
           <b-form-select plain v-model="selectedTipo">
             <option value="">Todos</option>
             <option v-for="tipoTramite in tiposTramite" :value="tipoTramite" :key="tipoTramite">{{ tipoTramite }}</option>
@@ -59,7 +59,7 @@
         <b-button variant="success" class="text-center mt-3" v-if="jefeComercio" @click="generarExcelTramitesNoFinalizados"> Exportar a Excel</b-button>
       </div>
       <!-- <b-form-group class="col-4 mx-auto mt-4" horizontal label-class="text-success h6" label="Filtrar por DNI">
-        <b-icon-funnel-fill variant="success" />
+        <i class="bi bi-funnel-fill text-success"></i>
         <b-form-input v-model="selectedDocumento" @keypress="onSearchByDocumento">
         </b-form-input>
       </b-form-group> -->
@@ -70,7 +70,7 @@
       <template #cell(nroTramite)="row">
         <span>{{ row.value }}</span>
         <span v-if="adminMaster && row.item.visible === false" title="Trámite invisible para no administradores">
-          <b-icon-eye-slash class="text-danger mr-1" style="margin-left: 1rem;" />
+          <i class="bi bi-eye-slash"></i>
         </span>
       </template>
       <template #cell(status)="row">
@@ -82,13 +82,13 @@
       <template #cell(detalles)="row">
         <NuxtLink :to="{ name: 'comercio-solicitudes-id', params: { id: row.item.id } }" @click.native="registrarActividad('Abrir Trámite', 'Trámite nro: ' + row.item.nroTramite)">
           <b-button variant="outline-secondary" size="sm" title="Editar">
-            <b-icon-pen/>
+            <i class="bi bi-pen"></i>
           </b-button>
         </NuxtLink>
       </template>
       <template #cell(observaciones)="row">
         <b-button v-if="row.item.observaciones && row.item.observaciones != ''" @click="onShowObservaciones(row.item.id)" variant="outline-primary" size="sm" title="Observaciones">
-          <b-icon-eye/>
+          <i class="bi bi-eye"></i>
         </b-button>
       </template>
     </b-table>

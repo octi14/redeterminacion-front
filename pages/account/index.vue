@@ -55,7 +55,7 @@
     <b-modal v-model="showPopupChanged" header-bg-variant="success" centered>
       <template #modal-header>
         <div class="mx-auto text-center">
-          <b-icon-check-circle style="color:white" scale="2"></b-icon-check-circle>
+          <i class="bi bi-check-circle"></i>
         </div>
       </template>
       <div class="text-center">
@@ -108,7 +108,7 @@ export default{
     },
     async logout(){
       // Emitir evento para indicar que es un logout manual
-      this.$nuxt.$emit('manual-logout');
+      useNuxtApp().callHook('manual-logout');
       await this.$store.dispatch('user/logout')
       await this.$router.push('/login')
       this.showPopupChanged = false

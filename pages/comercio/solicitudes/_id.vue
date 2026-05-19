@@ -11,7 +11,7 @@
         <div class="row justify-content-center mt-3">
           <p class="h5"> Número de trámite: <b> {{ habilitacion.nroTramite }}  </b></p>
           <span v-if="mostrarIconoAdvertencia" class="iconoAdvertencia">
-            <b-icon-exclamation-circle-fill scale="1.3" class="text-secondary ml-3" v-on:mouseover="showAdvertencia = true" v-on:mouseleave="showAdvertencia = false" />
+            <i class="bi bi-exclamation-circle-fill"></i>
             <span v-if="showAdvertencia" class="textoHover">El plazo administrativo del trámite está por vencer o se encuentra vencido.</span>
           </span>
         </div>
@@ -31,8 +31,8 @@
         <div class="row justify-content-center mt-3" v-if="adminMaster && visibleLocal">
           <div class="h5 row"> Visibilidad:
             <h5 :class="getStatusClass(habilitacion.status)" class="ml-2"> 
-              <b-icon-eye-slash v-if="visibleLocal" class="ml-1 text-success" title="Trámite visible" />
-              <b-icon-eye-slash v-else class="ml-1 text-danger" title="Trámite invisible" />
+              <i class="bi bi-eye-slash"></i>
+              <i class="bi bi-eye-slash"></i>
               <span v-if="visibleLocal">Visible</span>
               <span v-else>Invisible</span>
             </h5>
@@ -47,8 +47,8 @@
         >
           Visibilidad del trámite
           
-        <b-icon-eye v-if="visibleLocal" class="ml-1 text-success" title="Trámite visible" />
-        <b-icon-eye-slash v-else class="ml-1 text-danger" title="Trámite invisible" />
+        <i class="bi bi-eye"></i>
+        <i class="bi bi-eye-slash"></i>
         </b-form-checkbox>
       </div>
       <!--Botones-->
@@ -60,7 +60,7 @@
         <b-button @click="onRestablecer" variant="secondary" class="btn-4 mt-3 mx-1" v-if="adminMaster && habilitacion && habilitacion.status != 'En revisión'"> Volver a estado En Revisión </b-button>
         <b-button @click="onShowObservaciones" variant="primary" class="btn-2 mt-3 mx-1"> Ver observaciones </b-button>
         <b-button @click="onDescargarHabilitacion(); registrarActividad('Descargar Trámite', 'Trámite Descargado', habilitacion.nroTramite)" v-if="adminComercio || adminArvige || adminModernizacion" variant="success" class="btn-4 mt-3 mx-1">
-          <b-icon icon="download" class="mr-1"></b-icon> Descargar trámite
+          <i class="bi bi-download"></i> Descargar trámite
         </b-button>
       </div>
 
@@ -78,14 +78,14 @@
                     <input class="form-check-input" type="radio" name="revisionSolicitante" id="solicitanteCorrecto"
                            value="correcto" v-model="revisionSolicitante" @change="actualizarRevision('solicitante')">
                     <label class="form-check-label text-success" for="solicitanteCorrecto">
-                      <b-icon-check-circle-fill></b-icon-check-circle-fill>
+                      <i class="bi bi-check-circle-fill"></i>
                     </label>
                   </div>
                   <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="revisionSolicitante" id="solicitanteIncorrecto"
                            value="incorrecto" v-model="revisionSolicitante" @change="actualizarRevision('solicitante')">
                     <label class="form-check-label text-danger" for="solicitanteIncorrecto">
-                      <b-icon-x-circle-fill></b-icon-x-circle-fill>
+                      <i class="bi bi-x-circle-fill"></i>
                     </label>
                   </div>
                 </div>
@@ -169,14 +169,14 @@
                     <input class="form-check-input" type="radio" name="revisionInmueble" id="inmuebleCorrecto"
                            value="correcto" v-model="revisionInmueble" @change="actualizarRevision('inmueble')">
                     <label class="form-check-label text-success" for="inmuebleCorrecto">
-                      <b-icon-check-circle-fill></b-icon-check-circle-fill>
+                      <i class="bi bi-check-circle-fill"></i>
                     </label>
                   </div>
                   <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="revisionInmueble" id="inmuebleIncorrecto"
                            value="incorrecto" v-model="revisionInmueble" @change="actualizarRevision('inmueble')">
                     <label class="form-check-label text-danger" for="inmuebleIncorrecto">
-                      <b-icon-x-circle-fill></b-icon-x-circle-fill>
+                      <i class="bi bi-x-circle-fill"></i>
                     </label>
                   </div>
                 </div>
@@ -228,22 +228,22 @@
             </div>
             <div class="layout" v-if="!baja">
               <p class="col col-main">
-                <b-icon-check-circle-fill variant="success" v-if="habilitacion.mesas" class="mr-2"></b-icon-check-circle-fill>
-                <b-icon-x-circle-fill variant="danger" v-else class="mr-2"></b-icon-x-circle-fill>
+                <i class="bi bi-check-circle-fill text-success"></i>
+                <i class="bi bi-x-circle-fill text-danger"></i>
                 <strong class="text-primary">Mesas y sillas</strong><br>
               </p>
             </div>
             <div class="layout" v-if="!baja">
               <p class="col col-main">
-                <b-icon-check-circle-fill variant="success" v-if="habilitacion.marquesina" class="mr-2"></b-icon-check-circle-fill>
-                <b-icon-x-circle-fill variant="danger" v-else class="mr-2"></b-icon-x-circle-fill>
+                <i class="bi bi-check-circle-fill text-success"></i>
+                <i class="bi bi-x-circle-fill text-danger"></i>
                 <strong class="text-primary">Marquesina</strong><br>
               </p>
             </div>
             <div class="layout" v-if="!baja">
               <p class="col col-main">
-                <b-icon-check-circle-fill variant="success" v-if="habilitacion.carteles" class="mr-2"></b-icon-check-circle-fill>
-                <b-icon-x-circle-fill variant="danger" v-else class="mr-2"></b-icon-x-circle-fill>
+                <i class="bi bi-check-circle-fill text-success"></i>
+                <i class="bi bi-x-circle-fill text-danger"></i>
                 <strong class="text-primary">Carteles</strong><br>
               </p>
             </div>
@@ -261,8 +261,8 @@
             </div>
             <div class="layout" v-if="!baja">
               <p class="col col-main">
-                <b-icon-check-circle-fill variant="success" v-if="habilitacion.mercaderia" class="mr-2"></b-icon-check-circle-fill>
-                <b-icon-x-circle-fill variant="danger" v-else class="mr-2"></b-icon-x-circle-fill>
+                <i class="bi bi-check-circle-fill text-success"></i>
+                <i class="bi bi-x-circle-fill text-danger"></i>
                 <strong class="text-primary">Mercadería</strong><br>
               </p>
             </div>
@@ -273,8 +273,8 @@
               <div class="layout" v-for="(item, index) in habilitacion.serviciosHoteleria" :key="index">
                 <p class="col col-main">
                   <strong class="text-primary">- {{ item.servicio }}</strong>
-                  <b-icon-check-circle-fill variant="info" v-if="item.value"></b-icon-check-circle-fill>
-                  <b-icon-x-circle-fill variant="danger" v-else></b-icon-x-circle-fill>
+                  <i class="bi bi-check-circle-fill text-info"></i>
+                  <i class="bi bi-x-circle-fill text-danger"></i>
                 </p>
               </div>
               <div class="layout" v-if="habilitacion.otrosServicios" style="border:1px solid #CCC">
@@ -314,14 +314,14 @@
                     <input class="form-check-input" type="radio" name="revisionTodosDocumentos" id="todosDocumentosCorrecto"
                            @change="marcarTodosDocumentos('correcto')">
                     <label class="form-check-label text-success" for="todosDocumentosCorrecto" title="Marcar todos los documentos como correctos">
-                      <b-icon-check-circle-fill></b-icon-check-circle-fill>
+                      <i class="bi bi-check-circle-fill"></i>
                     </label>
                   </div>
                   <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="revisionTodosDocumentos" id="todosDocumentosIncorrecto"
                            @change="marcarTodosDocumentos('incorrecto')">
                     <label class="form-check-label text-danger" for="todosDocumentosIncorrecto" title="Marcar todos los documentos como incorrectos">
-                      <b-icon-x-circle-fill></b-icon-x-circle-fill>
+                      <i class="bi bi-x-circle-fill"></i>
                     </label>
                   </div>
                 </div>
@@ -336,7 +336,7 @@
               </div>
               <div class="col-2 text-center">
                 <b-button size="sm" @click="openDocumento(documento, nombreDocumento)" variant="outline-primary">
-                  <b-icon icon="eye-fill" scale="1.2"></b-icon>
+                  <i class="bi bi-eye-fill"></i>
                 </b-button>
               </div>
               <!-- Controles de revisión para cada documento -->
@@ -442,8 +442,8 @@
         class="px-4 py-2"
         :disabled="!documentos || documentos === null"
       >
-        <b-icon-check-circle-fill class="mr-2" v-if="documentos && documentos !== null"></b-icon-check-circle-fill>
-        <b-spinner small class="mr-2" v-else></b-spinner>
+        <i v-if="documentos && documentos !== null" class="bi bi-check-circle-fill"></i>
+        <b-spinner v-else small class="mr-2"></b-spinner>
         <span v-if="documentos && documentos !== null">Finalizar Revisión</span>
         <span v-else>Esperando documentos...</span>
       </b-button>
@@ -464,7 +464,7 @@
     <b-modal v-model="showRejectPopup" hide-footer :header-bg-variant="'danger'" centered>
         <template #modal-header>
           <div class="confirmation-popup-header mx-auto">
-            <b-icon-envelope scale="2" variant="light" />
+            <i class="bi bi-envelope text-light"></i>
           </div>
         </template>
         <div class="confirmation-popup-body">
@@ -496,7 +496,7 @@
     <!-- <b-modal v-model="showRectificacion" hide-footer :header-bg-variant="'secondary'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
-          <b-icon-exclamation-octagon scale="2" variant="light" />
+          <i class="bi bi-exclamation-octagon text-light"></i>
         </div>
       </template>
       <div class="confirmation-popup-body">
@@ -515,13 +515,13 @@
     <b-modal v-model="showPrevApprove" hide-footer :header-bg-variant="'secondary'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
-          <b-icon-envelope scale="2" variant="light" />
+          <i class="bi bi-envelope text-light"></i>
         </div>
       </template>
       <div class="confirmation-popup-body">
         <h2 class="icon-orange text-secondary text-center"><b>Aprobar solicitud</b></h2>
         <hr/>
-        <h5 class="mb-3 text-center mr-3"> <b-icon-exclamation-octagon scale="0.8" variant="secondary"/><b> ¿El comercio requiere inspección? </b> </h5>
+        <h5 class="mb-3 text-center mr-3"> <i class="bi bi-exclamation-octagon text-secondary"></i><b> ¿El comercio requiere inspección? </b> </h5>
         <div class="form-check">
             <input class="form-check-input" type="checkbox" id="documentCheckbox" v-model="inspeccion"/>
             <label class="form-check-label" for="documentCheckbox"><b> Si. </b> Se enviará automáticamente un mail indicando que la persona deberá pedir un Turno Web para Inspección Comercial.</label>
@@ -538,7 +538,7 @@
     <b-modal v-model="showAprobarBaja" hide-footer :header-bg-variant="'secondary'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
-          <b-icon-check-circle scale="2" variant="light" class="my-2" />
+          <i class="bi bi-check-circle text-light"></i>
         </div>
       </template>
       <div class="confirmation-popup-body">
@@ -559,7 +559,7 @@
     <b-modal v-model="showApprove" hide-footer :header-bg-variant="'success'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
-          <b-icon-envelope scale="2" variant="light" />
+          <i class="bi bi-envelope text-light"></i>
         </div>
       </template>
       <div class="confirmation-popup-body">
@@ -587,7 +587,7 @@
     <b-modal v-model="showSolicitarDoc" hide-footer :header-bg-variant="'success'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
-          <b-icon-envelope scale="2" variant="light" />
+          <i class="bi bi-envelope text-light"></i>
         </div>
       </template>
       <div class="confirmation-popup-body">
@@ -610,7 +610,7 @@
     <b-modal v-model="showFinalizar" hide-footer :header-bg-variant="'success'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
-          <b-icon-check-circle scale="2" variant="light" />
+          <i class="bi bi-check-circle text-light"></i>
         </div>
       </template>
       <div class="confirmation-popup-body">
@@ -620,7 +620,7 @@
         <div class="expediente-form-container">
           <div class="form-group mb-3">
             <label class="form-label">
-              <b-icon-caret-right-fill class="icon-orange me-2"/>
+              <i class="bi bi-caret-right-fill"></i>
               <strong>Número de expediente:</strong>
             </label>
             <div class="expediente-input-group">
@@ -647,7 +647,7 @@
 
           <div class="form-group mb-3" v-if="!esHabilitacion">
             <label class="form-label">
-              <b-icon-caret-right-fill class="icon-orange me-2"/>
+              <i class="bi bi-caret-right-fill"></i>
               <strong>Alcance:</strong>
             </label>
             <b-form-input
@@ -673,7 +673,7 @@
     <b-modal v-model="showFinalizarRenovacion" hide-footer :header-bg-variant="'success'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
-          <b-icon-check-circle scale="2" variant="light" />
+          <i class="bi bi-check-circle text-light"></i>
         </div>
       </template>
       <div class="confirmation-popup-body" v-if="!baja">
@@ -683,7 +683,7 @@
         <div class="expediente-form-container">
           <div class="form-group mb-3">
             <label class="form-label">
-              <b-icon-caret-right-fill class="icon-orange me-2"/>
+              <i class="bi bi-caret-right-fill"></i>
               <strong>Número de expediente:</strong>
             </label>
             <div class="expediente-input-group">
@@ -710,7 +710,7 @@
 
           <div class="form-group mb-3">
             <label class="form-label">
-              <b-icon-caret-right-fill class="icon-orange me-2"/>
+              <i class="bi bi-caret-right-fill"></i>
               <strong>Alcance:</strong>
             </label>
             <b-form-input
@@ -736,7 +736,7 @@
     <b-modal v-model="showRestoreDefault" hide-footer :header-bg-variant="'secondary'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
-          <b-icon-exclamation-triangle scale="2" variant="light" />
+          <i class="bi bi-exclamation-triangle text-light"></i>
         </div>
       </template>
       <div class="confirmation-popup-body text-center">
@@ -771,7 +771,7 @@
     <b-modal v-model="showRevisionIncompleta" hide-footer :header-bg-variant="'warning'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
-          <b-icon-exclamation-triangle scale="2" variant="light" />
+          <i class="bi bi-exclamation-triangle text-light"></i>
         </div>
       </template>
       <div class="confirmation-popup-body text-center">
@@ -791,7 +791,7 @@
     <b-modal v-model="showRechazoAutomatico" hide-footer :header-bg-variant="'danger'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
-          <b-icon-exclamation-triangle scale="2" variant="light" />
+          <i class="bi bi-exclamation-triangle text-light"></i>
         </div>
       </template>
       <div class="confirmation-popup-body text-center">

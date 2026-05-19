@@ -8,10 +8,10 @@
         </div>
         <b-card class="section-card col-md-6 mx-auto">
           <div class="li-row">
-            <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Estás a punto de seleccionar un turno de inspección para tu comercio.</p></div>
+            <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p>Estás a punto de seleccionar un turno de inspección para tu comercio.</p></div>
           </div>
           <div class="li-row">
-            <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Para iniciar, ingresá el <b>número de trámite</b> que recibiste luego de haber enviado el Formulario de Solicitud de Habilitaciones.</p></div>
+            <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p>Para iniciar, ingresá el <b>número de trámite</b> que recibiste luego de haber enviado el Formulario de Solicitud de Habilitaciones.</p></div>
           </div>
           <b-form>
             <b-form-input :disabled="enterKeyPressed" @keydown.enter.native="onNextPage" v-model="nroTramiteIngresado" type="number" size="lg" class="col-md-6 col-sm-10 mt-4 mx-auto" placeholder="Número de trámite" no-wheel></b-form-input>
@@ -29,21 +29,21 @@
           </div>
           <b-card class="section-card col-md-6 mx-auto">
             <h5>
-              <b-icon-calendar-check class="icon-orange" />
+              <i class="bi bi-calendar-check"></i>
               Selección de fecha
             </h5>
             <div class="li-row">
-              <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Elegí una fecha dentro de los días señalados.</p></div>
+              <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p>Elegí una fecha dentro de los días señalados.</p></div>
             </div>
             <div class="li-row">
-              <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Tené en cuenta que las inspecciones se llevan a cabo en diferentes días de la semana dependiendo del lugar donde se encuentre tu comercio. Por eso, sólo podrás elegir los días correspondientes a la localidad que informaste al iniciar el trámite de habilitación:</p></div>
+              <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p>Tené en cuenta que las inspecciones se llevan a cabo en diferentes días de la semana dependiendo del lugar donde se encuentre tu comercio. Por eso, sólo podrás elegir los días correspondientes a la localidad que informaste al iniciar el trámite de habilitación:</p></div>
             </div>
             <div class="col-md-10 mx-auto">
               <div class="li-row">
-                <div class="li-icon"><b-icon-check font-scale="2" class="icon-green"></b-icon-check></div><div class="li-content sub-li"><p><b>Villa Gesell:</b> Lunes, Martes y Miércoles</p></div>
+                <div class="li-icon"><i class="bi bi-check" style="font-size: 2em"></i></div><div class="li-content sub-li"><p><b>Villa Gesell:</b> Lunes, Martes y Miércoles</p></div>
               </div>
               <div class="li-row">
-                <div class="li-icon"><b-icon-check font-scale="2" class="icon-green"></b-icon-check></div><div class="li-content sub-li"><p><b>Mar de Las Pampas / Colonia Marina / Las Gaviotas / Mar Azul:</b>  Jueves y Viernes.</p></div>
+                <div class="li-icon"><i class="bi bi-check" style="font-size: 2em"></i></div><div class="li-content sub-li"><p><b>Mar de Las Pampas / Colonia Marina / Las Gaviotas / Mar Azul:</b>  Jueves y Viernes.</p></div>
               </div>
             </div>
             <b-calendar
@@ -69,11 +69,11 @@
           </div>
           <b-card class="section-card col-md-6 mx-auto">
             <h5>
-              <b-icon-clock class="icon-orange"></b-icon-clock>
+              <i class="bi bi-clock"></i>
               Selección de horario
             </h5>
             <div class="li-row">
-              <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Seleccioná una franja horaria para recibir la visita de inspección.</p></div>
+              <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p>Seleccioná una franja horaria para recibir la visita de inspección.</p></div>
             </div>
             <b-form-select v-model="timePicked" class="col-11 mx-auto">
               <!-- <b-form-select-option
@@ -105,10 +105,10 @@
           <b-card class="section-card col-md-6 mx-auto">
             <h5><img class="bi-ticket" src="../../../assets/icon-num-rifa.png" /> Confirmación de turno</h5>
             <div class="li-row">
-              <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Completá los datos que te solicitamos a continuación.</p></div>
+              <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p>Completá los datos que te solicitamos a continuación.</p></div>
             </div>
             <div class="li-row">
-              <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p> Al finalizar se emitirá un comprobante que deberás mostrar el día de la inspección.</p></div>
+              <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p> Al finalizar se emitirá un comprobante que deberás mostrar el día de la inspección.</p></div>
             </div>
             <div class="col-10 mx-auto">
                <b-form-group>
@@ -124,7 +124,7 @@
               <b-card-text>
                 <b-row class="v-align">
                   <b-col md="2">
-                    <b-icon-exclamation-triangle variant="warning" font-scale="4"></b-icon-exclamation-triangle>
+                    <i class="bi bi-exclamation-triangle text-warning" style="font-size: 4em"></i>
                     <p class="li-title"><u><b>¡Importante!</b></u></p>
                   </b-col>
                   <b-col  md="10">
@@ -138,7 +138,7 @@
               <b-button :disabled="sendingForm || !areAllFieldsComplete"  @click="onSelectTurno" variant="success">Continuar</b-button>
             </div>
             <div v-if="!areAllFieldsComplete" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Falta completar información.
+              <i class="bi bi-exclamation-octagon text-danger"></i> Falta completar información.
             </div>
           </b-card>
         </div>
@@ -150,20 +150,20 @@
               <h5><b>Comprobante de turno - </b> Inspección</h5>
             </b-card-header>
             <b-card-body class="text-center">
-              <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Día: </b> {{ formattedDate }}</h5> </div>
-              <div class="row" v-if="time === '08.30'"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Horario: </b> {{ time }} - 11.30 </h5> </div>
-              <div class="row" v-if="time === '11.30'"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Horario: </b> {{ time }} - 13.30 </h5> </div>
-              <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Nro de trámite:</b> {{ nroTramite }}</h5> </div>
-              <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Solicitante: </b> {{ nombre }}</h5> </div>
+              <div class="row"><i class="bi bi-check"></i><h5><b class="text-green ml-1">Día: </b> {{ formattedDate }}</h5> </div>
+              <div class="row" v-if="time === '08.30'"><i class="bi bi-check"></i><h5><b class="text-green ml-1">Horario: </b> {{ time }} - 11.30 </h5> </div>
+              <div class="row" v-if="time === '11.30'"><i class="bi bi-check"></i><h5><b class="text-green ml-1">Horario: </b> {{ time }} - 13.30 </h5> </div>
+              <div class="row"><i class="bi bi-check"></i><h5><b class="text-green ml-1">Nro de trámite:</b> {{ nroTramite }}</h5> </div>
+              <div class="row"><i class="bi bi-check"></i><h5><b class="text-green ml-1">Solicitante: </b> {{ nombre }}</h5> </div>
               <hr/>
              <div class="text-left">
               <div class="row">
-                <b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill>
+                <i class="bi bi-caret-right-fill" style="font-size: 1em"></i>
                 <p class="small"><small>Para consultar el estado de tu trámite ingresá en <a class="text-success">haciendavgesell.gob.ar</a>, hacé click en el ícono
                   correspondiente y escribí <br/>el número asignado en este comprobante. </small></p>
               </div>
               <div class="row">
-                <b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill>
+                <i class="bi bi-caret-right-fill" style="font-size: 1em"></i>
                 <p class="small"><small>Podés cancelar tu turno enviando un correo a divinspectores@gesell.gob.ar. </small></p>
               </div>
 
@@ -190,7 +190,7 @@
       <b-modal v-model="formOk" v-if="date && time && formOk && !printing" no-close-on-backdrop :header-bg-variant="'success'" hide-footer centered>
         <template #modal-header>
           <div class="centeredContainer"><h3>
-              <b-icon icon="check-circle-fill" scale="1.5" variant="light"></b-icon>
+              <i class="bi bi-check-circle-fill text-light"></i>
           </h3></div>
         </template>
         <div class="text-center modal-success">
@@ -208,7 +208,7 @@
       <b-modal v-model="showPopupFormError" @click-outside="showPopupFormError = false" :header-bg-variant="'danger'" centered>
         <template #modal-header>
           <div class="centeredContainer"><h3>
-              <b-icon-exclamation-octagon scale="1.5" variant="light"></b-icon-exclamation-octagon>
+              <i class="bi bi-exclamation-octagon text-light"></i>
           </h3></div>
         </template>
         <div class="centeredContainer modal-error">
@@ -227,7 +227,7 @@
       <b-modal v-model="showPopupNotAllowed" @click-outside="showPopupNotAllowed = false" :header-bg-variant="'secondary'" centered>
         <template #modal-header>
           <div class="centeredContainer">
-            <b-icon-exclamation-octagon scale="3" variant="light"></b-icon-exclamation-octagon>
+            <i class="bi bi-exclamation-octagon text-light"></i>
           </div>
         </template>
         <div class="centeredContainer modal-warning">
@@ -247,7 +247,7 @@
       <b-modal v-model="showPopupNoEntry" @click-outside="showPopupNoEntry = false" :header-bg-variant="'danger'" centered>
         <template #modal-header>
           <div class="centeredContainer"><h3>
-              <b-icon-exclamation-octagon scale="1.5" variant="light"></b-icon-exclamation-octagon>
+              <i class="bi bi-exclamation-octagon text-light"></i>
           </h3></div>
         </template>
         <div class="centeredContainer modal-error">
@@ -265,7 +265,7 @@
       <b-modal v-model="showPopupAlready" @click-outside="showPopupAlready = false" :header-bg-variant="'danger'" centered>
         <template #modal-header>
           <div class="centeredContainer"><h3>
-              <b-icon-exclamation-octagon scale="1.5" variant="light"></b-icon-exclamation-octagon>
+              <i class="bi bi-exclamation-octagon text-light"></i>
           </h3></div>
         </template>
         <div class="centeredContainer modal-error">

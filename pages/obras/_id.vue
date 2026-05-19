@@ -162,7 +162,7 @@
             <b-modal id="modal-delete" centered header-bg-variant="danger">
               <template #modal-header>
                 <div class="centeredContainer mx-auto my-2">
-                  <b-icon-trash-fill scale="3" variant="light"/>
+                  <i class="bi bi-trash-fill text-light"></i>
                 </div>
               </template>
               <div class="d-block text-center">

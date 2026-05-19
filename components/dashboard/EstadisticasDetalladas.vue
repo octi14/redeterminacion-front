@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <h4 class="section-title">
       <i class="bi bi-bar-chart-fill mr-2"></i>
@@ -553,3 +553,4 @@ export default {
   max-width: 150px;
 }
 </style>
+

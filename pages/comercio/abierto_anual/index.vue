@@ -14,8 +14,8 @@
             @sliding-start="onSlideStart"
             @sliding-end="onSlideEnd"
             >
-                <b-carousel-slide img-src="../../../assets/2. Desktop períodos.png"></b-carousel-slide>
-                <b-carousel-slide img-src="../../../assets/1. Desktop requisitos.png"></b-carousel-slide>
+                <b-carousel-slide :img-src="carouselDesktopPeriodos"></b-carousel-slide>
+                <b-carousel-slide :img-src="carouselDesktopRequisitos"></b-carousel-slide>
             </b-carousel>
             </b-col>
         </b-row>
@@ -33,27 +33,27 @@
             @sliding-start="onSlideStart"
             @sliding-end="onSlideEnd"
             >
-                <b-carousel-slide img-src="../../../assets/1. Carrousel Mobile 1. AANUAL 2026.png"></b-carousel-slide>
-                <b-carousel-slide img-src="../../../assets/2. Carrousel Mobile 2. AANUAL 2026.png"></b-carousel-slide>
-                <b-carousel-slide img-src="../../../assets/3. Carrousel Mobile 3. AANUAL 2026.png"></b-carousel-slide>
+                <b-carousel-slide :img-src="carouselMobile1"></b-carousel-slide>
+                <b-carousel-slide :img-src="carouselMobile2"></b-carousel-slide>
+                <b-carousel-slide :img-src="carouselMobile3"></b-carousel-slide>
             </b-carousel>
           </div>
           <br />
           <b-card class="section-card" id="card-baja" v-bind:class="{ 'expanded': isCardExpanded(0) }">
             <h4 class="section-title" @click="toggleCard(0)">
               ¿Qué es el beneficio de Abierto Anual?
-              <b-icon-chevron-compact-down v-if="!isCardExpanded(0)"></b-icon-chevron-compact-down>
-              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
+              <i class="bi bi-chevron-compact-down"></i>
+              <i class="bi bi-chevron-compact-up"></i>
             </h4>
             <transition name="expand">
               <div v-show="isCardExpanded(0)">
                 <div class="li-row first-li">
-                  <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">
+                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content">
                     Es un <b>descuento del 60% </b>(sesenta por ciento) del valor <b>de la Tasa por Inspección de Seguridad e Higiene</b> correspondiente al año fiscal siguiente 2027, otorgado en virtud del Artículo 182 de la <a href="https://arvige.gob.ar/legislacion/pdf/12" class="text-success">Ordenanza Fiscal 2156/08 (TO2025).</a></div>
                 </div>
                 <hr>
                 <div class="li-row warning-li">
-                  <div class="li-icon"><b-icon-exclamation-circle-fill font-scale="0.75" class="icon-orange"></b-icon-exclamation-circle-fill></div><div class="li-content">
+                  <div class="li-icon"><i class="bi bi-exclamation-circle-fill" style="font-size: 0.75em"></i></div><div class="li-content">
                     El beneficio es una excepción al pago total y acreditarlo es de exclusiva responsabilidad del contribuyente.
                   </div>
                 </div>
@@ -63,8 +63,8 @@
           <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(1) }">
             <h4 class="section-title" @click="toggleCard(1)">
               ¿Quiénes son beneficiarios de Abierto Anual?
-              <b-icon-chevron-compact-down v-if="!isCardExpanded(1)"></b-icon-chevron-compact-down>
-              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
+              <i class="bi bi-chevron-compact-down"></i>
+              <i class="bi bi-chevron-compact-up"></i>
             </h4>
             <transition name="expand">
               <div v-show="isCardExpanded(1)">
@@ -73,11 +73,11 @@
                 </div>
                 <br>
                 <div class="li-row">
-                  <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">
+                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content">
                     Sus <b>establecimientos</b> hayan permanecido <b>con actividad</b> en forma <b>permanente y/o durante los fines de semana del ejercicio fiscal anterior</b> y <b>no posean deudas en concepto de Tasas, Derechos, Contribuciones o Multas con el municipio</b>.</div>
                 </div>
                 <div class="li-row">
-                  <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">
+                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content">
                     Sus establecimientos dispongan de la <b>Renovación o Reempadronamiento</b> comercial correspondiente.</div>
                 </div>
               </div>
@@ -86,17 +86,17 @@
           <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(2) }">
             <h4 class="section-title" @click="toggleCard(2)">
               ¿Quienes están excluidos del beneficio de Abierto Anual?
-              <b-icon-chevron-compact-down v-if="!isCardExpanded(2)"></b-icon-chevron-compact-down>
-              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
+              <i class="bi bi-chevron-compact-down"></i>
+              <i class="bi bi-chevron-compact-up"></i>
             </h4>
             <transition name="expand">
               <div v-show="isCardExpanded(2)">
                 <div class="li-row first-li">
                   <div class="li-content mb-1"> Están <b>excluidos</b> del Beneficio: </div></div>
-                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
                   <div class="li-content">Aquellos/as <b>contribuyentes que no hayan acreditado</b>, ante la evaluación del Municipio, <b>contar con un comercio con
                    actividad permanente y/o durante los fines de semana del ejercicio fiscal anterior</b>. </div></div>
-                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
                   <div class="li-content"> Los <b>Grandes Contribuyentes</b> incluidos en los Artículos 181 bis a 181 noveno de la <a href="https://arvige.gob.ar/legislacion/pdf/12" class="text-success">Ordenanza Fiscal 2156/08 c/ Mod</a>. </div>
                 </div>
               </div>
@@ -105,24 +105,24 @@
           <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(3) }">
             <h4 class="section-title" @click="toggleCard(3)">
               ¿Qué requisitos se necesitan para obtener el beneficio de Abierto Anual?
-              <b-icon-chevron-compact-down v-if="!isCardExpanded(3)"></b-icon-chevron-compact-down>
-              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
+              <i class="bi bi-chevron-compact-down"></i>
+              <i class="bi bi-chevron-compact-up"></i>
             </h4>
             <transition name="expand">
               <div v-show="isCardExpanded(3)">
-                <div class="li-row first-li"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                <div class="li-row first-li"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
                   <div class="li-content">Poseer una <b>Habilitación Comercial</b> en el Partido de Villa Gesell, con su <b>Renovación o Reempadronamiento comercial</b> correspondientes efectuados en tiempo y forma. </div>
                 </div>
-                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
                   <div class="li-content"><b>No</b> poseer <b>deudas en  concepto de Tasas, Derechos, Contribuciones o Multas con el Municipio</b>.</div>
                 </div>
-                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
                   <div class="li-content">No ser un contribuyente excluido del beneficio acorde Ord. 2156/08 c/ Mod. </div>
                 </div>
-                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
                   <div class="li-content"><b>Realizar</b> el procedimiento de <b>carga de datos</b> según lo previsto por la Autoridad de Aplicación.</div>
                 </div>
-                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
                   <div class="li-content">Haber permanecido con la <b>CUIT vigente durante todo el año fiscal en curso</b> -condición indispensable para no dar de baja la habilitación-.</div>
                 </div>
               </div>
@@ -131,36 +131,36 @@
           <b-card id="normas" class="section-card" v-bind:class="{ 'expanded': isCardExpanded(4) }">
             <h4 class="section-title" @click="toggleCard(4)">
               ¿Qué documentación se necesita para obtener el Beneficio de Abierto Anual?
-              <b-icon-chevron-compact-down v-if="!isCardExpanded(4)"></b-icon-chevron-compact-down>
-              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
+              <i class="bi bi-chevron-compact-down"></i>
+              <i class="bi bi-chevron-compact-up"></i>
             </h4>
             <transition name="expand">
               <div v-show="isCardExpanded(4)">
                 <div class="li-row first-li mb-1"><p>Una <b>factura digital</b> o una <b>fotografía de la factura emitida en formato papel</b>, correspondiente a los
                    siguientes tres períodos del año en curso: </p></div>
-                  <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                  <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
                     <div class="li-content"><p><b>Período 1 (2/5/26 al 31/5/26):</b> Se deberá cargar una factura emitida durante el mes de <i>Mayo</i>.</p></div>
                   </div>
-                  <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                  <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
                     <div class="li-content"><p><b>Período 2 (1/8/26 al 31/8/26):</b> Se deberá cargar una factura emitida durante el mes de <i>Agosto</i>.</p></div>
                   </div>
-                  <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                  <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
                     <div class="li-content"><p><b>Período 3 (1/10/26 al 31/10/26):</b> Se deberá cargar una factura emitida durante el mes de <i>Octubre</i>.</p></div>
                   </div>
-                  <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                  <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
                     <div class="li-content"><p><b>Período de rectificación (1/11/26 al 30/11/26):</b> Podrán acreditarse las facturas pendientes y rectificar aquellas marcadas como incorrectas.</p></div>
                   </div>
                   <b-card border-variant="warning" align="center" class="importante-card" >
                     <b-card-text>
                       <b-row >
                         <b-col md="2">
-                          <b-icon-exclamation-triangle variant="warning" font-scale="4"></b-icon-exclamation-triangle>
+                          <i class="bi bi-exclamation-triangle text-warning" style="font-size: 4em"></i>
                           <p class="li-title"><u><b>¡Importante!</b></u></p>
                         </b-col>
                         <b-col  md="10">
-                          <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Las <b>facturas</b> deberán ser <b>digitales</b> (en caso de tenerlas en formato papel <b>podés escanearlos o sacarles una foto</b>) y deben ser <b>legibles</b>. Pueden encontrarse en formato pdf o imagen y tener un peso máximo de 15Mb.</div></div>
-                          <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Los <b>periodos de recepción</b> de las facturas serán <b>definidos</b> por la <b>Autoridad de Aplicación</b> en el transcurso del año. Estos periodos <b>serán notificados al DFE</b> de la persona interesada <b>y publicitados en las vías oficiales</b> de comunicación <b>del Municipio</b>.</div></div>
-                          <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Las <b>facturas</b> deberán <b>corresponder a ventas efectivamente producidas en los períodos descriptos.</b></div></div>
+                          <div class="li-row"><div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div><div class="li-content">Las <b>facturas</b> deberán ser <b>digitales</b> (en caso de tenerlas en formato papel <b>podés escanearlos o sacarles una foto</b>) y deben ser <b>legibles</b>. Pueden encontrarse en formato pdf o imagen y tener un peso máximo de 15Mb.</div></div>
+                          <div class="li-row"><div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div><div class="li-content">Los <b>periodos de recepción</b> de las facturas serán <b>definidos</b> por la <b>Autoridad de Aplicación</b> en el transcurso del año. Estos periodos <b>serán notificados al DFE</b> de la persona interesada <b>y publicitados en las vías oficiales</b> de comunicación <b>del Municipio</b>.</div></div>
+                          <div class="li-row"><div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div><div class="li-content">Las <b>facturas</b> deberán <b>corresponder a ventas efectivamente producidas en los períodos descriptos.</b></div></div>
                         </b-col>
                       </b-row>
                     </b-card-text>
@@ -171,8 +171,8 @@
           <b-card id="datos" class="section-card" v-bind:class="{ 'expanded': isCardExpanded(5) }">
             <h4 class="section-title" @click="toggleCard(5)">
               ¿Cómo se realiza la carga y verificación de la documentación?
-              <b-icon-chevron-compact-down v-if="!isCardExpanded(5)"></b-icon-chevron-compact-down>
-              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
+              <i class="bi bi-chevron-compact-down"></i>
+              <i class="bi bi-chevron-compact-up"></i>
             </h4>
             <transition name="expand">
               <div v-show="isCardExpanded(5)">
@@ -206,13 +206,13 @@
                   </div>
                   <div class="li-content">
                     <p>Una vez cargada, <b>ARVIGE revisará</b> que <b>la factura</b> sea correcta.</p>
-                    <!-- <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="0.75" class="icon-orange" shift-v="3px"></b-icon-caret-right-fill></div>
+                    <!-- <div class="li-row"><div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 0.75em"></i></div>
                       <div class="li-content mini-content"><p>Si la <u>factura es correcta</u>, <b>no recibirás notificaciones en tu Domicilio Fiscal Electrónico (DFE)</b>. Para más información lee atentamente el paso 5.</p></div>
                     </div>
-                    <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="0.75" class="icon-orange" shift-v="3px"></b-icon-caret-right-fill></div>
+                    <div class="li-row"><div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 0.75em"></i></div>
                       <div class="li-content mini-content"><p>Si la <u>factura es incorrecta</u> o la carga fue errónea (por ejemplo, se subió una imagen donde la fecha no coincide con el período a acreditar) <b>se te notificará por DFE que deberás volver a efectuar la carga en un plazo de tiempo determinado</b>. Si no tenes constituido tu DFE podés iniciar el trámite enviando un mail a <a href="mailto:dirarvige@gesell.gob.ar" target="_blank" class="icon-green">dirarvige@gesell.gob.ar</a></p></div>
                     </div>
-                    <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="0.75" class="icon-orange" shift-v="3px"></b-icon-caret-right-fill></div>
+                    <div class="li-row"><div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 0.75em"></i></div>
                       <div class="li-content mini-content"><p><i>En caso que no dispongas de DFE no se te notificará el error y deberás continuar en el paso 5.</i></p></div>
                     </div> -->
                   </div>
@@ -223,16 +223,16 @@
                   </div>
                   <div class="li-content">
                     <p>Si la persona que solicita el beneficio desea <b>verificar el estado de carga de su boleta, podrá hacerlo en esta misma página</b>. Para eso, <b>deberá ingresar nuevamente los datos requeridos</b> y revisar en “carga de documentación” si la misma fue aceptada o rechazada:</p>
-                    <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="0.75" class="icon-orange" shift-v="3px"></b-icon-caret-right-fill></div>
+                    <div class="li-row"><div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 0.75em"></i></div>
                       <div class="li-content mini-content"><p>Si la <u>factura es correcta</u> podrá ver la fecha en la que fue verificada por ARVIGE.</p></div>
                     </div>
-                    <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="0.75" class="icon-orange" shift-v="3px"></b-icon-caret-right-fill></div>
+                    <div class="li-row"><div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 0.75em"></i></div>
                       <div class="li-content mini-content"><p>Si la <u>factura fue rechazada</u>, podrá visualizar en la página la información necesaria para la rectificación de la misma en el periodo fijado a esos efectos.</p></div>
                     </div>
                   </div>
                 </div>
                 <div class="li-row other-li">
-                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
                   <div class="li-content">
                     <p class="li-title">Para visualizar como realizar tu trámite, podés mirar este video tutorial</p>
                     <iframe width="560" height="315" src="https://www.youtube.com/embed/NKZWxjCh1l4?si=SCCPendq9R_daKRK" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -244,27 +244,27 @@
           <b-card id="datos" class="section-card" v-bind:class="{ 'expanded': isCardExpanded(5) }">
             <h4 class="section-title" @click="toggleCard(6)">
               Preguntas frecuentes
-              <b-icon-chevron-compact-down v-if="!isCardExpanded(6)"></b-icon-chevron-compact-down>
-              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
+              <i class="bi bi-chevron-compact-down"></i>
+              <i class="bi bi-chevron-compact-up"></i>
             </h4>
             <transition name="expand">
               <div v-show="isCardExpanded(6)">
                 <div class="li-row first-li">
-                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
                   <div class="li-content">
                     <p class="li-title">¿Qué sucede si mi comercio se encontraba cerrado por causas justificadas durante el período a acreditar?</p>
                     <p >En caso de no poder realizar el envío de alguna de las facturas en los períodos indicados (el establecimiento se encontraba cerrado por vacaciones, el comercio se encontraba en refacción ou otra causa justificada que haga que no se adecue a lo determinado en el Artículo citado en la Referencia) <u>deberá acreditarse la facturación completa (Resumen Z) efectuada el último día más próximo al que debió acreditarse la misma</u>. Por ejemplo: El local permaneció cerrado en Agosto por reparaciones; deberá presentarse el Resumen Z del 31 de Julio.</p>
                   </div>
                 </div>
                 <div class="li-row">
-                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
                   <div class="li-content">
                     <p class="li-title">¿Qué sucede si no envié a tiempo las tres facturas solicitadas?</p>
                     <p>En caso de no cumplirse con el envío de las 3 facturas solicitadas en los períodos indicados, podrán acreditarse durante el período de rectificación, que se extiende desde el 1 al 30 de noviembre del año en curso, siendo esta la última instancia de acreditación posible. <b>Extinguido el plazo no podrá reclamarse el beneficio.</b></p>
                   </div>
                 </div>
                 <div class="li-row">
-                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
                   <div class="li-content">
                     <p class="li-title">¿Qué sucede si fui categorizado/a como Gran Contribuyente?</p>
                     <p>Aquellos/as contribuyentes que accedieron a la recategorización como Grandes Contribuyentes no son pasibles de gozar del beneficio.</p>
@@ -285,14 +285,14 @@
      <b-modal v-model="showConfirmationPopup" hide-footer :header-bg-variant="'success'" centered>
         <template #modal-header>
           <div class="confirmation-popup-header">
-              <b-icon icon="exclamation-triangle" scale="2" variant="light" ></b-icon>
+              <i class="bi bi-exclamation-triangle text-light"></i>
             </div>
         </template>
         <div class="confirmation-popup-body">
           <h2 class="icon-orange"><b>IMPORTANTE</b></h2>
           <p>Antes de continuar tené en cuenta lo siguiente:</p>
           <div class="li-row">
-            <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Recordá que los documentos deben ser legibles, estar subidos en formato imagen o pdf y tener un peso máximo de 15 mb.</div>
+            <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div><div class="li-content">Recordá que los documentos deben ser legibles, estar subidos en formato imagen o pdf y tener un peso máximo de 15 mb.</div>
           </div>
           <div class="form-check">
               <input class="form-check-input" type="checkbox" id="documentCheckbox" v-model="documentCheckboxChecked"/>
@@ -312,14 +312,14 @@
       <template #modal-header>
         <div class="modal-info">
           <h5>
-              <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
+              <i class="bi bi-question-circle text-light"></i>
               Información Adicional
           </h5>
         </div>
             <button type="button" aria-label="Close" class="close" @click="showLibreDeudaPopup = false">×</button>
       </template>
       <div class="modal-info">
-        <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>En el encabezado de cada factura se indica si tu partida registra deuda o no lo hace. Hacé click en la imagen y verificá cómo se visualiza.</p>
+        <p><i class="bi bi-caret-right-fill"></i>En el encabezado de cada factura se indica si tu partida registra deuda o no lo hace. Hacé click en la imagen y verificá cómo se visualiza.</p>
         <div style="width: 100%">
           <a href="http://haciendavgesell.gob.ar/_nuxt/img/ej-libredeuda.78769c7.jpg" target="_blank"><img src="../../../assets/ej-libredeuda.jpg" width="100%" height="fit-content" /></a>
         </div>
@@ -329,7 +329,7 @@
     <b-modal v-model="showClosedPopup" hide-footer :header-bg-variant="'success'" centered   no-close-on-backdrop no-close-on-esc>
       <template #modal-header>
         <div class="closed-popup-header">
-            <b-icon icon="exclamation-triangle" scale="2" variant="light" ></b-icon>
+            <i class="bi bi-exclamation-triangle text-light"></i>
         </div>
             <button type="button" aria-label="Close" class="close" @click="showClosedPopup = false" style="position: absolute; right: 15px; top: 15px;">×</button>
       </template>
@@ -338,7 +338,7 @@
         <p >El plazo para acreditar las facturas del año 2025 ha expirado.</p>
 
         <div class="li-row">
-          <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Por cualquier reclamo comunicate con <a href="mailto:dirarvige@gesell.gob.ar" class="text-success">ARVIGE</a> para conocer los pasos a seguir.</div>
+          <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div><div class="li-content">Por cualquier reclamo comunicate con <a href="mailto:dirarvige@gesell.gob.ar" class="text-success">ARVIGE</a> para conocer los pasos a seguir.</div>
         </div>
 
         <div class="text-center mt-3">
@@ -354,9 +354,20 @@
 
   <script>
   import rubros from "@/plugins/rubros.js";
+  import carouselDesktopPeriodos from '~/assets/2. Desktop períodos.png'
+  import carouselDesktopRequisitos from '~/assets/1. Desktop requisitos.png'
+  import carouselMobile1 from '~/assets/1. Carrousel Mobile 1. AANUAL 2026.png'
+  import carouselMobile2 from '~/assets/2. Carrousel Mobile 2. AANUAL 2026.png'
+  import carouselMobile3 from '~/assets/3. Carrousel Mobile 3. AANUAL 2026.png'
+
   export default {
     data:function() {
       return {
+        carouselDesktopPeriodos,
+        carouselDesktopRequisitos,
+        carouselMobile1,
+        carouselMobile2,
+        carouselMobile3,
         slideDesktop: 0,
         slideMobile: 0,
         /** ms entre avances automáticos (desktop y mobile llevan índices separados) */
@@ -509,11 +520,11 @@
     padding-right: 0;
     box-sizing: border-box;
   }
-  .mobileCarrousel >>> .carousel {
+  .mobileCarrousel :deep(.carousel) {
     width: 100%;
   }
   /* Todas las placas visibles: img a ancho completo sin recortes raros */
-  .mobileCarrousel >>> .carousel-item img {
+  .mobileCarrousel :deep(.carousel-item img) {
     width: 100%;
     height: auto;
     display: block;

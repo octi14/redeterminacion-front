@@ -1,4 +1,4 @@
-const formatFile = (FileResponse) => ({
+﻿const formatFile = (FileResponse) => ({
   id: FileResponse._id,
   expediente: FileResponse.expediente,
   objeto: FileResponse.objeto,
@@ -21,7 +21,7 @@ const formatFile = (FileResponse) => ({
   createdAt: new Date(FileResponse.createdAt),
 })
 
-module.exports = {
+export default {
   getLatest: async (axios,
     //  { skip = 0, limit = 6 }
      ) => {
@@ -77,3 +77,4 @@ module.exports = {
     })
   },
 }
+

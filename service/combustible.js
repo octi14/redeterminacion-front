@@ -1,4 +1,4 @@
-const formatOrden = (OrdenResponse) => ({
+﻿const formatOrden = (OrdenResponse) => ({
   id: OrdenResponse._id,
   nroOrden: OrdenResponse.nroOrden,
   area: OrdenResponse.area,
@@ -31,7 +31,7 @@ const formatProveedor = (ProveedorResponse) => ({
   tiposCombustible: ProveedorResponse.tiposCombustible,
 })
 
-module.exports = {
+export default {
   getLatest: async (axios) => {
     const response = await axios.$get('/ordenesCompra')
     return response.data.map(formatOrden)
@@ -91,3 +91,4 @@ module.exports = {
     return response.data.map(formatProveedor)
   },
 }
+

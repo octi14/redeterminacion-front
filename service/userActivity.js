@@ -1,4 +1,4 @@
-const formatUserActivity = (activityResponse) => ({
+﻿const formatUserActivity = (activityResponse) => ({
   id: activityResponse._id,
   userId: activityResponse.userId,
   actionType: activityResponse.actionType,
@@ -9,7 +9,7 @@ const formatUserActivity = (activityResponse) => ({
   deviceInfo: activityResponse.deviceInfo || {}
 })
 
-module.exports = {
+export default {
   // Todas las actividades (sin filtro de fecha)
   getAll: async (axios) => {
     const response = await axios.$get('/user-activities')
@@ -40,3 +40,4 @@ module.exports = {
     return response.data.map(formatUserActivity)
   }
 }
+

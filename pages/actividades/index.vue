@@ -146,7 +146,8 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useUserActivitiesStore } from '~/stores/userActivities'
 import ActiveSessions from '@/components/userActivity/ActiveSessions.vue'
 
 export default {
@@ -179,7 +180,7 @@ export default {
   },
 
   computed: {
-    ...mapState('userActivities', ['all', 'recent', 'filtered']),
+    ...mapState(useUserActivitiesStore, ['all', 'recent', 'filtered']),
 
     breadcrumbItems() {
       return [
@@ -239,7 +240,7 @@ export default {
   },
 
   methods: {
-    ...mapActions('userActivities', ['getAll', 'getLastDays', 'getFiltered']),
+    ...mapActions(useUserActivitiesStore, ['getAll', 'getLastDays', 'getFiltered']),
 
     async loadActivities() {
       await this.getLastDays({ days: 30 })

@@ -1,4 +1,4 @@
-const formatFile = (FileResponse) => ({
+﻿const formatFile = (FileResponse) => ({
   id: FileResponse._id,
   cuit: FileResponse.cuit,
   nroLegajo: FileResponse.nroLegajo,
@@ -23,7 +23,7 @@ const formatFile = (FileResponse) => ({
     createdAt: new Date(FileResponse.createdAt),
   })
 
-  module.exports = {
+  export default {
     getAll: async (axios,
       //  { skip = 0, limit = 6 }
        ) => {
@@ -101,3 +101,4 @@ const formatFile = (FileResponse) => ({
     //   return filesResponse.data.map(formatFile)
     // },
   }
+

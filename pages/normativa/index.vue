@@ -11,7 +11,7 @@
             @sliding-start="onSlideStart"
             @sliding-end="onSlideEnd"
             >
-                <b-carousel-slide img-src="../../assets/banner-normativa.png"></b-carousel-slide>
+                <b-carousel-slide :img-src="bannerNormativa"></b-carousel-slide>
             </b-carousel>
         </div>
         <div class="col-10 mobileCarrousel" style="margin: auto; margin-top: 2rem">
@@ -24,7 +24,7 @@
             @sliding-start="onSlideStart"
             @sliding-end="onSlideEnd"
             >
-                <b-carousel-slide img-src="../../assets/banner-normativa-mobile.png"></b-carousel-slide>
+                <b-carousel-slide :img-src="bannerNormativaMobile"></b-carousel-slide>
             </b-carousel>
         </div>
     <div class="mt-5">
@@ -52,13 +52,27 @@
 </template>
 
 <script>
+import bannerNormativa from '~/assets/banner-normativa.png'
+import bannerNormativaMobile from '~/assets/banner-normativa-mobile.png'
+
 export default {
+  data() {
+    return {
+      slide: 0,
+      bannerNormativa,
+      bannerNormativaMobile,
+    }
+  },
   computed: {
     adminHacienda() {
       return this.$store.state.user.admin == "hacienda" || this.$store.state.user.admin == "master";
-    }
-  }
-};
+    },
+  },
+  methods: {
+    onSlideStart() {},
+    onSlideEnd() {},
+  },
+}
 </script>
 
 <style scoped>

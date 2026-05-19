@@ -4,7 +4,7 @@
     <div class="form mx-auto mt-5">
       <b-form-group class="col-5 mx-6 mx-auto mt-4" label-class="text-success h6">
         <label for="inputCUIT" class="bv-no-focus-ring col-form-label pt-0 text-success h6">
-          <b-icon-search></b-icon-search> Buscar por CUIT
+          <i class="bi bi-search"></i> Buscar por CUIT
         </label>
         <b-form-input
           id="inputCUIT"
@@ -23,7 +23,7 @@
     <b-table per-page="10" head-row-variant="warning" class="col-md-10 white col-sm-8 mx-auto mt-4 shadow-card" :items="paginatedItems" :fields="fields">
       <template #cell(detalles)="row">
         <b-button variant="outline-secondary" size="sm" title="Editar" @click="editarMaestro(row.item)">
-          <b-icon-pen size="sm"/>
+          <i class="bi bi-pen"></i>
         </b-button>
       </template>
     </b-table>

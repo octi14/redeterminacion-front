@@ -1,4 +1,4 @@
-@import "~bootswatch/dist/minty/variables";
+@import "bootswatch/dist/minty/variables";
 
 $primary: #2A43A1;
 $secondary: #daa511;
@@ -7,9 +7,8 @@ $danger: #cc0025;
 $warning: #cbc508;
 $dark: #000000;
 
-// Clases para el color de estado
 .estado-danger {
-  color: $danger; // Ajusta el color del texto según tu diseño
+  color: $danger;
 }
 
 // $navbar-dark-color: rgba($white, .8);
@@ -25,10 +24,8 @@ $pagination-active-bg: $secondary;
 $dropdown-bg: $success;
 $dropdown-link-color: $white;
 
-@import '~bootstrap/scss/bootstrap.scss';
-@import "~bootswatch/dist/minty/bootswatch";
-
-@import '~bootstrap-vue/src/index.scss';
+@import "bootstrap/scss/bootstrap";
+@import "bootswatch/dist/minty/bootswatch";
 
 @import "./custom";
 @import "./dashboard";

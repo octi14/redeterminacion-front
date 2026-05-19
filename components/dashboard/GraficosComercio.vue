@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <h4 class="section-title">
       <i class="bi bi-pie-chart-fill mr-2"></i>
@@ -137,7 +137,7 @@
 </template>
 
 <script>
-import Chart from '~/plugins/chart.js'
+import Chart from '~/utils/chart-setup.js'
 
 export default {
   name: 'GraficosComercio',
@@ -749,3 +749,4 @@ export default {
   width: 100%;
 }
 </style>
+

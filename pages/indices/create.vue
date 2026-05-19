@@ -4,7 +4,7 @@
     <div class="container col-md-4 col-sm-10 card shadow-card my-5">
       <div class="col ml-5 mt-5">
         <h4>
-          <b-icon-arrow-down-left-square class="icon-orange" /> |
+          <i class="bi bi-arrow-down-left-square"></i> |
           <b class="landing-text"> Crear índice </b>
         </h4>
       </div>

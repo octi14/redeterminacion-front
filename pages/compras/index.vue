@@ -6,7 +6,7 @@
         <a href="https://hacienda.gesell.gob.ar/compras-y-suministros.html" target="_blank" class="col-md-5">
           <b-button variant="outline" class="d-flex align-items-center w-100 white shadow-card">
             <div class="me-3">
-              <b-icon-receipt class="mx-3 my-3 landing-icon" />
+              <i class="bi bi-receipt"></i>
             </div>
             <div class="col text-left my-auto">
               <h3 class="landing-text"><b> Licitaciones públicas</b></h3>

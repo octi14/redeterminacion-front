@@ -7,7 +7,7 @@
         <h4 class="section-title mt-4"> ¿Qué documentación necesito para registrarme como Proveedor Municipal? </h4>
         <div class="li-row ml-3 mt-3 mb-3">
           <div class="row">
-            <b-icon-caret-right-fill font-scale="1" class="icon-orange icon mx-2"></b-icon-caret-right-fill>
+            <i class="bi bi-caret-right-fill" style="font-size: 1em"></i>
             <h6> Para realizar la inscripción como Proveedor Municipal deberás completar la
               <a target="_blank" href="https://www.google.com/url?q=https://drive.google.com/file/d/1lkEj6eRbXCGcRyD54ibEssMILgMJdSG2/view?usp%3Dsharing&sa=D&source=docs&ust=1696884793738508&usg=AOvVaw1GzSOcReLrdMhQdS-pltSr">
                 Planilla de Inscripción de Proveedores
@@ -16,20 +16,20 @@
             </h6>
           </div>
           <div class="row">
-            <b-icon-caret-right-fill font-scale="1" class="icon-orange icon mx-2"></b-icon-caret-right-fill>
+            <i class="bi bi-caret-right-fill" style="font-size: 1em"></i>
             <h6> Luego, deberás entregar la planilla y documentación original en el Departamento de Compras y Licitaciones municipal. </h6>
           </div>
         </div>
         <h4 class="section-title"> ¿Cuál es el valor de la Inscripción al Registro de Proveedores? </h4>
         <div class="li-row mt-3 ml-3 mb-3">
           <div class="row">
-            <b-icon-caret-right-fill font-scale="1" class="icon-orange icon mx-2"></b-icon-caret-right-fill>
+            <i class="bi bi-caret-right-fill" style="font-size: 1em"></i>
             <h6> El valor de la inscripción corresponde a lo indicado en el <a href="https://arvige.gob.ar/legislacion/pdf/12">
              Art. 242 de la Ordenanza Municipal 2156/08 (TO 2024). </a>
              </h6>
           </div>
           <div class="row">
-            <b-icon-caret-right-fill font-scale="1" class="icon-orange icon mx-2"></b-icon-caret-right-fill>
+            <i class="bi bi-caret-right-fill" style="font-size: 1em"></i>
             <h6> También puede consultarse telefónicamente o por correo electrónico en el Departamento de Compras municipal. </h6>
           </div>
 
@@ -37,24 +37,24 @@
         <h4 class="section-title"> ¿Cómo realizo el pago de Inscripción al Registro de Proveedores? </h4>
         <div class="li-row mt-3 mb-3 ml-3">
           <div class="row">
-            <b-icon-caret-right-fill font-scale="1" class="icon-orange icon mx-2"></b-icon-caret-right-fill>
+            <i class="bi bi-caret-right-fill" style="font-size: 1em"></i>
             <h6> Podés realizar el pago a través de depósito o transferencia. Consultá los <b>Datos Bancarios</b> haciendo </h6>
             <h6 class="ml-1"><a target="blank" href="https://docs.google.com/document/d/1tNkM1aft_U6j1ibSLBqxmi77BjvjZPl54wjtkeVSqWU/"> click aquí.</a></h6>
           </div>
           <div class="row">
-            <b-icon-caret-right-fill font-scale="1" class="icon-orange icon mx-2"></b-icon-caret-right-fill>
+            <i class="bi bi-caret-right-fill" style="font-size: 1em"></i>
               <h6> Para finalizar, enviá el comprobante de pago a la Tesorería Municipal.</h6>
           </div>
         </div>
         <h4 class="section-title"> Contactos útiles </h4>
         <div class="li-row mt-3 ml-3">
           <div class="row">
-            <b-icon-caret-right-fill font-scale="1" class="icon-orange icon mx-2" />
+            <i class="bi bi-caret-right-fill" style="font-size: 1em"></i>
             <h6><b> Departamento de Compras </b> </h6>
           </div>
           <h6> Tel: 02255-478028/79 | Horario de Atención: Lunes a Viernes de 08.30 a 13.30 hs </h6>
           <div class="row mt-4">
-            <b-icon-caret-right-fill font-scale="1" class="icon-orange icon mx-2" />
+            <i class="bi bi-caret-right-fill" style="font-size: 1em"></i>
             <h6><b> Tesorería municipal</b> </h6>
           </div>
           <h6> tesoreriavg@gesell.gob.ar | Tel: 02255-478034 </h6>

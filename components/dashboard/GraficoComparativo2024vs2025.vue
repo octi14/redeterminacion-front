@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="grafico-comparativo-2024-2025">
     <b-card class="mb-4 shadow-sm">
       <template #header>
@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import Chart from '~/plugins/chart.js'
+import Chart from '~/utils/chart-setup.js'
 
 export default {
   name: 'GraficoComparativo2024vs2025',
@@ -484,3 +484,4 @@ canvas {
   width: 100% !important;
 }
 </style>
+

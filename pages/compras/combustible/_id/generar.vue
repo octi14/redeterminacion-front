@@ -46,7 +46,7 @@
                     class="sugerencia-item sugerencia-personalizada"
                     @click="abrirPatentePersonalizada"
                   >
-                    <b-icon-plus-circle class="mr-2" />
+                    <i class="bi bi-plus-circle"></i>
                     Ingresar patente personalizada...
                   </div>
                 </div>
@@ -94,7 +94,7 @@
     <b-modal id="confirmacionModal" hide-footer header-bg-variant="success" title-class="text-center text-light" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
-          <b-icon-check-circle scale="2.5" class="my-3" variant="light"/>
+          <i class="bi bi-check-circle text-light"></i>
         </div>
       </template>
       <p class="h5 text-center font-weight-bold text-dark mt-4 mb-5">Los vales de combustible
@@ -120,7 +120,7 @@
     <b-modal v-model="showPatentePersonalizada" hide-footer header-bg-variant="primary" title-class="text-center text-light" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
-          <b-icon-car-front-fill scale="2.5" class="my-3" variant="light"/>
+          <i class="bi bi-car-front-fill text-light"></i>
         </div>
       </template>
       <h4 class="text-center text-primary mb-4">Patente Personalizada</h4>

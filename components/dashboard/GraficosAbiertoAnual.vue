@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <h4 class="section-title">
       <i class="bi bi-bar-chart-fill mr-2"></i>
@@ -116,7 +116,7 @@
 </template>
 
 <script>
-import Chart from '~/plugins/chart.js'
+import Chart from '~/utils/chart-setup.js'
 
 export default {
   name: 'GraficosAbiertoAnual',
@@ -398,3 +398,4 @@ export default {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 </style>
+

@@ -30,7 +30,7 @@
       </div>
       <!-- <div class="row no-gutters">
         <b-button @click="onDescargarHabilitacion(); registrarActividad('Descargar Trámite', 'Trámite Descargado', pago.nroTramite)" v-if="adminComercio || adminArvige || adminModernizacion" variant="success" class="btn-4 mx-auto mt-3 mx-1">
-          <b-icon icon="download" class="mr-1"></b-icon> Descargar trámite
+          <i class="bi bi-download"></i> Descargar trámite
         </b-button>
       </div> -->
 
@@ -122,7 +122,7 @@
               </p>
               <p class="col col-complementary" role="complementary">
                 <b-button size="sm" @click="openDocumento(documento, nombreDocumento)" variant="outline-primary">
-                  <b-icon icon="eye" scale="1.2"></b-icon>
+                  <i class="bi bi-eye"></i>
                   Ver
                 </b-button>
               </p>
@@ -149,7 +149,7 @@
     <b-modal v-model="showRejectPopup" hide-footer :header-bg-variant="'danger'" centered>
         <template #modal-header>
           <div class="confirmation-popup-header mx-auto">
-            <b-icon-envelope scale="2" variant="light" />
+            <i class="bi bi-envelope text-light"></i>
           </div>
         </template>
         <div class="confirmation-popup-body">
@@ -182,7 +182,7 @@
     <b-modal v-model="showPrevApprove" hide-footer :header-bg-variant="'secondary'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
-          <b-icon-check-circle scale="2" variant="light" class="my-2" />
+          <i class="bi bi-check-circle text-light"></i>
         </div>
       </template>
       <div class="confirmation-popup-body">
@@ -215,7 +215,7 @@
     <b-modal v-model="showApprove" hide-footer :header-bg-variant="'success'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
-          <b-icon-envelope scale="2" variant="light" />
+          <i class="bi bi-envelope text-light"></i>
         </div>
       </template>
       <div class="confirmation-popup-body">
@@ -233,7 +233,7 @@
     <b-modal v-model="showRestoreDefault" hide-footer :header-bg-variant="'secondary'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
-          <b-icon-exclamation-triangle scale="2" variant="light" />
+          <i class="bi bi-exclamation-triangle text-light"></i>
         </div>
       </template>
       <div class="confirmation-popup-body text-center">
@@ -267,11 +267,11 @@
     <!-- Modal para archivos HEIC -->
     <b-modal v-model="showHeicModal" header-bg-variant="warning" title="Archivo no compatible" title-class="text-light" hide-footer centered>
       <div class="text-center">
-        <b-icon-exclamation-triangle-fill variant="warning" scale="3" class="my-3"></b-icon-exclamation-triangle-fill>
+        <i class="bi bi-exclamation-triangle-fill text-warning"></i>
         <h5 class="my-3">Este archivo no pudo ser abierto desde el navegador</h5>
         <p class="mb-4">El formato HEIC no es compatible con tu navegador.<br/> Podés descargar el archivo para visualizarlo en tu dispositivo.</p>
         <b-button @click="downloadHeicFile" variant="success" class="mr-2 btn-download-heic">
-          <b-icon-download></b-icon-download> Descargar
+          <i class="bi bi-download"></i> Descargar
         </b-button>
         <b-button @click="showHeicModal = false" variant="secondary">
           Cerrar

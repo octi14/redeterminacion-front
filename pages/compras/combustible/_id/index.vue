@@ -24,21 +24,21 @@
       <!--Datos de orden de compra-->
       <b-card no-body class="container big-container col-md-7 col-sm-10 shadow-card mt-4 mx-auto">
         <div class="container mt-4">
-          <h5 class="row">
-            <b-icon-receipt class="icon-orange mt-4 ml-4" scale="1.75"/>
+          <div class="row align-items-center">
+            <i class="bi bi-receipt"></i>
             <a class="ml-3 mr-2 mt-2 separador" > | </a>
-            <h2 class="text-green mt-3"><b>Datos de orden de compra</b></h2>
-          </h5>
+            <h2 class="text-green mt-3 mb-0"><b>Datos de orden de compra</b></h2>
+          </div>
           <hr />
         </div>
         <div class="container mx-auto">
           <div class="row mt-4 mx-5">
-            <b-icon-caret-right-fill class="icon-orange mt-1" scale="1.25"/>
+            <i class="bi bi-caret-right-fill"></i>
             <h5 class="text-dark mx-2">Área asignada: </h5>
             <h5 class="text-right text-gray font-weight-bold" style="font-size: 1.75rem; line-height: 1.5rem">{{ orden.area }}</h5>
           </div>
           <div class="row no-gutters mt-1 mx-5">
-            <b-icon-caret-right-fill class="icon-orange mt-1" scale="1.25"/>
+            <i class="bi bi-caret-right-fill"></i>
             <h5 class="text-dark mx-2">Proveedor:</h5>
             <h5 class="text-right text-gray font-weight-bold" style="font-size: 1.75rem; line-height: 1.5rem">{{ orden.proveedor }}</h5>
           </div>
@@ -97,10 +97,10 @@
         <div class="container big-container col-md-7 col-sm-10 card shadow-card mt-4 mb-3 mx-auto">
           <!-- Título -->
           <div class="col mx-auto">
-            <h5 class="row mt-3 ml-1">
-              <b-icon-receipt class="icon-orange mt-4 ml-4" scale="2"/>
+            <div class="row align-items-center mt-3 ml-1">
+              <i class="bi bi-receipt"></i>
               <a class="ml-3 mr-2 mt-2 separador" > | </a>
-              <h2 class="text-green mt-3"><b>Vales emitidos</b></h2>
+              <h2 class="text-green mt-3 mb-0"><b>Vales emitidos</b></h2>
               <div class="ml-auto mr-4 mt-2 d-flex align-items-center">
                 <!-- Selector de vista -->
                 <div class="btn-group mr-2" role="group">
@@ -110,7 +110,7 @@
                     @click="cambiarVistaVales('grid')"
                     title="Vista cuadrícula"
                   >
-                    <b-icon-grid/>
+                    <i class="bi bi-grid"></i>
                   </b-button>
                   <b-button
                     :variant="vistaVales === 'list' ? 'primary' : 'outline-secondary'"
@@ -118,7 +118,7 @@
                     @click="cambiarVistaVales('list')"
                     title="Vista lista"
                   >
-                    <b-icon-list/>
+                    <i class="bi bi-list"></i>
                   </b-button>
                 </div>
                 <b-button
@@ -127,7 +127,7 @@
                   class="mr-2"
                   @click="exportarValesAExcel"
                 >
-                  <b-icon-file-earmark-spreadsheet-fill/>
+                  <i class="bi bi-file-earmark-spreadsheet-fill"></i>
                   Exportar a Excel
                 </b-button>
                 <b-button
@@ -135,12 +135,12 @@
                   size="sm"
                   @click="toggleOcultarAnulados"
                 >
-                  <b-icon-eye-slash v-if="ocultarAnulados"/>
-                  <b-icon-eye v-else/>
+                  <i class="bi bi-eye-slash"></i>
+                  <i class="bi bi-eye"></i>
                   {{ ocultarAnulados ? 'Mostrar anulados' : 'Ocultar anulados' }}
                 </b-button>
               </div>
-            </h5>
+            </div>
             <hr />
           </div>
 
@@ -151,24 +151,24 @@
               <!-- Botón para deseleccionar todos -->
               <div class="text-center mx-3 my-3" v-if="valesSeleccionados.length">
                 <button class="btn btn-secondary" @click="deseleccionarTodos">
-                  <b-icon-x-circle/> Deseleccionar todos
+                  <i class="bi bi-x-circle"></i> Deseleccionar todos
                 </button>
               </div>
               <!-- Botón para reimprimir seleccionados -->
               <div class="text-center mx-3 my-3" v-if="valesSeleccionados.length">
                 <button class="btn btn-primary" @click="abrirModalReimpresion">
-                  <b-icon-printer-fill/> Reimprimir seleccionados ({{ valesSeleccionados.length }})
+                  <i class="bi bi-printer-fill"></i> Reimprimir seleccionados ({{ valesSeleccionados.length }})
                 </button>
               </div>
               <!-- Botón para reimprimir seleccionados -->
               <div class="text-center my-3" v-if="valesSeleccionados.length">
                 <button class="btn btn-success" @click="abrirModalUtilizarVales">
-                  <b-icon-check/> Marcar como utilizados ({{ valesSeleccionados.length }})
+                  <i class="bi bi-check"></i> Marcar como utilizados ({{ valesSeleccionados.length }})
                 </button>
               </div>
               <div class="text-center mx-3 my-3" v-if="valesSeleccionados.length">
                 <button class="btn btn-danger" @click="abrirModalEliminacionMasiva">
-                  <b-icon-trash/> Eliminar seleccionados ({{ valesSeleccionados.length }})
+                  <i class="bi bi-trash"></i> Eliminar seleccionados ({{ valesSeleccionados.length }})
                 </button>
               </div>
             </div>
@@ -210,18 +210,18 @@
                         <div class="row d-flex justify-content-between align-items-center vale-card-header">
                           <div class="d-flex row align-items-center">
                             <input v-if="!vale.consumido && !vale.anulado" type="checkbox" class="vale-checkbox-input mr-2" :value="vale.id" v-model="valesSeleccionados" />
-                            <b-icon-x-square v-else disabled="disabled" class="mr-2 vale-icon-disabled"></b-icon-x-square>
+                            <i class="bi bi-x-square"></i>
                             <h5 class="mb-0 ml-1 font-weight-700 text-gray vale-card-title">VALE N° {{ vale.nro_vale }}</h5>
                           </div>
                           <div v-if="adminCompras && !vale.anulado" class="d-flex vale-card-actions">
                             <button v-if="!vale.consumido" class="btn btn-success vale-card-btn" title="Marcar como utilizado" @click="confirmarMarcarUtilizado(vale, (currentPage - 1) * itemsPerPage + index)">
-                              <b-icon-check scale="0.85" />
+                              <i class="bi bi-check"></i>
                             </button>
                             <button v-if="!vale.consumido" class="btn btn-primary vale-card-btn" title="Reimprimir" @click="confirmarReimpresion(vale, index)">
-                              <b-icon-printer-fill scale="0.85" />
+                              <i class="bi bi-printer-fill"></i>
                             </button>
                             <button v-if="!vale.consumido" class="btn btn-danger vale-card-btn" title="Eliminar" @click="confirmarEliminacion(vale.id)">
-                              <b-icon-trash-fill scale="0.85" />
+                              <i class="bi bi-trash-fill"></i>
                             </button>
                           </div>
                         </div>
@@ -284,7 +284,7 @@
                           v-model="valesSeleccionados"
                           class="vale-checkbox"
                         />
-                        <b-icon-x-square v-else disabled="disabled" class="text-muted"></b-icon-x-square>
+                        <i class="bi bi-x-square"></i>
                       </td>
                       <td class="font-weight-bold">{{ vale.nro_vale }}</td>
                       <td>{{ vale.tipoCombustible }}</td>
@@ -305,7 +305,7 @@
                             title="Marcar como utilizado"
                             @click="confirmarMarcarUtilizado(vale, (currentPage - 1) * itemsPerPage + index)"
                           >
-                            <b-icon-check />
+                            <i class="bi bi-check"></i>
                           </button>
                           <button
                             v-if="!vale.consumido"
@@ -313,7 +313,7 @@
                             title="Reimprimir"
                             @click="confirmarReimpresion(vale, index)"
                           >
-                            <b-icon-printer-fill />
+                            <i class="bi bi-printer-fill"></i>
                           </button>
                           <button
                             v-if="!vale.consumido"
@@ -321,7 +321,7 @@
                             title="Eliminar"
                             @click="confirmarEliminacion(vale.id)"
                           >
-                            <b-icon-trash-fill />
+                            <i class="bi bi-trash-fill"></i>
                           </button>
                         </div>
                       </td>
@@ -360,8 +360,8 @@
     <b-modal id="modalUtilizacion" header-class="justify-content-center" title-class="text-light" header-bg-variant="success" hide-footer centered>
       <template #modal-header>
         <b-iconstack class="my-3">
-          <b-icon-circle scale="2.7" variant="light"/>
-          <b-icon-exclamation scale="2" variant="light" />
+          <i class="bi bi-circle text-light"></i>
+          <i class="bi bi-exclamation text-light"></i>
         </b-iconstack>
       </template>
       <p class="h5 text-center mt-3 mb-4 font-weight-500 text-dark">
@@ -378,8 +378,8 @@
     <b-modal id="modalReimpresion" header-class="justify-content-center" title-class="text-light" header-bg-variant="success" hide-footer centered>
       <template #modal-header>
         <b-iconstack class="my-3">
-          <b-icon-circle scale="2.7" variant="light"/>
-          <b-icon-printer-fill scale="1.5" variant="light" />
+          <i class="bi bi-circle text-light"></i>
+          <i class="bi bi-printer-fill text-light"></i>
         </b-iconstack>
       </template>
       <p class="h5 text-center mt-3 mb-4 font-weight-500 text-dark">Estás a punto de reimprimir el vale.</p>
@@ -395,8 +395,8 @@
     <b-modal id="modalReimpresionMasiva" header-class="justify-content-center" header-bg-variant="success" title-class="text-light text-center" hide-footer centered>
       <template #modal-header>
         <b-iconstack class="my-3">
-          <b-icon-circle scale="2.7" variant="light"/>
-          <b-icon-printer-fill scale="1.5" variant="light" />
+          <i class="bi bi-circle text-light"></i>
+          <i class="bi bi-printer-fill text-light"></i>
         </b-iconstack>
       </template>
       <p class="h5 text-center mt-3 mb-4 font-weight-500 text-dark">Estás a punto de reimprimir los vales.</p>
@@ -412,8 +412,8 @@
     <b-modal id="modalUtilizacionMasiva" header-class="justify-content-center" header-bg-variant="success" title-class="text-light text-center" hide-footer centered>
       <template #modal-header>
         <b-iconstack class="my-3">
-          <b-icon-circle scale="2.7" variant="light"/>
-          <b-icon-exclamation scale="1.9" variant="light" />
+          <i class="bi bi-circle text-light"></i>
+          <i class="bi bi-exclamation text-light"></i>
         </b-iconstack>
       </template>
       <p class="h5 text-center mt-3 my-4 text-dark font-weight-500">¿Estás seguro/a de que querés marcar los vales seleccionados como utilizados?</p>
@@ -428,8 +428,8 @@
     <b-modal id="modalEliminacionMasiva" header-class="justify-content-center" header-bg-variant="danger" title-class="text-light text-center" hide-footer centered>
       <template #modal-header>
         <b-iconstack class="my-3">
-          <b-icon-circle scale="2.7" variant="light"/>
-          <b-icon-exclamation scale="1.9" variant="light" />
+          <i class="bi bi-circle text-light"></i>
+          <i class="bi bi-exclamation text-light"></i>
         </b-iconstack>
       </template>
       <p class="h5 text-center mt-3 my-4 text-dark font-weight-500">¿Estás seguro/a de que querés eliminar los vales seleccionados?</p>
@@ -449,8 +449,8 @@
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
           <b-iconstack>
-            <b-icon-circle scale="3" variant="light"/>
-            <b-icon-trash-fill scale="2" variant="light"/>
+            <i class="bi bi-circle text-light"></i>
+            <i class="bi bi-trash-fill text-light"></i>
           </b-iconstack>
         </div>
       </template>
@@ -466,8 +466,8 @@
     <b-modal v-model="modalEliminacion" header-class="justify-content-center" title-class="text-light text-center" header-bg-variant="danger" hide-footer centered>
       <template #modal-header>
         <b-iconstack class="my-3">
-          <b-icon-circle scale="2.7" variant="light"/>
-          <b-icon-trash-fill scale="1.5" variant="light" />
+          <i class="bi bi-circle text-light"></i>
+          <i class="bi bi-trash-fill text-light"></i>
         </b-iconstack>
       </template>
       <p class="h5 text-center mt-3 mb-4 font-weight-500 text-dark">Estás a punto de eliminar el vale.</p>
@@ -487,8 +487,8 @@
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
           <b-iconstack>
-            <b-icon-circle scale="3" variant="light"/>
-            <b-icon-trash-fill scale="2" variant="light"/>
+            <i class="bi bi-circle text-light"></i>
+            <i class="bi bi-trash-fill text-light"></i>
           </b-iconstack>
         </div>
       </template>
@@ -504,8 +504,8 @@
     <b-modal id="modalUtilizacionSuccess" v-model="modalModificado" header-class="justify-content-center" header-bg-variant="success" hide-footer centered>
       <template #modal-header>
         <b-iconstack class="my-3">
-          <b-icon-circle scale="2.7" variant="light"/>
-          <b-icon-check scale="2" variant="light"/>
+          <i class="bi bi-circle text-light"></i>
+          <i class="bi bi-check text-light"></i>
         </b-iconstack>
       </template>
       <p class="h5 mt-3 text-center font-weight-500">Vale de combustible modificado.</p>

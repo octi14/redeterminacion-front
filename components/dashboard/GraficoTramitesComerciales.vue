@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="grafico-tramites-comerciales">
     <div class="header-section">
       <h4 class="section-title">
@@ -170,7 +170,7 @@
 </template>
 
 <script>
-import Chart from '~/plugins/chart.js'
+import Chart from '~/utils/chart-setup.js'
 
 export default {
   name: 'GraficoTramitesComerciales',
@@ -523,3 +523,4 @@ export default {
   }
 }
 </style>
+

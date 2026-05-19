@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="combustible-por-area">
     <div class="header-section">
       <h4 class="section-title">
@@ -286,3 +286,4 @@ export default {
   }
 }
 </style>
+

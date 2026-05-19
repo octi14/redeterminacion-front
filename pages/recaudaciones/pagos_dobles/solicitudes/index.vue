@@ -6,7 +6,7 @@
       <b-row>
         <b-form-group class="col-4 mx-6 mx-auto mt-4" label-class="text-success h6">
           <label for="inputCUIT" class="bv-no-focus-ring col-form-label pt-0 text-success h6">
-            <b-icon-search></b-icon-search> Buscar por CUIT
+            <i class="bi bi-search"></i> Buscar por CUIT
           </label>
           <b-form-input
             id="inputCUIT"
@@ -17,7 +17,7 @@
           />
         </b-form-group>
         <b-form-group class="col-4 mx-6 mx-auto mt-4" label-class="text-success h6">
-          <label for="selectedEstado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><b-icon-funnel-fill></b-icon-funnel-fill> Filtrar por Estado</label>
+          <label for="selectedEstado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><i class="bi bi-funnel-fill"></i> Filtrar por Estado</label>
           <b-form-select plain v-model="selectedEstado">
             <option value="">Todos</option>
             <option v-for="estado in estados" :value="estado" :key="estado">{{ estado }}</option>
@@ -38,13 +38,13 @@
       <template #cell(detalles)="row">
         <NuxtLink :to="{ name: 'recaudaciones-pagos_dobles-solicitudes-id', params: { id: row.item.id } }" @click.native="registrarActividad('Abrir Trámite', 'Trámite nro: ' + row.item.nroTramite)">
           <b-button variant="outline-secondary" size="sm" title="Editar">
-            <b-icon-pen/>
+            <i class="bi bi-pen"></i>
           </b-button>
         </NuxtLink>
       </template>
       <template #cell(observaciones)="row">
         <b-button v-if="row.item.observaciones && row.item.observaciones != ''" @click="onShowObservaciones(row.item.id)" variant="outline-primary" size="sm" title="Observaciones">
-          <b-icon-eye/>
+          <i class="bi bi-eye"></i>
         </b-button>
       </template>
     </b-table>

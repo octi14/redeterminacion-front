@@ -2,7 +2,7 @@
   <div class="active-sessions">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h4 class="mb-0">
-        <b-icon-people-fill class="mr-2" />
+        <i class="bi bi-people-fill"></i>
         Sesiones Activas
       </h4>
       <div class="d-flex align-items-center">
@@ -15,7 +15,7 @@
           @click="refreshSessions"
           :disabled="loading"
         >
-          <b-icon-arrow-clockwise :class="{ 'spinning': loading }" />
+          <i class="bi bi-arrow-clockwise"></i>
           Actualizar
         </b-button>
       </div>
@@ -35,7 +35,7 @@
     <!-- Active sessions list -->
     <div v-if="!loading || activeSessions.length > 0">
       <div v-if="activeSessions.length === 0" class="text-center py-4 bg-light rounded">
-        <b-icon-person-x class="text-muted" size="2rem" />
+        <i class="bi bi-person-x"></i>
         <p class="text-muted mt-2 mb-0">No hay usuarios con sesiones activas</p>
       </div>
 
@@ -70,7 +70,7 @@
             <div class="session-info">
               <div class="session-status mb-2">
                 <b-badge variant="success" pill class="w-100">
-                  <b-icon-circle-fill class="mr-1" style="font-size: 0.5rem;" />
+                  <i class="bi bi-circle-fill"></i>
                   Sesión activa
                 </b-badge>
               </div>

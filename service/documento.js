@@ -1,4 +1,4 @@
-const formatDocs = (FileResponse) => {
+﻿const formatDocs = (FileResponse) => {
   const formattedDocs = {};
   for (const key in FileResponse) {
     if (FileResponse.hasOwnProperty(key)) {
@@ -8,7 +8,7 @@ const formatDocs = (FileResponse) => {
   return formattedDocs;
 };
 
-module.exports = {
+export default {
   getById: async (axios, { id }) => {
     const fileResponse = await axios.$get(`/habilitaciones/documentos/${id}`);
     return formatDocs(fileResponse.data);
@@ -19,3 +19,4 @@ module.exports = {
     return formatDocs(fileResponse.data);
   },
 };
+

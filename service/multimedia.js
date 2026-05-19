@@ -1,11 +1,11 @@
-const formatMultimedia = (MultimediaResponse) => ({
+﻿const formatMultimedia = (MultimediaResponse) => ({
   id: MultimediaResponse._id,
   nombre: MultimediaResponse.nombre,
   link: MultimediaResponse.link,
   categoria: MultimediaResponse.categoria,
 })
 
-module.exports = {
+export default {
   getLatest: async (axios,
     //  { skip = 0, limit = 6 }
      ) => {
@@ -67,3 +67,4 @@ module.exports = {
     })
   },
 }
+

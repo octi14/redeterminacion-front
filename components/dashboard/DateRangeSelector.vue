@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="date-range-selector">
     <!-- Botones de rango rápido -->
     <div class="quick-range-buttons mb-3">
@@ -431,3 +431,4 @@ export default {
   }
 }
 </style>
+

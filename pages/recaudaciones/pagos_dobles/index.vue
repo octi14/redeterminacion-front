@@ -12,7 +12,7 @@
             @sliding-start="onSlideStart"
             @sliding-end="onSlideEnd"
             >
-                <b-carousel-slide img-src="../../../assets/banner-pago-doble.png"></b-carousel-slide>
+                <b-carousel-slide :img-src="bannerPagoDoble"></b-carousel-slide>
             </b-carousel>
         </div>
         <div class="col-10 mobileCarrousel" style="margin: auto; margin-top: 2rem">
@@ -25,7 +25,7 @@
             @sliding-start="onSlideStart"
             @sliding-end="onSlideEnd"
             >
-                <b-carousel-slide img-src="../../../assets/banner-pago-doble.png"></b-carousel-slide>
+                <b-carousel-slide :img-src="bannerPagoDoble"></b-carousel-slide>
             </b-carousel>
         </div>
 
@@ -36,19 +36,19 @@
           <b-card class="section-card shadow-card my-2" id="card-baja" v-bind:class="{ 'expanded': isCardExpanded(0) }" >
             <h4 class="section-title" @click="toggleCard(0)">
               ¿A qué nos referimos con este trámite?
-              <b-icon-chevron-compact-down v-if="!isCardExpanded(0)"></b-icon-chevron-compact-down>
-              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
+              <i class="bi bi-chevron-compact-down"></i>
+              <i class="bi bi-chevron-compact-up"></i>
             </h4>
             <transition name="expand">
               <div v-show="isCardExpanded(0)">
                 <div class="li-row first-li">
-                  <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> El formulario de reclamo por <b>Pago doble</b> implica solicitar la acreditación de saldo excedente de <b>tasa urbana</b> para ser utilizado en futuros pagos.</div>
+                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El formulario de reclamo por <b>Pago doble</b> implica solicitar la acreditación de saldo excedente de <b>tasa urbana</b> para ser utilizado en futuros pagos.</div>
                 </div>
                 <div class="li-row first-p">
-                  <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Mediante este trámite <b>el Municipio verificará que la documentación solicitada</b> y el <b>pago de tasas correspondientes estén cumplimentadas.</b></div>
+                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Mediante este trámite <b>el Municipio verificará que la documentación solicitada</b> y el <b>pago de tasas correspondientes estén cumplimentadas.</b></div>
                 </div>
                 <!-- <div class="li-row">
-                  <div class="li-icon"><b-icon-info-circle font-scale="1" class="icon-orange"/></div>
+                  <div class="li-icon"><i class="bi bi-info-circle" style="font-size: 1em"></i></div>
                   <div class="li-content" style="width:100%">
                     <p class="li-title">El trámite de devolución de tributo por doble pago se encuentra regido por el Decreto 3064/2023. </p>
                   </div>
@@ -59,16 +59,16 @@
           <b-card class="section-card shadow-card my-2" id="card-habilitacion">
             <h4 class="section-title" @click="toggleCard(18)">
               ¿Quién puede solicitar la acreditación del saldo?
-              <b-icon-chevron-compact-down v-if="!isCardExpanded(18)"></b-icon-chevron-compact-down>
-              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
+              <i class="bi bi-chevron-compact-down"></i>
+              <i class="bi bi-chevron-compact-up"></i>
             </h4>
             <transition name="expand">
               <div v-show="isCardExpanded(18)">
                 <div class="li-row first-li">
-                  <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> El <b>Titular del inmueble por el cual se reclama</b> ó</div>
+                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>Titular del inmueble por el cual se reclama</b> ó</div>
                 </div>
                 <div class="li-row">
-                  <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> El <b>Representante o Apoderado/a de la persona interesada</b> con documentación que acredite el carácter de tal. <b-icon-question-circle-fill @click="openPopup('A')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div>
+                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>Representante o Apoderado/a de la persona interesada</b> con documentación que acredite el carácter de tal. <i class="bi bi-question-circle-fill text-info" style="font-size: 1.25em"></i></div>
                 </div>
               </div>
             </transition>
@@ -76,15 +76,15 @@
           <b-card class="section-card shadow-card my-2">
             <h4 class="section-title" @click="toggleCard(19)">
               ¿Qué documentos se necesitan para demostrar el doble pago?
-              <b-icon-chevron-compact-down v-if="!isCardExpanded(19)"></b-icon-chevron-compact-down>
-              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
+              <i class="bi bi-chevron-compact-down"></i>
+              <i class="bi bi-chevron-compact-up"></i>
             </h4>
             <transition name="expand">
               <div v-show="isCardExpanded(19)">
-                <div class="li-row first-li"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">DNI del solicitante (imagen del frente y dorso).</div></div>
-                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Comprobantes que demuestren que el pago se ha efectuado más de una vez.</div></div>
-                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Acreditación de titularidad de la cuenta. Esto puede realizarse a través de la presentación de la Escritura traslativa de dominio del inmueble / Boleto de Compraventa o afín, con el correspondiente Impuesto de Sellos Provincial y firma certificada por Escribano Público, Entidad Bancaria o Autoridad Administrativa / OTROS.</div></div>
-                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Planilla de Autorización de Trámite legalizada o poder autorizado por escribano (únicamente si el trámite es iniciado mediante representante o apoderado/a).</div></div>
+                <div class="li-row first-li"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content">DNI del solicitante (imagen del frente y dorso).</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Comprobantes que demuestren que el pago se ha efectuado más de una vez.</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Acreditación de titularidad de la cuenta. Esto puede realizarse a través de la presentación de la Escritura traslativa de dominio del inmueble / Boleto de Compraventa o afín, con el correspondiente Impuesto de Sellos Provincial y firma certificada por Escribano Público, Entidad Bancaria o Autoridad Administrativa / OTROS.</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Planilla de Autorización de Trámite legalizada o poder autorizado por escribano (únicamente si el trámite es iniciado mediante representante o apoderado/a).</div></div>
                 <div class="separador-top">
                   <p>Los <b>documentos</b> deberán encontrarse <b>digitalizados</b> (podés escanearlos o sacarles una foto) y deben <b>ser legibles</b>. Pueden encontrarse <b>en formato pdf o imagen</b> y tener un <b>peso máximo de 15 Mb</b>.</p>
                 </div>
@@ -92,11 +92,11 @@
                   <b-card-text>
                     <b-row >
                       <b-col md="2">
-                        <b-icon-exclamation-triangle variant="warning" font-scale="5"></b-icon-exclamation-triangle>
+                        <i class="bi bi-exclamation-triangle text-warning" style="font-size: 5em"></i>
                         <p class="li-title"><u><b>¡Importante!</b></u></p>
                       </b-col>
                       <b-col  md="10">
-                          <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Una vez completado el formulario, el Dpto. Recaudaciones se comunicará a través del correo electrónico oficial (recaudaciones@gesell.gob.ar), indicándote los pasos a seguir.</div></div>
+                          <div class="li-row"><div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div><div class="li-content">Una vez completado el formulario, el Dpto. Recaudaciones se comunicará a través del correo electrónico oficial (recaudaciones@gesell.gob.ar), indicándote los pasos a seguir.</div></div>
                       </b-col>
                     </b-row>
                   </b-card-text>
@@ -106,27 +106,27 @@
           </b-card>
           <b-card class="section-card FAQs-card" v-bind:class="{ 'expanded': isCardExpanded(15) }">
             <h4 class="section-title" @click="toggleCard(15)">Preguntas Frecuentes
-              <b-icon-chevron-compact-down v-if="!isCardExpanded(15)"></b-icon-chevron-compact-down>
-              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
+              <i class="bi bi-chevron-compact-down"></i>
+              <i class="bi bi-chevron-compact-up"></i>
             </h4>
             <transition name="expand">
               <div v-show="isCardExpanded(15)">
                 <div class="li-row first-li">
-                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
                   <div class="li-content">
                     <p class="li-title">¿Cómo finaliza el trámite?</p>
                     <p>Una vez completado el formulario, el Dpto. Recaudaciones se comunicará a través del correo electrónico oficial (<a href="mailto:recaudaciones@gesell.gob.ar" target="_blank" class="external-link">recaudaciones@gesell.gob.ar</a>), indicándote los pasos a seguir y los costos administrativos del trámite.</p>
                   </div>
                 </div>
                 <div class="li-row">
-                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
                   <div class="li-content">
                     <p class="li-title">¿Por qué no cargan mis archivos?</p>
                     <p>Puede ser que los archivos que quieras cargar superen el peso máximo soportado. En ese caso, te sugerimos reducirlos con alguna herramienta digital (por ejemplo: <a href="https://www.ilovepdf.com/es/comprimir_pdf" target="_blank" class="external-link">ilovepdf</a>, <a href="https://www.camscanner.com/es-es" target="_blank" class="external-link">camscanner</a>, entre otras). Si el problema persiste podés comunicarte con <a href="mailto:recaudaciones@gesell.gob.ar" target="_blank" class="external-link">recaudaciones@gesell.gob.ar</a></p>
                   </div>
                 </div>
                 <div class="li-row first-li">
-                  <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
+                  <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
                   <div class="li-content">
                     <p class="li-title">¿Cómo cargo varias imágenes en un campo único del formulario?</p>
                     <p>En caso de que el archivo que vayas a subir tenga varias páginas (y, por ejemplo, vos las hayas fotografiado) deberás compilarlas en un único archivo pdf. Para ello existen diversas herramientas digitales (por ejemplo, <a href="https://www.ilovepdf.com/es/jpg_a_pdf" target="_blank" class="external-link">ilovepdf</a>) que te permiten hacerlo de manera sencilla y gratuita. </p>
@@ -158,7 +158,7 @@
         <template #modal-header>
           <div class="modal-info">
             <h5>
-                <b-icon icon="question-circle" scale="1.25" variant="light" ></b-icon>
+                <i class="bi bi-question-circle text-light"></i>
                 Información Adicional
             </h5>
           </div>
@@ -179,7 +179,7 @@
         <template #modal-header>
           <div class="modal-info">
             <h5>
-                <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
+                <i class="bi bi-question-circle text-light"></i>
                 Información Adicional
             </h5>
           </div>
@@ -193,14 +193,14 @@
           </div>
           <div class="parrafo">
             <h6>¿Cómo identificar los tipos de plano?</h6>
-            <p><b-icon-check scale="1.25" class="icon-orange"></b-icon-check>Verificá el sello impuesto en la carátula de tu plano. Esta puede indicar: <i class="icon-green">Conforme a obra o Medición Aprobado o Conforme a obra o Medición Registrado.</i></p>
+            <p><i class="bi bi-check"></i>Verificá el sello impuesto en la carátula de tu plano. Esta puede indicar: <i class="icon-green">Conforme a obra o Medición Aprobado o Conforme a obra o Medición Registrado.</i></p>
           </div>
           <div class="parrafo">
             <div style="width: 64%; display: inline-block; vertical-align:top;">
             <h6>¿Cómo digitalizar el plano?</h6>
-              <p><b-icon-check scale="1.25" class="icon-orange"></b-icon-check>Sacá una <b>fotografía</b> de la <b>carátula</b> y del <b>sector del plano donde se encuentra el local a habilitar</b>. Éste debe estar claramente <b>identificado</b> con una <b>cruz</b> en lápiz.</p>
-              <p><b-icon-check scale="1.25" class="icon-orange"></b-icon-check>Luego, uní las imagenes en un pdf con alguna herramienta digital (como <a href="https://www.ilovepdf.com/es/jpg_a_pdf" class="external-link" target="_blank">ilovepdf</a>).</p>
-              <p><b-icon-check scale="1.25" class="icon-orange"></b-icon-check>Podés ver un ejemplo haciendo click en la imagen. <i>Ahí te indicamos cómo identificar el tipo de plano y cómo señalar la unidad funcional donde se ubicará tu comercio.</i></p>
+              <p><i class="bi bi-check"></i>Sacá una <b>fotografía</b> de la <b>carátula</b> y del <b>sector del plano donde se encuentra el local a habilitar</b>. Éste debe estar claramente <b>identificado</b> con una <b>cruz</b> en lápiz.</p>
+              <p><i class="bi bi-check"></i>Luego, uní las imagenes en un pdf con alguna herramienta digital (como <a href="https://www.ilovepdf.com/es/jpg_a_pdf" class="external-link" target="_blank">ilovepdf</a>).</p>
+              <p><i class="bi bi-check"></i>Podés ver un ejemplo haciendo click en la imagen. <i>Ahí te indicamos cómo identificar el tipo de plano y cómo señalar la unidad funcional donde se ubicará tu comercio.</i></p>
             </div>
             <div style="width: 35%; display: inline-block; max-width:165px; margin-top:1rem">
               <a href="https://drive.google.com/file/d/11JlAeO_87e-mslA7W_VAAoDEfou48WrU/view" target="_blank"><img src="../../../assets/ej-plano.jpg" width="100%" height="fit-content" /></a>
@@ -212,17 +212,17 @@
     <b-modal v-model="showConfirmationPopup" hide-footer :header-bg-variant="'success'" centered>
         <template #modal-header>
           <div class="confirmation-popup-header">
-              <b-icon icon="exclamation-triangle" scale="2" variant="light" ></b-icon>
+              <i class="bi bi-exclamation-triangle text-light"></i>
             </div>
         </template>
         <div class="confirmation-popup-body">
           <h2 class="icon-orange"><b>IMPORTANTE</b></h2>
           <p>Antes de continuar tené en cuenta lo siguiente:</p>
           <div class="li-row">
-            <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">La documentación presentada deberá encontrarse actualizada, es decir que debe haber sido expedida dentro del plazo de los últimos 30 días.</div>
+            <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div><div class="li-content">La documentación presentada deberá encontrarse actualizada, es decir que debe haber sido expedida dentro del plazo de los últimos 30 días.</div>
           </div>
           <div class="li-row">
-            <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Recordá que los documentos deben ser legibles, estar subidos en formato imagen o pdf y tener un peso máximo de 15 mb.</div>
+            <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div><div class="li-content">Recordá que los documentos deben ser legibles, estar subidos en formato imagen o pdf y tener un peso máximo de 15 mb.</div>
           </div>
           <div class="form-check">
               <input class="form-check-input" type="checkbox" id="documentCheckbox" v-model="documentCheckboxChecked"/>
@@ -241,10 +241,13 @@
 </template>
 
 <script>
+import bannerPagoDoble from '~/assets/banner-pago-doble.png'
 
-export default({
+export default {
   data(){
     return{
+      bannerPagoDoble,
+      slide: 0,
       showConfirmationPopup: false,
       showPopupA: false,
       showPopupB: false,
@@ -272,8 +275,10 @@ export default({
     proceedToForm() {
       this.showConfirmationPopup = false;
     },
+    onSlideStart() {},
+    onSlideEnd() {},
   }
-})
+}
 </script>
 
 

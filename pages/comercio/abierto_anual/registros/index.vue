@@ -4,7 +4,7 @@
     <div class="col-8 mx-auto" v-if="adminArvige">
       <b-form-group class="col-5 mx-6 mx-auto mt-4" label-class="text-success h6">
         <label for="inputCUIT" class="bv-no-focus-ring col-form-label pt-0 text-success h6">
-          <b-icon-search></b-icon-search> Buscar por CUIT
+          <i class="bi bi-search"></i> Buscar por CUIT
         </label>
         <b-form-input
           id="inputCUIT"
@@ -32,7 +32,7 @@
 
       <div class="row justify-content-center">
         <!-- <b-form-checkbox class="mx-3 mt-2" v-model="hideFinalizados">Ocultar finalizados</b-form-checkbox> -->
-        <b-button variant="info" @click="exportarCSV"><b-icon-download class="mr-1"/>Exportar CSV</b-button>
+        <b-button variant="info" @click="exportarCSV"><i class="bi bi-download"></i>Exportar CSV</b-button>
       </div>
     </div>
 
@@ -41,8 +41,8 @@
         <div>
           <span v-for="(estado, index) in row.item.status" class="mx-1" :key="index" :style="{ color: estadoColor(estado) }">
             <b-iconstack :title="estado">
-              <b-icon-circle variant="dark"></b-icon-circle>
-              <b-icon icon="circle-fill"></b-icon>
+              <i class="bi bi-circle text-dark"></i>
+              <i class="bi bi-circle-fill"></i>
             </b-iconstack>
           </span>
         </div>
@@ -50,7 +50,7 @@
       <template #cell(detalles)="row">
         <NuxtLink :to="{ name: 'comercio-abierto_anual-registros-id', params: { id: row.item.id } }">
           <b-button variant="outline-secondary" size="sm" title="Editar">
-            <b-icon-pen/>
+            <i class="bi bi-pen"></i>
           </b-button>
         </NuxtLink>
       </template>

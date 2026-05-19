@@ -8,7 +8,7 @@
         </div>
         <b-card class="section-card col-md-6 mx-auto">
           <div class="li-row">
-            <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">
+            <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content">
               <p>Ingresá tu <b>número de trámite</b> para conocer en qué estado se encuentra.</p>
             </div>
           </div>
@@ -29,7 +29,7 @@
       <b-modal v-model="showPopupFormError" @click-outside="showPopupFormError = false" :header-bg-variant="'danger'" centered>
         <template #modal-header>
           <div class="centeredContainer">
-            <b-icon-exclamation-octagon scale="3" variant="light"/>
+            <i class="bi bi-exclamation-octagon text-light"></i>
           </div>
         </template>
         <div class="centeredContainer modal-error">
@@ -48,7 +48,7 @@
       <b-modal v-model="showPopupNoEntry" @click-outside="showPopupNoEntry = false" :header-bg-variant="'danger'" centered>
         <template #modal-header>
           <div class="centeredContainer">
-            <b-icon-exclamation-octagon scale="3" variant="light"/>
+            <i class="bi bi-exclamation-octagon text-light"></i>
           </div>
         </template>
         <div class="centeredContainer modal-error">
@@ -66,7 +66,7 @@
       <b-modal v-model="showPopupRejected" @click-outside="showPopupRejected = false" header-class="lightblue" centered>
         <template #modal-header>
           <div class="centeredContainer">
-            <b-icon-info-circle scale="2" variant="light"/>
+            <i class="bi bi-info-circle text-light"></i>
           </div>
         </template>
         <div class="centeredContainer modal-primary">
@@ -86,7 +86,7 @@
       <b-modal v-model="showPopupInit" @click-outside="showPopupInit = false" header-class="lightblue" centered>
         <template #modal-header>
           <div class="centeredContainer">
-            <b-icon-info-circle scale="2" variant="light"/>
+            <i class="bi bi-info-circle text-light"></i>
           </div>
         </template>
         <div class="centeredContainer modal-primary">
@@ -105,7 +105,7 @@
       <b-modal v-model="showPopupResend" @click-outside="showPopupResend = false" header-class="lightblue" centered>
         <template #modal-header>
           <div class="centeredContainer">
-            <b-icon-info-circle scale="2" variant="light"/>
+            <i class="bi bi-info-circle text-light"></i>
           </div>
         </template>
         <div class="centeredContainer modal-primary">
@@ -125,7 +125,7 @@
       <b-modal v-model="showPopupWaiting" @click-outside="showPopupWaiting = false" header-class="lightblue" centered>
         <template #modal-header>
           <div class="centeredContainer">
-            <b-icon-info-circle scale="2" variant="light"/>
+            <i class="bi bi-info-circle text-light"></i>
           </div>
         </template>
         <div class="centeredContainer modal-primary">
@@ -144,7 +144,7 @@
       <b-modal v-model="showPopupAlready" @click-outside="showPopupAlready = false" header-class="lightblue" centered>
         <template #modal-header>
           <div class="centeredContainer">
-            <b-icon-info-circle scale="2" variant="light"/>
+            <i class="bi bi-info-circle text-light"></i>
           </div>
         </template>
         <div class="centeredContainer modal-primary">
@@ -164,7 +164,7 @@
       <b-modal v-model="showPopupProrroga" @click-outside="showPopupProrroga = false" header-class="lightblue" centered>
         <template #modal-header>
           <div class="centeredContainer">
-            <b-icon-info-circle scale="2" variant="light"/>
+            <i class="bi bi-info-circle text-light"></i>
           </div>
         </template>
         <div class="centeredContainer modal-primary">
@@ -183,7 +183,7 @@
       <b-modal v-model="showPopupInspected" @click-outside="showPopupInspected = false" header-class="lightblue" centered>
         <template #modal-header>
           <div class="centeredContainer">
-            <b-icon-info-circle scale="2" variant="light"/>
+            <i class="bi bi-info-circle text-light"></i>
           </div>
         </template>
         <div class="centeredContainer modal-success">
@@ -203,7 +203,7 @@
       <b-modal v-model="showPopupWaitingDoc" @click-outside="showPopupWaitingDoc = false" header-class="lightblue" centered>
         <template #modal-header>
           <div class="centeredContainer">
-            <b-icon-info-circle scale="2" variant="light"/>
+            <i class="bi bi-info-circle text-light"></i>
           </div>
         </template>
         <div class="centeredContainer modal-primary">
@@ -222,7 +222,7 @@
       <b-modal v-model="showPopupWaitingPay" @click-outside="showPopupWaitingPay = false" header-class="lightblue" centered>
         <template #modal-header>
           <div class="centeredContainer">
-            <b-icon-info-circle scale="2" variant="light"/>
+            <i class="bi bi-info-circle text-light"></i>
           </div>
         </template>
         <div class="centeredContainer modal-primary">
@@ -241,7 +241,7 @@
       <b-modal v-model="showPopupFinished" @click-outside="showPopupFinished = false" header-class="lightblue" centered>
         <template #modal-header>
           <div class="centeredContainer">
-            <b-icon-info-circle scale="2" variant="light"/>
+            <i class="bi bi-info-circle text-light"></i>
           </div>
         </template>
         <div class="centeredContainer modal-success">

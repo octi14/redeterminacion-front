@@ -1,7 +1,7 @@
 <template>
   <div class="obra-feed">
     <b-form-group class="col-md-3 col-sm-8 mx-auto mt-4" label-class="text-success h6">
-      <label for="selectedAdjudicado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><b-icon-funnel-fill></b-icon-funnel-fill> Filtrar por empresa</label>
+      <label for="selectedAdjudicado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><i class="bi bi-funnel-fill"></i> Filtrar por empresa</label>
       <b-form-select plain v-model="selectedAdjudicado" @change="filterItems()">
         <option value="">Todos</option>
         <option v-for="adjudicado in adjudicados" :value="adjudicado" :key="adjudicado">{{ adjudicado }}</option>

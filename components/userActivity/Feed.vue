@@ -2,7 +2,7 @@
   <div class="user-activity-feed">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h4 class="mb-0">
-        <b-icon-list-task class="mr-2" />
+        <i class="bi bi-list-task"></i>
         Actividad de Usuarios
       </h4>
       <div class="d-flex align-items-center">
@@ -12,7 +12,7 @@
           @click="refreshActivities"
           :disabled="loading"
         >
-          <b-icon-arrow-clockwise :class="{ 'spinning': loading }" />
+          <i class="bi bi-arrow-clockwise"></i>
           Actualizar
         </b-button>
       </div>
@@ -32,7 +32,7 @@
     <!-- Activities list -->
     <div v-if="!loading || activitiesList.length > 0">
       <div v-if="activitiesList.length === 0" class="text-center py-5">
-        <b-icon-inbox class="text-muted" size="3rem" />
+        <i class="bi bi-inbox"></i>
         <p class="text-muted mt-3">No hay actividades registradas</p>
       </div>
 
@@ -83,7 +83,7 @@
             <!-- Tercera fila: URL (si existe) -->
             <div v-if="activity.visitedUrl" class="activity-row activity-url">
               <div class="url-content">
-                <b-icon-link class="url-icon" />
+                <i class="bi bi-link"></i>
                 <a :href="activity.visitedUrl" target="_blank" class="url-link">
                   {{ truncateUrl(activity.visitedUrl) }}
                 </a>
@@ -98,7 +98,8 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useUserActivitiesStore } from '~/stores/userActivities'
 
 export default {
   name: 'UserActivityFeed',
@@ -122,7 +123,7 @@ export default {
   },
 
   computed: {
-    ...mapState('userActivities', ['all', 'recent', 'filtered', 'loading', 'error']),
+    ...mapState(useUserActivitiesStore, ['all', 'recent', 'filtered', 'loading', 'error']),
 
     activitiesList() {
       // Si se pasan actividades como prop, usarlas
@@ -152,7 +153,7 @@ export default {
   },
 
   methods: {
-    ...mapActions('userActivities', ['getAll', 'getRecent', 'getFiltered', 'clearError']),
+    ...mapActions(useUserActivitiesStore, ['getAll', 'getRecent', 'getFiltered', 'clearError']),
 
     async loadActivities() {
       // Si se pasan actividades como prop, no cargar desde el store

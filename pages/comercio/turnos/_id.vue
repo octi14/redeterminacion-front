@@ -82,7 +82,7 @@
     <b-modal v-model="showRejectPopup" hide-footer :header-bg-variant="'danger'" centered>
         <template #modal-header>
           <div class="confirmation-popup-header mx-auto">
-            <b-icon-exclamation-triangle scale="2" variant="light" />
+            <i class="bi bi-exclamation-triangle text-light"></i>
           </div>
         </template>
         <div class="confirmation-popup-body">
@@ -102,7 +102,7 @@
     <b-modal v-model="showCancelPopup" hide-footer :header-bg-variant="'danger'" centered>
         <template #modal-header>
           <div class="confirmation-popup-header mx-auto">
-            <b-icon-exclamation-triangle scale="2" variant="light" />
+            <i class="bi bi-exclamation-triangle text-light"></i>
           </div>
         </template>
         <div class="confirmation-popup-body">
@@ -122,7 +122,7 @@
     <b-modal v-model="showPrevApprove" hide-footer :header-bg-variant="'success'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
-          <b-icon-check-circle scale="2" variant="light" />
+          <i class="bi bi-check-circle text-light"></i>
         </div>
       </template>
       <div class="confirmation-popup-body">
@@ -141,7 +141,7 @@
     <b-modal v-model="showApprove" hide-footer :header-bg-variant="'success'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
-          <b-icon-check-circle scale="2" variant="light" />
+          <i class="bi bi-check-circle text-light"></i>
         </div>
       </template>
       <div class="confirmation-popup-body">
@@ -159,7 +159,7 @@
     <b-modal v-model="showPrevProrroga" hide-footer :header-bg-variant="'secondary'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
-          <b-icon-check-circle scale="2" variant="light" />
+          <i class="bi bi-check-circle text-light"></i>
         </div>
       </template>
       <div class="confirmation-popup-body">
@@ -178,7 +178,7 @@
     <b-modal v-model="showProrroga" hide-footer :header-bg-variant="'success'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
-          <b-icon-check-circle scale="2" variant="light" />
+          <i class="bi bi-check-circle text-light"></i>
         </div>
       </template>
       <div class="confirmation-popup-body">
@@ -196,7 +196,7 @@
     <b-modal v-model="showNoMasProrrogas" hide-footer :header-bg-variant="'danger'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
-          <b-icon-exclamation-circle scale="2" variant="light" />
+          <i class="bi bi-exclamation-circle text-light"></i>
         </div>
       </template>
       <div class="confirmation-popup-body">

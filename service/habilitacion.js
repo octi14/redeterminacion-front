@@ -1,4 +1,4 @@
-const FINALIZACION_PATTERNS = [
+﻿const FINALIZACION_PATTERNS = [
   /Se finaliza(?: la solicitud)?(?: el)?(?: trámite)?(?: [^0-9]*)?(\d{1,2}\/\d{1,2}\/\d{2,4})(?:\s+(\d{1,2}:\d{2}(?::\d{2})?))?/gi,
   /Finalización[^0-9]*(\d{1,2}\/\d{1,2}\/\d{2,4})/gi,
   /Renovación finalizada[^0-9]*(\d{1,2}\/\d{1,2}\/\d{2,4})/gi,
@@ -172,7 +172,7 @@ const formatExtendedFile = (FileResponse) => {
   }
 }
 
-module.exports = {
+export default {
   getAll: async (axios, { userToken } = {}) => {
     const config = {};
     if (userToken) {
@@ -241,3 +241,4 @@ module.exports = {
   //   return filesResponse.data.map(formatFile)
   // },
 }
+

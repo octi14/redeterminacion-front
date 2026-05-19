@@ -3,7 +3,7 @@
     <NuxtLink :to="to" class="col-md-5">
       <b-button variant="outline" class="d-flex w-100 white shadow-card">
         <div class="me-3">
-          <b-icon :icon="icon" class="mx-3 my-3 landing-icon" />
+          <i :class="`bi bi-${icon} mx-3 my-3 landing-icon`"></i>
         </div>
         <div class="col text-left my-auto">
           <h3 class="landing-text"><b> {{title}} </b></h3>
@@ -27,8 +27,10 @@ export default {
 
 <style scoped>
 .landing-icon {
-  width: 60px;
-  height: 60px;
+  font-size: 3.75rem;
+  line-height: 1;
+  width: auto;
+  height: auto;
   color: #ef8918;
   transition: transform 0.2s ease;
 }

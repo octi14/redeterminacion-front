@@ -5,11 +5,11 @@
     <!-- Botones de acción: ocultos para quien solo ve el dashboard -->
     <div v-if="!soloDashboardCombustible" class="row no-gutters justify-content-center mt-4">
       <b-button variant="success" class="text-center mx-3" @click="showCargarOrden = true">
-        <b-icon-plus-circle class="mr-2"></b-icon-plus-circle>
+        <i class="bi bi-plus-circle"></i>
         Cargar Orden de Compra
       </b-button>
       <b-button variant="primary" class="text-center mx-3" @click="showCargarVehiculo = true">
-        <b-icon-plus-circle class="mr-2"></b-icon-plus-circle>
+        <i class="bi bi-plus-circle"></i>
         Cargar Vehículo
       </b-button>
     </div>
@@ -34,7 +34,7 @@
             class="outline-secondary"
             title="Detalles"
           >
-            <b-icon-pen class="icon-hover" />
+            <i class="bi bi-pen"></i>
           </b-button>
 
 
@@ -44,7 +44,7 @@
             variant="outline-primary"
             title="Observaciones"
           >
-            <b-icon-eye />
+            <i class="bi bi-eye"></i>
           </b-button>
 
           <b-button
@@ -52,7 +52,7 @@
             title="Eliminar"
             @click="sendEliminarOrden(row.item)"
           >
-            <b-icon-trash />
+            <i class="bi bi-trash"></i>
           </b-button>
         </b-button-group>
       </template>
@@ -146,7 +146,7 @@
                 @click="limpiarFiltros"
                 class="mb-3"
               >
-                <b-icon-x-circle class="mr-1" />
+                <i class="bi bi-x-circle"></i>
                 Limpiar filtros
               </b-button>
             </div>
@@ -173,14 +173,14 @@
                   title="Editar"
                   @click="editarVehiculo(row.item)"
                 >
-                  <b-icon-pen class="icon-hover" />
+                  <i class="bi bi-pen"></i>
                 </b-button>
                 <b-button
                   variant="outline-danger"
                   title="Eliminar"
                   @click="sendEliminarVehiculo(row.item)"
                 >
-                  <b-icon-trash />
+                  <i class="bi bi-trash"></i>
                 </b-button>
               </b-button-group>
             </template>
@@ -202,11 +202,11 @@
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
           <b-iconstack v-if="!successMessage" class="my-3">
-            <b-icon-circle scale="2.7" variant="light"/>
-            <b-icon-upload scale="1.5" variant="light" />
+            <i class="bi bi-circle text-light"></i>
+            <i class="bi bi-upload text-light"></i>
           </b-iconstack>
           <b-iconstack class="my-3" v-else>
-            <b-icon-check-circle scale="2.5" variant="light"/>
+            <i class="bi bi-check-circle text-light"></i>
           </b-iconstack>
         </div>
       </template>
@@ -229,7 +229,7 @@
           <div class="mx-auto">
             <!-- Número de orden de compra -->
             <div class="row mt-4 mx-1">
-                <b-icon-caret-right-fill class="icon-orange ml-0"/>
+                <i class="bi bi-caret-right-fill"></i>
               <h6 class="text-dark font-weight-500 ml-1">Número de Orden de Compra</h6>
             </div>
             <b-form-group class="col-12 ml-2" :state="nroOrdenDuplicado ? false : null" invalid-feedback="Ya existe una orden de compra con este número.">
@@ -242,7 +242,7 @@
 
             <!-- Proveedor -->
             <div class="row mt-4 mx-1">
-              <b-icon-caret-right-fill class="icon-orange ml-0"/>
+              <i class="bi bi-caret-right-fill"></i>
               <h6 class="text-dark font-weight-500 ml-1">Proveedor</h6>
             </div>
             <b-form-group label-class="text-dark font-weight-bold" class="col-11  ml-2">
@@ -253,7 +253,7 @@
 
             <!-- Área asignada -->
             <div class="row mt-4 mx-1">
-              <b-icon-caret-right-fill class="icon-orange ml-0"/>
+              <i class="bi bi-caret-right-fill"></i>
               <h6 class="text-dark font-weight-500 ml-1">Área asignada</h6>
             </div>
             <b-form-group label-class="text-dark font-weight-bold" class="col-11  ml-2">
@@ -262,7 +262,7 @@
             </b-form-group>
             <!-- Combustibles -->
             <div class="row mt-4 mx-1">
-              <b-icon-caret-right-fill class="icon-orange ml-0"/>
+              <i class="bi bi-caret-right-fill"></i>
               <h6 class="text-dark font-weight-500 ml-1">Montos asignados por tipo de combustible</h6>
             </div>
             <b-form-group class="col-12  ml-2" >
@@ -278,7 +278,7 @@
                 <h6 class="font-weight-500 text-dark ml-3 mr-1 mt-1">$ </h6>
                 <b-form-input style="border-radius: 0;" size="sm" class="col-5" type="number" placeholder="Monto" no-wheel v-model="combustible.monto" />
                 <b-button v-if="orden.montos.length > 1" variant="outline-danger" size="sm" class="ml-2" @click="removeCombustible(index)">
-                  <b-icon-trash-fill/>
+                  <i class="bi bi-trash-fill"></i>
                 </b-button>
               </div>
               <b-button variant="primary" :disabled="this.orden.montos.length >= 4" size="sm" @click="addCombustible">+ Agregar combustible</b-button>
@@ -309,8 +309,8 @@
     <b-modal v-model="showEliminarOrden" hide-footer header-class="justify-content-center" :header-bg-variant="'danger'" centered>
       <template #modal-header>
         <b-iconstack class="my-3">
-          <b-icon-circle scale="2.7" variant="light"/>
-          <b-icon-trash-fill scale="1.5" variant="light" />
+          <i class="bi bi-circle text-light"></i>
+          <i class="bi bi-trash-fill text-light"></i>
         </b-iconstack>
       </template>
       <!-- Mensaje de éxito -->
@@ -327,7 +327,7 @@
       <div v-else>
         <p class="h5 text-center mt-3 mb-2 font-weight-500 text-dark">Estás a punto de eliminar la orden de compra.</p>
         <p class="d-flex align-items-center justify-content-center mt-2 mb-2 px-3 py-2 rounded bg-light border border-warning">
-          <b-icon-exclamation-circle-fill scale="1.2" class="text-warning mr-2 flex-shrink-0" />
+          <i class="bi bi-exclamation-circle-fill"></i>
           <span class="text-dark font-weight-600" style="font-size: 0.95rem;">Se eliminarán también todos los vales asociados a esta orden.</span>
         </p>
         <p class="h6 text-center mt-2 mb-3 font-weight-500 text-dark">¿Deseás continuar?</p>
@@ -372,11 +372,11 @@
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
           <b-iconstack v-if="!successMessageVehiculo" class="my-3">
-            <b-icon-circle scale="2.7" variant="light"/>
-            <b-icon-plus scale="1.5" variant="light" />
+            <i class="bi bi-circle text-light"></i>
+            <i class="bi bi-plus text-light"></i>
           </b-iconstack>
           <b-iconstack class="my-3" v-else>
-            <b-icon-check-circle scale="2.5" variant="light"/>
+            <i class="bi bi-check-circle text-light"></i>
           </b-iconstack>
         </div>
       </template>
@@ -397,7 +397,7 @@
           <div class="mx-auto">
              <!-- Patente -->
              <div class="row mt-4 mx-1">
-               <b-icon-caret-right-fill class="icon-orange ml-0"/>
+               <i class="bi bi-caret-right-fill"></i>
                <h6 class="text-dark font-weight-500 ml-1">Patente del Vehículo</h6>
              </div>
              <b-form-group class="col-12 ml-2">
@@ -406,7 +406,7 @@
 
              <!-- Área asignada -->
              <div class="row mt-4 mx-1">
-               <b-icon-caret-right-fill class="icon-orange ml-0"/>
+               <i class="bi bi-caret-right-fill"></i>
                <h6 class="text-dark font-weight-500 ml-1">Área asignada</h6>
              </div>
              <b-form-group label-class="text-dark font-weight-bold" class="col-11 ml-2">
@@ -447,8 +447,8 @@
     <b-modal v-model="showEliminarVehiculo" hide-footer header-class="justify-content-center" :header-bg-variant="'danger'" centered>
       <template #modal-header>
         <b-iconstack class="my-3">
-          <b-icon-circle scale="2.7" variant="light"/>
-          <b-icon-trash-fill scale="1.5" variant="light" />
+          <i class="bi bi-circle text-light"></i>
+          <i class="bi bi-trash-fill text-light"></i>
         </b-iconstack>
       </template>
       <!-- Mensaje de éxito -->
@@ -475,8 +475,8 @@
     <b-modal v-model="showEditarVehiculo" hide-footer header-class="justify-content-center" :header-bg-variant="'primary'" centered>
       <template #modal-header>
         <b-iconstack class="my-3">
-          <b-icon-circle scale="2.7" variant="light"/>
-          <b-icon-pencil-fill scale="1.5" variant="light" />
+          <i class="bi bi-circle text-light"></i>
+          <i class="bi bi-pencil-fill text-light"></i>
         </b-iconstack>
       </template>
       <div class="text-center">

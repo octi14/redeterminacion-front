@@ -2,16 +2,16 @@
   <div class="multimedia-card">
     <div class="multimedia-card mx-auto">
       <div class="my-3">
-        <b-icon-link45deg class="link" scale="0.95"/>
+        <i class="bi bi-link45deg"></i>
         <a class="link" :href="item.link" target="blank">
           {{item.nombre}}
         </a>
         <b-button-group class="float-right" v-if="adminModernizacion">
           <b-button variant="outline-secondary" title="Editar" @click="editarArchivo">
-            <b-icon-pen size="sm"/>
+            <i class="bi bi-pen"></i>
           </b-button>
           <b-button variant="outline-danger" title="Eliminar" @click="eliminarArchivo">
-            <b-icon-trash size="sm"/>
+            <i class="bi bi-trash"></i>
           </b-button>
         </b-button-group>
       </div>

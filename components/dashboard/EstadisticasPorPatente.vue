@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="estadisticas-por-patente">
     <div class="header-section">
       <h4 class="section-title">
@@ -327,3 +327,4 @@ export default {
   color: #856404 !important;
 }
 </style>
+

@@ -3,11 +3,11 @@
   <transition name="flip">
   <b-card id="aaCard" ref="card" class="abierto-anual-card shadow-card" style="max-width: 20rem;">
       <div class="icon-container">
-          <b-icon-clock-history v-if="estadoIcono ==='esperando-periodo'" scale="4" variant="warning"></b-icon-clock-history>
-          <b-icon-x-circle-fill v-else-if="estadoIcono ==='incorrecto'" scale="5" variant="danger"></b-icon-x-circle-fill>
-          <b-icon-exclamation-circle v-else-if="estadoIcono ==='rectificacion'" scale="5" variant="warning"></b-icon-exclamation-circle>
-          <b-icon-check-circle-fill v-else-if="estadoIcono ==='correcto'" scale="4" variant="success"></b-icon-check-circle-fill>
-          <b-icon-arrow-clockwise v-else-if="estadoIcono ==='loading'" scale="5" animation="spin" variant="success"></b-icon-arrow-clockwise>
+          <i v-if="estadoIcono === 'esperando-periodo'" class="bi bi-clock-history text-warning" style="font-size: 4rem"></i>
+          <i v-else-if="estadoIcono === 'incorrecto'" class="bi bi-x-circle-fill text-danger" style="font-size: 5rem"></i>
+          <i v-else-if="estadoIcono === 'rectificacion'" class="bi bi-exclamation-circle text-warning" style="font-size: 5rem"></i>
+          <i v-else-if="estadoIcono === 'correcto'" class="bi bi-check-circle-fill text-success" style="font-size: 4rem"></i>
+          <i v-else-if="estadoIcono === 'loading'" class="bi bi-arrow-clockwise text-success" style="font-size: 5rem"></i>
           <b-iconstack scale="4" v-else-if="estadoIcono ==='revision'">
               <b-icon stacked icon="list-task" variant="warning" scale="0.5" shift-v="-1px"></b-icon>
               <b-icon stacked icon="clipboard" variant="warning"></b-icon>
@@ -18,7 +18,7 @@
           </b-iconstack>
       </div>
       <div class="periodo-header">
-          <b-card-text><h2>Período {{ periodo + 1 }}</h2></b-card-text>
+          <b-card-text><h2>PerÃ­odo {{ periodo + 1 }}</h2></b-card-text>
           <b-card-text><h3>{{ periodoTexto }}</h3></b-card-text>
       </div>
       <b-card-text v-if="estadoActual == 1" class="periodo-esperando-card">
@@ -27,13 +27,13 @@
               <b-col><p class="sub-texto-exp">Estado: Incompleto</p></b-col>
           </b-row>
           <b-row>
-              <b-col><p class="texto-exp"><b>Todavía no está habilitada la carga de documentación para este período.</b></p></b-col>
+              <b-col><p class="texto-exp"><b>TodavÃ­a no estÃ¡ habilitada la carga de documentaciÃ³n para este perÃ­odo.</b></p></b-col>
           </b-row>
       </b-card-text>
       <b-card-text v-else-if="estadoActual == 2" class="ticket-revision-card">
       <!-- estadoActual == 2 => EN REVISION -->
           <b-row>
-              <b-col><p class="sub-texto-exp">Estado: En Revisión</p></b-col>
+              <b-col><p class="sub-texto-exp">Estado: En RevisiÃ³n</p></b-col>
           </b-row>
           <b-row>
               <b-col><p class="texto-exp"><b>Fecha de Carga:</b> {{ fecha }}</p></b-col>
@@ -45,7 +45,7 @@
               <b-col><p class="sub-texto-exp">Estado: Correcto</p></b-col>
           </b-row>
           <b-row>
-              <b-col><p class="texto-exp">La factura cargada el día {{ fecha }} es correcta.</p></b-col>
+              <b-col><p class="texto-exp">La factura cargada el dÃ­a {{ fecha }} es correcta.</p></b-col>
           </b-row>
       </b-card-text>
       <b-card-text v-else-if="estadoActual == 4" class="ticket-bad-card">
@@ -54,12 +54,12 @@
               <b-col><p class="sub-texto-exp">Estado: Incorrecto</p></b-col>
           </b-row>
           <b-row>
-              <b-col><div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-3px"></b-icon-caret-right-fill><p class="texto-exp li-content">La <b>carga</b> realizada el día {{ fecha }} es <b>incorrecta</b>, porque <b>{{ motivo ? motivo : tramite.facturas[periodo].observaciones }}</b></p></div></b-col>
+              <b-col><div class="li-row"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i><p class="texto-exp li-content">La <b>carga</b> realizada el dÃ­a {{ fecha }} es <b>incorrecta</b>, porque <b>{{ motivo ? motivo : tramite.facturas[periodo].observaciones }}</b></p></div></b-col>
           </b-row>
           <b-row>
               <b-col><div class="importante-box">
-                  <b-icon-exclamation-triangle variant="warning" font-scale="1"></b-icon-exclamation-triangle>
-                  <p class="texto-exp">Recordá notificar por DFE el período de rectificación.</p>
+                  <i class="bi bi-exclamation-triangle text-warning" style="font-size: 1em"></i>
+                  <p class="texto-exp">RecordÃ¡ notificar por DFE el perÃ­odo de rectificaciÃ³n.</p>
               </div></b-col>
           </b-row>
       </b-card-text>
@@ -73,8 +73,8 @@
           </b-row>
           <b-row>
               <b-col><div class="importante-box">
-                  <b-icon-exclamation-triangle variant="warning" font-scale="1"></b-icon-exclamation-triangle>
-                  <p class="texto-exp">Recordá notificar por DFE el período de rectificación.</p>
+                  <i class="bi bi-exclamation-triangle text-warning" style="font-size: 1em"></i>
+                  <p class="texto-exp">RecordÃ¡ notificar por DFE el perÃ­odo de rectificaciÃ³n.</p>
               </div></b-col>
           </b-row>
       </b-card-text>
@@ -84,13 +84,13 @@
               <b-col><p class="sub-texto-exp">Estado: Incompleto</p></b-col>
           </b-row>
           <b-row>
-              <b-col><p class="texto-exp"><b>Aún no se han cargado documentos.</b></p></b-col>
+              <b-col><p class="texto-exp"><b>AÃºn no se han cargado documentos.</b></p></b-col>
           </b-row>
       </b-card-text>
       <b-card-text v-else-if="estadoActual == 7" class="rectificacion-card">
-      <!-- estadoActual == 7 => HABILITADO PARA SUBIR POR RECTIFICACIÓN -->
+      <!-- estadoActual == 7 => HABILITADO PARA SUBIR POR RECTIFICACIÃ“N -->
           <b-row class="importante-box">
-              <b-col><p><b>Rectificación</b></p></b-col>
+              <b-col><p><b>RectificaciÃ³n</b></p></b-col>
           </b-row>
           <b-row v-if="tramite.facturas[periodo]">
             <b-col>
@@ -101,20 +101,20 @@
           <b-row v-else>
             <b-col v-if="estado === 'Rechazado'">
               <div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-3px">
-                </b-icon-caret-right-fill><p style="text-align: justify;" class="texto-exp li-content">Motivo de rechazo: <b>{{ tramite.facturas[periodo] ? tramite.facturas[periodo].observaciones : "No se seleccionó ningún motivo." }}</b></p></div>
+                </b-icon-caret-right-fill><p style="text-align: justify;" class="texto-exp li-content">Motivo de rechazo: <b>{{ tramite.facturas[periodo] ? tramite.facturas[periodo].observaciones : "No se seleccionÃ³ ningÃºn motivo." }}</b></p></div>
             </b-col>
           </b-row>
           <b-row>
-              <b-col><p class="texto-exp"><b>Aún no se han cargado documentos.</b></p></b-col>
+              <b-col><p class="texto-exp"><b>AÃºn no se han cargado documentos.</b></p></b-col>
           </b-row>
       </b-card-text>
       <b-card-text v-else-if="estadoActual == 8" class="ticket-revision-card">
       <!-- estadoActual == 8 => EN REVISION POR RECTIFICACION -->
           <b-row class="importante-box">
-              <b-col><p><b>Rectificación</b></p></b-col>
+              <b-col><p><b>RectificaciÃ³n</b></p></b-col>
           </b-row>
           <b-row>
-              <b-col><p class="sub-texto-exp">Estado: En Revisión</p></b-col>
+              <b-col><p class="sub-texto-exp">Estado: En RevisiÃ³n</p></b-col>
           </b-row>
           <b-row>
               <b-col><p class="texto-exp"><b>Fecha de Carga:</b> {{ fecha }}</p></b-col>
@@ -123,12 +123,12 @@
       <b-card-text v-else-if="estadoActual == 9" class="action-confirmation-card">
       <!-- estadoActual == 9 => CONFIRMAR RECTIFICACION MANUAL -->
           <b-row>
-              <b-col><p class="texto-exp"><b>Estas a punto de dar una rectificación manual.<br />¿Deseas continuar?</b></p></b-col>
+              <b-col><p class="texto-exp"><b>Estas a punto de dar una rectificaciÃ³n manual.<br />Â¿Deseas continuar?</b></p></b-col>
           </b-row>
           <b-row>
               <b-col><div class="importante-box">
-                  <b-icon-exclamation-triangle variant="warning" font-scale="1"></b-icon-exclamation-triangle>
-                  <p class="texto-exp">Opción habilitada para casos excepecionales.</p>
+                  <i class="bi bi-exclamation-triangle text-warning" style="font-size: 1em"></i>
+                  <p class="texto-exp">OpciÃ³n habilitada para casos excepecionales.</p>
               </div></b-col>
           </b-row>
       </b-card-text>
@@ -138,13 +138,13 @@
               <b-col><p class="texto-exp"><b>Estas por indicar que la factura es correcta.</b></p></b-col>
           </b-row>
           <b-row>
-              <b-col><p class="texto-exp"><b>¿Deseas continuar?</b></p></b-col>
+              <b-col><p class="texto-exp"><b>Â¿Deseas continuar?</b></p></b-col>
           </b-row>
       </b-card-text>
       <b-card-text v-else-if="estadoActual == 11" class="comment-pick-card">
           <!-- estadoActual == 8 => Seleccionar Motivo -->
           <b-row>
-              <b-col><div class="li-row"><b-icon-caret-right-fill class="li-icon icon-orange" font-scale="1" shift-v="-3px"></b-icon-caret-right-fill><p class="li-content texto-exp"><b>Seleccioná los motivos por los que la carga es incorrecta:</b></p></div></b-col>
+              <b-col><div class="li-row"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i><p class="li-content texto-exp"><b>SeleccionÃ¡ los motivos por los que la carga es incorrecta:</b></p></div></b-col>
           </b-row>
           <b-row>
             <b-radio-group class="motivos-rechazo-group">
@@ -165,7 +165,7 @@
                 class="btn-ver-mas-motivos"
                 @click="mostrarTodosMotivos = !mostrarTodosMotivos"
               >
-                {{ mostrarTodosMotivos ? 'Ver menos' : 'Ver más' }}
+                {{ mostrarTodosMotivos ? 'Ver menos' : 'Ver mÃ¡s' }}
               </b-button>
             </b-radio-group>
           </b-row>
@@ -176,7 +176,7 @@
               <b-col><p class="texto-exp">Estas por indicar que la factura es incorrecta porque <b>{{ motivo }}</b></p></b-col>
           </b-row>
           <b-row>
-              <b-col><p class="texto-exp"><b>¿Deseas continuar?</b></p></b-col>
+              <b-col><p class="texto-exp"><b>Â¿Deseas continuar?</b></p></b-col>
           </b-row>
       </b-card-text>
       <b-card-text v-else-if="estadoActual == 13" class="ticket-enviando-card">
@@ -184,13 +184,13 @@
           <b-row>
               <b-col>
                   <p class="texto-exp"><b>Cargando, esto puede demorar unos minutos.</b></p>
-                  <p class="sub-texto-exp">Por favor, no cierres esta página.</p>
+                  <p class="sub-texto-exp">Por favor, no cierres esta pÃ¡gina.</p>
               </b-col>
           </b-row>
       </b-card-text>
       <b-row v-if="estadoActual == 2 || estadoActual == 3 || estadoActual == 4 || estadoActual == 8">
           <b-col v-if="facturas && facturas[periodo]">
-              <b-button class="btn-show-ticket" variant="outline-primary" @click="openDocumento(facturas[periodo])"><b-icon-eye></b-icon-eye></b-button>
+              <b-button class="btn-show-ticket" variant="outline-primary" @click="openDocumento(facturas[periodo])"><i class="bi bi-eye"></i></b-button>
           </b-col>
       </b-row>
       <div class="btn-abajo-container">
@@ -205,7 +205,7 @@
                   <b-button @click="RechazarTicket" variant="danger" class="btn-cancel float-right"><span>Rechazar</span></b-button>
               </div>
               <div v-else-if="estadoActual == 3 || estadoActual == 4 || estadoActual == 5" style="width: 100%;">
-                  <b-icon-pencil-square variant="dark" scale="2" @click="RectificarTicket" class="btn-rectific"></b-icon-pencil-square>
+                  <i class="bi bi-pencil-square text-dark"></i>
               </div>
           </div>
       </div>
@@ -215,11 +215,11 @@
   <!-- Modal para archivos HEIC -->
   <b-modal v-model="showHeicModal" header-bg-variant="warning" title="Archivo no compatible" title-class="text-light" hide-footer centered>
     <div class="text-center">
-      <b-icon-exclamation-triangle-fill variant="warning" scale="3" class="my-3"></b-icon-exclamation-triangle-fill>
+      <i class="bi bi-exclamation-triangle-fill text-warning"></i>
       <h5 class="my-3">Este archivo no pudo ser abierto desde el navegador</h5>
-      <p class="mb-4">El formato HEIC no es compatible con tu navegador.<br/> Podés descargar el archivo para visualizarlo en tu dispositivo.</p>
+      <p class="mb-4">El formato HEIC no es compatible con tu navegador.<br/> PodÃ©s descargar el archivo para visualizarlo en tu dispositivo.</p>
       <b-button @click="downloadHeicFile" variant="success" class="mr-2 btn-download-heic">
-        <b-icon-download></b-icon-download> Descargar
+        <i class="bi bi-download"></i> Descargar
       </b-button>
       <b-button @click="showHeicModal = false" variant="secondary">
         Cerrar
@@ -230,7 +230,7 @@
 </template>
 
 <script>
-import { requiredIf } from 'vuelidate/lib/validators';
+import { requiredIf } from '@vuelidate/validators';
 export default {
   props: {
     id: {
@@ -242,7 +242,7 @@ export default {
     fecha: String,
     observaciones: String,
     hardEstado: Number,
-    // Puedes agregar más props según sea necesario
+    // Puedes agregar mÃ¡s props segÃºn sea necesario
   },
   data() {
       return {
@@ -254,15 +254,15 @@ export default {
       mostrarTodosMotivos: false,
       maxMotivosIniciales: 5,
       motivosRechazo: [
-        'La factura no corresponde al período solicitado.',
+        'La factura no corresponde al perÃ­odo solicitado.',
         'La factura no corresponde al Legajo y/o CUIT/CUIM.',
-        'El documento no es legible o está dañado.',
+        'El documento no es legible o estÃ¡ daÃ±ado.',
         'El documento no es una factura.',
-        'El contribuyente cambió de categoría tributaria.',
-        'La facturación no es compatible con las reglamentaciones de AFIP.',
+        'El contribuyente cambiÃ³ de categorÃ­a tributaria.',
+        'La facturaciÃ³n no es compatible con las reglamentaciones de AFIP.',
         'La factura no corresponde a una venta efectivamente efectuada.',
-        'La CUIT registra uno o más impuestos con baja de oficio según ARCA.',
-        'La facturación no constituye punto de Venta en Villa Gesell.',
+        'La CUIT registra uno o mÃ¡s impuestos con baja de oficio segÃºn ARCA.',
+        'La facturaciÃ³n no constituye punto de Venta en Villa Gesell.',
       ],
       recaptchaSiteKey: "6LfNxggoAAAAANyfZ5a2Lg_Rx28HX_lINDYX7AU-",
       captchaResponse: null,
@@ -283,19 +283,19 @@ export default {
       return this.$store.getters['config/abiertoAnualPeriodos'];
     },
     periodoTexto() {
-      // Lógica para asignar un texto al periodo
+      // LÃ³gica para asignar un texto al periodo
       // Por ejemplo, puedes tener un array de textos correspondientes a cada periodo
       const periodosTextos = [
         "Mayo",
         "Agosto",
         "Octubre"
       ];
-          // Asegúrate de que el periodo esté dentro del rango del array
+          // AsegÃºrate de que el periodo estÃ© dentro del rango del array
           if (this.periodo >= 0 && this.periodo <= periodosTextos.length) {
               return periodosTextos[this.periodo];
           } else {
-              // Si el periodo está fuera de rango, retorna un mensaje de error o un valor por defecto
-              return "Periodo no válido";
+              // Si el periodo estÃ¡ fuera de rango, retorna un mensaje de error o un valor por defecto
+              return "Periodo no vÃ¡lido";
           }
       },
       estadoIcono(){
@@ -338,24 +338,24 @@ export default {
   },
   fetchOnServer: false,
   /**
-   * Hook created(): inicializa la tarjeta del período de Abierto Anual.
-   * 1) Calcula estadoActual (1-13) a partir del estado del trámite y las fechas.
+   * Hook created(): inicializa la tarjeta del perÃ­odo de Abierto Anual.
+   * 1) Calcula estadoActual (1-13) a partir del estado del trÃ¡mite y las fechas.
    * 2) Guarda estadoPrevio y motivo; si viene hardEstado por prop, fuerza ese estado.
-   * (Las facturas/documentos se cargan después vía fetch() y se usan desde la computed facturas.)
+   * (Las facturas/documentos se cargan despuÃ©s vÃ­a fetch() y se usan desde la computed facturas.)
    */
   async created() {
-      // Determinar estado inicial (estadoActual) según el estado del trámite.
-      // estado viene del backend (Correcto | Incorrecto | Incompleto | En revisión).
-      // estadoActual es el número que usa el template para mostrar mensajes e íconos (1-13).
+      // Determinar estado inicial (estadoActual) segÃºn el estado del trÃ¡mite.
+      // estado viene del backend (Correcto | Incorrecto | Incompleto | En revisiÃ³n).
+      // estadoActual es el nÃºmero que usa el template para mostrar mensajes e Ã­conos (1-13).
       switch(this.estado){
           case "Correcto": {
-                  // Período ya aprobado: no se puede volver a subir.
+                  // PerÃ­odo ya aprobado: no se puede volver a subir.
                   this.estadoActual = 3;
                   break
               };
           case "Incorrecto": {
-                  // Rechazado: si está en rectificación o config lo permite → estado 7 (habilitado para subir rectificación).
-                  // Si no → estado 4 (incorrecto, sin rectificación habilitada).
+                  // Rechazado: si estÃ¡ en rectificaciÃ³n o config lo permite â†’ estado 7 (habilitado para subir rectificaciÃ³n).
+                  // Si no â†’ estado 4 (incorrecto, sin rectificaciÃ³n habilitada).
                   if (this.tramite.facturas[this.periodo] && (this.tramite.facturas[this.periodo].rectificando || this.config.rectificacion)){
                       this.estadoActual =  7;
                       break
@@ -365,7 +365,7 @@ export default {
                   }
               };
           case "Incompleto": {
-                  // Aún no hay carga correcta: depende de la fecha actual vs ventana del período.
+                  // AÃºn no hay carga correcta: depende de la fecha actual vs ventana del perÃ­odo.
                   await this.$store.dispatch('fechas/get')
                   const now = new Date(this.$store.state.fechas.fecha.fecha);
                   const maxDateParts = this.config.maxDates[this.periodo].split('/');
@@ -373,7 +373,7 @@ export default {
                   const maxDate = new Date(maxDateParts[2], maxDateParts[1] - 1, maxDateParts[0], 23, 59, 59, 999);
                   const minDate = new Date(minDateParts[2], minDateParts[1] - 1, minDateParts[0]);
                   if (now && now > maxDate){
-                      // Pasó la fecha máxima: período vencido. Si hay rectificación habilitada → 7; si no → 5 (vencido sin rectificación).
+                      // PasÃ³ la fecha mÃ¡xima: perÃ­odo vencido. Si hay rectificaciÃ³n habilitada â†’ 7; si no â†’ 5 (vencido sin rectificaciÃ³n).
                       if(this.config.rectificacion){
                           this.estadoActual = 7;
                           break;
@@ -382,7 +382,7 @@ export default {
                       break;
                   }
                   if (now && now < minDate){
-                      // Antes de la ventana: no se puede cargar aún.
+                      // Antes de la ventana: no se puede cargar aÃºn.
                       this.estadoActual =  1;
                       break;
                   }
@@ -390,8 +390,8 @@ export default {
                   this.estadoActual =  6;
                   break
               };
-          case "En revisión":{
-              // Cargó documentos y están siendo revisados.
+          case "En revisiÃ³n":{
+              // CargÃ³ documentos y estÃ¡n siendo revisados.
               this.estadoActual =  2;
               break
           }
@@ -399,13 +399,13 @@ export default {
      this.estadoPrevio = this.estadoActual;
      this.motivo = this.observaciones;
 
-     // Override: si el padre pasa hardEstado, se fuerza ese estado (útil para pruebas o flujos especiales).
+     // Override: si el padre pasa hardEstado, se fuerza ese estado (Ãºtil para pruebas o flujos especiales).
      if (this.hardEstado != null)
           this.estadoActual = this.hardEstado;
   },
   methods: {
       RechazarTicket() {
-      // Validar que el archivo no esté vacío antes de enviarlo
+      // Validar que el archivo no estÃ© vacÃ­o antes de enviarlo
           var nextCard = null;
           if (this.estadoActual == 2 || this.estadoActual == 8){
               nextCard = 11;
@@ -523,7 +523,7 @@ export default {
 
       openDocumento(documento) {
         if (!this.isValidBase64(documento.data)) {
-            console.error('La cadena Base64 no es válida');
+            console.error('La cadena Base64 no es vÃ¡lida');
             return;
         }
 
@@ -572,22 +572,22 @@ export default {
 
 
       playAnimation(callback, newState) {
-          // Agregar clase para iniciar la animación
+          // Agregar clase para iniciar la animaciÃ³n
           this.$refs.card.classList.add('playing-animation');
           setTimeout(() => {
-              // Cambiar el estado a mitad de la animación
+              // Cambiar el estado a mitad de la animaciÃ³n
               this.estadoActual = newState;
 
-              // Esperar a que termine la animación
+              // Esperar a que termine la animaciÃ³n
               setTimeout(() => {
-                  // Remover la clase para detener la animación
+                  // Remover la clase para detener la animaciÃ³n
                   this.$refs.card.classList.remove('playing-animation');
-                  // Llamar al callback después de la animación
+                  // Llamar al callback despuÃ©s de la animaciÃ³n
                   if (callback) {
                       callback();
                   }
-              }, 1000); // Cambia 1000ms por la duración de tu animación
-          }, 500); // Cambia 500ms por la mitad de la duración de tu animación
+              }, 1000); // Cambia 1000ms por la duraciÃ³n de tu animaciÃ³n
+          }, 500); // Cambia 500ms por la mitad de la duraciÃ³n de tu animaciÃ³n
       },
 
       downloadHeicFile() {
@@ -921,7 +921,7 @@ width: 100%;
   opacity: 0; /* Desaparece el contenido actual */
 }
 51% {
-  opacity: 0; /* Se asegura que el contenido anterior esté oculto durante la rotación */
+  opacity: 0; /* Se asegura que el contenido anterior estÃ© oculto durante la rotaciÃ³n */
 }
 100% {
   transform: rotateY(0deg);
@@ -929,3 +929,4 @@ width: 100%;
 }
 }
 </style>
+

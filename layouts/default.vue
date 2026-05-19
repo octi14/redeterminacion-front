@@ -4,9 +4,8 @@
       <Navbar />
     </div>
     <div id="app-content" class="mt-5">
-     <!-- <Nuxt keep-alive /> -->
-      <Nuxt />
-      <ModalSessionTimeout :mostrarModal="sessionExpired" />
+      <slot />
+      <ModalSessionTimeout :mostrarModal="showSessionTimeoutModal" />
       <ModalMoratoria2026 :mostrarModal="mostrarMoratoria" @close="mostrarMoratoria = false" />
     </div>
     <Foot />
@@ -27,21 +26,27 @@ export default {
     token() {
       return this.$store.state.user.token;
     },
+    showSessionTimeoutModal() {
+      const path = this.$route?.path || ''
+      return this.sessionExpired && path !== '/login'
+    },
   },
   watch: {
     token(newToken) {
       if (newToken) {
         this.sessionExpired = this.checkTokenExpired(newToken);
         this.manualLogout = false; // Resetear la bandera cuando hay token
-      } else {
-        // Solo mostrar el popup si NO fue un logout manual
+      } else if (this.$route?.path !== '/login') {
+        // Solo mostrar el popup si NO fue un logout manual (nunca en /login)
         this.sessionExpired = !this.manualLogout;
+      } else {
+        this.sessionExpired = false;
       }
     },
     // Cuando navegamos dentro de la SPA, `mounted()` no vuelve a correr.
     // Este watcher asegura que el popup se muestre cada vez que entramos a `/`.
     '$route.path'(newPath) {
-      if (!process.client) return;
+      if (!import.meta.client) return;
       this.mostrarMoratoria = newPath === '/';
     },
   },
@@ -63,12 +68,12 @@ export default {
     }
 
     // Popup de Moratoria 2026 al inicio de la página (`/`)
-    if (process.client && this.$route && this.$route.path === '/') {
+    if (import.meta.client && this.$route && this.$route.path === '/') {
       this.mostrarMoratoria = true;
     }
 
     // Escuchar el evento de logout manual
-    this.$nuxt.$on('manual-logout', () => {
+    useNuxtApp().hook('manual-logout', () => {
       this.manualLogout = true;
     });
   },

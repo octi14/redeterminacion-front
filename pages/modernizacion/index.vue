@@ -5,7 +5,7 @@
     <b-modal v-model="isAdding" hide-header-close title-class="h5 mx-auto text-light" header-bg-variant="secondary" hide-footer centered>
       <template #modal-header>
         <div class="row mx-auto">
-          <b-icon-upload class="my-3 mr-2" style="color:white" scale="2"/>
+          <i class="bi bi-upload"></i>
           <!-- <h4 class="text-light my-2 ml-4">Agregar archivo</h4> -->
         </div>
       </template>
@@ -26,7 +26,7 @@
       <div class="text-center mx-4 my-auto" v-if="adminModernizacion">
         <NuxtLink to="/modernizacion/procedimientos">
           <b-button variant="outline" class="mt-3 btn-5">
-            <b-icon-folder class="h1 landing-icon" /> <br />
+            <i class="bi bi-folder"></i> <br />
             <h4 style="color:green"><b> Procedimientos </b></h4>
           </b-button>
         </NuxtLink>
@@ -34,7 +34,7 @@
       <div class="text-center mx-4 my-auto" v-if="adminModernizacion">
         <NuxtLink to="/modernizacion/tutoriales">
           <b-button variant="outline" class="mt-3 btn-5">
-            <b-icon-folder class="h1 landing-icon" /> <br />
+            <i class="bi bi-folder"></i> <br />
             <h4 style="color:green"><b> Tutoriales </b></h4>
           </b-button>
         </NuxtLink>
@@ -42,7 +42,7 @@
       <div class="text-center mx-4 my-auto">
         <NuxtLink to="/modernizacion/notas">
           <b-button variant="outline" class="mt-5 btn-5">
-            <b-icon-folder class="h1 landing-icon" /> <br />
+            <i class="bi bi-folder"></i> <br />
             <h4 style="color:green"><b> Formularios/<br/> Notas tipo </b></h4>
           </b-button>
         </NuxtLink>

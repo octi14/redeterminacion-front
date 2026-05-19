@@ -62,7 +62,7 @@
               <p class="col col-complementary">
                 <a :href="doc.url" target="_blank">
                   <b-button size="sm" variant="outline-primary" pill>
-                    <b-icon icon="eye" scale="1.2"></b-icon> Ver
+                    <i class="bi bi-eye"></i> Ver
                   </b-button>
                 </a>
               </p>
@@ -86,7 +86,7 @@
     <b-modal v-model="showReject" hide-footer :header-bg-variant="'danger'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
-          <b-icon-envelope scale="2" variant="light" />
+          <i class="bi bi-envelope text-light"></i>
         </div>
       </template>
       <div class="confirmation-popup-body">
@@ -101,7 +101,7 @@
     <b-modal v-model="showApprove" hide-footer :header-bg-variant="'success'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
-          <b-icon-check-circle scale="2" variant="light" class="my-2" />
+          <i class="bi bi-check-circle text-light"></i>
         </div>
       </template>
       <div class="confirmation-popup-body">
@@ -116,7 +116,7 @@
     <b-modal v-model="showRestore" hide-footer :header-bg-variant="'secondary'" centered>
       <template #modal-header>
         <div class="confirmation-popup-header mx-auto">
-          <b-icon-exclamation-triangle scale="2" variant="light" />
+          <i class="bi bi-exclamation-triangle text-light"></i>
         </div>
       </template>
       <div class="confirmation-popup-body text-center">

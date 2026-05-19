@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="page main-background">
     <Banner title="Comercio Abierto Anual"/>
     <div class="mx-auto">
@@ -8,25 +8,25 @@
         </div> -->
         <b-card class="section-card col-md-6 mx-auto">
           <div class="li-row">
-            <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content"><p>Estás a punto de iniciar la carga de comprobantes para obtener el beneficio de Abierto Anual.</p></div>
+            <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p>EstÃ¡s a punto de iniciar la carga de comprobantes para obtener el beneficio de Abierto Anual.</p></div>
           </div>
           <div class="li-row">
-            <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content"><p>Para comenzar, ingresá los siguientes datos del comercio:</p></div>
+            <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p>Para comenzar, ingresÃ¡ los siguientes datos del comercio:</p></div>
           </div>
           <b-form @submit="sendData">
             <b-row>
               <label for="cuit" class="col-6">CUIT/CUIM del titular del comercio: <span style="font-weight: 500"><i>(sin guiones)</i></span></label>
               <b-form-input class="col-6" v-model="cuit" id="cuit" type="number" placeholder="Ingrese su CUIT/CUIM" no-wheel></b-form-input>
               <div v-if="$v.cuit.$error" class="validation-error col-12">
-                <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon>  'El CUIT/CUIT debe ser un número de 11 dígitos'
+                <i class="bi bi-exclamation-octagon text-danger"></i>  'El CUIT/CUIT debe ser un nÃºmero de 11 dÃ­gitos'
               </div>
             </b-row>
-            <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
+            <i class="bi bi-question-circle text-light"></i>
             <b-row>
-              <label for="nroLegajo" class="col-6"> N° de legajo comercial: <b-icon-question-circle-fill @click="openPopup('A')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></label>
-              <b-form-input class="col-6" v-model="nroLegajoInput" id="nroLegajo" type="text" placeholder="Ingrese un N° de Legajo Comercial" no-wheel @input="sanitizeLegajo"></b-form-input>
+              <label for="nroLegajo" class="col-6"> NÂ° de legajo comercial: <i class="bi bi-question-circle-fill text-info" style="font-size: 1.25em"></i></label>
+              <b-form-input class="col-6" v-model="nroLegajoInput" id="nroLegajo" type="text" placeholder="Ingrese un NÂ° de Legajo Comercial" no-wheel @input="sanitizeLegajo"></b-form-input>
               <div v-if="$v.nroLegajo.$error" class="validation-error col-12">
-                <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon>  'Completá este campo'
+                <i class="bi bi-exclamation-octagon text-danger"></i>  'CompletÃ¡ este campo'
               </div>
             </b-row>
           </b-form>
@@ -41,16 +41,16 @@
 
     </div>
 
-    <!-- Modal número de trámite incorrecto -->
+    <!-- Modal nÃºmero de trÃ¡mite incorrecto -->
     <b-modal v-model="showPopupFormError" @click-outside="showPopupFormError = false" :header-bg-variant="'danger'" centered>
       <template #modal-header>
         <div class="centeredContainer"><h3>
-            <b-icon-exclamation-octagon scale="1.5" variant="light"></b-icon-exclamation-octagon>
+            <i class="bi bi-exclamation-octagon text-light"></i>
         </h3></div>
       </template>
       <div class="centeredContainer modal-error">
         <p class="modal-subtitle">No hemos podido encontrar tu comercio</p>
-        <p class="">Por favor, corroborá que los datos ingresados sean correctos.</p>
+        <p class="">Por favor, corroborÃ¡ que los datos ingresados sean correctos.</p>
         <p class="minitext">Si el problema persiste, envianos un correo a <a target="_blank" href="mailto:diarvige@gesell.gob.ar" class="icon-green">dirarvige@gesell.gob.ar</a>.</p>
       </div>
       <template #modal-footer>
@@ -60,16 +60,16 @@
       </template>
     </b-modal>
 
-    <!-- Modal No ha ingresado un número de trámite -->
+    <!-- Modal No ha ingresado un nÃºmero de trÃ¡mite -->
     <b-modal v-model="showPopupNoEntry" @click-outside="showPopupNoEntry = false" :header-bg-variant="'danger'" centered>
       <template #modal-header>
         <div class="centeredContainer"><h3>
-            <b-icon-exclamation-octagon scale="1.5" variant="light"></b-icon-exclamation-octagon>
+            <i class="bi bi-exclamation-octagon text-light"></i>
         </h3></div>
       </template>
       <div class="centeredContainer modal-error">
-        <p class="modal-subtitle">No has ingresado un CUIT o un número de legajo válidos.</p>
-        <p class="">Por favor, completá este campo para continuar.</p>
+        <p class="modal-subtitle">No has ingresado un CUIT o un nÃºmero de legajo vÃ¡lidos.</p>
+        <p class="">Por favor, completÃ¡ este campo para continuar.</p>
       </div>
       <template #modal-footer>
         <div class="" style="margin: auto">
@@ -77,19 +77,19 @@
         </div>
       </template>
     </b-modal>
-  <!-- Modal información Adicional -->
+  <!-- Modal informaciÃ³n Adicional -->
     <b-modal v-model="showPopupA"  :hide-footer="true" @click-outside="showPopupA = false" :header-bg-variant="'success'" centered>
     <template #modal-header>
         <div class="modal-info">
           <h5>
-              <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
-              Información Adicional
+              <i class="bi bi-question-circle text-light"></i>
+              InformaciÃ³n Adicional
           </h5>
         </div>
-            <button type="button" aria-label="Close" class="close" @click="showPopupA = false">×</button>
+            <button type="button" aria-label="Close" class="close" @click="showPopupA = false">Ã—</button>
       </template>
       <div class="modal-info">
-        <p class="destacado"><b-icon-caret-right-fill class="icon-orange" shift-v="" scale="1.5"></b-icon-caret-right-fill>Podés encontrar el número de <b>CUIM</b> y de <b>legajo comercial</b> en el encabezado de la notificación que recibiste. Hacé click en la imagen y verificá cómo se visualiza.</p>
+        <p class="destacado"><i class="bi bi-caret-right-fill"></i>PodÃ©s encontrar el nÃºmero de <b>CUIM</b> y de <b>legajo comercial</b> en el encabezado de la notificaciÃ³n que recibiste. HacÃ© click en la imagen y verificÃ¡ cÃ³mo se visualiza.</p>
         <div style="width: 100%">
           <a href="http://haciendavgesell.gob.ar/_nuxt/img/ej-cedulanotificacion.edf6c18.jpg" target="_blank"><img src="../../../assets/ej-cedulanotificacion.jpg" width="100%" height="fit-content" /></a>
         </div>
@@ -99,16 +99,16 @@
     <b-modal v-model="showClosedPopup" hide-footer :header-bg-variant="'success'" centered   no-close-on-backdrop no-close-on-esc>
       <template #modal-header>
         <div class="closed-popup-header">
-            <b-icon icon="exclamation-triangle" scale="2" variant="light" ></b-icon>
+            <i class="bi bi-exclamation-triangle text-light"></i>
         </div>
-            <button type="button" aria-label="Close" class="close" @click="showClosedPopup = false" style="position: absolute; right: 15px; top: 15px;">×</button>
+            <button type="button" aria-label="Close" class="close" @click="showClosedPopup = false" style="position: absolute; right: 15px; top: 15px;">Ã—</button>
       </template>
       <div class="closed-popup-body">
         <h2 class="icon-orange"><b>IMPORTANTE</b></h2>
-        <p >El plazo para acreditar las facturas del año 2025 ha expirado.</p>
+        <p >El plazo para acreditar las facturas del aÃ±o 2025 ha expirado.</p>
 
         <div class="li-row">
-          <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Por cualquier reclamo comunicate con <a href="mailto:dirarvige@gesell.gob.ar" class="text-success">ARVIGE</a> para conocer los pasos a seguir.</div>
+          <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div><div class="li-content">Por cualquier reclamo comunicate con <a href="mailto:dirarvige@gesell.gob.ar" class="text-success">ARVIGE</a> para conocer los pasos a seguir.</div>
         </div>
 
         <div class="text-center mt-3">
@@ -123,7 +123,7 @@
 
 
   <script>
-  import { required, requiredIf, alpha, numeric, email, minLength, maxLength, sameAs } from 'vuelidate/lib/validators';
+  import { required, requiredIf, alpha, numeric, email, minLength, maxLength, sameAs } from '@vuelidate/validators';
   export default {
     validations() {
       return {
@@ -224,7 +224,7 @@
       this.nroLegajoInput = null;
     },
     openPopup(type) {
-      // Lógica para abrir el popup correspondiente según el tipo (A, B, C, D)
+      // LÃ³gica para abrir el popup correspondiente segÃºn el tipo (A, B, C, D)
       if (type === 'A') {
         ("ShowPopup A")
         this.showPopupA = true;
@@ -233,13 +233,13 @@
         }
     },
     sanitizeLegajo() {
-      // Elimina cualquier caracter que no sea dígito
+      // Elimina cualquier caracter que no sea dÃ­gito
       const cleanValue = this.nroLegajoInput.replace(/\D/g, '');
 
       // Elimina ceros a la izquierda
       this.nroLegajo = cleanValue.replace(/^0+/, '') || '0';
 
-      // Actualiza el input visible (opcional: si querés mostrarlo corregido)
+      // Actualiza el input visible (opcional: si querÃ©s mostrarlo corregido)
       //this.nroLegajoInput = cleanValue;
     },
   },
@@ -530,3 +530,4 @@
       vertical-align: top;
     }
   </style>
+

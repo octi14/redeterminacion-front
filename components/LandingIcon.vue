@@ -1,67 +1,117 @@
 <template>
-  <!-- Para enlaces externos (que comienzan con http) -->
-  <a v-if="isExternalLink" :href="to" target="_blank" rel="noopener noreferrer" class="d-block">
-    <b-button variant="outline" class="btn-5">
-      <!-- Ícono de BootstrapVue -->
-      <b-icon v-if="type === 'bootstrap-vue'" :icon="icon" class="mb-4 landing-icon"></b-icon>
-
-      <!-- Ícono de Bootstrap Icons -->
-      <i v-if="type === 'bootstrap-icons'" class="bi" :class="`bi-${icon} mb-4 landing-icon bootstrap-icons`"></i>
-
-      <!-- Imagen SVG -->
-      <img v-if="type === 'svg'" :src="require(`~/assets/${icon}`)" class="mb-4 landing-icon svg-icon" :alt="title" />
-
-      <!-- <b-icon :icon="icon" class="" /> -->
-      <h5 class="landing-text"><b>{{ title }}</b></h5>
-    </b-button>
-  </a>
-
-  <!-- Para enlaces internos -->
-  <NuxtLink v-else :to="to" class="d-block">
-    <b-button variant="outline" class="btn-5">
-      <!-- Ícono de BootstrapVue -->
-      <b-icon v-if="type === 'bootstrap-vue'" :icon="icon" class="mb-4 landing-icon"></b-icon>
-
-      <!-- Ícono de Bootstrap Icons -->
-      <i v-if="type === 'bootstrap-icons'" class="bi" :class="`bi-${icon} mb-4 landing-icon bootstrap-icons`"></i>
-
-      <!-- Imagen SVG -->
-      <img v-if="type === 'svg'" :src="require(`~/assets/${icon}`)" class="mb-4 landing-icon svg-icon" :alt="title" />
-
-      <!-- <b-icon :icon="icon" class="" /> -->
-      <h5 class="landing-text"><b>{{ title }}</b></h5>
-    </b-button>
-  </NuxtLink>
+  <component
+    :is="isExternalLink ? 'a' : 'NuxtLink'"
+    v-bind="linkAttrs"
+    class="landing-tile-link"
+  >
+    <div class="landing-tile">
+      <img
+        v-if="type === 'svg'"
+        :src="svgSrc"
+        class="landing-tile-icon landing-tile-icon--svg"
+        :alt="title"
+      />
+      <i
+        v-else
+        :class="iconClasses"
+        aria-hidden="true"
+      />
+      <h5 class="landing-text landing-tile-title mb-0">
+        <b>{{ title }}</b>
+      </h5>
+    </div>
+  </component>
 </template>
 
 <script>
+import arvigeSvg from '~/assets/tas.svg'
+
 export default {
   props: {
     icon: String,
     title: String,
     type: String,
-    to: String
+    to: String,
   },
   computed: {
     isExternalLink() {
-      return this.to && this.to.startsWith('http');
-    }
-  }
+      return this.to && this.to.startsWith('http')
+    },
+    linkAttrs() {
+      if (this.isExternalLink) {
+        return {
+          href: this.to,
+          target: '_blank',
+          rel: 'noopener noreferrer',
+        }
+      }
+      return { to: this.to }
+    },
+    svgSrc() {
+      if (this.icon === 'tas.svg') {
+        return arvigeSvg
+      }
+      if (!this.icon) return ''
+      return new URL(`../assets/${this.icon}`, import.meta.url).href
+    },
+    iconClasses() {
+      return ['bi', `bi-${this.icon}`, 'landing-tile-icon']
+    },
+  },
 }
 </script>
 
 <style scoped>
-.svg-icon {
-  width: 90px !important;
-  height: 80px !important;
-  max-width: 90px !important;
-  object-fit: fill;
-  transform: scaleX(1.2) scaleY(1.1);
-  filter: brightness(0) saturate(100%) invert(50%) sepia(50%) saturate(5000%) hue-rotate(2deg) brightness(100%) contrast(110%);
+.landing-tile-link {
+  display: block;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+
+.landing-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 10rem;
+  width: 100%;
+  padding: 1rem 0.5rem;
+  text-align: center;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.landing-tile-icon {
+  display: block;
+  font-size: 4.5rem;
+  line-height: 1;
+  color: #ef8918;
+  margin-bottom: 1rem;
   transition: transform 0.2s ease;
 }
 
-.svg-icon:hover {
-  transform: scaleX(1.2) scaleY(1.1) scale(1.2);
+.landing-tile:hover .landing-tile-icon {
+  transform: scale(1.12);
+}
+
+.landing-tile-icon--svg {
+  width: 5.5rem;
+  height: 5rem;
+  object-fit: contain;
+  filter: brightness(0) saturate(100%) invert(50%) sepia(50%) saturate(5000%)
+    hue-rotate(2deg) brightness(100%) contrast(110%);
+}
+
+.landing-tile-title {
+  font-size: 1.15rem;
+  line-height: 1.3;
+  transition: text-shadow 0.3s ease;
+}
+
+.landing-tile-link:hover .landing-tile-title {
+  text-shadow: 0 0 3px rgba(21, 255, 0, 0.8);
 }
 </style>

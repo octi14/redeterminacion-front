@@ -138,7 +138,7 @@
         </template>
         <template v-else>
           <NuxtLink
-            class="nav-link"
+            class="nav-link text-white"
             active-class="active"
             to="/login"
           >
@@ -199,7 +199,7 @@ export default {
     onUserLogout() {
       this.registrarActividad("User Logout", "User Logout");
       // Emitir evento para indicar que es un logout manual
-      this.$nuxt.$emit('manual-logout');
+      useNuxtApp().callHook('manual-logout');
       this.$store.dispatch('user/logout')
     },
     onMyAccount(){

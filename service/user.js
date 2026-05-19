@@ -8,16 +8,16 @@ const formatProfile = ({
   }
 }
 
-const formatAuthenticatedUser = ({ _id: id, username, token, admin }) => {
+const formatAuthenticatedUser = (user = {}) => {
   return {
-    id,
-    username,
-    token,
-    admin,
+    id: user._id ?? user.id ?? '',
+    username: user.username ?? '',
+    token: user.token ?? '',
+    admin: user.admin ?? '',
   }
 }
 
-module.exports = {
+export default {
   authenticate: async (axios, { username, password }) => {
     axios.setHeader('Access-Control-Allow-Origin', true);
 
@@ -27,21 +27,22 @@ module.exports = {
         password,
       });
 
-      return formatAuthenticatedUser(authenticateResponse.data);
+      const payload = authenticateResponse?.data ?? authenticateResponse
+      return formatAuthenticatedUser(payload)
     } catch (error) {
-      if (error.response) {
-        // Se recibió una respuesta del servidor con un código de estado
-        if (error.response.status === 404) {
-          // Usuario no encontrado
-          throw new Error("Usuario no encontrado");
-        } else if (error.response.status === 401) {
-          // Contraseña incorrecta
-          throw new Error("Contraseña incorrecta");
-        }
-      }
+      const status = error.response?.status ?? error.statusCode ?? error.status
+      const message = error.response?.data?.message ?? error.data?.message
 
-      // Otro error que no está relacionado con el código de estado
-      throw new Error("Error de autenticación");
+      if (message) {
+        throw new Error(message)
+      }
+      if (status === 404) {
+        throw new Error('Usuario no encontrado')
+      }
+      if (status === 401) {
+        throw new Error('Contraseña incorrecta')
+      }
+      throw new Error('Error de autenticación')
     }
   },
 
@@ -90,3 +91,4 @@ module.exports = {
   //   return registerResponse
   // },
 }
+

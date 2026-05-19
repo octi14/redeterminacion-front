@@ -1,4 +1,4 @@
-// Importar servicios existentes
+﻿// Importar servicios existentes
 const HabilitacionService = require('./habilitacion')
 const ObraService = require('./obra')
 const TurnoService = require('./turno')
@@ -1180,7 +1180,7 @@ async function getHabilitacionesExtendidas(axios) {
   }
 }
 
-module.exports = {
+export default {
 
 
   // Obtener estadísticas por módulo usando endpoints existentes
@@ -1791,3 +1791,4 @@ module.exports = {
   }
 
 };
+

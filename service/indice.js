@@ -1,4 +1,4 @@
-const formatIndice = (IndiceResponse) => ({
+﻿const formatIndice = (IndiceResponse) => ({
   id: IndiceResponse._id,
   año: IndiceResponse.año,
   mes: IndiceResponse.mes,
@@ -13,7 +13,7 @@ const formatItem = (ItemsData) => ({
   valor: ItemsData.valor,
 })
 
-module.exports = {
+export default {
   getLatest: async (axios,
     //  { skip = 0, limit = 6 }
      ) => {
@@ -100,3 +100,4 @@ module.exports = {
     })
   },
 }
+

@@ -230,6 +230,28 @@ input[type="number"] {
 // ============================================
 // UTILIDADES GENERALES
 // ============================================
+// Compatibilidad Bootstrap 4 → 5 (clases usadas en el proyecto Nuxt 2)
+.no-gutters {
+  --bs-gutter-x: 0;
+  --bs-gutter-y: 0;
+  margin-right: 0;
+  margin-left: 0;
+
+  > .col,
+  > [class*='col-'] {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+
+.text-left {
+  text-align: left !important;
+}
+
+.text-right {
+  text-align: right !important;
+}
+
 .col h6 {
   margin-bottom: 0%;
 }

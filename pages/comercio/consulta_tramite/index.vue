@@ -424,7 +424,7 @@ export default {
   .consulta-banner-img {
     display: block;
     width: 100%;
-    max-width: 20rem;
+    max-width: 28rem;
     height: auto;
     margin: 0 auto 0.5rem;
   }
@@ -630,7 +630,7 @@ export default {
       padding-right: 15px;
     }
     .consulta-banner-img {
-      max-width: 16rem;
+      max-width: 21rem;
     }
     .mx-auto {
       max-width: 100%;

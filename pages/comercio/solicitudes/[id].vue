@@ -66,15 +66,26 @@
         <!-- <b-button @click="onShowRectificacion" variant="secondary " class="btn-4 mt-3 mx-1" v-if="habilitacion && habilitacion.status === 'En revisión'"> Rectificación </b-button> -->
         <b-button @click="onShowFinalizarSolicitud" variant="success" class="btn-4 mt-3 mx-1" v-if="(!renovacion && !reempadronamiento) && habilitacion && (habilitacion.status === 'Esperando documentación' || habilitacion.status === 'Esperando pago')"> Finalizar solicitud </b-button>
         <b-button @click="onShowFinalizarRenovacion" variant="success" class="btn-4 mt-3 mx-1" v-if="(renovacion || reempadronamiento) && habilitacion && habilitacion.status === 'Esperando documentación'"> Finalizar solicitud </b-button>
-        <b-button @click="onRestablecer" variant="secondary" class="btn-4 mt-3 mx-1" v-if="adminMaster && habilitacion && habilitacion.status != 'En revisión'"> Volver a estado En Revisión </b-button>
       </div>
-      <div class="solicitud-quick-actions" v-if="jefeComercio">
-        <b-button size="sm" @click="onShowObservaciones" variant="primary">Ver observaciones</b-button>
+      <div
+        class="solicitud-quick-actions"
+        v-if="jefeComercio || (adminMaster && habilitacion && habilitacion.status != 'En revisión')"
+      >
         <b-button
+          v-if="adminMaster && habilitacion && habilitacion.status != 'En revisión'"
           size="sm"
-          @click="onDescargarHabilitacion(); registrarActividad('Descargar Trámite', 'Trámite Descargado', habilitacion.nroTramite)"
-          v-if="adminComercio || adminArvige || adminModernizacion"
+          variant="secondary"
+          class="btn-4"
+          @click="onRestablecer"
+        >
+          Volver a estado En Revisión
+        </b-button>
+        <b-button v-if="jefeComercio" size="sm" variant="primary" @click="onShowObservaciones">Ver observaciones</b-button>
+        <b-button
+          v-if="jefeComercio && (adminComercio || adminArvige || adminModernizacion)"
+          size="sm"
           variant="success"
+          @click="onDescargarHabilitacion(); registrarActividad('Descargar Trámite', 'Trámite Descargado', habilitacion.nroTramite)"
         >
           <i class="bi bi-download"></i> Descargar trámite
         </b-button>
@@ -285,8 +296,7 @@
               <div class="layout" v-for="(item, index) in habilitacion.serviciosHoteleria" :key="index">
                 <p class="col col-main">
                   <strong class="text-primary">- {{ item.servicio }}</strong>
-                  <i class="bi bi-check-circle-fill text-info"></i>
-                  <i class="bi bi-x-circle-fill text-danger"></i>
+                  <i :class="item.value === true ? 'bi bi-check-circle-fill text-info' : 'bi bi-x-circle-fill text-danger'"></i>
                 </p>
               </div>
               <div class="layout" v-if="habilitacion.otrosServicios" style="border:1px solid #CCC">
@@ -1780,25 +1790,6 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
   margin: 1.5em;
 } */
 
-.solicitud-resumen {
-  width: 96%;
-  margin: 0 auto;
-  text-align: center;
-}
-
-.solicitud-quick-actions {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-  margin: 0.75rem auto 0;
-}
-
-.solicitud-quick-actions .btn {
-  min-width: 12rem;
-  padding: 0.3rem 0.8rem;
-}
-
 .visibilidad-switch-row {
   display: flex;
   justify-content: center;
@@ -1899,14 +1890,6 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
 
 /* Responsive adjustments */
 @media (max-width: 576px) {
-  .solicitud-quick-actions {
-    flex-wrap: wrap;
-  }
-
-  .solicitud-quick-actions .btn {
-    min-width: auto;
-  }
-
   .expediente-input-group {
     flex-direction: column;
     align-items: stretch;

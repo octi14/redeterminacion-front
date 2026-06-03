@@ -103,9 +103,9 @@
       </template>
       <p class="h5 text-center font-weight-bold text-dark mt-4 mb-5">Los vales de combustible
         se han creado correctamente</p>
-      <div class="d-flex justify-content-center">
-        <b-button size="sm" variant="success" class="mr-2 col-3" @click="generarImpresion">Imprimir</b-button>
-        <b-button size="sm" class="col-3" variant="danger" @click="cerrarModal">Salir</b-button>
+      <div class="modal-confirm-actions">
+        <b-button size="sm" variant="success" @click="generarImpresion">Imprimir</b-button>
+        <b-button size="sm" variant="danger" @click="cerrarModal">Salir</b-button>
       </div>
     </BModal>
 
@@ -139,8 +139,8 @@
         ></b-form-input>
       </b-form-group>
 
-      <div class="d-flex justify-content-center mt-4">
-        <b-button variant="success" class="mr-2" @click="registrarVehiculoPersonalizado" :disabled="!patentePersonalizada">
+      <div class="modal-confirm-actions mt-4">
+        <b-button variant="success" @click="registrarVehiculoPersonalizado" :disabled="!patentePersonalizada">
           Crear
         </b-button>
         <b-button variant="secondary" @click="showPatentePersonalizada = false">

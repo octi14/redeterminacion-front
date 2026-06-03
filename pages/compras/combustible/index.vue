@@ -218,14 +218,12 @@
 
     <BModal no-close-on-backdrop no-close-on-esc v-model="showCargarOrden" no-footer :header-bg-variant="'success'" centered>
       <template #header>
-        <div class="confirmation-popup-header mx-auto">
-          <span v-if="!successMessage" class="my-3">
-            <i class="bi bi-circle text-light"></i>
-            <i class="bi bi-upload text-light"></i>
-          </span>
-          <span class="my-3" v-else>
-            <i class="bi bi-check-circle text-light"></i>
-          </span>
+        <div v-if="!successMessage" class="confirmation-popup-header combustible-modal-icon">
+          <i class="bi bi-circle text-light" aria-hidden="true"></i>
+          <i class="bi bi-upload text-light" aria-hidden="true"></i>
+        </div>
+        <div v-else class="confirmation-popup-header">
+          <i class="bi bi-check-circle text-light" aria-hidden="true"></i>
         </div>
       </template>
       <div class="confirmation-popup-body">
@@ -235,11 +233,8 @@
         <div v-if="successMessage" class="text-center">
           <p class="h5 font-weight-bold text-dark mt-2" style="font-size: 1.15rem;">La orden de compra fue cargada con éxito</p>
 
-          <!-- Botón de aceptar -->
-          <div class="text-center mt-5">
-            <b-button style="border-radius: 0;" variant="success" @click="cerrarPopup()">
-              Aceptar
-            </b-button>
+          <div class="modal-confirm-actions mt-4">
+            <b-button variant="success" @click="cerrarPopup()">Aceptar</b-button>
           </div>
         </div>
 
@@ -306,19 +301,11 @@
 
           </div>
 
-          <div class="row justify-content-end">
-            <!-- Botón de aceptar -->
-            <div class="text-center mt-3 mx-2">
-              <b-button variant="success" :disabled="!nroOrden1 || !nroOrden2 || !orden.area || !orden.montos.length || nroOrdenDuplicado" @click="submitForm">
-                Aceptar
-              </b-button>
-            </div>
-            <!-- Botón de salir -->
-            <div class="text-center mt-3 mx-2">
-              <b-button variant="danger" @click="showCargarOrden=false">
-                Cancelar
-              </b-button>
-            </div>
+          <div class="modal-confirm-actions">
+            <b-button variant="success" :disabled="!nroOrden1 || !nroOrden2 || !orden.area || !orden.montos.length || nroOrdenDuplicado" @click="submitForm">
+              Aceptar
+            </b-button>
+            <b-button variant="danger" @click="showCargarOrden = false">Cancelar</b-button>
           </div>
         </div>
       </div>
@@ -326,20 +313,17 @@
 
     <BModal v-model="showEliminarOrden" no-footer header-class="justify-content-center" :header-bg-variant="'danger'" centered>
       <template #header>
-        <span class="my-3">
-          <i class="bi bi-circle text-light"></i>
-          <i class="bi bi-trash-fill text-light"></i>
-        </span>
+        <div class="confirmation-popup-header combustible-modal-icon">
+          <i class="bi bi-circle text-light" aria-hidden="true"></i>
+          <i class="bi bi-trash-fill text-light" aria-hidden="true"></i>
+        </div>
       </template>
       <!-- Mensaje de éxito -->
       <div v-if="eliminarSuccess" class="text-center">
           <p class="h5 font-weight-bold text-dark mt-2" style="font-size: 1.15rem;">La orden de compra fue eliminada con éxito</p>
 
-          <!-- Botón de aceptar -->
-          <div class="text-center mt-5">
-            <b-button style="border-radius: 0;" variant="success" @click="cerrarPopup()">
-              Aceptar
-            </b-button>
+          <div class="modal-confirm-actions mt-4">
+            <b-button variant="success" @click="cerrarPopup()">Aceptar</b-button>
           </div>
         </div>
       <div v-else>
@@ -350,9 +334,9 @@
         </p>
         <p class="h6 text-center mt-2 mb-3 font-weight-500 text-dark">¿Deseás continuar?</p>
         <hr class="row col-9 mx-auto"/>
-        <div class="row no-gutters justify-content-center">
-          <button class="btn btn-success mx-2" @click="sendEliminarOrden(tempElim)">Aceptar</button>
-          <button class="btn btn-danger mx-2" @click="showEliminarOrden = false">Cancelar</button>
+        <div class="modal-confirm-actions">
+          <button type="button" class="btn btn-success" @click="sendEliminarOrden(tempElim)">Aceptar</button>
+          <button type="button" class="btn btn-danger" @click="showEliminarOrden = false">Cancelar</button>
         </div>
       </div>
 
@@ -388,14 +372,12 @@
     <!-- Modal para cargar vehículo -->
     <BModal no-close-on-backdrop no-close-on-esc v-model="showCargarVehiculo" no-footer :header-bg-variant="'primary'" centered>
       <template #header>
-        <div class="confirmation-popup-header mx-auto">
-          <span v-if="!successMessageVehiculo" class="my-3">
-            <i class="bi bi-circle text-light"></i>
-            <i class="bi bi-plus text-light"></i>
-          </span>
-          <span class="my-3" v-else>
-            <i class="bi bi-check-circle text-light"></i>
-          </span>
+        <div v-if="!successMessageVehiculo" class="confirmation-popup-header combustible-modal-icon">
+          <i class="bi bi-circle text-light" aria-hidden="true"></i>
+          <i class="bi bi-plus text-light" aria-hidden="true"></i>
+        </div>
+        <div v-else class="confirmation-popup-header">
+          <i class="bi bi-check-circle text-light" aria-hidden="true"></i>
         </div>
       </template>
       <div class="confirmation-popup-body">
@@ -404,10 +386,8 @@
         <!-- Mensaje de éxito -->
         <div v-if="successMessageVehiculo" class="text-center">
           <p class="h5 font-weight-bold text-dark mt-2" style="font-size: 1.15rem;">El vehículo fue cargado con éxito</p>
-          <div class="text-center mt-5">
-            <b-button style="border-radius: 0;" variant="primary" @click="cerrarPopupVehiculo()">
-              Aceptar
-            </b-button>
+          <div class="modal-confirm-actions mt-4">
+            <b-button variant="primary" @click="cerrarPopupVehiculo()">Aceptar</b-button>
           </div>
         </div>
 
@@ -434,17 +414,11 @@
             <hr/>
           </div>
 
-          <div class="row justify-content-end">
-             <div class="text-center mt-3 mx-2">
-               <b-button variant="primary" :disabled="!vehiculo.patente || !vehiculo.area" @click="submitFormVehiculo">
-                 Aceptar
-               </b-button>
-             </div>
-            <div class="text-center mt-3 mx-2">
-              <b-button variant="danger" @click="showCargarVehiculo=false">
-                Cancelar
-              </b-button>
-            </div>
+          <div class="modal-confirm-actions">
+            <b-button variant="primary" :disabled="!vehiculo.patente || !vehiculo.area" @click="submitFormVehiculo">
+              Aceptar
+            </b-button>
+            <b-button variant="danger" @click="showCargarVehiculo = false">Cancelar</b-button>
           </div>
         </div>
       </div>
@@ -464,27 +438,25 @@
     <!-- Modal para eliminar vehículo -->
     <BModal v-model="showEliminarVehiculo" no-footer header-class="justify-content-center" :header-bg-variant="'danger'" centered>
       <template #header>
-        <span class="my-3">
-          <i class="bi bi-circle text-light"></i>
-          <i class="bi bi-trash-fill text-light"></i>
-        </span>
+        <div class="confirmation-popup-header combustible-modal-icon">
+          <i class="bi bi-circle text-light" aria-hidden="true"></i>
+          <i class="bi bi-trash-fill text-light" aria-hidden="true"></i>
+        </div>
       </template>
       <!-- Mensaje de éxito -->
       <div v-if="eliminarSuccessVehiculo" class="text-center">
           <p class="h5 font-weight-bold text-dark mt-2" style="font-size: 1.15rem;">El vehículo fue eliminado con éxito</p>
-          <div class="text-center mt-5">
-            <b-button style="border-radius: 0;" variant="success" @click="cerrarPopupVehiculo()">
-              Aceptar
-            </b-button>
+          <div class="modal-confirm-actions mt-4">
+            <b-button variant="success" @click="cerrarPopupVehiculo()">Aceptar</b-button>
           </div>
         </div>
       <div v-else>
         <p class="h5 text-center mt-3 mb-4 font-weight-500 text-dark">Estás a punto de eliminar el vehículo.</p>
         <p class="h6 text-center mt-2 mb-3 font-weight-500 text-dark">¿Deseás continuar?</p>
         <hr class="row col-9 mx-auto"/>
-        <div class="row no-gutters justify-content-center">
-          <button class="btn btn-success mx-2" @click="sendEliminarVehiculo(tempElimVehiculo)">Aceptar</button>
-          <button class="btn btn-danger mx-2" @click="showEliminarVehiculo = false">Cancelar</button>
+        <div class="modal-confirm-actions">
+          <button type="button" class="btn btn-success" @click="sendEliminarVehiculo(tempElimVehiculo)">Aceptar</button>
+          <button type="button" class="btn btn-danger" @click="showEliminarVehiculo = false">Cancelar</button>
         </div>
       </div>
     </BModal>
@@ -492,10 +464,10 @@
     <!-- Modal para editar vehículo -->
     <BModal v-model="showEditarVehiculo" no-footer header-class="justify-content-center" :header-bg-variant="'primary'" centered>
       <template #header>
-        <span class="my-3">
-          <i class="bi bi-circle text-light"></i>
-          <i class="bi bi-pencil-fill text-light"></i>
-        </span>
+        <div class="confirmation-popup-header combustible-modal-icon">
+          <i class="bi bi-circle text-light" aria-hidden="true"></i>
+          <i class="bi bi-pencil-fill text-light" aria-hidden="true"></i>
+        </div>
       </template>
       <div class="text-center">
         <h4 class="text-center mt-3 mb-4 font-weight-bold text-dark">Editar Vehículo</h4>
@@ -534,10 +506,10 @@
           </b-form-group>
 
           <hr class="row col-9 mx-auto"/>
-          <div class="row no-gutters justify-content-center">
+          <div class="modal-confirm-actions">
             <button
               type="submit"
-              class="btn btn-primary mx-2"
+              class="btn btn-primary"
               :disabled="loadingEditarVehiculo"
             >
               <b-spinner v-if="loadingEditarVehiculo" small class="mr-2"></b-spinner>
@@ -545,7 +517,7 @@
             </button>
             <button
               type="button"
-              class="btn btn-secondary mx-2"
+              class="btn btn-secondary"
               @click="cerrarModalEditar"
               :disabled="loadingEditarVehiculo"
             >

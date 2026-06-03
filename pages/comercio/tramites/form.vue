@@ -28,7 +28,7 @@
     <b-card no-body class="col-8 mt-1 section-card"  style="margin: 0px auto">
       <!-- Sección: Datos del solicitante -->
       <fieldset >
-        <legend><h3 class="legend-title">Datos del Solicitante <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1em" role="button" tabindex="0" @click.stop.prevent="openPopup('DatosDelSolicitante')" @keydown.enter.stop.prevent="openPopup('DatosDelSolicitante')"></i></h3></legend>
+        <h3 class="legend-title">Datos del Solicitante <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1em" role="button" tabindex="0" @click.stop.prevent="openPopup('DatosDelSolicitante')" @keydown.enter.stop.prevent="openPopup('DatosDelSolicitante')"></i></h3>
         <b-form-group label="Tipo de Solicitud *" label-for="tipo-solicitud" >
           <b-form-select title="Por el momento solo se pueden solicitar habilitaciones comerciales." id="tipo-solicitud" v-model="tipoSolicitudSeleccionada" >
             <b-form-select-option value="Habilitación">Habilitar nuevo comercio</b-form-select-option>
@@ -717,7 +717,7 @@
       <button type="button" aria-label="Close" class="close" @click="showPopupConstanciaIngresosBrutos = false">×</button>
     </template>
     <div class="modal-info">
-      <p><i class="bi bi-caret-right-fill"></i>Podes solicitar tu constancia de Ingresos Brutos haciendo <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" >click aquí</a>.</p>
+      <p><i class="bi bi-caret-right-fill"></i>Podés solicitar tu constancia de Ingresos Brutos haciendo <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" class="external-link">click aquí</a>.</p>
     </div>
   </BModal>
   <BModal v-model="showPopupConstanciaLibreDeuda" title="Libre Deuda de Tasa por Servicios Urbanos" :no-footer="true" @click-outside="showPopupConstanciaLibreDeuda = false" :header-bg-variant="'success'"  centered>
@@ -2147,16 +2147,6 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
     margin-right: 1rem;
     padding-right: 0.5rem;
     border-right: 1px solid #FFF;
-  }
-  .modal-info p, .modal-info .bi-caret-right-fill{
-    display: inline-block;
-  }
-  .modal-info .bi-caret-right-fill{
-    margin-right: 1rem;
-    color: #f09658;
-    vertical-align: top;
-    margin-top: 0.35rem;
-    font-size: 1.05rem;
   }
   .modal-info ul b, .modal-info a, .popupApoderado b{
     color: #0c681a;

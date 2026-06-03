@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="page main-background combustible-detalle-page">
     <Banner title="Compras" subtitle="Detalle de orden de compra"/>
 
@@ -353,158 +353,153 @@
     <!-- Modal de Confirmación para utilización -->
     <BModal v-model="showModalUtilizacion" header-class="justify-content-center" title-class="text-light" header-bg-variant="success" no-footer centered>
       <template #header>
-        <span class="my-3">
-          <i class="bi bi-circle text-light"></i>
-          <i class="bi bi-exclamation text-light"></i>
-        </span>
+        <div class="confirmation-popup-header combustible-modal-icon">
+          <i class="bi bi-circle text-light" aria-hidden="true"></i>
+          <i class="bi bi-exclamation text-light" aria-hidden="true"></i>
+        </div>
       </template>
       <p class="h5 text-center mt-3 mb-4 font-weight-500 text-dark">
         ¿Estás seguro de que deseas marcar el vale como utilizado?
       </p>
       <hr class="row col-9 mx-auto"/>
-      <div class="d-flex justify-content-center">
-        <button class="btn btn-success mx-2" @click="marcarUtilizado()">Aceptar</button>
-        <button class="btn btn-danger" @click="showModalUtilizacion = false">Cancelar</button>
+      <div class="modal-confirm-actions">
+        <button type="button" class="btn btn-success" @click="marcarUtilizado()">Aceptar</button>
+        <button type="button" class="btn btn-danger" @click="showModalUtilizacion = false">Cancelar</button>
       </div>
     </BModal>
 
     <!-- Modal de Confirmación para Reimpresión -->
     <BModal v-model="showModalReimpresion" header-class="justify-content-center" title-class="text-light" header-bg-variant="success" no-footer centered>
       <template #header>
-        <span class="my-3">
-          <i class="bi bi-circle text-light"></i>
-          <i class="bi bi-printer-fill text-light"></i>
-        </span>
+        <div class="confirmation-popup-header combustible-modal-icon">
+          <i class="bi bi-circle text-light" aria-hidden="true"></i>
+          <i class="bi bi-printer-fill text-light" aria-hidden="true"></i>
+        </div>
       </template>
       <p class="h5 text-center mt-3 mb-4 font-weight-500 text-dark">Estás a punto de reimprimir el vale.</p>
       <p class="h6 text-center mt-2 mb-3 font-weight-500 text-dark">¿Deseás continuar?</p>
       <hr class="row col-9 mx-auto"/>
-      <div class="d-flex justify-content-center">
-        <button class="btn btn-success mx-2" @click="reimprimirVale(valeSeleccionado)">Aceptar</button>
-        <button class="btn btn-danger" @click="showModalReimpresion = false">Cancelar</button>
+      <div class="modal-confirm-actions">
+        <button type="button" class="btn btn-success" @click="reimprimirVale(valeSeleccionado)">Aceptar</button>
+        <button type="button" class="btn btn-danger" @click="showModalReimpresion = false">Cancelar</button>
       </div>
     </BModal>
 
     <!-- Modal de confirmación para reimpresión múltiple -->
     <BModal v-model="showModalReimpresionMasiva" header-class="justify-content-center" header-bg-variant="success" title-class="text-light text-center" no-footer centered>
       <template #header>
-        <span class="my-3">
-          <i class="bi bi-circle text-light"></i>
-          <i class="bi bi-printer-fill text-light"></i>
-        </span>
+        <div class="confirmation-popup-header combustible-modal-icon">
+          <i class="bi bi-circle text-light" aria-hidden="true"></i>
+          <i class="bi bi-printer-fill text-light" aria-hidden="true"></i>
+        </div>
       </template>
       <p class="h5 text-center mt-3 mb-4 font-weight-500 text-dark">Estás a punto de reimprimir los vales.</p>
       <p class="h6 text-center mt-2 mb-3 font-weight-500 text-dark">¿Deseás continuar?</p>
-      <hr/>
-      <div class="row no-gutters justify-content-center">
+      <hr class="row col-9 mx-auto"/>
+      <div class="modal-confirm-actions">
         <b-button variant="success" @click="imprimirValesSeleccionados">Aceptar</b-button>
-        <b-button variant="danger" class="mx-2" @click="showModalReimpresionMasiva = false">Cancelar</b-button>
+        <b-button variant="danger" @click="showModalReimpresionMasiva = false">Cancelar</b-button>
       </div>
     </BModal>
 
     <!-- Modal de confirmación para marcación como consumido masivamente -->
     <BModal v-model="showModalUtilizacionMasiva" header-class="justify-content-center" header-bg-variant="success" title-class="text-light text-center" no-footer centered>
       <template #header>
-        <span class="my-3">
-          <i class="bi bi-circle text-light"></i>
-          <i class="bi bi-exclamation text-light"></i>
-        </span>
+        <div class="confirmation-popup-header combustible-modal-icon">
+          <i class="bi bi-circle text-light" aria-hidden="true"></i>
+          <i class="bi bi-exclamation text-light" aria-hidden="true"></i>
+        </div>
       </template>
       <p class="h5 text-center mt-3 my-4 text-dark font-weight-500">¿Estás seguro/a de que querés marcar los vales seleccionados como utilizados?</p>
-      <hr class="row col-9 mx-auto justify-content-center"/>
-      <div class="row no-gutters justify-content-center">
+      <hr class="row col-9 mx-auto"/>
+      <div class="modal-confirm-actions">
         <b-button variant="success" @click="marcarValesSeleccionados">Aceptar</b-button>
-        <b-button variant="danger" class="mx-2" @click="showModalUtilizacionMasiva = false">Cancelar</b-button>
+        <b-button variant="danger" @click="showModalUtilizacionMasiva = false">Cancelar</b-button>
       </div>
     </BModal>
 
-    <!-- Modal de confirmación para marcación como consumido masivamente -->
+    <!-- Modal de confirmación para eliminación masiva -->
     <BModal v-model="showModalEliminacionMasiva" header-class="justify-content-center" header-bg-variant="danger" title-class="text-light text-center" no-footer centered>
       <template #header>
-        <span class="my-3">
-          <i class="bi bi-circle text-light"></i>
-          <i class="bi bi-exclamation text-light"></i>
-        </span>
+        <div class="confirmation-popup-header combustible-modal-icon">
+          <i class="bi bi-circle text-light" aria-hidden="true"></i>
+          <i class="bi bi-exclamation text-light" aria-hidden="true"></i>
+        </div>
       </template>
       <p class="h5 text-center mt-3 my-4 text-dark font-weight-500">¿Estás seguro/a de que querés eliminar los vales seleccionados?</p>
-      <hr class="row col-9 mx-auto justify-content-center"/>
-      <div class="row no-gutters justify-content-center">
+      <hr class="row col-9 mx-auto"/>
+      <div class="modal-confirm-actions">
         <b-button variant="success" :disabled="eliminandoVales" @click="eliminarValesSeleccionados">
           <b-spinner v-if="eliminandoVales" small class="mr-2"></b-spinner>
           {{ eliminandoVales ? 'Eliminando...' : 'Aceptar' }}
         </b-button>
-        <b-button variant="danger" class="mx-2" :disabled="eliminandoVales" @click="showModalEliminacionMasiva = false">Cancelar</b-button>
+        <b-button variant="danger" :disabled="eliminandoVales" @click="showModalEliminacionMasiva = false">Cancelar</b-button>
       </div>
     </BModal>
 
-
-      <!-- Modal de Confirmación para Eliminación -->
-      <BModal v-model="showModalEliminadoMasivo" title="Confirmar Eliminación" title-class="text-light text-center" header-bg-variant="danger" no-footer centered>
+    <!-- Modal de Confirmación para Eliminación -->
+    <BModal v-model="showModalEliminadoMasivo" title="Confirmar Eliminación" title-class="text-light text-center" header-bg-variant="danger" no-footer centered>
       <template #header>
-        <div class="confirmation-popup-header mx-auto">
-          <span>
-            <i class="bi bi-circle text-light"></i>
-            <i class="bi bi-trash-fill text-light"></i>
-          </span>
+        <div class="confirmation-popup-header combustible-modal-icon">
+          <i class="bi bi-circle text-light" aria-hidden="true"></i>
+          <i class="bi bi-trash-fill text-light" aria-hidden="true"></i>
         </div>
       </template>
       <div class="mt-4 mb-5">
         <h4 class="text-center font-weight-500 text-dark">Los vales de combustible se han eliminado.</h4>
       </div>
-      <div class="d-flex justify-content-center">
-        <button class="btn btn-success mr-2" @click="cerrarModalEliminacionMasiva">Aceptar</button>
+      <div class="modal-confirm-actions">
+        <button type="button" class="btn btn-success" @click="cerrarModalEliminacionMasiva">Aceptar</button>
       </div>
     </BModal>
 
     <!-- Modal de Confirmación para Eliminación -->
     <BModal v-model="modalEliminacion" header-class="justify-content-center" title-class="text-light text-center" header-bg-variant="danger" no-footer centered>
       <template #header>
-        <span class="my-3">
-          <i class="bi bi-circle text-light"></i>
-          <i class="bi bi-trash-fill text-light"></i>
-        </span>
+        <div class="confirmation-popup-header combustible-modal-icon">
+          <i class="bi bi-circle text-light" aria-hidden="true"></i>
+          <i class="bi bi-trash-fill text-light" aria-hidden="true"></i>
+        </div>
       </template>
       <p class="h5 text-center mt-3 mb-4 font-weight-500 text-dark">Estás a punto de eliminar el vale.</p>
       <p class="h6 text-center mt-2 mb-3 font-weight-500 text-dark">¿Deseás continuar?</p>
       <hr class="row col-9 mx-auto"/>
-      <div class="row no-gutters justify-content-center">
-        <button class="btn btn-success mx-2" :disabled="eliminandoVale" @click="eliminarVale()">
+      <div class="modal-confirm-actions">
+        <button type="button" class="btn btn-success" :disabled="eliminandoVale" @click="eliminarVale()">
           <b-spinner v-if="eliminandoVale" small class="mr-2"></b-spinner>
           {{ eliminandoVale ? 'Eliminando...' : 'Aceptar' }}
         </button>
-        <button class="btn btn-danger mx-2" :disabled="eliminandoVale" @click="modalEliminacion = false">Cancelar</button>
+        <button type="button" class="btn btn-danger" :disabled="eliminandoVale" @click="modalEliminacion = false">Cancelar</button>
       </div>
     </BModal>
 
     <!-- Modal de Confirmación para Eliminación -->
     <BModal v-model="modalEliminado" title="Confirmar Eliminación" title-class="text-light text-center" header-bg-variant="danger" no-footer centered>
       <template #header>
-        <div class="confirmation-popup-header mx-auto">
-          <span>
-            <i class="bi bi-circle text-light"></i>
-            <i class="bi bi-trash-fill text-light"></i>
-          </span>
+        <div class="confirmation-popup-header combustible-modal-icon">
+          <i class="bi bi-circle text-light" aria-hidden="true"></i>
+          <i class="bi bi-trash-fill text-light" aria-hidden="true"></i>
         </div>
       </template>
       <div class="mt-4 mb-5">
         <h4 class="text-center font-weight-500 text-dark">El vale de combustible se ha eliminado.</h4>
       </div>
-      <div class="d-flex justify-content-center">
-        <button class="btn btn-success mr-2" @click="cerrarModalEliminacion">Aceptar</button>
+      <div class="modal-confirm-actions">
+        <button type="button" class="btn btn-success" @click="cerrarModalEliminacion">Aceptar</button>
       </div>
     </BModal>
 
-    <!-- Modal de Confirmación para Eliminación -->
+    <!-- Modal de Confirmación para modificación -->
     <BModal v-model="modalModificado" header-class="justify-content-center" header-bg-variant="success" no-footer centered>
       <template #header>
-        <span class="my-3">
-          <i class="bi bi-circle text-light"></i>
-          <i class="bi bi-check text-light"></i>
-        </span>
+        <div class="confirmation-popup-header combustible-modal-icon">
+          <i class="bi bi-circle text-light" aria-hidden="true"></i>
+          <i class="bi bi-check text-light" aria-hidden="true"></i>
+        </div>
       </template>
       <p class="h5 mt-3 text-center font-weight-500">Vale de combustible modificado.</p>
-      <div class="d-flex justify-content-end">
-        <button class="btn btn-primary mx-auto mr-2" @click="cerrarModalModificacion ">Aceptar</button>
+      <div class="modal-confirm-actions">
+        <button type="button" class="btn btn-primary" @click="cerrarModalModificacion">Aceptar</button>
       </div>
     </BModal>
 

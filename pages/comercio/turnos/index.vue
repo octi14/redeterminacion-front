@@ -33,7 +33,7 @@
           </div>
           <b-card class="section-card col-md-6 mx-auto">
             <h5>
-              <i class="bi bi-calendar-check"></i>
+              <i class="bi bi-calendar-check icon-orange"></i>
               Selección de fecha
             </h5>
             <div class="li-row">
@@ -80,9 +80,13 @@
           </div>
           <b-card class="section-card col-md-6 mx-auto">
             <h5>
-              <i class="bi bi-clock"></i>
+              <i class="bi bi-clock icon-orange"></i>
               Selección de horario
             </h5>
+            <div v-if="selectedDateDisplay" class="li-row turno-fecha-elegida">
+              <div class="li-icon"><i class="bi bi-calendar-check icon-orange" style="font-size: 1.25em"></i></div>
+              <div class="li-content"><p><b>Fecha elegida:</b> {{ selectedDateDisplay }}</p></div>
+            </div>
             <div class="li-row">
               <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p>Seleccioná una franja horaria para recibir la visita de inspección.</p></div>
             </div>
@@ -117,13 +121,23 @@
           </div>
           <b-card class="section-card col-md-6 mx-auto">
             <h5><img class="bi-ticket" src="../../../assets/icon-num-rifa.png" /> Confirmación de turno</h5>
-            <div class="li-row">
-              <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p>Completá los datos que te solicitamos a continuación.</p></div>
+            <div v-if="selectedDateDisplay" class="li-row turno-fecha-elegida">
+              <div class="li-icon"><i class="bi bi-calendar-check icon-orange" style="font-size: 1.25em"></i></div>
+              <div class="li-content"><p><b>Fecha elegida:</b> {{ selectedDateDisplay }}</p></div>
             </div>
-            <div class="li-row">
-              <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p> Al finalizar se emitirá un comprobante que deberás mostrar el día de la inspección.</p></div>
+            <div v-if="selectedTimeDisplay" class="li-row turno-fecha-elegida">
+              <div class="li-icon"><i class="bi bi-clock icon-orange" style="font-size: 1.25em"></i></div>
+              <div class="li-content"><p><b>Franja horaria elegida:</b> {{ selectedTimeDisplay }}</p></div>
             </div>
-            <div class="col-10 mx-auto">
+            <div class="turno-instrucciones">
+              <div class="li-row">
+                <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p>Completá los datos que te solicitamos a continuación.</p></div>
+              </div>
+              <div class="li-row">
+                <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p>Al finalizar se emitirá un comprobante que deberás mostrar el día de la inspección.</p></div>
+              </div>
+            </div>
+            <div class="col-10 mx-auto turno-form-datos">
                <b-form-group>
                 <label for="nombre">Nombre</label>
                 <b-form-input id="nombre" v-model="nombre" required></b-form-input>
@@ -579,13 +593,41 @@ IMPORTANTE:
       return d
     },
     formattedDate() {
-      if (this.date) {
-        const day = this.date.getDate();
-        const month = this.date.getMonth() + 1;
-        const year = this.date.getFullYear();
-        return `${day}/${month}/${year}`;
+      const d = this.date || this.datePicked
+      if (!d) return ''
+      const date = d instanceof Date ? d : new Date(d)
+      if (Number.isNaN(date.getTime())) return ''
+      const day = date.getDate()
+      const month = date.getMonth() + 1
+      const year = date.getFullYear()
+      return `${day}/${month}/${year}`
+    },
+    selectedDateDisplay() {
+      const d = this.date || this.datePicked
+      if (!d) return ''
+      const date = d instanceof Date ? d : new Date(d)
+      if (Number.isNaN(date.getTime())) return ''
+      const text = date.toLocaleDateString('es-AR', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
+      return text.charAt(0).toUpperCase() + text.slice(1)
+    },
+    selectedTimeDisplay() {
+      const t = this.time || this.timePicked
+      if (!t) return ''
+      const slots = this.horariosDisponibles
+      if (!slots.length) return t
+      const idx = slots.indexOf(t)
+      if (idx === 0 && slots[1]) {
+        return `${slots[0]} - ${slots[1]}`
       }
-      return '';
+      if (idx === 1) {
+        return `${slots[1]} - 13:30`
+      }
+      return t
     },
     areAllFieldsComplete(){
         return (this.date && this.time && this.nroTramite && this.nombre && this.dni && this.domicilio)
@@ -598,7 +640,7 @@ IMPORTANTE:
 .turnera-banner-img {
   display: block;
   width: 100%;
-  max-width: 32rem;
+  max-width: 38rem;
   height: auto;
   margin: 0 auto;
 }
@@ -633,8 +675,9 @@ IMPORTANTE:
   .btn{
     width: 9rem !important;
   }
-  .bi-ticket{
-    width: 10% !important;
+  .bi-ticket {
+    width: 12% !important;
+    min-width: 2rem !important;
   }
   .modal-dialog{
     max-width: 100px !important;
@@ -773,6 +816,26 @@ IMPORTANTE:
     background-color: #e53749;
     border-color: #e53749;
   }
+  .turno-fecha-elegida {
+    margin-bottom: 0.5rem;
+  }
+
+  .turno-fecha-elegida p {
+    margin-bottom: 0;
+  }
+
+  .turno-instrucciones .li-row + .li-row {
+    margin-top: 0.85rem;
+  }
+
+  .turno-instrucciones .li-content p {
+    margin-bottom: 0;
+  }
+
+  .turno-form-datos {
+    margin-top: 1.5rem;
+  }
+
   .section-card h5{
     font-size: 2rem;
     font-weight: bold;
@@ -782,14 +845,24 @@ IMPORTANTE:
     border-bottom: 2px solid #CCC;
     margin-bottom: 1rem;
   }
-  .section-card h5 .bi-calendar-check, .section-card h5 .bi-clock, .section-card h5 .bi-ticket{
+  .section-card h5 .bi-calendar-check,
+  .section-card h5 .bi-clock,
+  .section-card h5 .bi-ticket {
     margin-right: 0.5rem;
     border-right: 1px solid #999;
     font-size: 2.5rem;
     padding-right: 0.75rem;
   }
-  .section-card h5 .bi-ticket{
-    width: 5%;
+
+  .section-card h5 .bi-calendar-check,
+  .section-card h5 .bi-clock,
+  .turno-fecha-elegida .bi-calendar-check,
+  .turno-fecha-elegida .bi-clock {
+    color: #E27910;
+  }
+  .section-card h5 .bi-ticket {
+    width: 6.5%;
+    min-width: 2.25rem;
   }
   .importante-card{
     margin: 2rem auto;
@@ -855,5 +928,10 @@ IMPORTANTE:
     display: block;
     margin-top: 0;
     line-height: 1;
+  }
+
+  .li-icon .bi-caret-right-fill,
+  .bi-caret-right-fill {
+    color: #0c681a;
   }
 </style>

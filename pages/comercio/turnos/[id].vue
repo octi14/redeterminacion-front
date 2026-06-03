@@ -3,26 +3,24 @@
     <Banner title="Detalles de turno"/>
     <!-- Datos del solicitante -->
     <template v-if="turno && (adminComercio || adminInspeccion)">
-      <div class="text-center mt-3">
-        <p class="h4"> Número de trámite: <b> {{ turno.nroTramite }}  </b></p>
-        <h5> Tipo de trámite: <b> {{ tipoSolicitud }} </b></h5>
-      </div>
-      <div class="row justify-content-center mt-3">
-
-        <div class="h4 row"> Estado:
-          <h4 class="text-primary ml-1" v-if="turno.status === 'Pendiente de inspección'">{{ turno.status }} </h4>
-          <h4 class="text-success ml-1" v-if="turno.status === 'Inspeccionado'">{{ turno.status }} </h4>
-          <h4 class="text-secondary ml-1" v-if="turno.status === 'Prórroga 1'">{{ turno.status }} </h4>
-          <h4 class="text-secondary ml-1" v-if="turno.status === 'Prórroga 2'">{{ turno.status }} </h4>
-          <h4 class="text-danger ml-1" v-if="turno.status === 'Cancelado'">{{ turno.status }} </h4>
-          <h4 class="text-danger ml-1" v-if="turno.status === 'Inspección rechazada'">{{ turno.status }} </h4>
+      <div class="solicitud-resumen">
+        <div class="row justify-content-center mt-3">
+          <p class="h4 mb-0">Número de trámite: <b>{{ turno.nroTramite }}</b></p>
+        </div>
+        <div class="row justify-content-center mt-3">
+          <p class="h5 mb-0">Tipo de trámite: <b>{{ tipoSolicitud }}</b></p>
+        </div>
+        <div class="row justify-content-center mt-3">
+          <div class="h5 d-flex align-items-center justify-content-center flex-wrap mb-0">
+            <span>Estado:</span>
+            <span :class="turnoStatusClass" class="ml-2">{{ turno.status }}</span>
+          </div>
         </div>
       </div>
-      <div class="row col-10 mx-auto justify-content-center" v-if="adminInspeccion">
-        <b-button @click="onAprobar" variant="success" class="btn-4 mt-3 mx-1"> Aprobar inspección </b-button>
-        <b-button @click="onProrroga" variant="secondary" class="btn-4 mt-3 mx-1"> Prórroga </b-button>
-        <!-- <b-button @click="onRechazarTurno" class="btn-3 mt-3 mx-1"> Cancelar turno </b-button> -->
-        <b-button @click="onRechazarInsp" class="btn-3 mt-3 mx-1"> Rechazar inspección </b-button>
+      <div v-if="adminInspeccion" class="solicitud-quick-actions">
+        <b-button size="sm" variant="success" class="btn-4" @click="onAprobar">Aprobar inspección</b-button>
+        <b-button size="sm" variant="secondary" class="btn-4" @click="onProrroga">Prórroga</b-button>
+        <b-button size="sm" class="btn-3" @click="onRechazarInsp">Rechazar inspección</b-button>
       </div>
       <!-- datos del turno -->
       <div class="container col-md-6 col-sm-8 card shadow-card mt-4 mx-auto">
@@ -253,7 +251,18 @@ export default {
     adminComercio(){
       const admin = useUserStore().admin
       return admin == "comercio" || admin == "master"
-    }
+    },
+    turnoStatusClass() {
+      const classes = {
+        'Pendiente de inspección': 'text-primary',
+        Inspeccionado: 'text-success',
+        'Prórroga 1': 'text-secondary',
+        'Prórroga 2': 'text-secondary',
+        Cancelado: 'text-danger',
+        'Inspección rechazada': 'text-danger',
+      }
+      return classes[this.turno?.status] || ''
+    },
   },
   methods: {
     async loadTurno() {

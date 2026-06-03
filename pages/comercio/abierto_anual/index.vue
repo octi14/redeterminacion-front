@@ -48,7 +48,7 @@
             <transition name="expand">
               <div v-show="isCardExpanded(0)">
                 <div class="li-row first-li">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content">
+                  <div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content">
                     Es un <b>descuento del 60% </b>(sesenta por ciento) del valor <b>de la Tasa por Inspección de Seguridad e Higiene</b> correspondiente al año fiscal siguiente 2027, otorgado en virtud del Artículo 182 de la <a href="https://arvige.gob.ar/legislacion/pdf/12" class="text-success">Ordenanza Fiscal 2156/08 (TO2025).</a></div>
                 </div>
                 <hr>
@@ -73,11 +73,11 @@
                 </div>
                 <br>
                 <div class="li-row">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content">
+                  <div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content">
                     Sus <b>establecimientos</b> hayan permanecido <b>con actividad</b> en forma <b>permanente y/o durante los fines de semana del ejercicio fiscal anterior</b> y <b>no posean deudas en concepto de Tasas, Derechos, Contribuciones o Multas con el municipio</b>.</div>
                 </div>
                 <div class="li-row">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content">
+                  <div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content">
                     Sus establecimientos dispongan de la <b>Renovación o Reempadronamiento</b> comercial correspondiente.</div>
                 </div>
               </div>
@@ -93,10 +93,10 @@
               <div v-show="isCardExpanded(2)">
                 <div class="li-row first-li">
                   <div class="li-content mb-1"> Están <b>excluidos</b> del Beneficio: </div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div>
                   <div class="li-content">Aquellos/as <b>contribuyentes que no hayan acreditado</b>, ante la evaluación del Municipio, <b>contar con un comercio con
                    actividad permanente y/o durante los fines de semana del ejercicio fiscal anterior</b>. </div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div>
                   <div class="li-content"> Los <b>Grandes Contribuyentes</b> incluidos en los Artículos 181 bis a 181 noveno de la <a href="https://arvige.gob.ar/legislacion/pdf/12" class="text-success">Ordenanza Fiscal 2156/08 c/ Mod</a>. </div>
                 </div>
               </div>
@@ -110,19 +110,19 @@
             </h4>
             <transition name="expand">
               <div v-show="isCardExpanded(3)">
-                <div class="li-row first-li"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                <div class="li-row first-li"><div class="li-icon"><i class="bi bi-check-lg"></i></div>
                   <div class="li-content">Poseer una <b>Habilitación Comercial</b> en el Partido de Villa Gesell, con su <b>Renovación o Reempadronamiento comercial</b> correspondientes efectuados en tiempo y forma. </div>
                 </div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div>
                   <div class="li-content"><b>No</b> poseer <b>deudas en  concepto de Tasas, Derechos, Contribuciones o Multas con el Municipio</b>.</div>
                 </div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div>
                   <div class="li-content">No ser un contribuyente excluido del beneficio acorde Ord. 2156/08 c/ Mod. </div>
                 </div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div>
                   <div class="li-content"><b>Realizar</b> el procedimiento de <b>carga de datos</b> según lo previsto por la Autoridad de Aplicación.</div>
                 </div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div>
                   <div class="li-content">Haber permanecido con la <b>CUIT vigente durante todo el año fiscal en curso</b> -condición indispensable para no dar de baja la habilitación-.</div>
                 </div>
               </div>
@@ -138,16 +138,16 @@
               <div v-show="isCardExpanded(4)">
                 <div class="li-row first-li mb-1"><p>Una <b>factura digital</b> o una <b>fotografía de la factura emitida en formato papel</b>, correspondiente a los
                    siguientes tres períodos del año en curso: </p></div>
-                  <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                  <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div>
                     <div class="li-content"><p><b>Período 1 (2/5/26 al 31/5/26):</b> Se deberá cargar una factura emitida durante el mes de <i>Mayo</i>.</p></div>
                   </div>
-                  <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                  <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div>
                     <div class="li-content"><p><b>Período 2 (1/8/26 al 31/8/26):</b> Se deberá cargar una factura emitida durante el mes de <i>Agosto</i>.</p></div>
                   </div>
-                  <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                  <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div>
                     <div class="li-content"><p><b>Período 3 (1/10/26 al 31/10/26):</b> Se deberá cargar una factura emitida durante el mes de <i>Octubre</i>.</p></div>
                   </div>
-                  <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                  <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div>
                     <div class="li-content"><p><b>Período de rectificación (1/11/26 al 30/11/26):</b> Podrán acreditarse las facturas pendientes y rectificar aquellas marcadas como incorrectas.</p></div>
                   </div>
                   <b-card border-variant="warning" align="center" class="importante-card" >
@@ -778,22 +778,36 @@ ul{
   list-style-type: none; /* Elimina los puntos por defecto */
   padding: 0;
 }
-.li-icon, .li-title{
+.li-icon,
+.li-title {
   font-weight: 600;
-  color: #0c681a;
 }
-.li-title{
+
+.li-title {
+  color: #0c681a;
   margin-bottom: 0.25rem;
 }
-.warning-li .li-icon{
+
+.warning-li .li-icon {
   margin-top: -0.1rem;
 }
-.li-icon{
-  margin-right: 1%;
-  vertical-align: top;
+
+.li-icon {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  margin-right: 0.35rem;
+  margin-top: 0.18em;
+  min-width: 1.15em;
+  min-height: 1.15em;
 }
-.li-row{
+
+.li-row {
   display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
   width: 100%;
 }
 .first-li{

@@ -41,10 +41,10 @@
             </h4>
             <div class="section-card-panel">
                 <div class="li-row first-li">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El formulario de reclamo por <b>Pago doble</b> implica solicitar la acreditación de saldo excedente de <b>tasa urbana</b> para ser utilizado en futuros pagos.</div>
+                  <div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> El formulario de reclamo por <b>Pago doble</b> implica solicitar la acreditación de saldo excedente de <b>tasa urbana</b> para ser utilizado en futuros pagos.</div>
                 </div>
                 <div class="li-row first-p">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Mediante este trámite <b>el Municipio verificará que la documentación solicitada</b> y el <b>pago de tasas correspondientes estén cumplimentadas.</b></div>
+                  <div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Mediante este trámite <b>el Municipio verificará que la documentación solicitada</b> y el <b>pago de tasas correspondientes estén cumplimentadas.</b></div>
                 </div>
                 <!-- <div class="li-row">
                   <div class="li-icon"><i class="bi bi-info-circle" style="font-size: 1em"></i></div>
@@ -62,10 +62,10 @@
             </h4>
             <div class="section-card-panel">
                 <div class="li-row first-li">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>Titular del inmueble por el cual se reclama</b> ó</div>
+                  <div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> El <b>Titular del inmueble por el cual se reclama</b> ó</div>
                 </div>
                 <div class="li-row">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>Representante o Apoderado/a de la persona interesada</b> con documentación que acredite el carácter de tal. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('A')" @keydown.enter.stop.prevent="openPopup('A')"></i></div>
+                  <div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> El <b>Representante o Apoderado/a de la persona interesada</b> con documentación que acredite el carácter de tal. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('A')" @keydown.enter.stop.prevent="openPopup('A')"></i></div>
                 </div>
             </div>
           </b-card>
@@ -76,10 +76,10 @@
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
             <div class="section-card-panel">
-                <div class="li-row first-li"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content">DNI del solicitante (imagen del frente y dorso).</div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Comprobantes que demuestren que el pago se ha efectuado más de una vez.</div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Acreditación de titularidad de la cuenta. Esto puede realizarse a través de la presentación de la Escritura traslativa de dominio del inmueble / Boleto de Compraventa o afín, con el correspondiente Impuesto de Sellos Provincial y firma certificada por Escribano Público, Entidad Bancaria o Autoridad Administrativa / OTROS.</div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Planilla de Autorización de Trámite legalizada o poder autorizado por escribano (únicamente si el trámite es iniciado mediante representante o apoderado/a).</div></div>
+                <div class="li-row first-li"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content">DNI del solicitante (imagen del frente y dorso).</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Comprobantes que demuestren que el pago se ha efectuado más de una vez.</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Acreditación de titularidad de la cuenta. Esto puede realizarse a través de la presentación de la Escritura traslativa de dominio del inmueble / Boleto de Compraventa o afín, con el correspondiente Impuesto de Sellos Provincial y firma certificada por Escribano Público, Entidad Bancaria o Autoridad Administrativa / OTROS.</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Planilla de Autorización de Trámite legalizada o poder autorizado por escribano (únicamente si el trámite es iniciado mediante representante o apoderado/a).</div></div>
                 <div class="separador-top">
                   <p>Los <b>documentos</b> deberán encontrarse <b>digitalizados</b> (podés escanearlos o sacarles una foto) y deben <b>ser legibles</b>. Pueden encontrarse <b>en formato pdf o imagen</b> y tener un <b>peso máximo de 15 Mb</b>.</p>
                 </div>
@@ -558,19 +558,32 @@ ul{
   list-style-type: none; /* Elimina los puntos por defecto */
   padding: 0;
 }
-.li-icon, .li-title{
+.li-icon,
+.li-title {
   font-weight: 600;
-  color: #0c681a;
 }
-.li-title{
+
+.li-title {
+  color: #0c681a;
   margin-bottom: 0.25rem;
 }
-.li-icon{
-  margin-right: 1%;
-  vertical-align: top;
+
+.li-icon {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  margin-right: 0.35rem;
+  margin-top: 0.18em;
+  min-width: 1.15em;
+  min-height: 1.15em;
 }
-.li-row{
+
+.li-row {
   display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
   width: 100%;
 }
 .first-li{

@@ -41,9 +41,40 @@ html, body, div#__nuxt, div#__layout {
   height:100%;
 }
 
-// Navbar por encima de backdrops huérfanos de modales Bootstrap (z-index 1050)
+// Navbar fijo: debajo de modales abiertos; backdrops huérfanos no deben taparlo
 .app-navbar {
-  z-index: 2000 !important;
+  z-index: 1030 !important;
+}
+
+body.modal-open {
+  .modal-backdrop {
+    z-index: 1040 !important;
+  }
+
+  .modal,
+  .modal.show {
+    z-index: 1055 !important;
+  }
+}
+
+body:not(.modal-open) .modal-backdrop {
+  z-index: 1020 !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+}
+
+body.modal-open .modal-dialog {
+  max-height: calc(100vh - 2rem);
+  margin: 1rem auto;
+}
+
+body.modal-open .modal-content {
+  max-height: calc(100vh - 2rem);
+}
+
+body.modal-open .modal-body {
+  max-height: calc(100vh - 10rem);
+  overflow-y: auto;
 }
 
 // Toasts siempre por encima del navbar fijo
@@ -58,6 +89,48 @@ html, body, div#__nuxt, div#__layout {
 .b-toast,
 .toast {
   z-index: 3001 !important;
+}
+
+// Toasts: header con color fuerte, cuerpo con tono suave (todos los variants de useProjectToast)
+@each $variant in success, danger, warning, info, primary, secondary, dark {
+  .toast.text-bg-#{$variant},
+  .b-toast.text-bg-#{$variant},
+  .b-toast-#{$variant} {
+    background-color: transparent !important;
+    color: inherit !important;
+
+    .toast-header {
+      background-color: var(--bs-#{$variant}) !important;
+      border-bottom-color: rgba(0, 0, 0, 0.1) !important;
+
+      @if $variant == warning or $variant == info or $variant == secondary {
+        color: var(--bs-#{$variant}-text-emphasis) !important;
+
+        .btn-close {
+          filter: none;
+          opacity: 0.75;
+        }
+      } @else {
+        color: #fff !important;
+
+        .btn-close {
+          filter: brightness(0) invert(1);
+          opacity: 0.85;
+        }
+      }
+    }
+
+    .toast-body {
+      background-color: var(--bs-#{$variant}-bg-subtle) !important;
+      color: var(--bs-#{$variant}-text-emphasis) !important;
+    }
+
+    // Sin título: solo cuerpo con fondo suave
+    &:not(:has(.toast-header)) .toast-body {
+      background-color: var(--bs-#{$variant}-bg-subtle) !important;
+      color: var(--bs-#{$variant}-text-emphasis) !important;
+    }
+  }
 }
 
 // Si queda un backdrop huérfano, no bloquear navbar ni contenido
@@ -179,6 +252,37 @@ body:not(.modal-open) #app-content {
   .form-check { display: inline-flex; align-items: center; margin-bottom: 0; min-height: auto; padding-left: 1.75em; }
 }
 @media (min-width: 576px) { .si-no-radios { margin-top: 0; } }
+
+.solicitud-resumen {
+  width: 96%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.solicitud-quick-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.75rem auto 0;
+  padding: 0 1rem;
+
+  .btn {
+    width: auto;
+    flex: 0 1 auto;
+    white-space: nowrap;
+    padding: 0.35rem 0.85rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .solicitud-quick-actions .btn {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.85rem;
+  }
+}
 
 .main-background{
   background-color: #f8f5f5;
@@ -311,11 +415,29 @@ body:not(.modal-open) #app-content {
   color: $color-green-text !important;
 }
 
-// En Nuxt 2 se usaba b-icon-caret-right-fill con tono naranja.
-// Tras migración a Bootstrap Icons (<i class="bi bi-caret-right-fill">),
-// restauramos el color en listas informativas.
+// En Nuxt 2 se usaba b-icon-caret-right-fill / b-icon-check con tono naranja (icon-orange).
+// Tras migración a Bootstrap Icons, restauramos color, tamaño y alineación en listas informativas.
 .li-icon .bi-caret-right-fill {
   color: $color-orange-primary;
+}
+
+.li-icon .bi-check-lg,
+.li-icon .bi-check,
+.section-card .li-icon .bi-check-lg,
+.section-card .li-icon .bi-check,
+.confirmation-popup-body .bi-check:not(.text-success):not(.text-light):not(.text-primary),
+.confirmation-popup-body .bi-check-lg:not(.text-success):not(.text-light),
+.modal-info.modal-plano .bi-check:not(.text-success):not(.text-light) {
+  color: $color-orange-primary;
+  font-size: 1em !important;
+  line-height: 1;
+}
+
+.modal-info.modal-plano p > .bi-check,
+.confirmation-popup-body p > .bi-check:not(.text-success):not(.text-light) {
+  display: inline-block;
+  vertical-align: -0.12em;
+  margin-right: 0.2em;
 }
 
 // ============================================
@@ -347,6 +469,58 @@ body:not(.modal-open) #app-content {
 .page-btn-export {
   font-size: 0.875rem;
 }
+
+// ============================================
+// PARES DE BOTONES EN FORMULARIOS (Volver/Cancelar + Continuar/Aceptar)
+// Bootstrap 5 no incluye mr-/ml-; el espacio se resuelve con flex + gap.
+// ============================================
+$form-btn-pair-gap: 0.75rem;
+
+.btn-container,
+.centeredContainer fieldset {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: $form-btn-pair-gap;
+}
+
+.centeredContainer fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+
+.modal-footer {
+  gap: $form-btn-pair-gap;
+}
+
+.modal-footer > div:has(.btn) {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: $form-btn-pair-gap;
+  width: 100%;
+}
+
+// Alias utilidades de margen Bootstrap 4 (en BS5: ms-/me-)
+.ml-0 { margin-left: 0 !important; }
+.mr-0 { margin-right: 0 !important; }
+.ml-1 { margin-left: 0.25rem !important; }
+.mr-1 { margin-right: 0.25rem !important; }
+.ml-2 { margin-left: 0.5rem !important; }
+.mr-2 { margin-right: 0.5rem !important; }
+.mr-3 { margin-right: 1rem !important; }
+.ml-3 { margin-left: 1rem !important; }
+.ml-4 { margin-left: 1.5rem !important; }
+.mr-4 { margin-right: 1.5rem !important; }
+.ml-5 { margin-left: 3rem !important; }
+.mr-5 { margin-right: 3rem !important; }
+.ml-auto { margin-left: auto !important; }
+.mr-auto { margin-right: auto !important; }
 
 // ============================================
 // BOTONES PERSONALIZADOS
@@ -510,6 +684,8 @@ form .b-form-group:has(input[type='file']) > label[for] {
 form .field-help-icon,
 .field-help-icon {
   cursor: pointer;
+  position: relative;
+  z-index: 1;
 }
 
 // ============================================
@@ -518,18 +694,32 @@ form .field-help-icon,
 .modal-header {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   flex-wrap: nowrap;
   position: relative;
   width: 100%;
   padding-right: 2.75rem;
 
-  > .modal-info,
+  // Popups informativos (tramites, pagos dobles, etc.): título a la izquierda
+  > .modal-info {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
+    margin: 0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: left;
+  }
+
+  // Popup IMPORTANTE, íconos centrados, títulos BV por defecto
   > .modal-title,
   > .centeredContainer,
   > .confirmation-popup-header,
   > .closed-popup-header,
-  > div:not(.btn-close):not(.close) {
+  > .combustible-modal-icon,
+  > div:not(.btn-close):not(.close):not(.modal-info),
+  > span:not(.btn-close) {
     flex: 1 1 100%;
     width: 100%;
     min-width: 0;
@@ -542,11 +732,12 @@ form .field-help-icon,
 
   .modal-info h5 {
     margin: 0;
-    width: 100%;
+    width: auto;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     gap: 0.35rem;
+    text-align: left;
   }
 
   .modal-title {
@@ -626,6 +817,130 @@ form .field-help-icon,
   text-align: center;
   font-size: 2rem;
   margin: 0;
+
+  > i,
+  > .bi {
+    font-size: 2.75rem;
+    line-height: 1;
+  }
+}
+
+// Ícono doble (círculo + símbolo) en modales de combustible
+.combustible-modal-icon {
+  position: relative;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  font-size: 3.5rem;
+  line-height: 1;
+  margin: 0.35rem 0;
+
+  .bi-circle {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .bi-exclamation,
+  .bi-printer-fill,
+  .bi-trash-fill,
+  .bi-check,
+  .bi-plus,
+  .bi-upload,
+  .bi-pencil-fill {
+    position: relative;
+    z-index: 1;
+    font-size: 0.52em;
+  }
+}
+
+.confirmation-popup-header .bi-check-circle {
+  font-size: 2.75rem;
+  line-height: 1;
+}
+
+// Cuerpo de popups informativos: caret a la izquierda, texto y enlaces en línea continua
+.modal-info > p,
+.modal-info > .destacado,
+.modal-info p.destacado {
+  display: block !important;
+  position: relative;
+  padding-left: 1.65rem;
+  margin-bottom: 0.65rem;
+  line-height: 1.45;
+}
+
+.modal-info > p:last-child {
+  margin-bottom: 0;
+}
+
+.modal-info > p > .bi-caret-right-fill,
+.modal-info > .destacado > .bi-caret-right-fill,
+.modal-info p.destacado > .bi-caret-right-fill {
+  position: absolute;
+  left: 0;
+  top: 0.15em;
+  display: block !important;
+  margin: 0 !important;
+  font-size: 1.05rem;
+  color: $color-orange-primary;
+}
+
+.modal-info > p a {
+  white-space: nowrap;
+}
+
+.confirmation-popup-body .li-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.confirmation-popup-body .li-icon {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  margin-top: 0.18em;
+  padding-top: 0;
+  min-width: 1.1em;
+  min-height: 1.1em;
+}
+
+.confirmation-popup-body .li-icon .bi-caret-right-fill {
+  display: block;
+  margin: 0;
+  color: $color-orange-primary;
+}
+
+.modal-confirm-actions {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  margin: 0.5rem 0 0;
+
+  .btn,
+  button.btn,
+  .btn.btn-primary,
+  .btn.btn-secondary,
+  .btn.btn-success,
+  .btn.btn-danger {
+    width: auto;
+    flex: 0 1 auto;
+    min-width: 5.5rem;
+    padding: 0.35rem 1rem;
+    font-size: 0.95rem;
+  }
 }
 
 // ============================================
@@ -687,17 +1002,21 @@ form .field-help-icon,
 // Preguntas frecuentes: compactar espacio pregunta → respuesta
 .section-card .li-row {
   align-items: flex-start;
-  gap: 0.35rem;
+  gap: 0.4rem;
 }
 
 .section-card .li-icon {
   flex: 0 0 auto;
-  display: flex;
-  align-items: flex-start;
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
+  align-self: flex-start;
   line-height: 1;
-  margin-right: 0;
-  padding-top: 0.12em;
+  margin-right: 0.35rem;
+  margin-top: 0.18em;
+  padding-top: 0;
+  min-width: 1.15em;
+  min-height: 1.15em;
 }
 
 .section-card .li-icon .bi {

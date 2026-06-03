@@ -28,7 +28,7 @@
   <b-card no-body class="col-8 mt-1 section-card"  style="margin: 0px auto">
     <!-- Sección: Datos del solicitante -->
     <fieldset >
-      <legend><h3>Datos del Solicitante <i class="bi bi-question-circle-fill text-info" style="font-size: 1em"></i></h3></legend>
+      <h3 class="legend-title">Datos del Solicitante <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1em" role="button" tabindex="0" @click.stop.prevent="openPopup('DatosDelSolicitante')" @keydown.enter.stop.prevent="openPopup('DatosDelSolicitante')"></i></h3>
     </fieldset>
     <fieldset >
       <b-row>
@@ -578,7 +578,9 @@ export default{
     },
     openPopup(type) {
       // Lógica para abrir el popup correspondiente según el tipo (A, B, C, D)
-      if (type === 'A') {
+      if (type === 'DatosDelSolicitante') {
+        this.showPopupDatosDelSolicitante = true;
+      } else if (type === 'A') {
         this.showPopupA = true;
       } else if (type === 'B') {
         this.showPopupB = true;
@@ -976,10 +978,17 @@ form p{
   font-weight: 600;
   color: #666;
 }
-h3{
+h3 {
   font-weight: bold;
   color: #0c681a !important;
   margin: 1rem 0;
+}
+
+.legend-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: nowrap;
 }
 h5{
   margin: 1rem 0;

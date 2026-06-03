@@ -8,26 +8,39 @@
     />
     <!-- Datos del solicitante -->
     <template v-if="pago">
-      <div class="flex col" style="width: 96%">
+      <div class="solicitud-resumen">
         <div class="row justify-content-center mt-3">
-          <p class="h5"> Número de trámite: <b> R{{ pago.nroTramite }}  </b></p>
+          <p class="h5 mb-0">Número de trámite: <b>R{{ pago.nroTramite }}</b></p>
         </div>
         <div class="row justify-content-center mt-3">
-          <div class="h5 row"> Estado:
-            <h5 :class="getStatusClass(pago.status)" class="ml-2"> {{ pago.status }}</h5>
+          <div class="h5 d-flex align-items-center justify-content-center flex-wrap mb-0">
+            <span>Estado:</span>
+            <span :class="getStatusClass(pago.status)" class="ml-2">{{ pago.status }}</span>
           </div>
         </div>
-        <div class="col mx-auto" v-if="['Aprobada', 'Finalizada'].includes(pago.status)">
-          <div class="h5 row justify-content-center"> Número de expediente: <b class="text-success ml-1"> {{ pago.nroExpediente }} </b> </div>
-          <div class="h5 row justify-content-center"> Alcance: <b class="text-success ml-1"> {{ pago.alcance }} </b> </div>
-        </div>
+        <template v-if="['Aprobada', 'Finalizada'].includes(pago.status)">
+          <div class="h5 d-flex align-items-center justify-content-center flex-wrap mt-3 mb-0">
+            <span>Número de expediente:</span>
+            <b class="text-success ml-1">{{ pago.nroExpediente }}</b>
+          </div>
+          <div class="h5 d-flex align-items-center justify-content-center flex-wrap mt-2 mb-0">
+            <span>Alcance:</span>
+            <b class="text-success ml-1">{{ pago.alcance }}</b>
+          </div>
+        </template>
       </div>
-      <!--Botones-->
-      <div class="row col-10 mx-auto justify-content-center">
-        <b-button @click="onShowAprobarSolicitud" variant="success" class="btn-4 mt-3 mx-1" v-if="pago.status==='En revisión'"> Aprobar solicitud </b-button>
-        <!-- <b-button @click="onRestablecer" variant="secondary" class="btn-4 mt-3 mx-1" v-if="pago.status != 'En revisión'"> Volver a estado En Revisión </b-button> -->
-        <b-button @click="onRechazarSolicitud" class="btn-3 mt-3 mx-1"> Rechazar solicitud </b-button>
-        <b-button @click="onShowObservaciones" variant="primary" class="btn-2 mt-3 mx-1"> Ver observaciones </b-button>
+      <div class="solicitud-quick-actions">
+        <b-button
+          v-if="pago.status === 'En revisión'"
+          size="sm"
+          variant="success"
+          class="btn-4"
+          @click="onShowAprobarSolicitud"
+        >
+          Aprobar solicitud
+        </b-button>
+        <b-button size="sm" class="btn-3" @click="onRechazarSolicitud">Rechazar solicitud</b-button>
+        <b-button size="sm" variant="primary" class="btn-2" @click="onShowObservaciones">Ver observaciones</b-button>
       </div>
       <!-- <div class="row no-gutters">
         <b-button @click="onDescargarHabilitacion(); registrarActividad('Descargar Trámite', 'Trámite Descargado', pago.nroTramite)" v-if="adminComercio || adminArvige || adminModernizacion" variant="success" class="btn-4 mx-auto mt-3 mx-1">

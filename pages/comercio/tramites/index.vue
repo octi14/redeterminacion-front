@@ -37,7 +37,7 @@
     <b-container class="col-8">
       <b-row>
         <b-col class="botonera">
-          <h2 class="icon-green"><i class="bi bi-question-octagon-fill"></i> ¿Qué trámite estás buscando?</h2>
+          <h2 class="icon-green"><i class="bi bi-question-octagon-fill icon-orange"></i> ¿Qué trámite estás buscando?</h2>
           <div class="botonera-container">
             <b-row>
               <b-col lg="3" md="4" sm="6">
@@ -89,10 +89,10 @@
             </h4>
             <div class="section-card-panel">
                 <div class="li-row first-li">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El trámite de Baja Comercial implica finalizar una Habilitación Comercial. Mediante este trámite el Municipio verificará que la documentación solicitada y el pago de tasas correspondientes estén cumplimentadas.</div>
+                  <div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> El trámite de Baja Comercial implica finalizar una Habilitación Comercial. Mediante este trámite el Municipio verificará que la documentación solicitada y el pago de tasas correspondientes estén cumplimentadas.</div>
                 </div>
                 <div class="li-row">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Una vez confirmada esta información se extiende al solicitante un certificado de Baja Comercial donde consta la desvinculación comercial con este Municipio.</div>
+                  <div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Una vez confirmada esta información se extiende al solicitante un certificado de Baja Comercial donde consta la desvinculación comercial con este Municipio.</div>
                 </div>
             </div>
           </b-card>
@@ -104,13 +104,13 @@
             </h4>
             <div class="section-card-panel">
                 <div class="li-row first-li">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>Titular de la Habilitación Comercial</b> ó</div>
+                  <div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> El <b>Titular de la Habilitación Comercial</b> ó</div>
                 </div>
                 <div class="li-row">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>Propietario/a del Inmueble</b> en el cual se encuentre situado el comercio habilitado. <i>En este último caso el contrato entre las partes debe estar finalizado y debe haber cesado la actividad comercial.</i></div>
+                  <div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> El <b>Propietario/a del Inmueble</b> en el cual se encuentre situado el comercio habilitado. <i>En este último caso el contrato entre las partes debe estar finalizado y debe haber cesado la actividad comercial.</i></div>
                 </div>
                 <div class="li-row">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> En ambos casos podrá actuar un/a representante o apoderado/a de la persona interesada con documentación que acredite el carácter de tal. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('A')" @keydown.enter.stop.prevent="openPopup('A')"></i></div>
+                  <div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> En ambos casos podrá actuar un/a representante o apoderado/a de la persona interesada con documentación que acredite el carácter de tal. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('A')" @keydown.enter.stop.prevent="openPopup('A')"></i></div>
                 </div>
             </div>
           </b-card>
@@ -121,13 +121,13 @@
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
             <div class="section-card-panel">
-                <div class="li-row first-li"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> DNI del solicitante <i>(imagen del frente y dorso)</i>. </div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de Tasa de Inspección de Seguridad e Higiene. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('ConstanciaLibreDeudaSegHig')" @keydown.enter.stop.prevent="openPopup('ConstanciaLibreDeudaSegHig')"></i></div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Tasa por Servicios Urbanos</a> que afectan al local <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('LibreDeuda')" @keydown.enter.stop.prevent="openPopup('LibreDeuda')"></i></div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=266&categ=34" target="_blank" class="external-link">Ingresos Brutos</a> <i>(Solo si la baja la solicita el titular de la habilitación)</i>. </div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Escritura traslativa de Dominio del Inmueble/ Contrato de locación / Boleto de Compraventa o afín, con el correspondiente Impuesto de Sellos Provincial y firma certificada por Escribano Público, Entidad Bancaria o Autoridad Administrativa (en caso de corresponder).</div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Poder autorizado por escribano <i>(únicamente si el trámite es iniciado mediante representante o apoderado/a)</i>.</div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <b>Personas Jurídicas:</b> Escritura constitutiva de la misma con designación actual de sus representantes.</div></div>
+                <div class="li-row first-li"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> DNI del solicitante <i>(imagen del frente y dorso)</i>. </div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Libre deuda de Tasa de Inspección de Seguridad e Higiene. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('ConstanciaLibreDeudaSegHig')" @keydown.enter.stop.prevent="openPopup('ConstanciaLibreDeudaSegHig')"></i></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Libre deuda de <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Tasa por Servicios Urbanos</a> que afectan al local <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('LibreDeuda')" @keydown.enter.stop.prevent="openPopup('LibreDeuda')"></i></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Libre deuda de <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=266&categ=34" target="_blank" class="external-link">Ingresos Brutos</a> <i>(Solo si la baja la solicita el titular de la habilitación)</i>. </div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Escritura traslativa de Dominio del Inmueble/ Contrato de locación / Boleto de Compraventa o afín, con el correspondiente Impuesto de Sellos Provincial y firma certificada por Escribano Público, Entidad Bancaria o Autoridad Administrativa (en caso de corresponder).</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Poder autorizado por escribano <i>(únicamente si el trámite es iniciado mediante representante o apoderado/a)</i>.</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> <b>Personas Jurídicas:</b> Escritura constitutiva de la misma con designación actual de sus representantes.</div></div>
               <div class="separador-top">
                 <p>Los <b>documentos</b> deberán encontrarse <b>digitalizados</b> (podés escanearlos o sacarles una foto) y deben <b>ser legibles</b>. Pueden encontrarse <b>en formato pdf o imagen</b> y tener un <b>peso máximo de 15 Mb</b>.</p>
               </div>
@@ -159,11 +159,11 @@
                     <p class="li-title">¿Qué sucede si el/la titular de la baja se encuentra fallecido/a?</p>
                     <p >En caso de titular fallecido realizar la consulta correspondiente en <a href="mailto:deptocomercio@gesell.gob.ar" target="_blank" class="external-link">deptocomercio@gesell.gob.ar</a></p>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>Apellido y nombre del/la titular de la habilitación</p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>Nro. de Expediente.</p></div>
                     </div>
                   </div>
@@ -253,11 +253,11 @@
                   <div class="li-content">
                     <p class="li-title">¿Qué sucede si abro un local comercial sin realizar la habilitación correspondiente?</p>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>La omisión de la habilitación determinará la inmediata clausura del establecimiento, debiendo abonar la multa correspondiente para quienes cometieran tal infracción.</p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>El establecimiento deberá permanecer cerrado hasta tanto regularice su trámite de habilitación.</p></div>
                     </div>
                   </div>
@@ -272,10 +272,10 @@
             </h4>
             <div class="section-card-panel">
                 <div class="li-row first-li">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>interesado futuro comerciante/industrial o afin</b> mayor de 18 años.</div>
+                  <div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> El <b>interesado futuro comerciante/industrial o afin</b> mayor de 18 años.</div>
                 </div>
                 <div class="li-row">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>representante o apoderado/a de la persona</b> interesada con documentación que acredite el carácter de tal. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('A')" @keydown.enter.stop.prevent="openPopup('A')"></i></div>
+                  <div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> El <b>representante o apoderado/a de la persona</b> interesada con documentación que acredite el carácter de tal. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('A')" @keydown.enter.stop.prevent="openPopup('A')"></i></div>
                 </div>
             </div>
           </b-card>
@@ -287,16 +287,16 @@
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
             <div class="section-card-panel">
-                <div class="li-row first-li"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> DNI del solicitante <i>(imagen del frente y dorso)</i>.</div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Domicilio real y legal del establecimiento <i>(deberá constar calle y número)</i>. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('NroInmueble')" @keydown.enter.stop.prevent="openPopup('NroInmueble')"></i></div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Copia de plano (en alguna de sus dos posibilidades: <i>1. Conforme a obra o Medición aprobado / 2. Conforme a obra o Medición registrado).</i> En caso de no poseerlo, se requerirá el Informe Técnico debidamente visado por el Colegio Profesional correspondiente. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('B')" @keydown.enter.stop.prevent="openPopup('B')"></i></div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Tasa por Sevicios Urbanos</a> <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('LibreDeuda')" @keydown.enter.stop.prevent="openPopup('LibreDeuda')"></i></div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Copia de la Escritura traslativa de Dominio del inmueble donde se desarrollará la actividad / Contrato de locación / Boleto de Compraventa o afín, con el correspondiente Impuesto de Sellos Provincial y firma certificada por Escribano Público, Entidad Bancaria o Autoridad Administrativa.</div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <a href="https://seti.afip.gob.ar/padron-puc-constancia-internet/ConsultaConstanciaAction.do" target="_blank" class="external-link">Constancia de inscripción de AFIP</a> actualizada.</div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" class="external-link">Constancia de Inscripción en Ingresos Brutos</a> (ARBA) actualizada al momento de la solicitud. Esta deberá mantenerse activa mientras el comercio, industria o asimilable esté habilitado, bajo pena de ser pasible de la clausura del establecimiento.</div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <a href="https://sso.arba.gov.ar/Login/login?service=https%3A%2F%2Fapp.arba.gov.ar%3A443%2FWebTramites%2Fwelcome.do" target="_blank" class="external-link">Certificado de domicilio Ingresos Brutos (ARBA).</a></div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <a href="https://drive.google.com/file/d/1m5ouibBL4sWokhkSR5keTjbUVo-I4TOU/view" target="_blank" class="external-link">Planilla de Autorización de Trámite</a> o poder autorizado por escribano <i>(únicamente si el trámite es iniciado mediante representante o apoderado/a)</i>.</div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <b>Personas Jurídicas:</b> Escritura constitutiva de la misma con designación actual de sus representantes.</div></div>
+                <div class="li-row first-li"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> DNI del solicitante <i>(imagen del frente y dorso)</i>.</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Domicilio real y legal del establecimiento <i>(deberá constar calle y número)</i>. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('NroInmueble')" @keydown.enter.stop.prevent="openPopup('NroInmueble')"></i></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Copia de plano (en alguna de sus dos posibilidades: <i>1. Conforme a obra o Medición aprobado / 2. Conforme a obra o Medición registrado).</i> En caso de no poseerlo, se requerirá el Informe Técnico debidamente visado por el Colegio Profesional correspondiente. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('B')" @keydown.enter.stop.prevent="openPopup('B')"></i></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Libre deuda de <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Tasa por Sevicios Urbanos</a> <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('LibreDeuda')" @keydown.enter.stop.prevent="openPopup('LibreDeuda')"></i></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Copia de la Escritura traslativa de Dominio del inmueble donde se desarrollará la actividad / Contrato de locación / Boleto de Compraventa o afín, con el correspondiente Impuesto de Sellos Provincial y firma certificada por Escribano Público, Entidad Bancaria o Autoridad Administrativa.</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> <a href="https://seti.afip.gob.ar/padron-puc-constancia-internet/ConsultaConstanciaAction.do" target="_blank" class="external-link">Constancia de inscripción de AFIP</a> actualizada.</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" class="external-link">Constancia de Inscripción en Ingresos Brutos</a> (ARBA) actualizada al momento de la solicitud. Esta deberá mantenerse activa mientras el comercio, industria o asimilable esté habilitado, bajo pena de ser pasible de la clausura del establecimiento.</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> <a href="https://sso.arba.gov.ar/Login/login?service=https%3A%2F%2Fapp.arba.gov.ar%3A443%2FWebTramites%2Fwelcome.do" target="_blank" class="external-link">Certificado de domicilio Ingresos Brutos (ARBA).</a></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> <a href="https://drive.google.com/file/d/1m5ouibBL4sWokhkSR5keTjbUVo-I4TOU/view" target="_blank" class="external-link">Planilla de Autorización de Trámite</a> o poder autorizado por escribano <i>(únicamente si el trámite es iniciado mediante representante o apoderado/a)</i>.</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> <b>Personas Jurídicas:</b> Escritura constitutiva de la misma con designación actual de sus representantes.</div></div>
               <div class="separador-top">
                 <p>Excepto el domicilio, el resto de los <b>documentos</b> deberán encontrarse <b>digitalizados</b> (podés escanearlos o sacarles una foto) y deben <b>ser legibles</b>. Pueden encontrarse <b>en formato pdf o imagen</b> y tener un <b>peso máximo de 15 Mb</b>.</p>
               </div>
@@ -349,7 +349,7 @@
                         <p class="li-title">Requisitos Generales  <a href="https://drive.google.com/file/d/1I3BW2F16ZhW7tLqPU6qSmRYybkMKBTXS/view" target="_blank" class="external-link" style="font-weight: 500">(Ord. 1958/04)</a></p>
                         <div v-if="rubroSeleccionado.requisitos.length" class="li-p">
                           <div class="li-row" v-for="(req, index) in rubroSeleccionado.requisitos" :key="index">
-                            <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                            <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                             <div class="li-content" >
                               <p> {{ req }}</p>
                             </div>
@@ -362,7 +362,7 @@
                         <p class="li-title">Requisitos <span v-if="rubroSeleccionado.requisitos.length">específicos para el rubro</span><span v-else>Generales</span></p>
                         <div v-if="rubroSeleccionado.especiales.length" class="li-p">
                           <div class="li-row" v-for="(req, index) in rubroSeleccionado.especiales" :key="index">
-                            <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                            <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                             <div class="li-content" >
                               <a v-if="rubroSeleccionado.links.length && rubroSeleccionado.links[index]!='' && rubroSeleccionado.links[index]!=null" :href="`${rubroSeleccionado.links[index]}`" target="_blank" class="external-link" > {{ req }}</a>
                               <p v-else> {{ req }}</p>
@@ -455,11 +455,11 @@
                         <div class="li-content">
                           <p class="li-title">Zonas permitidas para el rubro: {{ rubroSeleccionado.nombre }}</p>
                           <div class="li-row">
-                            <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                            <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                             <div class="li-content"><p class="">En este mapa se indican las zonas permitidas para tu comercio de acuerdo a lo determinado por la Ordenanza 3069/21 Mod 3138/21 (Plan de Ordenamiento Municipal).</p></div>
                           </div>
                           <div class="li-row">
-                            <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                            <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                             <div class="li-content"><p class="li-p">La zona coloreada del mapa señala el espacio catastral donde es posible habilitar comercios de tu rubro <i>(no indica ubicaciones catastrales que se encuentren libres)</i>.</p></div>
                           </div>
                         </div>
@@ -489,19 +489,19 @@
                     <p class="li-title">¿Cómo se calcula la Tasa de Habilitación?</p>
                     <p class="li-p">La Tasa de Habilitación depende de los siguientes factores:</p>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>El rubro que se quiere habilitar.</p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>La zona donde se encuentra el local.</p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>La superficie total afectada a la actividad comercial (que implican el sector de atención al público, depósito, espacio de circulación, entrepiso, sanitarios, entre otros).</p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>La condición del plano de obra (aprobado o registrado).</p></div>
                     </div>
                   </div>
@@ -512,19 +512,19 @@
                     <p class="li-title">Para facilitar la búsqueda de un local: ¿Dónde puedo consultar la Zona Comercial Apta para habilitar y los requisitos edilicios para su instalación y funcionamiento?</p>
                     <p class="li-p">Para realizar tu consulta, podés enviar un correo electrónico a: <a class="external-link" href="mailto:deptocomercio@gesell.gob.ar" target="_blank">deptocomercio@gesell.gob.ar</a> informando los siguientes datos:</p>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>Rubro a habilitar.</p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>Domicilio real del local (Calle y Número).</p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>Localidad de ubicación en el Partido de Villa Gesell.</p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>Datos catastrales: Chacra- Quinta- Manzana - Parcela - Unidad Contributiva.</p></div>
                     </div>
                   </div>
@@ -534,11 +534,11 @@
                   <div class="li-content">
                     <p class="li-title">¿Deben renovarse las habilitaciones comerciales?</p>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p><b>En caso de contrato de locación:</b> Las habilitaciones se extienden por el período que abarca el contrato de locación y deben reempadronarse anualmente, según corresponda, teniendo en cuenta la normativa vigente.</p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p><b>En caso de ser propietario/a del inmueble:</b> Las habilitaciones no tienen caducidad si la titularidad o las condiciones acreditadas al momento de la entrega del certificado de habilitación no cambian.</p></div>
                     </div>
                   </div>
@@ -549,15 +549,15 @@
                     <p class="li-title">¿Cómo puedo obtener el Registro Provincial para la Comercialización de Bebidas Alcohólicas (REBA)?</p>
                     <p class="li-p">Las actividades que comercializan bebidas alcohólicas deben tramitar el certificado del REBA correspondiente.</p>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>Para tramitarlo debés tener tu habilitación comercial vigente.</p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>Su costo dependerá de la actividad comercial que se lleve a cabo.</p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>El trámite se lleva a cabo <b>personalmente</b> en la Municipalidad una vez iniciado el trámite online.</p></div>
                     </div>
                   </div>
@@ -618,36 +618,36 @@
             </h4>
             <div class="section-card-panel">
                 <div class="li-row first-li">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El trámite de <b>Renovación Comercial</b> implica <b>reafirmar la continuidad de una Habilitación comercial</b> una vez que el <b>contrato de locación/comodato/etc. original haya concluido.</b></div>
+                  <div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> El trámite de <b>Renovación Comercial</b> implica <b>reafirmar la continuidad de una Habilitación comercial</b> una vez que el <b>contrato de locación/comodato/etc. original haya concluido.</b></div>
                 </div>
                 <div class="li-row">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Mediante este trámite <b>el Municipio verificará que la documentación solicitada</b> y el <b>pago de tasas correspondientes estén cumplimentadas.</b></div>
+                  <div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Mediante este trámite <b>el Municipio verificará que la documentación solicitada</b> y el <b>pago de tasas correspondientes estén cumplimentadas.</b></div>
                 </div>
                 <div class="li-row first-p">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Una vez <b>confirmada esta información y concluida la inspección correspondiente</b> se extiende al solicitante un <b>Certificado de Habilitación donde consta la renovación comercial</b> con este Municipio.</div>
+                  <div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Una vez <b>confirmada esta información y concluida la inspección correspondiente</b> se extiende al solicitante un <b>Certificado de Habilitación donde consta la renovación comercial</b> con este Municipio.</div>
                 </div>
                 <div class="li-row">
                   <div class="li-icon"><i class="bi bi-exclamation-circle" style="font-size: 1em"></i></div>
                   <div class="li-content" style="width:100%">
                     <p class="li-title">El trámite a realizar NO es una renovación comercial en los siguientes casos:</p>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>Si el contrato de locación, comodato, etc. no ha concluido el trámite a realizar es un <a href="#card-reempadronamiento" id="btnRe" class="external-link" @click="seleccionarTramite('Reempadronamiento')">Reempadronamiento comercial.</a></p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>Si realizaste una <a href="#card-baja" id="btnB" class="external-link" @click="seleccionarTramite('Baja')">Baja Comercial</a></p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>Si realizaste un <b>Cambio de Domicilio</b>.<!--  Podes ver los requisitos de este trámite haciendo <a href="#card-cambio-domicilio" id="btnCD" class="external-link" @click="seleccionarTramite('Cambio de Domicilio')">click aquí</a>. --></p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>Si realizaste un <b>Cambio de Titular</b>.<!--  Podes ver los requisitos de este trámite haciendo <a href="#card-cambio-titular" id="btnCT" class="external-link" @click="seleccionarTramite('Cambio de Titular')">click aquí</a>. --></p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>Si se <b>anexaron metros cuadrados</b> al comercio.<!--  Podes ver los requisitos de este trámite haciendo <a href="#card-anexo-mt-2" id="btnAM2" class="external-link" @click="seleccionarTramite('Anexo de Mts2')">click aquí</a>. --></p></div>
                     </div>
                   </div>
@@ -662,10 +662,10 @@
             </h4>
             <div class="section-card-panel">
                 <div class="li-row first-li">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>Titular de la Habilitación Comercial</b> ó</div>
+                  <div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> El <b>Titular de la Habilitación Comercial</b> ó</div>
                 </div>
                 <div class="li-row">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>Representante o Apoderado/a de la persona interesada</b> con documentación que acredite el carácter de tal. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('A')" @keydown.enter.stop.prevent="openPopup('A')"></i></div>
+                  <div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> El <b>Representante o Apoderado/a de la persona interesada</b> con documentación que acredite el carácter de tal. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('A')" @keydown.enter.stop.prevent="openPopup('A')"></i></div>
                 </div>
             </div>
           </b-card>
@@ -676,18 +676,18 @@
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
             <div class="section-card-panel">
-                <div class="li-row first-li"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> DNI del solicitante <i>(imagen del frente y dorso)</i>.</div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de Tasa de Inspección de Seguridad e Higiene. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('ConstanciaLibreDeudaSegHig')" @keydown.enter.stop.prevent="openPopup('ConstanciaLibreDeudaSegHig')"></i></div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Tasa por Servicios Urbanos</a> que afectan al local <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('LibreDeuda')" @keydown.enter.stop.prevent="openPopup('LibreDeuda')"></i></div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=266&categ=34" target="_blank" class="external-link">Ingresos Brutos</a>  del titular de la habilitación. </div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <a href="https://www.afip.gob.ar/landing/default.asp" target="_blank" class="external-link">Constancia de inscripción de AFIP</a>. </div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <a href="https://sso.arba.gov.ar/Login/login?service=https%3A%2F%2Fapp.arba.gov.ar%3A443%2FWebTramites%2Fwelcome.do" target="_blank" class="external-link">Certificado de domicilio Ingresos Brutos (ARBA).</a></div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" class="external-link">Constancia de inscripción a Ingresos Brutos.</a></div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libro de actas: se entrega en forma presencial al finalizar el trámite. (<i>En el caso de alojamientos se presentarán 2 libros: de quejas y de habilitación.</i>)</div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Declaración Jurada - Metros establecimiento habilitado. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('decJurada')" @keydown.enter.stop.prevent="openPopup('decJurada')"></i></div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Contrato de locación con el correspondiente Impuesto de Sellos Provincial y firma certificada por Escribano Público, Entidad Bancaria o Autoridad Administrativa.</div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Planilla de Autorización de Trámite legalizada o poder autorizado por escribano <i>(únicamente si el trámite es iniciado mediante representante o apoderado/a)</i>.</div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <b>Personas Jurídicas:</b> Escritura constitutiva de la misma con designación actual de sus representantes.</div></div>
+                <div class="li-row first-li"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> DNI del solicitante <i>(imagen del frente y dorso)</i>.</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Libre deuda de Tasa de Inspección de Seguridad e Higiene. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('ConstanciaLibreDeudaSegHig')" @keydown.enter.stop.prevent="openPopup('ConstanciaLibreDeudaSegHig')"></i></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Libre deuda de <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Tasa por Servicios Urbanos</a> que afectan al local <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('LibreDeuda')" @keydown.enter.stop.prevent="openPopup('LibreDeuda')"></i></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Libre deuda de <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=266&categ=34" target="_blank" class="external-link">Ingresos Brutos</a>  del titular de la habilitación. </div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> <a href="https://www.afip.gob.ar/landing/default.asp" target="_blank" class="external-link">Constancia de inscripción de AFIP</a>. </div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> <a href="https://sso.arba.gov.ar/Login/login?service=https%3A%2F%2Fapp.arba.gov.ar%3A443%2FWebTramites%2Fwelcome.do" target="_blank" class="external-link">Certificado de domicilio Ingresos Brutos (ARBA).</a></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" class="external-link">Constancia de inscripción a Ingresos Brutos.</a></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Libro de actas: se entrega en forma presencial al finalizar el trámite. (<i>En el caso de alojamientos se presentarán 2 libros: de quejas y de habilitación.</i>)</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Declaración Jurada - Metros establecimiento habilitado. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('decJurada')" @keydown.enter.stop.prevent="openPopup('decJurada')"></i></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Contrato de locación con el correspondiente Impuesto de Sellos Provincial y firma certificada por Escribano Público, Entidad Bancaria o Autoridad Administrativa.</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Planilla de Autorización de Trámite legalizada o poder autorizado por escribano <i>(únicamente si el trámite es iniciado mediante representante o apoderado/a)</i>.</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> <b>Personas Jurídicas:</b> Escritura constitutiva de la misma con designación actual de sus representantes.</div></div>
                 <div class="separador-top">
                   <p>Los <b>documentos</b> deberán encontrarse <b>digitalizados</b> (podés escanearlos o sacarles una foto) y deben <b>ser legibles</b>. Pueden encontrarse <b>en formato pdf o imagen</b> y tener un <b>peso máximo de 15 Mb</b>.</p>
                 </div>
@@ -793,33 +793,33 @@
             </h4>
             <div class="section-card-panel">
                 <div class="li-row first-li">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El trámite de <b>Reempadronamiento Comercial</b> implica <b>reafirmar la continuidad de una Habilitación comercial</b> en <b>los mismos términos en los que fue solicitada</b>,  siempre y cuando el certificado de habilitación se encuentre vigente.</div>
+                  <div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> El trámite de <b>Reempadronamiento Comercial</b> implica <b>reafirmar la continuidad de una Habilitación comercial</b> en <b>los mismos términos en los que fue solicitada</b>,  siempre y cuando el certificado de habilitación se encuentre vigente.</div>
                 </div>
                 <div class="li-row first-p">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Mediante este trámite <b>el Municipio verificará que la documentación solicitada</b> y el <b>pago de tasas correspondientes estén cumplimentadas.</b></div>
+                  <div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Mediante este trámite <b>el Municipio verificará que la documentación solicitada</b> y el <b>pago de tasas correspondientes estén cumplimentadas.</b></div>
                 </div>
                 <div class="li-row">
                   <div class="li-icon"><i class="bi bi-exclamation-circle" style="font-size: 1em"></i></div>
                   <div class="li-content" style="width:100%">
                     <p class="li-title">El trámite a realizar NO es un reempadronamiento comercial en los siguientes casos:</p>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>Si el contrato de locación, comodato, etc. original se encuentra concluído, el trámite a realizar es una <a href="#card-renovacion" id="btnR" class="external-link" @click="seleccionarTramite('Renovación')">Renovación comercial.</a></p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>Si realizaste una <a href="#card-baja" id="btnB" class="external-link" @click="seleccionarTramite('Baja')">Baja Comercial</a></p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>Si realizaste un <b>Cambio de Domicilio</b>.<!--  Podes ver los requisitos de este trámite haciendo <a href="#card-cambio-domicilio" id="btnCD" class="external-link" @click="seleccionarTramite('Cambio de Domicilio')">click aquí</a>. --></p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>Si realizaste un <b>Cambio de Titular</b>.<!--  Podes ver los requisitos de este trámite haciendo <a href="#card-cambio-titular" id="btnCT" class="external-link" @click="seleccionarTramite('Cambio de Titular')">click aquí</a>. --></p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>Si se <b>anexaron metros cuadrados</b> al comercio.<!--  Podes ver los requisitos de este trámite haciendo <a href="#card-anexo-mt-2" id="btnAM2" class="external-link" @click="seleccionarTramite('Anexo de Mts2')">click aquí</a>. --></p></div>
                     </div>
                   </div>
@@ -834,10 +834,10 @@
             </h4>
             <div class="section-card-panel">
                 <div class="li-row first-li">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>Titular de la Habilitación Comercial</b> ó</div>
+                  <div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> El <b>Titular de la Habilitación Comercial</b> ó</div>
                 </div>
                 <div class="li-row">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>Representante o Apoderado/a de la persona interesada</b> con documentación que acredite el carácter de tal. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('A')" @keydown.enter.stop.prevent="openPopup('A')"></i></div>
+                  <div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> El <b>Representante o Apoderado/a de la persona interesada</b> con documentación que acredite el carácter de tal. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('A')" @keydown.enter.stop.prevent="openPopup('A')"></i></div>
                 </div>
             </div>
           </b-card>
@@ -848,17 +848,17 @@
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
             <div class="section-card-panel">
-                <div class="li-row first-li"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> DNI del solicitante <i>(imagen del frente y dorso)</i>.</div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de Tasa de Inspección de Seguridad e Higiene. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('ConstanciaLibreDeudaSegHig')" @keydown.enter.stop.prevent="openPopup('ConstanciaLibreDeudaSegHig')"></i></div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Tasa por Servicios Urbanos</a> que afectan al local <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('LibreDeuda')" @keydown.enter.stop.prevent="openPopup('LibreDeuda')"></i></div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=266&categ=34" target="_blank" class="external-link">Ingresos Brutos</a>  del titular de la habilitación. </div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <a href="https://www.afip.gob.ar/landing/default.asp" target="_blank" class="external-link">Constancia de inscripción de AFIP</a>. </div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <a href="https://sso.arba.gov.ar/Login/login?service=https%3A%2F%2Fapp.arba.gov.ar%3A443%2FWebTramites%2Fwelcome.do" target="_blank" class="external-link">Certificado de domicilio Ingresos Brutos (ARBA).</a></div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" class="external-link">Constancia de inscripción a Ingresos Brutos.</a></div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libro de actas: se entrega en forma presencial al finalizar el trámite. (<i>En el caso de alojamientos se presentarán 2 libros: de quejas y de habilitación.</i>)</div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Declaración Jurada - Metros establecimiento habilitado. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('decJurada')" @keydown.enter.stop.prevent="openPopup('decJurada')"></i></div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Planilla de Autorización de Trámite legalizada o poder autorizado por escribano <i>(únicamente si el trámite es iniciado mediante representante o apoderado/a)</i>.</div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <b>Personas Jurídicas:</b> Escritura constitutiva de la misma con designación actual de sus representantes.</div></div>
+                <div class="li-row first-li"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> DNI del solicitante <i>(imagen del frente y dorso)</i>.</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Libre deuda de Tasa de Inspección de Seguridad e Higiene. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('ConstanciaLibreDeudaSegHig')" @keydown.enter.stop.prevent="openPopup('ConstanciaLibreDeudaSegHig')"></i></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Libre deuda de <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Tasa por Servicios Urbanos</a> que afectan al local <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('LibreDeuda')" @keydown.enter.stop.prevent="openPopup('LibreDeuda')"></i></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Libre deuda de <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=266&categ=34" target="_blank" class="external-link">Ingresos Brutos</a>  del titular de la habilitación. </div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> <a href="https://www.afip.gob.ar/landing/default.asp" target="_blank" class="external-link">Constancia de inscripción de AFIP</a>. </div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> <a href="https://sso.arba.gov.ar/Login/login?service=https%3A%2F%2Fapp.arba.gov.ar%3A443%2FWebTramites%2Fwelcome.do" target="_blank" class="external-link">Certificado de domicilio Ingresos Brutos (ARBA).</a></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" class="external-link">Constancia de inscripción a Ingresos Brutos.</a></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Libro de actas: se entrega en forma presencial al finalizar el trámite. (<i>En el caso de alojamientos se presentarán 2 libros: de quejas y de habilitación.</i>)</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Declaración Jurada - Metros establecimiento habilitado. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('decJurada')" @keydown.enter.stop.prevent="openPopup('decJurada')"></i></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Planilla de Autorización de Trámite legalizada o poder autorizado por escribano <i>(únicamente si el trámite es iniciado mediante representante o apoderado/a)</i>.</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> <b>Personas Jurídicas:</b> Escritura constitutiva de la misma con designación actual de sus representantes.</div></div>
                 <div class="separador-top">
                   <p>Los <b>documentos</b> deberán encontrarse <b>digitalizados</b> (podés escanearlos o sacarles una foto) y deben <b>ser legibles</b>. Pueden encontrarse <b>en formato pdf o imagen</b> y tener un <b>peso máximo de 15 Mb</b>.</p>
                 </div>
@@ -904,11 +904,11 @@
                   <div class="li-content">
                     <p class="li-title">¿Cuándo deben reempadronrse las habilitaciones comerciales?</p>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p><b>En caso de contrato de locación:</b> Las habilitaciones se extienden por el período que abarca el contrato de locación y deben reempadronarse anualmente, según corresponda, teniendo en cuenta la normativa vigente.</p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p><b>En caso de ser propietario/a del inmueble:</b> Las habilitaciones no tienen caducidad si la titularidad o las condiciones acreditadas al momento de la entrega del certificado de habilitación no cambian.</p></div>
                     </div>
                   </div>
@@ -985,23 +985,23 @@
                   <div class="li-content" style="width:100%">
                     <p class="li-title">El trámite a realizar NO es un cambio de titularidad en los siguientes casos:</p>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>Si el contrato de locación, comodato, etc. no ha concluido el trámite a realizar es un <a href="#card-reempadronamiento" id="btnRe" class="external-link" @click="seleccionarTramite('Reempadronamiento')">Reempadronamiento comercial.</a></p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>Si el contrato de locación, comodato, etc. ha concluido el trámite a realizar es una</p> <a href="#card-renovacion" id="btnR" class="external-link" @click="seleccionarTramite('Renovación')">Renovación comercial.</a></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>Si realizaste una <a href="#card-baja" id="btnB" class="external-link" @click="seleccionarTramite('Baja')">Baja Comercial</a></p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>Si realizaste un <b>Cambio de Domicilio</b>.<!--  Podes ver los requisitos de este trámite haciendo <a href="#card-cambio-domicilio" id="btnCD" class="external-link" @click="seleccionarTramite('Cambio de Domicilio')">click aquí</a>. --></p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>Si se <b>anexaron metros cuadrados</b> al comercio.<!--  Podes ver los requisitos de este trámite haciendo <a href="#card-anexo-mt-2" id="btnAM2" class="external-link" @click="seleccionarTramite('Anexo de Mts2')">click aquí</a>. --></p></div>
                     </div>
                   </div>
@@ -1016,13 +1016,13 @@
             </h4>
             <div class="section-card-panel">
                 <div class="li-row first-li">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>El Titular de la Habilitación Comercial</b> mayor de 18 años.</div>
+                  <div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> El <b>El Titular de la Habilitación Comercial</b> mayor de 18 años.</div>
                 </div>
                 <div class="li-row">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>interesado futuro comerciante/industrial o afin</b> mayor de 18 años.</div>
+                  <div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> El <b>interesado futuro comerciante/industrial o afin</b> mayor de 18 años.</div>
                 </div>
                 <div class="li-row">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>representante o apoderado/a de la persona</b> interesada con documentación que acredite el carácter de tal. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('A')" @keydown.enter.stop.prevent="openPopup('A')"></i></div>
+                  <div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> El <b>representante o apoderado/a de la persona</b> interesada con documentación que acredite el carácter de tal. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('A')" @keydown.enter.stop.prevent="openPopup('A')"></i></div>
                 </div>
             </div>
           </b-card>
@@ -1034,19 +1034,19 @@
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
             <div class="section-card-panel">
-                <div class="li-row first-li"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> DNI del solicitante <i>(imagen del frente y dorso)</i>.</div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda Tasa de Inspección de Seguridad e Higiene. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('ConstanciaLibreDeudaSegHig')" @keydown.enter.stop.prevent="openPopup('ConstanciaLibreDeudaSegHig')"></i></div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Tasa por Sevicios Urbanos</a> <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('LibreDeuda')" @keydown.enter.stop.prevent="openPopup('LibreDeuda')"></i></div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=266&categ=34" target="_blank" class="external-link">Ingresos Brutos</a>  del titular de la habilitación. </div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <a href="https://seti.afip.gob.ar/padron-puc-constancia-internet/ConsultaConstanciaAction.do" target="_blank" class="external-link">Constancia de inscripción de AFIP</a> actualizada.</div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <a href="https://sso.arba.gov.ar/Login/login?service=https%3A%2F%2Fapp.arba.gov.ar%3A443%2FWebTramites%2Fwelcome.do" target="_blank" class="external-link">Certificado de domicilio Ingresos Brutos (ARBA).</a></div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" class="external-link">Constancia de Inscripción en Ingresos Brutos</a> (ARBA) actualizada al momento de la solicitud. Esta deberá mantenerse activa mientras el comercio, industria o asimilable esté habilitado, bajo pena de ser pasible de la clausura del establecimiento.</div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libro de actas: se entrega en forma presencial al finalizar el trámite. (<i>En el caso de alojamientos se presentarán 2 libros: de quejas y de habilitación.</i>) <b>Si el titular anterior posee certificado de habilitación deberá ser entregado para el trámite.</b></div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <a href="https://drive.google.com/file/d/1T0tLmahWr8YZ5q_XqV9_RPAkDGyXQ-wo/view?usp=sharing" target="_blank" class="external-link">Constancia de Conformidad de Cambio de Titularidad</a> firmada por el anterior Titular (junto con copia del DNI del titular anterior).</div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Plano de obra vigente. <u>Si este continúa en trámite</u>, presentar Informe Técnico Visado en el Colegio de Arquitectos (Artic. 20º Ord. Nº 3177/21).</div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Escritura traslativa de Dominio del Inmueble/ Contrato de locación / Boleto de Compraventa o afín, con el correspondiente Impuesto de Sellos Provincial y firma certificada por Escribano Público, Entidad Bancaria o Autoridad Administrativa.</div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <a href="https://drive.google.com/file/d/1m5ouibBL4sWokhkSR5keTjbUVo-I4TOU/view" target="_blank" class="external-link">Planilla de Autorización de Trámite</a> o poder autorizado por escribano <i>(únicamente si el trámite es iniciado mediante representante o apoderado/a)</i>.</div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <b>Personas Jurídicas:</b> Escritura constitutiva de la misma con designación actual de sus representantes.</div></div>
+                <div class="li-row first-li"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> DNI del solicitante <i>(imagen del frente y dorso)</i>.</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Libre deuda Tasa de Inspección de Seguridad e Higiene. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('ConstanciaLibreDeudaSegHig')" @keydown.enter.stop.prevent="openPopup('ConstanciaLibreDeudaSegHig')"></i></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Libre deuda de <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Tasa por Sevicios Urbanos</a> <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('LibreDeuda')" @keydown.enter.stop.prevent="openPopup('LibreDeuda')"></i></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Libre deuda de <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=266&categ=34" target="_blank" class="external-link">Ingresos Brutos</a>  del titular de la habilitación. </div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> <a href="https://seti.afip.gob.ar/padron-puc-constancia-internet/ConsultaConstanciaAction.do" target="_blank" class="external-link">Constancia de inscripción de AFIP</a> actualizada.</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> <a href="https://sso.arba.gov.ar/Login/login?service=https%3A%2F%2Fapp.arba.gov.ar%3A443%2FWebTramites%2Fwelcome.do" target="_blank" class="external-link">Certificado de domicilio Ingresos Brutos (ARBA).</a></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" class="external-link">Constancia de Inscripción en Ingresos Brutos</a> (ARBA) actualizada al momento de la solicitud. Esta deberá mantenerse activa mientras el comercio, industria o asimilable esté habilitado, bajo pena de ser pasible de la clausura del establecimiento.</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Libro de actas: se entrega en forma presencial al finalizar el trámite. (<i>En el caso de alojamientos se presentarán 2 libros: de quejas y de habilitación.</i>) <b>Si el titular anterior posee certificado de habilitación deberá ser entregado para el trámite.</b></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> <a href="https://drive.google.com/file/d/1T0tLmahWr8YZ5q_XqV9_RPAkDGyXQ-wo/view?usp=sharing" target="_blank" class="external-link">Constancia de Conformidad de Cambio de Titularidad</a> firmada por el anterior Titular (junto con copia del DNI del titular anterior).</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Plano de obra vigente. <u>Si este continúa en trámite</u>, presentar Informe Técnico Visado en el Colegio de Arquitectos (Artic. 20º Ord. Nº 3177/21).</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Escritura traslativa de Dominio del Inmueble/ Contrato de locación / Boleto de Compraventa o afín, con el correspondiente Impuesto de Sellos Provincial y firma certificada por Escribano Público, Entidad Bancaria o Autoridad Administrativa.</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> <a href="https://drive.google.com/file/d/1m5ouibBL4sWokhkSR5keTjbUVo-I4TOU/view" target="_blank" class="external-link">Planilla de Autorización de Trámite</a> o poder autorizado por escribano <i>(únicamente si el trámite es iniciado mediante representante o apoderado/a)</i>.</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> <b>Personas Jurídicas:</b> Escritura constitutiva de la misma con designación actual de sus representantes.</div></div>
               <div class="separador-top">
                 <p>Excepto el domicilio, el resto de los <b>documentos</b> deberán encontrarse <b>digitalizados</b> (podés escanearlos o sacarles una foto) y deben <b>ser legibles</b>. Pueden encontrarse <b>en formato pdf o imagen</b> y tener un <b>peso máximo de 15 Mb</b>.</p>
               </div>
@@ -1086,19 +1086,19 @@
                     <p class="li-title">¿Cómo se calcula la Tasa de Habilitación?</p>
                     <p class="li-p">La Tasa de Habilitación depende de los siguientes factores:</p>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>El rubro que se quiere habilitar.</p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>La zona donde se encuentra el local.</p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>La superficie total afectada a la actividad comercial (que implican el sector de atención al público, depósito, espacio de circulación, entrepiso, sanitarios, entre otros).</p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>La condición del plano de obra (aprobado o registrado).</p></div>
                     </div>
                   </div>
@@ -1109,19 +1109,19 @@
                     <p class="li-title">Para facilitar la búsqueda de un local: ¿Dónde puedo consultar la Zona Comercial Apta para habilitar y los requisitos edilicios para su instalación y funcionamiento?</p>
                     <p class="li-p">Para realizar tu consulta, podés enviar un correo electrónico a: <a class="external-link" href="mailto:deptocomercio@gesell.gob.ar" target="_blank">deptocomercio@gesell.gob.ar</a> informando los siguientes datos:</p>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>Rubro a habilitar.</p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>Domicilio real del local (Calle y Número).</p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>Localidad de ubicación en el Partido de Villa Gesell.</p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>Datos catastrales: Chacra- Quinta- Manzana - Parcela - Unidad Contributiva.</p></div>
                     </div>
                   </div>
@@ -1131,11 +1131,11 @@
                   <div class="li-content">
                     <p class="li-title">¿Deben renovarse las habilitaciones comerciales?</p>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p><b>En caso de contrato de locación:</b> Las habilitaciones se extienden por el período que abarca el contrato de locación y deben reempadronarse anualmente, según corresponda, teniendo en cuenta la normativa vigente.</p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p><b>En caso de ser propietario/a del inmueble:</b> Las habilitaciones no tienen caducidad si la titularidad o las condiciones acreditadas al momento de la entrega del certificado de habilitación no cambian.</p></div>
                     </div>
                   </div>
@@ -1146,15 +1146,15 @@
                     <p class="li-title">¿Cómo puedo obtener el Registro Provincial para la Comercialización de Bebidas Alcohólicas (REBA)?</p>
                     <p class="li-p">Las actividades que comercializan bebidas alcohólicas deben tramitar el certificado del REBA correspondiente.</p>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>Para tramitarlo debés tener tu habilitación comercial vigente.</p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>Su costo dependerá de la actividad comercial que se lleve a cabo.</p></div>
                     </div>
                     <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div>
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
                       <div class="li-content"><p>El trámite se lleva a cabo <b>personalmente</b> en la Municipalidad una vez iniciado el trámite online.</p></div>
                     </div>
                   </div>
@@ -1985,16 +1985,6 @@ p, .li-content{
   padding-right: 0.5rem;
   border-right: 1px solid #FFF;
 }
-.modal-info p, .modal-info .bi-caret-right-fill{
-  display: inline-block;
-}
-.modal-info .bi-caret-right-fill{
-  margin-right: 1rem;
-  color: #E27910;
-  vertical-align: top;
-  margin-top: 0.35rem;
-  font-size: 1rem;
-}
 .modal-info ol b, .modal-info a, .popupApoderado b{
   color: #0c681a;
 }
@@ -2092,12 +2082,22 @@ ul{
 .li-title{
   margin-bottom: 0.25rem;
 }
-.li-icon{
-  margin-right: 1%;
-  vertical-align: top;
+.li-icon {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  margin-right: 0.35rem;
+  margin-top: 0.18em;
+  min-width: 1.15em;
+  min-height: 1.15em;
 }
-.li-row{
+
+.li-row {
   display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
   width: 100%;
 }
 .first-li{
@@ -2127,11 +2127,17 @@ ul{
   max-height: 0; /* Altura inicial y final de la animación */
   overflow: hidden;
 }
-.botonera h2{
+.botonera h2 {
   font-weight: bold;
   margin: 0.5rem 0;
   padding-bottom: 1rem;
   border-bottom: 1px #666 solid;
+}
+
+.botonera h2 .bi-question-octagon-fill {
+  font-size: 0.8em;
+  vertical-align: -0.08em;
+  margin-right: 0.2rem;
 }
 .botonera{
   margin-top: 2rem;

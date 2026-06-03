@@ -320,10 +320,16 @@ export default {
     .b-row {
       height: 100%; /* Asegúrate de que el b-row tenga una altura definida (puede ser 100% o cualquier otra altura que desees). */
     }
-    .li-icon, .li-title, label{
-    font-weight: 600;
-    color: #0c681a;
-    font-size: 1rem !important;
+    .li-title,
+    label {
+      font-weight: 600;
+      color: #0c681a;
+      font-size: 1rem !important;
+    }
+
+    .li-icon {
+      font-weight: 600;
+      font-size: 1rem !important;
     }
     label{
       font-weight: bold;
@@ -331,9 +337,17 @@ export default {
     .li-title{
       margin-bottom: 0.3rem;
     }
-    .li-icon{
-      padding-right: 1%;
-      vertical-align: top;
+    .li-icon {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      align-self: flex-start;
+      padding-right: 0;
+      margin-right: 0.35rem;
+      margin-top: 0.18em;
+      min-width: 1.15em;
+      min-height: 1.15em;
     }
     .icon-verificacion{
       width: 2.85rem;
@@ -348,8 +362,10 @@ export default {
       object-fit: contain;
       transform: rotate(-25deg);
     }
-    .li-row{
+    .li-row {
       display: flex;
+      align-items: flex-start;
+      gap: 0.4rem;
       width: 100%;
     }
     .li-icon, .li-content{
@@ -363,8 +379,10 @@ export default {
       margin-top: 0.5rem;
       font-size: 1.05rem;
     }
-    .bi-check{
-      vertical-align: top;
+    .bi-check {
+      color: #E27910;
+      font-size: 1em;
+      line-height: 1;
     }
     .todos-correctos{
       background-color: #FFF !important;

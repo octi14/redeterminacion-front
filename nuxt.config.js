@@ -7,6 +7,11 @@ export default defineNuxtConfig({
   },
 
   app: {
+    pageTransition: {
+      name: 'page',
+      mode: 'out-in',
+    },
+    layoutTransition: false,
     head: {
       title: 'Hacienda Villa Gesell',
       htmlAttrs: { lang: 'es' },
@@ -37,18 +42,19 @@ export default defineNuxtConfig({
   },
 
   plugins: [
-    '~/plugins/pinia-compat.js',
-    '~/plugins/vuelidate-compat.js',
-    '~/plugins/bv-components-compat.js',
+    '~/plugins/pinia-payload.server.js',
+    '~/plugins/api.js',
+    '~/plugins/auth-hydrate.client.js',
+    '~/plugins/router-cleanup.client.js',
+    '~/plugins/vuelidate.js',
     '~/plugins/logUserActivity.client.js',
-    '~/plugins/bv-compat.client.js',
   ],
 
   alias: {
     'vuelidate/lib/validators': '@vuelidate/validators',
   },
 
-  modules: ['@bootstrap-vue-next/nuxt', '@pinia/nuxt'],
+  modules: ['./modules/nuxt-dev-fix.js', '@bootstrap-vue-next/nuxt', '@pinia/nuxt'],
 
   runtimeConfig: {
     public: {
@@ -60,11 +66,19 @@ export default defineNuxtConfig({
 
   compatibilityDate: '2024-11-01',
 
+  future: {
+    compatibilityVersion: 3,
+  },
+
   vite: {
+    ssr: {
+      // Librerías que usan navigator/DOM: no evaluarlas en el bundle SSR.
+      external: ['file-saver', 'jspdf', 'jszip'],
+    },
     css: {
       preprocessorOptions: {
         scss: {
-          silenceDeprecations: ['import', 'global-builtin', 'color-functions'],
+          silenceDeprecations: ['import', 'global-builtin', 'color-functions', 'if-function'],
         },
       },
     },

@@ -1,4 +1,5 @@
-const areas = [
+/** Lista de áreas municipales (combustible, vehículos, etc.) */
+export const AREAS = [
   'Intendente Municipal',
   'Dependencias policiales',
   'PUM',
@@ -29,6 +30,4 @@ const areas = [
   'Secretaría de Planeamiento',
 ]
 
-export default defineNuxtPlugin(() => ({
-  provide: { areas },
-}))
+export default AREAS

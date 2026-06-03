@@ -33,14 +33,13 @@
       <b-row>
         <b-col>
           <br />
-          <b-card class="section-card shadow-card my-2" id="card-baja" v-bind:class="{ 'expanded': isCardExpanded(0) }" >
+          <b-card class="section-card shadow-card my-2" id="card-baja" :class="{ expanded: isCardExpanded(0) }">
             <h4 class="section-title" @click="toggleCard(0)">
               ¿A qué nos referimos con este trámite?
               <i class="bi bi-chevron-compact-down"></i>
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
-            <transition name="expand">
-              <div v-show="isCardExpanded(0)">
+            <div class="section-card-panel">
                 <div class="li-row first-li">
                   <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El formulario de reclamo por <b>Pago doble</b> implica solicitar la acreditación de saldo excedente de <b>tasa urbana</b> para ser utilizado en futuros pagos.</div>
                 </div>
@@ -53,34 +52,30 @@
                     <p class="li-title">El trámite de devolución de tributo por doble pago se encuentra regido por el Decreto 3064/2023. </p>
                   </div>
                 </div> -->
-              </div>
-            </transition>
+            </div>
           </b-card>
-          <b-card class="section-card shadow-card my-2" id="card-habilitacion">
+          <b-card class="section-card shadow-card my-2" id="card-habilitacion" :class="{ expanded: isCardExpanded(18) }">
             <h4 class="section-title" @click="toggleCard(18)">
               ¿Quién puede solicitar la acreditación del saldo?
               <i class="bi bi-chevron-compact-down"></i>
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
-            <transition name="expand">
-              <div v-show="isCardExpanded(18)">
+            <div class="section-card-panel">
                 <div class="li-row first-li">
                   <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>Titular del inmueble por el cual se reclama</b> ó</div>
                 </div>
                 <div class="li-row">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>Representante o Apoderado/a de la persona interesada</b> con documentación que acredite el carácter de tal. <i class="bi bi-question-circle-fill text-info" style="font-size: 1.25em"></i></div>
+                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>Representante o Apoderado/a de la persona interesada</b> con documentación que acredite el carácter de tal. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('A')" @keydown.enter.stop.prevent="openPopup('A')"></i></div>
                 </div>
-              </div>
-            </transition>
+            </div>
           </b-card>
-          <b-card class="section-card shadow-card my-2">
+          <b-card class="section-card shadow-card my-2" :class="{ expanded: isCardExpanded(19) }">
             <h4 class="section-title" @click="toggleCard(19)">
               ¿Qué documentos se necesitan para demostrar el doble pago?
               <i class="bi bi-chevron-compact-down"></i>
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
-            <transition name="expand">
-              <div v-show="isCardExpanded(19)">
+            <div class="section-card-panel">
                 <div class="li-row first-li"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content">DNI del solicitante (imagen del frente y dorso).</div></div>
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Comprobantes que demuestren que el pago se ha efectuado más de una vez.</div></div>
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Acreditación de titularidad de la cuenta. Esto puede realizarse a través de la presentación de la Escritura traslativa de dominio del inmueble / Boleto de Compraventa o afín, con el correspondiente Impuesto de Sellos Provincial y firma certificada por Escribano Público, Entidad Bancaria o Autoridad Administrativa / OTROS.</div></div>
@@ -102,15 +97,13 @@
                   </b-card-text>
                 </b-card>
             </div>
-            </transition>
           </b-card>
-          <b-card class="section-card FAQs-card" v-bind:class="{ 'expanded': isCardExpanded(15) }">
+          <b-card class="section-card FAQs-card" :class="{ expanded: isCardExpanded(15) }">
             <h4 class="section-title" @click="toggleCard(15)">Preguntas Frecuentes
               <i class="bi bi-chevron-compact-down"></i>
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
-            <transition name="expand">
-              <div v-show="isCardExpanded(15)">
+            <div class="section-card-panel">
                 <div class="li-row first-li">
                   <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
                   <div class="li-content">
@@ -132,8 +125,7 @@
                     <p>En caso de que el archivo que vayas a subir tenga varias páginas (y, por ejemplo, vos las hayas fotografiado) deberás compilarlas en un único archivo pdf. Para ello existen diversas herramientas digitales (por ejemplo, <a href="https://www.ilovepdf.com/es/jpg_a_pdf" target="_blank" class="external-link">ilovepdf</a>) que te permiten hacerlo de manera sencilla y gratuita. </p>
                   </div>
                 </div>
-              </div>
-            </transition>
+            </div>
           </b-card>
           <!-- <b-card id="normas" class="section-card shadow-card my-2">
             <h4 class="section-title" @click="toggleCard(21)">
@@ -148,14 +140,14 @@
               </div>
             </transition>
           </b-card> -->
-        <b-button variant="success" class="float-right btn-form" @click="showPopupConf()">Iniciar Trámite</b-button>
+        <div class="page-btn-iniciar-tramite-wrap"><b-button variant="success" size="sm" class="btn-form page-btn-iniciar-tramite" @click="showPopupConf()">Iniciar Trámite</b-button></div>
         </b-col>
       </b-row>
     </b-container>
 
     <!-- Popups -->
-    <b-modal v-model="showPopupA"  :hide-footer="true" @click-outside="showPopupA = false" :header-bg-variant="'success'" centered>
-        <template #modal-header>
+    <BModal id="modalPagosDoblesApoderado" :model-value="showPopupA" :visible="showPopupA" @update:model-value="showPopupA = $event" :no-footer="true" :header-bg-variant="'success'" centered>
+        <template #header>
           <div class="modal-info">
             <h5>
                 <i class="bi bi-question-circle text-light"></i>
@@ -166,7 +158,7 @@
         </template>
         <div class="modal-info popupApoderado">
           <h3>Representante o Apoderado/a</h3>
-          <p class="destacado"><b-icon-caret-right-fill class="icon-orange"></b-icon-caret-right-fill >Esta figura permite facultar a una persona para la realización de trámites, actos y gestiones en representación del/la contribuyente o responsable solicitante.</p>
+          <p class="destacado"><i class="bi bi-caret-right-fill icon-orange"></i> Esta figura permite facultar a una persona para la realización de trámites, actos y gestiones en representación del/la contribuyente o responsable solicitante.</p>
           <h6>Casos de Representación:</h6>
           <p><span class="icon-orange">1) </span><b>Representante Voluntario:</b> Persona que actúa en nombre y por cuenta de otra, en virtud de la facultad que ella le confiere mediante un mandato (poder o autorización).</p>
           <p><span class="icon-orange">2) </span><b>Representante Legal:</b> Persona que actúa en nombre y por cuenta de una Persona Jurídica en virtud del carácter que posee por integrar los órganos de mando. Asimismo, los padres que ejercen la patria potestad sobre sus hijos/as.</p>
@@ -174,9 +166,9 @@
           <p><span class="icon-orange">4) </span><b>Sucesiones Indivisas:</b> Casos en que, existiendo varios/as herederos/as, todos/as son propietarios/as de los bienes, pero aún no se ha realizado la división de los mismos en la proporción que cada uno/a tiene derecho a heredar.</p>
           <p><span class="icon-orange">5) </span><b>Herederos/as o Legatarios/as (Causahabientes):</b> Sucesor/a de una persona fallecida (actuación ante el Fisco previa al inicio de la sucesión o iniciada ésta, previa a la declaratoria de herederos/as).</p>
         </div>
-    </b-modal>
-    <b-modal v-model="showPopupB" title="" :hide-footer="true" @click-outside="showPopupB = false" :header-bg-variant="'success'" centered>
-        <template #modal-header>
+    </BModal>
+    <BModal id="modalPagosDoblesPlano" :model-value="showPopupB" :visible="showPopupB" @update:model-value="showPopupB = $event" title="" :no-footer="true" :header-bg-variant="'success'" centered>
+        <template #header>
           <div class="modal-info">
             <h5>
                 <i class="bi bi-question-circle text-light"></i>
@@ -207,10 +199,10 @@
             </div>
           </div>
         </div>
-    </b-modal>
+    </BModal>
     <!-- Popup de advertencia -->
-    <b-modal v-model="showConfirmationPopup" hide-footer :header-bg-variant="'success'" centered>
-        <template #modal-header>
+    <BModal id="modalPagosDoblesConfirmacion" :model-value="showConfirmationPopup" :visible="showConfirmationPopup" @update:model-value="showConfirmationPopup = $event" no-footer :header-bg-variant="'success'" centered>
+        <template #header>
           <div class="confirmation-popup-header">
               <i class="bi bi-exclamation-triangle text-light"></i>
             </div>
@@ -229,14 +221,16 @@
               <label class="form-check-label" for="documentCheckbox">Ya tengo todos los documentos digitalizados y la información requerida.</label>
           </div>
           <div class="text-center mt-3">
-              <nuxt-link :class="{ 'disabled': !documentCheckboxChecked }" :to="{path: '/recaudaciones/pagos_dobles/form' }">
-              <b-btn variant="success" :disabled="!documentCheckboxChecked" @click="proceedToForm()" >
-                  Aceptar
-              </b-btn>
-              </nuxt-link>
+              <b-button
+                variant="success"
+                :disabled="!documentCheckboxChecked"
+                @click="proceedToFormAndGo"
+              >
+                Aceptar
+              </b-button>
           </div>
         </div>
-    </b-modal>
+    </BModal>
   </div>
 </template>
 
@@ -259,8 +253,12 @@ export default {
     showPopupConf(){
       this.showConfirmationPopup = true
     },
-    openPopup(name){
-      this.showPopupA = true
+    openPopup(type) {
+      if (type === 'A') {
+        this.showPopupA = true
+      } else if (type === 'B') {
+        this.showPopupB = true
+      }
     },
     toggleCard(cardIndex) {
       if (this.expandedCards.includes(cardIndex)) {
@@ -274,6 +272,11 @@ export default {
     },
     proceedToForm() {
       this.showConfirmationPopup = false;
+    },
+    proceedToFormAndGo() {
+      if (!this.documentCheckboxChecked) return;
+      this.proceedToForm();
+      this.$router.push('/recaudaciones/pagos_dobles/form');
     },
     onSlideStart() {},
     onSlideEnd() {},
@@ -373,6 +376,8 @@ p, .li-content{
 }
 .btn-form{
   margin: 15px 0;
+  position: relative;
+  z-index: 2;
 }
 .confirmation-popup-header{
  margin: auto;
@@ -557,11 +562,8 @@ ul{
   font-weight: 600;
   color: #0c681a;
 }
-.li-icon, .li-content{
-  display: inline-block;
-}
 .li-title{
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.25rem;
 }
 .li-icon{
   margin-right: 1%;
@@ -577,32 +579,11 @@ ul{
 .first-p{
   margin-bottom: 1rem;
 }
-.FAQs-card .li-row{
-  margin-top: 1rem;
-}
 .li-content .li-row{
   margin-top: 0;
 }
-.li-icon, .li-content{
-  display: inline-block;
-}
 .li-p{
-  margin-bottom: 1rem;
-}
-/* Estilos para Animaciones de Expansión/Contracción  */
-.expanded {
-  max-height: 3000px; /* Altura máxima cuando está expandido */
-}
-
-.expand-enter-active,
-.expand-leave-active {
-  transition: max-height 2s ease-out; /* Duración de la animación */
-}
-
-.expand-enter,
-.expand-leave-to {
-  max-height: 0; /* Altura inicial y final de la animación */
-  overflow: hidden;
+  margin-bottom: 0.5rem;
 }
 .botonera h2{
   font-weight: bold;

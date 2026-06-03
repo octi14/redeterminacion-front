@@ -1,5 +1,7 @@
 import UserService from '../service/user.js'
 import { defineStore } from 'pinia'
+import { authenticateUser } from '../utils/auth-login.js'
+import { useToastController } from 'bootstrap-vue-next'
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -37,46 +39,48 @@ export const useUserStore = defineStore('user', {
     },
 
     async authenticate({ username, password }) {
-      const api = useApi()
-      const router = useRouter()
+      const config = useRuntimeConfig()
       const nuxtApp = useNuxtApp()
-
-      const showToast = (body, options = {}) => {
-        try {
-          nuxtApp.$bvToast?.toast(body, options)
-        } catch (err) {
-          console.warn('[login] No se pudo mostrar el toast:', err)
-        }
-      }
-
       try {
-        const authUser = await UserService.authenticate(api, { username, password })
-        if (!authUser?.token) {
-          throw new Error('Respuesta de autenticación inválida')
+        await authenticateUser(this, { username, password }, config.public.apiBase)
+        try {
+          const show = nuxtApp.vueApp.runWithContext(() => useToastController()?.show)
+          show?.({
+            props: {
+              body: 'Ingreso exitoso.',
+              title: undefined,
+              variant: 'success',
+              solid: true,
+              pos: 'top-end',
+              value: 5000,
+            },
+            appendToast: true,
+          })
+        } catch (_) {
+          /* toast opcional */
         }
-
-        this.setAuthenticated({
-          id: authUser.id,
-          username,
-          token: authUser.token,
-          admin: authUser.admin,
-        })
-
-        showToast('Ingreso exitoso.', { variant: 'success', appendToast: true, solid: true })
-
-        // No bloquear el login si falla el registro de actividad
-        void this.registrarActividad({ evento: 'LogIn', result: 'LogIn Exitoso', username })
-
-        await router.push('/')
+        if (import.meta.client) {
+          await navigateTo('/')
+        }
         return true
       } catch (e) {
         const message = e?.message || 'Error de autenticación'
-        showToast(`Error iniciando sesión: ${message}`, {
-          title: 'Error',
-          variant: 'danger',
-          appendToast: true,
-          solid: true,
-        })
+        try {
+          const show = nuxtApp.vueApp.runWithContext(() => useToastController()?.show)
+          show?.({
+            props: {
+              body: `Error iniciando sesión: ${message}`,
+              title: 'Error',
+              variant: 'danger',
+              solid: true,
+              pos: 'top-end',
+              value: 5000,
+            },
+            appendToast: true,
+          })
+        } catch (_) {
+          /* toast opcional */
+        }
         this.clearSession()
         throw e
       }
@@ -94,7 +98,7 @@ export const useUserStore = defineStore('user', {
     async changePassword({ userId, oldPassword, newPassword }) {
       const api = useApi()
       const nuxtApp = useNuxtApp()
-      const toast = (body, options) => nuxtApp.$bvToast?.toast(body, options)
+      const show = nuxtApp.vueApp.runWithContext(() => useToastController()?.show)
       try {
         const response = await UserService.changePassword(api, {
           userId,
@@ -102,10 +106,30 @@ export const useUserStore = defineStore('user', {
           newPassword,
         })
         if (response) {
-          toast('Contraseña cambiada con éxito.', { variant: 'success', appendToast: true, solid: true })
+          show?.({
+            props: {
+              body: 'Contraseña cambiada con éxito.',
+              title: undefined,
+              variant: 'success',
+              solid: true,
+              pos: 'top-end',
+              value: 5000,
+            },
+            appendToast: true,
+          })
           return true
         }
-        toast('Error al cambiar la contraseña.', { variant: 'danger', appendToast: true, solid: true })
+        show?.({
+          props: {
+            body: 'Error al cambiar la contraseña.',
+            title: undefined,
+            variant: 'danger',
+            solid: true,
+            pos: 'top-end',
+            value: 5000,
+          },
+          appendToast: true,
+        })
         return false
       } catch (error) {
         console.error('Error al cambiar la contraseña:', error)

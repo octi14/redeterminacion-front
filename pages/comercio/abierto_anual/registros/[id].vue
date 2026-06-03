@@ -1,43 +1,40 @@
 <template>
     <div class="page main-background">
       <Banner title="Detalles de solicitud"/>
-      <div v-if="!tramite" class="text-center mt-3">
-        <h2> Cargando </h2>
-        <h4> Por favor espere unos segundos </h4>
-      </div>
+      <LoadingState
+        v-if="loading"
+        size="lg"
+        variant="primary"
+      />
       <!-- Datos del solicitante -->
       <template v-if="tramite && adminArvige">
-        <div class="flex col title-row" style="width: 96%">
-          <div class="row justify-content-center mt-3">
-            <p class="h5"> Número de legajo: <b> {{ tramite.nroLegajo }}  </b></p>
-          </div>
-          <div class="row justify-content-center mt-3">
-            <p class="h5"> CUIT: <b> {{ tramite.cuit }}  </b></p>
-          </div>
+        <div class="title-row text-center mx-auto">
+          <p class="h5 mt-3 mb-0"> Número de legajo: <b> {{ tramite.nroLegajo }}  </b></p>
+          <p class="h5 mt-3 mb-0"> CUIT: <b> {{ tramite.cuit }}  </b></p>
         </div>
         <!--Datos de facturas-->
-        <div class="row no-gutters justify-content-center">
-          <b-col v-for="(periodo, index) in tramite.status" :key="index" cols="12" sm="8" md="6" lg="4" xl="4">
+        <div class="row no-gutters justify-content-center abierto-anual-registros-cards">
+          <b-col v-for="(periodo, index) in periodosEstado" :key="index" cols="12" sm="10" md="6" lg="4" xl="4">
               <AbiertoAnualAdminCard
               :id="index"
               :periodo="index"
               :estado="periodo"
-              :fecha="tramite.fechasCarga[index]"
-              :observaciones="tramite.observaciones"
+              :fecha="Array.isArray(tramite.fechasCarga) ? tramite.fechasCarga[index] : null"
+              :observaciones="observacionPeriodo(index)"
               />
           </b-col>
         </div>
       </template>
 
-      <div class="text-center my-4">
+      <div class="page-btn-volver-wrap">
         <NuxtLink to="/comercio/abierto_anual/registros">
-          <b-button variant="primary">Volver</b-button>
+          <b-button variant="primary" size="sm" class="page-btn-volver">Volver</b-button>
         </NuxtLink>
       </div>
 
-      <b-modal v-model="showObservaciones" header-bg-variant="primary" title="Observaciones" title-class="text-light" hide-footer centered>
+      <BModal v-model="showObservaciones" header-bg-variant="primary" title="Observaciones" title-class="text-light" no-footer centered>
         <p v-html="observaciones"></p>
-      </b-modal>
+      </BModal>
 
     </div>
   </template>
@@ -67,6 +64,7 @@
         showSolicitarDoc: false,
         showObservaciones: false,
         tramite: null,
+        loading: true,
         observaciones: '',
         showDocumentoModal: false,
         DocumentoModalTitle: "",
@@ -74,30 +72,41 @@
     },
     computed: {
       adminArvige(){
-        return this.$store.state.user.admin == "arvige" || this.$store.state.user.admin == "master"
+        const admin = useUserStore().admin
+        return admin == "arvige" || admin == "master"
       },
-      // facturas(){
-      //   return this.$store.state.facturas.all
-      // }
+      periodosEstado() {
+        if (Array.isArray(this.tramite?.status) && this.tramite.status.length) {
+          return this.tramite.status
+        }
+        return ['Incompleto', 'Incompleto', 'Incompleto']
+      },
     },
-    async fetch() {
-      await this.$store.dispatch('config/getAbiertoAnualPeriodos');
-      const tramiteId = this.$route.params.id
-      await this.$store.dispatch('abiertoAnual/getSingle',{
-        id: tramiteId,
-      })
-      this.tramite = this.$store.state.abiertoAnual.single
-
-      // await this.$store.dispatch('facturas/getById', {
-      //   id: tramiteId,
-      // })
-
+    async mounted() {
+      await this.loadTramite()
     },
-    fetchOnServer: false,
     activated() {
-      this.$fetch()
+      this.loadTramite()
     },
     methods: {
+      async loadTramite() {
+        this.loading = true
+        try {
+          await useConfigStore().getAbiertoAnualPeriodos();
+          const tramiteId = this.$route.params.id
+          await useAbiertoAnualStore().getSingle({
+            id: tramiteId,
+          })
+          this.tramite = useAbiertoAnualStore().single
+          if (this.tramite?.id) {
+            await useFacturasStore().getById({
+              id: this.tramite.id,
+            })
+          }
+        } finally {
+          this.loading = false
+        }
+      },
       getStatusClass(status) {
         return this.statusClasses[status] || '';
       },
@@ -120,12 +129,21 @@
         this.showFinalizar = true
       },
       onShowObservaciones(){
-        if(this.habilitacion.observaciones){
-          this.observaciones = this.habilitacion.observaciones.split('-').join('<br>')
+        if(this.tramite?.observaciones){
+          const observaciones = typeof this.tramite?.observaciones === 'string'
+            ? this.tramite.observaciones
+            : ''
+          this.observaciones = observaciones.split('-').join('<br>')
         }else{
           this.observaciones = "No hay observaciones para mostrar."
         }
         this.showObservaciones = true
+      },
+      observacionPeriodo(index) {
+        if (Array.isArray(this.tramite?.facturas) && this.tramite.facturas[index]) {
+          return this.tramite.facturas[index].observaciones || ''
+        }
+        return ''
       },
       onResetEdit() {
         this.editing = false
@@ -143,6 +161,14 @@
   </script>
 
   <style scoped>
+  .title-row {
+    width: 96%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
   @media (max-width: 720px){
     .section-subtitle{
       margin-left: 0 !important;
@@ -165,11 +191,6 @@
     .bi-exclamation-circle{
       margin: 1rem auto !important;
       width: 100%;
-    }
-    .title-row {
-      margin-left: 0 !important;
-      margin-right: 0 !important;
-      margin-bottom: 2rem !important;
     }
   }
   .modal-dialog {
@@ -206,8 +227,10 @@
     margin: 1.5em;
   } */
 
-  .col {
-    padding: 0.4em;
-    margin: 0 2px 2px 40px;
+  .abierto-anual-registros-cards > .col {
+    padding: 0.5rem;
+    margin: 0;
+    display: flex;
+    justify-content: center;
   }
   </style>

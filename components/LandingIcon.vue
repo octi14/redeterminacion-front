@@ -1,8 +1,11 @@
 <template>
-  <component
-    :is="isExternalLink ? 'a' : 'NuxtLink'"
-    v-bind="linkAttrs"
+  <a
+    v-if="isExternalLink"
+    :href="to"
+    target="_blank"
+    rel="noopener noreferrer"
     class="landing-tile-link"
+    @click.stop="onExternalClick"
   >
     <div class="landing-tile">
       <img
@@ -20,13 +23,44 @@
         <b>{{ title }}</b>
       </h5>
     </div>
-  </component>
+  </a>
+
+  <NuxtLink
+    v-else
+    :to="to"
+    class="landing-tile-link"
+    @click.stop="onInternalClick"
+  >
+    <div class="landing-tile">
+      <img
+        v-if="type === 'svg'"
+        :src="svgSrc"
+        class="landing-tile-icon landing-tile-icon--svg"
+        :alt="title"
+      />
+      <i
+        v-else
+        :class="iconClasses"
+        aria-hidden="true"
+      />
+      <h5 class="landing-text landing-tile-title mb-0">
+        <b>{{ title }}</b>
+      </h5>
+    </div>
+  </NuxtLink>
 </template>
 
 <script>
 import arvigeSvg from '~/assets/tas.svg'
+import { unlockNavigation } from '~/utils/modalCleanup'
 
 export default {
+  inject: {
+    closeMoratoriaModal: {
+      from: 'closeMoratoriaModal',
+      default: null,
+    },
+  },
   props: {
     icon: String,
     title: String,
@@ -37,25 +71,28 @@ export default {
     isExternalLink() {
       return this.to && this.to.startsWith('http')
     },
-    linkAttrs() {
-      if (this.isExternalLink) {
-        return {
-          href: this.to,
-          target: '_blank',
-          rel: 'noopener noreferrer',
-        }
-      }
-      return { to: this.to }
-    },
     svgSrc() {
       if (this.icon === 'tas.svg') {
         return arvigeSvg
       }
-      if (!this.icon) return ''
-      return new URL(`../assets/${this.icon}`, import.meta.url).href
+      return ''
     },
     iconClasses() {
       return ['bi', `bi-${this.icon}`, 'landing-tile-icon']
+    },
+  },
+  methods: {
+    prepareNavigation() {
+      unlockNavigation()
+      if (typeof this.closeMoratoriaModal === 'function') {
+        this.closeMoratoriaModal()
+      }
+    },
+    onInternalClick() {
+      this.prepareNavigation()
+    },
+    onExternalClick() {
+      this.prepareNavigation()
     },
   },
 }
@@ -67,6 +104,8 @@ export default {
   height: 100%;
   text-decoration: none;
   color: inherit;
+  position: relative;
+  z-index: 2;
 }
 
 .landing-tile {

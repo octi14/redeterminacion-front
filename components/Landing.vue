@@ -3,8 +3,8 @@
     <div class="container landing-grid-container">
       <div class="row justify-content-center landing-grid">
         <div
-          v-for="(link, index) in tileLinks"
-          :key="`${link.title}-${index}`"
+          v-for="link in tileLinks"
+          :key="link.title"
           class="col-10 col-sm-6 col-lg-4 landing-grid-col"
         >
           <LandingIcon
@@ -35,9 +35,10 @@ export default {
   },
   computed: {
     adminHacienda() {
+      const admin = useUserStore().admin
       return (
-        this.$store.state.user.admin === 'hacienda' ||
-        this.$store.state.user.admin === 'master'
+        admin === 'hacienda' ||
+        admin === 'master'
       )
     },
     tileLinks() {
@@ -90,6 +91,8 @@ export default {
 <style scoped>
 .landing-page {
   padding-bottom: 2rem;
+  position: relative;
+  z-index: 2;
 }
 
 .landing-grid-container {

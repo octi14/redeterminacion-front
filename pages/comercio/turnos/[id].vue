@@ -40,7 +40,7 @@
             <p class="col col-complementary" role="complementary">
               <a>{{ turno.dia + " " + turno.horario}}</a>
             </p>
-          <b-btn v-if="turno.status != 'Cancelado'" @click="onRechazarTurno" style="height: 30px; width:85px" size="sm" variant="danger" class="mx-1"> Cancelar</b-btn>
+          <b-button v-if="turno.status != 'Cancelado'" @click="onRechazarTurno" style="height: 30px; width:85px" size="sm" variant="danger" class="mx-1"> Cancelar</b-button>
           </div>
           <div class="layout">
             <p class="col col-main">
@@ -79,8 +79,8 @@
     </template>
 
     <!-- Modals -->
-    <b-modal v-model="showRejectPopup" hide-footer :header-bg-variant="'danger'" centered>
-        <template #modal-header>
+    <BModal v-model="showRejectPopup" no-footer :header-bg-variant="'danger'" centered>
+        <template #header>
           <div class="confirmation-popup-header mx-auto">
             <i class="bi bi-exclamation-triangle text-light"></i>
           </div>
@@ -91,16 +91,16 @@
           <p>Observaciones:  </p>
           <b-form-textarea v-model="observaciones" type="text" />
           <div class="text-center mt-3">
-            <b-btn variant="danger" @click="onSendReject()" >
+            <b-button variant="danger" @click="onSendReject()" >
                 Enviar
-            </b-btn>
+            </b-button>
           </div>
         </div>
-    </b-modal>
+    </BModal>
 
     <!-- cancelar turno-->
-    <b-modal v-model="showCancelPopup" hide-footer :header-bg-variant="'danger'" centered>
-        <template #modal-header>
+    <BModal v-model="showCancelPopup" no-footer :header-bg-variant="'danger'" centered>
+        <template #header>
           <div class="confirmation-popup-header mx-auto">
             <i class="bi bi-exclamation-triangle text-light"></i>
           </div>
@@ -111,16 +111,16 @@
           <p>Observaciones:  </p>
           <b-form-textarea v-model="observaciones" type="text" />
           <div class="text-center mt-3">
-            <b-btn variant="danger" @click="onSendCancel()" >
+            <b-button variant="danger" @click="onSendCancel()" >
                 Enviar
-            </b-btn>
+            </b-button>
           </div>
         </div>
-    </b-modal>
+    </BModal>
 
     <!-- chequeo aprobar inspección-->
-    <b-modal v-model="showPrevApprove" hide-footer :header-bg-variant="'success'" centered>
-      <template #modal-header>
+    <BModal v-model="showPrevApprove" no-footer :header-bg-variant="'success'" centered>
+      <template #header>
         <div class="confirmation-popup-header mx-auto">
           <i class="bi bi-check-circle text-light"></i>
         </div>
@@ -130,16 +130,16 @@
         <p class="text-center">La inspección será marcada como realizada. </p>
         <p class="text-center">Al seleccionar esta opción, el Departamento Comercio dará aviso al solicitante de los pasos para continuar el trámite. </p>
         <div class="text-center mt-3">
-          <b-btn variant="success" @click="onSendApprove">
+          <b-button variant="success" @click="onSendApprove">
               Aprobar
-          </b-btn>
+          </b-button>
         </div>
       </div>
-    </b-modal>
+    </BModal>
 
     <!-- inspección aprobada-->
-    <b-modal v-model="showApprove" hide-footer :header-bg-variant="'success'" centered>
-      <template #modal-header>
+    <BModal v-model="showApprove" no-footer :header-bg-variant="'success'" centered>
+      <template #header>
         <div class="confirmation-popup-header mx-auto">
           <i class="bi bi-check-circle text-light"></i>
         </div>
@@ -148,16 +148,16 @@
         <h4 class="text-success text-center"><b>Comercio inspeccionado</b></h4>
         <p class="text-center">El trámite continuará desde el Departamento de Comercio.</p>
         <div class="text-center mt-3">
-          <b-btn variant="success" @click="showApprove = false">
+          <b-button variant="success" @click="showApprove = false">
               Aceptar
-          </b-btn>
+          </b-button>
         </div>
       </div>
-    </b-modal>
+    </BModal>
 
     <!-- chequeo prorroga-->
-    <b-modal v-model="showPrevProrroga" hide-footer :header-bg-variant="'secondary'" centered>
-      <template #modal-header>
+    <BModal v-model="showPrevProrroga" no-footer :header-bg-variant="'secondary'" centered>
+      <template #header>
         <div class="confirmation-popup-header mx-auto">
           <i class="bi bi-check-circle text-light"></i>
         </div>
@@ -167,16 +167,16 @@
         <p class="text-center">Se concederá prórroga de<b> 7 días hábiles </b>para que el solicitante dé cumplimiento a los requerimientos. </p>
         <p class="text-center">La cantidad total de prórrogas pasibles de conceder son dos (2) continuadas e ininterrumpidas.</p>
         <div class="text-center mt-3">
-          <b-btn variant="secondary" @click="onSendProrroga">
+          <b-button variant="secondary" @click="onSendProrroga">
               Aceptar
-          </b-btn>
+          </b-button>
         </div>
       </div>
-    </b-modal>
+    </BModal>
 
     <!-- prórroga exitosa-->
-    <b-modal v-model="showProrroga" hide-footer :header-bg-variant="'success'" centered>
-      <template #modal-header>
+    <BModal v-model="showProrroga" no-footer :header-bg-variant="'success'" centered>
+      <template #header>
         <div class="confirmation-popup-header mx-auto">
           <i class="bi bi-check-circle text-light"></i>
         </div>
@@ -185,16 +185,16 @@
         <h4 class="text-success text-center"><b>Inspección prorrogada</b></h4>
         <p class="text-center">El trámite ha sido prorrogado por 7 días hábiles a partir de la fecha en la que se efectuó la prórroga.</p>
         <div class="text-center mt-3">
-          <b-btn variant="success" @click="showProrroga = false">
+          <b-button variant="success" @click="showProrroga = false">
               Aceptar
-          </b-btn>
+          </b-button>
         </div>
       </div>
-    </b-modal>
+    </BModal>
 
     <!-- no se pueden dar más prórrogas-->
-    <b-modal v-model="showNoMasProrrogas" hide-footer :header-bg-variant="'danger'" centered>
-      <template #modal-header>
+    <BModal v-model="showNoMasProrrogas" no-footer :header-bg-variant="'danger'" centered>
+      <template #header>
         <div class="confirmation-popup-header mx-auto">
           <i class="bi bi-exclamation-circle text-light"></i>
         </div>
@@ -203,16 +203,16 @@
         <h4 class="text-danger text-center"><b>No se pueden otorgar más prórrogas</b></h4>
         <p class="text-center">Sólo pueden darse 2 prórrogas por turno. En caso de requerir un caso especial donde haya más de 2 prórrogas por favor comuníquese con Soporte Técnico. </p>
         <div class="text-center mt-3">
-          <b-btn variant="danger" @click="showNoMasProrrogas = false">
+          <b-button variant="danger" @click="showNoMasProrrogas = false">
               Aceptar
-          </b-btn>
+          </b-button>
         </div>
       </div>
-    </b-modal>
+    </BModal>
 
-    <div class="text-center my-4">
+    <div class="page-btn-volver-wrap">
       <NuxtLink to="/comercio/turnos/reservas">
-      <b-button variant="primary"> Volver </b-button>
+      <b-button variant="primary" size="sm" class="page-btn-volver"> Volver </b-button>
       </NuxtLink>
     </div>
   </div>
@@ -222,6 +222,7 @@
 import MailerService from "@/service/mailer.js";
 
 export default {
+  setup(){ const { showToast } = useProjectToast(); return { showToast } },
   data() {
     return {
       inspeccion: false,
@@ -238,34 +239,44 @@ export default {
       tipoSolicitud: '',
     }
   },
-  async fetch() {
-    const id = this.$route.params.id
-    await this.$store.dispatch('turnos/getById',{
-      id: id,
-    })
-    this.turno = this.$store.state.turnos.single
-    const nroTramite = this.turno.nroTramite
-    await this.$store.dispatch('habilitaciones/getByNroTramite',{
-      nroTramite
-    })
-    this.telefono = this.$store.state.habilitaciones.single.telefono
-    this.tipoSolicitud = this.$store.state.habilitaciones.single.tipoSolicitud
+  async mounted() {
+    await this.loadTurno()
   },
-  fetchOnServer: false,
   activated() {
-    this.$fetch()
+    void this.loadTurno()
   },
   computed: {
     adminInspeccion(){
-      return this.$store.state.user.admin == "inspeccion" || this.$store.state.user.admin == "master"
+      const admin = useUserStore().admin
+      return admin == "inspeccion" || admin == "master"
     },
     adminComercio(){
-      return this.$store.state.user.admin == "comercio" || this.$store.state.user.admin == "master"
+      const admin = useUserStore().admin
+      return admin == "comercio" || admin == "master"
     }
   },
   methods: {
+    async loadTurno() {
+      const id = this.$route.params.id
+      await useTurnosStore().getById({
+        id,
+      })
+      this.turno = useTurnosStore().single
+      const nroTramite = this.turno?.nroTramite
+      if (!nroTramite) {
+        this.telefono = null
+        this.tipoSolicitud = ''
+        return
+      }
+      await useHabilitacionesStore().getByNroTramite({
+        nroTramite,
+      })
+      const habilitacion = useHabilitacionesStore().single
+      this.telefono = habilitacion?.telefono || null
+      this.tipoSolicitud = habilitacion?.tipoSolicitud || ''
+    },
     async registrarActividad(evento, result, nroSolicitud){
-      const userId = this.$store.state.user.username; // Reemplaza con el ID del usuario real
+      const userId = useUserStore().username; // Reemplaza con el ID del usuario real
       const actionType = evento;
       const actionResult = "Trámite nro " + nroSolicitud + ' ' + result;
 
@@ -302,22 +313,22 @@ export default {
         status: 'Inspeccionado'
       }
       const id = this.turno.id
-      const userToken = this.$store.state.user.token
-      await this.$store.dispatch('turnos/update', {
+      const userToken = useUserStore().token
+      await useTurnosStore().update({
         id,
         turno,
         userToken,
       })
       const nroTramite = this.turno.nroTramite
-      await this.$store.dispatch('habilitaciones/getByNroTramite',{
+      await useHabilitacionesStore().getByNroTramite({
         nroTramite
       })
 
       // Guardar el email antes del update
-      const destinatario = this.$store.state.habilitaciones.single.mail
+      const destinatario = useHabilitacionesStore().single.mail
 
-      const habId = this.$store.state.habilitaciones.single.id
-      await this.$store.dispatch('habilitaciones/update', {
+      const habId = useHabilitacionesStore().single.id
+      await useHabilitacionesStore().update({
         id: habId,
         habilitacion,
       })
@@ -339,19 +350,19 @@ Domicilio: ${this.turno.domicilio}
 El trámite continuará desde el Departamento Comercio MVGesell. En los próximos días recibirá un correo electrónico indicándole los pasos
 a seguir para finalizar el trámite, incluyendo el pago de la/s tasa/s correspondiente/s.`
 
-          await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
-          this.$bvToast.toast('Correo de aprobación de inspección enviado al solicitante.', { variant: 'success' })
+          await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
+          this.showToast('Correo de aprobación de inspección enviado al solicitante', { variant: 'success' })
         } else {
           console.error('No se encontró el email del solicitante')
-          this.$bvToast.toast('No se pudo enviar el correo: email del solicitante no disponible.', { variant: 'danger' })
+          this.showToast('No se pudo enviar el correo: email del solicitante no disponible', { variant: 'danger' })
         }
       } catch (e) {
         console.error('Error al enviar correo:', e)
-        this.$bvToast.toast('No se pudo enviar el correo de aprobación de inspección.', { variant: 'danger' })
+        this.showToast('No se pudo enviar el correo de aprobación de inspección', { variant: 'danger' })
       }
 
       this.wait(300)
-      this.$fetch()
+      void this.loadTurno()
       this.showPrevApprove = false
       this.showApprove = true
     },
@@ -384,21 +395,21 @@ a seguir para finalizar el trámite, incluyendo el pago de la/s tasa/s correspon
         }
       }
       const id = this.turno.id
-      const userToken = this.$store.state.user.token
-      await this.$store.dispatch('turnos/update', {
+      const userToken = useUserStore().token
+      await useTurnosStore().update({
         id,
         turno,
         userToken,
       })
       const nroTramite = this.turno.nroTramite
-      await this.$store.dispatch('habilitaciones/getByNroTramite',{
+      await useHabilitacionesStore().getByNroTramite({
         nroTramite
       })
 
       // Guardar el email antes del update
-      const destinatario = this.$store.state.habilitaciones.single.mail
-      const habId = this.$store.state.habilitaciones.single.id
-      await this.$store.dispatch('habilitaciones/update', {
+      const destinatario = useHabilitacionesStore().single.mail
+      const habId = useHabilitacionesStore().single.id
+      await useHabilitacionesStore().update({
         id: habId,
         habilitacion,
       })
@@ -421,18 +432,18 @@ La prórroga es de 7 días a partir de la fecha de otorgación. Para continuar c
 
 Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
 
-          await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
-          this.$bvToast.toast('Correo de prórroga enviado al solicitante.', { variant: 'success' })
+          await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
+          this.showToast('Correo de prórroga enviado al solicitante', { variant: 'success' })
         } else {
           console.error('No se encontró el email del solicitante')
-          this.$bvToast.toast('No se pudo enviar el correo: email del solicitante no disponible.', { variant: 'danger' })
+          this.showToast('No se pudo enviar el correo: email del solicitante no disponible', { variant: 'danger' })
         }
       } catch (e) {
         console.error('Error al enviar correo de prórroga:', e)
-        this.$bvToast.toast('No se pudo enviar el correo de prórroga.', { variant: 'danger' })
+        this.showToast('No se pudo enviar el correo de prórroga', { variant: 'danger' })
       }
       this.wait(300)
-      this.$fetch()
+      void this.loadTurno()
       this.showPrevProrroga = false
       this.showProrroga = true
     },
@@ -442,25 +453,25 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
         status: 'Inspección rechazada'
       }
       const id = this.turno.id
-      const userToken = this.$store.state.user.token
-      await this.$store.dispatch('turnos/update', {
+      const userToken = useUserStore().token
+      await useTurnosStore().update({
         id,
         turno,
         userToken,
       })
       const nroTramite = this.turno.nroTramite
-      await this.$store.dispatch('habilitaciones/getByNroTramite',{
+      await useHabilitacionesStore().getByNroTramite({
         nroTramite
       })
       // Guardar el email antes del update
-      const destinatario = this.$store.state.habilitaciones.single.mail
-      const observaciones = this.$store.state.habilitaciones.single.observaciones
+      const destinatario = useHabilitacionesStore().single.mail
+      const observaciones = useHabilitacionesStore().single.observaciones
       const habilitacion = {
         status: 'Rechazada',
         observaciones: observaciones + " - " + 'Se rechaza la inspección el día ' + new Date().toLocaleDateString('es-AR') + " " + this.observaciones
       }
-      const habId = this.$store.state.habilitaciones.single.id
-      await this.$store.dispatch('habilitaciones/update', {
+      const habId = useHabilitacionesStore().single.id
+      await useHabilitacionesStore().update({
         id: habId,
         habilitacion,
       })
@@ -483,18 +494,18 @@ Motivo del rechazo: ${this.observaciones}
 
 Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
 
-          await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
-          this.$bvToast.toast('Correo de rechazo de inspección enviado al solicitante.', { variant: 'success' })
+          await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
+          this.showToast('Correo de rechazo de inspección enviado al solicitante', { variant: 'success' })
         } else {
           console.error('No se encontró el email del solicitante')
-          this.$bvToast.toast('No se pudo enviar el correo: email del solicitante no disponible.', { variant: 'danger' })
+          this.showToast('No se pudo enviar el correo: email del solicitante no disponible', { variant: 'danger' })
         }
       } catch (e) {
-        this.$bvToast.toast('No se pudo enviar el correo de rechazo de inspección.', { variant: 'danger' })
+        this.showToast('No se pudo enviar el correo de rechazo de inspección', { variant: 'danger' })
       }
       this.wait(300)
       this.observaciones = ''
-      this.$fetch()
+      void this.loadTurno()
       this.showRejectPopup = false
     },
     async onSendCancel(){
@@ -503,25 +514,25 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
         status: 'Cancelado'
       }
       const id = this.turno.id
-      const userToken = this.$store.state.user.token
-      await this.$store.dispatch('turnos/update', {
+      const userToken = useUserStore().token
+      await useTurnosStore().update({
         id,
         turno,
         userToken,
       })
       const nroTramite = this.turno.nroTramite
-      await this.$store.dispatch('habilitaciones/getByNroTramite',{
+      await useHabilitacionesStore().getByNroTramite({
         nroTramite
       })
       // Guardar el email antes del update
-      const destinatario = this.$store.state.habilitaciones.single.mail
-      const observaciones = this.$store.state.habilitaciones.single.observaciones
+      const destinatario = useHabilitacionesStore().single.mail
+      const observaciones = useHabilitacionesStore().single.observaciones
       const habilitacion = {
         status: "Esperando turno",
         observaciones: observaciones + " - " + "Se canceló el turno el día " + new Date().toLocaleDateString('es-AR')
       }
-      const habId = this.$store.state.habilitaciones.single.id
-      await this.$store.dispatch('habilitaciones/update', {
+      const habId = useHabilitacionesStore().single.id
+      await useHabilitacionesStore().update({
         id: habId,
         habilitacion,
       })
@@ -546,18 +557,18 @@ Para continuar con el trámite, debe solicitar un nuevo turno de inspección en 
 
 Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
 
-          await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
-          this.$bvToast.toast('Correo de cancelación de turno enviado al solicitante.', { variant: 'success' })
+          await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
+          this.showToast('Correo de cancelación de turno enviado al solicitante', { variant: 'success' })
         } else {
           console.error('No se encontró el email del solicitante')
-          this.$bvToast.toast('No se pudo enviar el correo: email del solicitante no disponible.', { variant: 'danger' })
+          this.showToast('No se pudo enviar el correo: email del solicitante no disponible', { variant: 'danger' })
         }
       } catch (e) {
-        this.$bvToast.toast('No se pudo enviar el correo de cancelación de turno.', { variant: 'danger' })
+        this.showToast('No se pudo enviar el correo de cancelación de turno', { variant: 'danger' })
       }
       this.wait(300)
       this.observaciones = ''
-      this.$fetch()
+      void this.loadTurno()
       this.showCancelPopup = false
     },
     onResetEdit() {

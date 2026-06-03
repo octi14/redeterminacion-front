@@ -93,8 +93,8 @@
           </b-col>
       </b-row>
 
-      <div class="row justify-content-center my-4" style="width: 100%;">
-          <b-button variant="success" @click="volver">Volver</b-button>
+      <div class="page-btn-volver-wrap">
+          <b-button variant="primary" size="sm" class="page-btn-volver" @click="volver">Volver</b-button>
       </div>
   </div>
 </template>
@@ -107,24 +107,26 @@ export default {
     AbiertoAnualCard
   },
   async mounted() {
-    await this.$store.dispatch('config/getAbiertoAnualPeriodos');
+    await useConfigStore().getAbiertoAnualPeriodos();
     window.addEventListener('keydown', this.preventReload);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     window.removeEventListener('keydown', this.preventReload);
   },
   computed: {
     facturas(){
-      return this.$store.state.facturas.all
+      return useFacturasStore().all
     },
     tramite(){
-      return this.$store.state.abiertoAnual.single
+      return useAbiertoAnualStore().single
     },
     maestro(){
-      return this.$store.state.maestro.single[0]
+      const single = useMaestroStore().single
+      return Array.isArray(single) ? single[0] : null
     },
     todosCorrectos() {
-      return this.tramite.status.every(estado => estado === "Correcto")
+      const statusList = Array.isArray(this.tramite?.status) ? this.tramite.status : []
+      return statusList.length > 0 && statusList.every(estado => estado === "Correcto")
     }
   },
   methods: {

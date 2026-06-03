@@ -3,8 +3,8 @@
     <Banner title="Consulta de trámites"/>
     <div class="mx-auto">
       <div class="mt-3">
-        <div class="row justify-content-center banner-container" style="width: 100%">
-          <img src="../../../assets/consulta.png" style="max-width: 100%"/>
+        <div class="row justify-content-center banner-container">
+          <img :src="consultaBanner" class="consulta-banner-img" alt="Consultá el estado de tu trámite" />
         </div>
         <b-card class="section-card col-md-6 mx-auto">
           <div class="li-row">
@@ -13,7 +13,7 @@
             </div>
           </div>
           <b-form>
-            <b-form-input :disabled="enterKeyPressed" @keydown.enter.native="consultar" v-model="nroTramiteIngresado" type="number" size="lg" class="col-md-6 col-sm-10 mt-4 mx-auto" placeholder="Número de trámite" no-wheel></b-form-input>
+            <b-form-input :disabled="enterKeyPressed" @keydown.enter="consultar" v-model="nroTramiteIngresado" type="number" size="lg" class="col-md-6 col-sm-10 mt-4 mx-auto" placeholder="Número de trámite" no-wheel></b-form-input>
           </b-form>
           <div class="btn-container col-sm-10">
             <b-button class="btn-cancel" @click="onResetParams" :disabled="isConsulting">Cancelar</b-button>
@@ -26,8 +26,8 @@
       </div>
 
       <!-- Modal número de trámite incorrecto -->
-      <b-modal v-model="showPopupFormError" @click-outside="showPopupFormError = false" :header-bg-variant="'danger'" centered>
-        <template #modal-header>
+      <BModal v-model="showPopupFormError" @click-outside="showPopupFormError = false" :header-bg-variant="'danger'" centered>
+        <template #header>
           <div class="centeredContainer">
             <i class="bi bi-exclamation-octagon text-light"></i>
           </div>
@@ -37,16 +37,16 @@
           <p class="">Por favor, corroborá que los datos ingresados sean correctos. Recordá que el número de trámite que te solicitamos fue enviado a tu correo electrónico.</p>
           <p class="minitext">Si el problema persiste, envianos un correo a <a class="icon-green">deptocomercio@gesell.gob.ar</a>.</p>
         </div>
-        <template #modal-footer>
+        <template #footer>
           <div class="" style="margin: auto">
             <b-button @click="showPopupFormError = false" variant="danger" class="btn-cancel" >Aceptar</b-button>
           </div>
         </template>
-      </b-modal>
+      </BModal>
 
       <!-- Modal No ha ingresado un número de trámite -->
-      <b-modal v-model="showPopupNoEntry" @click-outside="showPopupNoEntry = false" :header-bg-variant="'danger'" centered>
-        <template #modal-header>
+      <BModal v-model="showPopupNoEntry" @click-outside="showPopupNoEntry = false" :header-bg-variant="'danger'" centered>
+        <template #header>
           <div class="centeredContainer">
             <i class="bi bi-exclamation-octagon text-light"></i>
           </div>
@@ -55,16 +55,16 @@
           <p class="modal-subtitle">No has ingresado un número de trámite.</p>
           <p class="">Por favor, completá este campo para continuar.</p>
         </div>
-        <template #modal-footer>
+        <template #footer>
           <div class="" style="margin: auto">
             <b-button @click="showPopupNoEntry = false" variant="danger" class="btn-danger" >Aceptar</b-button>
           </div>
         </template>
-      </b-modal>
+      </BModal>
 
       <!-- Modal Tu trámite fue rechazado -->
-      <b-modal v-model="showPopupRejected" @click-outside="showPopupRejected = false" header-class="lightblue" centered>
-        <template #modal-header>
+      <BModal v-model="showPopupRejected" @click-outside="showPopupRejected = false" header-class="lightblue" centered>
+        <template #header>
           <div class="centeredContainer">
             <i class="bi bi-info-circle text-light"></i>
           </div>
@@ -75,16 +75,16 @@
           <p>Una vez solucionados los inconvenientes, volvé a iniciar el trámite completando nuevamente el formulario de habilitación online. </p>
           <p class="minitext">No olvides revisar la carpeta de "Spam" o "No deseados". </p>
         </div>
-        <template #modal-footer>
+        <template #footer>
           <div style="margin: auto">
             <b-button @click="showPopupRejected = false" class="btn-primary">Aceptar</b-button>
           </div>
         </template>
-      </b-modal>
+      </BModal>
 
       <!-- Modal Tu trámite está en revisión -->
-      <b-modal v-model="showPopupInit" @click-outside="showPopupInit = false" header-class="lightblue" centered>
-        <template #modal-header>
+      <BModal v-model="showPopupInit" @click-outside="showPopupInit = false" header-class="lightblue" centered>
+        <template #header>
           <div class="centeredContainer">
             <i class="bi bi-info-circle text-light"></i>
           </div>
@@ -94,16 +94,16 @@
           <p>Durante los próximos días recibirás un correo electrónico del Departamento Comercio donde se te indicarán los pasos a seguir. </p>
           <p class="minitext" style="color:gray">No olvides revisar la carpeta de "Spam" o "No deseados". </p>
         </div>
-        <template #modal-footer>
+        <template #footer>
           <div style="margin: auto">
             <b-button @click="showPopupInit = false" class="btn-primary">Aceptar</b-button>
           </div>
         </template>
-      </b-modal>
+      </BModal>
 
       <!-- Modal Tu trámite está en rectificación -->
-      <b-modal v-model="showPopupResend" @click-outside="showPopupResend = false" header-class="lightblue" centered>
-        <template #modal-header>
+      <BModal v-model="showPopupResend" @click-outside="showPopupResend = false" header-class="lightblue" centered>
+        <template #header>
           <div class="centeredContainer">
             <i class="bi bi-info-circle text-light"></i>
           </div>
@@ -114,16 +114,16 @@
             El Departamento Comercio se comunicará por correo electrónico para indicarte los pasos a seguir para continuar el trámite.</p>
           <p class="minitext" style="color:gray">No olvides revisar la carpeta de "Spam" o "No deseados". </p>
         </div>
-        <template #modal-footer>
+        <template #footer>
           <div style="margin: auto">
             <b-button @click="showPopupResend = false" class="btn-primary">Aceptar</b-button>
           </div>
         </template>
-      </b-modal>
+      </BModal>
 
       <!-- Modal El sistema espera que usted saque un turno -->
-      <b-modal v-model="showPopupWaiting" @click-outside="showPopupWaiting = false" header-class="lightblue" centered>
-        <template #modal-header>
+      <BModal v-model="showPopupWaiting" @click-outside="showPopupWaiting = false" header-class="lightblue" centered>
+        <template #header>
           <div class="centeredContainer">
             <i class="bi bi-info-circle text-light"></i>
           </div>
@@ -133,16 +133,16 @@
           <p> El departamento Comercio se comunicará por correo electrónico para indicarte que debés sacar turno para inspeccionar tu local.</p>
           <small>No olvides revisar la carpeta de “spam” o “no deseados”. </small>
         </div>
-        <template #modal-footer>
+        <template #footer>
           <div class="" style="margin: auto">
             <b-button @click="showPopupWaiting = false" variant="danger" class="btn-primary" >Aceptar</b-button>
           </div>
         </template>
-      </b-modal>
+      </BModal>
 
       <!-- Modal Usted ya ha solicitado un turno -->
-      <b-modal v-model="showPopupAlready" @click-outside="showPopupAlready = false" header-class="lightblue" centered>
-        <template #modal-header>
+      <BModal v-model="showPopupAlready" @click-outside="showPopupAlready = false" header-class="lightblue" centered>
+        <template #header>
           <div class="centeredContainer">
             <i class="bi bi-info-circle text-light"></i>
           </div>
@@ -153,16 +153,16 @@
           <small>Recordá que el día de la inspección debe haber alguien presente en el local. En caso de querer cancelar el turno
              comunicate con <a class="icon-green"> divinspectores@gesell.gob.ar. </a></small>
         </div>
-        <template #modal-footer>
+        <template #footer>
           <div class="" style="margin: auto">
             <b-button @click="showPopupAlready = false" variant="danger" class="btn-primary">Aceptar</b-button>
           </div>
         </template>
-      </b-modal>
+      </BModal>
 
       <!-- Modal Prórrogas -->
-      <b-modal v-model="showPopupProrroga" @click-outside="showPopupProrroga = false" header-class="lightblue" centered>
-        <template #modal-header>
+      <BModal v-model="showPopupProrroga" @click-outside="showPopupProrroga = false" header-class="lightblue" centered>
+        <template #header>
           <div class="centeredContainer">
             <i class="bi bi-info-circle text-light"></i>
           </div>
@@ -172,16 +172,16 @@
           <p class="mx-auto" style="font-size:1.1rem"> Tu local aún no cumple con todas las condiciones necesarias para habilitar y se te asignaron 7 días hábiles para realizar los cambios indicados. </p>
           <p style="font-size:1rem; color:gray">Una vez terminado ese lapso, nuestros/as inspectores/as volverán a visitarte para continuar con el trámite.</p>
         </div>
-        <template #modal-footer>
+        <template #footer>
           <div class="" style="margin: auto">
             <b-button @click="showPopupProrroga = false" variant="danger" class="btn-primary">Aceptar</b-button>
           </div>
         </template>
-      </b-modal>
+      </BModal>
 
       <!-- Modal su comercio fue inspeccionado  -->
-      <b-modal v-model="showPopupInspected" @click-outside="showPopupInspected = false" header-class="lightblue" centered>
-        <template #modal-header>
+      <BModal v-model="showPopupInspected" @click-outside="showPopupInspected = false" header-class="lightblue" centered>
+        <template #header>
           <div class="centeredContainer">
             <i class="bi bi-info-circle text-light"></i>
           </div>
@@ -192,16 +192,16 @@
           <p>A continuación el Departamento Comercio se comunicará con vos por correo electrónico para indicarte cómo continuar.</p>
           <small>No olvides revisar la carpeta de "spam" o "no deseados".</small>
         </div>
-        <template #modal-footer>
+        <template #footer>
           <div class="" style="margin: auto">
             <b-button @click="showPopupInspected = false" variant="danger" class="btn-primary">Aceptar</b-button>
           </div>
         </template>
-      </b-modal>
+      </BModal>
 
       <!-- Modal Su trámite está esperando documentación -->
-      <b-modal v-model="showPopupWaitingDoc" @click-outside="showPopupWaitingDoc = false" header-class="lightblue" centered>
-        <template #modal-header>
+      <BModal v-model="showPopupWaitingDoc" @click-outside="showPopupWaitingDoc = false" header-class="lightblue" centered>
+        <template #header>
           <div class="centeredContainer">
             <i class="bi bi-info-circle text-light"></i>
           </div>
@@ -211,16 +211,16 @@
           <p> Estás a punto de finalizar tu trámite. El Departamento Comercio te envió un correo electrónico indicándote los pasos a seguir.</p>
           <small class="minitext">No olvides revisar la carpeta de “spam” o “no deseados”.</small>
         </div>
-        <template #modal-footer>
+        <template #footer>
           <div class="" style="margin: auto">
             <b-button @click="showPopupWaitingDoc = false" variant="danger" class="btn-primary">Aceptar</b-button>
           </div>
         </template>
-      </b-modal>
+      </BModal>
 
             <!-- Modal Su trámite está esperando pago -->
-      <b-modal v-model="showPopupWaitingPay" @click-outside="showPopupWaitingPay = false" header-class="lightblue" centered>
-        <template #modal-header>
+      <BModal v-model="showPopupWaitingPay" @click-outside="showPopupWaitingPay = false" header-class="lightblue" centered>
+        <template #header>
           <div class="centeredContainer">
             <i class="bi bi-info-circle text-light"></i>
           </div>
@@ -230,16 +230,16 @@
           <p> El Departamento Comercio te envió un correo electrónico indicándote los pasos a seguir para finalizar el trámite.</p>
           <small class="minitext">No olvides revisar la carpeta de “spam” o “no deseados”.</small>
         </div>
-        <template #modal-footer>
+        <template #footer>
           <div class="" style="margin: auto">
             <b-button @click="showPopupWaitingPay = false" variant="danger" class="btn-primary">Aceptar</b-button>
           </div>
         </template>
-      </b-modal>
+      </BModal>
 
       <!-- Modal Su trámite fue finalizado -->
-      <b-modal v-model="showPopupFinished" @click-outside="showPopupFinished = false" header-class="lightblue" centered>
-        <template #modal-header>
+      <BModal v-model="showPopupFinished" @click-outside="showPopupFinished = false" header-class="lightblue" centered>
+        <template #header>
           <div class="centeredContainer">
             <i class="bi bi-info-circle text-light"></i>
           </div>
@@ -248,21 +248,25 @@
           <p class="modal-subtitle">Tu trámite ha sido finalizado.</p>
           <p> Tu solicitud ha sido aprobada con el expediente nro. <b>{{ nroExpediente }}.</b></p>
         </div>
-        <template #modal-footer>
+        <template #footer>
           <div class="" style="margin: auto">
             <b-button @click="showPopupFinished = false" variant="danger" class="btn-primary" >Aceptar</b-button>
           </div>
         </template>
-      </b-modal>
+      </BModal>
     </div>
   </div>
 
 </template>
 
 <script>
+import consultaBanner from '~/assets/consulta.png'
+
 export default {
+  setup(){ const { showToast } = useProjectToast(); return { showToast } },
   data() {
     return {
+      consultaBanner,
       nroTramite: null,
       nroTramiteIngresado: null,
       nombre: '',
@@ -317,15 +321,15 @@ export default {
         const nroTramite = this.nroTramiteIngresado
 
         // Registrar consulta - detectar si hay usuario autenticado
-        const userId = this.$store.state.user?.username || 'Usuario Anónimo';
+        const userId = useUserStore().username || 'Usuario Anónimo';
         await this.$logUserActivity(
           userId,
           'Consulta de Trámite',
           `Consulta de trámite nro ${nroTramite}`
         );
 
-        await this.$store.dispatch('habilitaciones/getByNroTramite',  { nroTramite })
-        const tramite = this.$store.state.habilitaciones.single
+        await useHabilitacionesStore().getByNroTramite({ nroTramite })
+        const tramite = useHabilitacionesStore().single
         if(tramite){
           if (tramite.visible === false) {
             this.showPopupFormError = true
@@ -340,7 +344,7 @@ export default {
               this.showPopupRejected = true
               break
             case "Finalizada":
-              this.nroExpediente = this.$store.state.habilitaciones.single.nroExpediente
+              this.nroExpediente = useHabilitacionesStore().single.nroExpediente
               this.showPopupFinished = true
               break
             case "Esperando turno":
@@ -353,11 +357,11 @@ export default {
               this.showPopupProrroga = true
               break
             case "Esperando inspección":
-              await this.$store.dispatch('turnos/getSingle', { nroTramite })
+              await useTurnosStore().getSingle({ nroTramite })
               this.showPopupAlready = true
               break
             case "Inspeccionado":
-              await this.$store.dispatch('turnos/getSingle', { nroTramite })
+              await useTurnosStore().getSingle({ nroTramite })
               this.showPopupInspected = true
               break
 
@@ -379,12 +383,12 @@ export default {
         }
       }catch(e){
         console.log(e)
-        this.$bvToast.toast('Algo salió mal buscando la habilitación.', {
+        this.showToast('Algo salió mal buscando la habilitación.', {
           title: 'Error',
           variant: 'danger',
           appendToast: true,
           solid: true,
-          toaster: 'b-toaster-top-center',
+          pos: 'top-center',
         });
       }finally{
         this.isConsulting = false
@@ -410,13 +414,26 @@ export default {
       return '';
     },
     turno(){
-      return this.$store.state.turnos.single
+      return useTurnosStore().single
     },
   },
 };
 </script>
 
 <style scoped>
+  .consulta-banner-img {
+    display: block;
+    width: 100%;
+    max-width: 20rem;
+    height: auto;
+    margin: 0 auto 0.5rem;
+  }
+
+  .banner-container {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
   .centeredContainer{
     width:  auto;
     margin: auto;
@@ -611,6 +628,9 @@ export default {
     .banner-container {
       padding-left: 15px;
       padding-right: 15px;
+    }
+    .consulta-banner-img {
+      max-width: 16rem;
     }
     .mx-auto {
       max-width: 100%;

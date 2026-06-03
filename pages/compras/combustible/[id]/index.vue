@@ -1,11 +1,20 @@
-<template>
-  <div class="page main-background">
+﻿<template>
+  <div class="page main-background combustible-detalle-page">
     <Banner title="Compras" subtitle="Detalle de orden de compra"/>
+
+    <LoadingState v-if="cargandoDetalle" size="lg" class="mt-5" />
+
+    <div v-else-if="loadError" class="container text-center mt-5">
+      <h3 class="text-danger font-weight-bold">Ocurrió un error al cargar la orden de compra.</h3>
+      <p class="text-muted mt-3">Por favor, volvé a la lista de órdenes e intentá nuevamente.</p>
+      <b-button variant="primary" size="sm" class="mt-3" @click="volver">Volver</b-button>
+    </div>
+
     <!-- Header + Datos de la orden de compra -->
-    <template v-if="orden && adminCompras">
-      <div class="flex col" style="width: 96%">
+    <template v-else-if="orden && adminCompras">
+      <div class="order-header">
         <div class="row justify-content-center mt-3">
-          <h4> Número de orden: <b> {{ orden.nroOrden }}</b></h4>
+          <h4 class="order-number"> Número de orden: <b> {{ orden.nroOrden }}</b></h4>
         </div>
         <!-- <div class="row justify-content-center mt-3">
           <div class="h5 row"> Estado:
@@ -14,35 +23,35 @@
         </div> -->
       </div>
       <!--Botones-->
-      <div class="row col-10 mx-auto justify-content-center" v-if="adminCompras">
-        <b-button v-if="orden && orden.id" @click="$router.push(`/compras/combustible/${orden.id}/generar`)" variant="success" class="btn-4 mt-3 mx-1">
+      <div class="orden-acciones" v-if="adminCompras">
+        <b-button v-if="orden && orden.id" @click="$router.push(`/compras/combustible/${orden.id}/generar`)" variant="success" class="btn-4 mt-3 mx-1 orden-acciones-btn">
           + | Agregar vales
         </b-button>
-        <b-button @click="onShowObservaciones" variant="primary" class="btn-2 mt-3 mx-1"> Ver observaciones </b-button>
+        <b-button @click="onShowObservaciones" variant="primary" class="btn-2 mt-3 mx-1 orden-acciones-btn"> Ver observaciones </b-button>
       </div>
 
       <!--Datos de orden de compra-->
       <b-card no-body class="container big-container col-md-7 col-sm-10 shadow-card mt-4 mx-auto">
-        <div class="container mt-4">
-          <div class="row align-items-center">
-            <i class="bi bi-receipt"></i>
-            <a class="ml-3 mr-2 mt-2 separador" > | </a>
-            <h2 class="text-green mt-3 mb-0"><b>Datos de orden de compra</b></h2>
+        <div class="combustible-panel-body">
+          <div class="order-section-header">
+            <i class="bi bi-receipt icon-orange order-section-icon"></i>
+            <a class="separador order-section-separator"> | </a>
+            <h2 class="text-green mb-0 order-section-title"><b>Datos de orden de compra</b></h2>
           </div>
-          <hr />
-        </div>
-        <div class="container mx-auto">
-          <div class="row mt-4 mx-5">
-            <i class="bi bi-caret-right-fill"></i>
-            <h5 class="text-dark mx-2">Área asignada: </h5>
-            <h5 class="text-right text-gray font-weight-bold" style="font-size: 1.75rem; line-height: 1.5rem">{{ orden.area }}</h5>
+          <hr class="panel-divider" />
+
+          <div class="order-data-row order-data-row-first">
+            <i class="bi bi-caret-right-fill icon-orange order-data-caret"></i>
+            <h5 class="text-dark mb-0 order-data-label-text">Área asignada:</h5>
+            <h5 class="order-data-value text-gray font-weight-bold mb-0">{{ orden.area }}</h5>
           </div>
-          <div class="row no-gutters mt-1 mx-5">
-            <i class="bi bi-caret-right-fill"></i>
-            <h5 class="text-dark mx-2">Proveedor:</h5>
-            <h5 class="text-right text-gray font-weight-bold" style="font-size: 1.75rem; line-height: 1.5rem">{{ orden.proveedor }}</h5>
+          <div class="order-data-row order-data-row-tight">
+            <i class="bi bi-caret-right-fill icon-orange order-data-caret"></i>
+            <h5 class="text-dark mb-0 order-data-label-text">Proveedor:</h5>
+            <h5 class="order-data-value text-gray font-weight-bold mb-0">{{ orden.proveedor }}</h5>
           </div>
-          <div class="fuel-layout mt-5">.
+
+          <div class="fuel-layout mt-5">
             <div
               class="fuel-container-h"
               v-for="(monto, index) in orden.montos"
@@ -84,24 +93,24 @@
                   <p>Restante: <span :class="['text-color-' + index]">{{ format(getSaldoPorTipo(monto.tipoCombustible)) }}</span></p>
                   <p>Total: {{ format(monto.monto) }}</p>
                 </div>
+              </div>
             </div>
           </div>
-
-        </div>
         </div>
       </b-card>
     </template>
     <!-- Vales -->
-    <template>
+    <template v-if="!cargandoDetalle && !loadError">
       <div v-if="orden">
         <div class="container big-container col-md-7 col-sm-10 card shadow-card mt-4 mb-3 mx-auto">
-          <!-- Título -->
-          <div class="col mx-auto">
-            <div class="row align-items-center mt-3 ml-1">
-              <i class="bi bi-receipt"></i>
-              <a class="ml-3 mr-2 mt-2 separador" > | </a>
-              <h2 class="text-green mt-3 mb-0"><b>Vales emitidos</b></h2>
-              <div class="ml-auto mr-4 mt-2 d-flex align-items-center">
+          <div class="combustible-panel-body">
+            <div class="vales-header">
+              <div class="vales-header-title">
+                <i class="bi bi-receipt icon-orange" style="font-size: 2rem;"></i>
+                <a class="mx-2 separador"> | </a>
+                <h2 class="text-green mb-0"><b>Vales emitidos</b></h2>
+              </div>
+              <div class="vales-header-actions">
                 <!-- Selector de vista -->
                 <div class="btn-group mr-2" role="group">
                   <b-button
@@ -124,7 +133,7 @@
                 <b-button
                   variant="success"
                   size="sm"
-                  class="mr-2"
+                  class="mr-2 page-btn-export"
                   @click="exportarValesAExcel"
                 >
                   <i class="bi bi-file-earmark-spreadsheet-fill"></i>
@@ -135,42 +144,30 @@
                   size="sm"
                   @click="toggleOcultarAnulados"
                 >
-                  <i class="bi bi-eye-slash"></i>
-                  <i class="bi bi-eye"></i>
+                  <i v-if="ocultarAnulados" class="bi bi-eye-slash"></i>
+                  <i v-else class="bi bi-eye"></i>
                   {{ ocultarAnulados ? 'Mostrar anulados' : 'Ocultar anulados' }}
                 </b-button>
               </div>
             </div>
-            <hr />
-          </div>
+            <hr class="panel-divider" />
 
           <!-- Mostrar los enlaces a los vales -->
-          <div class="container justify-content-center mx-auto" v-if="paginatedVales && paginatedVales.length">
+          <div class="vales-content" v-if="paginatedVales && paginatedVales.length">
             <!-- Botones de utilización masiva -->
-            <div class="row justify-content-center">
-              <!-- Botón para deseleccionar todos -->
-              <div class="text-center mx-3 my-3" v-if="valesSeleccionados.length">
-                <button class="btn btn-secondary" @click="deseleccionarTodos">
-                  <i class="bi bi-x-circle"></i> Deseleccionar todos
-                </button>
-              </div>
-              <!-- Botón para reimprimir seleccionados -->
-              <div class="text-center mx-3 my-3" v-if="valesSeleccionados.length">
-                <button class="btn btn-primary" @click="abrirModalReimpresion">
-                  <i class="bi bi-printer-fill"></i> Reimprimir seleccionados ({{ valesSeleccionados.length }})
-                </button>
-              </div>
-              <!-- Botón para reimprimir seleccionados -->
-              <div class="text-center my-3" v-if="valesSeleccionados.length">
-                <button class="btn btn-success" @click="abrirModalUtilizarVales">
-                  <i class="bi bi-check"></i> Marcar como utilizados ({{ valesSeleccionados.length }})
-                </button>
-              </div>
-              <div class="text-center mx-3 my-3" v-if="valesSeleccionados.length">
-                <button class="btn btn-danger" @click="abrirModalEliminacionMasiva">
-                  <i class="bi bi-trash"></i> Eliminar seleccionados ({{ valesSeleccionados.length }})
-                </button>
-              </div>
+            <div v-if="valesSeleccionados.length" class="vales-bulk-actions">
+              <button class="btn btn-secondary" @click="deseleccionarTodos">
+                <i class="bi bi-x-circle"></i> Deseleccionar todos
+              </button>
+              <button class="btn btn-primary" @click="abrirModalReimpresion">
+                <i class="bi bi-printer-fill"></i> Reimprimir seleccionados ({{ valesSeleccionados.length }})
+              </button>
+              <button class="btn btn-success" @click="abrirModalUtilizarVales">
+                <i class="bi bi-check"></i> Marcar como utilizados ({{ valesSeleccionados.length }})
+              </button>
+              <button class="btn btn-danger" @click="abrirModalEliminacionMasiva">
+                <i class="bi bi-trash"></i> Eliminar seleccionados ({{ valesSeleccionados.length }})
+              </button>
             </div>
 
             <!-- Paginador -->
@@ -205,40 +202,36 @@
               <div v-for="(vale, index) in paginatedVales" :key="index" class="col-12 col-md-4 mb-3">
                 <b-card no-body class="border-card main-background shadow-card vale-card-compact">
                   <div class="vale-card-body">
-                    <div class="row no-gutters align-items-center">
-                      <div class="col no-gutters">
-                        <div class="row d-flex justify-content-between align-items-center vale-card-header">
-                          <div class="d-flex row align-items-center">
-                            <input v-if="!vale.consumido && !vale.anulado" type="checkbox" class="vale-checkbox-input mr-2" :value="vale.id" v-model="valesSeleccionados" />
-                            <i class="bi bi-x-square"></i>
-                            <h5 class="mb-0 ml-1 font-weight-700 text-gray vale-card-title">VALE N° {{ vale.nro_vale }}</h5>
-                          </div>
-                          <div v-if="adminCompras && !vale.anulado" class="d-flex vale-card-actions">
-                            <button v-if="!vale.consumido" class="btn btn-success vale-card-btn" title="Marcar como utilizado" @click="confirmarMarcarUtilizado(vale, (currentPage - 1) * itemsPerPage + index)">
-                              <i class="bi bi-check"></i>
-                            </button>
-                            <button v-if="!vale.consumido" class="btn btn-primary vale-card-btn" title="Reimprimir" @click="confirmarReimpresion(vale, index)">
-                              <i class="bi bi-printer-fill"></i>
-                            </button>
-                            <button v-if="!vale.consumido" class="btn btn-danger vale-card-btn" title="Eliminar" @click="confirmarEliminacion(vale.id)">
-                              <i class="bi bi-trash-fill"></i>
-                            </button>
-                          </div>
-                        </div>
-                        <div class="vale-card-details">
-                          <p class="vale-card-line text-dark mb-0">Tipo de combustible: {{ vale.tipoCombustible }}</p>
-                          <p class="vale-card-line text-dark mb-0">Importe: {{ format(vale.monto) }}</p>
-                          <p class="vale-card-line text-dark mb-0">Patente: {{ vale.dominio ? vale.dominio.toUpperCase() : 'Sin patente' }}</p>
-                          <p class="vale-card-line text-dark mb-0">Fecha de emisión: {{ new Date(vale.fechaEmision).toLocaleDateString('es-AR') }}</p>
-                          <p class="vale-card-line text-dark mb-0">
-                            Estado:
-                            <span :class="vale.consumido ? 'text-danger' : 'text-success'">
-                              <b v-if="!vale.anulado">{{ vale.consumido ? 'No disponible' : 'Disponible' }}</b>
-                              <b class="text-gray" v-else>Anulado</b>
-                            </span>
-                          </p>
-                        </div>
+                    <div class="vale-card-header">
+                      <div class="vale-card-header-left">
+                        <input v-if="!vale.consumido && !vale.anulado" type="checkbox" class="vale-checkbox-input mr-2" :value="vale.id" v-model="valesSeleccionados" />
+                        <i v-else class="bi bi-x-square mr-2 vale-icon-disabled"></i>
+                        <h5 class="mb-0 font-weight-700 text-gray vale-card-title">VALE N° {{ vale.nro_vale }}</h5>
                       </div>
+                      <div v-if="adminCompras && !vale.anulado" class="d-flex vale-card-actions">
+                        <button v-if="!vale.consumido" class="btn btn-success vale-card-btn" title="Marcar como utilizado" @click="confirmarMarcarUtilizado(vale, (currentPage - 1) * itemsPerPage + index)">
+                          <i class="bi bi-check"></i>
+                        </button>
+                        <button v-if="!vale.consumido" class="btn btn-primary vale-card-btn" title="Reimprimir" @click="confirmarReimpresion(vale, index)">
+                          <i class="bi bi-printer-fill"></i>
+                        </button>
+                        <button v-if="!vale.consumido" class="btn btn-danger vale-card-btn" title="Eliminar" @click="confirmarEliminacion(vale.id)">
+                          <i class="bi bi-trash-fill"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="vale-card-details">
+                      <p class="vale-card-line text-dark mb-0">Tipo de combustible: {{ vale.tipoCombustible }}</p>
+                      <p class="vale-card-line text-dark mb-0">Importe: {{ format(vale.monto) }}</p>
+                      <p class="vale-card-line text-dark mb-0">Patente: {{ vale.dominio ? vale.dominio.toUpperCase() : 'Sin patente' }}</p>
+                      <p class="vale-card-line text-dark mb-0">Fecha de emisión: {{ new Date(vale.fechaEmision).toLocaleDateString('es-AR') }}</p>
+                      <p class="vale-card-line text-dark mb-0">
+                        Estado:
+                        <span :class="vale.consumido ? 'text-danger' : 'text-success'">
+                          <b v-if="!vale.anulado">{{ vale.consumido ? 'No disponible' : 'Disponible' }}</b>
+                          <b class="text-gray" v-else>Anulado</b>
+                        </span>
+                      </p>
                     </div>
                   </div>
                 </b-card>
@@ -246,7 +239,7 @@
             </div>
 
             <!-- Vista Lista -->
-            <div v-if="vistaVales === 'list'" class="mx-4">
+            <div v-if="vistaVales === 'list'" class="vales-list-wrap">
               <div class="table-responsive">
                 <table class="table table-hover vales-list-table">
                   <thead>
@@ -284,7 +277,7 @@
                           v-model="valesSeleccionados"
                           class="vale-checkbox"
                         />
-                        <i class="bi bi-x-square"></i>
+                        <i v-else class="bi bi-x-square text-muted"></i>
                       </td>
                       <td class="font-weight-bold">{{ vale.nro_vale }}</td>
                       <td>{{ vale.tipoCombustible }}</td>
@@ -343,26 +336,27 @@
               <p class="text-muted small">Haz clic en el tipo de combustible nuevamente para mostrar todos los vales.</p>
             </div>
           </div>
+          </div>
         </div>
       </div>
     </template>
 
-    <div class="text-center mb-3">
-      <b-button variant="primary" @click="volver">Volver</b-button>
+    <div class="page-btn-volver-wrap">
+      <b-button variant="primary" size="sm" class="page-btn-volver" @click="volver">Volver</b-button>
     </div>
 
     <!-- Modals -->
-    <b-modal v-model="showObservaciones" size="lg" header-bg-variant="primary" title="Observaciones" title-class="text-light" hide-footer centered body-class="observaciones-modal-body">
+    <BModal v-model="showObservaciones" size="lg" header-bg-variant="primary" title="Observaciones" title-class="text-light" no-footer centered body-class="observaciones-modal-body">
       <div class="observaciones-modal-content" v-html="observaciones"></div>
-    </b-modal>
+    </BModal>
 
     <!-- Modal de Confirmación para utilización -->
-    <b-modal id="modalUtilizacion" header-class="justify-content-center" title-class="text-light" header-bg-variant="success" hide-footer centered>
-      <template #modal-header>
-        <b-iconstack class="my-3">
+    <BModal v-model="showModalUtilizacion" header-class="justify-content-center" title-class="text-light" header-bg-variant="success" no-footer centered>
+      <template #header>
+        <span class="my-3">
           <i class="bi bi-circle text-light"></i>
           <i class="bi bi-exclamation text-light"></i>
-        </b-iconstack>
+        </span>
       </template>
       <p class="h5 text-center mt-3 mb-4 font-weight-500 text-dark">
         ¿Estás seguro de que deseas marcar el vale como utilizado?
@@ -370,67 +364,67 @@
       <hr class="row col-9 mx-auto"/>
       <div class="d-flex justify-content-center">
         <button class="btn btn-success mx-2" @click="marcarUtilizado()">Aceptar</button>
-        <button class="btn btn-danger" @click="$bvModal.hide('modalUtilizacion')">Cancelar</button>
+        <button class="btn btn-danger" @click="showModalUtilizacion = false">Cancelar</button>
       </div>
-    </b-modal>
+    </BModal>
 
     <!-- Modal de Confirmación para Reimpresión -->
-    <b-modal id="modalReimpresion" header-class="justify-content-center" title-class="text-light" header-bg-variant="success" hide-footer centered>
-      <template #modal-header>
-        <b-iconstack class="my-3">
+    <BModal v-model="showModalReimpresion" header-class="justify-content-center" title-class="text-light" header-bg-variant="success" no-footer centered>
+      <template #header>
+        <span class="my-3">
           <i class="bi bi-circle text-light"></i>
           <i class="bi bi-printer-fill text-light"></i>
-        </b-iconstack>
+        </span>
       </template>
       <p class="h5 text-center mt-3 mb-4 font-weight-500 text-dark">Estás a punto de reimprimir el vale.</p>
       <p class="h6 text-center mt-2 mb-3 font-weight-500 text-dark">¿Deseás continuar?</p>
       <hr class="row col-9 mx-auto"/>
       <div class="d-flex justify-content-center">
         <button class="btn btn-success mx-2" @click="reimprimirVale(valeSeleccionado)">Aceptar</button>
-        <button class="btn btn-danger" @click="$bvModal.hide('modalReimpresion')">Cancelar</button>
+        <button class="btn btn-danger" @click="showModalReimpresion = false">Cancelar</button>
       </div>
-    </b-modal>
+    </BModal>
 
     <!-- Modal de confirmación para reimpresión múltiple -->
-    <b-modal id="modalReimpresionMasiva" header-class="justify-content-center" header-bg-variant="success" title-class="text-light text-center" hide-footer centered>
-      <template #modal-header>
-        <b-iconstack class="my-3">
+    <BModal v-model="showModalReimpresionMasiva" header-class="justify-content-center" header-bg-variant="success" title-class="text-light text-center" no-footer centered>
+      <template #header>
+        <span class="my-3">
           <i class="bi bi-circle text-light"></i>
           <i class="bi bi-printer-fill text-light"></i>
-        </b-iconstack>
+        </span>
       </template>
       <p class="h5 text-center mt-3 mb-4 font-weight-500 text-dark">Estás a punto de reimprimir los vales.</p>
       <p class="h6 text-center mt-2 mb-3 font-weight-500 text-dark">¿Deseás continuar?</p>
       <hr/>
       <div class="row no-gutters justify-content-center">
         <b-button variant="success" @click="imprimirValesSeleccionados">Aceptar</b-button>
-        <b-button variant="danger" class="mx-2" @click="$bvModal.hide('modalReimpresionMasiva')">Cancelar</b-button>
+        <b-button variant="danger" class="mx-2" @click="showModalReimpresionMasiva = false">Cancelar</b-button>
       </div>
-    </b-modal>
+    </BModal>
 
     <!-- Modal de confirmación para marcación como consumido masivamente -->
-    <b-modal id="modalUtilizacionMasiva" header-class="justify-content-center" header-bg-variant="success" title-class="text-light text-center" hide-footer centered>
-      <template #modal-header>
-        <b-iconstack class="my-3">
+    <BModal v-model="showModalUtilizacionMasiva" header-class="justify-content-center" header-bg-variant="success" title-class="text-light text-center" no-footer centered>
+      <template #header>
+        <span class="my-3">
           <i class="bi bi-circle text-light"></i>
           <i class="bi bi-exclamation text-light"></i>
-        </b-iconstack>
+        </span>
       </template>
       <p class="h5 text-center mt-3 my-4 text-dark font-weight-500">¿Estás seguro/a de que querés marcar los vales seleccionados como utilizados?</p>
       <hr class="row col-9 mx-auto justify-content-center"/>
       <div class="row no-gutters justify-content-center">
         <b-button variant="success" @click="marcarValesSeleccionados">Aceptar</b-button>
-        <b-button variant="danger" class="mx-2" @click="$bvModal.hide('modalUtilizacionMasiva')">Cancelar</b-button>
+        <b-button variant="danger" class="mx-2" @click="showModalUtilizacionMasiva = false">Cancelar</b-button>
       </div>
-    </b-modal>
+    </BModal>
 
     <!-- Modal de confirmación para marcación como consumido masivamente -->
-    <b-modal id="modalEliminacionMasiva" header-class="justify-content-center" header-bg-variant="danger" title-class="text-light text-center" hide-footer centered>
-      <template #modal-header>
-        <b-iconstack class="my-3">
+    <BModal v-model="showModalEliminacionMasiva" header-class="justify-content-center" header-bg-variant="danger" title-class="text-light text-center" no-footer centered>
+      <template #header>
+        <span class="my-3">
           <i class="bi bi-circle text-light"></i>
           <i class="bi bi-exclamation text-light"></i>
-        </b-iconstack>
+        </span>
       </template>
       <p class="h5 text-center mt-3 my-4 text-dark font-weight-500">¿Estás seguro/a de que querés eliminar los vales seleccionados?</p>
       <hr class="row col-9 mx-auto justify-content-center"/>
@@ -439,19 +433,19 @@
           <b-spinner v-if="eliminandoVales" small class="mr-2"></b-spinner>
           {{ eliminandoVales ? 'Eliminando...' : 'Aceptar' }}
         </b-button>
-        <b-button variant="danger" class="mx-2" :disabled="eliminandoVales" @click="$bvModal.hide('modalEliminacionMasiva')">Cancelar</b-button>
+        <b-button variant="danger" class="mx-2" :disabled="eliminandoVales" @click="showModalEliminacionMasiva = false">Cancelar</b-button>
       </div>
-    </b-modal>
+    </BModal>
 
 
       <!-- Modal de Confirmación para Eliminación -->
-      <b-modal id="modalEliminadoMasivo" title="Confirmar Eliminación" title-class="text-light text-center" header-bg-variant="danger" hide-footer centered>
-      <template #modal-header>
+      <BModal v-model="showModalEliminadoMasivo" title="Confirmar Eliminación" title-class="text-light text-center" header-bg-variant="danger" no-footer centered>
+      <template #header>
         <div class="confirmation-popup-header mx-auto">
-          <b-iconstack>
+          <span>
             <i class="bi bi-circle text-light"></i>
             <i class="bi bi-trash-fill text-light"></i>
-          </b-iconstack>
+          </span>
         </div>
       </template>
       <div class="mt-4 mb-5">
@@ -460,15 +454,15 @@
       <div class="d-flex justify-content-center">
         <button class="btn btn-success mr-2" @click="cerrarModalEliminacionMasiva">Aceptar</button>
       </div>
-    </b-modal>
+    </BModal>
 
     <!-- Modal de Confirmación para Eliminación -->
-    <b-modal v-model="modalEliminacion" header-class="justify-content-center" title-class="text-light text-center" header-bg-variant="danger" hide-footer centered>
-      <template #modal-header>
-        <b-iconstack class="my-3">
+    <BModal v-model="modalEliminacion" header-class="justify-content-center" title-class="text-light text-center" header-bg-variant="danger" no-footer centered>
+      <template #header>
+        <span class="my-3">
           <i class="bi bi-circle text-light"></i>
           <i class="bi bi-trash-fill text-light"></i>
-        </b-iconstack>
+        </span>
       </template>
       <p class="h5 text-center mt-3 mb-4 font-weight-500 text-dark">Estás a punto de eliminar el vale.</p>
       <p class="h6 text-center mt-2 mb-3 font-weight-500 text-dark">¿Deseás continuar?</p>
@@ -480,16 +474,16 @@
         </button>
         <button class="btn btn-danger mx-2" :disabled="eliminandoVale" @click="modalEliminacion = false">Cancelar</button>
       </div>
-    </b-modal>
+    </BModal>
 
     <!-- Modal de Confirmación para Eliminación -->
-    <b-modal v-model="modalEliminado" title="Confirmar Eliminación" title-class="text-light text-center" header-bg-variant="danger" hide-footer centered>
-      <template #modal-header>
+    <BModal v-model="modalEliminado" title="Confirmar Eliminación" title-class="text-light text-center" header-bg-variant="danger" no-footer centered>
+      <template #header>
         <div class="confirmation-popup-header mx-auto">
-          <b-iconstack>
+          <span>
             <i class="bi bi-circle text-light"></i>
             <i class="bi bi-trash-fill text-light"></i>
-          </b-iconstack>
+          </span>
         </div>
       </template>
       <div class="mt-4 mb-5">
@@ -498,21 +492,21 @@
       <div class="d-flex justify-content-center">
         <button class="btn btn-success mr-2" @click="cerrarModalEliminacion">Aceptar</button>
       </div>
-    </b-modal>
+    </BModal>
 
     <!-- Modal de Confirmación para Eliminación -->
-    <b-modal id="modalUtilizacionSuccess" v-model="modalModificado" header-class="justify-content-center" header-bg-variant="success" hide-footer centered>
-      <template #modal-header>
-        <b-iconstack class="my-3">
+    <BModal v-model="modalModificado" header-class="justify-content-center" header-bg-variant="success" no-footer centered>
+      <template #header>
+        <span class="my-3">
           <i class="bi bi-circle text-light"></i>
           <i class="bi bi-check text-light"></i>
-        </b-iconstack>
+        </span>
       </template>
       <p class="h5 mt-3 text-center font-weight-500">Vale de combustible modificado.</p>
       <div class="d-flex justify-content-end">
         <button class="btn btn-primary mx-auto mr-2" @click="cerrarModalModificacion ">Aceptar</button>
       </div>
-    </b-modal>
+    </BModal>
 
   </div>
 </template>
@@ -520,13 +514,15 @@
 <script>
 import templateVale from "@/assets/TemplateValex2.png";
 import { numeroATexto } from "@/utils/numeroATexto";
-import jsPDF from "jspdf";
 import * as XLSX from 'xlsx';
-import { saveAs } from 'file-saver';
+import { saveAsFile } from '~/utils/saveAsFile';
 export default {
+  setup(){ const { showToast } = useProjectToast(); return { showToast } },
   data() {
     return {
       loading: false,
+      cargandoDetalle: true,
+      loadError: false,
       currentPage: 1,
       itemsPerPage: 100,
       modalEliminacion: false,
@@ -544,11 +540,17 @@ export default {
       filtroTipoCombustible: null, // Filtro por tipo de combustible
       ocultarAnulados: false, // Control para ocultar/mostrar vales anulados
       vistaVales: 'grid', // 'grid' o 'list' - Vista actual de los vales
+      showModalUtilizacion: false,
+      showModalReimpresion: false,
+      showModalReimpresionMasiva: false,
+      showModalUtilizacionMasiva: false,
+      showModalEliminacionMasiva: false,
+      showModalEliminadoMasivo: false,
     }
   },
   computed: {
     orden(){
-      return this.$store.state.combustible.single
+      return useCombustibleStore().single
     },
     // Saldo por tipo = monto del tipo − suma de vales no anulados de ese tipo
     saldosCalculados() {
@@ -571,10 +573,13 @@ export default {
       return this.saldosCalculados.reduce((total, s) => total + (Number(s.saldo) || 0), 0);
     },
     adminCompras(){
-      return this.$store.state.user.admin == "compras" || this.$store.state.user.admin == "master"
+      const admin = useUserStore().admin
+      return admin == "compras" || admin == "master"
     },
     vales(){
-      return this.$store.state.combustible.vales_creados
+      return Array.isArray(useCombustibleStore().vales_creados)
+        ? useCombustibleStore().vales_creados
+        : []
     },
     selectedVales() {
       if (!this.vales || !Array.isArray(this.vales)) {
@@ -666,17 +671,34 @@ export default {
       deep: true
     }
   },
-  async fetch() {
-    const ordenId = this.$route.params.id
-    await this.$store.dispatch('combustible/getSingle',{
-      id: ordenId,
-    })
-
-    await this.$store.dispatch('combustible/getValesSingle', {
-      id: ordenId,
-    })
+  async mounted() {
+    await this.loadDetalleOrden()
   },
   methods: {
+    async loadDetalleOrden() {
+      const ordenId = this.$route.params.id
+      this.loadError = false
+      this.cargandoDetalle = true
+      try {
+        await useCombustibleStore().getSingle({
+          id: ordenId,
+        })
+        await useCombustibleStore().getValesSingle({
+          id: ordenId,
+        })
+      } catch (error) {
+        console.error('Error al cargar detalle de combustible:', error)
+        this.loadError = true
+        const combustibleStore = useCombustibleStore()
+        combustibleStore.setSingle(null)
+        combustibleStore.setValesCreados([])
+      } finally {
+        this.cargandoDetalle = false
+      }
+    },
+    async recargarDetalleOrden() {
+      await this.loadDetalleOrden()
+    },
     getSaldoPorTipo(tipoCombustible) {
       const item = this.saldosCalculados.find(s => s.tipoCombustible === tipoCombustible);
       return item ? Number(item.saldo) || 0 : 0;
@@ -687,7 +709,7 @@ export default {
       return `${(porcentaje / 100) * circunferencia}, ${circunferencia}`;
     },
     async registrarActividad(evento, result, nroSolicitud){
-      const userId = this.$store.state.user.username; // Reemplaza con el ID del usuario real
+      const userId = useUserStore().username; // Reemplaza con el ID del usuario real
       const actionType = evento;
       const actionResult = "Trámite nro " + nroSolicitud + ' ' + result;
 
@@ -706,12 +728,14 @@ export default {
       this.showObservaciones = true
     },
     async onShowGenerarVales(){
-      await this.$router.push('/generar')
+      const ordenId = this.orden?.id || this.$route.params.id
+      if (!ordenId) return
+      await this.$router.push(`/compras/combustible/${ordenId}/generar`)
     },
     confirmarReimpresion(vale, index) {
       this.valeSeleccionado = vale;
       this.indexSeleccionado = index
-      this.$bvModal.show('modalReimpresion')
+      this.showModalReimpresion = true
     },
     confirmarEliminacion(id) {
       this.valeSeleccionado = id;
@@ -786,14 +810,12 @@ export default {
       link.click();
       await this.wait(400)
       this.loading = false
-      this.$bvModal.hide('modalReimpresion')
+      this.showModalReimpresion = false
     },
     async imprimirValesSeleccionados() {
       if (this.valesSeleccionados.length === 0) return;
 
       const jsPDF = (await import('jspdf')).default;
-      const templateVale = require('@/assets/TemplateValex2.png');
-      const { numeroATexto } = require('@/utils/numeroATexto');
 
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");
@@ -854,7 +876,7 @@ export default {
       }
 
       pdf.save(`Vales_${this.orden.nroOrden}.pdf`);
-      this.$bvModal.hide('modalReimpresionMasiva')
+      this.showModalReimpresionMasiva = false
     },
     dibujarValeEnMitad(ctx, vale, lado, offsetY = 0) {
       const offsetX = lado === "izquierda" ? 0 : 1748; // ⚠️ Asegurate que 1748 sea la mitad exacta de tu imagen
@@ -890,14 +912,15 @@ export default {
       this.eliminandoVale = true;
 
       try {
-        const userToken = this.$store.state.user.token;
+        const userToken = useUserStore().token;
 
         // Hacer la petición al backend para eliminar el vale
-        await this.$store.dispatch("combustible/anularVale", { id, userToken });
+        await useCombustibleStore().anularVale({ id, userToken });
 
         // Remover el vale de los seleccionados si estaba seleccionado
         this.valesSeleccionados = this.valesSeleccionados.filter(valeId => valeId !== id);
 
+        await this.recargarDetalleOrden()
         this.modalEliminacion = false;
         this.modalEliminado = true;
       } catch (error) {
@@ -919,10 +942,10 @@ export default {
         for (let i = 0; i < valesAEliminar.length; i++) {
           try {
             const id = valesAEliminar[i];
-            const userToken = this.$store.state.user.token;
+            const userToken = useUserStore().token;
 
             // Hacer la petición al backend para eliminar el vale
-            await this.$store.dispatch("combustible/anularVale", { id, userToken })
+            await useCombustibleStore().anularVale({ id, userToken })
           } catch(e) {
             console.error(`Error al eliminar vale ${valesAEliminar[i]}:`, e);
             errores++;
@@ -936,8 +959,9 @@ export default {
           alert(`No se pudieron eliminar ${errores} vale(s). Hubo un problema con alguno(s) de ellos.`);
         }
 
-        this.$bvModal.hide('modalEliminacionMasiva')
-        this.$bvModal.show('modalEliminadoMasivo')
+        this.showModalEliminacionMasiva = false
+        await this.recargarDetalleOrden()
+        this.showModalEliminadoMasivo = true
       } catch (error) {
         console.error("Error general en eliminación masiva:", error);
         alert("Ocurrió un error al eliminar los vales. Revisa la consola para más detalles.");
@@ -949,46 +973,44 @@ export default {
     confirmarMarcarUtilizado(valeRef, index) {
       this.tempValeRef = valeRef
       this.tempNroVale = index
-      this.$bvModal.show('modalUtilizacion')
+      this.showModalUtilizacion = true
     },
     cerrarModalModificacion(){
-      this.$bvModal.hide('modalUtilizacionSuccess')
-      location.reload()
+      this.modalModificado = false
+      this.recargarDetalleOrden()
     },
     cerrarModalEliminacion(){
       this.modalEliminado = false
-      location.reload()
+      this.recargarDetalleOrden()
     },
     cerrarModalEliminacionMasiva(){
-      this.$bvModal.hide('modalEliminadoMasivo')
-      location.reload()
+      this.showModalEliminadoMasivo = false
+      this.recargarDetalleOrden()
     },
     async marcarUtilizado(){
       const id = this.tempValeRef.id;
         try {
-          const userToken = this.$store.state.user.token;
+          const userToken = useUserStore().token;
 
           const vale = {
             consumido: true,
           }
 
           // Hacer la petición al backend para eliminar el vale
-          await this.$store.dispatch("combustible/consumirVale", { id, vale });
+          await useCombustibleStore().consumirVale({ id, vale });
 
           // Registrar actividad de uso de vale
           await this.$logUserActivity(
-            this.$store.state.user.username,
+            useUserStore().username,
             'Marcar Vale como Utilizado',
             `Vale ${this.tempValeRef.nro_vale} marcado como utilizado`
           );
 
-          // Eliminar el vale de la lista en el frontend
-          this.vales = this.vales.filter(v => v._id !== this.valeSeleccionado);
-
           // Remover el vale de los seleccionados si estaba seleccionado
           this.valesSeleccionados = this.valesSeleccionados.filter(valeId => valeId !== id);
 
-          this.$bvModal.hide('modalUtilizacion')
+          await this.recargarDetalleOrden()
+          this.showModalUtilizacion = false
           this.modalModificado = true;
         } catch (error) {
           console.error("Error al eliminar el vale:", error);
@@ -1003,13 +1025,13 @@ export default {
       for (let i = 0; i < valesAMarcar.length; i++) {
         try {
           const id = valesAMarcar[i];
-          const userToken = this.$store.state.user.token;
+          const userToken = useUserStore().token;
 
           const vale = {
             consumido: true,
           }
           // Hacer la petición al backend para eliminar el vale
-          await this.$store.dispatch("combustible/consumirVale", { id, vale })
+          await useCombustibleStore().consumirVale({ id, vale })
         }catch (error) {
         console.error("Error al eliminar el vale:", error);
         alert("Ocurrió un error al eliminar el vale. Revisa la consola para más detalles.");
@@ -1018,7 +1040,7 @@ export default {
 
       // Registrar actividad de uso masivo de vales
       await this.$logUserActivity(
-        this.$store.state.user.username,
+        useUserStore().username,
         'Marcar Vales como Utilizados',
         `${valesAMarcar.length} vales marcados como utilizados`
       );
@@ -1027,21 +1049,21 @@ export default {
       this.valesSeleccionados = [];
 
       await this.wait(500)
-      this.$bvModal.hide('modalUtilizacionMasiva')
-      location.reload()
+      this.showModalUtilizacionMasiva = false
+      await this.recargarDetalleOrden()
     },
     getStatusClass(status) {
       return this.statusClasses[status] || '';
     },
     abrirModalReimpresion() {
-      this.$bvModal.show('modalReimpresionMasiva');
+      this.showModalReimpresionMasiva = true
     },
     abrirModalUtilizarVales() {
-      this.$bvModal.show('modalUtilizacionMasiva');
+      this.showModalUtilizacionMasiva = true
     },
     abrirModalEliminacionMasiva() {
       this.eliminandoVales = false; // Resetear estado al abrir modal
-      this.$bvModal.show('modalEliminacionMasiva');
+      this.showModalEliminacionMasiva = true
     },
     //Métodos de sistema
     async volver(){
@@ -1183,7 +1205,7 @@ export default {
     async exportarValesAExcel() {
       try {
         if (!this.vales || !Array.isArray(this.vales) || this.vales.length === 0) {
-          this.$bvToast.toast('No hay vales para exportar', {
+          this.showToast('No hay vales para exportar', {
             title: 'Información',
             variant: 'info',
             solid: true
@@ -1225,16 +1247,16 @@ export default {
         // Usamos FileSaver.js para guardar el archivo
         const fecha = new Date().toISOString().split('T')[0];
         const nombreArchivo = `Vales_Orden_${this.orden.nroOrden}_${fecha}.xlsx`;
-        saveAs(blob, nombreArchivo);
+        await saveAsFile(blob, nombreArchivo);
 
-        this.$bvToast.toast('Archivo Excel generado exitosamente', {
+        this.showToast('Archivo Excel generado exitosamente', {
           title: 'Éxito',
           variant: 'success',
           solid: true
         });
       } catch (error) {
         console.error('Error al generar el Excel:', error);
-        this.$bvToast.toast('Error al generar el archivo Excel', {
+        this.showToast('Error al generar el archivo Excel', {
           title: 'Error',
           variant: 'danger',
           solid: true
@@ -1289,10 +1311,19 @@ export default {
   font-size: 1rem;
 }
 .vale-card-body {
-  padding: 0.55rem 0.77rem 0.75rem 0;
+  padding: 0.55rem 0.75rem 0.75rem;
 }
 .vale-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
   margin-bottom: 0.5rem;
+}
+.vale-card-header-left {
+  display: flex;
+  align-items: center;
+  min-width: 0;
 }
 .vale-card-title {
   font-size: 1.15rem;
@@ -1331,12 +1362,161 @@ export default {
   margin-right: 0.25rem;
 }
 
-.big-container{
+.vales-bulk-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin: 1rem 0;
+}
+
+.big-container {
   padding: 2rem 3rem;
 }
 
+.combustible-panel-body {
+  padding: 0;
+}
+
+.panel-divider {
+  margin: 0.75rem 0 1rem;
+}
+
+.order-header {
+  width: 96%;
+  margin: 0 auto;
+}
+
+.order-section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: nowrap;
+  padding-top: 0.25rem;
+}
+
+.order-section-icon {
+  font-size: 1.75rem;
+  margin-left: 0.25rem;
+}
+
+.order-section-separator {
+  margin: 0 0.35rem;
+}
+
+.order-section-title {
+  line-height: 1.2;
+  margin-top: 0.15rem;
+}
+
+.order-number {
+  text-align: center;
+}
+
+.orden-acciones {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.25rem auto 0;
+}
+
+.orden-acciones-btn {
+  width: auto !important;
+  min-width: 200px;
+  max-width: 260px;
+}
+
+.order-data-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.5rem;
+  padding: 0 1.75rem;
+}
+
+.order-data-row-first {
+  margin-top: 0.25rem;
+}
+
+.order-data-row-tight {
+  margin-top: 0.35rem;
+}
+
+.order-data-caret {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.order-data-label-text {
+  margin-right: 0.25rem;
+}
+
+.order-data-value {
+  font-size: 1.75rem;
+  line-height: 1.5rem;
+  text-align: left;
+  word-break: break-word;
+}
+
+.vales-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.vales-header-title {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 0.35rem;
+}
+
+.vales-header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.vales-content {
+  padding: 0 0.25rem;
+}
+
+.vales-list-wrap {
+  padding: 0 0.5rem;
+}
+
+@media (max-width: 992px) {
+  .big-container {
+    padding: 1rem 1.25rem;
+  }
+
+  .order-data-row {
+    padding: 0 0.75rem;
+  }
+
+  .order-data-value {
+    line-height: 1.8rem;
+  }
+
+  .vales-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .vales-header-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
 @media (max-width: 1200px) {
-.separador{
+  .separador {
     display: none;
   }
 }
@@ -1371,7 +1551,7 @@ export default {
 }
 .fuel-layout {
   display: flex;
-  flex-wrap: wrap; /* Permitir que se acomoden en filas */
+  flex-wrap: wrap;
 }
 /* PRUEBA CLASES CARD HORIZONTAL */
 .fuel-container-h {
@@ -1528,13 +1708,12 @@ export default {
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3); /* Agrega una sombra */
 }
 
-.col {
-  padding: 0.4em;
-  margin: 0 2px 2px 40px;
+.combustible-detalle-page .fuel-saldos-h p {
+  font-size: 15px;
 }
 
-p{
-  font-size: 18px;
+.combustible-detalle-page .fuel-title-h p {
+  font-size: 24px;
 }
 
 /* Estilos para vista lista de vales */

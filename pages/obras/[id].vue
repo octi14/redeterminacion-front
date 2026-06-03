@@ -18,20 +18,20 @@
               </div>
             </div>
 
-            <b-modal size="lg" v-model="editing" header-bg-variant="info" hide-footer title="Editar Obra">
+            <BModal size="lg" v-model="editing" header-bg-variant="info" no-footer title="Editar Obra">
               <ObraForm :obra="obra" @submit="onSubmitEditObra" @reset="editing = false"/>
-            </b-modal>
-            <b-modal header-bg-variant="info" hide-footer v-model="adding" title="Asignar certificado a esta obra">
+            </BModal>
+            <BModal header-bg-variant="info" no-footer v-model="adding" title="Asignar certificado a esta obra">
               <CertificadoForm
                 :obra="obra"
                 @submit="onSubmitCreateCertif"/>
-            </b-modal>
+            </BModal>
             <CertificadoFeed
               v-show="watchingCertif"
               :obra="obra"/>
-            <b-modal id="obraProgressModal" v-model="watchingProgress" header-bg-variant="info" title="Avance de la Obra" size="lg" hide-footer>
+            <BModal id="obraProgressModal" v-model="watchingProgress" header-bg-variant="info" title="Avance de la Obra" size="lg" no-footer>
               <ObraProgress class="mx-auto" :obra="obra"/>
-            </b-modal>
+            </BModal>
 
             <!-- Body -->
             <div class="card shadow-card col-md-6 col-sm-12 mx-auto" v-if="!adding && !editing">
@@ -159,8 +159,8 @@
               </div>
             </div>
             <!--Modal Eliminar archivo-->
-            <b-modal id="modal-delete" centered header-bg-variant="danger">
-              <template #modal-header>
+            <BModal v-model="showDeleteModal" centered header-bg-variant="danger">
+              <template #header>
                 <div class="centeredContainer mx-auto my-2">
                   <i class="bi bi-trash-fill text-light"></i>
                 </div>
@@ -170,13 +170,13 @@
                 <h5>Está seguro de que desea eliminar esta obra?</h5>
                 <p class="small">Al eliminar una obra, se eliminarán todos sus certificados y redeterminaciones. </p>
               </div>
-              <template #modal-footer>
+              <template #footer>
                 <div class="row mx-auto">
-                  <b-button class="mt-2 mx-1" variant="success" @click="onSubmitDelete(); $bvModal.hide('modal-delete')">Eliminar</b-button>
-                  <b-button class="mt-2" variant="danger" @click="$bvModal.hide('modal-delete')">Cancelar</b-button>
+                  <b-button class="mt-2 mx-1" variant="success" @click="onSubmitDelete(); showDeleteModal = false">Eliminar</b-button>
+                  <b-button class="mt-2" variant="danger" @click="showDeleteModal = false">Cancelar</b-button>
                 </div>
               </template>
-            </b-modal>
+            </BModal>
           </div>
         </div>
       </div>
@@ -186,6 +186,7 @@
 
 <script>
 export default {
+  setup(){ const { showToast } = useProjectToast(); return { showToast } },
   middleware: ['authenticated'],
   data() {
     return {
@@ -194,18 +195,15 @@ export default {
       watchItems: false,
       editing: false,
       adding: false,
+      showDeleteModal: false,
     }
   },
-  async fetch() {
-    const obraId = this.$route.params.id
-    await this.$store.dispatch('obras/getSingle',{
-      id: obraId,
-    })
+  async mounted() {
+    await this.loadObra()
   },
-  fetchOnServer: false,
   computed: {
     obra(){
-      return this.$store.state.obras.single
+      return useObrasStore().single
     },
     // formattedDate() {
     //   const formatter = new Intl.DateTimeFormat('es-AR', {
@@ -239,25 +237,32 @@ export default {
         {
           variant: "danger",
           label: "Eliminar",
-          action: () => this.$bvModal.show("modal-delete")
+          action: () => { this.showDeleteModal = true }
         }
       ].filter(button => this.shouldShowButton(button));
     },
     isAdmin(){
-      return Boolean(this.$store.state.user.admin == "true")
+      return Boolean(useUserStore().admin == "true")
     },
     adminHacienda(){
-      return this.$store.state.user.admin == "hacienda" || this.$store.state.user.admin == "master"
+      const admin = useUserStore().admin
+      return admin == "hacienda" || admin == "master"
     },
   },
   activated() {
-    this.obra = null
     this.watchingCertif = false
     this.editing = false
     this.adding = false
-    this.$fetch()
+    this.showDeleteModal = false
+    void this.loadObra()
   },
   methods: {
+    async loadObra() {
+      const obraId = this.$route.params.id
+      await useObrasStore().getSingle({
+        id: obraId,
+      })
+    },
     onShowCertif() {
       this.watchingCertif = !this.watchingCertif
     },
@@ -295,13 +300,13 @@ export default {
     },
     async onSubmitEditObra({ obra }) {
       try {
-        const userToken = this.$store.state.user.token
-        await this.$store.dispatch('obras/update', {
+        const userToken = useUserStore().token
+        await useObrasStore().update({
           obra,
           userToken,
         })
         // this.editing = false
-        this.$bvToast.toast('', {
+        this.showToast('', {
           title: 'Archivo actualizado.',
           variant: 'success',
           appendToast: true,
@@ -309,7 +314,7 @@ export default {
         })
         await this.$router.push('/')
       } catch (e) {
-        this.$bvToast.toast('Error Editando. Intente cerrar sesión e iniciar nuevamente.', {
+        this.showToast('Error Editando. Intente cerrar sesión e iniciar nuevamente.', {
           title: 'Error',
           variant: 'danger',
           appendToast: true,
@@ -319,21 +324,21 @@ export default {
     },
     async onSubmitCreateCertif({ certificado }) {
       try {
-        const userToken = this.$store.state.user.token
-        const verifiedCert = await this.$store.dispatch('certificados/create', {
+        const userToken = useUserStore().token
+        const verifiedCert = await useCertificadosStore().create({
           certificado,
           userToken,
         })
         this.obra.certificados.push(verifiedCert.id)
         const obra = this.obra
-        await this.$store.dispatch('obras/update', {
+        await useObrasStore().update({
           obra,
           userToken,
         })
         // this.editing = false
         await this.$router.push('/')
       } catch (e) {
-        this.$bvToast.toast('Error Editando. Intente cerrar sesión e iniciar nuevamente.', {
+        this.showToast('Error Editando. Intente cerrar sesión e iniciar nuevamente.', {
           title: 'Error',
           variant: 'danger',
           appendToast: true,
@@ -344,14 +349,14 @@ export default {
     },
     async onSubmitDelete() {
       try {
-        const userToken = this.$store.state.user.token
+        const userToken = useUserStore().token
         const id = this.$route.params.id
 
-        await this.$store.dispatch('obras/delete', {
+        await useObrasStore().delete({
           id: id,
           userToken,
         })
-        this.$bvToast.toast('Eliminada correctamente', {
+        this.showToast('Eliminada correctamente', {
           title: '',
           variant: 'success',
           appendToast: true,
@@ -359,14 +364,14 @@ export default {
         })
         await this.$router.push('/')
       } catch (e) {
-        this.$bvToast.toast('Error Editando. Intente cerrar sesión e iniciar nuevamente.', {
+        this.showToast('Error Editando. Intente cerrar sesión e iniciar nuevamente.', {
           title: '',
           variant: 'danger',
           appendToast: true,
           solid: true,
         })
       }
-      this.$set(this, 'editing', false)
+      this.editing = false
     },
     onResetEdit() {
       this.editing = false

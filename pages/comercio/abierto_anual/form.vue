@@ -8,25 +8,25 @@
         </div> -->
         <b-card class="section-card col-md-6 mx-auto">
           <div class="li-row">
-            <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p>EstÃ¡s a punto de iniciar la carga de comprobantes para obtener el beneficio de Abierto Anual.</p></div>
+            <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p>Estás a punto de iniciar la carga de comprobantes para obtener el beneficio de Abierto Anual.</p></div>
           </div>
           <div class="li-row">
-            <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p>Para comenzar, ingresÃ¡ los siguientes datos del comercio:</p></div>
+            <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p>Para comenzar, ingresá los siguientes datos del comercio:</p></div>
           </div>
           <b-form @submit="sendData">
             <b-row>
               <label for="cuit" class="col-6">CUIT/CUIM del titular del comercio: <span style="font-weight: 500"><i>(sin guiones)</i></span></label>
               <b-form-input class="col-6" v-model="cuit" id="cuit" type="number" placeholder="Ingrese su CUIT/CUIM" no-wheel></b-form-input>
               <div v-if="$v.cuit.$error" class="validation-error col-12">
-                <i class="bi bi-exclamation-octagon text-danger"></i>  'El CUIT/CUIT debe ser un nÃºmero de 11 dÃ­gitos'
+                <i class="bi bi-exclamation-octagon text-danger"></i>  'El CUIT/CUIT debe ser un número de 11 dígitos'
               </div>
             </b-row>
             <i class="bi bi-question-circle text-light"></i>
             <b-row>
-              <label for="nroLegajo" class="col-6"> NÂ° de legajo comercial: <i class="bi bi-question-circle-fill text-info" style="font-size: 1.25em"></i></label>
-              <b-form-input class="col-6" v-model="nroLegajoInput" id="nroLegajo" type="text" placeholder="Ingrese un NÂ° de Legajo Comercial" no-wheel @input="sanitizeLegajo"></b-form-input>
+              <label for="nroLegajo" class="col-6"> N° de legajo comercial: <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('A')" @keydown.enter.stop.prevent="openPopup('A')"></i></label>
+              <b-form-input class="col-6" v-model="nroLegajoInput" id="nroLegajo" type="text" placeholder="Ingrese un N° de Legajo Comercial" no-wheel @input="sanitizeLegajo"></b-form-input>
               <div v-if="$v.nroLegajo.$error" class="validation-error col-12">
-                <i class="bi bi-exclamation-octagon text-danger"></i>  'CompletÃ¡ este campo'
+                <i class="bi bi-exclamation-octagon text-danger"></i>  'Completá este campo'
               </div>
             </b-row>
           </b-form>
@@ -41,89 +41,90 @@
 
     </div>
 
-    <!-- Modal nÃºmero de trÃ¡mite incorrecto -->
-    <b-modal v-model="showPopupFormError" @click-outside="showPopupFormError = false" :header-bg-variant="'danger'" centered>
-      <template #modal-header>
+    <!-- Modal número de trámite incorrecto -->
+    <BModal v-model="showPopupFormError" @click-outside="showPopupFormError = false" :header-bg-variant="'danger'" centered>
+      <template #header>
         <div class="centeredContainer"><h3>
             <i class="bi bi-exclamation-octagon text-light"></i>
         </h3></div>
       </template>
       <div class="centeredContainer modal-error">
         <p class="modal-subtitle">No hemos podido encontrar tu comercio</p>
-        <p class="">Por favor, corroborÃ¡ que los datos ingresados sean correctos.</p>
+        <p class="">Por favor, corroborá que los datos ingresados sean correctos.</p>
         <p class="minitext">Si el problema persiste, envianos un correo a <a target="_blank" href="mailto:diarvige@gesell.gob.ar" class="icon-green">dirarvige@gesell.gob.ar</a>.</p>
       </div>
-      <template #modal-footer>
+      <template #footer>
         <div class="" style="margin: auto">
           <b-button @click="showPopupFormError = false" variant="danger" class="btn-cancel" >Aceptar</b-button>
         </div>
       </template>
-    </b-modal>
+    </BModal>
 
-    <!-- Modal No ha ingresado un nÃºmero de trÃ¡mite -->
-    <b-modal v-model="showPopupNoEntry" @click-outside="showPopupNoEntry = false" :header-bg-variant="'danger'" centered>
-      <template #modal-header>
+    <!-- Modal No ha ingresado un número de trámite -->
+    <BModal v-model="showPopupNoEntry" @click-outside="showPopupNoEntry = false" :header-bg-variant="'danger'" centered>
+      <template #header>
         <div class="centeredContainer"><h3>
             <i class="bi bi-exclamation-octagon text-light"></i>
         </h3></div>
       </template>
       <div class="centeredContainer modal-error">
-        <p class="modal-subtitle">No has ingresado un CUIT o un nÃºmero de legajo vÃ¡lidos.</p>
-        <p class="">Por favor, completÃ¡ este campo para continuar.</p>
+        <p class="modal-subtitle">No has ingresado un CUIT o un número de legajo válidos.</p>
+        <p class="">Por favor, completá este campo para continuar.</p>
       </div>
-      <template #modal-footer>
+      <template #footer>
         <div class="" style="margin: auto">
           <b-button @click="showPopupNoEntry = false" variant="danger" class="btn-cancel" >Aceptar</b-button>
         </div>
       </template>
-    </b-modal>
-  <!-- Modal informaciÃ³n Adicional -->
-    <b-modal v-model="showPopupA"  :hide-footer="true" @click-outside="showPopupA = false" :header-bg-variant="'success'" centered>
-    <template #modal-header>
+    </BModal>
+  <!-- Modal información Adicional -->
+    <BModal v-model="showPopupA"  :no-footer="true" @click-outside="showPopupA = false" :header-bg-variant="'success'" centered>
+    <template #header>
         <div class="modal-info">
           <h5>
               <i class="bi bi-question-circle text-light"></i>
-              InformaciÃ³n Adicional
+              Información Adicional
           </h5>
         </div>
-            <button type="button" aria-label="Close" class="close" @click="showPopupA = false">Ã—</button>
+            <button type="button" aria-label="Close" class="close" @click="showPopupA = false">×</button>
       </template>
       <div class="modal-info">
-        <p class="destacado"><i class="bi bi-caret-right-fill"></i>PodÃ©s encontrar el nÃºmero de <b>CUIM</b> y de <b>legajo comercial</b> en el encabezado de la notificaciÃ³n que recibiste. HacÃ© click en la imagen y verificÃ¡ cÃ³mo se visualiza.</p>
+        <p class="destacado"><i class="bi bi-caret-right-fill"></i>Podés encontrar el número de <b>CUIM</b> y de <b>legajo comercial</b> en el encabezado de la notificación que recibiste. Hacé click en la imagen y verificá cómo se visualiza.</p>
         <div style="width: 100%">
           <a href="http://haciendavgesell.gob.ar/_nuxt/img/ej-cedulanotificacion.edf6c18.jpg" target="_blank"><img src="../../../assets/ej-cedulanotificacion.jpg" width="100%" height="fit-content" /></a>
         </div>
       </div>
-    </b-modal>
+    </BModal>
     <!-- Popup de periodo cerrado -->
-    <b-modal v-model="showClosedPopup" hide-footer :header-bg-variant="'success'" centered   no-close-on-backdrop no-close-on-esc>
-      <template #modal-header>
+    <BModal v-model="showClosedPopup" no-footer :header-bg-variant="'success'" centered   no-close-on-backdrop no-close-on-esc>
+      <template #header>
         <div class="closed-popup-header">
             <i class="bi bi-exclamation-triangle text-light"></i>
         </div>
-            <button type="button" aria-label="Close" class="close" @click="showClosedPopup = false" style="position: absolute; right: 15px; top: 15px;">Ã—</button>
+            <button type="button" aria-label="Close" class="close" @click="showClosedPopup = false">×</button>
       </template>
       <div class="closed-popup-body">
         <h2 class="icon-orange"><b>IMPORTANTE</b></h2>
-        <p >El plazo para acreditar las facturas del aÃ±o 2025 ha expirado.</p>
+        <p >El plazo para acreditar las facturas del año 2025 ha expirado.</p>
 
         <div class="li-row">
           <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div><div class="li-content">Por cualquier reclamo comunicate con <a href="mailto:dirarvige@gesell.gob.ar" class="text-success">ARVIGE</a> para conocer los pasos a seguir.</div>
         </div>
 
         <div class="text-center mt-3">
-            <b-btn variant="success" @click="showClosedPopup = false">
+            <b-button variant="success" @click="showClosedPopup = false">
                 Aceptar
-            </b-btn>
+            </b-button>
         </div>
       </div>
-    </b-modal>
+    </BModal>
   </div>
 </template>
 
 
   <script>
   import { required, requiredIf, alpha, numeric, email, minLength, maxLength, sameAs } from '@vuelidate/validators';
+  import { computePopUpAbiertoAnualCerrado } from '~/utils/abiertoAnualPeriodos';
   export default {
     validations() {
       return {
@@ -155,16 +156,16 @@
       };
     },
     async mounted() {
-      await this.$store.dispatch('config/getAbiertoAnualPeriodos');
-      const config = this.$store.getters['config/abiertoAnualPeriodos'];
-      this.showClosedPopup = config && config.popUpAbiertoAnualCerrado;
+      await useConfigStore().getAbiertoAnualPeriodos();
+      const config = useConfigStore().abiertoAnualPeriodos;
+      this.showClosedPopup = computePopUpAbiertoAnualCerrado(config);
     },
     computed: {
       config() {
-        return this.$store.getters['config/abiertoAnualPeriodos'];
+        return useConfigStore().abiertoAnualPeriodos;
       },
       maestro(){
-        return this.$store.state.maestro.all
+        return useMaestroStore().all
       }
     },
     methods: {
@@ -182,30 +183,32 @@
             const cuit = Number(this.cuit);
             const nroLegajo = Number(this.nroLegajo);
             //busco en el maestro
-            await this.$store.dispatch('maestro/getSingle', {
+            const maestroStore = useMaestroStore()
+            const abiertoAnualStore = useAbiertoAnualStore()
+            await maestroStore.getSingle({
               cuit: cuit,
               legajo: nroLegajo,
             });
-            const result = this.$store.state.maestro.single;
+            const result = maestroStore.single;
             if (result && result.length > 0) {
               //existe en el maestro
-              await this.$store.dispatch('abiertoAnual/getByCuitLegajo', {
+              await abiertoAnualStore.getByCuitLegajo({
                 cuit: cuit,
                 nroLegajo: nroLegajo,
               });
               //si no estaba creado,
-              if (!this.$store.state.abiertoAnual.single) {
+              if (!abiertoAnualStore.single) {
                 // Crear un nuevo AbiertoAnual si no se encuentra uno existente
-                await this.$store.dispatch('abiertoAnual/create', {
+                await abiertoAnualStore.create({
                   cuit: cuit,
                   nroLegajo: this.nroLegajo,
                 });
-                await this.$store.dispatch('abiertoAnual/getByCuitLegajo', {
+                await abiertoAnualStore.getByCuitLegajo({
                   cuit: cuit,
                   nroLegajo: nroLegajo,
                 });
               }
-              const id = this.$store.state.abiertoAnual.single.id;
+              const id = abiertoAnualStore.single.id;
               await this.$router.push('/comercio/abierto_anual/periodos');
           } else {
               this.showPopupFormError = true;
@@ -224,7 +227,7 @@
       this.nroLegajoInput = null;
     },
     openPopup(type) {
-      // LÃ³gica para abrir el popup correspondiente segÃºn el tipo (A, B, C, D)
+      // Lógica para abrir el popup correspondiente según el tipo (A, B, C, D)
       if (type === 'A') {
         ("ShowPopup A")
         this.showPopupA = true;
@@ -233,13 +236,13 @@
         }
     },
     sanitizeLegajo() {
-      // Elimina cualquier caracter que no sea dÃ­gito
+      // Elimina cualquier caracter que no sea dígito
       const cleanValue = this.nroLegajoInput.replace(/\D/g, '');
 
       // Elimina ceros a la izquierda
       this.nroLegajo = cleanValue.replace(/^0+/, '') || '0';
 
-      // Actualiza el input visible (opcional: si querÃ©s mostrarlo corregido)
+      // Actualiza el input visible (opcional: si querés mostrarlo corregido)
       //this.nroLegajoInput = cleanValue;
     },
   },

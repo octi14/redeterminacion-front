@@ -1,10 +1,11 @@
 <template>
   <div class="page main-background">
     <Banner title="Detalles de solicitud"/>
-    <div v-if="!pago" class="text-center mt-3">
-      <h2> Cargando </h2>
-      <h4> Por favor espere unos segundos </h4>
-    </div>
+    <LoadingState
+      v-if="!pago"
+      size="lg"
+      variant="primary"
+    />
     <!-- Datos del solicitante -->
     <template v-if="pago">
       <div class="flex col" style="width: 96%">
@@ -16,7 +17,7 @@
             <h5 :class="getStatusClass(pago.status)" class="ml-2"> {{ pago.status }}</h5>
           </div>
         </div>
-        <div class="col mx-auto" v-if="pago.status === 'Finalizada'">
+        <div class="col mx-auto" v-if="['Aprobada', 'Finalizada'].includes(pago.status)">
           <div class="h5 row justify-content-center"> Número de expediente: <b class="text-success ml-1"> {{ pago.nroExpediente }} </b> </div>
           <div class="h5 row justify-content-center"> Alcance: <b class="text-success ml-1"> {{ pago.alcance }} </b> </div>
         </div>
@@ -130,24 +131,21 @@
           </div>
         </div>
         <div class="justify-content-center mx-auto" v-else>
-          <p class="h4 text-loading text-center"> Cargando... </p>
-          <div class="row justify-content-center mb-3">
-            <b-spinner variant="success"></b-spinner>
-          </div>
+          <LoadingState text="Cargando..." variant="success" size="lg" />
         </div>
       </div>
     </template>
 
-    <div class="text-center mb-3">
+    <div class="page-btn-volver-wrap">
       <NuxtLink to="/recaudaciones/pagos_dobles/solicitudes">
-        <b-button variant="primary">Volver</b-button>
+        <b-button variant="primary" size="sm" class="page-btn-volver">Volver</b-button>
       </NuxtLink>
     </div>
 
     <!-- Modals -->
     <!--Modal previo a rechazar el turno-->
-    <b-modal v-model="showRejectPopup" hide-footer :header-bg-variant="'danger'" centered>
-        <template #modal-header>
+    <BModal v-model="showRejectPopup" no-footer :header-bg-variant="'danger'" centered>
+        <template #header>
           <div class="confirmation-popup-header mx-auto">
             <i class="bi bi-envelope text-light"></i>
           </div>
@@ -171,16 +169,16 @@
             placeholder='Escriba el motivo (obligatorio si elige "Otro")'
           />
           <div class="text-center mt-3">
-            <b-btn variant="danger" @click="onSendReject()" :disabled="!puedeEnviarRechazo">
+            <b-button variant="danger" @click="onSendReject()" :disabled="!puedeEnviarRechazo">
                 Enviar
-            </b-btn>
+            </b-button>
           </div>
         </div>
-    </b-modal>
+    </BModal>
 
     <!--Modal previo a aprobar(con y sin inspección)-->
-    <b-modal v-model="showPrevApprove" hide-footer :header-bg-variant="'secondary'" centered>
-      <template #modal-header>
+    <BModal v-model="showPrevApprove" no-footer :header-bg-variant="'secondary'" centered>
+      <template #header>
         <div class="confirmation-popup-header mx-auto">
           <i class="bi bi-check-circle text-light"></i>
         </div>
@@ -204,16 +202,16 @@
           placeholder='Comentario para el solicitante (obligatorio si elige "Agregar comentario")'
         />
         <div class="text-center mt-3">
-          <b-btn variant="primary" @click="onSendApprove()" :disabled="!puedeEnviarAprob">
+          <b-button variant="primary" @click="onSendApprove()" :disabled="!puedeEnviarAprob">
               Aceptar
-          </b-btn>
+          </b-button>
         </div>
       </div>
-    </b-modal>
+    </BModal>
 
     <!--Modal solicitud aprobada-->
-    <b-modal v-model="showApprove" hide-footer :header-bg-variant="'success'" centered>
-      <template #modal-header>
+    <BModal v-model="showApprove" no-footer :header-bg-variant="'success'" centered>
+      <template #header>
         <div class="confirmation-popup-header mx-auto">
           <i class="bi bi-envelope text-light"></i>
         </div>
@@ -222,16 +220,16 @@
         <h3 class="icon-orange text-success text-center"><b>Trámite aprobado</b></h3>
         <p style="text-align: center">La solicitud ha sido aprobada exitosamente. Se ha enviado un correo electrónico al solicitante informando la aprobación.</p>
         <div class="text-center mt-3">
-          <b-btn variant="success" @click="showApprove = false">
+          <b-button variant="success" @click="showApprove = false">
               Aceptar
-          </b-btn>
+          </b-button>
         </div>
       </div>
-    </b-modal>
+    </BModal>
 
     <!--Modal volver a erstado En revisión-->
-    <b-modal v-model="showRestoreDefault" hide-footer :header-bg-variant="'secondary'" centered>
-      <template #modal-header>
+    <BModal v-model="showRestoreDefault" no-footer :header-bg-variant="'secondary'" centered>
+      <template #header>
         <div class="confirmation-popup-header mx-auto">
           <i class="bi bi-exclamation-triangle text-light"></i>
         </div>
@@ -241,31 +239,31 @@
         <p style="color:black"> ¿Estás seguro/a de que deseas volver el trámite a “En revisión”? </p>
         <small>Esta acción es permanente y reinicia el proceso de verificación del trámite.</small>
         <div class="text-center mt-4">
-          <b-btn variant="success" @click="onSendRestablecer()" >
+          <b-button variant="success" @click="onSendRestablecer()" >
               Aceptar
-          </b-btn>
-          <b-btn variant="danger" @click="onRestablecer" >
+          </b-button>
+          <b-button variant="danger" @click="onRestablecer" >
               Cancelar
-          </b-btn>
+          </b-button>
         </div>
       </div>
-    </b-modal>
+    </BModal>
 
-    <b-modal v-model="showObservaciones" header-bg-variant="primary" title="Observaciones" title-class="text-light" hide-footer centered>
+    <BModal v-model="showObservaciones" header-bg-variant="primary" title="Observaciones" title-class="text-light" no-footer centered>
       <p v-html="observaciones"></p>
-    </b-modal>
+    </BModal>
 
-    <b-modal v-model="showDocumentoModal" id="documento-modal" hide-footer centered>
-      <template #modal-header>
+    <BModal v-model="showDocumentoModal" id="documento-modal" no-footer centered>
+      <template #header>
         <h3 class="icon-orange text-primary text-center"><b>{{ DocumentoModalTitle + " - " + pago.nroTramite }}</b></h3>
       </template>
       <div class="modal-body">
 
       </div>
-    </b-modal>
+    </BModal>
 
     <!-- Modal para archivos HEIC -->
-    <b-modal v-model="showHeicModal" header-bg-variant="warning" title="Archivo no compatible" title-class="text-light" hide-footer centered>
+    <BModal v-model="showHeicModal" header-bg-variant="warning" title="Archivo no compatible" title-class="text-light" no-footer centered>
       <div class="text-center">
         <i class="bi bi-exclamation-triangle-fill text-warning"></i>
         <h5 class="my-3">Este archivo no pudo ser abierto desde el navegador</h5>
@@ -277,18 +275,19 @@
           Cerrar
         </b-button>
       </div>
-    </b-modal>
+    </BModal>
 
   </div>
 </template>
 
 <script>
-import JSZip from 'jszip';
-import { saveAs } from 'file-saver';
+import { loadJSZip } from '~/utils/loadJszip';
+import { saveAsFile } from '~/utils/saveAsFile';
 import * as XLSX from 'xlsx';
 import MailerService from '~/service/mailer.js'
 
 export default {
+  setup(){ const { showToast } = useProjectToast(); return { showToast } },
   data() {
     return {
       statusClasses: {
@@ -321,10 +320,11 @@ export default {
   },
   computed: {
     adminComercio(){
-      return this.$store.state.user.admin == "comercio" || this.$store.state.user.admin == "master"
+      const admin = useUserStore().admin
+      return admin == "comercio" || admin == "master"
     },
     documentos(){
-      return this.$store.state.documentos.all
+      return useDocumentosStore().all
     },
     puedeEnviarRechazo() {
       if (!this.motivoRechazo) {
@@ -348,22 +348,20 @@ export default {
       ]
     },
   },
-  async fetch() {
+  async mounted() {
     const pagoId = this.$route.params.id
-    await this.$store.dispatch('pagosDobles/getSingle',{
+    await usePagosDoblesStore().getSingle({
       id: pagoId,
     })
-    this.pago = this.$store.state.pagosDobles.single
+    this.pago = usePagosDoblesStore().single
 
-    await this.$store.dispatch('documentos/getPagosById', {
+    await useDocumentosStore().getPagosById({
       id: pagoId,
     })
 
   },
-  fetchOnServer: false,
-  activated() {
-    this.$fetch()
-  },
+
+
   methods: {
     isValidBase64(str) {
       try {
@@ -374,7 +372,7 @@ export default {
     },
 
     async registrarActividad(evento, result, nroSolicitud){
-      const userId = this.$store.state.user.username; // Reemplaza con el ID del usuario real
+      const userId = useUserStore().username; // Reemplaza con el ID del usuario real
       const actionType = evento;
       const actionResult = "Reclamo de pago doble nro " + nroSolicitud + ' ' + result;
 
@@ -420,8 +418,7 @@ export default {
         observaciones: observaciones + " - " + lineaAprob
       }
       const id = this.pago.id
-      const userToken = this.$store.state.user.token
-      await this.$store.dispatch('pagosDobles/update', {
+            await usePagosDoblesStore().update({
         id,
         pago,
       })
@@ -447,10 +444,10 @@ Número de trámite: R${this.pago.nroTramite}
 Fecha de aprobación: ${new Date().toLocaleDateString('es-AR')}
 ${comentAprob ? `\nComentario:\n${comentAprob}\n` : ''}
 Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Recaudaciones Municipal (recaudaciones@gesell.gob.ar).`
-        await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
-        this.$bvToast.toast('Correo de aprobación enviado al solicitante.', { variant: 'success' })
+        await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
+        this.showToast('Correo de aprobación enviado al solicitante.', { variant: 'success' })
       } catch (e) {
-        this.$bvToast.toast('No se pudo enviar el correo de aprobación.', { variant: 'danger' })
+        this.showToast('No se pudo enviar el correo de aprobación.', { variant: 'danger' })
       }
     },
     onRechazarSolicitud(){
@@ -466,7 +463,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
         status: 'Rechazada'
       }
       const id = this.pago.id
-      await this.$store.dispatch('pagosDobles/update', {
+      await usePagosDoblesStore().update({
         id,
         pago,
       })
@@ -485,10 +482,10 @@ Su reclamo de pago doble ha sido rechazado por el siguiente motivo:
 ${motivoTexto}
 
 Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Recaudaciones Municipal (recaudaciones@gesell.gob.ar).`
-        await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
-        this.$bvToast.toast('Correo de rechazo enviado al solicitante.', { variant: 'success' })
+        await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
+        this.showToast('Correo de rechazo enviado al solicitante.', { variant: 'success' })
       } catch (e) {
-        this.$bvToast.toast('No se pudo enviar el correo de rechazo.', { variant: 'danger' })
+        this.showToast('No se pudo enviar el correo de rechazo.', { variant: 'danger' })
       }
 
       this.motivoRechazo = ''
@@ -503,6 +500,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
         const pago = this.pago;
         const documentos = this.documentos || {};
 
+        const JSZip = await loadJSZip();
         const zip = new JSZip();
 
         // Convertir los datos de la habilitación a Excel
@@ -568,7 +566,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
 
         // Generar y descargar el archivo zip
         const zipContent = await zip.generateAsync({ type: 'blob' });
-        saveAs(zipContent, `Habilitacion_${nroTramite}.zip`);
+        await saveAsFile(zipContent, `Habilitacion_${nroTramite}.zip`);
       } catch (error) {
         console.error('Error al descargar la habilitación:', error);
       }
@@ -627,11 +625,11 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
         link.click();
         document.body.removeChild(link);
       } else {
-        this.$bvToast.toast('Formato de contenido no compatible', {
+        this.showToast('Formato de contenido no compatible', {
           variant: 'danger',
           title: 'Error',
           solid: true,
-          autoHideDelay: 5000
+          value: 5000
         });
       }
     },
@@ -675,7 +673,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
 
       } catch (error) {
         console.error('Error al descargar el archivo HEIC:', error);
-        this.$bvToast.toast('Error al descargar el archivo', {
+        this.showToast('Error al descargar el archivo', {
           variant: 'danger',
           title: 'Error'
         });
@@ -694,8 +692,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
       }
 
       const id = this.pago.id
-      const userToken = this.$store.state.user.token
-      await this.$store.dispatch('pagosDobles/update', {
+            await usePagosDoblesStore().update({
         id,
         pago,
       })

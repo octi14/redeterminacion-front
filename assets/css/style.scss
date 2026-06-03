@@ -11,9 +11,10 @@ $dark: #000000;
   color: $danger;
 }
 
-// $navbar-dark-color: rgba($white, .8);
-// $navbar-dark-hover-color: rgba($white, .9);
-// $navbar-dark-disabled-color: rgba($white, .5);
+$navbar-dark-color: rgba($white, .9);
+$navbar-dark-hover-color: $white;
+$navbar-dark-active-color: $white;
+$navbar-dark-disabled-color: rgba($white, .55);
 
 $pagination-bg: $success;
 $pagination-disabled-bg: rgba($success, .5);

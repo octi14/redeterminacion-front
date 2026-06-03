@@ -241,7 +241,7 @@
               </div>
             </transition>
           </b-card>
-          <b-card id="datos" class="section-card" v-bind:class="{ 'expanded': isCardExpanded(5) }">
+          <b-card id="faq-abierto-anual" class="section-card FAQs-card" v-bind:class="{ 'expanded': isCardExpanded(6) }">
             <h4 class="section-title" @click="toggleCard(6)">
               Preguntas frecuentes
               <i class="bi bi-chevron-compact-down"></i>
@@ -275,41 +275,40 @@
           </b-card>
           <b-row class="no-gutters">
             <b-col>
-              <b-button variant="success" class="float-right btn-form" @click="openPopup('Form')">Iniciar Trámite</b-button>
-              <!-- <b-button variant="success" class="float-right btn-form" @click="openPopup('ClosedPeriod')">Iniciar Trámite</b-button> -->
+              <div class="page-btn-iniciar-tramite-wrap"><b-button variant="success" size="sm" class="btn-form page-btn-iniciar-tramite" @click="openPopup('Form')">Iniciar Trámite</b-button></div>
             </b-col>
           </b-row>
         </b-col>
     </div>
      <!-- Popup de advertencia -->
-     <b-modal v-model="showConfirmationPopup" hide-footer :header-bg-variant="'success'" centered>
-        <template #modal-header>
+     <BModal v-model="showConfirmationPopup" no-footer :header-bg-variant="'success'" centered>
+        <template #header>
           <div class="confirmation-popup-header">
               <i class="bi bi-exclamation-triangle text-light"></i>
             </div>
         </template>
         <div class="confirmation-popup-body">
           <h2 class="icon-orange"><b>IMPORTANTE</b></h2>
-          <p>Antes de continuar tené en cuenta lo siguiente:</p>
+          <p>{{ textoPopupImportante.intro }}</p>
           <div class="li-row">
-            <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div><div class="li-content">Recordá que los documentos deben ser legibles, estar subidos en formato imagen o pdf y tener un peso máximo de 15 mb.</div>
+            <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div><div class="li-content">{{ textoPopupImportante.documentos }}</div>
           </div>
           <div class="form-check">
               <input class="form-check-input" type="checkbox" id="documentCheckbox" v-model="documentCheckboxChecked"/>
-              <label class="form-check-label" for="documentCheckbox">Ya tengo todos los documentos digitalizados y la información requerida.</label>
+              <label class="form-check-label" for="documentCheckbox">{{ textoPopupImportante.checkbox }}</label>
           </div>
           <div class="text-center mt-3">
               <nuxt-link :class="{ 'disabled': !documentCheckboxChecked }" :to="{path: '/comercio/abierto_anual/form'}">
-              <b-btn variant="success" :disabled="!documentCheckboxChecked" @click="proceedToForm()" >
+              <b-button variant="success" :disabled="!documentCheckboxChecked" @click="proceedToForm()" >
                   Aceptar
-              </b-btn>
+              </b-button>
               </nuxt-link>
           </div>
         </div>
-    </b-modal>
+    </BModal>
     <!-- Popup de solicitud de libredeuda -->
-    <b-modal v-model="showLibreDeudaPopup" title="" @hide="resetForm" :header-bg-variant="'success'" hide-footer centered>
-      <template #modal-header>
+    <BModal v-model="showLibreDeudaPopup" title="" @hide="resetForm" :header-bg-variant="'success'" no-footer centered>
+      <template #header>
         <div class="modal-info">
           <h5>
               <i class="bi bi-question-circle text-light"></i>
@@ -319,19 +318,19 @@
             <button type="button" aria-label="Close" class="close" @click="showLibreDeudaPopup = false">×</button>
       </template>
       <div class="modal-info">
-        <p><i class="bi bi-caret-right-fill"></i>En el encabezado de cada factura se indica si tu partida registra deuda o no lo hace. Hacé click en la imagen y verificá cómo se visualiza.</p>
+        <p><i class="bi bi-caret-right-fill"></i>En el encabezado de cada factura se indica si tu partida registra deuda o no lo hace. Hacé click en la imagen y verificará cómo se visualiza.</p>
         <div style="width: 100%">
           <a href="http://haciendavgesell.gob.ar/_nuxt/img/ej-libredeuda.78769c7.jpg" target="_blank"><img src="../../../assets/ej-libredeuda.jpg" width="100%" height="fit-content" /></a>
         </div>
       </div>
-    </b-modal>
+    </BModal>
     <!-- Popup de periodo cerrado -->
-    <b-modal v-model="showClosedPopup" hide-footer :header-bg-variant="'success'" centered   no-close-on-backdrop no-close-on-esc>
-      <template #modal-header>
+    <BModal v-model="showClosedPopup" no-footer :header-bg-variant="'success'" centered   no-close-on-backdrop no-close-on-esc>
+      <template #header>
         <div class="closed-popup-header">
             <i class="bi bi-exclamation-triangle text-light"></i>
         </div>
-            <button type="button" aria-label="Close" class="close" @click="showClosedPopup = false" style="position: absolute; right: 15px; top: 15px;">×</button>
+            <button type="button" aria-label="Close" class="close" @click="showClosedPopup = false">×</button>
       </template>
       <div class="closed-popup-body">
         <h2 class="icon-orange"><b>IMPORTANTE</b></h2>
@@ -342,27 +341,37 @@
         </div>
 
         <div class="text-center mt-3">
-            <b-btn variant="success" @click="showClosedPopup = false">
+            <b-button variant="success" @click="showClosedPopup = false">
                 Aceptar
-            </b-btn>
+            </b-button>
         </div>
       </div>
-    </b-modal>
+    </BModal>
     </div>
 
   </template>
 
   <script>
-  import rubros from "@/plugins/rubros.js";
-  import carouselDesktopPeriodos from '~/assets/2. Desktop períodos.png'
+  import rubros from '~/utils/rubros.js'
+  import carouselDesktopPeriodos from '~/assets/2. Desktop periodos.png'
   import carouselDesktopRequisitos from '~/assets/1. Desktop requisitos.png'
   import carouselMobile1 from '~/assets/1. Carrousel Mobile 1. AANUAL 2026.png'
   import carouselMobile2 from '~/assets/2. Carrousel Mobile 2. AANUAL 2026.png'
   import carouselMobile3 from '~/assets/3. Carrousel Mobile 3. AANUAL 2026.png'
+  import { computePopUpAbiertoAnualCerrado } from '~/utils/abiertoAnualPeriodos'
+
+  const textoPopupImportante = {
+    intro: 'Antes de continuar tené en cuenta lo siguiente:',
+    documentos:
+      'Recordá que los documentos deben ser legibles, estar subidos en formato imagen o pdf y tener un peso máximo de 15 mb.',
+    checkbox:
+      'Ya tengo todos los documentos digitalizados y la información requerida.',
+  }
 
   export default {
     data:function() {
       return {
+        textoPopupImportante,
         carouselDesktopPeriodos,
         carouselDesktopRequisitos,
         carouselMobile1,
@@ -391,12 +400,12 @@
     },
     computed: {
       config() {
-        return this.$store.getters['config/abiertoAnualPeriodos'];
+        return useConfigStore().abiertoAnualPeriodos;
       },
     },
     async mounted() {
-      await this.$store.dispatch('config/getAbiertoAnualPeriodos');
-      this.showClosedPopup = this.config && this.config.popUpAbiertoAnualCerrado;
+      await useConfigStore().getAbiertoAnualPeriodos();
+      this.showClosedPopup = computePopUpAbiertoAnualCerrado(this.config);
       this.filteredRubros.sort((a, b) => a.nombre.localeCompare(b.nombre));
     },
     methods: {
@@ -448,7 +457,7 @@
     isCardExpanded(cardIndex) {
       return this.expandedCards.includes(cardIndex);
     },
-  }
+    },
   }
   </script>
 
@@ -773,11 +782,8 @@ ul{
   font-weight: 600;
   color: #0c681a;
 }
-.li-icon, .li-content{
-  display: inline-block;
-}
 .li-title{
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.25rem;
 }
 .warning-li .li-icon{
   margin-top: -0.1rem;
@@ -796,17 +802,11 @@ ul{
 .other-li{
   margin-top: 0.35rem;
 }
-.FAQs-card .li-row{
-  margin-top: 1rem;
-}
 .li-content .li-row{
   margin-top: 0;
 }
-.li-icon, .li-content{
-  display: inline-block;
-}
 .li-p{
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 /* Estilos para Animaciones de Expansión/Contracción  */
 .expanded {
@@ -815,7 +815,7 @@ ul{
 
 .expand-enter-active,
 .expand-leave-active {
-  transition: max-height 2s ease-out; /* Duración de la animación */
+  transition: max-height 0.22s ease-in-out; /* Duración de la animación */
 }
 
 .expand-enter,

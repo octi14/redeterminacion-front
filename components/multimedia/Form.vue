@@ -15,12 +15,12 @@
           :value="categoria">{{categoria.nombre}}
         </b-form-select-option>
       </b-form-select>
-      <b-btn type="submit" size="md" variant="success">
+      <b-button type="submit" size="md" variant="success">
         <h5 class="my-auto" style="color:white">{{ create ? 'Crear' : 'Editar' }} </h5>
-      </b-btn>
-      <b-btn type="reset" size="md">
+      </b-button>
+      <b-button type="reset" size="md">
         <h5 class="my-auto" style="color:white"> Volver </h5>
-      </b-btn>
+      </b-button>
     </b-form>
   </div>
 </template>
@@ -29,6 +29,7 @@
 import MultimediaService from '~/service/multimedia'
 
 export default {
+  setup(){ const { showToast } = useProjectToast(); return { showToast } },
   props: {
     multimedia: {
       type: Object,
@@ -67,19 +68,21 @@ export default {
       ],
     }
   },
-  async fetch() {
-    const multimediaId = this.multimedia.id
-    if (!this.create){
-      this.item = await MultimediaService.getSingle(this.$axios, {
-        id: multimediaId,
-      })
-    }
+  async mounted() {
+    await this.loadMultimediaItem()
   },
   created() {
     this.initialize()
   },
-  fetchOnServer: false,
   methods: {
+    async loadMultimediaItem() {
+      const multimediaId = this.multimedia.id
+      if (!this.create) {
+        this.item = await MultimediaService.getSingle(useApi(), {
+          id: multimediaId,
+        })
+      }
+    },
     volver(){
       this.$emit('reset')
     },
@@ -92,9 +95,9 @@ export default {
     },
     async onSubmitCreateFile() {
     if(this.nombre == "" || this.link == "" || this.categoria == null){
-      this.$bvToast.toast('Faltan datos para la carga del archivo. Asegúrese que todos los campos están completos.', {
+      this.showToast('Faltan datos para la carga del archivo. Asegúrese que todos los campos están completos.', {
         title: 'Error',
-        toaster: 'b-toaster-top-center',
+        pos: 'top-center',
         variant: 'danger',
         bodyClass: 'text-center',
         appendToast: true,
@@ -102,8 +105,8 @@ export default {
       })
       } else{
       try {
-        const userToken = this.$store.state.user.token
-        await this.$store.dispatch('multimedias/create', {
+        const userToken = useUserStore().token
+        await useMultimediasStore().create({
           userToken,
           multimedia: {
             nombre: this.nombre,
@@ -113,7 +116,7 @@ export default {
         })
         this.$emit('submit')
         } catch (e) {
-          this.$bvToast.toast('Error Cargando el archivo', {
+          this.showToast('Error Cargando el archivo', {
             title: 'Error',
             variant: 'danger',
             appendToast: true,
@@ -135,9 +138,9 @@ export default {
     },
     onSubmitEditMultimedia() {
       if(this.nombre == "" || this.link == "" || this.categoria == null){
-        this.$bvToast.toast('Faltan datos para la carga del archivo. Asegúrese que todos los campos están completos.', {
+        this.showToast('Faltan datos para la carga del archivo. Asegúrese que todos los campos están completos.', {
           title: 'Error',
-          toaster: 'b-toaster-top-center',
+          pos: 'top-center',
           variant: 'danger',
           appendToast: true,
           solid: true,

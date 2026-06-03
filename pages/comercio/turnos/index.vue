@@ -3,8 +3,10 @@
     <Banner title="Inspección de Comercios"/>
     <div class="mx-auto">
       <div class="mt-3" v-if="page === 0">
-        <div class="row justify-content-center banner-container" style="width: 100%">
-          <img src="../../../assets/turnera-banner-1.png" style="max-width: 100%"/>
+        <div class="row justify-content-center banner-container">
+          <div class="col-md-8 mx-auto text-center">
+            <img :src="turneraBanner1" class="turnera-banner-img" alt="" />
+          </div>
         </div>
         <b-card class="section-card col-md-6 mx-auto">
           <div class="li-row">
@@ -14,7 +16,7 @@
             <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p>Para iniciar, ingresá el <b>número de trámite</b> que recibiste luego de haber enviado el Formulario de Solicitud de Habilitaciones.</p></div>
           </div>
           <b-form>
-            <b-form-input :disabled="enterKeyPressed" @keydown.enter.native="onNextPage" v-model="nroTramiteIngresado" type="number" size="lg" class="col-md-6 col-sm-10 mt-4 mx-auto" placeholder="Número de trámite" no-wheel></b-form-input>
+            <b-form-input :disabled="enterKeyPressed" @keydown.enter="onNextPage" v-model="nroTramiteIngresado" type="number" size="lg" class="col-md-6 col-sm-10 mt-4 mx-auto" placeholder="Número de trámite" no-wheel></b-form-input>
           </b-form>
           <div class="btn-container">
             <b-button class="btn-cancel" @click="onResetParams">Cancelar</b-button>
@@ -24,8 +26,10 @@
       </div>
       <b-form class="mt-3">
         <div v-if="page === 1">
-          <div class="row justify-content-center" style="width: 100%">
-            <img src="../../../assets/turnera-banner-2.png" style="max-width: 100%"/>
+          <div class="row justify-content-center banner-container">
+            <div class="col-md-8 mx-auto text-center">
+              <img :src="turneraBanner2" class="turnera-banner-img" alt="" />
+            </div>
           </div>
           <b-card class="section-card col-md-6 mx-auto">
             <h5>
@@ -47,11 +51,16 @@
               </div>
             </div>
             <b-calendar
-              class="col-8 mx-auto mt-3"
-              block hide-header
+              class="turnera-calendar col-8 mx-auto mt-3"
+              block
+              hide-header
+              selected-variant="success"
+              today-variant="success"
+              nav-button-variant="outline-secondary"
+              label-help="Elegí un día habilitado según la localidad de tu comercio."
               :date-format-options="{ year: 'numeric', day: '2-digit', weekday: 'short' }"
-              :min="addDays(new Date(),2)"
-              :max="daysFromNow()"
+              :min="minTurnoDate"
+              :max="maxTurnoDate"
               locale="es"
               value-as-date
               :date-disabled-fn="dateDisabled"
@@ -64,8 +73,10 @@
           </b-card>
         </div>
         <div v-if="page === 2">
-          <div class="row justify-content-center" style="width: 100%">
-            <img src="../../../assets/turnera-banner-3.png" style="max-width: 100%"/>
+          <div class="row justify-content-center banner-container">
+            <div class="col-md-8 mx-auto text-center">
+              <img :src="turneraBanner3" class="turnera-banner-img" alt="" />
+            </div>
           </div>
           <b-card class="section-card col-md-6 mx-auto">
             <h5>
@@ -99,8 +110,10 @@
           </b-card>
         </div>
         <div v-if="page === 3">
-          <div class="row justify-content-center" style="width: 100%">
-            <img src="../../../assets/turnera-banner-4.png" style="max-width: 100%"/>
+          <div class="row justify-content-center banner-container">
+            <div class="col-md-8 mx-auto text-center">
+              <img :src="turneraBanner4" class="turnera-banner-img" alt="" />
+            </div>
           </div>
           <b-card class="section-card col-md-6 mx-auto">
             <h5><img class="bi-ticket" src="../../../assets/icon-num-rifa.png" /> Confirmación de turno</h5>
@@ -175,8 +188,8 @@
       </div>
 
       <!-- Modal enviando turno -->
-      <b-modal v-model="sendingForm" title="" no-close-on-backdrop :header-bg-variant="'success'" hide-footer  centered>
-        <template #modal-header>
+      <BModal v-model="sendingForm" title="" no-close-on-backdrop :header-bg-variant="'success'" no-footer  centered>
+        <template #header>
           <h5 class="centeredContainer text-light"> <b>Solicitando turno</b></h5>
         </template>
         <div class="centeredContainer">
@@ -184,11 +197,11 @@
           <b-spinner variant="success" style="width: 3rem; height: 3rem;" label="Large Spinner"></b-spinner>
           <p>No cierres esta página</p>
         </div>
-      </b-modal>
+      </BModal>
 
       <!-- Modal Solicitud exitosa -->
-      <b-modal v-model="formOk" v-if="date && time && formOk && !printing" no-close-on-backdrop :header-bg-variant="'success'" hide-footer centered>
-        <template #modal-header>
+      <BModal v-model="formOk" v-if="date && time && formOk && !printing" no-close-on-backdrop :header-bg-variant="'success'" no-footer centered>
+        <template #header>
           <div class="centeredContainer"><h3>
               <i class="bi bi-check-circle-fill text-light"></i>
           </h3></div>
@@ -202,11 +215,11 @@
             <b-button @click="onPrintTicket" variant="success">Imprimir</b-button>
           </div>
         </div>
-      </b-modal>
+      </BModal>
 
       <!-- Modal número de trámite incorrecto -->
-      <b-modal v-model="showPopupFormError" @click-outside="showPopupFormError = false" :header-bg-variant="'danger'" centered>
-        <template #modal-header>
+      <BModal v-model="showPopupFormError" @click-outside="showPopupFormError = false" :header-bg-variant="'danger'" centered>
+        <template #header>
           <div class="centeredContainer"><h3>
               <i class="bi bi-exclamation-octagon text-light"></i>
           </h3></div>
@@ -216,16 +229,16 @@
           <p class="">Por favor, corroborá que los datos ingresados sean correctos. Recordá que el número de trámite que te solicitamos fue enviado a tu correo electrónico.</p>
           <p class="minitext">Si el problema persiste, envianos un correo a <a target="_blank" href="mailto:deptocomercio@gesell.gob.ar" class="icon-green">deptocomercio@gesell.gob.ar</a>.</p>
         </div>
-        <template #modal-footer>
+        <template #footer>
           <div class="" style="margin: auto">
             <b-button @click="showPopupFormError = false" variant="danger" class="btn-cancel" >Aceptar</b-button>
           </div>
         </template>
-      </b-modal>
+      </BModal>
 
       <!-- Modal No estás habilitado a sacar turno todavía -->
-      <b-modal v-model="showPopupNotAllowed" @click-outside="showPopupNotAllowed = false" :header-bg-variant="'secondary'" centered>
-        <template #modal-header>
+      <BModal v-model="showPopupNotAllowed" @click-outside="showPopupNotAllowed = false" :header-bg-variant="'secondary'" centered>
+        <template #header>
           <div class="centeredContainer">
             <i class="bi bi-exclamation-octagon text-light"></i>
           </div>
@@ -236,16 +249,16 @@
           <p class="">Revisá tu correo electrónico para corroborar si tu solicitud fue aprobada sin necesitar inspección.</p>
           <p class="minitext">Si tenés dudas, envianos un correo a <a target="_blank" href="mailto:deptocomercio@gesell.gob.ar" class="icon-green">deptocomercio@gesell.gob.ar</a>.</p>
         </div>
-        <template #modal-footer>
+        <template #footer>
           <div style="margin: auto">
             <b-button @click="showPopupNotAllowed = false" variant="primary">Aceptar</b-button>
           </div>
         </template>
-      </b-modal>
+      </BModal>
 
       <!-- Modal No ha ingresado un número de trámite -->
-      <b-modal v-model="showPopupNoEntry" @click-outside="showPopupNoEntry = false" :header-bg-variant="'danger'" centered>
-        <template #modal-header>
+      <BModal v-model="showPopupNoEntry" @click-outside="showPopupNoEntry = false" :header-bg-variant="'danger'" centered>
+        <template #header>
           <div class="centeredContainer"><h3>
               <i class="bi bi-exclamation-octagon text-light"></i>
           </h3></div>
@@ -254,16 +267,16 @@
           <p class="modal-subtitle">No has ingresado un número de trámite.</p>
           <p class="">Por favor, completá este campo para continuar.</p>
         </div>
-        <template #modal-footer>
+        <template #footer>
           <div class="" style="margin: auto">
             <b-button @click="showPopupNoEntry = false" variant="danger" class="btn-cancel" >Aceptar</b-button>
           </div>
         </template>
-      </b-modal>
+      </BModal>
 
       <!-- Modal Usted ya ha solicitado un turno -->
-      <b-modal v-model="showPopupAlready" @click-outside="showPopupAlready = false" :header-bg-variant="'danger'" centered>
-        <template #modal-header>
+      <BModal v-model="showPopupAlready" @click-outside="showPopupAlready = false" :header-bg-variant="'danger'" centered>
+        <template #header>
           <div class="centeredContainer"><h3>
               <i class="bi bi-exclamation-octagon text-light"></i>
           </h3></div>
@@ -273,22 +286,33 @@
           <p class="">Si deseas cancelarlo o reprogramarlo, debes comunicarte con divinspectores@gesell.gob.ar.</p>
           <p class="">Recordá que podés cancelar el turno sólo hasta 5 días antes del momento de inspección. </p>
         </div>
-        <template #modal-footer>
+        <template #footer>
           <div class="" style="margin: auto">
             <b-button @click="showPopupAlready = false" variant="danger" class="btn-cancel" >Aceptar</b-button>
           </div>
         </template>
-      </b-modal>
+      </BModal>
   </div>
 
 </template>
 
 <script>
 import MailerService from "@/service/mailer.js";
+import turneraBanner1 from '~/assets/turnera-banner-1.png'
+import turneraBanner2 from '~/assets/turnera-banner-2.png'
+import turneraBanner3 from '~/assets/turnera-banner-3.png'
+import turneraBanner4 from '~/assets/turnera-banner-4.png'
+import BCalendar from '~/components/BCalendarField.vue'
 
 export default {
+  components: { BCalendar },
+  setup(){ const { showToast } = useProjectToast(); return { showToast } },
   data() {
     return {
+      turneraBanner1,
+      turneraBanner2,
+      turneraBanner3,
+      turneraBanner4,
       nroTramite: null,
       nroTramiteIngresado: null,
       page: 0,
@@ -321,13 +345,6 @@ export default {
     wait(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
     },
-    addDays(date, days) {
-      date.setDate(date.getDate() + days);
-      return date;
-    },
-    daysFromNow() {
-      return this.addDays(new Date(), this.maxRange);
-    },
     generateTimeOptions() {
       const startTime = 570; // 9:30 (in minutes)
       const endTime = 700; // 11:30 (in minutes)
@@ -349,7 +366,7 @@ export default {
       const day = date.getDate();
 
       // Verificar si la fecha tiene 6 turnos pedidos
-      const turnos = this.$store.state.turnos.all;
+      const turnos = useTurnosStore().all;
       const turnosParaFecha = turnos.filter(turno => turno.dia === new Date(date).toLocaleDateString('es-AR'));
       const seisTurnosPedidos = turnosParaFecha.length >= 6;
 
@@ -360,7 +377,7 @@ export default {
     },
     timeDisabled(time) {
       // Obtener la cantidad de turnos reservados para la franja horaria específica
-      const turnos = this.$store.state.turnos.all;
+      const turnos = useTurnosStore().all;
       const turnosParaFranja = turnos.filter(turno => turno.dia === new Date(this.date).toLocaleDateString('es-AR') && turno.horario === time);
       const tresTurnosPedidos = turnosParaFranja.length >= 3; // Suponiendo que 3 es el límite de turnos por franja horaria
 
@@ -369,13 +386,13 @@ export default {
     async onSelectTurno() {
       let success = false; // Bandera para verificar si el try se ejecutó con éxito
 
-      let tipoTramite = this.$store.state.habilitaciones.single.tipoSolicitud
+      let tipoTramite = useHabilitacionesStore().single.tipoSolicitud
       if (!this.nombre || !this.dni || !this.domicilio) {
-        this.$bvToast.toast('Existen datos incompletos', {
+        this.showToast('Existen datos incompletos', {
           title: 'Error',
           variant: 'danger',
           solid: true,
-          toaster: 'b-toaster-top-center',
+          pos: 'top-center',
         });
       } else {
         try {
@@ -389,12 +406,12 @@ export default {
             tipoTramite: tipoTramite,
           }
           this.sendingForm = true
-          await this.$store.dispatch('turnos/create',{
+          await useTurnosStore().create({
             turno
           })
           success = true; // Cambia la bandera a true si el try se ejecutó correctamente
         }catch(e){
-          this.$bvToast.toast('No se pudo solicitar un turno por un error desconocido. Recargue la pagina e intente nuevamente más tarde.', {
+          this.showToast('No se pudo solicitar un turno por un error desconocido. Recargue la pagina e intente nuevamente más tarde.', {
             solid: true,
             variant: 'danger',
             appendToast: true,
@@ -403,21 +420,21 @@ export default {
 
         // Verifica la bandera 'success' para ejecutar el código después del try...catch
         if (success) {
-          const habilitacionId = this.$store.state.habilitaciones.single.id;
-          const observaciones = this.$store.state.habilitaciones.single.observaciones;
+          const habilitacionId = useHabilitacionesStore().single.id;
+          const observaciones = useHabilitacionesStore().single.observaciones;
           const habilitacion = {
             status: 'Esperando inspección',
             observaciones: observaciones + " - " + "Turno solicitado el día " + new Date().toLocaleDateString('es-AR') +
               " - " + "Se debe inspeccionar el comercio el día " + new Date(this.date).toLocaleDateString('es-AR') + " a las " + this.time
           };
-          await this.$store.dispatch('habilitaciones/updateLazy', {
+          await useHabilitacionesStore().updateLazy({
             id: habilitacionId,
             habilitacion,
           });
 
           // --- Enviar correo al solicitante ---
           try {
-            const destinatario = this.$store.state.habilitaciones.single.mail
+            const destinatario = useHabilitacionesStore().single.mail
             if (!destinatario) {
               console.error('No se encontró el email del solicitante')
               return
@@ -439,7 +456,7 @@ IMPORTANTE:
 - Si necesita cancelar o reprogramar el turno, comuníquese con divinspectores@gesell.gob.ar
 - Solo puede cancelar el turno hasta 5 días antes de la inspección.`
 
-            await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+            await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
           } catch (e) {
             console.error('Error al enviar correo de confirmación de turno:', e)
           }
@@ -466,17 +483,17 @@ IMPORTANTE:
           } else {
             try{
               const nroTramite = this.nroTramiteIngresado
-              await this.$store.dispatch('habilitaciones/getByNroTramite',  { nroTramite })
-              if(this.$store.state.habilitaciones.single){
-                const status = this.$store.state.habilitaciones.single.status
+              await useHabilitacionesStore().getByNroTramite({ nroTramite })
+              if(useHabilitacionesStore().single){
+                const status = useHabilitacionesStore().single.status
                 if(status === "Esperando turno"){
                   this.nroTramite = this.nroTramiteIngresado
-                  this.localidad = this.$store.state.habilitaciones.single.localidad
+                  this.localidad = useHabilitacionesStore().single.localidad
                   this.page += 1
-                  await this.$store.dispatch('turnos/getAll')
+                  await useTurnosStore().getAll()
                 }else{
                   if(status === "Esperando inspección" || status === "Prórroga 1" || status === "Prórroga 2" || status === "Inspeccionado"){
-                    await this.$store.dispatch('turnos/getSingle', { nroTramite })
+                    await useTurnosStore().getSingle({ nroTramite })
                     this.showPopupAlready = true
                   }else{
                     this.showPopupNotAllowed = true
@@ -487,12 +504,12 @@ IMPORTANTE:
               }
             }catch(e){
               console.log(e)
-              this.$bvToast.toast('Algo salió mal buscando la habilitación.', {
+              this.showToast('Algo salió mal buscando la habilitación.', {
                 title: 'Error',
                 variant: 'danger',
                 appendToast: true,
                 solid: true,
-                toaster: 'b-toaster-top-center',
+                pos: 'top-center',
               });
             }
           }
@@ -501,12 +518,12 @@ IMPORTANTE:
 
         case 1:
           if (!this.datePicked) {
-            this.$bvToast.toast('No ha seleccionado una fecha', {
+            this.showToast('No ha seleccionado una fecha', {
               title: 'Error',
               variant: 'danger',
               appendToast: true,
               solid: true,
-              toaster: 'b-toaster-top-center',
+              pos: 'top-center',
             });
           } else {
             this.date = this.datePicked
@@ -516,12 +533,12 @@ IMPORTANTE:
 
         case 2:
           if (!this.timePicked) {
-            this.$bvToast.toast('No ha seleccionado un horario', {
+            this.showToast('No ha seleccionado un horario', {
               title: 'Error',
               variant: 'danger',
               appendToast: true,
               solid: true,
-              toaster: 'b-toaster-top-center',
+              pos: 'top-center',
             });
           } else {
             this.time = this.timePicked
@@ -551,6 +568,16 @@ IMPORTANTE:
     },
   },
   computed: {
+    minTurnoDate() {
+      const d = new Date()
+      d.setDate(d.getDate() + 2)
+      return d
+    },
+    maxTurnoDate() {
+      const d = new Date()
+      d.setDate(d.getDate() + this.maxRange)
+      return d
+    },
     formattedDate() {
       if (this.date) {
         const day = this.date.getDate();
@@ -568,11 +595,29 @@ IMPORTANTE:
 </script>
 
 <style scoped>
+.turnera-banner-img {
+  display: block;
+  width: 100%;
+  max-width: 32rem;
+  height: auto;
+  margin: 0 auto;
+}
+
+.banner-container {
+  margin-bottom: 0.5rem;
+}
+
+.turnera-calendar :deep(.b-calendar-grid) {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
 @media (max-width: 720px){
-  .b-calendar{
+  .turnera-calendar,
+  .turnera-calendar :deep(.b-calendar),
+  .turnera-calendar :deep(.b-calendar-inner) {
     width: 100% !important;
     max-width: 100% !important;
-    padding: 0 0 !important;
+    padding: 0 !important;
   }
   .banner-container{
     margin:auto;
@@ -771,16 +816,33 @@ IMPORTANTE:
   .li-title{
     margin-bottom: 0.3rem;
   }
-  .li-icon{
-    margin-right: 1%;
-    vertical-align: top;
-  }
-  .li-row{
+  .li-row {
     display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
     width: 100%;
   }
-  .li-icon, .li-content{
-    display: inline-block;
+  .li-icon {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    line-height: 1;
+    margin-right: 0;
+    padding-top: 0.12em;
+  }
+  .li-content {
+    display: block;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .li-content p {
+    margin-top: 0;
+    margin-bottom: 0.65rem;
+    line-height: 1.4;
+  }
+  .li-content p:last-child {
+    margin-bottom: 0;
   }
   .li-p{
     margin-bottom: 1rem;
@@ -788,15 +850,10 @@ IMPORTANTE:
   .sub-li p{
     font-size: 1.3rem;
   }
-  .bi-caret-right-fill, .bi-check{
-    display: inline-block;
-  }
-  .bi-caret-right-fill{
-    vertical-align: top;
-    margin-top: 0.5rem;
-    font-size: 1.05rem;
-  }
-  .bi-check{
-    vertical-align: top;
+  .bi-caret-right-fill,
+  .bi-check {
+    display: block;
+    margin-top: 0;
+    line-height: 1;
   }
 </style>

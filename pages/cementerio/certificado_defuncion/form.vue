@@ -1,4 +1,4 @@
-﻿<template>
+<template>
 <div class="page main-background">
   <Banner title="Cementerio" />
 
@@ -12,7 +12,7 @@
           <b-form-group label="CUIT *" label-for="fun-cuit">
             <b-form-input id="fun-cuit" v-model="funeraria.cuit" @blur="$v.funeraria.cuit.$touch()"></b-form-input>
             <div v-if="$v.funeraria.cuit.$error" class="validation-error">
-              <i class="bi bi-exclamation-octagon text-danger"></i> Introduce un CUIT vÃ¡lido, sin guiones.
+              <i class="bi bi-exclamation-octagon text-danger"></i> Introduce un CUIT válido, sin guiones.
             </div>
           </b-form-group>
         </b-col>
@@ -27,21 +27,21 @@
       </b-row>
       <b-row>
         <b-col lg="6">
-          <b-form-group label="TelÃ©fono de contacto *" label-for="fun-tel">
+          <b-form-group label="Teléfono de contacto *" label-for="fun-tel">
             <b-form-input id="fun-tel" v-model="funeraria.telefono" @blur="$v.funeraria.telefono.$touch()"></b-form-input>
             <div v-if="$v.funeraria.telefono.$error" class="validation-error">
-              <i class="bi bi-exclamation-octagon text-danger"></i> Debe ser numÃ©rico.
+              <i class="bi bi-exclamation-octagon text-danger"></i> Debe ser numérico.
             </div>
           </b-form-group>
         </b-col>
         <b-col lg="6">
-          <b-form-group label="Correo electrÃ³nico *" label-for="fun-mail">
+          <b-form-group label="Correo electrónico *" label-for="fun-mail">
             <b-form-input id="fun-mail" v-model="funeraria.mail" @blur="$v.funeraria.mail.$touch()"></b-form-input>
             <div v-if="$v.funeraria.mail.$error" class="validation-error">
-              <i class="bi bi-exclamation-octagon text-danger"></i> Email invÃ¡lido.
+              <i class="bi bi-exclamation-octagon text-danger"></i> Email inválido.
             </div>
           </b-form-group>
-          <b-form-group label="Repita el correo electrÃ³nico *" label-for="fun-mail2">
+          <b-form-group label="Repita el correo electrónico *" label-for="fun-mail2">
             <b-form-input id="fun-mail2" v-model="funeraria.mail2" @blur="$v.funeraria.mail2.$touch()"></b-form-input>
             <div v-if="$v.funeraria.mail2.$error" class="validation-error">
               <i class="bi bi-exclamation-octagon text-danger"></i> Los correos deben coincidir.
@@ -53,7 +53,7 @@
 
     <b-card no-body class="col-8 mt-1 section-card"  style="margin: 0px auto 2rem">
       <fieldset>
-        <legend><h3>Datos del Ã³bito</h3></legend>
+        <legend><h3>Datos del óbito</h3></legend>
       </fieldset>
       <b-row>
         <b-col lg="6">
@@ -91,14 +91,14 @@
           <b-form-group label="Nro de documento *" label-for="obi-num">
             <b-form-input id="obi-num" v-model="obito.numeroDocumento" @blur="$v.obito.numeroDocumento.$touch()"></b-form-input>
             <div v-if="$v.obito.numeroDocumento.$error" class="validation-error">
-              <i class="bi bi-exclamation-octagon text-danger"></i> Debe ser numÃ©rico.
+              <i class="bi bi-exclamation-octagon text-danger"></i> Debe ser numérico.
             </div>
           </b-form-group>
         </b-col>
       </b-row>
       <b-row>
         <b-col lg="6">
-          <b-form-group label="Fecha de defunciÃ³n *" label-for="obi-fecha">
+          <b-form-group label="Fecha de defunción *" label-for="obi-fecha">
             <b-form-input id="obi-fecha" type="date" v-model="obito.fechaDefuncion" @blur="$v.obito.fechaDefuncion.$touch()"></b-form-input>
             <div v-if="$v.obito.fechaDefuncion.$error" class="validation-error">
               <i class="bi bi-exclamation-octagon text-danger"></i> Campo requerido.
@@ -110,8 +110,8 @@
 
     <b-card no-body class="col-8 mt-1 section-card"  style="margin: 0px auto 2rem">
       <fieldset>
-        <legend><h3>DocumentaciÃ³n</h3></legend>
-        <p>SubÃ­ archivos legibles en formato imagen o PDF (mÃ¡x. 15 Mb).</p>
+        <legend><h3>Documentación</h3></legend>
+        <p>Subí archivos legibles en formato imagen o PDF (máx. 15 Mb).</p>
       </fieldset>
       
       <b-row>
@@ -123,8 +123,8 @@
       </b-row>
       <b-row>
         <b-col lg="6">
-          <b-form-group label="Certificado de defunciÃ³n *" label-for="doc-cert">
-            <b-form-file id="doc-cert" v-model="documentos.certificadoDefuncion" placeholder="No se seleccionÃ³ un archivo." browse-text="Examinar" accept=".pdf, image/*"
+          <b-form-group label="Certificado de defunción *" label-for="doc-cert">
+            <b-form-file id="doc-cert" v-model="documentos.certificadoDefuncion" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*"
               @change="checkDocumentSize('certificadoDefuncion', $event); touchDoc('certificadoDefuncion')"></b-form-file>
             <div v-if="docErrors.certificadoDefuncion" class="validation-error">
               <i class="bi bi-exclamation-octagon text-danger"></i> {{ docErrors.certificadoDefuncion }}
@@ -133,7 +133,7 @@
         </b-col>
         <b-col lg="6">
           <b-form-group :label="exentoPagoTasa ? 'Comprobante de exento de pago *' : 'Comprobante de pago de Tasa Derecho de cementerio *'" label-for="doc-pago">
-            <b-form-file id="doc-pago" v-model="documentos.comprobantePagoTasa" placeholder="No se seleccionÃ³ un archivo." browse-text="Examinar" accept=".pdf, image/*"
+            <b-form-file id="doc-pago" v-model="documentos.comprobantePagoTasa" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*"
               @change="checkDocumentSize('comprobantePagoTasa', $event); touchDoc('comprobantePagoTasa')"></b-form-file>
             <div v-if="docErrors.comprobantePagoTasa" class="validation-error">
               <i class="bi bi-exclamation-octagon text-danger"></i> {{ docErrors.comprobantePagoTasa }}
@@ -154,17 +154,17 @@
     </div>
   </b-form>
 
-  <b-modal v-model="showOk" title="" ok-only :header-bg-variant="'success'" centered>
-    <template #modal-header>
+  <BModal v-model="showOk" title="" ok-only :header-bg-variant="'success'" centered>
+    <template #header>
       <div class="centeredContainer"><h3>
         <i class="bi bi-check-circle-fill text-light"></i>
       </h3></div>
     </template>
     <div class="centeredContainer">
-      <p class="modal-subtitle">Â¡Tu solicitud fue registrada!</p>
-      <p class="">Pronto recibirÃ¡s novedades por correo electrÃ³nico.</p>
+      <p class="modal-subtitle">¡Tu solicitud fue registrada!</p>
+      <p class="">Pronto recibirás novedades por correo electrónico.</p>
     </div>
-  </b-modal>
+  </BModal>
 </div>
 </template>
 
@@ -235,7 +235,7 @@ export default{
     checkDocumentSize(field, event){
       const file = event && event.target && event.target.files ? event.target.files[0] : null;
       if(file && file.size > this.maxFileSize){
-        this.docErrors[field] = 'Tu archivo pesa '+ (file.size/1024/1024).toFixed(2) + 'MB, supera el lÃ­mite (' + (this.maxFileSize/1024/1024) + 'MB).';
+        this.docErrors[field] = 'Tu archivo pesa '+ (file.size/1024/1024).toFixed(2) + 'MB, supera el límite (' + (this.maxFileSize/1024/1024) + 'MB).';
       }else{
         this.docErrors[field] = null;
       }
@@ -278,7 +278,7 @@ export default{
             documentos: documentosParaGuardar,
           };
 
-          await this.$store.dispatch('cementerio/create', { certificado });
+          await useCementerioStore().create({ certificado });
           this.showOk = true;
         }catch(e){
           console.error('Error al enviar el formulario de cementerio:', e);

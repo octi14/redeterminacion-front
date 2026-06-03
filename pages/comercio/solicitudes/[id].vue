@@ -1,13 +1,14 @@
 <template>
   <div class="page main-background">
     <Banner title="Detalles de solicitud"/>
-    <div v-if="!habilitacion" class="text-center mt-3">
-      <h2> Cargando </h2>
-      <h4> Por favor espere unos segundos </h4>
-    </div>
+    <LoadingState
+      v-if="!habilitacion"
+      size="lg"
+      variant="primary"
+    />
     <!-- Datos generales -->
     <template v-if="habilitacion && adminComercio">
-      <div class="flex col" style="width: 96%">
+      <div class="solicitud-resumen">
         <div class="row justify-content-center mt-3">
           <p class="h5"> Número de trámite: <b> {{ habilitacion.nroTramite }}  </b></p>
           <span v-if="mostrarIconoAdvertencia" class="iconoAdvertencia">
@@ -19,36 +20,44 @@
           <p class="h5"> Tipo de trámite: <b> {{ habilitacion.tipoSolicitud }}  </b></p>
         </div>
         <div class="row justify-content-center mt-3">
-          <div class="h5 row"> Estado:
-            <h5 :class="getStatusClass(habilitacion.status)" class="ml-2"> {{ habilitacion.status }}</h5>
+          <div class="h5 d-flex align-items-center justify-content-center">
+            <span>Estado:</span>
+            <span :class="getStatusClass(habilitacion.status)" class="ml-2">{{ habilitacion.status }}</span>
           </div>
         </div>
         <div class="col mx-auto" v-if="habilitacion.status === 'Finalizada' || !esHabilitacion">
-          <div class="h5 row justify-content-center"> Número de expediente: <b class="text-success ml-1"> {{ habilitacion.nroExpediente }} </b> </div>
-          <div class="h5 row justify-content-center" v-if="!esHabilitacion"> Alcance: <b class="text-success ml-1"> {{ habilitacion.alcance }} </b> </div>
-          <div class="h5 row justify-content-center" v-if="!esHabilitacion"> Legajo: <b class="text-success ml-1"> {{ habilitacion.nroLegajo }} </b> </div>
+          <div class="h5 d-flex align-items-center justify-content-center">
+            <span>Número de expediente:</span>
+            <b class="text-success ml-1">{{ habilitacion.nroExpediente || '—' }}</b>
+          </div>
+          <div class="h5 d-flex align-items-center justify-content-center" v-if="!esHabilitacion">
+            <span>Alcance:</span>
+            <b class="text-success ml-1">{{ habilitacion.alcance || '—' }}</b>
+          </div>
+          <div class="h5 d-flex align-items-center justify-content-center" v-if="!esHabilitacion">
+            <span>Legajo:</span>
+            <b class="text-success ml-1">{{ habilitacion.nroLegajo || '—' }}</b>
+          </div>
         </div>        
-        <div class="row justify-content-center mt-3" v-if="adminMaster && visibleLocal">
-          <div class="h5 row"> Visibilidad:
-            <h5 :class="getStatusClass(habilitacion.status)" class="ml-2"> 
-              <i class="bi bi-eye-slash"></i>
-              <i class="bi bi-eye-slash"></i>
+        <div class="row justify-content-center mt-3" v-if="adminMaster">
+          <div class="h5 d-flex align-items-center justify-content-center">
+            <span>Visibilidad:</span>
+            <span :class="getStatusClass(habilitacion.status)" class="ml-2"> 
+              <i :class="visibleLocal ? 'bi bi-eye' : 'bi bi-eye-slash'"></i>
               <span v-if="visibleLocal">Visible</span>
               <span v-else>Invisible</span>
-            </h5>
+            </span>
           </div>
         </div>
       </div>
-      <div class="row justify-content-center mt-2" v-if="adminMaster">
+      <div class="mt-2 visibilidad-switch-row" v-if="adminMaster">
         <b-form-checkbox
           switch
           v-model="visibleLocal"
           @change="onToggleVisibilidad"
         >
           Visibilidad del trámite
-          
-        <i class="bi bi-eye"></i>
-        <i class="bi bi-eye-slash"></i>
+          <i :class="visibleLocal ? 'bi bi-eye ml-1' : 'bi bi-eye-slash ml-1'"></i>
         </b-form-checkbox>
       </div>
       <!--Botones-->
@@ -58,8 +67,15 @@
         <b-button @click="onShowFinalizarSolicitud" variant="success" class="btn-4 mt-3 mx-1" v-if="(!renovacion && !reempadronamiento) && habilitacion && (habilitacion.status === 'Esperando documentación' || habilitacion.status === 'Esperando pago')"> Finalizar solicitud </b-button>
         <b-button @click="onShowFinalizarRenovacion" variant="success" class="btn-4 mt-3 mx-1" v-if="(renovacion || reempadronamiento) && habilitacion && habilitacion.status === 'Esperando documentación'"> Finalizar solicitud </b-button>
         <b-button @click="onRestablecer" variant="secondary" class="btn-4 mt-3 mx-1" v-if="adminMaster && habilitacion && habilitacion.status != 'En revisión'"> Volver a estado En Revisión </b-button>
-        <b-button @click="onShowObservaciones" variant="primary" class="btn-2 mt-3 mx-1"> Ver observaciones </b-button>
-        <b-button @click="onDescargarHabilitacion(); registrarActividad('Descargar Trámite', 'Trámite Descargado', habilitacion.nroTramite)" v-if="adminComercio || adminArvige || adminModernizacion" variant="success" class="btn-4 mt-3 mx-1">
+      </div>
+      <div class="solicitud-quick-actions" v-if="jefeComercio">
+        <b-button size="sm" @click="onShowObservaciones" variant="primary">Ver observaciones</b-button>
+        <b-button
+          size="sm"
+          @click="onDescargarHabilitacion(); registrarActividad('Descargar Trámite', 'Trámite Descargado', habilitacion.nroTramite)"
+          v-if="adminComercio || adminArvige || adminModernizacion"
+          variant="success"
+        >
           <i class="bi bi-download"></i> Descargar trámite
         </b-button>
       </div>
@@ -228,22 +244,19 @@
             </div>
             <div class="layout" v-if="!baja">
               <p class="col col-main">
-                <i class="bi bi-check-circle-fill text-success"></i>
-                <i class="bi bi-x-circle-fill text-danger"></i>
+                <i :class="habilitacion?.mesas === true ? 'bi bi-check-circle-fill text-success' : 'bi bi-x-circle-fill text-danger'"></i>
                 <strong class="text-primary">Mesas y sillas</strong><br>
               </p>
             </div>
             <div class="layout" v-if="!baja">
               <p class="col col-main">
-                <i class="bi bi-check-circle-fill text-success"></i>
-                <i class="bi bi-x-circle-fill text-danger"></i>
+                <i :class="habilitacion?.marquesina === true ? 'bi bi-check-circle-fill text-success' : 'bi bi-x-circle-fill text-danger'"></i>
                 <strong class="text-primary">Marquesina</strong><br>
               </p>
             </div>
             <div class="layout" v-if="!baja">
               <p class="col col-main">
-                <i class="bi bi-check-circle-fill text-success"></i>
-                <i class="bi bi-x-circle-fill text-danger"></i>
+                <i :class="habilitacion?.carteles === true ? 'bi bi-check-circle-fill text-success' : 'bi bi-x-circle-fill text-danger'"></i>
                 <strong class="text-primary">Carteles</strong><br>
               </p>
             </div>
@@ -261,8 +274,7 @@
             </div>
             <div class="layout" v-if="!baja">
               <p class="col col-main">
-                <i class="bi bi-check-circle-fill text-success"></i>
-                <i class="bi bi-x-circle-fill text-danger"></i>
+                <i :class="habilitacion?.mercaderia === true ? 'bi bi-check-circle-fill text-success' : 'bi bi-x-circle-fill text-danger'"></i>
                 <strong class="text-primary">Mercadería</strong><br>
               </p>
             </div>
@@ -368,11 +380,8 @@
           </div>
         </div>
         <div class="justify-content-center mx-auto" v-else>
-          <p class="h4 text-loading text-center"> Cargando documentos... </p>
-          <div class="row justify-content-center mb-3">
-            <b-spinner variant="success"></b-spinner>
-          </div>
-          <p class="text-muted text-center small">
+          <LoadingState variant="success" size="lg" />
+          <p class="text-muted text-center small mt-2">
             Por favor, espere mientras se cargan los documentos antes de proceder con la revisión.
           </p>
         </div>
@@ -454,15 +463,17 @@
 
     <!-- Botón Volver - Abajo -->
     <div class="text-center my-3">
-      <NuxtLink to="/comercio/solicitudes">
-        <b-button variant="primary" class="mx-2">Volver</b-button>
+      <NuxtLink to="/comercio/solicitudes" custom v-slot="{ navigate }">
+        <b-button variant="primary" size="sm" class="page-btn-volver" @click="navigate">
+          Volver
+        </b-button>
       </NuxtLink>
     </div>
 
     <!-- Modals -->
     <!--Modal previo a rechazar el trámite-->
-    <b-modal v-model="showRejectPopup" hide-footer :header-bg-variant="'danger'" centered>
-        <template #modal-header>
+    <BModal v-model="showRejectPopup" no-footer :header-bg-variant="'danger'" centered>
+        <template #header>
           <div class="confirmation-popup-header mx-auto">
             <i class="bi bi-envelope text-light"></i>
           </div>
@@ -485,16 +496,16 @@
           <b-form-textarea v-model="observaciones" required type="text" /> -->
 
           <div class="text-center mt-3">
-            <b-btn variant="danger" @click="onSendReject()" >
+            <b-button variant="danger" @click="onSendReject()" >
                 Confirmar Rechazo
-            </b-btn>
+            </b-button>
           </div>
         </div>
-    </b-modal>
+    </BModal>
 
     <!--Modal solicitar rectificación de datos-->
-    <!-- <b-modal v-model="showRectificacion" hide-footer :header-bg-variant="'secondary'" centered>
-      <template #modal-header>
+    <!-- <BModal v-model="showRectificacion" no-footer :header-bg-variant="'secondary'" centered>
+      <template #header>
         <div class="confirmation-popup-header mx-auto">
           <i class="bi bi-exclamation-octagon text-light"></i>
         </div>
@@ -504,16 +515,16 @@
         <hr/>
         <p>Se solicitará una rectificación de datos o de documentación. Recordá notificar al solicitante a través de su correo electrónico indicando los motivos.</p>
         <div class="text-center mt-3">
-          <b-btn variant="secondary" @click="onSendRectificacion()" >
+          <b-button variant="secondary" @click="onSendRectificacion()" >
               Aceptar
-          </b-btn>
+          </b-button>
         </div>
       </div>
-    </b-modal> -->
+    </BModal> -->
 
     <!--Modal previo a aprobar(con y sin inspección)-->
-    <b-modal v-model="showPrevApprove" hide-footer :header-bg-variant="'secondary'" centered>
-      <template #modal-header>
+    <BModal v-model="showPrevApprove" no-footer :header-bg-variant="'secondary'" centered>
+      <template #header>
         <div class="confirmation-popup-header mx-auto">
           <i class="bi bi-envelope text-light"></i>
         </div>
@@ -527,16 +538,16 @@
             <label class="form-check-label" for="documentCheckbox"><b> Si. </b> Se enviará automáticamente un mail indicando que la persona deberá pedir un Turno Web para Inspección Comercial.</label>
         </div>
         <div class="text-center mt-3">
-          <b-btn variant="primary" @click="onSendApprove()" >
+          <b-button variant="primary" @click="onSendApprove()" >
               Aceptar
-          </b-btn>
+          </b-button>
         </div>
       </div>
-    </b-modal>
+    </BModal>
 
     <!--Modal previo a aprobar una baja-->
-    <b-modal v-model="showAprobarBaja" hide-footer :header-bg-variant="'secondary'" centered>
-      <template #modal-header>
+    <BModal v-model="showAprobarBaja" no-footer :header-bg-variant="'secondary'" centered>
+      <template #header>
         <div class="confirmation-popup-header mx-auto">
           <i class="bi bi-check-circle text-light"></i>
         </div>
@@ -548,16 +559,16 @@
            efectuar el pago de las deudas de tasas previstas para el rubro.</p>
         <hr/>
         <div class="text-center mt-3">
-          <b-btn variant="primary" @click="onSendAprobarBaja()" >
+          <b-button variant="primary" @click="onSendAprobarBaja()" >
               Aceptar
-          </b-btn>
+          </b-button>
         </div>
       </div>
-    </b-modal>
+    </BModal>
 
     <!--Modal solicitud aprobada-->
-    <b-modal v-model="showApprove" hide-footer :header-bg-variant="'success'" centered>
-      <template #modal-header>
+    <BModal v-model="showApprove" no-footer :header-bg-variant="'success'" centered>
+      <template #header>
         <div class="confirmation-popup-header mx-auto">
           <i class="bi bi-envelope text-light"></i>
         </div>
@@ -576,16 +587,16 @@
           <li v-if="!baja">  Constituya el Domicilio Fiscal Electrónico (DFE). </li>
         </ul>
         <div class="text-center mt-3">
-          <b-btn variant="success" @click="showApprove = false">
+          <b-button variant="success" @click="showApprove = false">
               Aceptar
-          </b-btn>
+          </b-button>
         </div>
       </div>
-    </b-modal>
+    </BModal>
 
     <!--Modal solicitar documentación(inspección aprobada)-->
-    <b-modal v-model="showSolicitarDoc" hide-footer :header-bg-variant="'success'" centered>
-      <template #modal-header>
+    <BModal v-model="showSolicitarDoc" no-footer :header-bg-variant="'success'" centered>
+      <template #header>
         <div class="confirmation-popup-header mx-auto">
           <i class="bi bi-envelope text-light"></i>
         </div>
@@ -599,16 +610,16 @@
           <li>  Constituya el Domicilio Fiscal Electrónico (DFE). </li>
         </ul>
         <div class="text-center mt-3">
-          <b-btn variant="success" @click="onSendSolicitar()" >
+          <b-button variant="success" @click="onSendSolicitar()" >
               Aceptar
-          </b-btn>
+          </b-button>
         </div>
       </div>
-    </b-modal>
+    </BModal>
 
     <!--Modal finalizar trámite y colocar el número de expediente-->
-    <b-modal v-model="showFinalizar" hide-footer :header-bg-variant="'success'" centered>
-      <template #modal-header>
+    <BModal v-model="showFinalizar" no-footer :header-bg-variant="'success'" centered>
+      <template #header>
         <div class="confirmation-popup-header mx-auto">
           <i class="bi bi-check-circle text-light"></i>
         </div>
@@ -662,16 +673,16 @@
         </div>
         <small> Recordá que más adelante podrás consultar los datos proporcionados en la sección de búsqueda. </small>
         <div class="text-center mt-3">
-          <b-btn variant="success" :disabled="!nroExpediente1 || !nroExpediente2" @click="onSendFinalizar();" >
+          <b-button variant="success" :disabled="!nroExpediente1 || !nroExpediente2" @click="onSendFinalizar();" >
               Aceptar
-          </b-btn>
+          </b-button>
         </div>
       </div>
-    </b-modal>
+    </BModal>
 
     <!--Modal finalizar trámite y colocar el número de expediente-->
-    <b-modal v-model="showFinalizarRenovacion" hide-footer :header-bg-variant="'success'" centered>
-      <template #modal-header>
+    <BModal v-model="showFinalizarRenovacion" no-footer :header-bg-variant="'success'" centered>
+      <template #header>
         <div class="confirmation-popup-header mx-auto">
           <i class="bi bi-check-circle text-light"></i>
         </div>
@@ -725,16 +736,16 @@
         </div>
         <small> Recordá que más adelante podrás consultar los datos proporcionados en la sección de búsqueda. </small>
         <div class="text-center mt-3">
-          <b-btn variant="success" :disabled="!nroExpediente1 || !nroExpediente2 || !alcance" @click="onSendFinalizarRenovacion()" >
+          <b-button variant="success" :disabled="!nroExpediente1 || !nroExpediente2 || !alcance" @click="onSendFinalizarRenovacion()" >
               Aceptar
-          </b-btn>
+          </b-button>
         </div>
       </div>
-    </b-modal>
+    </BModal>
 
     <!--Modal volver a erstado En revisión-->
-    <b-modal v-model="showRestoreDefault" hide-footer :header-bg-variant="'secondary'" centered>
-      <template #modal-header>
+    <BModal v-model="showRestoreDefault" no-footer :header-bg-variant="'secondary'" centered>
+      <template #header>
         <div class="confirmation-popup-header mx-auto">
           <i class="bi bi-exclamation-triangle text-light"></i>
         </div>
@@ -744,32 +755,32 @@
         <p style="color:black"> ¿Estás seguro/a de que deseas volver el trámite a “En revisión”? </p>
         <small>Esta acción es permanente y reinicia el proceso de verificación del trámite.</small>
         <div class="text-center mt-4">
-          <b-btn variant="success" @click="onSendRestablecer()" >
+          <b-button variant="success" @click="onSendRestablecer()" >
               Aceptar
-          </b-btn>
-          <b-btn variant="danger" @click="onRestablecer" >
+          </b-button>
+          <b-button variant="danger" @click="onRestablecer" >
               Cancelar
-          </b-btn>
+          </b-button>
         </div>
       </div>
-    </b-modal>
+    </BModal>
 
-    <b-modal v-model="showObservaciones" header-bg-variant="primary" title="Observaciones" title-class="text-light" hide-footer centered>
+    <BModal v-model="showObservaciones" header-bg-variant="primary" title="Observaciones" title-class="text-light" no-footer centered>
       <p v-html="observaciones"></p>
-    </b-modal>
+    </BModal>
 
-    <b-modal v-model="showDocumentoModal" id="documento-modal" hide-footer centered>
-      <template #modal-header>
+    <BModal v-model="showDocumentoModal" id="documento-modal" no-footer centered>
+      <template #header>
         <h3 class="icon-orange text-primary text-center"><b>{{ DocumentoModalTitle + " - " + habilitacion.nroTramite }}</b></h3>
       </template>
       <div class="modal-body">
 
       </div>
-    </b-modal>
+    </BModal>
 
     <!--Modal revisión incompleta-->
-    <b-modal v-model="showRevisionIncompleta" hide-footer :header-bg-variant="'warning'" centered>
-      <template #modal-header>
+    <BModal v-model="showRevisionIncompleta" no-footer :header-bg-variant="'warning'" centered>
+      <template #header>
         <div class="confirmation-popup-header mx-auto">
           <i class="bi bi-exclamation-triangle text-light"></i>
         </div>
@@ -780,16 +791,16 @@
         <p style="color:black">Por favor, completa la revisión de todos los elementos antes de finalizar.</p>
         <small>Debes revisar los datos del solicitante, datos del inmueble y todos los documentos presentados.</small>
         <div class="text-center mt-4">
-          <b-btn variant="warning" @click="showRevisionIncompleta = false">
+          <b-button variant="warning" @click="showRevisionIncompleta = false">
               Aceptar
-          </b-btn>
+          </b-button>
         </div>
       </div>
-    </b-modal>
+    </BModal>
 
     <!--Modal rechazo automático-->
-    <b-modal v-model="showRechazoAutomatico" hide-footer :header-bg-variant="'danger'" centered>
-      <template #modal-header>
+    <BModal v-model="showRechazoAutomatico" no-footer :header-bg-variant="'danger'" centered>
+      <template #header>
         <div class="confirmation-popup-header mx-auto">
           <i class="bi bi-exclamation-triangle text-light"></i>
         </div>
@@ -800,23 +811,24 @@
         <p style="color:black">El trámite será rechazado automáticamente al finalizar la revisión.</p>
         <small>Revisá todos los elementos marcados como incorrectos<br/> antes de continuar.</small>
         <div class="text-center mt-4">
-          <b-btn variant="danger" @click="showRechazoAutomatico = false">
+          <b-button variant="danger" @click="showRechazoAutomatico = false">
               Aceptar
-          </b-btn>
+          </b-button>
         </div>
       </div>
-    </b-modal>
+    </BModal>
 
   </div>
 </template>
 
 <script>
-import JSZip from 'jszip';
-import { saveAs } from 'file-saver';
+import { loadJSZip } from '~/utils/loadJszip';
+import { saveAsFile } from '~/utils/saveAsFile';
 import * as XLSX from 'xlsx';
 import MailerService from "@/service/mailer.js";
 
 export default {
+  setup(){ const { showToast } = useProjectToast(); return { showToast } },
   data() {
     return {
       statusClasses: {
@@ -889,24 +901,30 @@ export default {
     },
 
     adminComercio(){
-      return this.$store.state.user.admin == "comercio" || this.$store.state.user.admin == "master"
+      const admin = useUserStore().admin
+      return admin == "comercio" || admin == "master"
     },
     adminArvige(){
-      return this.$store.state.user.admin == "arvige" || this.$store.state.user.admin == "master"
+      const admin = useUserStore().admin
+      return admin == "arvige" || admin == "master"
     },
     adminModernizacion(){
-      return this.$store.state.user.admin == "modernizacion" || this.$store.state.user.admin == "master"
+      const admin = useUserStore().admin
+      return admin == "modernizacion" || admin == "master"
     },
     adminMaster(){
-      return this.$store.state.user.admin == "master"
+      return useUserStore().admin == "master"
     },
     jefeComercio(){
-      return (this.$store.state.user.username === "myriamalonso@gesell.gob.ar"
-              || this.$store.state.user.username === "nataliamegias@gesell.gob.ar"
-              || this.$store.state.user.username === "mariaelisabetbahlcke@gesell.gob.ar") || this.$store.state.user.admin == "master"
+      const userStore = useUserStore()
+      return (userStore.username === "myriamalonso@gesell.gob.ar"
+              || userStore.username === "nataliamegias@gesell.gob.ar"
+              || userStore.username === "mariaelisabetbahlcke@gesell.gob.ar") || userStore.admin == "master"
     },
     hoteleria(){
-      for (const item of this.habilitacion.serviciosHoteleria) {
+      const servicios = this.habilitacion?.serviciosHoteleria
+      if (!Array.isArray(servicios)) return false
+      for (const item of servicios) {
         if (item.value !== false) {
           return true;
         }
@@ -914,75 +932,47 @@ export default {
       return false;
     },
     documentos(){
-      return this.$store.state.documentos.all
-    },
-
-        elementosIncorrectos() {
-      const elementos = [];
-
-      // Verificar datos del solicitante
-      if (this.revisionSolicitante === 'incorrecto') {
-        elementos.push('Datos del solicitante');
-      }
-
-      // Verificar datos del inmueble
-      if (this.revisionInmueble === 'incorrecto') {
-        elementos.push('Datos del inmueble');
-      }
-
-      // Verificar documentos incorrectos
-      if (this.revisionDocumentos) {
-        Object.entries(this.revisionDocumentos).forEach(([nombreDocumento, valor]) => {
-          if (valor === 'incorrecto') {
-            elementos.push(nombreDocumento);
-          }
-        });
-      }
-
-      console.log('Elementos incorrectos:', elementos);
-      return elementos;
+      return useDocumentosStore().all
     }
   },
-  async fetch() {
-    const habilitacionId = this.$route.params.id
-    await this.$store.dispatch('habilitaciones/getSingle',{
-      id: habilitacionId,
-    })
-    this.habilitacion = this.$store.state.habilitaciones.single
-
-    // Verificar que habilitacion existe antes de acceder a sus propiedades
-    if (!this.habilitacion) {
-      console.error('No se pudo cargar la habilitación')
-      return
-    }
-
-    if (!this.adminMaster && this.habilitacion.visible === false) {
-      this.$bvToast.toast('El trámite no está disponible para este usuario.', {
-        title: 'Trámite no disponible',
-        variant: 'warning',
-        solid: true,
-      })
-      this.$router.replace('/comercio/solicitudes')
-      return
-    }
-
-    this.visibleLocal = this.habilitacion.visible !== false
-
-    const nroTramite = this.habilitacion.nroTramite
-    await this.$store.dispatch('turnos/getSingle', { nroTramite })
-    this.turno = this.$store.state.turnos.single
-
-    await this.$store.dispatch('documentos/getById', {
-      id: habilitacionId,
-    })
-  },
-  fetchOnServer: false,
-  activated() {
-    this.$fetch()
+  async mounted() {
+    await this.loadSolicitud()
   },
   methods: {
+    async loadSolicitud() {
+      const habilitacionId = this.$route.params.id
+      await useHabilitacionesStore().getSingle({
+        id: habilitacionId,
+      })
+      this.habilitacion = useHabilitacionesStore().single
+
+      if (!this.habilitacion) {
+        console.error('No se pudo cargar la habilitación')
+        return
+      }
+
+      if (!this.adminMaster && this.habilitacion.visible === false) {
+        this.showToast('El trámite no está disponible para este usuario.', {
+          title: 'Trámite no disponible',
+          variant: 'warning',
+          solid: true,
+        })
+        this.$router.replace('/comercio/solicitudes')
+        return
+      }
+
+      this.visibleLocal = this.habilitacion.visible !== false
+
+      const nroTramite = this.habilitacion.nroTramite
+      await useTurnosStore().getSingle({ nroTramite })
+      this.turno = useTurnosStore().single
+
+      await useDocumentosStore().getById({
+        id: habilitacionId,
+      })
+    },
     async registrarActividad(evento, result, nroSolicitud){
-      const userId = this.$store.state.user.username; // Reemplaza con el ID del usuario real
+      const userId = useUserStore().username; // Reemplaza con el ID del usuario real
       const actionType = evento;
       const actionResult = "Trámite nro " + nroSolicitud + ' ' + result;
 
@@ -1001,12 +991,12 @@ export default {
       const visible = !!this.visibleLocal;
 
       try {
-        await this.$store.dispatch('habilitaciones/updateLazy', {
+        await useHabilitacionesStore().updateLazy({
           id,
           habilitacion: { visible },
         });
-        this.$store.commit('habilitaciones/setSingleVisible', visible);
-        this.$bvToast.toast(
+        useHabilitacionesStore().setSingleVisible(visible);
+        this.showToast(
           visible
             ? 'El trámite ahora es visible para usuarios no administradores.'
             : 'El trámite ahora es invisible para usuarios no administradores.',
@@ -1017,7 +1007,7 @@ export default {
           }
         );
       } catch (e) {
-        this.$bvToast.toast('No se pudo actualizar la visibilidad del trámite.', {
+        this.showToast('No se pudo actualizar la visibilidad del trámite.', {
           title: 'Error',
           variant: 'danger',
           solid: true,
@@ -1064,8 +1054,7 @@ export default {
         observaciones: observaciones + " - " + "Solicita rectificación el día " + new Date().toLocaleDateString('es-AR')
       }
       const id = this.habilitacion.id
-      const userToken = this.$store.state.user.token
-      await this.$store.dispatch('habilitaciones/update', {
+      await useHabilitacionesStore().update({
         id,
         habilitacion,
       })
@@ -1082,8 +1071,7 @@ export default {
         observaciones: observaciones + " - " + "Se solicita documentación el día " + new Date().toLocaleDateString('es-AR')
       }
       const id = this.habilitacion.id
-      const userToken = this.$store.state.user.token
-      await this.$store.dispatch('habilitaciones/update', {
+      await useHabilitacionesStore().update({
         id,
         habilitacion,
       })
@@ -1093,13 +1081,11 @@ export default {
       try {
         if (!this.habilitacion.mail) {
           console.error('No se encontró el email del solicitante')
-          this.$bvToast.toast('No se pudo enviar el correo: email del solicitante no disponible.', { variant: 'danger' })
-          return
-        }
-
-        const destinatario = this.habilitacion.mail
-        const asunto = `Documentación requerida - Trámite N° ${this.habilitacion.nroTramite}`
-        const mensaje = `Estimado/a contribuyente,
+          this.showToast('No se pudo enviar el correo: email del solicitante no disponible', { variant: 'danger' })
+        } else {
+          const destinatario = this.habilitacion.mail
+          const asunto = `Documentación requerida - Trámite N° ${this.habilitacion.nroTramite}`
+          const mensaje = `Estimado/a contribuyente,
 
 Su trámite comercial requiere que presente los originales de los documentos que envió online.
 
@@ -1115,10 +1101,11 @@ En caso contrario, el trámite caerá y deberá iniciarlo nuevamente.
 
 Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
 
-        await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
-        this.$bvToast.toast('Correo de solicitud de documentación enviado al solicitante.', { variant: 'success' })
+          await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
+          this.showToast('Correo de solicitud de documentación enviado al solicitante', { variant: 'success' })
+        }
       } catch (e) {
-        this.$bvToast.toast('No se pudo enviar el correo de solicitud de documentación.', { variant: 'danger' })
+        this.showToast('No se pudo enviar el correo de solicitud de documentación', { variant: 'danger' })
       }
 
       this.wait(300)
@@ -1140,8 +1127,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
         observaciones: observaciones + " - " + "Se finaliza el trámite el día " + new Date().toLocaleDateString('es-AR')
       }
       const id = this.habilitacion.id
-      const userToken = this.$store.state.user.token
-      await this.$store.dispatch('habilitaciones/update', {
+      await useHabilitacionesStore().update({
         id,
         habilitacion,
       })
@@ -1155,7 +1141,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
       try {
         if (!this.habilitacion.mail) {
           console.error('No se encontró el email del solicitante para finalización')
-          this.$bvToast.toast('No se pudo enviar el correo: email del solicitante no disponible.', { variant: 'danger' })
+          this.showToast('No se pudo enviar el correo: email del solicitante no disponible', { variant: 'danger' })
         } else {
           const destinatario = this.habilitacion.mail
           const asunto = `Trámite comercial finalizado - N° ${this.habilitacion.nroTramite}`
@@ -1171,11 +1157,11 @@ Número de expediente: ${nroExpediente}${alcance ? '\nAlcance: ' + alcance : ''}
 El trámite ha sido culminado exitosamente. Recuerde que en el plazo de 10 dias hábiles deberá acreditar
 los originales de la documentación en el Departamento Comercio sito en Avda 3 N° 820 Planta Baja - Villa Gesell.`
 
-          await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
-          this.$bvToast.toast('Correo de finalización enviado al solicitante.', { variant: 'success' })
+          await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
+          this.showToast('Correo de finalización enviado al solicitante', { variant: 'success' })
         }
       } catch (e) {
-        this.$bvToast.toast('No se pudo enviar el correo de finalización.', { variant: 'danger' })
+        this.showToast('No se pudo enviar el correo de finalización', { variant: 'danger' })
       }
 
       this.wait(300)
@@ -1197,8 +1183,7 @@ los originales de la documentación en el Departamento Comercio sito en Avda 3 N
       }
 
       const id = this.habilitacion.id
-      const userToken = this.$store.state.user.token
-      await this.$store.dispatch('habilitaciones/update', {
+      await useHabilitacionesStore().update({
         id,
         habilitacion,
       })
@@ -1217,8 +1202,7 @@ los originales de la documentación en el Departamento Comercio sito en Avda 3 N
         habilitacion.status = "Esperando turno"
       }
       const id = this.habilitacion.id
-      const userToken = this.$store.state.user.token
-      await this.$store.dispatch('habilitaciones/update', {
+      await useHabilitacionesStore().update({
         id,
         habilitacion,
       })
@@ -1228,16 +1212,14 @@ los originales de la documentación en el Departamento Comercio sito en Avda 3 N
       try {
         if (!this.habilitacion.mail) {
           console.error('No se encontró el email del solicitante')
-          this.$bvToast.toast('No se pudo enviar el correo: email del solicitante no disponible.', { variant: 'danger' })
-          return
-        }
+          this.showToast('No se pudo enviar el correo: email del solicitante no disponible', { variant: 'danger' })
+        } else {
+          const destinatario = this.habilitacion.mail
+          let asunto, mensaje
 
-        const destinatario = this.habilitacion.mail
-        let asunto, mensaje
-
-        if (this.inspeccion) {
-          asunto = `Solicitud de trámite comercial aprobada - Requiere inspección - N° ${this.habilitacion.nroTramite}`
-          mensaje = `Estimado/a contribuyente,
+          if (this.inspeccion) {
+            asunto = `Solicitud de trámite comercial aprobada - Requiere inspección - N° ${this.habilitacion.nroTramite}`
+            mensaje = `Estimado/a contribuyente,
 
 Su solicitud de trámite comercial ha sido aprobada exitosamente. Ha finalizado la etapa de revisión y la documentación presentada es correcta.
 
@@ -1249,9 +1231,9 @@ Rubro: ${this.habilitacion.rubro}
 
 Para continuar con el trámite, debe solicitar un turno para inspección comercial en la página de turnos web.
 Puede acceder a la página de turnos en: https://haciendavgesell.gob.ar/comercio/turnos .`
-        } else {
-          asunto = `Solicitud de trámite comercial aprobada - N° ${this.habilitacion.nroTramite}`
-          mensaje = `Estimado/a contribuyente,
+          } else {
+            asunto = `Solicitud de trámite comercial aprobada - N° ${this.habilitacion.nroTramite}`
+            mensaje = `Estimado/a contribuyente,
 
 Su solicitud de trámite comercial ha sido aprobada exitosamente.
 
@@ -1267,12 +1249,13 @@ y proceder al pago de la Tasa de Habilitacion pertinente.
 
 Adicionalmente, le comentamos que puede presentar su documentación en la Casa de Villa Gesell en Buenos Aires,
 ubicada en la Avenida Corrientes 1312, piso 11 oficina 42, CABA.`
-        }
+          }
 
-        await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
-        this.$bvToast.toast('Correo de aprobación enviado al solicitante.', { variant: 'success' })
+          await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
+          this.showToast('Correo de aprobación enviado al solicitante', { variant: 'success' })
+        }
       } catch (e) {
-        this.$bvToast.toast('No se pudo enviar el correo de aprobación.', { variant: 'danger' })
+        this.showToast('No se pudo enviar el correo de aprobación', { variant: 'danger' })
       }
 
       this.wait(300)
@@ -1291,8 +1274,7 @@ ubicada en la Avenida Corrientes 1312, piso 11 oficina 42, CABA.`
         observaciones: observaciones + " - " + "Se aprueba la solicitud el " + new Date().toLocaleDateString('es-AR') + " " + new Date().toLocaleTimeString() + ". Esperando pago."
       }
       const id = this.habilitacion.id
-      const userToken = this.$store.state.user.token
-      await this.$store.dispatch('habilitaciones/update', {
+      await useHabilitacionesStore().update({
         id,
         habilitacion,
       })
@@ -1302,13 +1284,11 @@ ubicada en la Avenida Corrientes 1312, piso 11 oficina 42, CABA.`
       try {
         if (!this.habilitacion.mail) {
           console.error('No se encontró el email del solicitante para aprobación de baja')
-          this.$bvToast.toast('No se pudo enviar el correo: email del solicitante no disponible.', { variant: 'danger' })
-          return
-        }
-
-        const destinatario = this.habilitacion.mail
-        const asunto = `Solicitud de baja aprobada - N° ${this.habilitacion.nroTramite}`
-        const mensaje = `Estimado/a contribuyente,
+          this.showToast('No se pudo enviar el correo: email del solicitante no disponible', { variant: 'danger' })
+        } else {
+          const destinatario = this.habilitacion.mail
+          const asunto = `Solicitud de baja aprobada - N° ${this.habilitacion.nroTramite}`
+          const mensaje = `Estimado/a contribuyente,
 
 Su solicitud de baja ha sido aprobada exitosamente.
 
@@ -1320,10 +1300,11 @@ Para completar el trámite, debe abonar las deudas de tasas correspondientes en 
 
 Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (habilitacioncomercial@gesell.gob.ar).`
 
-        await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
-        this.$bvToast.toast('Correo de aprobación de baja enviado al solicitante.', { variant: 'success' })
+          await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
+          this.showToast('Correo de aprobación de baja enviado al solicitante', { variant: 'success' })
+        }
       } catch (e) {
-        this.$bvToast.toast('No se pudo enviar el correo de aprobación de baja.', { variant: 'danger' })
+        this.showToast('No se pudo enviar el correo de aprobación de baja', { variant: 'danger' })
       }
 
       this.wait(300)
@@ -1344,8 +1325,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
         observaciones: observaciones + " - " + "Se finaliza la solicitud el " + new Date().toLocaleDateString('es-AR') + " " + new Date().toLocaleTimeString()
       }
       const id = this.habilitacion.id
-      const userToken = this.$store.state.user.token
-      await this.$store.dispatch('habilitaciones/update', {
+      await useHabilitacionesStore().update({
         id,
         habilitacion,
       })
@@ -1359,7 +1339,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
       try {
         if (!this.habilitacion.mail) {
           console.error('No se encontró el email del solicitante para finalización de renovación')
-          this.$bvToast.toast('No se pudo enviar el correo: email del solicitante no disponible.', { variant: 'danger' })
+          this.showToast('No se pudo enviar el correo: email del solicitante no disponible', { variant: 'danger' })
         } else {
           const destinatario = this.habilitacion.mail
           const tipoTramite = this.reempadronamiento ? 'reempadronamiento' : 'renovación'
@@ -1378,11 +1358,11 @@ El trámite está completo. En los próximos días recibirá la documentación c
 
 Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (renovacioncomercial@gesell.gob.ar).`
 
-          await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
-          this.$bvToast.toast(`Correo de finalización de ${tipoTramite} enviado al solicitante.`, { variant: 'success' })
+          await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
+          this.showToast(`Correo de finalización de ${tipoTramite} enviado al solicitante.`, { variant: 'success' })
         }
       } catch (e) {
-        this.$bvToast.toast('No se pudo enviar el correo de finalización.', { variant: 'danger' })
+        this.showToast('No se pudo enviar el correo de finalización', { variant: 'danger' })
       }
 
       this.wait(300)
@@ -1407,8 +1387,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
         status: 'Rechazada'
       }
       const id = this.habilitacion.id
-      const userToken = this.$store.state.user.token
-      await this.$store.dispatch('habilitaciones/update', {
+      await useHabilitacionesStore().update({
         id,
         habilitacion,
       })
@@ -1418,12 +1397,10 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
       try {
         if (!this.habilitacion.mail) {
           console.error('No se encontró el email del solicitante para rechazo')
-          this.$bvToast.toast('No se pudo enviar el correo: email del solicitante no disponible.', { variant: 'danger' })
-          return
-        }
-
-        const destinatario = this.habilitacion.mail
-        const asunto = `Solicitud de trámite comercial rechazada - N° ${this.habilitacion.nroTramite}`
+          this.showToast('No se pudo enviar el correo: email del solicitante no disponible', { variant: 'danger' })
+        } else {
+          const destinatario = this.habilitacion.mail
+          const asunto = `Solicitud de trámite comercial rechazada - N° ${this.habilitacion.nroTramite}`
 
         // Construir la lista de elementos incorrectos
         let elementosIncorrectosTexto = ''
@@ -1432,7 +1409,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
 ${this.elementosIncorrectos.map(elemento => `• ${elemento}`).join('\n')}`
         }
 
-        const mensaje = `Estimado/a contribuyente,
+          const mensaje = `Estimado/a contribuyente,
 
 Su solicitud de trámite comercial ha sido rechazada.
 
@@ -1446,10 +1423,11 @@ ${elementosIncorrectosTexto}
 Deberá volver a presentar la solicitud una vez subsanados los errores detectados.
 
 Importante: La documentación que adjunte debe ser legible y en formato PDF o imagen.`
-        await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
-        this.$bvToast.toast('Correo de rechazo enviado al solicitante.', { variant: 'success' })
+          await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
+          this.showToast('Correo de rechazo enviado al solicitante', { variant: 'success' })
+        }
       } catch (e) {
-        this.$bvToast.toast('No se pudo enviar el correo de rechazo.', { variant: 'danger' })
+        this.showToast('No se pudo enviar el correo de rechazo', { variant: 'danger' })
       }
 
       this.wait(300)
@@ -1465,6 +1443,7 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
         const habilitacion = this.habilitacion;
         const documentos = this.documentos || {};
 
+        const JSZip = await loadJSZip();
         const zip = new JSZip();
 
         // Convertir los datos de la habilitación a Excel
@@ -1532,7 +1511,7 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
 
         // Generar y descargar el archivo zip
         const zipContent = await zip.generateAsync({ type: 'blob' });
-        saveAs(zipContent, `Habilitacion_${nroTramite}.zip`);
+        await saveAsFile(zipContent, `Habilitacion_${nroTramite}.zip`);
       } catch (error) {
         console.error('Error al descargar la habilitación:', error);
       }
@@ -1551,8 +1530,8 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
       const blob = new Blob([arrayBuffer], { type: documento.contentType });
       const fileURL = URL.createObjectURL(blob);
 
-      this.$bvModal.show('documento-modal'); // Abre el modal
       this.DocumentoModalTitle = nombreDocumento;
+      this.showDocumentoModal = true;
 
       // Utiliza $nextTick para esperar hasta que el componente esté completamente montado
       this.$nextTick(() => {
@@ -1649,7 +1628,7 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
     marcarTodosDocumentos(valor) {
       if (!this.documentos || typeof this.documentos !== 'object') return;
       Object.keys(this.documentos).forEach((nombreDocumento) => {
-        this.$set(this.revisionDocumentos, nombreDocumento, valor);
+        this.revisionDocumentos[nombreDocumento] = valor;
       });
       this.actualizarElementosIncorrectos();
       this.verificarRechazoAutomatico();
@@ -1712,11 +1691,11 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
     onFinalizarRevision() {
       // Verificar que los documentos han terminado de cargar
       if (!this.documentos || this.documentos === null) {
-        this.$bvToast.toast("Los documentos aún están cargando. Por favor, espere un momento antes de finalizar la revisión.", {
+        this.showToast("Los documentos aún están cargando. Por favor, espere un momento antes de finalizar la revisión.", {
           variant: "warning",
           title: "Documentos cargando",
           solid: true,
-          autoHideDelay: 5000
+          value: 5000
         });
         return;
       }
@@ -1801,9 +1780,38 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
   margin: 1.5em;
 } */
 
-.col {
-  padding: 0.4em;
-  margin: 0 2px 2px 40px;
+.solicitud-resumen {
+  width: 96%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.solicitud-quick-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.75rem auto 0;
+}
+
+.solicitud-quick-actions .btn {
+  min-width: 12rem;
+  padding: 0.3rem 0.8rem;
+}
+
+.visibilidad-switch-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.visibilidad-switch-row :deep(.custom-control) {
+  margin: 0;
+}
+
+.visibilidad-switch-row :deep(.custom-control-label) {
+  white-space: nowrap;
 }
 
 /* Estilos para los controles de revisión */
@@ -1891,6 +1899,14 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
 
 /* Responsive adjustments */
 @media (max-width: 576px) {
+  .solicitud-quick-actions {
+    flex-wrap: wrap;
+  }
+
+  .solicitud-quick-actions .btn {
+    min-width: auto;
+  }
+
   .expediente-input-group {
     flex-direction: column;
     align-items: stretch;

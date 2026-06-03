@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div>
     <h4 class="section-title">
       <i class="bi bi-pie-chart-fill mr-2"></i>
@@ -713,7 +713,7 @@ export default {
       })
     }
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.chartTramitesPorMes) {
       this.chartTramitesPorMes.destroy()
     }

@@ -1,7 +1,7 @@
 <template>
   <div class="footer">
     <!-- Sección oscura con información de contacto -->
-    <div class="footer-contact bg-dark text-light py-5">
+    <div class="footer-contact text-light py-5">
       <div class="container-fluid px-4">
         <!-- Título principal -->
         <div class="row no-gutters mb-4">
@@ -123,7 +123,7 @@
     </div>
 
     <!-- Barra verde con copyright -->
-    <div class="footer-copyright bg-success text-light py-2">
+    <div class="footer-copyright text-light py-2">
       <div class="container-fluid">
       <div class="row no-gutters">
           <div class="col-12 text-center">
@@ -157,9 +157,13 @@ export default {
   font-family: 'Roboto', sans-serif;
 }
 
-/* Sección oscura con información de contacto */
+/* Sección oscura con información de contacto (gris original, no bg-dark de BS5) */
 .footer-contact {
-  background-color: #505050 !important; /* Bootstrap dark */
+  background-color: #505050 !important;
+}
+
+.footer-contact.bg-dark {
+  background-color: #505050 !important;
 }
 
 .footer-contact .text-big {
@@ -184,10 +188,10 @@ export default {
 
 .footer-contact h6 {
   color: #f8f9fa !important;
-  font-weight: 500;
+  font-weight: 400;
   font-size: 1.35rem;
   font-family: 'Roboto', sans-serif;
-  letter-spacing: 0.18px;
+  letter-spacing: 0.22px;
 }
 
 .footer-contact p {
@@ -199,6 +203,12 @@ export default {
   letter-spacing: 0.3px;
   line-height: 1.2;
   font-family: 'Roboto', sans-serif;
+}
+
+/* Espacio ícono–texto (antes: class="mr-2" en b-icon) */
+.footer-contact p > i.bi {
+  margin-right: 0.5rem;
+  flex-shrink: 0;
 }
 
 .footer-contact .logo-container {
@@ -563,7 +573,11 @@ export default {
 
 /* Barra verde con copyright */
 .footer-copyright {
-  background-color: #28a745 !important; /* Verde Bootstrap success */
+  background-color: #28a745 !important;
+}
+
+.footer-copyright.bg-success {
+  background-color: #28a745 !important;
 }
 
 .footer-copyright p {

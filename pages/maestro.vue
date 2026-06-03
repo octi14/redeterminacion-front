@@ -1,8 +1,8 @@
 <template>
   <div v-if="adminMaster || adminArvige" class="page main-background">
     <Banner title="Maestro comercial"/>
-    <div class="form mx-auto mt-5">
-      <b-form-group class="col-5 mx-6 mx-auto mt-4" label-class="text-success h6">
+    <div class="maestro-toolbar mx-auto mt-4">
+      <b-form-group class="maestro-toolbar__search" label-class="text-success h6">
         <label for="inputCUIT" class="bv-no-focus-ring col-form-label pt-0 text-success h6">
           <i class="bi bi-search"></i> Buscar por CUIT
         </label>
@@ -14,31 +14,46 @@
           type="text"
         />
       </b-form-group>
-      <span class="text-center">Cargar maestro</span>
-      <b-form class="col justify-content-center">
-        <b-form-file v-model="file" class="row col-4 mx-auto" accept="csv" type="file" placeholder="No has seleccionado un archivo." @change="handleFileUpload"/>
-        <b-button @click="onSubirMaestro" variant="success" class="mt-4">Subir archivo</b-button>
-      </b-form>
+
+      <div class="maestro-upload">
+        <p class="maestro-upload__title">Cargar maestro</p>
+        <b-form class="maestro-upload__form">
+          <b-form-file
+            v-model="file"
+            class="maestro-upload__file"
+            accept="csv"
+            type="file"
+            placeholder="No has seleccionado un archivo."
+            @change="handleFileUpload"
+          />
+          <b-button size="sm" @click="onSubirMaestro" variant="success" class="maestro-upload__btn">
+            Subir archivo
+          </b-button>
+        </b-form>
+      </div>
     </div>
-    <b-table per-page="10" head-row-variant="warning" class="col-md-10 white col-sm-8 mx-auto mt-4 shadow-card" :items="paginatedItems" :fields="fields">
+    <b-table per-page="10" head-row-variant="warning" class="internal-use-table internal-use-wide white mt-4 shadow-card" :items="paginatedItems" :fields="fields" :busy="loading">
+      <template #table-busy>
+        <LoadingState text="Cargando..." variant="primary" />
+      </template>
       <template #cell(detalles)="row">
         <b-button variant="outline-secondary" size="sm" title="Editar" @click="editarMaestro(row.item)">
           <i class="bi bi-pen"></i>
         </b-button>
       </template>
     </b-table>
-    <b-pagination class="mt-4" :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
+    <b-pagination v-if="!loading" class="internal-use-pagination internal-use-wide mt-4" :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
 
-    <b-modal id="modalEditarMaestro" hide-header-close v-model="editing" header-bg-variant="secondary" title="Editar maestro comercial" title-class="h5 text-light mx-auto" hide-footer centered>
+    <BModal id="modalEditarMaestro" no-header-close v-model="editing" header-bg-variant="secondary" title="Editar maestro comercial" title-class="h5 text-light mx-auto" no-footer centered>
       <MaestroComercialForm
         v-if="editing"
-        v-on:show="fetch"
+        v-on:show="loadMaestro"
         :item="editarItem"
         :create="false"
         @submit="onSubmitEditMaestro"
         @reset="editing = false"
       ></MaestroComercialForm>
-    </b-modal>
+    </BModal>
   </div>
 </template>
 
@@ -51,6 +66,7 @@ export default {
       perPage: 10,
       editing: false,
       inputCUIT: '',
+      loading: true,
       fields: [
         { key: 'cuit', label: 'CUIT' },
         { key: 'legajo', label: 'Legajo comercial' },
@@ -63,12 +79,12 @@ export default {
       ],
     };
   },
-  async fetch() {
-    await this.$store.dispatch('maestro/get');
+  async mounted() {
+    await this.loadMaestro()
   },
   computed: {
     maestro() {
-      return this.$store.state.maestro.all;
+      return useMaestroStore().all;
     },
     filteredItems() {
       let items = this.maestro;
@@ -88,16 +104,25 @@ export default {
       return Math.ceil(this.filteredItems.length / this.perPage);
     },
     adminMaster(){
-      return this.$store.state.user.admin == "master"
+      return useUserStore().admin == "master"
     },
     adminArvige(){
-      return this.$store.state.user.admin == "arvige" || this.$store.state.user.admin == "master"
+      const admin = useUserStore().admin
+      return admin == "arvige" || admin == "master"
     }
   },
   methods: {
+    async loadMaestro() {
+      this.loading = true
+      try {
+        await useMaestroStore().get()
+      } finally {
+        this.loading = false
+      }
+    },
     editarMaestro(item) {
-      this.$bvModal.show('modalEditarMaestro');
       this.editarItem = item;
+      this.editing = true;
     },
     onPageChange(newPage) {
       this.currentPage = newPage;
@@ -106,10 +131,11 @@ export default {
       this.file = event.target.files[0];
     },
     async onSubirMaestro() {
-      const userToken = this.$store.state.user.token;
+      const userToken = useUserStore().token;
       const file = await this.readFileContent(this.file);
 
-      await this.$store.dispatch('maestro/create', { file });
+      await useMaestroStore().create({ file });
+      await this.loadMaestro()
     },
     async readFileContent(file) {
       return new Promise((resolve, reject) => {
@@ -129,3 +155,51 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.maestro-toolbar {
+  width: 100%;
+  max-width: min(92rem, 96vw);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.maestro-toolbar__search {
+  max-width: 20rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.maestro-upload {
+  max-width: 22rem;
+  margin: 1.25rem auto 0;
+  padding: 1rem 1.25rem;
+  text-align: center;
+  background: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+}
+
+.maestro-upload__title {
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #0c681a;
+}
+
+.maestro-upload__form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.maestro-upload__file {
+  width: 100%;
+  max-width: 18rem;
+}
+
+.maestro-upload__btn {
+  min-width: 9rem;
+}
+</style>

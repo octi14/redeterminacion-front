@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="grafico-finalizaciones-por-anio">
     <b-card class="shadow-sm h-100">
       <template #header>
@@ -214,7 +214,7 @@ export default {
       this.crearGrafico()
     })
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.chart) {
       this.chart.destroy()
       this.chart = null

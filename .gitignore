@@ -89,3 +89,10 @@ sw.*
 
 # Vim swap files
 *.swp
+
+# Playwright MCP (Cursor) + artefactos de tests
+.playwright-mcp/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/

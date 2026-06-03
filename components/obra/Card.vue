@@ -18,10 +18,5 @@ export default {
       required: true,
     },
   },
-  methods: {
-    tag(id) {
-      return this.$store.getters['tags/getTagById'](id)
-    },
-  },
 }
 </script>

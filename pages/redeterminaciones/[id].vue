@@ -151,6 +151,7 @@
 <script>
 
 export default {
+  setup(){ const { showToast } = useProjectToast(); return { showToast } },
   data() {
     return {
       obraUvi: false,
@@ -177,31 +178,37 @@ export default {
   },
   computed: {
     certificado(){
-      return this.$store.state.certificados.single
+      return useCertificadosStore().single
     },
     obra(){
-      return this.$store.state.obras.single
+      return useObrasStore().single
     }
   },
-  async fetch() {
-    const certificadoId = this.$route.params.id
-    await this.$store.dispatch('certificados/getSingle',{
-      id: certificadoId,
-    })
-    const obraId = this.certificado.obra
-    await this.$store.dispatch('obras/getSingle', {
-      id: obraId,
-    })
-    for (var i = 0; i < this.obra.items.length; i++) {
-      this.totales.push(0)
-    }
-    this.obraUvi = (this.obra.ponderacion[0].porcentaje == null)
+  async mounted() {
+    await this.loadRedeterminacion()
   },
-  fetchOnServer: false,
   activated() {
-    this.$fetch()
+    void this.loadRedeterminacion()
   },
   methods: {
+    async loadRedeterminacion() {
+      const certificadoId = this.$route.params.id
+      await useCertificadosStore().getSingle({
+        id: certificadoId,
+      })
+      const obraId = this.certificado?.obra
+      if (!obraId) return
+      await useObrasStore().getSingle({
+        id: obraId,
+      })
+      this.totales = []
+      if (this.obra?.items) {
+        for (var i = 0; i < this.obra.items.length; i++) {
+          this.totales.push(0)
+        }
+      }
+      this.obraUvi = this.obra?.ponderacion?.[0]?.porcentaje == null
+    },
     onResetEdit() {
       this.editing = false
     },
@@ -223,30 +230,32 @@ export default {
         if(this.fechaAnterior){
           const otroMes = new Date(this.fechaAnterior).getUTCMonth() +1
           const otroAño = new Date(this.fechaAnterior).getFullYear()
-          await this.$store.dispatch('indices/search', {
+          await useIndicesStore().search({
             mes: otroMes,
             año: otroAño,
           })
         } else {
-          await this.$store.dispatch('indices/search', {
+          await useIndicesStore().search({
             mes: mes,
             año: año,
           })
         }
-        this.origenMateriales = this.$store.state.indices.indices[0].valor
-        this.origenGenerales = this.$store.state.indices.indices[1].valor
-        this.origenManoObra = this.$store.state.indices.indices[2].valor
-        this.origenEquipos = this.$store.state.indices.indices[3].valor
+        const indicesOrigen = useIndicesStore().indices
+        this.origenMateriales = indicesOrigen[0].valor
+        this.origenGenerales = indicesOrigen[1].valor
+        this.origenManoObra = indicesOrigen[2].valor
+        this.origenEquipos = indicesOrigen[3].valor
         const mes2 = new Date(this.fechaCancelacion).getUTCMonth() +1
         const año2 = new Date(this.fechaCancelacion).getFullYear()
-        await this.$store.dispatch('indices/search', {
+        await useIndicesStore().search({
           mes: mes2,
           año: año2,
         })
-        this.destinoMateriales = this.$store.state.indices.indices[0].valor
-        this.destinoGenerales = this.$store.state.indices.indices[1].valor
-        this.destinoManoObra = this.$store.state.indices.indices[2].valor
-        this.destinoEquipos = this.$store.state.indices.indices[3].valor
+        const indicesDestino = useIndicesStore().indices
+        this.destinoMateriales = indicesDestino[0].valor
+        this.destinoGenerales = indicesDestino[1].valor
+        this.destinoManoObra = indicesDestino[2].valor
+        this.destinoEquipos = indicesDestino[3].valor
       }
     },
     redeterminarMateriales(monto) {
@@ -289,14 +298,14 @@ export default {
         }
       }
       try {
-        const userToken = this.$store.state.user.token
-        await this.$store.dispatch('redeterminaciones/create', {
+        const userToken = useUserStore().token
+        await useRedeterminacionesStore().create({
           obra: this.obra.id,
           certificado: this.certificado.id,
           items: this.redeterminacion,
           userToken,
         })
-        this.$bvToast.toast('Creada correctamente', {
+        this.showToast('Creada correctamente', {
           title: 'Creada',
           variant: 'success',
           appendToast: true,
@@ -304,7 +313,7 @@ export default {
         })
         await this.$router.push('/redeterminacion')
       } catch (e) {
-        this.$bvToast.toast('Error creando la redeterminación', {
+        this.showToast('Error creando la redeterminación', {
           title: 'Error',
           variant: 'danger',
           appendToast: true,
@@ -325,7 +334,7 @@ export default {
         //si es anterior al que estoy usando:
         if (this.obra.certificados[c] != this.certificado.id) {
           //acumulo saldo
-          saldoAcumulado = saldoAcumulado + this.$store.state.certificados.certifs[c].items[i].saldo
+          saldoAcumulado = saldoAcumulado + useCertificadosStore().certifs[c].items[i].saldo
         }else{
           return saldoAcumulado
         }
@@ -335,7 +344,7 @@ export default {
       var avanceTotal = 0
       for(var c = 0; c < this.obra.certificados.length; c++) {
         if (this.obra.certificados[c] != this.certificado.id) {
-          avanceTotal = avanceTotal + this.$store.state.certificados.certifs[c].items[n].avance
+          avanceTotal = avanceTotal + useCertificadosStore().certifs[c].items[n].avance
         }else{
           return (this.certificado.items[n].contratado * avanceTotal)/100
         }

@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="date-range-selector">
     <!-- Botones de rango rápido -->
     <div class="quick-range-buttons mb-3">
@@ -332,12 +332,12 @@ export default {
 }
 
 /* Asegurar que el calendario no se corte */
-::v-deep .b-form-datepicker {
+:deep(.b-form-datepicker) {
   position: relative;
   width: 100%;
 }
 
-::v-deep .b-form-datepicker .dropdown-menu {
+:deep(.b-form-datepicker .dropdown-menu) {
   z-index: 1050 !important;
   position: absolute !important;
   transform: none !important;
@@ -347,22 +347,22 @@ export default {
 }
 
 /* Asegurar que el calendario se muestre correctamente */
-::v-deep .b-calendar {
+:deep(.b-calendar) {
   z-index: 1050 !important;
   width: 100%;
 }
 
 /* Asegurar que el input del datepicker tenga el ancho correcto */
-::v-deep .b-form-datepicker .form-control {
+:deep(.b-form-datepicker .form-control) {
   width: 100%;
 }
 
 /* Asegurar que el dropdown no se corte en contenedores con overflow */
-::v-deep .b-form-datepicker .dropdown {
+:deep(.b-form-datepicker .dropdown) {
   position: static;
 }
 
-::v-deep .b-form-datepicker .dropdown-menu.show {
+:deep(.b-form-datepicker .dropdown-menu.show) {
   display: block !important;
   position: absolute !important;
   top: 100% !important;
@@ -373,7 +373,7 @@ export default {
 }
 
 /* Asegurar que el contenedor del dropdown tenga el contexto correcto */
-::v-deep .b-form-datepicker > .dropdown {
+:deep(.b-form-datepicker > .dropdown) {
   position: relative;
   display: block;
   width: 100%;

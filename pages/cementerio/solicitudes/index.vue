@@ -1,7 +1,7 @@
 <template>
   <div class="page main-background">
     <Banner title="Certificados de defunción" subtitle="Uso interno" />
-    <div class="col-10 mx-auto" v-if="adminCementerio">
+    <div class="internal-use-toolbar" v-if="adminCementerio">
       <b-row>
         <b-form-group class="col-4 mx-6 mx-auto mt-4" label-class="text-success h6">
           <label for="inputCUIT" class="bv-no-focus-ring col-form-label pt-0 text-success h6">
@@ -20,12 +20,29 @@
       <b-form-checkbox class="text-center" v-model="hideFinalizados">Ocultar Finalizados/Rechazados</b-form-checkbox>
     </div>
 
-    <b-table per-page="10" head-row-variant="warning" class="col-md-10 white col-sm-8 mx-auto mt-4 shadow-card" :items="paginatedItems" :fields="fields">
+    <b-table
+      per-page="10"
+      head-row-variant="warning"
+      class="internal-use-table white mt-4 shadow-card"
+      :items="paginatedItems"
+      :fields="fields"
+      :busy="loading"
+    >
+      <template #table-busy>
+        <LoadingState text="Cargando..." variant="primary" />
+      </template>
       <template #cell(estado)="row">
         <div :class="row.item.estadoColor"><b>{{ row.value }}</b></div>
       </template>
+      <template #cell(detalles)="row">
+        <NuxtLink :to="`/cementerio/solicitudes/${row.item.id}`">
+          <b-button variant="outline-secondary" size="sm" title="Editar">
+            <i class="bi bi-pen"></i>
+          </b-button>
+        </NuxtLink>
+      </template>
     </b-table>
-    <b-pagination class="mt-4" :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
+    <b-pagination v-if="!loading" class="mt-4" :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
   </div>
 </template>
 
@@ -46,25 +63,18 @@ export default{
         { key: 'responsable', label: 'Responsable' },
         { key: 'mail', label: 'Mail' },
         { key: 'estado', label: 'Estado' },
+        { key: 'detalles' },
       ],
-      estados: ['Rechazada','En revisión', 'Aprobada']
+      estados: ['Rechazada','En revisión', 'Aprobada'],
+      loading: true,
     };
   },
-  async fetch() {
-    await this.$store.dispatch('cementerio/getAll')
-    this.items = this.certificados
-    this.items?.forEach(item => {
-      switch (item.estado) {
-        case 'En revisión': item.estadoColor = 'text-primary'; break;
-        case 'Rechazada': item.estadoColor = 'text-danger'; break;
-        case 'Aprobada': item.estadoColor = 'text-darkgreen'; break;
-        default: item.estadoColor = 'text-secondary';
-      }
-    });
+  async mounted() {
+    await this.loadSolicitudes()
   },
   computed: {
     certificados(){
-      return this.$store.state.cementerio.all
+      return useCementerioStore().all
     },
     paginatedItems() {
       if (!this.filteredItems || this.filteredItems.length === 0) return [];
@@ -75,7 +85,8 @@ export default{
     filteredItems() {
       let items = this.items;
       if (this.hideFinalizados) {
-        items = items.filter(item => !["Rechazada", "Finalizada"].includes(item.estado));
+        // En Cementerio los "finalizados" son los que ya fueron aprobados o rechazados.
+        items = items.filter(item => !["Rechazada", "Aprobada", "Finalizada"].includes(item.estado));
       }
       if (this.inputCUIT) {
         items = items.filter(item => item.cuit && String(item.cuit).includes(this.inputCUIT));
@@ -89,10 +100,31 @@ export default{
       return Math.ceil(this.filteredItems.length / this.perPage);
     },
     adminCementerio() {
-      return this.$store.state.user.admin === "cementerio" || this.$store.state.user.admin == "master"
+      const admin = useUserStore().admin
+      return admin === "cementerio" || admin == "master"
     },
   },
   methods: {
+    async loadSolicitudes() {
+      this.loading = true
+      try {
+        await useCementerioStore().getAll()
+        this.items = this.certificados
+        this.items?.forEach(item => {
+          switch (item.estado) {
+            case 'En revisión': item.estadoColor = 'text-primary'; break;
+            case 'Rechazada': item.estadoColor = 'text-danger'; break;
+            case 'Aprobada': item.estadoColor = 'text-darkgreen'; break;
+            default: item.estadoColor = 'text-secondary';
+          }
+        });
+      } finally {
+        this.loading = false
+      }
+    },
+    filtrarPorCuit() {
+      this.currentPage = 1
+    },
     onPageChange(newPage) {
       this.currentPage = newPage;
     },

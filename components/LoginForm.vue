@@ -1,36 +1,43 @@
 <template>
-  <div class="login-form text-center">
-    <form class="login-form-inner" @submit.prevent="onSubmitLoginForm">
-      <div class="mb-3">
+  <div class="text-center login-form-body">
+    <form novalidate @submit.prevent="onSubmitLoginForm">
+      <div class="my-3 text-left">
         <input
           id="input-username"
           v-model="form.username"
           type="text"
-          class="form-control form-control-lg mx-auto login-field"
+          class="form-control form-control-lg login-field mx-auto"
           placeholder="Nombre de usuario"
           autocomplete="username"
-          required
+          style="text-align: center"
+          @input="syncAutofill"
+          @change="syncAutofill"
         />
       </div>
 
-      <div class="mb-3">
+      <div class="text-left">
         <input
           id="input-password"
           v-model="form.password"
           type="password"
-          class="form-control form-control-lg mx-auto login-field"
+          class="form-control form-control-lg login-field mx-auto"
           placeholder="Contraseña"
           autocomplete="current-password"
-          required
+          style="text-align: center"
+          @input="syncAutofill"
+          @change="syncAutofill"
         />
       </div>
 
-      <p v-if="errorMessage" class="text-danger small mx-auto login-error">{{ errorMessage }}</p>
+      <p v-if="errorMessage" class="text-danger small login-field mx-auto mb-2 mt-2">
+        {{ errorMessage }}
+      </p>
 
       <button
-        type="submit"
-        class="btn btn-lg w-100 login-submit-btn"
+        type="button"
+        class="btn btn-lg login-field mb-6 mx-auto login-submit-btn"
         :disabled="loggingIn"
+        @click="onSubmitLoginForm"
       >
         <b>{{ loggingIn ? 'Ingresando...' : 'Acceder' }}</b>
       </button>
@@ -40,6 +47,11 @@
 
 <script>
 export default {
+  setup() {
+    const { login } = useLogin()
+    const userStore = useUserStore()
+    return { login, userStore }
+  },
   data() {
     return {
       loggingIn: false,
@@ -75,18 +87,18 @@ export default {
       const password = this.form.password || ''
       this.errorMessage = ''
 
-      if (this.loggingIn || !username || !password) {
-        if (!username || !password) {
-          this.errorMessage = 'Completá usuario y contraseña.'
-        }
+      if (this.loggingIn) return
+
+      if (!username || !password) {
+        this.errorMessage = 'Completá usuario y contraseña.'
         return
       }
 
       this.loggingIn = true
       try {
-        const userStore = useUserStore()
-        await userStore.authenticate({ username, password })
+        await this.login({ username, password })
       } catch (e) {
+        this.userStore.clearSession()
         this.errorMessage = e?.message || 'No se pudo iniciar sesión.'
       } finally {
         this.loggingIn = false
@@ -97,43 +109,27 @@ export default {
 </script>
 
 <style scoped>
-.login-form {
-  position: relative;
-  z-index: 2;
+.login-form-body {
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
 }
 
 .login-field {
   width: 100%;
   max-width: 100%;
-  text-align: center;
-  border-radius: 8px;
-  border: 1px solid #c8d7e8;
-  background-color: #e8f1fb;
-  color: #212529;
+  display: block;
 }
 
-.login-field::placeholder {
-  color: #6c757d;
-}
-
-.login-field:focus {
-  background-color: #eef6ff;
-  border-color: #19a02d;
-  box-shadow: 0 0 0 0.2rem rgba(25, 160, 45, 0.15);
-  outline: none;
-}
-
-.login-error {
-  max-width: 100%;
+.login-form-body .form-control {
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .login-submit-btn {
-  margin-top: 0.5rem;
-  border-radius: 8px;
   background-color: #ef8918;
   border-color: #ef8918;
   color: #fff;
-  font-weight: 600;
+  width: 100%;
 }
 
 .login-submit-btn:hover:not(:disabled) {
@@ -143,6 +139,6 @@ export default {
 }
 
 .login-submit-btn:disabled {
-  opacity: 0.75;
+  opacity: 0.7;
 }
 </style>

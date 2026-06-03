@@ -38,35 +38,30 @@ export default {
       selectedCertificado: null, // Índice del certificado seleccionado
     }
   },
-  async fetch() {
-    await this.$store.dispatch('certificados/search', {
-      obra: this.obra.id
-      })
-    this.items = this.certificados
-    await this.$store.dispatch('redeterminaciones/searchByObra', {
-      obra: this.obra.id
-    })
-    this.redets = this.redeterminaciones
-
-    // const newLength = this.$store.state.certificados.latest.length
-    // this.all = newLength === this.lastLength
-    // this.lastLength = newLength
+  async mounted() {
+    await this.loadCertificados()
   },
-  fetchOnServer: false,
   computed: {
-    loading() {
-      return this.$fetchState.pending
-    },
     certificados() {
-      return this.$store.state.certificados.certifs
+      return useCertificadosStore().certifs
     },
     redeterminaciones() {
-      return this.$store.state.redeterminaciones.redets
+      return useRedeterminacionesStore().redets
     },
   },
   methods: {
+    async loadCertificados() {
+      await useCertificadosStore().search({
+        obra: this.obra.id,
+      })
+      this.items = this.certificados
+      await useRedeterminacionesStore().searchByObra({
+        obra: this.obra.id,
+      })
+      this.redets = this.redeterminaciones
+    },
     loadMore() {
-      this.$fetch()
+      void this.loadCertificados()
     },
     openModal(index) {
       this.selectedCertificado = index;

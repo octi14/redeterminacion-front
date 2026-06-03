@@ -64,14 +64,14 @@
             </transition>
           </b-card>
 
-          <b-button variant="success" class="float-right btn-form" @click="showPopupConf()">Iniciar Trámite</b-button>
+          <div class="page-btn-iniciar-tramite-wrap"><b-button variant="success" size="sm" class="btn-form page-btn-iniciar-tramite" @click="showPopupConf()">Iniciar Trámite</b-button></div>
         </b-col>
       </b-row>
     </b-container>
 
     <!-- Popup de confirmación -->
-    <b-modal v-model="showConfirmationPopup" hide-footer :header-bg-variant="'success'" centered>
-      <template #modal-header>
+    <BModal v-model="showConfirmationPopup" no-footer :header-bg-variant="'success'" centered>
+      <template #header>
         <div class="confirmation-popup-header">
           <i class="bi bi-exclamation-triangle text-light"></i>
         </div>
@@ -84,13 +84,13 @@
         </div>
         <div class="text-center mt-3">
           <nuxt-link :class="{ 'disabled': !documentCheckboxChecked }" :to="{path: '/cementerio/certificado_defuncion/form' }">
-            <b-btn variant="success" :disabled="!documentCheckboxChecked" @click="proceedToForm()" >
+            <b-button variant="success" :disabled="!documentCheckboxChecked" @click="proceedToForm()" >
               Aceptar
-            </b-btn>
+            </b-button>
           </nuxt-link>
         </div>
       </div>
-    </b-modal>
+    </BModal>
   </div>
 </template>
 

@@ -1,4 +1,5 @@
 import AbiertoAnualConfigService from '../service/abiertoAnualConfig.js'
+import { getDefaultAbiertoAnualPeriodos } from '~/utils/abiertoAnualPeriodos'
 import { defineStore } from 'pinia'
 
 export const useConfigStore = defineStore('config', {
@@ -9,8 +10,7 @@ export const useConfigStore = defineStore('config', {
   getters: {
     abiertoAnualPeriodos(state) {
       if (state.abiertoAnualPeriodos) return state.abiertoAnualPeriodos
-      const year = new Date().getFullYear()
-      return AbiertoAnualConfigService.getDefaultConfig(year)
+      return getDefaultAbiertoAnualPeriodos()
     },
   },
 

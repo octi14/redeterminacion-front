@@ -2,7 +2,7 @@
   <div class="page main-background">
     <Banner title="Comercio Abierto anual" subtitle="Uso interno" />
     <div class="col-8 mx-auto" v-if="adminArvige">
-      <b-form-group class="col-5 mx-6 mx-auto mt-4" label-class="text-success h6">
+      <b-form-group class="col-5 mx-6 mx-auto mt-4 mb-4" label-class="text-success h6">
         <label for="inputCUIT" class="bv-no-focus-ring col-form-label pt-0 text-success h6">
           <i class="bi bi-search"></i> Buscar por CUIT
         </label>
@@ -30,20 +30,36 @@
         </div>
       </div>
 
-      <div class="row justify-content-center">
-        <!-- <b-form-checkbox class="mx-3 mt-2" v-model="hideFinalizados">Ocultar finalizados</b-form-checkbox> -->
-        <b-button variant="info" @click="exportarCSV"><i class="bi bi-download"></i>Exportar CSV</b-button>
+      <div class="page-btn-export-wrap">
+        <b-button variant="success" size="sm" class="page-btn-export" @click="exportarCSV"><i class="bi bi-download"></i> Exportar CSV</b-button>
       </div>
     </div>
 
-    <b-table per-page="10" head-row-variant="warning" class="col-md-10 white col-sm-8 mx-auto mt-4 shadow-card" :items="paginatedItems" :fields="fields">
+    <b-table
+      per-page="10"
+      head-row-variant="warning"
+      class="internal-use-table white mt-4 shadow-card"
+      :items="paginatedItems"
+      :fields="fields"
+      :busy="loading"
+    >
+      <template #table-busy>
+        <LoadingState text="Cargando..." variant="primary" />
+      </template>
       <template #cell(status)="row">
-        <div>
-          <span v-for="(estado, index) in row.item.status" class="mx-1" :key="index" :style="{ color: estadoColor(estado) }">
-            <b-iconstack :title="estado">
-              <i class="bi bi-circle text-dark"></i>
-              <i class="bi bi-circle-fill"></i>
-            </b-iconstack>
+        <div class="facturas-estado-dots">
+          <span
+            v-for="(estado, index) in (row.item.status || []).slice(0, 3)"
+            :key="index"
+            class="factura-periodo-dot mx-1"
+            :title="estado"
+          >
+            <i class="bi bi-circle factura-periodo-dot__ring" aria-hidden="true"></i>
+            <i
+              class="bi bi-circle-fill factura-periodo-dot__fill"
+              :style="{ color: estadoColor(estado) }"
+              aria-hidden="true"
+            ></i>
           </span>
         </div>
       </template>
@@ -55,7 +71,7 @@
         </NuxtLink>
       </template>
     </b-table>
-    <b-pagination class="mt-4" :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
+    <b-pagination v-if="!loading" class="mt-4" :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
   </div>
 </template>
 
@@ -82,15 +98,21 @@ export default {
       selectedEstado1: '', // Filtro para el estado del período 1
       selectedEstado2: '', // Filtro para el estado del período 2
       selectedEstado3: '', // Filtro para el estado del período 3
+      loading: true,
     }
   },
-  async fetch() {
-    await this.$store.dispatch('abiertoAnual/getAll')
-    this.$store.commit('abiertoAnual/ordenar')
+  async mounted() {
+    this.loading = true
+    try {
+      await useAbiertoAnualStore().getAll()
+      useAbiertoAnualStore().ordenar()
+    } finally {
+      this.loading = false
+    }
   },
   computed: {
     tramites() {
-      return this.$store.state.abiertoAnual.all;
+      return useAbiertoAnualStore().all;
     },
     filteredItems() {
       let items = this.tramites;
@@ -107,13 +129,13 @@ export default {
 
       // Filtros por estado en cada período, exceptuando "Todos"
       if (this.selectedEstado1 && this.selectedEstado1 !== 'Todos') {
-        items = items.filter(item => item.status[0] === this.selectedEstado1);
+        items = items.filter(item => Array.isArray(item.status) && item.status[0] === this.selectedEstado1);
       }
       if (this.selectedEstado2 && this.selectedEstado2 !== 'Todos') {
-        items = items.filter(item => item.status[1] === this.selectedEstado2);
+        items = items.filter(item => Array.isArray(item.status) && item.status[1] === this.selectedEstado2);
       }
       if (this.selectedEstado3 && this.selectedEstado3 !== 'Todos') {
-        items = items.filter(item => item.status[2] === this.selectedEstado3);
+        items = items.filter(item => Array.isArray(item.status) && item.status[2] === this.selectedEstado3);
       }
 
       return items;
@@ -127,7 +149,8 @@ export default {
       return Math.ceil(this.filteredItems.length / this.perPage);
     },
     adminArvige() {
-      return this.$store.state.user.admin === "arvige" || this.$store.state.user.admin === "master";
+      const admin = useUserStore().admin
+      return admin === "arvige" || admin === "master";
     }
   },
   methods: {
@@ -138,8 +161,9 @@ export default {
       this.currentPage = newPage;
     },
     async onShowObservaciones(id) {
-      const tramite = this.$store.state.abiertoAnual.all.find(tramite => tramite.id === id);
-      const observacionesDivididas = tramite.observaciones.split('-').join('<br>');
+      const tramite = useAbiertoAnualStore().all.find(tramite => tramite.id === id);
+      const observaciones = typeof tramite?.observaciones === 'string' ? tramite.observaciones : ''
+      const observacionesDivididas = observaciones.split('-').join('<br>');
       this.singleContent = observacionesDivididas;
       this.observacionesModal = true;
     },
@@ -161,12 +185,12 @@ export default {
         tramite.cuit,
         tramite.nroLegajo,
         // tramite.mail,
-        tramite.status[0] || '',
-        (tramite.facturas[0] && tramite.facturas[0].observaciones) || '',
-        tramite.status[1] || '',
-        (tramite.facturas[1] && tramite.facturas[1].observaciones) || '',
-        tramite.status[2] || '',
-        (tramite.facturas[2] && tramite.facturas[2].observaciones) || '',
+        (Array.isArray(tramite.status) ? tramite.status[0] : '') || '',
+        (Array.isArray(tramite.facturas) && tramite.facturas[0] && tramite.facturas[0].observaciones) || '',
+        (Array.isArray(tramite.status) ? tramite.status[1] : '') || '',
+        (Array.isArray(tramite.facturas) && tramite.facturas[1] && tramite.facturas[1].observaciones) || '',
+        (Array.isArray(tramite.status) ? tramite.status[2] : '') || '',
+        (Array.isArray(tramite.facturas) && tramite.facturas[2] && tramite.facturas[2].observaciones) || '',
       ]);
 
       const csvContent = [
@@ -190,3 +214,35 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.facturas-estado-dots {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+}
+
+.factura-periodo-dot {
+  position: relative;
+  display: inline-block;
+  width: 1.15rem;
+  height: 1.15rem;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.factura-periodo-dot__ring,
+.factura-periodo-dot__fill {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  line-height: 1;
+  font-size: inherit;
+}
+
+.factura-periodo-dot__ring {
+  color: #212529;
+}
+</style>

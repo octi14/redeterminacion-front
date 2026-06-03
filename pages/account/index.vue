@@ -52,8 +52,8 @@
     </div>
 
     <!--Modal contraseña cambiada con éxito-->
-    <b-modal v-model="showPopupChanged" header-bg-variant="success" centered>
-      <template #modal-header>
+    <BModal v-model="showPopupChanged" header-bg-variant="success" centered>
+      <template #header>
         <div class="mx-auto text-center">
           <i class="bi bi-check-circle"></i>
         </div>
@@ -61,18 +61,19 @@
       <div class="text-center">
         <h4 class="text-success"><b>¡Contraseña cambiada con éxito!</b></h4>
       </div>
-      <template #modal-footer>
+      <template #footer>
         <div class="mx-auto">
           <b-button @click="logout" variant="primary"> Aceptar </b-button>
         </div>
       </template>
-    </b-modal>
+    </BModal>
   </div>
 </template>
 
 <script>
 
 export default{
+  setup(){ const { showToast } = useProjectToast(); return { showToast } },
   data(){
     return{
       oldPassword: '',
@@ -87,14 +88,14 @@ export default{
   methods: {
     async onResetPassword() {
       if (this.newPassword !== this.repeatNewPassword) {
-        this.$bvToast.toast('Las nuevas contraseñas no coinciden', {
+        this.showToast('Las nuevas contraseñas no coinciden', {
           appendToast: true,
           solid: true,
           variant: 'danger',
         });
       } else {
-        const userId = this.$store.state.user.id;
-        const success = await this.$store.dispatch('user/changePassword', {
+        const userId = useUserStore().id;
+        const success = await useUserStore().changePassword({
           userId,
           oldPassword: this.oldPassword,
           newPassword: this.newPassword,
@@ -109,7 +110,7 @@ export default{
     async logout(){
       // Emitir evento para indicar que es un logout manual
       useNuxtApp().callHook('manual-logout');
-      await this.$store.dispatch('user/logout')
+      await useUserStore().logout()
       await this.$router.push('/login')
       this.showPopupChanged = false
     },

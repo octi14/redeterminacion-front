@@ -1,23 +1,23 @@
 <template>
   <!-- Modal de sesión expirada -->
-  <b-modal
+  <BModal
     id="modalSessionTimeout"
     :model-value="mostrarModal"
     @update:model-value="$emit('update:mostrarModal', $event)"
     no-close-on-backdrop
     no-close-on-esc
-    hide-header-close
+    no-header-close
     title="Sesión expirada"
     header-bg-variant="secondary"
     title-class="text-center text-light"
-    hide-footer
+    no-footer
     centered
   >
     <p class="h5 text-center font-weight-500">Tu sesión ha vencido. Debes iniciar sesión nuevamente.</p>
     <div class="row justify-content-center">
       <b-button class="col-3 my-3" variant="secondary" @click="logout">Aceptar</b-button>
     </div>
-  </b-modal>
+  </BModal>
 </template>
 
 <script>
@@ -29,7 +29,7 @@ export default {
   methods: {
     logout() {
       this.$emit('update:mostrarModal', false)
-      this.$store.dispatch("user/logout")
+      useUserStore().logout()
       this.$router.push("/login")
     },
   },

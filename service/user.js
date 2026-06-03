@@ -31,9 +31,13 @@ export default {
       return formatAuthenticatedUser(payload)
     } catch (error) {
       const status = error.response?.status ?? error.statusCode ?? error.status
-      const message = error.response?.data?.message ?? error.data?.message
+      const payload = error.response?.data ?? error.data
+      const message =
+        (typeof payload === 'object' && payload?.message) ||
+        (typeof payload === 'string' ? payload : null) ||
+        error.message
 
-      if (message) {
+      if (message && !String(message).startsWith('[POST]')) {
         throw new Error(message)
       }
       if (status === 404) {

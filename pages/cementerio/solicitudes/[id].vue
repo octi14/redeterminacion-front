@@ -1,10 +1,11 @@
 <template>
   <div class="page main-background">
     <Banner title="Detalles de solicitud"/>
-    <div v-if="!item" class="text-center mt-3">
-      <h2> Cargando </h2>
-      <h4> Por favor espere unos segundos </h4>
-    </div>
+    <LoadingState
+      v-if="!item"
+      size="lg"
+      variant="primary"
+    />
 
     <template v-if="item">
       <!-- Estado y acciones -->
@@ -70,21 +71,20 @@
           </div>
         </div>
         <div class="justify-content-center mx-auto" v-else>
-          <p class="h4 text-loading text-center"> Cargando... </p>
-          <div class="row justify-content-center mb-3"><b-spinner variant="success"></b-spinner></div>
+          <LoadingState text="Cargando..." variant="success" size="lg" />
         </div>
       </div>
     </template>
 
-    <div class="text-center mb-3">
+    <div class="page-btn-volver-wrap">
       <NuxtLink to="/cementerio/solicitudes">
-        <b-button variant="primary">Volver</b-button>
+        <b-button variant="primary" size="sm" class="page-btn-volver">Volver</b-button>
       </NuxtLink>
     </div>
 
     <!-- Modals -->
-    <b-modal v-model="showReject" hide-footer :header-bg-variant="'danger'" centered>
-      <template #modal-header>
+    <BModal v-model="showReject" no-footer :header-bg-variant="'danger'" centered>
+      <template #header>
         <div class="confirmation-popup-header mx-auto">
           <i class="bi bi-envelope text-light"></i>
         </div>
@@ -93,13 +93,13 @@
         <h2 class="icon-orange text-danger text-center"><b>Rechazar solicitud</b></h2>
         <p>Se enviará un correo a la funeraria informando el rechazo.</p>
         <div class="text-center mt-3">
-          <b-btn variant="danger" @click="onSendReject()">Enviar</b-btn>
+          <b-button variant="danger" @click="onSendReject()">Enviar</b-button>
         </div>
       </div>
-    </b-modal>
+    </BModal>
 
-    <b-modal v-model="showApprove" hide-footer :header-bg-variant="'success'" centered>
-      <template #modal-header>
+    <BModal v-model="showApprove" no-footer :header-bg-variant="'success'" centered>
+      <template #header>
         <div class="confirmation-popup-header mx-auto">
           <i class="bi bi-check-circle text-light"></i>
         </div>
@@ -108,13 +108,13 @@
         <h2 class="icon-orange text-success text-center"><b>Aprobar solicitud</b></h2>
         <p class="text-center">Se enviará un correo informando la aprobación.</p>
         <div class="text-center mt-3">
-          <b-btn variant="primary" @click="onSendApprove()">Aceptar</b-btn>
+          <b-button variant="primary" @click="onSendApprove()">Aceptar</b-button>
         </div>
       </div>
-    </b-modal>
+    </BModal>
 
-    <b-modal v-model="showRestore" hide-footer :header-bg-variant="'secondary'" centered>
-      <template #modal-header>
+    <BModal v-model="showRestore" no-footer :header-bg-variant="'secondary'" centered>
+      <template #header>
         <div class="confirmation-popup-header mx-auto">
           <i class="bi bi-exclamation-triangle text-light"></i>
         </div>
@@ -122,11 +122,11 @@
       <div class="confirmation-popup-body text-center">
         <h3 class="text-secondary text-center mb-4"><b>Volver a En revisión</b></h3>
         <div class="text-center mt-4">
-          <b-btn variant="success" @click="onSendRestore()">Aceptar</b-btn>
-          <b-btn variant="danger" @click="showRestore = false">Cancelar</b-btn>
+          <b-button variant="success" @click="onSendRestore()">Aceptar</b-button>
+          <b-button variant="danger" @click="showRestore = false">Cancelar</b-button>
         </div>
       </div>
-    </b-modal>
+    </BModal>
   </div>
 </template>
 
@@ -145,16 +145,18 @@ export default {
       statusClasses: { 'En revisión': 'text-primary', 'Rechazada': 'text-danger', 'Aprobada': 'text-darkgreen' },
     }
   },
-  async fetch() {
+  async mounted() {
     const id = this.$route.params.id
-    await this.$store.dispatch('cementerio/getSingle', { id })
-    this.item = this.$store.state.cementerio.single
-    const documentosResp = await this.$services.cementerio?.getDocumentos?.(this.$axios, { id }) || await this.$axios.$get(`/cementerio/certificadosDefuncion/documentos/${id}`)
+    await useCementerioStore().getSingle({ id })
+    this.item = useCementerioStore().single
+    const api = useApi()
+    const documentosResp = await this.$services.cementerio?.getDocumentos?.(api, { id }) || await api.$get(`/cementerio/certificadosDefuncion/documentos/${id}`)
     this.documentos = documentosResp.data || documentosResp
   },
   computed: {
     adminCementerio(){
-      return this.$store.state.user.admin == "cementerio" || this.$store.state.user.admin == "master"
+      const admin = useUserStore().admin
+      return admin == "cementerio" || admin == "master"
     },
   },
   methods: {
@@ -164,7 +166,7 @@ export default {
     onShowRestore(){ this.showRestore = true },
     async onSendApprove(){
       const id = this.$route.params.id
-      await this.$store.dispatch('cementerio/update', { id, certificado: { estado: 'Aprobada' } })
+      await useCementerioStore().update({ id, certificado: { estado: 'Aprobada' } })
       this.item.estado = 'Aprobada'
       try{
         const destinatario = this.item.funeraria?.mail
@@ -176,13 +178,13 @@ Su solicitud ha sido aprobada.
 Fecha: ${new Date().toLocaleDateString('es-AR')}
 
 Saludos cordiales.`
-        await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+        await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
       }catch(e){}
       this.showApprove = false
     },
     async onSendReject(){
       const id = this.$route.params.id
-      await this.$store.dispatch('cementerio/update', { id, certificado: { estado: 'Rechazada' } })
+      await useCementerioStore().update({ id, certificado: { estado: 'Rechazada' } })
       this.item.estado = 'Rechazada'
       try{
         const destinatario = this.item.funeraria?.mail
@@ -192,13 +194,13 @@ Saludos cordiales.`
 Su solicitud ha sido rechazada.
 
 Saludos cordiales.`
-        await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+        await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
       }catch(e){}
       this.showReject = false
     },
     async onSendRestore(){
       const id = this.$route.params.id
-      await this.$store.dispatch('cementerio/update', { id, certificado: { estado: 'En revisión' } })
+      await useCementerioStore().update({ id, certificado: { estado: 'En revisión' } })
       this.item.estado = 'En revisión'
       try{
         const destinatario = this.item.funeraria?.mail
@@ -208,7 +210,7 @@ Saludos cordiales.`
 Su solicitud ha vuelto al estado: En revisión.
 
 Saludos cordiales.`
-        await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+        await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
       }catch(e){}
       this.showRestore = false
     },

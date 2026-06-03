@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="grafico-comparativo-2024-2025">
     <b-card class="mb-4 shadow-sm">
       <template #header>
@@ -304,7 +304,7 @@ export default {
     await this.$nextTick()
     await this.crearGrafico()
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.chart) {
       this.chart.destroy()
       this.chart = null

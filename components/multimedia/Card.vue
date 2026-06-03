@@ -17,7 +17,7 @@
       </div>
     </div>
     <!-- Modal editar archivo -->
-    <b-modal hide-header-close v-model="editing" header-bg-variant="secondary" title="Editar archivo" title-class="h5 text-light mx-auto" hide-footer centered>
+    <BModal no-header-close v-model="editing" header-bg-variant="secondary" title="Editar archivo" title-class="h5 text-light mx-auto" no-footer centered>
       <MultimediaForm
         v-if="editing"
         v-on:show="fetch"
@@ -26,12 +26,13 @@
         @submit="onSubmitEditArchivo"
         @reset="editing = false"
       ></MultimediaForm>
-    </b-modal>
+    </BModal>
   </div>
 </template>
 
 <script>
 export default {
+  setup(){ const { showToast } = useProjectToast(); return { showToast } },
   props: {
     item: {
       type: Object,
@@ -45,7 +46,7 @@ export default {
   },
   computed: {
     adminModernizacion(){
-      return this.$store.state.user.admin == "modernizacion"
+      return useUserStore().admin == "modernizacion"
     }
   },
   activated() {
@@ -57,12 +58,12 @@ export default {
     },
     async onSubmitEditArchivo({ multimedia }) {
       try {
-        const userToken = this.$store.state.user.token
-        await this.$store.dispatch('multimedias/update', {
+        const userToken = useUserStore().token
+        await useMultimediasStore().update({
           multimedia,
           userToken,
         })
-        this.$bvToast.toast('', {
+        this.showToast('', {
           title: 'Archivo actualizado.',
           variant: 'success',
           appendToast: true,
@@ -71,7 +72,7 @@ export default {
         this.editing = false
         // await this.$router.push('/modernizacion')
       } catch (e) {
-        this.$bvToast.toast('Error Editando. Intente cerrar sesión e iniciar nuevamente.', {
+        this.showToast('Error Editando. Intente cerrar sesión e iniciar nuevamente.', {
           title: 'Error',
           variant: 'danger',
           appendToast: true,
@@ -81,18 +82,18 @@ export default {
     },
     async eliminarArchivo(){
       try{
-        const userToken = this.$store.state.user.token
-        await this.$store.dispatch('multimedias/delete', {
+        const userToken = useUserStore().token
+        await useMultimediasStore().delete({
           id: this.item.id,
           userToken
       })
-        this.$bvToast.toast('Eliminado correctamente', {
+        this.showToast('Eliminado correctamente', {
           variant: "success",
           solid: true
         })
         this.$router.push('/modernizacion')
       }catch(e){
-        this.$bvToast.toast(e.message, {
+        this.showToast(e.message, {
           variant: "danger",
           solid: true })
       }

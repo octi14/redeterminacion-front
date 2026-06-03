@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div>
     <h4 class="section-title">
       <i class="bi bi-graph-up-arrow-fill mr-2"></i>
@@ -262,7 +262,7 @@ export default {
     // Escuchar cambios de tamaño de ventana
     window.addEventListener('resize', this.handleResize)
   },
-  beforeDestroy() {
+  beforeUnmount() {
     window.removeEventListener('resize', this.handleResize)
   },
   methods: {

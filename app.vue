@@ -2,5 +2,7 @@
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
-  <BToastOrchestrator />
+  <ClientOnly>
+    <BToastOrchestrator />
+  </ClientOnly>
 </template>

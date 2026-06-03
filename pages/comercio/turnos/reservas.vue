@@ -2,33 +2,40 @@
   <div class="page main-background">
     <Banner title="Solicitudes de turnos" subtitle="Uso interno" />
     <div v-if="adminComercio || adminInspeccion">
-      <div class="row justify-content-center">
-        <b-form-group class="col-4 mx-auto mt-3" horizontal label-class="text-success">
+      <div class="internal-use-toolbar internal-use-wide">
+        <b-row class="align-items-end mt-3">
+        <b-form-group class="col-md-6" label-class="text-success h6">
           <label for="selectedEstado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><i class="bi bi-funnel-fill"></i> Filtrar por Estado</label>
-            <b-form-select plain v-model="selectedEstado">
+            <b-form-select id="selectedEstado" plain v-model="selectedEstado">
             <option value="">Todos</option>
             <option v-for="estado in estados" :value="estado" :key="estado">{{ estado }}</option>
           </b-form-select>
         </b-form-group>
 
-        <b-form-group class="col-4 mx-auto mt-3" horizontal label-class="text-success">
+        <b-form-group class="col-md-6" label-class="text-success h6">
           <label for="selectedTipoTramite" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><i class="bi bi-funnel-fill"></i> Filtrar por Tipo de Trámite</label>
-            <b-form-select plain v-model="selectedTipoTramite">
+            <b-form-select id="selectedTipoTramite" plain v-model="selectedTipoTramite">
             <option value="">Todos</option>
             <option v-for="tipo in tiposTramite" :value="tipo" :key="tipo">{{ tipo }}</option>
           </b-form-select>
         </b-form-group>
+        </b-row>
+
+        <div class="internal-use-checkbox-row">
+          <b-form-checkbox v-model="hideFinalizados">Ocultar Inspeccionados/Cancelados</b-form-checkbox>
+        </div>
       </div>
 
-      <b-form-checkbox class="text-center" v-model="hideFinalizados">Ocultar Inspeccionados/Cancelados</b-form-checkbox>
-
-      <b-table per-page="10" head-row-variant="primary" class="col-md-10 col-sm-8 mx-auto mt-4 shadow-card white" hover :items="filteredItems" :fields="fields" :current-page="currentPage" :sort-compare="onSortCompare">
+      <b-table per-page="10" head-row-variant="primary" class="internal-use-table internal-use-wide mt-4 shadow-card white" hover :items="filteredItems" :fields="fields" :current-page="currentPage" :sort-compare="onSortCompare" :busy="loading">
+        <template #table-busy>
+          <LoadingState text="Cargando..." variant="primary" />
+        </template>
         <template #cell(status)="row">
           <div :class="row.item.estadoColor"><b>{{ row.value }}</b></div>
         </template>
         <!-- Plantilla personalizada para la columna "detalles" -->
         <template #cell(detalles)="row">
-        <NuxtLink :to="{ name: 'comercio-turnos-id', params: { id: row.item.id } }" @click.native="registrarActividad('Abrir Turno', 'Turno nro: ' + row.item.nroTramite)">
+        <NuxtLink :to="{ name: 'comercio-turnos-id', params: { id: row.item.id } }" @click="registrarActividad('Abrir Turno', 'Turno nro: ' + row.item.nroTramite)">
           <b-button variant="outline-secondary" size="sm" title="Editar" >
             <i class="bi bi-pen"></i>
           </b-button>
@@ -41,13 +48,13 @@
         </template>
       </b-table>
 
-      <b-pagination :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
+      <b-pagination v-if="!loading" class="internal-use-pagination internal-use-wide" :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
 
     </div>
 
-    <b-modal v-model="singleModal" header-bg-variant="primary" :title="'Observaciones: Turno ' + nroObservaciones" title-class="text-light" hide-footer centered>
+    <BModal v-model="singleModal" header-bg-variant="primary" :title="'Observaciones: Turno ' + nroObservaciones" title-class="text-light" no-footer centered>
       <p> {{ singleContent }} </p>
-    </b-modal>
+    </BModal>
   </div>
 </template>
 
@@ -65,6 +72,7 @@ export default{
       selectedTipoTramite: '',
       currentPage: 1,
       perPage: 10,
+      loading: true,
       fields: [
         {
           key: 'nroTramite',
@@ -107,34 +115,12 @@ export default{
       tiposTramite: ['Habilitación', 'Baja', 'Renovación'], // Agrega los tipos de trámite necesarios
     }
   },
-  async fetch() {
-    await this.$store.dispatch('turnos/getAll')
-    this.items = this.turnos
-    // Asignar el color adecuado según el estado
-    this.items.forEach(item => {
-      switch (item.status) {
-        case 'Pendiente de inspección':
-          item.estadoColor = 'text-secondary';
-          break;
-        case 'Cancelado':
-          item.estadoColor = 'estado-danger';
-          break;
-        case 'Inspeccionado':
-          item.estadoColor = 'text-success';
-          break;
-        case 'Inspección rechazada':
-          item.estadoColor = 'estado-danger';
-          break;
-        default:
-          item.estadoColor = 'text-primary';
-      }
-    });
-    await this.$store.commit('turnos/ordenar')
-    const perPage = 10;
+  async mounted() {
+    await this.loadReservas()
   },
   computed: {
     turnos(){
-      return this.$store.state.turnos.all
+      return useTurnosStore().all
     },
     paginatedItems() {
       const startIndex = (this.currentPage - 1) * this.perPage;
@@ -180,15 +166,45 @@ export default{
       return items;
     },
     adminComercio(){
-      return this.$store.state.user.admin == "comercio" || this.$store.state.user.admin == "master"
+      const admin = useUserStore().admin
+      return admin == "comercio" || admin == "master"
     },
     adminInspeccion(){
-      return this.$store.state.user.admin == "inspeccion" || this.$store.state.user.admin == "master"
+      const admin = useUserStore().admin
+      return admin == "inspeccion" || admin == "master"
     }
   },
   methods: {
+    async loadReservas() {
+      this.loading = true
+      try {
+        await useTurnosStore().getAll()
+        this.items = this.turnos
+        this.items.forEach(item => {
+          switch (item.status) {
+            case 'Pendiente de inspección':
+              item.estadoColor = 'text-secondary'
+              break
+            case 'Cancelado':
+              item.estadoColor = 'estado-danger'
+              break
+            case 'Inspeccionado':
+              item.estadoColor = 'text-success'
+              break
+            case 'Inspección rechazada':
+              item.estadoColor = 'estado-danger'
+              break
+            default:
+              item.estadoColor = 'text-primary'
+          }
+        })
+        useTurnosStore().ordenar()
+      } finally {
+        this.loading = false
+      }
+    },
     async registrarActividad(evento, result){
-      const userId = this.$store.state.user.username; // Reemplaza con el ID del usuario real
+      const userId = useUserStore().username; // Reemplaza con el ID del usuario real
       const actionType = evento;
       const actionResult = result;
 
@@ -212,12 +228,17 @@ export default{
       }
     },
     async onShowObservaciones(id){
-      const turno = this.$store.state.turnos.all.filter(turno => turno.id === id)
-      this.nroObservaciones = turno[0].nroTramite
-      this.singleContent = turno[0].observaciones
-      this.$fetch()
+      const turno = useTurnosStore().all.find(turno => turno.id === id)
+      if (!turno) {
+        this.singleContent = 'No hay observaciones para mostrar.'
+        this.nroObservaciones = 0
+        this.singleModal = true
+        return
+      }
+      this.nroObservaciones = turno.nroTramite
+      this.singleContent = turno.observaciones || 'No hay observaciones para mostrar.'
       this.singleModal = true
-      this.registrarActividad("Ver Observaciones", "Trámite nro: " + turno[0].nroTramite);
+      this.registrarActividad("Ver Observaciones", "Trámite nro: " + turno.nroTramite);
     },
     onSortCompare(a, b, key) {
       // Ordenamiento personalizado para campos específicos

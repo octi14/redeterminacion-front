@@ -35,7 +35,7 @@ export default defineNuxtPlugin(() => {
     visitedUrl = null
   ) => {
     try {
-      const api = useApi()
+      const api = useNuxtApp().$axios
       if (!visitedUrl) {
         visitedUrl = window.location.href
       }

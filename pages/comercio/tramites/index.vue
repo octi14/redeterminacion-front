@@ -2,35 +2,35 @@
   <div class="page main-background">
     <Banner title="Trámites comerciales" />
 
-    <div class="col-10 mainCarrousel" style="margin: auto; margin-top: 2rem">
+    <div class="col-10 mainCarrousel tramites-carousel-wrap" style="margin: auto; margin-top: 2rem">
       <b-carousel
         id="mainCarousel"
-        v-model="slide"
+        v-model="slideDesktop"
         :interval="4000"
         controls
         indicators
-        img-width="100%"
+        ride="carousel"
         style="text-shadow: 1px 1px 2px #333;"
         @sliding-start="onSlideStart"
         @sliding-end="onSlideEnd"
       >
-        <b-carousel-slide :img-src="carouselHabilita1"></b-carousel-slide>
-        <b-carousel-slide :img-src="carouselHabilita2"></b-carousel-slide>
+        <b-carousel-slide :img-src="carouselHabilita1" />
+        <b-carousel-slide :img-src="carouselHabilita2" />
       </b-carousel>
     </div>
     <div class="col-12 moblieCarrousel" style="padding: 0 10%; margin-top: 0; background-color: #FFFEF7;">
       <b-carousel
         id="moblieCarousel"
-        v-model="slide"
+        v-model="slideMobile"
         :interval="4000"
         controls
         indicators
-        img-width="100%"
+        ride="carousel"
         style="text-shadow: 1px 1px 2px #333;"
         @sliding-start="onSlideStart"
         @sliding-end="onSlideEnd"
       >
-        <b-carousel-slide :img-src="carouselHabilitaMobile"></b-carousel-slide>
+        <b-carousel-slide :img-src="carouselHabilitaMobile" />
       </b-carousel>
     </div>
 
@@ -40,14 +40,40 @@
           <h2 class="icon-green"><i class="bi bi-question-octagon-fill"></i> ¿Qué trámite estás buscando?</h2>
           <div class="botonera-container">
             <b-row>
-              <b-col lg="3" md="4" sm="6"><a href="#card-habilitacion" id="btnH"><img id="btn-Habilitación" width="100%" src="../../../assets/btn/btn_habilitacion.png" @click="seleccionarTramite('Habilitación')"></a></b-col>
-              <b-col lg="3" md="4" sm="6"><a href="#card-baja" id="btnB"><img id="btn-Baja" width="100%" src="../../../assets/btn/btn_baja.png" @click="seleccionarTramite('Baja')"></a></b-col>
-              <b-col lg="3" md="4" sm="6"><a href="#card-renovacion" id="btnR"><img id="btn-Renovación" width="100%" src="../../../assets/btn/btn_renovacion.png" @click="seleccionarTramite('Renovación')"></a></b-col>
-              <b-col lg="3" md="4" sm="6"><a href="#card-reempadronamiento" id="btnRe"><img id="btn-Reempadronamiento" width="100%" src="../../../assets/btn/btn_reempadronamiento.png" @click="seleccionarTramite('Reempadronamiento')"></a></b-col>
-              <b-col lg="3" md="4" sm="6"><a href="#card-cambioTitular" id="btnCT"><img id="btn-Cambio-Titular" width="100%" src="../../../assets/btn/btn_cambio_titular.png" @click="seleccionarTramite('Cambio de Titular')"></a></b-col>
-              <b-col lg="3" md="4" sm="6"><img id="btn-Cambio-Domicilio" class="disabled" width="100%" src="../../../assets/btn/btn_cambio_domicilio.png" @click="seleccionarTramite('Cambio-Domicilio')"></b-col>
-              <b-col lg="3" md="4" sm="6"><img id="btn-Anexo" class="disabled" width="100%" src="../../../assets/btn/btn_anexo.png" @click="seleccionarTramite('Anexo')"></b-col>
-              <b-col lg="3" md="4" sm="6"><img id="btn-Anexo-Cambio" class="disabled" width="100%" src="../../../assets/btn/btn_anexo_cambio.png" @click="seleccionarTramite('Anexo-Cambio')"></b-col>
+              <b-col lg="3" md="4" sm="6">
+                <div class="tramite-btn" role="button" tabindex="0" @click="seleccionarTramite('Habilitación')">
+                  <img id="btn-Habilitación" class="w-100" :src="btnHabilitacion" alt="Habilitación Comercial">
+                </div>
+              </b-col>
+              <b-col lg="3" md="4" sm="6">
+                <div class="tramite-btn" role="button" tabindex="0" @click="seleccionarTramite('Baja')">
+                  <img id="btn-Baja" class="w-100" :src="btnBaja" alt="Baja">
+                </div>
+              </b-col>
+              <b-col lg="3" md="4" sm="6">
+                <div class="tramite-btn" role="button" tabindex="0" @click="seleccionarTramite('Renovación')">
+                  <img id="btn-Renovación" class="w-100" :src="btnRenovacion" alt="Renovación">
+                </div>
+              </b-col>
+              <b-col lg="3" md="4" sm="6">
+                <div class="tramite-btn" role="button" tabindex="0" @click="seleccionarTramite('Reempadronamiento')">
+                  <img id="btn-Reempadronamiento" class="w-100" :src="btnReempadronamiento" alt="Reempadronamiento">
+                </div>
+              </b-col>
+              <b-col lg="3" md="4" sm="6">
+                <div class="tramite-btn" role="button" tabindex="0" @click="seleccionarTramite('Cambio de Titular')">
+                  <img id="btn-Cambio-Titular" class="w-100" :src="btnCambioTitular" alt="Cambio de Titular">
+                </div>
+              </b-col>
+              <b-col lg="3" md="4" sm="6">
+                <img id="btn-Cambio-Domicilio" class="disabled w-100" :src="btnCambioDomicilio" alt="Cambio de Domicilio">
+              </b-col>
+              <b-col lg="3" md="4" sm="6">
+                <img id="btn-Anexo" class="disabled w-100" :src="btnAnexo" alt="Anexo">
+              </b-col>
+              <b-col lg="3" md="4" sm="6">
+                <img id="btn-Anexo-Cambio" class="disabled w-100" :src="btnAnexoCambio" alt="Anexo Cambio">
+              </b-col>
             </b-row>
           </div>
         </b-col>
@@ -55,31 +81,28 @@
       <b-row>
         <b-col v-if="tramiteSeleccionado=='Baja'">
           <br />
-          <b-card class="section-card" id="card-baja" v-bind:class="{ 'expanded': isCardExpanded(0) }">
+          <b-card class="section-card" id="card-baja" :class="{ expanded: isCardExpanded(0) }">
             <h4 class="section-title" @click="toggleCard(0)">
               ¿Qué significa realizar una Baja Comercial?
               <i class="bi bi-chevron-compact-down"></i>
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
-            <transition name="expand">
-              <div v-show="isCardExpanded(0)">
+            <div class="section-card-panel">
                 <div class="li-row first-li">
                   <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El trámite de Baja Comercial implica finalizar una Habilitación Comercial. Mediante este trámite el Municipio verificará que la documentación solicitada y el pago de tasas correspondientes estén cumplimentadas.</div>
                 </div>
                 <div class="li-row">
                   <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Una vez confirmada esta información se extiende al solicitante un certificado de Baja Comercial donde consta la desvinculación comercial con este Municipio.</div>
                 </div>
-              </div>
-            </transition>
+            </div>
           </b-card>
-          <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(1) }">
+          <b-card class="section-card" :class="{ expanded: isCardExpanded(1) }">
             <h4 class="section-title" @click="toggleCard(1)">
               ¿Quién puede realizar una Baja Comercial?
               <i class="bi bi-chevron-compact-down"></i>
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
-            <transition name="expand">
-              <div v-show="isCardExpanded(1)">
+            <div class="section-card-panel">
                 <div class="li-row first-li">
                   <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>Titular de la Habilitación Comercial</b> ó</div>
                 </div>
@@ -87,22 +110,20 @@
                   <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>Propietario/a del Inmueble</b> en el cual se encuentre situado el comercio habilitado. <i>En este último caso el contrato entre las partes debe estar finalizado y debe haber cesado la actividad comercial.</i></div>
                 </div>
                 <div class="li-row">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> En ambos casos podrá actuar un/a representante o apoderado/a de la persona interesada con documentación que acredite el carácter de tal. <i class="bi bi-question-circle-fill text-info" style="font-size: 1.25em"></i></div>
+                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> En ambos casos podrá actuar un/a representante o apoderado/a de la persona interesada con documentación que acredite el carácter de tal. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('A')" @keydown.enter.stop.prevent="openPopup('A')"></i></div>
                 </div>
-              </div>
-            </transition>
+            </div>
           </b-card>
-          <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(2) }">
+          <b-card class="section-card" :class="{ expanded: isCardExpanded(2) }">
             <h4 class="section-title" @click="toggleCard(2)">
               ¿Qué documentación necesito para iniciar una Baja Comercial?
               <i class="bi bi-chevron-compact-down"></i>
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
-            <transition name="expand">
-              <div v-show="isCardExpanded(2)">
+            <div class="section-card-panel">
                 <div class="li-row first-li"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> DNI del solicitante <i>(imagen del frente y dorso)</i>. </div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de Tasa de Inspección de Seguridad e Higiene. <i class="bi bi-question-circle-fill text-info" style="font-size: 1.25em"></i></div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Tasa por Servicios Urbanos</a> que afectan al local <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. <i class="bi bi-question-circle-fill text-info" style="font-size: 1.25em"></i></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de Tasa de Inspección de Seguridad e Higiene. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('ConstanciaLibreDeudaSegHig')" @keydown.enter.stop.prevent="openPopup('ConstanciaLibreDeudaSegHig')"></i></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Tasa por Servicios Urbanos</a> que afectan al local <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('LibreDeuda')" @keydown.enter.stop.prevent="openPopup('LibreDeuda')"></i></div></div>
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=266&categ=34" target="_blank" class="external-link">Ingresos Brutos</a> <i>(Solo si la baja la solicita el titular de la habilitación)</i>. </div></div>
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Escritura traslativa de Dominio del Inmueble/ Contrato de locación / Boleto de Compraventa o afín, con el correspondiente Impuesto de Sellos Provincial y firma certificada por Escribano Público, Entidad Bancaria o Autoridad Administrativa (en caso de corresponder).</div></div>
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Poder autorizado por escribano <i>(únicamente si el trámite es iniciado mediante representante o apoderado/a)</i>.</div></div>
@@ -124,16 +145,14 @@
                   </b-row>
                 </b-card-text>
               </b-card>
-              </div>
-            </transition>
+            </div>
           </b-card>
-          <b-card class="section-card FAQs-card" v-bind:class="{ 'expanded': isCardExpanded(3) }">
+          <b-card class="section-card FAQs-card" :class="{ expanded: isCardExpanded(3) }">
             <h4 class="section-title" @click="toggleCard(3)">Preguntas Frecuentes
               <i class="bi bi-chevron-compact-down"></i>
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
-            <transition name="expand">
-              <div v-show="isCardExpanded(3)">
+            <div class="section-card-panel">
                 <div class="li-row first-li">
                   <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
                   <div class="li-content">
@@ -198,37 +217,33 @@
                     <iframe class="videoTuto" width="560" height="315" src="https://www.youtube.com/embed/HJwZkfxsnOw?si=EszZ_Byjmv2-ysF8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                   </div>
                 </div>
-              </div>
-            </transition>
+            </div>
           </b-card>
-          <b-card id="normas" class="section-card" v-bind:class="{ 'expanded': isCardExpanded(4) }">
+          <b-card id="normas" class="section-card" :class="{ expanded: isCardExpanded(4) }">
             <h4 class="section-title" @click="toggleCard(4)">
               Condiciones legales
               <i class="bi bi-chevron-compact-down"></i>
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
-            <transition name="expand">
-              <div v-show="isCardExpanded(4)">
+            <div class="section-card-panel">
                 <p class="first-li">
                   La habilitación de comercios/industrias o asimilables deberá adecuarse a lo determinado en concordancia con leyes nacionales, provinciales y
                   <a href="https://arvige.gob.ar/legislacion/pdf/12" target="_blank" class="external-link">el Digesto de Habilitaciones Comerciales (Ord.1958/04 (TO2024)</a>.
                 </p>
-              </div>
-            </transition>
+            </div>
           </b-card>
-        <b-button variant="success" class="float-right btn-form" @click="openPopup('Form')">Iniciar Trámite</b-button>
+        <div class="page-btn-iniciar-tramite-wrap"><b-button variant="success" size="sm" class="btn-form page-btn-iniciar-tramite" @click="openPopup('Form')">Iniciar Trámite</b-button></div>
         <br />
         </b-col>
         <b-col v-if="tramiteSeleccionado=='Habilitación'">
           <br />
-          <b-card class="section-card" id="card-baja" v-bind:class="{ 'expanded': isCardExpanded(5) }">
+          <b-card class="section-card" id="card-baja" :class="{ expanded: isCardExpanded(5) }">
             <h4 class="section-title" @click="toggleCard(5)">
               ¿Qué significa realizar una Habilitacion Comercial?
               <i class="bi bi-chevron-compact-down"></i>
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
-            <transition name="expand">
-              <div v-show="isCardExpanded(5)">
+            <div class="section-card-panel">
                 <div class="li-row first-li" style="margin-bottom: 1rem">
                   <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
                   <p class="li-content">La Municipalidad de Villa Gesell dispone que toda persona humana o jurídica que pretenda ejercer el comercio, industria o actividad asimilable deberá, previo a su desarrollo dentro del Partido, solicitar la habilitación pertinente.</p>
@@ -247,39 +262,35 @@
                     </div>
                   </div>
                 </div>
-              </div>
-            </transition>
+            </div>
           </b-card>
-          <b-card class="section-card" id="card-habilitacion" v-bind:class="{ 'expanded': isCardExpanded(6) }">
+          <b-card class="section-card" id="card-habilitacion" :class="{ expanded: isCardExpanded(6) }">
             <h4 class="section-title" @click="toggleCard(6)">
               ¿Quién puede iniciar una Habilitación Comercial?
               <i class="bi bi-chevron-compact-down"></i>
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
-            <transition name="expand">
-              <div v-show="isCardExpanded(6)">
+            <div class="section-card-panel">
                 <div class="li-row first-li">
                   <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>interesado futuro comerciante/industrial o afin</b> mayor de 18 años.</div>
                 </div>
                 <div class="li-row">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>representante o apoderado/a de la persona</b> interesada con documentación que acredite el carácter de tal. <i class="bi bi-question-circle-fill text-info" style="font-size: 1.25em"></i></div>
+                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>representante o apoderado/a de la persona</b> interesada con documentación que acredite el carácter de tal. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('A')" @keydown.enter.stop.prevent="openPopup('A')"></i></div>
                 </div>
-              </div>
-            </transition>
+            </div>
           </b-card>
 
-          <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(7) }">
+          <b-card class="section-card" :class="{ expanded: isCardExpanded(7) }">
             <h4 class="section-title" @click="toggleCard(7)">
               ¿Qué documentación necesito para iniciar una Habilitación Comercial?
               <i class="bi bi-chevron-compact-down"></i>
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
-            <transition name="expand">
-              <div v-show="isCardExpanded(7)">
+            <div class="section-card-panel">
                 <div class="li-row first-li"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> DNI del solicitante <i>(imagen del frente y dorso)</i>.</div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Domicilio real y legal del establecimiento <i>(deberá constar calle y número)</i>. <i class="bi bi-question-circle-fill text-info" style="font-size: 1.25em"></i></div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Copia de plano (en alguna de sus dos posibilidades: <i>1. Conforme a obra o Medición aprobado / 2. Conforme a obra o Medición registrado).</i> En caso de no poseerlo, se requerirá el Informe Técnico debidamente visado por el Colegio Profesional correspondiente. <i class="bi bi-question-circle-fill text-info" style="font-size: 1.25em"></i></div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Tasa por Sevicios Urbanos</a> <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. <i class="bi bi-question-circle-fill text-info" style="font-size: 1.25em"></i></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Domicilio real y legal del establecimiento <i>(deberá constar calle y número)</i>. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('NroInmueble')" @keydown.enter.stop.prevent="openPopup('NroInmueble')"></i></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Copia de plano (en alguna de sus dos posibilidades: <i>1. Conforme a obra o Medición aprobado / 2. Conforme a obra o Medición registrado).</i> En caso de no poseerlo, se requerirá el Informe Técnico debidamente visado por el Colegio Profesional correspondiente. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('B')" @keydown.enter.stop.prevent="openPopup('B')"></i></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Tasa por Sevicios Urbanos</a> <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('LibreDeuda')" @keydown.enter.stop.prevent="openPopup('LibreDeuda')"></i></div></div>
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Copia de la Escritura traslativa de Dominio del inmueble donde se desarrollará la actividad / Contrato de locación / Boleto de Compraventa o afín, con el correspondiente Impuesto de Sellos Provincial y firma certificada por Escribano Público, Entidad Bancaria o Autoridad Administrativa.</div></div>
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <a href="https://seti.afip.gob.ar/padron-puc-constancia-internet/ConsultaConstanciaAction.do" target="_blank" class="external-link">Constancia de inscripción de AFIP</a> actualizada.</div></div>
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" class="external-link">Constancia de Inscripción en Ingresos Brutos</a> (ARBA) actualizada al momento de la solicitud. Esta deberá mantenerse activa mientras el comercio, industria o asimilable esté habilitado, bajo pena de ser pasible de la clausura del establecimiento.</div></div>
@@ -303,18 +314,16 @@
                   </b-row>
                 </b-card-text>
               </b-card>
-              </div>
-            </transition>
+            </div>
           </b-card>
 
-          <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(8) }">
+          <b-card class="section-card" :class="{ expanded: isCardExpanded(8) }">
             <h4 class="section-title" @click="toggleCard(8)">
               Requisitos por rubros comerciales
               <i class="bi bi-chevron-compact-down"></i>
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
-            <transition name="expand">
-              <div v-show="isCardExpanded(8)">
+            <div class="section-card-panel">
                 <div class="li-row first-li">
                   <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
                   <div class="li-content">
@@ -459,16 +468,14 @@
                       <p v-if="rubroSeleccionado" class="li-p">Descargá el mapa de zonas permitidas para tu rubro haciendo <a class="external-link" target="_blank" :href="`${rubroSeleccionado.pom}`">click aquí</a></p>
                     </div>
                 </div>
-              </div>
-            </transition>
+            </div>
           </b-card>
-          <b-card class="section-card FAQs-card" v-bind:class="{ 'expanded': isCardExpanded(9) }">
+          <b-card class="section-card FAQs-card" :class="{ expanded: isCardExpanded(9) }">
             <h4 class="section-title" @click="toggleCard(9)">Preguntas Frecuentes
               <i class="bi bi-chevron-compact-down"></i>
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
-            <transition name="expand">
-              <div v-show="isCardExpanded(9)">
+            <div class="section-card-panel">
                 <div class="li-row first-li">
                   <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
                   <div class="li-content">
@@ -583,37 +590,33 @@
                     <iframe class="videoTuto" width="560" height="315" src="https://www.youtube.com/embed/HJwZkfxsnOw?si=EszZ_Byjmv2-ysF8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                   </div>
                 </div>
-              </div>
-            </transition>
+            </div>
           </b-card>
-          <b-card id="normas" class="section-card" v-bind:class="{ 'expanded': isCardExpanded(10) }">
+          <b-card id="normas" class="section-card" :class="{ expanded: isCardExpanded(10) }">
             <h4 class="section-title" @click="toggleCard(10)">
               Condiciones legales
               <i class="bi bi-chevron-compact-down"></i>
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
-            <transition name="expand">
-              <div v-show="isCardExpanded(10)">
+            <div class="section-card-panel">
                 <p class="first-li">
                   La habilitación de comercios/industrias o asimilables deberá adecuarse a lo determinado en concordancia con leyes nacionales, provinciales y
                   <a href="https://arvige.gob.ar/legislacion/pdf/12" target="_blank" class="external-link">el Digesto de Habilitaciones Comerciales (Ord.1958/04 (TO2024)</a>.
                 </p>
-              </div>
-            </transition>
+            </div>
           </b-card>
-        <b-button variant="success" class="float-right btn-form" @click="openPopup('Form')">Iniciar Trámite</b-button>
+        <div class="page-btn-iniciar-tramite-wrap"><b-button variant="success" size="sm" class="btn-form page-btn-iniciar-tramite" @click="openPopup('Form')">Iniciar Trámite</b-button></div>
         <br />
         </b-col>
         <b-col v-if="tramiteSeleccionado=='Renovación'">
           <br />
-          <b-card class="section-card" id="card-baja" v-bind:class="{ 'expanded': isCardExpanded(11) }">
+          <b-card class="section-card" id="card-baja" :class="{ expanded: isCardExpanded(11) }">
             <h4 class="section-title" @click="toggleCard(11)">
               ¿Qué significa realizar una Renovación Comercial?
               <i class="bi bi-chevron-compact-down"></i>
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
-            <transition name="expand">
-              <div v-show="isCardExpanded(11)">
+            <div class="section-card-panel">
                 <div class="li-row first-li">
                   <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El trámite de <b>Renovación Comercial</b> implica <b>reafirmar la continuidad de una Habilitación comercial</b> una vez que el <b>contrato de locación/comodato/etc. original haya concluido.</b></div>
                 </div>
@@ -649,43 +652,39 @@
                     </div>
                   </div>
                 </div>
-              </div>
-            </transition>
+            </div>
           </b-card>
-          <b-card class="section-card" id="card-habilitacion" v-bind:class="{ 'expanded': isCardExpanded(12) }">
+          <b-card class="section-card" id="card-habilitacion" :class="{ expanded: isCardExpanded(12) }">
             <h4 class="section-title" @click="toggleCard(12)">
               ¿Quién puede iniciar una Renovación Comercial?
               <i class="bi bi-chevron-compact-down"></i>
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
-            <transition name="expand">
-              <div v-show="isCardExpanded(12)">
+            <div class="section-card-panel">
                 <div class="li-row first-li">
                   <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>Titular de la Habilitación Comercial</b> ó</div>
                 </div>
                 <div class="li-row">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>Representante o Apoderado/a de la persona interesada</b> con documentación que acredite el carácter de tal. <i class="bi bi-question-circle-fill text-info" style="font-size: 1.25em"></i></div>
+                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>Representante o Apoderado/a de la persona interesada</b> con documentación que acredite el carácter de tal. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('A')" @keydown.enter.stop.prevent="openPopup('A')"></i></div>
                 </div>
-              </div>
-            </transition>
+            </div>
           </b-card>
-          <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(13) }">
+          <b-card class="section-card" :class="{ expanded: isCardExpanded(13) }">
             <h4 class="section-title" @click="toggleCard(13)">
               ¿Qué documentación necesito para iniciar una Renovación Comercial?
               <i class="bi bi-chevron-compact-down"></i>
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
-            <transition name="expand">
-              <div v-show="isCardExpanded(13)">
+            <div class="section-card-panel">
                 <div class="li-row first-li"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> DNI del solicitante <i>(imagen del frente y dorso)</i>.</div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de Tasa de Inspección de Seguridad e Higiene. <i class="bi bi-question-circle-fill text-info" style="font-size: 1.25em"></i></div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Tasa por Servicios Urbanos</a> que afectan al local <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. <i class="bi bi-question-circle-fill text-info" style="font-size: 1.25em"></i></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de Tasa de Inspección de Seguridad e Higiene. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('ConstanciaLibreDeudaSegHig')" @keydown.enter.stop.prevent="openPopup('ConstanciaLibreDeudaSegHig')"></i></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Tasa por Servicios Urbanos</a> que afectan al local <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('LibreDeuda')" @keydown.enter.stop.prevent="openPopup('LibreDeuda')"></i></div></div>
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=266&categ=34" target="_blank" class="external-link">Ingresos Brutos</a>  del titular de la habilitación. </div></div>
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <a href="https://www.afip.gob.ar/landing/default.asp" target="_blank" class="external-link">Constancia de inscripción de AFIP</a>. </div></div>
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <a href="https://sso.arba.gov.ar/Login/login?service=https%3A%2F%2Fapp.arba.gov.ar%3A443%2FWebTramites%2Fwelcome.do" target="_blank" class="external-link">Certificado de domicilio Ingresos Brutos (ARBA).</a></div></div>
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" class="external-link">Constancia de inscripción a Ingresos Brutos.</a></div></div>
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libro de actas: se entrega en forma presencial al finalizar el trámite. (<i>En el caso de alojamientos se presentarán 2 libros: de quejas y de habilitación.</i>)</div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Declaración Jurada - Metros establecimiento habilitado. <i class="bi bi-question-circle-fill text-info" style="font-size: 1.25em"></i></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Declaración Jurada - Metros establecimiento habilitado. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('decJurada')" @keydown.enter.stop.prevent="openPopup('decJurada')"></i></div></div>
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Contrato de locación con el correspondiente Impuesto de Sellos Provincial y firma certificada por Escribano Público, Entidad Bancaria o Autoridad Administrativa.</div></div>
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Planilla de Autorización de Trámite legalizada o poder autorizado por escribano <i>(únicamente si el trámite es iniciado mediante representante o apoderado/a)</i>.</div></div>
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <b>Personas Jurídicas:</b> Escritura constitutiva de la misma con designación actual de sus representantes.</div></div>
@@ -708,15 +707,13 @@
                   </b-card-text>
                 </b-card>
             </div>
-            </transition>
           </b-card>
-          <b-card class="section-card FAQs-card" v-bind:class="{ 'expanded': isCardExpanded(15) }">
+          <b-card class="section-card FAQs-card" :class="{ expanded: isCardExpanded(15) }">
             <h4 class="section-title" @click="toggleCard(15)">Preguntas Frecuentes
               <i class="bi bi-chevron-compact-down"></i>
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
-            <transition name="expand">
-              <div v-show="isCardExpanded(15)">
+            <div class="section-card-panel">
                 <div class="li-row first-li">
                   <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
                   <div class="li-content">
@@ -768,37 +765,33 @@
                     <iframe class="videoTuto" width="560" height="315" src="https://www.youtube.com/embed/HJwZkfxsnOw?si=EszZ_Byjmv2-ysF8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                   </div>
                 </div>
-              </div>
-            </transition>
+            </div>
           </b-card>
-          <b-card id="normas" class="section-card" v-bind:class="{ 'expanded': isCardExpanded(16) }">
+          <b-card id="normas" class="section-card" :class="{ expanded: isCardExpanded(16) }">
             <h4 class="section-title" @click="toggleCard(16)">
               Condiciones legales
               <i class="bi bi-chevron-compact-down"></i>
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
-            <transition name="expand">
-              <div v-show="isCardExpanded(16)">
+            <div class="section-card-panel">
                 <p class="first-li">
                   La renovación de comercios/industrias o asimilables deberá adecuarse a lo determinado en concordancia con leyes nacionales, provinciales y el art. 168 del Digesto de Habilitaciones Comerciales
                   <a href="https://arvige.gob.ar/legislacion/pdf/12" target="_blank" class="external-link">(Ord.1958/04 (TO2024)</a>.
                 </p>
-              </div>
-            </transition>
+            </div>
           </b-card>
-        <b-button variant="success" class="float-right btn-form" @click="openPopup('Form')">Iniciar Trámite</b-button>
+        <div class="page-btn-iniciar-tramite-wrap"><b-button variant="success" size="sm" class="btn-form page-btn-iniciar-tramite" @click="openPopup('Form')">Iniciar Trámite</b-button></div>
         <br />
         </b-col>
         <b-col v-if="tramiteSeleccionado=='Reempadronamiento'">
           <br />
-          <b-card class="section-card" id="card-baja" v-bind:class="{ 'expanded': isCardExpanded(17) }">
+          <b-card class="section-card" id="card-baja" :class="{ expanded: isCardExpanded(17) }">
             <h4 class="section-title" @click="toggleCard(17)">
               ¿Qué significa realizar un Reempadronamiento Comercial?
               <i class="bi bi-chevron-compact-down"></i>
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
-            <transition name="expand">
-              <div v-show="isCardExpanded(17)">
+            <div class="section-card-panel">
                 <div class="li-row first-li">
                   <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El trámite de <b>Reempadronamiento Comercial</b> implica <b>reafirmar la continuidad de una Habilitación comercial</b> en <b>los mismos términos en los que fue solicitada</b>,  siempre y cuando el certificado de habilitación se encuentre vigente.</div>
                 </div>
@@ -831,43 +824,39 @@
                     </div>
                   </div>
                 </div>
-              </div>
-            </transition>
+            </div>
           </b-card>
-          <b-card class="section-card" id="card-habilitacion" v-bind:class="{ 'expanded': isCardExpanded(18) }">
+          <b-card class="section-card" id="card-habilitacion" :class="{ expanded: isCardExpanded(18) }">
             <h4 class="section-title" @click="toggleCard(18)">
               ¿Quién puede iniciar un Reempadronamiento Comercial?
               <i class="bi bi-chevron-compact-down"></i>
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
-            <transition name="expand">
-              <div v-show="isCardExpanded(18)">
+            <div class="section-card-panel">
                 <div class="li-row first-li">
                   <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>Titular de la Habilitación Comercial</b> ó</div>
                 </div>
                 <div class="li-row">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>Representante o Apoderado/a de la persona interesada</b> con documentación que acredite el carácter de tal. <i class="bi bi-question-circle-fill text-info" style="font-size: 1.25em"></i></div>
+                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>Representante o Apoderado/a de la persona interesada</b> con documentación que acredite el carácter de tal. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('A')" @keydown.enter.stop.prevent="openPopup('A')"></i></div>
                 </div>
-              </div>
-            </transition>
+            </div>
           </b-card>
-          <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(19) }">
+          <b-card class="section-card" :class="{ expanded: isCardExpanded(19) }">
             <h4 class="section-title" @click="toggleCard(19)">
               ¿Qué documentación necesito para iniciar un Reempadronamiento Comercial?
               <i class="bi bi-chevron-compact-down"></i>
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
-            <transition name="expand">
-              <div v-show="isCardExpanded(19)">
+            <div class="section-card-panel">
                 <div class="li-row first-li"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> DNI del solicitante <i>(imagen del frente y dorso)</i>.</div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de Tasa de Inspección de Seguridad e Higiene. <i class="bi bi-question-circle-fill text-info" style="font-size: 1.25em"></i></div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Tasa por Servicios Urbanos</a> que afectan al local <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. <i class="bi bi-question-circle-fill text-info" style="font-size: 1.25em"></i></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de Tasa de Inspección de Seguridad e Higiene. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('ConstanciaLibreDeudaSegHig')" @keydown.enter.stop.prevent="openPopup('ConstanciaLibreDeudaSegHig')"></i></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Tasa por Servicios Urbanos</a> que afectan al local <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('LibreDeuda')" @keydown.enter.stop.prevent="openPopup('LibreDeuda')"></i></div></div>
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=266&categ=34" target="_blank" class="external-link">Ingresos Brutos</a>  del titular de la habilitación. </div></div>
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <a href="https://www.afip.gob.ar/landing/default.asp" target="_blank" class="external-link">Constancia de inscripción de AFIP</a>. </div></div>
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <a href="https://sso.arba.gov.ar/Login/login?service=https%3A%2F%2Fapp.arba.gov.ar%3A443%2FWebTramites%2Fwelcome.do" target="_blank" class="external-link">Certificado de domicilio Ingresos Brutos (ARBA).</a></div></div>
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" class="external-link">Constancia de inscripción a Ingresos Brutos.</a></div></div>
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libro de actas: se entrega en forma presencial al finalizar el trámite. (<i>En el caso de alojamientos se presentarán 2 libros: de quejas y de habilitación.</i>)</div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Declaración Jurada - Metros establecimiento habilitado. <i class="bi bi-question-circle-fill text-info" style="font-size: 1.25em"></i></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Declaración Jurada - Metros establecimiento habilitado. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('decJurada')" @keydown.enter.stop.prevent="openPopup('decJurada')"></i></div></div>
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Planilla de Autorización de Trámite legalizada o poder autorizado por escribano <i>(únicamente si el trámite es iniciado mediante representante o apoderado/a)</i>.</div></div>
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <b>Personas Jurídicas:</b> Escritura constitutiva de la misma con designación actual de sus representantes.</div></div>
                 <div class="separador-top">
@@ -889,15 +878,13 @@
                   </b-card-text>
                 </b-card>
             </div>
-            </transition>
           </b-card>
-          <b-card class="section-card FAQs-card" v-bind:class="{ 'expanded': isCardExpanded(20) }">
+          <b-card class="section-card FAQs-card" :class="{ expanded: isCardExpanded(20) }">
             <h4 class="section-title" @click="toggleCard(20)">Preguntas Frecuentes
               <i class="bi bi-chevron-compact-down"></i>
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
-            <transition name="expand">
-              <div v-show="isCardExpanded(20)">
+            <div class="section-card-panel">
                 <div class="li-row first-li">
                   <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
                   <div class="li-content">
@@ -954,37 +941,33 @@
                     <iframe class="videoTuto" width="560" height="315" src="https://www.youtube.com/embed/HJwZkfxsnOw?si=EszZ_Byjmv2-ysF8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                   </div>
                 </div>
-              </div>
-            </transition>
+            </div>
           </b-card>
-          <b-card id="normas" class="section-card" v-bind:class="{ 'expanded': isCardExpanded(21) }">
+          <b-card id="normas" class="section-card" :class="{ expanded: isCardExpanded(21) }">
             <h4 class="section-title" @click="toggleCard(21)">
               Condiciones legales
               <i class="bi bi-chevron-compact-down"></i>
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
-            <transition name="expand">
-              <div v-show="isCardExpanded(21)">
+            <div class="section-card-panel">
                 <p class="first-li">
                   El reempadronamiento de comercios/industrias o asimilables deberá adecuarse a lo determinado en concordancia con leyes nacionales, provinciales y el art. 163 del Digesto de Habilitaciones Comerciales
                   <a href="https://arvige.gob.ar/legislacion/pdf/12" target="_blank" class="external-link">(Ord.1958/04 (TO2024)</a>.
                 </p>
-              </div>
-            </transition>
+            </div>
           </b-card>
-        <b-button variant="success" class="float-right btn-form" @click="openPopup('Form')">Iniciar Trámite</b-button>
+        <div class="page-btn-iniciar-tramite-wrap"><b-button variant="success" size="sm" class="btn-form page-btn-iniciar-tramite" @click="openPopup('Form')">Iniciar Trámite</b-button></div>
         <br />
         </b-col>
         <b-col v-if="tramiteSeleccionado=='Cambio de Titular'">
           <br />
-          <b-card class="section-card" id="card-baja" v-bind:class="{ 'expanded': isCardExpanded(22) }">
+          <b-card class="section-card" id="card-baja" :class="{ expanded: isCardExpanded(22) }">
             <h4 class="section-title" @click="toggleCard(22)">
               ¿Qué significa realizar un Cambio de Titular?
               <i class="bi bi-chevron-compact-down"></i>
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
-            <transition name="expand">
-              <div v-show="isCardExpanded(22)">
+            <div class="section-card-panel">
                 <div class="li-row first-li" style="margin-bottom: 1rem">
                   <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
                   <p class="li-content">El trámite de <b>Cambio de Titularidad</b> implica <b>realizar una modificación respecto de la persona que ejerce el comercio bajo una habilitación en curso que en su principio estaba a nombre de otra.</b> </p>
@@ -1023,17 +1006,15 @@
                     </div>
                   </div>
                 </div>
-              </div>
-            </transition>
+            </div>
           </b-card>
-          <b-card class="section-card" id="card-habilitacion" v-bind:class="{ 'expanded': isCardExpanded(23) }">
+          <b-card class="section-card" id="card-habilitacion" :class="{ expanded: isCardExpanded(23) }">
             <h4 class="section-title" @click="toggleCard(23)">
               ¿Quién puede realizar un Cambio de Titular?
               <i class="bi bi-chevron-compact-down"></i>
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
-            <transition name="expand">
-              <div v-show="isCardExpanded(23)">
+            <div class="section-card-panel">
                 <div class="li-row first-li">
                   <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>El Titular de la Habilitación Comercial</b> mayor de 18 años.</div>
                 </div>
@@ -1041,23 +1022,21 @@
                   <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>interesado futuro comerciante/industrial o afin</b> mayor de 18 años.</div>
                 </div>
                 <div class="li-row">
-                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>representante o apoderado/a de la persona</b> interesada con documentación que acredite el carácter de tal. <i class="bi bi-question-circle-fill text-info" style="font-size: 1.25em"></i></div>
+                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> El <b>representante o apoderado/a de la persona</b> interesada con documentación que acredite el carácter de tal. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('A')" @keydown.enter.stop.prevent="openPopup('A')"></i></div>
                 </div>
-              </div>
-            </transition>
+            </div>
           </b-card>
 
-          <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(24) }">
+          <b-card class="section-card" :class="{ expanded: isCardExpanded(24) }">
             <h4 class="section-title" @click="toggleCard(24)">
               ¿Qué documentación necesito para iniciar un Cambio de Titular?
               <i class="bi bi-chevron-compact-down"></i>
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
-            <transition name="expand">
-              <div v-show="isCardExpanded(24)">
+            <div class="section-card-panel">
                 <div class="li-row first-li"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> DNI del solicitante <i>(imagen del frente y dorso)</i>.</div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda Tasa de Inspección de Seguridad e Higiene. <i class="bi bi-question-circle-fill text-info" style="font-size: 1.25em"></i></div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Tasa por Sevicios Urbanos</a> <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. <i class="bi bi-question-circle-fill text-info" style="font-size: 1.25em"></i></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda Tasa de Inspección de Seguridad e Higiene. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('ConstanciaLibreDeudaSegHig')" @keydown.enter.stop.prevent="openPopup('ConstanciaLibreDeudaSegHig')"></i></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Tasa por Sevicios Urbanos</a> <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('LibreDeuda')" @keydown.enter.stop.prevent="openPopup('LibreDeuda')"></i></div></div>
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Libre deuda de <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=266&categ=34" target="_blank" class="external-link">Ingresos Brutos</a>  del titular de la habilitación. </div></div>
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <a href="https://seti.afip.gob.ar/padron-puc-constancia-internet/ConsultaConstanciaAction.do" target="_blank" class="external-link">Constancia de inscripción de AFIP</a> actualizada.</div></div>
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> <a href="https://sso.arba.gov.ar/Login/login?service=https%3A%2F%2Fapp.arba.gov.ar%3A443%2FWebTramites%2Fwelcome.do" target="_blank" class="external-link">Certificado de domicilio Ingresos Brutos (ARBA).</a></div></div>
@@ -1086,16 +1065,14 @@
                   </b-row>
                 </b-card-text>
               </b-card>
-              </div>
-            </transition>
+            </div>
           </b-card>
-          <b-card class="section-card FAQs-card" v-bind:class="{ 'expanded': isCardExpanded(26) }">
+          <b-card class="section-card FAQs-card" :class="{ expanded: isCardExpanded(26) }">
             <h4 class="section-title" @click="toggleCard(26)">Preguntas Frecuentes
               <i class="bi bi-chevron-compact-down"></i>
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
-            <transition name="expand">
-              <div v-show="isCardExpanded(26)">
+            <div class="section-card-panel">
                 <div class="li-row first-li">
                   <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
                   <div class="li-content">
@@ -1210,33 +1187,30 @@
                     <iframe class="videoTuto" width="560" height="315" src="https://www.youtube.com/embed/HJwZkfxsnOw?si=EszZ_Byjmv2-ysF8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                   </div>
                 </div>
-              </div>
-            </transition>
+            </div>
           </b-card>
-          <b-card id="normas" class="section-card" v-bind:class="{ 'expanded': isCardExpanded(27) }">
+          <b-card id="normas" class="section-card" :class="{ expanded: isCardExpanded(27) }">
             <h4 class="section-title" @click="toggleCard(27)">
               Condiciones legales
               <i class="bi bi-chevron-compact-down"></i>
               <i class="bi bi-chevron-compact-up"></i>
             </h4>
-            <transition name="expand">
-              <div v-show="isCardExpanded(27)">
+            <div class="section-card-panel">
                 <p class="first-li">
                   La habilitación de comercios/industrias o asimilables deberá adecuarse a lo determinado en concordancia con leyes nacionales, provinciales y
                   <a href="https://arvige.gob.ar/legislacion/pdf/12" target="_blank" class="external-link">el art.170 de la Ordenanza 2156/08 (TO 2023)</a>.
                 </p>
-              </div>
-            </transition>
+            </div>
           </b-card>
-        <b-button variant="success" class="float-right btn-form" @click="openPopup('Form')">Iniciar Trámite</b-button>
+        <div class="page-btn-iniciar-tramite-wrap"><b-button variant="success" size="sm" class="btn-form page-btn-iniciar-tramite" @click="openPopup('Form')">Iniciar Trámite</b-button></div>
         <br />
         </b-col>
       </b-row>
     </b-container>
 
     <!-- Popups -->
-    <b-modal v-model="showPopupA"  :hide-footer="true" @click-outside="showPopupA = false" :header-bg-variant="'success'" centered>
-        <template #modal-header>
+    <BModal v-model="showPopupA"  :no-footer="true" @click-outside="showPopupA = false" :header-bg-variant="'success'" centered>
+        <template #header>
           <div class="modal-info">
             <h5>
                 <i class="bi bi-question-circle text-light"></i>
@@ -1247,7 +1221,7 @@
         </template>
         <div class="modal-info popupApoderado">
           <h3>Representante o Apoderado/a</h3>
-          <p class="destacado"><b-icon-caret-right-fill class="icon-orange"></b-icon-caret-right-fill >Esta figura permite facultar a una persona para la realización de trámites, actos y gestiones en representación del/la contribuyente o responsable solicitante.</p>
+          <p class="destacado"><i class="bi bi-caret-right-fill icon-orange li-icon"></i>Esta figura permite facultar a una persona para la realización de trámites, actos y gestiones en representación del/la contribuyente o responsable solicitante.</p>
           <h6>Casos de Representación:</h6>
           <p><span class="icon-orange">1) </span><b>Representante Voluntario:</b> Persona que actúa en nombre y por cuenta de otra, en virtud de la facultad que ella le confiere mediante un mandato (poder o autorización).</p>
           <p><span class="icon-orange">2) </span><b>Representante Legal:</b> Persona que actúa en nombre y por cuenta de una Persona Jurídica en virtud del carácter que posee por integrar los órganos de mando. Asimismo, los padres que ejercen la patria potestad sobre sus hijos/as.</p>
@@ -1255,9 +1229,9 @@
           <p><span class="icon-orange">4) </span><b>Sucesiones Indivisas:</b> Casos en que, existiendo varios/as herederos/as, todos/as son propietarios/as de los bienes, pero aún no se ha realizado la división de los mismos en la proporción que cada uno/a tiene derecho a heredar.</p>
           <p><span class="icon-orange">5) </span><b>Herederos/as o Legatarios/as (Causahabientes):</b> Sucesor/a de una persona fallecida (actuación ante el Fisco previa al inicio de la sucesión o iniciada ésta, previa a la declaratoria de herederos/as).</p>
         </div>
-    </b-modal>
-    <b-modal v-model="showPopupB" title="" :hide-footer="true" @click-outside="showPopupB = false" :header-bg-variant="'success'" centered>
-        <template #modal-header>
+    </BModal>
+    <BModal v-model="showPopupB" title="" :no-footer="true" @click-outside="showPopupB = false" :header-bg-variant="'success'" centered>
+        <template #header>
           <div class="modal-info">
             <h5>
                 <i class="bi bi-question-circle text-light"></i>
@@ -1288,9 +1262,9 @@
             </div>
           </div>
         </div>
-        </b-modal>
-    <b-modal v-model="showPopupD" title="" :hide-footer="true" @click-outside="showPopupD = false" :header-bg-variant="'success'" centered>
-      <template #modal-header>
+        </BModal>
+    <BModal v-model="showPopupD" title="" :no-footer="true" @click-outside="showPopupD = false" :header-bg-variant="'success'" centered>
+      <template #header>
           <div class="modal-info">
             <h5>
                 <i class="bi bi-question-circle text-light"></i>
@@ -1302,9 +1276,9 @@
       <div class="modal-info">
         <p><i class="bi bi-caret-right-fill"></i>En caso de ser positiva la inspección correspondiente deberá constituir domicilio fiscal electrónico de quien ejerza la actividad donde serán válidas las notificaciones efectuadas.</p>
       </div>
-    </b-modal>
-    <b-modal v-model="showPopupE" title="" :hide-footer="true" @click-outside="showPopupE = false" :header-bg-variant="'success'" centered>
-      <template #modal-header>
+    </BModal>
+    <BModal v-model="showPopupE" title="" :no-footer="true" @click-outside="showPopupE = false" :header-bg-variant="'success'" centered>
+      <template #header>
           <div class="modal-info">
             <h5>
                 <i class="bi bi-question-circle text-light"></i>
@@ -1316,9 +1290,9 @@
       <div class="modal-info">
         <p><i class="bi bi-caret-right-fill"></i>Ingrese aqui.</p>
       </div>
-    </b-modal>
-    <b-modal v-model="showPopupConstanciaLibreDeudaSegHig" title="Libre deuda de Tasa de Inspección de Seguridad e Higiene" :hide-footer="true" @click-outside="showPopupConstanciaLibreDeudaSegHig = false" :header-bg-variant="'success'"  centered>
-      <template #modal-header>
+    </BModal>
+    <BModal v-model="showPopupConstanciaLibreDeudaSegHig" title="Libre deuda de Tasa de Inspección de Seguridad e Higiene" :no-footer="true" @click-outside="showPopupConstanciaLibreDeudaSegHig = false" :header-bg-variant="'success'"  centered>
+      <template #header>
         <div class="modal-info">
           <h5>
               <i class="bi bi-question-circle text-light"></i>
@@ -1330,10 +1304,10 @@
       <div class="modal-info">
         <p><i class="bi bi-caret-right-fill"></i>Podés solicitarlo enviando un correo electrónico a <a href="mailto:deptocomercio@gesell.gob.ar" target="_blank" >deptocomercio@gesell.gob.ar</a>, indicando <b>número de legajo comercial</b> y <b>nombre del titular de la habilitación</b>.</p>
       </div>
-    </b-modal>
+    </BModal>
     <!-- Popup de advertencia -->
-    <b-modal v-model="showConfirmationPopup" hide-footer :header-bg-variant="'success'" centered>
-        <template #modal-header>
+    <BModal v-model="showConfirmationPopup" no-footer :header-bg-variant="'success'" centered>
+        <template #header>
           <div class="confirmation-popup-header">
               <i class="bi bi-exclamation-triangle text-light"></i>
             </div>
@@ -1353,36 +1327,16 @@
           </div>
           <div class="text-center mt-3">
               <nuxt-link :class="{ 'disabled': !documentCheckboxChecked }" :to="{path: '/comercio/tramites/form', query: { tramite: tramiteSeleccionado } }">
-              <b-btn variant="success" :disabled="!documentCheckboxChecked" @click="proceedToForm()" >
+              <b-button variant="success" :disabled="!documentCheckboxChecked" @click="proceedToForm()" >
                   Aceptar
-              </b-btn>
+              </b-button>
               </nuxt-link>
           </div>
         </div>
-    </b-modal>
-    <!--Popup está cerrado-->
-    <!-- <b-modal v-model="showConfirmationPopup" hide-footer header-bg-variant="secondary" centered>
-      <template #modal-header>
-        <div class="confirmation-popup-header">
-            <i class="bi bi-exclamation-triangle text-light"></i>
-          </div>
-      </template>
-      <div class="confirmation-popup-body">
-        <p class="text-secondary"><b>No es posible iniciar un trámite comercial.</b></p>
-        <div class="li-row">
-          <div class="li-icon"></div><div class="li-content text-center">
-            Por el momento solo es posible iniciar trámites comerciales de lunes a viernes de 8 a 17hs.</div>
-        </div>
-        <div class="text-center mt-3">
-          <b-button class="btn-secondary" @click="showConfirmationPopup = false">
-              Aceptar
-          </b-button>
-        </div>
-      </div>
-    </b-modal> -->
+    </BModal>
     <!-- Popup de solicitud de libredeuda -->
-    <b-modal v-model="showLibreDeudaPopup" title="" @hide="resetForm" :header-bg-variant="'success'" hide-footer centered>
-      <template #modal-header>
+    <BModal v-model="showLibreDeudaPopup" title="" @hide="resetForm" :header-bg-variant="'success'" no-footer centered>
+      <template #header>
         <div class="modal-info">
           <h5>
               <i class="bi bi-question-circle text-light"></i>
@@ -1397,9 +1351,9 @@
           <a href="http://haciendavgesell.gob.ar/_nuxt/img/ej-libredeuda.78769c7.jpg" target="_blank"><img src="../../../assets/ej-libredeuda.jpg" width="100%" height="fit-content" /></a>
         </div>
       </div>
-    </b-modal>
-    <b-modal v-model="showPopupNroInmueble" title="" :hide-footer="true" @click-outside="showPopupNroInmueble = false" :header-bg-variant="'success'"  centered>
-      <template #modal-header>
+    </BModal>
+    <BModal v-model="showPopupNroInmueble" title="" :no-footer="true" @click-outside="showPopupNroInmueble = false" :header-bg-variant="'success'"  centered>
+      <template #header>
         <div class="modal-info">
           <h5>
               <i class="bi bi-question-circle text-light"></i>
@@ -1411,10 +1365,10 @@
       <div class="modal-info">
         <p><i class="bi bi-caret-right-fill"></i>Podés consultar el número enviando un correo electrónico a <a href="mailto:catatro@gesell.gob.ar" target="_blank">catastro@gesell.gob.ar</a>, indicando nomenclatura catastral del bien que se encuentra en la escritura del mismo.</p>
       </div>
-    </b-modal>
+    </BModal>
     <!-- Modal para declaración jurada -->
-    <b-modal v-model="showPopupDecJurada" title="" :hide-footer="true" @click-outside="showPopupDecJurada = false" :header-bg-variant="'success'" centered>
-      <template #modal-header>
+    <BModal v-model="showPopupDecJurada" title="" :no-footer="true" @click-outside="showPopupDecJurada = false" :header-bg-variant="'success'" centered>
+      <template #header>
         <div class="modal-info">
           <h5>
               <i class="bi bi-question-circle text-light"></i>
@@ -1431,15 +1385,39 @@
             <a v-else href="https://drive.google.com/file/d/12e--P7naWPKltm7pzsskRymFxobBN4QU/view?usp=sharing" target="_blank"> aquí.</a></p>
         </div>
       </div>
-    </b-modal>
+    </BModal>
   </div>
 </template>
 
 <script>
-import rubros from "@/plugins/rubros.js";
+import rubros from '~/utils/rubros.js'
 import carouselHabilita1 from '~/assets/habilita-en-simples-pasos.png'
 import carouselHabilita2 from '~/assets/habilita-en-simples-pasos-2.png'
 import carouselHabilitaMobile from '~/assets/habilita-en-simples-pasos-mobile.png'
+import btnHabilitacion from '~/assets/btn/btn_habilitacion.png'
+import btnBaja from '~/assets/btn/btn_baja.png'
+import btnRenovacion from '~/assets/btn/btn_renovacion.png'
+import btnReempadronamiento from '~/assets/btn/btn_reempadronamiento.png'
+import btnCambioTitular from '~/assets/btn/btn_cambio_titular.png'
+import btnCambioDomicilio from '~/assets/btn/btn_cambio_domicilio.png'
+import btnAnexo from '~/assets/btn/btn_anexo.png'
+import btnAnexoCambio from '~/assets/btn/btn_anexo_cambio.png'
+
+const TRAMITE_BTN_IDS = {
+  'Habilitación': 'btn-Habilitación',
+  Baja: 'btn-Baja',
+  'Renovación': 'btn-Renovación',
+  Reempadronamiento: 'btn-Reempadronamiento',
+  'Cambio de Titular': 'btn-Cambio-Titular',
+}
+
+const TRAMITE_SCROLL_IDS = {
+  'Habilitación': 'card-habilitacion',
+  Baja: 'card-baja',
+  'Renovación': 'card-baja',
+  Reempadronamiento: 'card-habilitacion',
+  'Cambio de Titular': 'card-habilitacion',
+}
 
 export default {
   data:function() {
@@ -1447,7 +1425,16 @@ export default {
       carouselHabilita1,
       carouselHabilita2,
       carouselHabilitaMobile,
-      slide: 0,
+      btnHabilitacion,
+      btnBaja,
+      btnRenovacion,
+      btnReempadronamiento,
+      btnCambioTitular,
+      btnCambioDomicilio,
+      btnAnexo,
+      btnAnexoCambio,
+      slideDesktop: 0,
+      slideMobile: 0,
       sliding: null,
       filteredRubros: rubros,//.filter(rubro => rubro.requisitos.length > 0),
       showPopupA: false,
@@ -1613,112 +1600,202 @@ export default {
   isCardExpanded(cardIndex) {
     return this.expandedCards.includes(cardIndex);
   },
-  seleccionarTramite(tramite){
-    this.tramiteSeleccionado = tramite;
-    // Obtener todas las imágenes de la botonera
-    const imagenes = document.querySelectorAll('.botonera-container img');
+  seleccionarTramite(tramite) {
+    this.tramiteSeleccionado = tramite
+    const targetBtnId = TRAMITE_BTN_IDS[tramite]
 
-    // Iterar sobre cada imagen
-    imagenes.forEach((imagen) => {
-      // Verificar si la imagen actual es la que se ha clickeado
-      if (imagen.id === `btn-${tramite}`) {
-        // Agregar la clase 'selected' a la imagen clickeada
-        imagen.classList.add('selected');
+    document.querySelectorAll('.botonera-container img').forEach((imagen) => {
+      if (targetBtnId && imagen.id === targetBtnId) {
+        imagen.classList.add('selected')
       } else {
-        // Eliminar la clase 'selected' de las demás imágenes
-        imagen.classList.remove('selected');
+        imagen.classList.remove('selected')
       }
-    });
-    this.expandedCards.forEach((card) => {
-      if( this.isCardExpanded(card)) this.toggleCard(card);
-    });
-  }
+    })
+
+    ;[...this.expandedCards].forEach((card) => {
+      if (this.isCardExpanded(card)) this.toggleCard(card)
+    })
+
+    this.$nextTick(() => {
+      const scrollId = TRAMITE_SCROLL_IDS[tramite]
+      if (scrollId) {
+        document.getElementById(scrollId)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+    })
+  },
 }
 }
 </script>
-<style lang="sass">
-#mainCarousel
+<style lang="scss">
+#mainCarousel {
+  .carousel,
+  .carousel-inner,
+  .carousel-item {
+    background-color: #fff;
+  }
+
+  .carousel-item img {
+    display: block;
+    width: 100%;
+    height: auto;
+    background-color: #fff;
+  }
+
   .carousel-control-prev-icon,
-  .carousel-control-next-icon
-    background-image: none
-    background-size: 100%, 100%
-    border-radius: 50%
-    height: 100px
-    width: 100px
-  .carousel-control-next-icon::after
-    color: #0c681a
-    content: '>'
-    font-size: 40px
-    left: 10px
-  .carousel-control-prev
-    text-align: left
-    background: rgba(#CCC, 0.3)
-    width: 5%
-  .carousel-control-next
-    text-align: right
-    background: rgba(#CCC, 0.3)
-    width: 5%
-  .carousel-control-prev-icon::after
-    color: #0c681a
-    content: '<'
-    font-size: 40px
-  .carousel-indicators
-    bottom: -25px
-  .carousel-indicators li
-    background-color: #999999
-    height: 6px
-    margin: 0 5px
-    opacity: 1
-    padding: 3px
-    position: relative
-    width: 6px
-    border-radius: 50%
-  .carousel-indicators li::after
-    bottom: -7px
-    content: ""
-    left: -7px
-    padding: 5px
-    position: absolute
-    right: -7px
-    top: -7px
-  .carousel-indicators li.active
-    background-color: 999999
-    border: 3px solid #999999
-    top: 6px
-    border-radius: 50%
-@media (max-width: 1200px)
-  #mainCarousel
+  .carousel-control-next-icon {
+    background-image: none;
+    background-size: 100%, 100%;
+    border-radius: 50%;
+    height: 100px;
+    width: 100px;
+  }
+
+  .carousel-control-next-icon::after {
+    color: #0c681a;
+    content: '>';
+    font-size: 40px;
+    left: 10px;
+  }
+
+  .carousel-control-prev {
+    text-align: left;
+    background: rgba(204, 204, 204, 0.3);
+    width: 5%;
+  }
+
+  .carousel-control-next {
+    text-align: right;
+    background: rgba(204, 204, 204, 0.3);
+    width: 5%;
+  }
+
+  .carousel-control-prev-icon::after {
+    color: #0c681a;
+    content: '<';
+    font-size: 40px;
+  }
+
+  .carousel-indicators {
+    bottom: -25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0;
+  }
+
+  .carousel-indicators li,
+  .carousel-indicators button {
+    background-color: #999999;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    height: 8px;
+    margin: 0 5px;
+    opacity: 1;
+    padding: 0;
+    position: relative;
+    width: 8px;
+    border-radius: 50%;
+    border: none;
+    transition: transform 0.15s ease, background-color 0.15s ease;
+  }
+
+  .carousel-indicators li::after,
+  .carousel-indicators button::after {
+    bottom: -7px;
+    content: "";
+    left: -7px;
+    padding: 5px;
+    position: absolute;
+    right: -7px;
+    top: -7px;
+  }
+
+  .carousel-indicators li.active,
+  .carousel-indicators button.active {
+    background-color: #666666;
+    border: 2px solid #999999;
+    transform: scale(1.15);
+  }
+}
+
+#moblieCarousel {
+  .carousel-control-prev-icon,
+  .carousel-control-next-icon {
+    background-image: none;
+  }
+
+  .carousel-control-next-icon::after {
+    color: #0c681a;
+    content: '>';
+    font-size: 40px;
+  }
+
+  .carousel-control-prev-icon::after {
+    color: #0c681a;
+    content: '<';
+    font-size: 40px;
+  }
+}
+
+@media (max-width: 1200px) {
+  #mainCarousel,
+  #moblieCarousel {
     .carousel-control-prev-icon::after,
-    .carousel-control-next-icon::after
-      font-size: 30px
-    .carousel-indicators li
-      background-color: #999999
-      height: 3px
-      margin: 0 5px
-      opacity: 1
-      padding: 3px
-      position: relative
-      width: 3px
-      border-radius: 50%
-    .carousel-indicators li::after
-      bottom: -7px
-      content: ""
-      left: -7px
-      padding: 5px
-      position: absolute
-      right: -7px
-      top: -7px
-    .carousel-indicators li.active
-      background-color: 999999
-      border: 3px solid #999999
-      top: 6px
-      border-radius: 50%
-@media (max-width: 720px)
-  #mainCarousel
+    .carousel-control-next-icon::after {
+      font-size: 30px;
+    }
+
+    .carousel-indicators {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .carousel-indicators li,
+    .carousel-indicators button {
+      background-color: #999999;
+      box-sizing: border-box;
+      flex: 0 0 auto;
+      height: 6px;
+      margin: 0 5px;
+      opacity: 1;
+      padding: 0;
+      position: relative;
+      width: 6px;
+      border-radius: 50%;
+      border: none;
+    }
+
+    .carousel-indicators li::after,
+    .carousel-indicators button::after {
+      bottom: -7px;
+      content: "";
+      left: -7px;
+      padding: 5px;
+      position: absolute;
+      right: -7px;
+      top: -7px;
+    }
+
+    .carousel-indicators li.active,
+    .carousel-indicators button.active {
+      background-color: #666666;
+      border: 2px solid #999999;
+      transform: scale(1.15);
+    }
+  }
+}
+
+@media (max-width: 720px) {
+  #mainCarousel {
     .carousel-control-prev-icon,
     .carousel-control-next-icon,
-    .carousel-indicators li
-      display: none
+    .carousel-indicators li,
+    .carousel-indicators button {
+      display: none;
+    }
+  }
+}
 </style>
 <style scoped>
 .btn-secondary{
@@ -1727,6 +1804,10 @@ export default {
 }
 .mainCarrousel{
     display: block;
+    background-color: #fff;
+  }
+  .tramites-carousel-wrap {
+    padding-bottom: 2rem;
   }
   .moblieCarrousel{
     display: none;
@@ -1811,6 +1892,19 @@ p, .li-content{
 }
 .btn-form{
   margin: 15px 0;
+}
+.tramite-btn {
+  cursor: pointer;
+  display: block;
+}
+.tramite-btn img.selected,
+.botonera-container img.selected {
+  outline: 3px solid #0c681a;
+  outline-offset: 2px;
+}
+.botonera-container img.disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 .confirmation-popup-header{
  margin: auto;
@@ -1995,11 +2089,8 @@ ul{
   font-weight: 600;
   color: #0c681a;
 }
-.li-icon, .li-content{
-  display: inline-block;
-}
 .li-title{
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.25rem;
 }
 .li-icon{
   margin-right: 1%;
@@ -2015,17 +2106,11 @@ ul{
 .first-p{
   margin-bottom: 1rem;
 }
-.FAQs-card .li-row{
-  margin-top: 1rem;
-}
 .li-content .li-row{
   margin-top: 0;
 }
-.li-icon, .li-content{
-  display: inline-block;
-}
 .li-p{
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 /* Estilos para Animaciones de Expansión/Contracción  */
 .expanded {
@@ -2034,7 +2119,7 @@ ul{
 
 .expand-enter-active,
 .expand-leave-active {
-  transition: max-height 2s ease-out; /* Duración de la animación */
+  transition: max-height 0.22s ease-in-out; /* Duración de la animación */
 }
 
 .expand-enter,

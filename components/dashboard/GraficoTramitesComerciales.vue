@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="grafico-tramites-comerciales">
     <div class="header-section">
       <h4 class="section-title">
@@ -403,7 +403,7 @@ export default {
       link.click()
     }
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.chart) {
       this.chart.destroy()
     }

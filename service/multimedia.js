@@ -1,4 +1,4 @@
-﻿const formatMultimedia = (MultimediaResponse) => ({
+const formatMultimedia = (MultimediaResponse) => ({
   id: MultimediaResponse._id,
   nombre: MultimediaResponse.nombre,
   link: MultimediaResponse.link,
@@ -24,7 +24,8 @@ export default {
     const filesResponse = await axios.$post('/multimedias/search', {
       categoria,
     })
-    return filesResponse.data.map(formatMultimedia)
+    const list = filesResponse?.data
+    return Array.isArray(list) ? list.map(formatMultimedia) : []
   },
   searchSingle: async (
     axios,

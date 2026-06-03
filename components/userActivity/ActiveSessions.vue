@@ -91,7 +91,7 @@
 </template>
 
 <script>
-const UserService = require('@/service/user')
+import UserService from '~/service/user.js'
 
 export default {
   name: 'ActiveSessions',
@@ -125,7 +125,7 @@ export default {
   methods: {
     async loadUsers() {
       try {
-        this.users = await UserService.getAll(this.$axios)
+        this.users = await UserService.getAll(useApi())
       } catch (error) {
         console.error('Error al cargar usuarios:', error)
         this.users = []

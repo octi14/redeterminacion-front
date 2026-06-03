@@ -2,7 +2,9 @@
   <div class="page main-background">
     <Banner title="Compras" subtitle="Generar vales"/>
 
-    <b-container class="mt-4" v-if="orden">
+    <LoadingState v-if="cargandoOrden" size="lg" class="mt-5" />
+
+    <b-container v-else-if="orden" class="mt-4">
       <b-card class="shadow-card">
         <b-card-header class="bg-success text-white text-center">
           <h3>Generando vales: orden N°</h3>
@@ -81,18 +83,20 @@
       </b-card>
     </b-container>
 
-    <b-container class="justify-content-center text-center card shadow-card mt-4" v-else>
+    <b-container v-else class="justify-content-center text-center card shadow-card mt-4">
       <h3 class="text-danger font-weight-bold mt-5">Ocurrió un error al cargar la orden de compra.</h3>
       <h5 class="m-5">Por favor, volvé a la lista de órdenes de compra y seleccioná una.</h5>
     </b-container>
 
     <div class="row no-gutters justify-content-center">
-      <b-button variant="primary" class="col-3 my-4 mx-auto" @click="$router.push(`/compras/combustible`)">Volver</b-button>
+      <div class="page-btn-volver-wrap">
+        <b-button variant="primary" size="sm" class="page-btn-volver" @click="$router.push(`/compras/combustible`)">Volver</b-button>
+      </div>
     </div>
 
     <!-- Modal de confirmación -->
-    <b-modal id="confirmacionModal" hide-footer header-bg-variant="success" title-class="text-center text-light" centered>
-      <template #modal-header>
+    <BModal v-model="showConfirmacionModal" no-footer header-bg-variant="success" title-class="text-center text-light" centered>
+      <template #header>
         <div class="confirmation-popup-header mx-auto">
           <i class="bi bi-check-circle text-light"></i>
         </div>
@@ -103,22 +107,22 @@
         <b-button size="sm" variant="success" class="mr-2 col-3" @click="generarImpresion">Imprimir</b-button>
         <b-button size="sm" class="col-3" variant="danger" @click="cerrarModal">Salir</b-button>
       </div>
-    </b-modal>
+    </BModal>
 
       <!-- Modal de carga -->
-      <b-modal v-model="loading" hide-footer header-bg-variant="success" title-class="text-center text-light" centered>
-      <template #modal-header>
+      <BModal v-model="loading" no-footer header-bg-variant="success" title-class="text-center text-light" centered>
+      <template #header>
         <div class="confirmation-popup-header mx-auto">
           <b-spinner scale="2.5" class="my-3" variant="light"/>
         </div>
       </template>
       <p class="h5 text-center font-weight-bold text-dark mt-4 mb-4">Generando vales...</p>
       <p class="h6 text-center font-weight-400 text-dark mt-2 mb-5">Por favor, esperá un momento</p>
-    </b-modal>
+    </BModal>
 
     <!-- Modal para patente personalizada -->
-    <b-modal v-model="showPatentePersonalizada" hide-footer header-bg-variant="primary" title-class="text-center text-light" centered>
-      <template #modal-header>
+    <BModal v-model="showPatentePersonalizada" no-footer header-bg-variant="primary" title-class="text-center text-light" centered>
+      <template #header>
         <div class="confirmation-popup-header mx-auto">
           <i class="bi bi-car-front-fill text-light"></i>
         </div>
@@ -143,25 +147,28 @@
           Cancelar
         </b-button>
       </div>
-    </b-modal>
+    </BModal>
   </div>
 </template>
 
 <script>
 //instalar esto
 import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 import templateVale from "@/assets/TemplateValex2.png";
 import { numeroATexto } from "@/utils/numeroATexto";
 
 export default {
+  setup(){ const { showToast } = useProjectToast(); return { showToast } },
   data() {
     return {
       loading: false,
+      cargandoOrden: true,
+      loadError: false,
       loadingVehiculos: false,
       vehiculos: [],
       valesParaImprimir: [],
       showPatentePersonalizada: false,
+      showConfirmacionModal: false,
       patentePersonalizada: '',
       showSugerencias: false,
       form: {
@@ -174,13 +181,13 @@ export default {
   },
   computed: {
     orden() {
-      return this.$store.state.combustible.single;
+      return useCombustibleStore().single;
     },
     valesCreados(){
-      return this.$store.state.combustible.vales_creados
+      return useCombustibleStore().vales_creados
     },
     tiposCombustible(){
-      const orden = this.$store.state.combustible.single
+      const orden = useCombustibleStore().single
       if (!orden || !orden.montos) return []
       return orden.montos.map((item) => item.tipoCombustible)
     },
@@ -226,10 +233,6 @@ export default {
         .filter(patente => patente.toLowerCase().includes(busqueda))
     }
   },
-  async mounted() {
-    // Cargar vehículos cuando se monta el componente
-    await this.cargarVehiculos()
-  },
   watch: {
     // Cargar vehículos cuando cambie la orden (área)
     orden: {
@@ -241,21 +244,43 @@ export default {
       immediate: true
     }
   },
-  mounted() {
-    // Cerrar sugerencias al hacer clic fuera
-    document.addEventListener('click', this.handleClickOutside)
+  async mounted() {
+    await this.loadOrden()
+    if (import.meta.client) {
+      document.addEventListener('click', this.handleClickOutside)
+    }
   },
-  beforeDestroy() {
-    document.removeEventListener('click', this.handleClickOutside)
+  beforeUnmount() {
+    if (import.meta.client) {
+      document.removeEventListener('click', this.handleClickOutside)
+    }
   },
   methods: {
+    async loadOrden() {
+      const ordenId = this.$route.params.id
+      this.loadError = false
+      this.cargandoOrden = true
+      try {
+        await useCombustibleStore().getSingle({ id: ordenId })
+        await useCombustibleStore().getValesSingle({ id: ordenId })
+        if (!useCombustibleStore().single) {
+          this.loadError = true
+        }
+      } catch (error) {
+        console.error('Error al cargar orden para generar vales:', error)
+        this.loadError = true
+        useCombustibleStore().setSingle(null)
+      } finally {
+        this.cargandoOrden = false
+      }
+    },
     async cargarVehiculos() {
       if (!this.orden) return
 
       this.loadingVehiculos = true
       try {
-        await this.$store.dispatch('vehiculos/getAll')
-        this.vehiculos = this.$store.state.vehiculos ? this.$store.state.vehiculos.all : []
+        await useVehiculosStore().getAll()
+        this.vehiculos = useVehiculosStore().all || []
       } catch (error) {
         console.error('Error al cargar vehículos:', error)
         this.vehiculos = []
@@ -292,8 +317,8 @@ export default {
     async validarPatenteDuplicada(patente) {
       try {
         // Obtener todos los vehículos para verificar si la patente existe
-        await this.$store.dispatch('vehiculos/getAll')
-        const todosVehiculos = this.$store.state.vehiculos ? this.$store.state.vehiculos.all : []
+        await useVehiculosStore().getAll()
+        const todosVehiculos = useVehiculosStore().all || []
 
         // Buscar si la patente existe en alguna área (incluyendo la actual)
         const patenteExiste = todosVehiculos.some(vehiculo =>
@@ -311,8 +336,8 @@ export default {
     async validarPatenteEnOtraArea(patente) {
       try {
         // Obtener todos los vehículos para verificar si la patente existe en otras áreas
-        await this.$store.dispatch('vehiculos/getAll')
-        const todosVehiculos = this.$store.state.vehiculos ? this.$store.state.vehiculos.all : []
+        await useVehiculosStore().getAll()
+        const todosVehiculos = useVehiculosStore().all || []
 
         // Buscar si la patente existe en alguna área
         const vehiculoExistente = todosVehiculos.find(vehiculo =>
@@ -336,31 +361,31 @@ export default {
         if (patenteExiste) {
           const areaConflictiva = await this.validarPatenteEnOtraArea(patente)
 
-          this.$bvToast.toast(`La patente ${patente} ya existe en el área ${areaConflictiva}. Por favor, ingrese una patente diferente.`, {
+          this.showToast(`La patente ${patente} ya existe en el área ${areaConflictiva}. Por favor, ingrese una patente diferente.`, {
             variant: "warning",
             title: "Patente duplicada",
             solid: true,
-            autoHideDelay: 5000
+            value: 5000
           })
           return
         }
 
         try {
           // Registrar el vehículo en la base de datos
-          const userToken = this.$store.state.user.token
+          const userToken = useUserStore().token
           const nuevoVehiculo = {
             patente: patente,
             area: this.orden.area
           }
 
-          await this.$store.dispatch('vehiculos/create', {
+          await useVehiculosStore().create({
             vehiculo: nuevoVehiculo,
             userToken
           })
 
           // Registrar actividad de creación de vehículo
           await this.$logUserActivity(
-            this.$store.state.user.username,
+            useUserStore().username,
             'Crear Vehículo',
             `Vehículo ${patente} creado en el área ${this.orden.area}`
           );
@@ -373,20 +398,20 @@ export default {
           this.showPatentePersonalizada = false
           this.patentePersonalizada = ''
 
-          this.$bvToast.toast(`Vehículo ${patente} registrado exitosamente en el área ${this.orden.area}`, {
+          this.showToast(`Vehículo ${patente} registrado exitosamente en el área ${this.orden.area}`, {
             variant: "success",
             title: "Vehículo registrado",
             solid: true,
-            autoHideDelay: 3000
+            value: 3000
           })
 
         } catch (error) {
           console.error('Error al registrar vehículo:', error)
-          this.$bvToast.toast("Error al registrar el vehículo. Por favor, intente nuevamente.", {
+          this.showToast("Error al registrar el vehículo. Por favor, intente nuevamente.", {
             variant: "danger",
             title: "Error",
             solid: true,
-            autoHideDelay: 5000
+            value: 5000
           })
         }
       }
@@ -414,19 +439,11 @@ export default {
 
       if (totalMonto > saldoDisponible) {
         this.loading = false;
-        this.$bvModal.msgBoxOk(`El monto total excede el saldo disponible para ${this.form.combustible}`, {
-          title: "Saldo insuficiente",
-          size: "md",
-          bodyClass: "text-center font-weight-bold text-dark h5 my-4",
-          buttonSize: "md",
-          okVariant: "success",
-          okTitle: "Aceptar",
-          footerClass: "mx-auto",
-          titleClass: "text-center font-weight-bold mx-auto text-light",
-          headerBgVariant: "danger",
-          centered: true,
-        });
-        return;
+        this.showToast(`El monto total excede el saldo disponible para ${this.form.combustible}`, {
+          title: 'Saldo insuficiente',
+          variant: 'danger',
+        })
+        return
       }
 
       const payload = {
@@ -439,22 +456,22 @@ export default {
       };
 
       try {
-        await this.$store.dispatch('combustible/generarVales', { payload });
+        await useCombustibleStore().generarVales({ payload });
 
-        this.valesParaImprimir = [...(this.$store.state.combustible.vales_creados || [])];
+        this.valesParaImprimir = [...(useCombustibleStore().vales_creados || [])];
 
         // Refrescar la orden en el store para que el saldo y la UI se actualicen
-        await this.$store.dispatch('combustible/getSingle', { id: this.orden.id });
-        await this.$store.dispatch('combustible/getValesSingle', { id: this.orden.id });
+        await useCombustibleStore().getSingle({ id: this.orden.id });
+        await useCombustibleStore().getValesSingle({ id: this.orden.id });
 
         // Registrar actividad de generación de vales
         await this.$logUserActivity(
-          this.$store.state.user.username,
+          useUserStore().username,
           'Generar Vales',
           `${this.form.cantidad} vales de ${this.form.combustible} generados para el vehículo ${this.form.patente}`
         );
         this.loading = false
-        this.$bvModal.show("confirmacionModal"); // Mostrar modal de confirmación
+        this.showConfirmacionModal = true
 
         // Limpiar formulario después de generar los vales
         this.form.cantidad = 1;
@@ -470,7 +487,7 @@ export default {
 
     cerrarModal() {
       this.valesParaImprimir = [];
-      this.$bvModal.hide("confirmacionModal");
+      this.showConfirmacionModal = false
       this.$router.push("/compras/combustible");
     },
 
@@ -479,6 +496,8 @@ export default {
     },
     async crearPDFVales() {
       if (!this.valesParaImprimir?.length) return;
+
+      const { default: jsPDF } = await import('jspdf');
 
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");

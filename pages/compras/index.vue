@@ -2,37 +2,27 @@
   <div class="page main-background">
     <Banner title="Compras"/>
     <div class="mt-5">
-      <div class="row no-gutters justify-content-center">
-        <a href="https://hacienda.gesell.gob.ar/compras-y-suministros.html" target="_blank" class="col-md-5">
-          <b-button variant="outline" class="d-flex align-items-center w-100 white shadow-card">
-            <div class="me-3">
-              <i class="bi bi-receipt"></i>
-            </div>
-            <div class="col text-left my-auto">
-              <h3 class="landing-text"><b> Licitaciones públicas</b></h3>
-              <h6>Pliegos y notas aclaratorias para consulta</h6>
-            </div>
-          </b-button>
-        </a>
-      </div>
+      <MenuItem
+        to="https://hacienda.gesell.gob.ar/compras-y-suministros.html"
+        icon="receipt"
+        title="Licitaciones públicas"
+        description="Pliegos y notas aclaratorias para consulta"
+      />
       <MenuItem to="/compras/proveedores" icon="pen" title="Inscripción de proveedores" description="Información acerca de la inscripción como Proveedor Municipal"/>
-      <div class="row no-gutters justify-content-center mt-5" v-if="adminCompras || puedeVerDashboardCombustible">
-        <NuxtLink to="/compras/combustible" class="col-md-5">
-          <b-button variant="outline" class="d-flex w-100 white shadow-card">
-            <div class="me-3">
-              <FuelIcon class="mx-3 my-3 landing-icon"/>
-            </div>
-            <div class="col text-left my-auto">
-              <h3 class="landing-text"><b> Combustible </b></h3>
-              <h6>Administrar órdenes de compra y vales de combustible</h6>
-            </div>
-          </b-button>
-        </NuxtLink>
-      </div>
+      <MenuItem
+        v-if="adminCompras || puedeVerDashboardCombustible"
+        to="/compras/combustible"
+        title="Combustible"
+        description="Administrar órdenes de compra y vales de combustible"
+      >
+        <template #icon>
+          <FuelIcon />
+        </template>
+      </MenuItem>
     </div>
-    <div class="text-center m-4 float-lg-end">
+    <div class="page-btn-volver-wrap">
       <NuxtLink to="/">
-        <b-button variant="primary"> Volver </b-button>
+        <b-button variant="primary" size="sm" class="page-btn-volver"> Volver </b-button>
       </NuxtLink>
     </div>
   </div>
@@ -42,41 +32,17 @@
 export default {
   computed: {
     adminHacienda() {
-      return this.$store.state.user.admin == "hacienda" || this.$store.state.user.admin == "master";
+      const admin = useUserStore().admin
+      return admin == "hacienda" || admin == "master";
     },
     adminCompras(){
-      return this.$store.state.user.admin == "compras" || this.$store.state.user.admin == "master";
+      const admin = useUserStore().admin
+      return admin == "compras" || admin == "master";
     },
     /** Usuario que solo puede ver el dashboard de combustible (sin órdenes ni vehículos). */
     puedeVerDashboardCombustible() {
-      return this.$store.state.user.username === "gustavociriaco@gesell.gob.ar";
+      return useUserStore().username === "gustavociriaco@gesell.gob.ar";
     }
   }
 };
 </script>
-
-<style scoped>
-.landing-icon {
-  width: 60px;
-  height: 60px;
-  color: #ef8918;
-  transition: transform 0.2s ease;
-}
-/* Aplicar escala al hacer hover en el ícono */
-.landing-icon:hover {
-  transform: scale(1.15);
-}
-
-.col{
-  margin: 16px;
-}
-
-/* Agregar márgenes laterales en mobile para los rows */
-@media (max-width: 767.98px) {
-  .row.no-gutters {
-    padding-left: 15px;
-    padding-right: 15px;
-  }
-}
-
-</style>

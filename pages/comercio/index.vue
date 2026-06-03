@@ -6,7 +6,9 @@
     <MenuItem to="comercio/consulta_tramite" title="Consulta estado de trámite" description="Consultá el estado de tu trámite comercial" icon="search"/>
     <MenuItem to="comercio/turnos" title="Turnos" description="Obtener turnos para inspección de comercios" icon="clock"/>
     <div class="row no-gutters">
-      <b-button variant="primary" class="mx-auto text-center my-4" @click="$router.push('/')">Volver</b-button>
+      <div class="page-btn-volver-wrap w-100">
+        <b-button variant="primary" size="sm" class="page-btn-volver" @click="$router.push('/')">Volver</b-button>
+      </div>
     </div>
   </div>
 </template>

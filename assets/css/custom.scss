@@ -24,11 +24,14 @@ html, body, div#__nuxt, div#__layout {
     flex-grow: 1;
   }
 }
-// transition
+// Fade de navegación entre páginas (como en Nuxt 2), corto para no frenar la UX.
 .page-enter-active,
 .page-leave-active {
-  transition: opacity 0.3s;
+  transition: opacity 0.2s ease;
 }
+
+.page-enter-from,
+.page-leave-to,
 .page-enter,
 .page-leave-to {
   opacity: 0.1;
@@ -37,6 +40,145 @@ html, body, div#__nuxt, div#__layout {
 .page {
   height:100%;
 }
+
+// Navbar por encima de backdrops huérfanos de modales Bootstrap (z-index 1050)
+.app-navbar {
+  z-index: 2000 !important;
+}
+
+// Toasts siempre por encima del navbar fijo
+// (BootstrapVueNext puede usar distintos contenedores según versión/config)
+.b-toast-container,
+.toast-container,
+.b-toaster,
+[class*="b-toaster-"] {
+  z-index: 3000 !important;
+}
+
+.b-toast,
+.toast {
+  z-index: 3001 !important;
+}
+
+// Si queda un backdrop huérfano, no bloquear navbar ni contenido
+body:not(.modal-open) #app-layout,
+body:not(.modal-open) #app-navbar,
+body:not(.modal-open) #app-content {
+  pointer-events: auto;
+}
+
+// Listados de uso interno: tablas y barras de filtros más angostos y centrados
+.internal-use-toolbar {
+  width: 100%;
+  max-width: 50rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.internal-use-table {
+  width: 100%;
+  max-width: 50rem;
+  margin-left: auto;
+  margin-right: auto;
+
+  &.table-responsive,
+  .table-responsive {
+    width: 100%;
+  }
+
+  table,
+  table.table {
+    width: 100%;
+    min-width: 100%;
+    margin-bottom: 0;
+  }
+
+  // Encabezados de tablas internas (warning/primary): fondo crema y color de texto (sin tocar peso tipográfico).
+  thead th,
+  thead th.text-warning,
+  thead th.text-primary,
+  thead th.text-success,
+  thead th.bg-warning,
+  thead th.bg-primary,
+  thead th.bg-success,
+  thead th.text-bg-warning,
+  thead th.text-bg-primary,
+  thead th.text-bg-success,
+  thead tr.table-warning > th,
+  thead tr.table-primary > th,
+  thead.table-warning > tr > th,
+  thead.table-primary > tr > th,
+  thead > tr > th.table-warning,
+  thead > tr > th.table-primary,
+  .table-warning > thead > tr > th,
+  .table-primary > thead > tr > th,
+  .table-warning > th,
+  .table-primary > th {
+    background-color: #f0efba !important;
+    color: #888 !important;
+    --bs-table-color: #888;
+    --bs-warning-color: #888;
+    --bs-primary-color: #888;
+  }
+
+  // Columnas de acción (detalles / observaciones)
+  th:nth-last-child(-n + 2),
+  td:nth-last-child(-n + 2) {
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+    width: 1%;
+  }
+}
+
+// Checkbox centrado sin separar el input del texto (evitar text-center en b-form-checkbox)
+.internal-use-checkbox-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+
+  .form-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0;
+    min-height: auto;
+  }
+
+  .form-check-input {
+    float: none;
+    margin: 0;
+    flex-shrink: 0;
+  }
+
+  .form-check-label {
+    padding-left: 0;
+    margin: 0;
+  }
+}
+
+.internal-use-pagination {
+  width: 100%;
+  max-width: 50rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+// Páginas con muchos filtros/columnas (comercio solicitudes, turnos, pagos dobles)
+.internal-use-toolbar.internal-use-wide,
+.internal-use-table.internal-use-wide,
+.internal-use-pagination.internal-use-wide {
+  max-width: min(92rem, 96vw);
+}
+
+.si-no-radios-row { margin-bottom: 0.5rem; }
+.si-no-radios {
+  display: flex; flex-direction: row; flex-wrap: nowrap; align-items: center;
+  gap: 1.25rem; margin-top: 0.25rem;
+  .form-check { display: inline-flex; align-items: center; margin-bottom: 0; min-height: auto; padding-left: 1.75em; }
+}
+@media (min-width: 576px) { .si-no-radios { margin-top: 0; } }
 
 .main-background{
   background-color: #f8f5f5;
@@ -167,6 +309,43 @@ html, body, div#__nuxt, div#__layout {
 
 .text-green {
   color: $color-green-text !important;
+}
+
+// En Nuxt 2 se usaba b-icon-caret-right-fill con tono naranja.
+// Tras migración a Bootstrap Icons (<i class="bi bi-caret-right-fill">),
+// restauramos el color en listas informativas.
+.li-icon .bi-caret-right-fill {
+  color: $color-orange-primary;
+}
+
+// ============================================
+// BOTONES DE PÁGINA (Volver / Iniciar trámite / Exportar)
+// ============================================
+.page-btn-volver-wrap {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 1rem 0 1.5rem;
+  clear: both;
+}
+
+.page-btn-iniciar-tramite-wrap {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin: 0.75rem 0;
+  clear: both;
+}
+
+.page-btn-export-wrap {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 0.75rem 0 1rem;
+}
+
+.page-btn-export {
+  font-size: 0.875rem;
 }
 
 // ============================================
@@ -310,6 +489,146 @@ input[type="number"] {
 }
 
 // ============================================
+// FORMULARIOS (paridad BootstrapVue 2 / BS4)
+// BS5 + BootstrapVueNext no aplican margin-bottom en b-form-group.
+// ============================================
+form .b-form-group,
+form .form-group {
+  margin-bottom: 1rem;
+}
+
+form fieldset > p {
+  margin-bottom: 1rem;
+}
+
+// Campos archivo: el texto del label no debe abrir el explorador (solo "Examinar")
+form .b-form-group:has(.form-control[type='file']) > label[for],
+form .b-form-group:has(input[type='file']) > label[for] {
+  cursor: default;
+}
+
+form .field-help-icon,
+.field-help-icon {
+  cursor: pointer;
+}
+
+// ============================================
+// MODALES: botón X al final del header, sin fondo ni borde
+// ============================================
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  position: relative;
+  width: 100%;
+  padding-right: 2.75rem;
+
+  > .modal-info,
+  > .modal-title,
+  > .centeredContainer,
+  > .confirmation-popup-header,
+  > .closed-popup-header,
+  > div:not(.btn-close):not(.close) {
+    flex: 1 1 100%;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .modal-info h5 {
+    margin: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .modal-title {
+    width: 100%;
+    text-align: center;
+  }
+
+  .close,
+  button.close,
+  .btn-close {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0 !important;
+    float: none !important;
+    flex: 0 0 auto;
+    z-index: 1;
+  }
+
+  .close,
+  button.close {
+    background: none !important;
+    background-color: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    outline: none;
+    padding: 0;
+    width: auto;
+    height: auto;
+    min-width: unset;
+    min-height: unset;
+    font-size: 1.75rem;
+    font-weight: 400;
+    line-height: 1;
+    opacity: 0.9;
+    text-shadow: none;
+    appearance: none;
+    -webkit-appearance: none;
+
+    &:hover,
+    &:focus,
+    &:active {
+      background: none !important;
+      border: 0 !important;
+      box-shadow: none !important;
+      outline: none;
+      opacity: 1;
+    }
+  }
+
+  &.bg-success,
+  &.bg-danger,
+  &.bg-primary,
+  &.bg-dark,
+  &.text-bg-success,
+  &.text-bg-danger,
+  &.text-bg-primary,
+  &.text-bg-dark {
+    .close,
+    button.close {
+      color: #fff !important;
+    }
+
+    .btn-close {
+      filter: brightness(0) invert(1);
+    }
+  }
+}
+
+.confirmation-popup-header,
+.closed-popup-header {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 2rem;
+  margin: 0;
+}
+
+// ============================================
 // TARJETAS SECCIÓN (ACORDEÓN COMERCIO / ABIERTO ANUAL)
 // Quita la línea gris interior del desplegable y el espacio que ocupaba.
 // ============================================
@@ -321,15 +640,127 @@ input[type="number"] {
 .section-card .section-title {
   border-bottom: none !important;
   margin-bottom: 0 !important;
+  position: relative;
+  padding-right: 2.5rem;
+  cursor: pointer;
+  display: block;
+  width: 100%;
 }
+
+// Chevrones acordeón (migración b-icon → dos <i class="bi">; antes v-if/v-else)
+.section-card .section-title .bi-chevron-compact-up,
+.section-card .section-title .bi-chevron-compact-down {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.section-card:not(.expanded) .section-title .bi-chevron-compact-up {
+  display: none !important;
+}
+
+.section-card.expanded .section-title .bi-chevron-compact-down {
+  display: none !important;
+}
+
+// Panel acordeón (sin <transition>; evita max-height atascado en Vue 3)
+.section-card .section-card-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.22s ease-in-out;
+}
+
+.section-card:not(.expanded) .section-card-panel {
+  pointer-events: none;
+}
+
+.section-card.expanded .section-card-panel {
+  max-height: 4000px;
+}
+
 .section-card .card-body > div {
   border-top: none !important;
   border-bottom: none !important;
 }
 
+// Preguntas frecuentes: compactar espacio pregunta → respuesta
+.section-card .li-row {
+  align-items: flex-start;
+  gap: 0.35rem;
+}
+
+.section-card .li-icon {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  line-height: 1;
+  margin-right: 0;
+  padding-top: 0.12em;
+}
+
+.section-card .li-icon .bi {
+  display: block;
+  margin-top: 0;
+  line-height: 1;
+}
+
+.section-card .li-content {
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.section-card .li-content > p {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.section-card .li-content > p.li-title {
+  margin-bottom: 0.25rem;
+  line-height: 1.35;
+}
+
+.section-card .li-content > p.li-p {
+  margin-bottom: 0.5rem;
+}
+
+.section-card .li-content > p:last-child {
+  margin-bottom: 0;
+}
+
+.section-card .li-content .li-row {
+  margin-top: 0.35rem;
+}
+
+.section-card.FAQs-card > .section-card-panel > .li-row + .li-row,
+.section-card.FAQs-card .card-body > * > .li-row + .li-row {
+  margin-top: 0.85rem;
+}
+
 // ============================================
 // TRANSICIONES VUE
 // ============================================
+// Acordeones legacy con <transition name="expand"> (Vue 3: *-from / *-to)
+.expand-enter-active,
+.expand-leave-active {
+  transition: max-height 0.25s ease-in-out;
+  overflow: hidden;
+}
+
+.expand-enter-from,
+.expand-leave-to,
+.expand-enter,
+.expand-leave-to {
+  max-height: 0 !important;
+  overflow: hidden;
+}
+
+.expand-enter-to,
+.expand-leave-from {
+  max-height: 3000px !important;
+}
 // Transiciones para listas (usado en componentes Feed)
 .list-enter-active,
 .list-leave-active {

@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div>
     <h4 class="section-title">
       <i class="bi bi-bar-chart-fill mr-2"></i>
@@ -43,7 +43,7 @@
             <div v-for="motivo in rechazosPorMotivo" :key="motivo.motivo" class="motivo-item mb-3">
               <div class="d-flex justify-content-between align-items-center mb-2">
                 <h6 class="mb-0 text-warning">{{ motivo.motivo }}</h6>
-                <span class="badge badge-warning">{{ motivo.total }} total</span>
+                <b-badge variant="warning">{{ motivo.total }} total</b-badge>
               </div>
               <div class="row">
                 <div class="col-4">
@@ -299,7 +299,7 @@ export default {
       })
     }
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.chartBarrasConsolidado) {
       this.chartBarrasConsolidado.destroy()
     }

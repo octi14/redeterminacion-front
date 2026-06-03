@@ -1,19 +1,19 @@
-﻿<template>
+<template>
 <div class="page main-background">
   <Banner title="Pagos dobles" />
-  <!-- Comprobante (pÃ¡gina 4) -->
+  <!-- Comprobante (página 4) -->
   <div v-if="printing">
     <b-card no-body border-variant="success" style="margin-top: 80px" class="printing-modal shadow col-md-5 col-sm-8 mx-auto">
       <b-card-header class="row" header-class="green text-light">
         <h5><b>Comprobante de Solicitud - </b> Recaudaciones</h5>
       </b-card-header>
       <b-card-body class="text-center">
-        <div class="row"><i class="bi bi-check"></i><h5><b class="text-green ml-1">DÃ­a: </b> {{ new Date().toLocaleDateString('es-AR') }}</h5> </div>
+        <div class="row"><i class="bi bi-check"></i><h5><b class="text-green ml-1">Día: </b> {{ new Date().toLocaleDateString('es-AR') }}</h5> </div>
 
-        <div class="row"><i class="bi bi-check"></i><h5><b class="text-green ml-1">Nro de trÃ¡mite:</b> R{{ nroTramite }}</h5> </div>
+        <div class="row"><i class="bi bi-check"></i><h5><b class="text-green ml-1">Nro de trámite:</b> R{{ nroTramite }}</h5> </div>
         <div class="row"><i class="bi bi-check"></i><h5><b class="text-green ml-1">Solicitante: </b> {{ solicitante.nombre }}  {{ solicitante.apellido }}</h5> </div>
         <hr/>
-        <p class="" style="text-align: justify"><i class="bi bi-caret-right-fill text-success"></i> TenÃ© en cuenta que el Departamento Recaudaciones puede solicitarte documentaciÃ³n adicional vÃ­a correo electrÃ³nico.</p>
+        <p class="" style="text-align: justify"><i class="bi bi-caret-right-fill text-success"></i> Tené en cuenta que el Departamento Recaudaciones puede solicitarte documentación adicional vía correo electrónico.</p>
 
         <hr/>
         <b-button class="mt-2 btn-orange" v-if="endButton === true" @click="onResetParams">Volver</b-button>
@@ -23,10 +23,10 @@
 
   <b-form @submit.prevent="onSubmitForm" class="my-3" style="margin-left:10px;margin-right:10px" v-else>
     <!-- <b-card no-body class="col-8 mt-1 section-card"  style="margin: 0px auto">
-      <h5 style="margin-top:0px; margin-bottom: 0px; text-align:center;" ><i class="bi bi-exclamation-circle-fill"></i> El siguiente formulario tiene carÃ¡cter de declaraciÃ³n jurada.</h5>
+      <h5 style="margin-top:0px; margin-bottom: 0px; text-align:center;" ><i class="bi bi-exclamation-circle-fill"></i> El siguiente formulario tiene carácter de declaración jurada.</h5>
     </b-card> -->
   <b-card no-body class="col-8 mt-1 section-card"  style="margin: 0px auto">
-    <!-- SecciÃ³n: Datos del solicitante -->
+    <!-- Sección: Datos del solicitante -->
     <fieldset >
       <legend><h3>Datos del Solicitante <i class="bi bi-question-circle-fill text-info" style="font-size: 1em"></i></h3></legend>
     </fieldset>
@@ -36,7 +36,7 @@
           <b-form-group label="Nombre *" label-for="nombreSolicitante">
             <b-form-input id="nombreSolicitante" v-model="solicitante.nombre" @blur="$v.solicitante.nombre.$touch()"></b-form-input>
             <div v-if="$v.solicitante.nombre.$error" class="validation-error">
-              <i class="bi bi-exclamation-octagon text-danger"></i> El Nombre no puede estar vacÃ­o.
+              <i class="bi bi-exclamation-octagon text-danger"></i> El Nombre no puede estar vacío.
             </div>
           </b-form-group>
         </b-col>
@@ -44,7 +44,7 @@
           <b-form-group label="Apellido *" label-for="apellidoSolicitante" >
             <b-form-input id="apellidoSolicitante" v-model="solicitante.apellido" @blur="$v.solicitante.apellido.$touch()"></b-form-input>
             <div v-if="$v.solicitante.apellido.$error" class="validation-error">
-              <i class="bi bi-exclamation-octagon text-danger"></i> El Apellido no puede estar vacÃ­o.
+              <i class="bi bi-exclamation-octagon text-danger"></i> El Apellido no puede estar vacío.
             </div>
           </b-form-group>
         </b-col>
@@ -54,7 +54,7 @@
           <b-form-group label="DNI / Pasaporte *" label-for="DNISolicitante" >
             <b-form-input id="DNISolicitante" v-model="solicitante.dni" @blur="$v.solicitante.dni.$touch()"></b-form-input>
             <div v-if="$v.solicitante.dni.$error" class="validation-error">
-              <i class="bi bi-exclamation-octagon text-danger"></i> Introduce un DNI vÃ¡lido.
+              <i class="bi bi-exclamation-octagon text-danger"></i> Introduce un DNI válido.
             </div>
           </b-form-group>
         </b-col>
@@ -62,40 +62,40 @@
           <b-form-group label="CUIT *" label-for="cuit" >
             <b-form-input id="cuit" v-model="solicitante.cuit" @blur="$v.solicitante.cuit.$touch()"></b-form-input>
             <div v-if="$v.solicitante.cuit.$error" class="validation-error">
-              <i class="bi bi-exclamation-octagon text-danger"></i> Introduce un CUIT vÃ¡lido, sin guiones ni caracteres especiales.
+              <i class="bi bi-exclamation-octagon text-danger"></i> Introduce un CUIT válido, sin guiones ni caracteres especiales.
             </div>
           </b-form-group>
         </b-col>
       </b-row>
-      <b-form-group label="NÃºmero de cuenta" label-for="nro-cuenta" >
+      <b-form-group label="Número de cuenta" label-for="nro-cuenta" >
         <b-form-input id="nro-cuenta" v-model="solicitante.nroCuenta" @blur="$v.solicitante.nroCuenta.$touch()"></b-form-input>
         <div v-if="$v.solicitante.nroCuenta.$error" class="validation-error">
-          <i class="bi bi-exclamation-octagon text-danger"></i> El NÃºmero de cuenta no puede estar vacÃ­o.
+          <i class="bi bi-exclamation-octagon text-danger"></i> El Número de cuenta no puede estar vacío.
         </div>
       </b-form-group>
       <b-form-group label="Domicilio Real y/o Legal *" label-for="domicilio-real" >
         <b-form-input id="domicilio-real" v-model="solicitante.domicilioReal" @blur="$v.solicitante.domicilioReal.$touch()"></b-form-input>
         <div v-if="$v.solicitante.domicilioReal.$error" class="validation-error">
-          <i class="bi bi-exclamation-octagon text-danger"></i> El Domicilio Real y/o Legal no puede estar vacÃ­o.
+          <i class="bi bi-exclamation-octagon text-danger"></i> El Domicilio Real y/o Legal no puede estar vacío.
         </div>
       </b-form-group>
       <b-row>
         <b-col lg="6">
-          <b-form-group label="TelÃ©fono *" label-for="telefonoTitular" >
+          <b-form-group label="Teléfono *" label-for="telefonoTitular" >
             <b-form-input id="telefonoTitular" v-model="solicitante.telefono" no-wheel @blur="$v.solicitante.telefono.$touch()"></b-form-input>
             <div v-if="$v.solicitante.telefono.$error" class="validation-error">
-              <i class="bi bi-exclamation-octagon text-danger"></i> El telÃ©fono no puede estar vacÃ­o, contener letras o caracteres especiales.
+              <i class="bi bi-exclamation-octagon text-danger"></i> El teléfono no puede estar vacío, contener letras o caracteres especiales.
             </div>
           </b-form-group>
         </b-col>
         <b-col lg="6">
-          <b-form-group label="CÃ³digo Postal *" label-for="codigoPostal" >
+          <b-form-group label="Código Postal *" label-for="codigoPostal" >
             <b-col lg="4" style="padding-left: 0px;">
               <b-form-input id="codigoPostal" v-model="solicitante.codigoPostal" @blur="$v.solicitante.codigoPostal.$touch()"></b-form-input>
             </b-col>
             <b-col lg="12" style="padding-left: 0px;">
               <div v-if="$v.solicitante.codigoPostal.$error" class="validation-error">
-                <i class="bi bi-exclamation-octagon text-danger"></i> El cÃ³digo postal no puede estar vacÃ­o, contener letras o caracteres especiales.
+                <i class="bi bi-exclamation-octagon text-danger"></i> El código postal no puede estar vacío, contener letras o caracteres especiales.
               </div>
             </b-col>
           </b-form-group>
@@ -106,7 +106,7 @@
           <b-form-group label="Localidad *" label-for="localidadSolicitante" >
             <b-form-input id="localidadSolicitante" v-model="solicitante.localidad" @blur="$v.solicitante.localidad.$touch()"></b-form-input>
             <div v-if="$v.solicitante.localidad.$error" class="validation-error">
-              <i class="bi bi-exclamation-octagon text-danger"></i> La localidad no puede estar vacÃ­a.
+              <i class="bi bi-exclamation-octagon text-danger"></i> La localidad no puede estar vacía.
             </div>
           </b-form-group>
         </b-col>
@@ -124,51 +124,47 @@
           </b-form-group>
         </b-col>
       </b-row>
-      <b-form-group label="Correo ElectrÃ³nico *" label-for="mail" >
+      <b-form-group label="Correo Electrónico *" label-for="mail" >
         <b-form-input id="mail" v-model="solicitante.mail" @blur="$v.solicitante.mail.$touch()"></b-form-input>
         <div v-if="$v.solicitante.mail.$error" class="validation-error">
-          <i class="bi bi-exclamation-octagon text-danger"></i> Debe introducir un email vÃ¡lido. Ejemplo: nombre@dominio.com
+          <i class="bi bi-exclamation-octagon text-danger"></i> Debe introducir un email válido. Ejemplo: nombre@dominio.com
         </div>
       </b-form-group>
-      <b-form-group label="Repita el Correo ElectrÃ³nico *" label-for="mail" >
+      <b-form-group label="Repita el Correo Electrónico *" label-for="mail" >
         <b-form-input id="mail" v-model="solicitante.mail2" @blur="$v.solicitante.mail2.$touch()"></b-form-input>
         <div v-if="$v.solicitante.mail2.$error" class="validation-error">
           <i class="bi bi-exclamation-octagon text-danger"></i> Los correos deben coincidir.
         </div>
       </b-form-group>
-      <!-- <b-form-group label="SeleccionÃ¡ el caso que corresponda *" label-for="esPropietario">
+      <!-- <b-form-group label="Seleccioná el caso que corresponda *" label-for="esPropietario">
         <b-form-checkbox v-model="solicitante.esTitular" name="esTitular" >
           <span>Soy o represento al titular del inmueble</span></b-form-checkbox>
         <b-form-checkbox v-model="solicitante.esPropietario" name="esPropietario" >
           <span>Soy o represento al propietario del inmueble</span></b-form-checkbox>
         <div v-if="$v.solicitante.esTitular.$error || $v.solicitante.esPropietario.$error" class="validation-error">
-          <i class="bi bi-exclamation-octagon text-danger"></i> Debe seleccionar por lo menos una opciÃ³n.
+          <i class="bi bi-exclamation-octagon text-danger"></i> Debe seleccionar por lo menos una opción.
         </div>
       </b-form-group> -->
     </fieldset>
 
-    <b-row>
+    <b-row class="align-items-center si-no-radios-row">
       <b-col lg="6" md="8" sm="8">
-        <h5>Â¿Sos titular del inmueble?</h5>
+        <h5 class="mb-0">¿Sos titular del inmueble?</h5>
       </b-col>
-      <b-col class="form-check-inline" sm="4">
-        <b-col lg="3" sm="3">
-          <b-form-radio  id="esTitular-no" v-model="solicitante.esTitular" name="radio-esTitular" checked="checked" value="false"> No</b-form-radio>
-        </b-col>
-        <b-col lg="3" sm="1">
-          <b-form-radio  id="esTitular-si" v-model="solicitante.esTitular" name="radio-esTitular" value="true"> SÃ­</b-form-radio>
-        </b-col>
+      <b-col cols="12" sm="auto" class="si-no-radios">
+        <b-form-radio id="esTitular-no" v-model="solicitante.esTitular" name="radio-esTitular" value="false">No</b-form-radio>
+        <b-form-radio id="esTitular-si" v-model="solicitante.esTitular" name="radio-esTitular" value="true">Sí</b-form-radio>
       </b-col>
     </b-row>
   </b-card>
   <b-card no-body class="col-8 mt-1 section-card" style="margin: 0px auto">
     <fieldset >
-      <legend><h3>Carga de DocumentaciÃ³n</h3></legend>
-      <p>AquÃ­ deberÃ¡s cargar los documentos requeridos previamente. TenÃ© en cuenta que deben ser <u>legibles</u>, estar subidos en <u>formato de imagen Ã³ pdf</u> y tener un <u>peso mÃ¡ximo de 15 mb</u>.</p>
+      <legend><h3>Carga de Documentación</h3></legend>
+      <p>Aquí deberás cargar los documentos requeridos previamente. Tené en cuenta que deben ser <u>legibles</u>, estar subidos en <u>formato de imagen ó pdf</u> y tener un <u>peso máximo de 15 mb</u>.</p>
       <b-row>
         <b-col lg="6">
           <b-form-group label="DNI (Frente) *" label-for="dniFrente">
-            <b-form-file v-model="documentos.dniFrente.contenido" placeholder="No se seleccionÃ³ un archivo." browse-text="Examinar" accept=".pdf, image/*"
+            <b-form-file v-model="documentos.dniFrente.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*"
               :state="getFormFieldState('dniFrente')"
               @change="handleDocumentUpdate('dniFrente'); checkDocumentSize('dniFrente', $event); $v.documentos.dniFrente.contenido.$touch()"
               @input="clearFormFieldState('dniFrente')"></b-form-file>
@@ -179,7 +175,7 @@
         </b-col>
         <b-col lg="6">
           <b-form-group label="DNI (Dorso) *" label-for="dniDorso" >
-            <b-form-file v-model="documentos.dniDorso.contenido" placeholder="No se seleccionÃ³ un archivo." browse-text="Examinar"
+            <b-form-file v-model="documentos.dniDorso.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
             accept=".pdf, image/*"  :state="getFormFieldState('dniDorso')"
             @change="handleDocumentUpdate('dniDorso'); checkDocumentSize('dniDorso', $event); $v.documentos.dniDorso.contenido.$touch()"
             @input="clearFormFieldState('dniDorso')"></b-form-file>
@@ -193,7 +189,7 @@
         <label for="comprobantePago" class="rubro-label">Comprobante de pago *
           <!-- <i class="bi bi-question-circle-fill text-info" style="font-size: 1em"></i> -->
         </label>
-        <b-form-file v-model="documentos.comprobantePago.contenido" placeholder="No se seleccionÃ³ un archivo." browse-text="Examinar"
+        <b-form-file v-model="documentos.comprobantePago.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
         accept=".pdf, image/*"  :state="getFormFieldState('comprobantePago')"
         @change="handleDocumentUpdate('comprobantePago'); checkDocumentSize('comprobantePago', $event); $v.documentos.comprobantePago.contenido.$touch()"
         @input="clearFormFieldState('comprobantePago')"></b-form-file>
@@ -203,7 +199,7 @@
       </b-form-group>
       <b-form-group>
         <label for="comprobantePago2" class="rubro-label">Comprobante de pago duplicado *</label>
-        <b-form-file v-model="documentos.comprobantePago2.contenido" placeholder="No se seleccionÃ³ un archivo." browse-text="Examinar"
+        <b-form-file v-model="documentos.comprobantePago2.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
         accept=".pdf, image/*"  :state="getFormFieldState('comprobantePago2')"
         @change="handleDocumentUpdate('comprobantePago2'); checkDocumentSize('comprobantePago2', $event); $v.documentos.comprobantePago2.contenido.$touch()"
         @input="clearFormFieldState('comprobantePago2')"></b-form-file>
@@ -215,15 +211,15 @@
       <!-- Documentos que solo se muestran si NO es titular -->
       <div v-if="solicitante.esTitular !== 'true'">
         <b-form-group>
-          <label for="planillaAutorizacion">Planilla de autorizaciÃ³n de trÃ¡mite *</label>
-          <b-form-file v-model="documentos.planillaAutorizacion.contenido" placeholder="No se seleccionÃ³ un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('planillaAutorizacion')" @change="checkDocumentSize('planillaAutorizacion', $event); $v.documentos.planillaAutorizacion.contenido.$touch()" @input="clearFormFieldState('planillaAutorizacion')"></b-form-file>
+          <label for="planillaAutorizacion">Planilla de autorización de trámite *</label>
+          <b-form-file v-model="documentos.planillaAutorizacion.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('planillaAutorizacion')" @change="checkDocumentSize('planillaAutorizacion', $event); $v.documentos.planillaAutorizacion.contenido.$touch()" @input="clearFormFieldState('planillaAutorizacion')"></b-form-file>
           <div v-if="$v.documentos.planillaAutorizacion.contenido.$error || fileTooLargeError.planillaAutorizacion" class="validation-error">
             <i class="bi bi-exclamation-octagon text-danger"></i> {{ fileTooLargeError.planillaAutorizacion || 'Debe seleccionar un archivo.' }}
           </div>
         </b-form-group>
         <b-form-group >
-          <label for="acreditacionTitularidad"><span> AcreditaciÃ³n de titularidad de la cuenta: Escritura traslativa de Dominio del inmueble / </span>Contrato de locaciÃ³n / Boleto de Compraventa. *</label>
-          <b-form-file v-model="documentos.acreditacionTitularidad.contenido" placeholder="No se seleccionÃ³ un archivo." browse-text="Examinar"
+          <label for="acreditacionTitularidad"><span> Acreditación de titularidad de la cuenta: Escritura traslativa de Dominio del inmueble / </span>Contrato de locación / Boleto de Compraventa. *</label>
+          <b-form-file v-model="documentos.acreditacionTitularidad.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
           accept=".pdf, image/*"  :state="getFormFieldState('acreditacionTitularidad')"
           @change="handleDocumentUpdate('acreditacionTitularidad'); checkDocumentSize('acreditacionTitularidad', $event); $v.documentos.acreditacionTitularidad.contenido.$touch()"
           @input="clearFormFieldState('acreditacionTitularidad')"></b-form-file>
@@ -239,11 +235,11 @@
         <b-row >
           <b-col md="2">
             <i class="bi bi-exclamation-triangle text-warning" style="font-size: 5em"></i>
-            <p class="li-title"><u><b>Â¡Importante!</b></u></p>
+            <p class="li-title"><u><b>¡Importante!</b></u></p>
           </b-col>
           <b-col  md="10">
-              <div class="li-row"><div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div><div class="li-content"><span>Una vez completado el formulario, el Dpto. Recaudaciones se comunicarÃ¡ a travÃ©s del correo electrÃ³nico oficial (<a href="mailto:deptocomercio@gesell.gob.ar" class="external-link" target="_blank" >recaudaciones@gesell.gob.ar</a>).</span></div></div>
-              <!-- <div class="li-row"><div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div><div class="li-content"><span><b>El trÃ¡mite de baja comercial serÃ¡ efectivo una vez abonado el importe del mismo y obtenido el certificado respectivo.</b></span></div></div> -->
+              <div class="li-row"><div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div><div class="li-content"><span>Una vez completado el formulario, el Dpto. Recaudaciones se comunicará a través del correo electrónico oficial (<a href="mailto:deptocomercio@gesell.gob.ar" class="external-link" target="_blank" >recaudaciones@gesell.gob.ar</a>).</span></div></div>
+              <!-- <div class="li-row"><div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div><div class="li-content"><span><b>El trámite de baja comercial será efectivo una vez abonado el importe del mismo y obtenido el certificado respectivo.</b></span></div></div> -->
           </b-col>
         </b-row>
       </b-card-text>
@@ -252,7 +248,7 @@
       <b-form-group>
         <div id="captchaContainer" class="g-recaptcha" :data-sitekey="recaptchaSiteKey"></div>
         <div v-if="captchaError" class="validation-error">
-          <i class="bi bi-exclamation-octagon text-danger"></i> Por favor completa la verificaciÃ³n para continuar.
+          <i class="bi bi-exclamation-octagon text-danger"></i> Por favor completa la verificación para continuar.
         </div>
       </b-form-group>
     </div>
@@ -277,87 +273,87 @@
   </b-card>
   </b-form>
 <!-- PopUps -->
-<b-modal v-model="showPopupDatosDelSolicitante" title="" :hide-footer="true" @click-outside="showPopupDatosDelSolicitante = false" :header-bg-variant="'success'"  centered>
-  <template #modal-header>
+<BModal v-model="showPopupDatosDelSolicitante" title="" :no-footer="true" @click-outside="showPopupDatosDelSolicitante = false" :header-bg-variant="'success'"  centered>
+  <template #header>
     <div class="modal-info">
       <h5>
           <i class="bi bi-question-circle text-light"></i>
-          InformaciÃ³n Adicional
+          Información Adicional
       </h5>
     </div>
-    <button type="button" aria-label="Close" class="close" @click="showPopupDatosDelSolicitante = false">Ã—</button>
+    <button type="button" aria-label="Close" class="close" @click="showPopupDatosDelSolicitante = false">×</button>
   </template>
   <div class="modal-info">
-    <p><i class="bi bi-caret-right-fill"></i>El interesado futuro comerciante / industrial o afÃ­n mayor de 18 aÃ±os.</p>
-    <p><i class="bi bi-caret-right-fill"></i>El representante o apoderado/a de la persona interesada con documentaciÃ³n que acredite el carÃ¡cter de tal.</p>
+    <p><i class="bi bi-caret-right-fill"></i>El interesado futuro comerciante / industrial o afín mayor de 18 años.</p>
+    <p><i class="bi bi-caret-right-fill"></i>El representante o apoderado/a de la persona interesada con documentación que acredite el carácter de tal.</p>
   </div>
-</b-modal>
-<b-modal v-model="showPopupNroInmueble" title="" :hide-footer="true" @click-outside="showPopupNroInmueble = false" :header-bg-variant="'success'"  centered>
-  <template #modal-header>
+</BModal>
+<BModal v-model="showPopupNroInmueble" title="" :no-footer="true" @click-outside="showPopupNroInmueble = false" :header-bg-variant="'success'"  centered>
+  <template #header>
     <div class="modal-info">
       <h5>
           <i class="bi bi-question-circle text-light"></i>
-          InformaciÃ³n Adicional
+          Información Adicional
       </h5>
     </div>
-    <button type="button" aria-label="Close" class="close" @click="showPopupNroInmueble = false">Ã—</button>
+    <button type="button" aria-label="Close" class="close" @click="showPopupNroInmueble = false">×</button>
   </template>
   <div class="modal-info">
-    <p><i class="bi bi-caret-right-fill"></i>PodÃ©s consultar el nÃºmero enviando un correo electrÃ³nico a <a href="mailto:catatro@gesell.gob.ar" target="_blank">catastro@gesell.gob.ar</a>, indicando nomenclatura catastral del bien que se encuentra en la escritura del mismo.</p>
+    <p><i class="bi bi-caret-right-fill"></i>Podés consultar el número enviando un correo electrónico a <a href="mailto:catatro@gesell.gob.ar" target="_blank">catastro@gesell.gob.ar</a>, indicando nomenclatura catastral del bien que se encuentra en la escritura del mismo.</p>
   </div>
-</b-modal>
-<b-modal v-model="showPopupFormLoading" no-close-on-backdrop title="" :header-bg-variant="'success'" hide-footer centered>
-  <template #modal-header>
+</BModal>
+<BModal v-model="showPopupFormLoading" no-close-on-backdrop title="" :header-bg-variant="'success'" no-footer centered>
+  <template #header>
     <h5 class="centeredContainer">Solicitud en Proceso</h5>
   </template>
   <div class="centeredContainer">
-    <p class="popup-link">Tus archivos se estÃ¡n cargando.</p>
+    <p class="popup-link">Tus archivos se están cargando.</p>
     <b-spinner variant="success" style="width: 3rem; height: 3rem;" label="Large Spinner"></b-spinner>
-    <p>No cierres esta pÃ¡gina</p>
+    <p>No cierres esta página</p>
   </div>
-</b-modal>
-<b-modal v-model="showPopupFormOk" title="" ok-only @click-outside="onPopupClose" @ok="onPopupClose" :header-bg-variant="'success'" centered>
-  <template #modal-header>
+</BModal>
+<BModal v-model="showPopupFormOk" title="" ok-only @click-outside="onPopupClose" @ok="onPopupClose" :header-bg-variant="'success'" centered>
+  <template #header>
     <div class="centeredContainer"><h3>
       <i class="bi bi-check-circle-fill text-light"></i>
     </h3></div>
   </template>
   <div class="centeredContainer">
-    <p class="modal-subtitle">Â¡Tu solicitud ha sido enviada exitosamente!</p>
-    <p class="">Se ha enviado automÃ¡ticamente un correo electrÃ³nico a tu direcciÃ³n de email con los datos de tu trÃ¡mite. En los prÃ³ximos dÃ­as recibirÃ¡s otro correo del Departamento Recaudaciones Municipal indicÃ¡ndote cÃ³mo continuar. Asegurate de revisar la bandeja de correos no deseados (Spam).</p>
-    <p class=""><b>Tu nÃºmero de trÃ¡mite es: </b></p>
+    <p class="modal-subtitle">¡Tu solicitud ha sido enviada exitosamente!</p>
+    <p class="">Se ha enviado automáticamente un correo electrónico a tu dirección de email con los datos de tu trámite. En los próximos días recibirás otro correo del Departamento Recaudaciones Municipal indicándote cómo continuar. Asegurate de revisar la bandeja de correos no deseados (Spam).</p>
+    <p class=""><b>Tu número de trámite es: </b></p>
     <p class="h3"><b> R{{ nroTramite }} </b></p>
-    <p class="">Por favor, conservÃ¡ este nÃºmero. SerÃ¡ solicitado mÃ¡s adelante.</p>
+    <p class="">Por favor, conservá este número. Será solicitado más adelante.</p>
   </div>
     <div class="centeredContainer" style="padding:0 1rem; padding-top: 1rem; border-top:1px solid #CCC; ">
-      <p class="" style="text-align: justify; margin-bottom:0; font-size: 0.75rem "><i class="bi bi-caret-right-fill text-success"></i> TenÃ© en cuenta que el Departamento Recaudaciones puede solicitarte documentaciÃ³n adicional vÃ­a correo electrÃ³nico.</p>
-      <p class="" style="text-align: justify; font-size: 0.75rem; margin-bottom:0; "><i class="bi bi-caret-right-fill text-success"></i> Para consultar el estado de tu trÃ¡mite ingresÃ¡ en <a class="external-link" href="https://haciendavgesell.gob.ar/">haciendavgesell.gob.ar</a>, hacÃ© click en el Ã­cono correspondiente y escribÃ­ el nÃºmero asignado en este comprobante.</p>
+      <p class="" style="text-align: justify; margin-bottom:0; font-size: 0.75rem "><i class="bi bi-caret-right-fill text-success"></i> Tené en cuenta que el Departamento Recaudaciones puede solicitarte documentación adicional vía correo electrónico.</p>
+      <p class="" style="text-align: justify; font-size: 0.75rem; margin-bottom:0; "><i class="bi bi-caret-right-fill text-success"></i> Para consultar el estado de tu trámite ingresá en <a class="external-link" href="https://haciendavgesell.gob.ar/">haciendavgesell.gob.ar</a>, hacé click en el ícono correspondiente y escribí el número asignado en este comprobante.</p>
     </div>
-  <template #modal-footer>
+  <template #footer>
     <div class="" style="margin: auto">
       <b-button @click="onResetParams" class="btn-cancel">Volver</b-button>
       <b-button @click="onPrintTicket" variant="success">Imprimir</b-button>
     </div>
   </template>
-</b-modal>
-<b-modal v-model="showPopupFormError" title="Error en el envÃ­o!" @click-outside="showPopupFormError = false" :header-bg-variant="'danger'" centered>
-  <template #modal-header>
+</BModal>
+<BModal v-model="showPopupFormError" title="Error en el envío!" @click-outside="showPopupFormError = false" :header-bg-variant="'danger'" centered>
+  <template #header>
     <div class="centeredContainer"><h3>
         <i class="bi bi-exclamation-octagon text-light"></i>
     </h3></div>
-    <button type="button" aria-label="Close" class="close" @click="showPopupFormError = false">Ã—</button>
+    <button type="button" aria-label="Close" class="close" @click="showPopupFormError = false">×</button>
   </template>
   <div class="centeredContainer modal-error">
     <p class="modal-subtitle">No hemos podido procesar tu solicitud</p>
-    <p class="">Por favor, verificÃ¡ tu conexiÃ³n a internet e intentalo nuevamente mÃ¡s tarde.</p>
+    <p class="">Por favor, verificá tu conexión a internet e intentalo nuevamente más tarde.</p>
     <p class="minitext">Si el problema persiste, comunicate con <a target="_blank" href="mailto:deptocmercio@gesell.gob.ar" class="external-link">deptocomercio@gesell.gob.ar</a> para que podamos ayudarte.</p>
   </div>
-  <template #modal-footer>
+  <template #footer>
     <div class="" style="margin: auto">
       <b-button @click="showPopupFormError = false" variant="danger" class="btn-cancel" >Aceptar</b-button>
     </div>
   </template>
-</b-modal>
+</BModal>
 </div>
 </template>
 
@@ -380,7 +376,13 @@ export default{
         localidad: { required },
         provincia: { required },
         mail: { required, email },
-        mail2: { required, email, sameAs: sameAs( function(){return this.solicitante.mail } ) },
+        mail2: {
+          required,
+          email,
+          sameAs: sameAs(function () {
+            return this?.solicitante?.mail || ''
+          }),
+        },
         // esPropietario: { requiredIfAtLeastOneChecked: (value) => {
         //     return value || this.solicitante.esTitular;
         //   } },
@@ -392,17 +394,27 @@ export default{
         //Validaciones compartidas
         dniFrente: { contenido:{ required} },
         dniDorso: { contenido:{ required} },
-        planillaAutorizacion: { contenido:{requiredIf: requiredIf(function () {
-          return this.solicitante.esTitular !== 'true' })}},
-        //Validaciones exclusivas de HabilitaciÃ³n
+        planillaAutorizacion: {
+          contenido: {
+            requiredIf: requiredIf(function () {
+              return this?.solicitante?.esTitular !== 'true'
+            }),
+          },
+        },
+        //Validaciones exclusivas de Habilitación
         comprobantePago: { contenido:{required} },
         comprobantePago2: { contenido:{required } },
         //Validaciones con varias condiciones
-        acreditacionTitularidad: { contenido:{ requiredIf: requiredIf(function () {
-          return this.solicitante.esTitular !== 'true' })}},
+        acreditacionTitularidad: {
+          contenido: {
+            requiredIf: requiredIf(function () {
+              return this?.solicitante?.esTitular !== 'true'
+            }),
+          },
+        },
       }
     }
-    // Otras validaciones aquÃ­...
+    // Otras validaciones aquí...
   },
   data(){
     return{
@@ -416,9 +428,9 @@ export default{
       maxFileSize: 15 * 1024 * 1024, // 15MB in bytes,
       fileTooLargeError: {},
       provincias: [
-        'CABA','Buenos Aires', 'Catamarca', 'Chaco', 'Chubut', 'CÃ³rdoba', 'Corrientes', 'Entre RÃ­os', 'Formosa', 'Jujuy',
-        'La Pampa', 'La Rioja', 'Mendoza', 'Misiones', 'NeuquÃ©n', 'RÃ­o Negro', 'Salta', 'San Juan', 'San Luis', 'Santa Cruz',
-        'Santa Fe', 'Santiago del Estero', 'Tierra del Fuego', 'TucumÃ¡n'
+        'CABA','Buenos Aires', 'Catamarca', 'Chaco', 'Chubut', 'Córdoba', 'Corrientes', 'Entre Ríos', 'Formosa', 'Jujuy',
+        'La Pampa', 'La Rioja', 'Mendoza', 'Misiones', 'Neuquén', 'Río Negro', 'Salta', 'San Juan', 'San Luis', 'Santa Cruz',
+        'Santa Fe', 'Santiago del Estero', 'Tierra del Fuego', 'Tucumán'
       ],
       nroTramite: null,
       nroLegajo: 0,
@@ -434,12 +446,13 @@ export default{
         localidad: '',
         provincia: '',
         mail: '',
-        esTitular: false,
+        mail2: '',
+        esTitular: 'false',
         esPropietario: false,
       },
       documentos: {
         planillaAutorizacion: {
-          nombreDocumento: 'Planilla de autorizaciÃ³n de trÃ¡mite',
+          nombreDocumento: 'Planilla de autorización de trámite',
           contenido: null
         },
         dniFrente:{
@@ -459,7 +472,7 @@ export default{
           contenido: null
         },
         acreditacionTitularidad:{
-          nombreDocumento: 'AcreditaciÃ³n de titularidad: Escritura traslativa de Dominio del inmueble / Contrato de locaciÃ³n / Boleto de Compraventa',
+          nombreDocumento: 'Acreditación de titularidad: Escritura traslativa de Dominio del inmueble / Contrato de locación / Boleto de Compraventa',
           contenido: null
         }
       },
@@ -478,14 +491,14 @@ export default{
       showPopupFormError: false,
       printing: false,
       endButton: false,
-      formSubmitted: false, // Control para prevenir envÃ­os duplicados
+      formSubmitted: false, // Control para prevenir envíos duplicados
     }
   },
   computed: {
     areAllFieldsComplete() {
 
-      // Usar Vuelidate para verificar que todos los campos requeridos estÃ©n completos
-      // Primero verificamos que no haya errores de validaciÃ³n
+      // Usar Vuelidate para verificar que todos los campos requeridos estén completos
+      // Primero verificamos que no haya errores de validación
       if (this.$v.$invalid) {
         return false;
       }
@@ -495,7 +508,7 @@ export default{
         return false;
       }
 
-      // Verificar campos bÃ¡sicos del solicitante
+      // Verificar campos básicos del solicitante
       const camposSolicitante =
         this.solicitante.nombre &&
         this.solicitante.apellido &&
@@ -521,7 +534,7 @@ export default{
 
       if (!documentosBasicos) return false;
 
-      // Verificar documentos condicionales segÃºn si es titular o no
+      // Verificar documentos condicionales según si es titular o no
       const noEsTitular = this.solicitante.esTitular !== 'true';
       if (noEsTitular) {
         const documentosAdicionales =
@@ -564,7 +577,7 @@ export default{
         return !this.captchaError;
     },
     openPopup(type) {
-      // LÃ³gica para abrir el popup correspondiente segÃºn el tipo (A, B, C, D)
+      // Lógica para abrir el popup correspondiente según el tipo (A, B, C, D)
       if (type === 'A') {
         this.showPopupA = true;
       } else if (type === 'B') {
@@ -595,7 +608,7 @@ export default{
       this.$v.$touch(); // Marca los campos como tocados para mostrar los errores
 
       if (!this.$v.$invalid && !Object.values(this.fileTooLargeError).some(error => !!error) && this.isCaptchaOK() && !this.formSubmitted) {
-        // Si no hay errores y el formulario no fue enviado previamente, envÃ­a el formulario
+        // Si no hay errores y el formulario no fue enviado previamente, envía el formulario
         this.formSubmitted = true; // Marcar como enviado para prevenir duplicados
         try {
           this.openPopup('FormLoading');
@@ -606,7 +619,7 @@ export default{
             const contenidoDoc = this.documentos[campo].contenido;
 
             if (contenidoDoc instanceof Blob) {
-              // Verificar que el campo sea un Blob vÃ¡lido (archivo PDF seleccionado)
+              // Verificar que el campo sea un Blob válido (archivo PDF seleccionado)
               const fileBlob = new Blob([contenidoDoc], { type: contenidoDoc.type });
 
                 // Agregar el archivo PDF a documentosParaGuardar
@@ -625,17 +638,17 @@ export default{
           };
 
           // Usar el store como en tramites/form.vue
-          const response = await this.$store.dispatch('pagosDobles/create', {
+          const response = await usePagosDoblesStore().create({
             pagoDoble,
           });
 
-          await MailerService.enviarCorreo(this.$axios, {
+          await MailerService.enviarCorreo(useApi(), {
             destinatario: this.solicitante.mail,
             asunto: 'Solicitud de pago doble recibida',
             mensaje: `Estimado/a contribuyente,
             Su reclamo por pago doble ha sido registrado correctamente.
-            En los prÃ³ximos dÃ­as recibirÃ¡ un correo electrÃ³nico del Departamento Recaudaciones Municipal en el que le indicarÃ¡n cÃ³mo continuar.
-            AsegÃºrese de revisar la bandeja de correos no deseados (Spam).`
+            En los próximos días recibirá un correo electrónico del Departamento Recaudaciones Municipal en el que le indicarán cómo continuar.
+            Asegúrese de revisar la bandeja de correos no deseados (Spam).`
           });
           this.nroTramite = response.data
           this.showPopupFormLoading = false;
@@ -647,7 +660,7 @@ export default{
           this.showPopupFormError = true;
         }
       } else {
-        console.log('Validaciones fallaron - no se envÃ­a el formulario');
+        console.log('Validaciones fallaron - no se envía el formulario');
       }
     },
     handleDocumentUpdate(fieldName) {
@@ -655,7 +668,7 @@ export default{
 
 
       if (contenidoDoc instanceof Blob) {
-        // Verificar que el campo sea un Blob vÃ¡lido (archivo PDF o imagen seleccionado)
+        // Verificar que el campo sea un Blob válido (archivo PDF o imagen seleccionado)
         const fileBlob = new Blob([contenidoDoc], { type: contenidoDoc.type });
 
         // Agregar el archivo PDF o imagen a documentosParaGuardar
@@ -674,8 +687,8 @@ export default{
 
       //('file.size: ' + file.size + '> this.maxFileSize: ' + this.maxFileSize);
        if (file && file.size > this.maxFileSize) {
-        // El archivo excede el tamaÃ±o mÃ¡ximo permitido
-        this.fileTooLargeError[field] = 'Tu archivo pesa '+ (file.size/1024/1024).toFixed(2) + 'MB'+ ', superando el lÃ­mite de peso permitido (' + this.maxFileSize/1024/1024 + 'MB'+ '). Reducilo y volvÃ© a cargarlo.' ;
+        // El archivo excede el tamaño máximo permitido
+        this.fileTooLargeError[field] = 'Tu archivo pesa '+ (file.size/1024/1024).toFixed(2) + 'MB'+ ', superando el límite de peso permitido (' + this.maxFileSize/1024/1024 + 'MB'+ '). Reducilo y volvé a cargarlo.' ;
         return;
       }else
       this.fileTooLargeError[field] = null
@@ -699,7 +712,7 @@ export default{
       this.endButton = false;
       this.nroTramite = null;
       this.nroLegajo = 0;
-      this.formSubmitted = false; // Resetear estado de envÃ­o
+      this.formSubmitted = false; // Resetear estado de envío
       this.solicitante = {
         nombre: '',
         apellido: '',
@@ -718,7 +731,7 @@ export default{
       }
       this.documentos = {
         planillaAutorizacion: {
-          nombreDocumento: 'Planilla de autorizaciÃ³n de trÃ¡mite',
+          nombreDocumento: 'Planilla de autorización de trámite',
           contenido: null
         },
         dniFrente: {
@@ -738,13 +751,13 @@ export default{
           contenido: null
         },
         acreditacionTitularidad: {
-          nombreDocumento: 'AcreditaciÃ³n de titularidad: Escritura traslativa de Dominio del inmueble / Contrato de locaciÃ³n / Boleto de Compraventa',
+          nombreDocumento: 'Acreditación de titularidad: Escritura traslativa de Dominio del inmueble / Contrato de locación / Boleto de Compraventa',
           contenido: null
         }
       }
     },
     async onPopupClose() {
-      // Reutilizar la lÃ³gica de reset para evitar duplicaciÃ³n de cÃ³digo
+      // Reutilizar la lógica de reset para evitar duplicación de código
       await this.onResetParams();
     },
     wait(ms) {
@@ -772,9 +785,6 @@ export default{
 @media (max-width: 720px) {
   h5{
     font-size: 1.15rem;
-  }
-  .form-check-inline{
-    margin-right: 0;
   }
 }
 @media (max-width: 480px) {
@@ -983,9 +993,6 @@ h5{
 }
 .rubro-label a{
   margin-left: 10px;
-}
-.form-check-inline div{
-  margin-right: 10px;
 }
 .bi-question-circle-fill{
   cursor: pointer;

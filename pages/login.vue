@@ -1,61 +1,41 @@
 <template>
-  <div class="page main-background login-page">
+  <div class="page main-background">
     <Banner title="Iniciar sesión" />
-    <div class="login-wrap mt-5">
-      <div class="login-panel mx-auto">
-        <div class="login-avatar-wrap">
-          <div class="login-avatar" aria-hidden="true">
-            <i class="bi bi-person-fill login-avatar-icon"></i>
-          </div>
-        </div>
+    <div class="mt-5">
+      <div class="card mt-7 shadow-card col-md-3 col-sm-8 mx-auto">
+        <i
+          class="bi bi-person-circle mx-auto login-page-icon d-block"
+          aria-hidden="true"
+        />
         <LoginForm />
       </div>
     </div>
   </div>
 </template>
 
-<style scoped>
-.login-page {
-  min-height: 60vh;
+<style>
+.mt-6 {
+  margin-top: 4rem;
 }
 
-.login-wrap {
-  padding-bottom: 3rem;
+.mb-6 {
+  margin-bottom: 4rem;
 }
 
-.login-panel {
-  position: relative;
-  width: 100%;
-  max-width: 420px;
-  margin-top: 2.75rem;
-  padding: 3rem 1.75rem 2rem;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+.mt-7 {
+  margin-top: 5rem;
 }
 
-.login-avatar-wrap {
-  display: flex;
-  justify-content: center;
-  margin-top: -5.25rem;
+.mt-8 {
+  margin-top: 5.5rem;
+}
+
+.login-page-icon {
+  color: #07691c;
+  font-size: 5rem;
+  line-height: 1;
+  margin-top: 2.5rem;
   margin-bottom: 1.25rem;
 }
 
-.login-avatar {
-  width: 5.5rem;
-  height: 5.5rem;
-  border-radius: 50%;
-  background: #19a02d;
-  border: 4px solid #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.login-avatar-icon {
-  font-size: 2.75rem;
-  color: #fff;
-  line-height: 1;
-}
 </style>

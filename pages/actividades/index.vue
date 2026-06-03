@@ -151,6 +151,7 @@ import { useUserActivitiesStore } from '~/stores/userActivities'
 import ActiveSessions from '@/components/userActivity/ActiveSessions.vue'
 
 export default {
+  setup(){ const { showToast } = useProjectToast(); return { showToast } },
   name: 'ActividadesPage',
   middleware: 'authenticated',
   components: {
@@ -230,7 +231,7 @@ export default {
     },
 
     adminMaster(){
-      return this.$store.state.user.admin == "master"
+      return useUserStore().admin == "master"
     }
 
   },
@@ -252,11 +253,11 @@ export default {
       try {
         await this.getAll()
         this.loadMode = 'all'
-        this.$bvToast.toast('Se cargaron todas las actividades', {
+        this.showToast('Se cargaron todas las actividades', {
           title: 'Carga completada',
           variant: 'success',
           solid: true,
-          toaster: 'b-toaster-top-right'
+          pos: 'top-end'
         })
       } finally {
         this.loadingAll = false
@@ -307,19 +308,19 @@ export default {
             limit: this.limit
           })
 
-          this.$bvToast.toast('Filtro de fechas aplicado', {
+          this.showToast('Filtro de fechas aplicado', {
             title: 'Filtro Aplicado',
             variant: 'success',
             solid: true,
-            toaster: 'b-toaster-top-right'
+            pos: 'top-end'
           })
         } catch (error) {
           console.error('Error aplicando filtro de fechas:', error)
-          this.$bvToast.toast('Error al aplicar el filtro de fechas', {
+          this.showToast('Error al aplicar el filtro de fechas', {
             title: 'Error',
             variant: 'danger',
             solid: true,
-            toaster: 'b-toaster-top-right'
+            pos: 'top-end'
           })
         }
       }
@@ -336,11 +337,11 @@ export default {
         await this.getAll()
       }
 
-      this.$bvToast.toast('Filtro de fechas removido', {
+      this.showToast('Filtro de fechas removido', {
         title: 'Filtro Removido',
         variant: 'info',
         solid: true,
-        toaster: 'b-toaster-top-right'
+        pos: 'top-end'
       })
     },
 

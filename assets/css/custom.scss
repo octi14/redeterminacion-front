@@ -698,7 +698,8 @@ form .field-help-icon,
   flex-wrap: nowrap;
   position: relative;
   width: 100%;
-  padding-right: 2.75rem;
+  // Simétrico: el X está en position:absolute; padding solo a un lado corría el centro visual
+  padding-inline: 2.75rem;
 
   // Popups informativos (tramites, pagos dobles, etc.): título a la izquierda
   > .modal-info {
@@ -743,6 +744,14 @@ form .field-help-icon,
   .modal-title {
     width: 100%;
     text-align: center;
+  }
+
+  .centeredContainer .bi,
+  .centeredContainer > .bi,
+  .centeredContainer h3 .bi,
+  .centeredContainer h5 .bi {
+    font-size: 2.5rem;
+    line-height: 1;
   }
 
   .close,

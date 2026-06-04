@@ -117,10 +117,16 @@
   </div>
 </template>
 
+<script setup>
+definePageMeta({
+  middleware: ['authenticated', 'require-admin'],
+  adminRoles: ['hacienda', 'master'],
+})
+</script>
+
 <script>
 export default {
   setup(){ const { showToast } = useProjectToast(); return { showToast } },
-  middleware: ['authenticated'],
   data() {
     return {
       expediente: '',

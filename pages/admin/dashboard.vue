@@ -130,6 +130,13 @@
   </div>
 </template>
 
+<script setup>
+definePageMeta({
+  middleware: ['authenticated', 'require-admin'],
+  adminRoles: ['master'],
+})
+</script>
+
 <script>
 import DashboardTabs from '~/components/dashboard/DashboardTabs.vue'
 import DateRangeSelector from '~/components/dashboard/DateRangeSelector.vue'

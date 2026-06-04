@@ -46,9 +46,15 @@
   </div>
 </template>
 
+<script setup>
+definePageMeta({
+  middleware: ['authenticated', 'require-admin'],
+  adminRoles: ['cementerio', 'master'],
+})
+</script>
+
 <script>
 export default{
-  middleware: ['authenticated'],
   data() {
     return {
       hideFinalizados: false,

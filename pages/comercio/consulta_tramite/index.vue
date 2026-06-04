@@ -3,8 +3,14 @@
     <Banner title="Consulta de trámites"/>
     <div class="mx-auto">
       <div class="mt-3">
-        <div class="row justify-content-center banner-container">
-          <img :src="consultaBanner" class="consulta-banner-img" alt="Consultá el estado de tu trámite" />
+        <div class="banner-container">
+          <img
+            :src="consultaBanner"
+            class="consulta-banner-img"
+            width="410"
+            height="303"
+            alt="Consultá el estado de tu trámite"
+          />
         </div>
         <b-card class="section-card col-md-6 mx-auto">
           <div class="li-row">
@@ -260,7 +266,7 @@
 </template>
 
 <script>
-import consultaBanner from '~/assets/consulta.png'
+import consultaBanner from '~/assets/consulta.png?url'
 
 export default {
   setup(){ const { showToast } = useProjectToast(); return { showToast } },
@@ -423,21 +429,45 @@ export default {
 <style scoped>
   .consulta-banner-img {
     display: block;
-    width: 100%;
-    max-width: 28rem;
+    width: min(100%, 410px);
     height: auto;
+    aspect-ratio: 410 / 303;
     margin: 0 auto 0.5rem;
+    flex-shrink: 0;
   }
 
   .banner-container {
     width: 100%;
-    margin-bottom: 0.5rem;
+    max-width: 410px;
+    margin: 0 auto 0.5rem;
+    line-height: 0;
   }
 
-  .centeredContainer{
-    width:  auto;
+  .centeredContainer {
+    width: auto;
     margin: auto;
     text-align: center;
+  }
+
+  .modal-header .centeredContainer {
+    width: 100%;
+    flex: 1 1 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+  }
+
+  .modal-header .centeredContainer h3,
+  .modal-header .centeredContainer h5 {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   .centeredContainer button{
     width: 40%;
@@ -485,9 +515,10 @@ export default {
     font-size: 1.1rem;
     padding: 0 1rem;
   }
-  .modal-error .minitext{
+  .modal-error .minitext {
     font-size: 0.9rem;
-    font-weight: 100;
+    font-weight: 400;
+    color: #888;
   }
 
   .modal-primary p{
@@ -496,9 +527,10 @@ export default {
     font-size: 1.1rem;
     padding: 0 1rem;
   }
-  .modal-primary .minitext{
+  .modal-primary .minitext {
     font-size: 0.9rem;
-    font-weight: 100;
+    font-weight: 400;
+    color: #888;
   }
 
   .modal-success p{
@@ -507,9 +539,10 @@ export default {
     font-size: 1.1rem;
     padding: 0 1.5rem;
   }
-  .modal-success .minitext{
+  .modal-success .minitext {
     font-size: 0.8rem;
-    font-weight: 100;
+    font-weight: 400;
+    color: #888;
   }
 
   .modal-warning .minitext{
@@ -626,11 +659,12 @@ export default {
       padding: 2rem 1.5rem !important;
     }
     .banner-container {
+      max-width: 100%;
       padding-left: 15px;
       padding-right: 15px;
     }
     .consulta-banner-img {
-      max-width: 21rem;
+      max-width: 100%;
     }
     .mx-auto {
       max-width: 100%;

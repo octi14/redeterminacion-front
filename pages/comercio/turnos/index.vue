@@ -3,17 +3,23 @@
     <Banner title="Inspección de Comercios"/>
     <div class="mx-auto">
       <div class="mt-3" v-if="page === 0">
-        <div class="row justify-content-center banner-container">
-          <div class="col-md-8 mx-auto text-center">
-            <img :src="turneraBanner1" class="turnera-banner-img" alt="" />
-          </div>
+        <div class="banner-container">
+          <img
+            :src="turneraBanner1"
+            class="turnera-banner-img"
+            width="803"
+            height="289"
+            alt=""
+          />
         </div>
         <b-card class="section-card col-md-6 mx-auto">
-          <div class="li-row">
-            <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p>Estás a punto de seleccionar un turno de inspección para tu comercio.</p></div>
-          </div>
-          <div class="li-row">
-            <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p>Para iniciar, ingresá el <b>número de trámite</b> que recibiste luego de haber enviado el Formulario de Solicitud de Habilitaciones.</p></div>
+          <div class="turno-instrucciones">
+            <div class="li-row">
+              <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p>Estás a punto de seleccionar un turno de inspección para tu comercio.</p></div>
+            </div>
+            <div class="li-row">
+              <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p>Para iniciar, ingresá el <b>número de trámite</b> que recibiste luego de haber enviado el Formulario de Solicitud de Habilitaciones.</p></div>
+            </div>
           </div>
           <b-form>
             <b-form-input :disabled="enterKeyPressed" @keydown.enter="onNextPage" v-model="nroTramiteIngresado" type="number" size="lg" class="col-md-6 col-sm-10 mt-4 mx-auto" placeholder="Número de trámite" no-wheel></b-form-input>
@@ -26,10 +32,14 @@
       </div>
       <b-form class="mt-3">
         <div v-if="page === 1">
-          <div class="row justify-content-center banner-container">
-            <div class="col-md-8 mx-auto text-center">
-              <img :src="turneraBanner2" class="turnera-banner-img" alt="" />
-            </div>
+          <div class="banner-container">
+            <img
+              :src="turneraBanner2"
+              class="turnera-banner-img"
+              width="803"
+              height="289"
+              alt=""
+            />
           </div>
           <b-card class="section-card col-md-6 mx-auto">
             <h5>
@@ -73,10 +83,14 @@
           </b-card>
         </div>
         <div v-if="page === 2">
-          <div class="row justify-content-center banner-container">
-            <div class="col-md-8 mx-auto text-center">
-              <img :src="turneraBanner3" class="turnera-banner-img" alt="" />
-            </div>
+          <div class="banner-container">
+            <img
+              :src="turneraBanner3"
+              class="turnera-banner-img"
+              width="803"
+              height="289"
+              alt=""
+            />
           </div>
           <b-card class="section-card col-md-6 mx-auto">
             <h5>
@@ -114,10 +128,14 @@
           </b-card>
         </div>
         <div v-if="page === 3">
-          <div class="row justify-content-center banner-container">
-            <div class="col-md-8 mx-auto text-center">
-              <img :src="turneraBanner4" class="turnera-banner-img" alt="" />
-            </div>
+          <div class="banner-container">
+            <img
+              :src="turneraBanner4"
+              class="turnera-banner-img"
+              width="803"
+              height="289"
+              alt=""
+            />
           </div>
           <b-card class="section-card col-md-6 mx-auto">
             <h5><img class="bi-ticket" src="../../../assets/icon-num-rifa.png" /> Confirmación de turno</h5>
@@ -312,11 +330,11 @@
 
 <script>
 import MailerService from "@/service/mailer.js";
-import turneraBanner1 from '~/assets/turnera-banner-1.png'
-import turneraBanner2 from '~/assets/turnera-banner-2.png'
-import turneraBanner3 from '~/assets/turnera-banner-3.png'
-import turneraBanner4 from '~/assets/turnera-banner-4.png'
 import BCalendar from '~/components/BCalendarField.vue'
+import turneraBanner1 from '~/assets/turnera-banner-1.png?url'
+import turneraBanner2 from '~/assets/turnera-banner-2.png?url'
+import turneraBanner3 from '~/assets/turnera-banner-3.png?url'
+import turneraBanner4 from '~/assets/turnera-banner-4.png?url'
 
 export default {
   components: { BCalendar },
@@ -637,16 +655,20 @@ IMPORTANTE:
 </script>
 
 <style scoped>
-.turnera-banner-img {
-  display: block;
+.banner-container {
   width: 100%;
-  max-width: 38rem;
-  height: auto;
-  margin: 0 auto;
+  max-width: 803px;
+  margin: 0 auto 0.5rem;
+  line-height: 0;
 }
 
-.banner-container {
-  margin-bottom: 0.5rem;
+.turnera-banner-img {
+  display: block;
+  width: min(100%, 803px);
+  height: auto;
+  aspect-ratio: 803 / 289;
+  margin: 0 auto;
+  flex-shrink: 0;
 }
 
 .turnera-calendar :deep(.b-calendar-grid) {
@@ -662,7 +684,11 @@ IMPORTANTE:
     padding: 0 !important;
   }
   .banner-container{
-    margin:auto;
+    margin: auto;
+    max-width: 100%;
+  }
+  .turnera-banner-img {
+    max-width: 100%;
   }
   .section-card{
     padding: 1rem 1rem !important;
@@ -678,9 +704,6 @@ IMPORTANTE:
   .bi-ticket {
     width: 12% !important;
     min-width: 2rem !important;
-  }
-  .modal-dialog{
-    max-width: 100px !important;
   }
   .justify-content-center{
     margin: auto;
@@ -699,10 +722,31 @@ IMPORTANTE:
   .disabled-option {
     color: rgb(164, 163, 163);
   }
-  .centeredContainer{
-    width:  auto;
+  .centeredContainer {
+    width: auto;
     margin: auto;
     text-align: center;
+  }
+
+  .modal-header .centeredContainer {
+    width: 100%;
+    flex: 1 1 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+  }
+
+  .modal-header .centeredContainer h3,
+  .modal-header .centeredContainer h5 {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   .centeredContainer button{
     width: 40%;
@@ -759,9 +803,10 @@ IMPORTANTE:
     font-weight: 500;
     padding: 0 1rem;
   }
-  .modal-error .minitext{
+  .modal-error .minitext {
     font-size: 0.8rem;
-    font-weight: 100;
+    font-weight: 400;
+    color: #888;
   }
 
   .modal-success p{
@@ -770,9 +815,10 @@ IMPORTANTE:
     font-size: 1.2rem;
     padding: 0 1.5rem;
   }
-  .modal-success .minitext{
+  .modal-success .minitext {
     font-size: 0.8rem;
-    font-weight: 100;
+    font-weight: 400;
+    color: #888;
   }
 
   .modal-warning p{
@@ -780,9 +826,10 @@ IMPORTANTE:
     font-weight: 500;
     padding: 0 1rem;
   }
-  .modal-warning .minitext{
+  .modal-warning .minitext {
     font-size: 0.9rem;
-    font-weight: 100;
+    font-weight: 400;
+    color: #888;
   }
 
   .small{
@@ -825,7 +872,7 @@ IMPORTANTE:
   }
 
   .turno-instrucciones .li-row + .li-row {
-    margin-top: 0.85rem;
+    margin-top: 1rem;
   }
 
   .turno-instrucciones .li-content p {

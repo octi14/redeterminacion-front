@@ -130,11 +130,17 @@
   </div>
 </template>
 
+<script setup>
+definePageMeta({
+  middleware: ['authenticated', 'require-admin'],
+  adminRoles: ['cementerio', 'master'],
+})
+</script>
+
 <script>
 import MailerService from '~/service/mailer.js'
 
 export default {
-  middleware: ['authenticated'],
   data() {
     return {
       item: null,

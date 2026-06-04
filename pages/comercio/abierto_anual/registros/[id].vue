@@ -39,6 +39,13 @@
     </div>
   </template>
 
+  <script setup>
+  definePageMeta({
+    middleware: ['authenticated', 'require-admin'],
+    adminRoles: ['arvige', 'master'],
+  })
+  </script>
+
   <script>
   import AbiertoAnualAdminCard from '~/components/comercio/AbiertoAnualAdminCard.vue';
   export default {

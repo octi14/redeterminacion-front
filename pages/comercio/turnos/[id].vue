@@ -216,6 +216,13 @@
   </div>
 </template>
 
+<script setup>
+definePageMeta({
+  middleware: ['authenticated', 'require-admin'],
+  adminRoles: ['comercio', 'master', 'inspeccion'],
+})
+</script>
+
 <script>
 import MailerService from "@/service/mailer.js";
 

@@ -68,6 +68,13 @@
   </div>
 </template>
 
+<script setup>
+definePageMeta({
+  middleware: ['authenticated', 'require-admin'],
+  adminRoles: ['recaudaciones', 'master'],
+})
+</script>
+
 <script>
 import * as XLSX from 'xlsx';
 

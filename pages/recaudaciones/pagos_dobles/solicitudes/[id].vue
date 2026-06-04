@@ -293,6 +293,13 @@
   </div>
 </template>
 
+<script setup>
+definePageMeta({
+  middleware: ['authenticated', 'require-admin'],
+  adminRoles: ['recaudaciones', 'master'],
+})
+</script>
+
 <script>
 import { loadJSZip } from '~/utils/loadJszip';
 import { saveAsFile } from '~/utils/saveAsFile';

@@ -145,6 +145,13 @@
   </div>
 </template>
 
+<script setup>
+definePageMeta({
+  middleware: ['authenticated', 'require-admin'],
+  adminRoles: ['master'],
+})
+</script>
+
 <script>
 import { mapState, mapActions } from 'pinia'
 import { useUserActivitiesStore } from '~/stores/userActivities'
@@ -153,7 +160,6 @@ import ActiveSessions from '@/components/userActivity/ActiveSessions.vue'
 export default {
   setup(){ const { showToast } = useProjectToast(); return { showToast } },
   name: 'ActividadesPage',
-  middleware: 'authenticated',
   components: {
     ActiveSessions
   },

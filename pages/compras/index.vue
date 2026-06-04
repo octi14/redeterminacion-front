@@ -29,6 +29,8 @@
 </template>
 
 <script>
+import { COMBUSTIBLE_DASHBOARD_USERNAMES } from '~/utils/access-control'
+
 export default {
   computed: {
     adminHacienda() {
@@ -41,7 +43,7 @@ export default {
     },
     /** Usuario que solo puede ver el dashboard de combustible (sin órdenes ni vehículos). */
     puedeVerDashboardCombustible() {
-      return useUserStore().username === "gustavociriaco@gesell.gob.ar";
+      return COMBUSTIBLE_DASHBOARD_USERNAMES.includes(useUserStore().username)
     }
   }
 };

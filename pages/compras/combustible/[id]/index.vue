@@ -506,6 +506,13 @@
   </div>
 </template>
 
+<script setup>
+definePageMeta({
+  middleware: ['authenticated', 'require-admin'],
+  adminRoles: ['compras', 'master'],
+})
+</script>
+
 <script>
 import templateVale from "@/assets/TemplateValex2.png";
 import { numeroATexto } from "@/utils/numeroATexto";

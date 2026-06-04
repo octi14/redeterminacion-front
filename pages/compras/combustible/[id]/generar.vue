@@ -151,6 +151,13 @@
   </div>
 </template>
 
+<script setup>
+definePageMeta({
+  middleware: ['authenticated', 'require-admin'],
+  adminRoles: ['compras', 'master'],
+})
+</script>
+
 <script>
 //instalar esto
 import html2canvas from "html2canvas";

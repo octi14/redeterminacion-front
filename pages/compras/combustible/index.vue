@@ -531,7 +531,18 @@
   </div>
 </template>
 
+<script setup>
+import { COMBUSTIBLE_DASHBOARD_USERNAMES } from '~/utils/access-control'
+
+definePageMeta({
+  middleware: ['authenticated', 'require-admin'],
+  adminRoles: ['compras', 'master'],
+  allowedUsernames: COMBUSTIBLE_DASHBOARD_USERNAMES,
+})
+</script>
+
 <script>
+import { COMBUSTIBLE_DASHBOARD_USERNAMES } from '~/utils/access-control'
 import areas from '~/constants/areas.js'
 import EstadisticasDetalladas from '~/components/dashboard/EstadisticasDetalladas.vue'
 import CombustiblePorArea from '~/components/dashboard/CombustiblePorArea.vue'
@@ -622,11 +633,11 @@ export default {
     },
     /** Puede entrar a la página combustible: admin compras o usuario con solo dashboard. */
     puedeVerPaginaCombustible() {
-      return this.adminCompras || useUserStore().username === "gustavociriaco@gesell.gob.ar"
+      return this.adminCompras || COMBUSTIBLE_DASHBOARD_USERNAMES.includes(useUserStore().username)
     },
     /** Solo ve el dashboard de combustible (sin órdenes ni vehículos). */
     soloDashboardCombustible() {
-      return useUserStore().username === "gustavociriaco@gesell.gob.ar"
+      return COMBUSTIBLE_DASHBOARD_USERNAMES.includes(useUserStore().username)
     },
     /** Solo martinjordan@gesell.gob.ar (o master) puede ver la pestaña Estadísticas dentro de la vista completa. */
     jefeCompras() {
@@ -713,7 +724,7 @@ export default {
   },
   methods: {
     async loadCombustiblePage() {
-      const soloDashboard = useUserStore().username === 'gustavociriaco@gesell.gob.ar'
+      const soloDashboard = COMBUSTIBLE_DASHBOARD_USERNAMES.includes(useUserStore().username)
 
       if (!soloDashboard) {
         this.loadingOrdenes = true
@@ -747,7 +758,7 @@ export default {
       const puedeVerDashboard = userStore && (
         (userStore.admin === 'compras' && userStore.username === 'martinjordan@gesell.gob.ar') ||
         userStore.admin === 'master' ||
-        userStore.username === 'gustavociriaco@gesell.gob.ar'
+        COMBUSTIBLE_DASHBOARD_USERNAMES.includes(userStore.username)
       )
       if (puedeVerDashboard) {
         try {

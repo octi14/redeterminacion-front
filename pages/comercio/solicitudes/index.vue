@@ -110,6 +110,13 @@
   </div>
 </template>
 
+<script setup>
+definePageMeta({
+  middleware: ['authenticated', 'require-admin'],
+  adminRoles: ['comercio', 'master'],
+})
+</script>
+
 <script>
 import * as XLSX from 'xlsx';
 import { saveAsFile } from '~/utils/saveAsFile';

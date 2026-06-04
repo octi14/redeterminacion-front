@@ -58,6 +58,13 @@
   </div>
 </template>
 
+<script setup>
+definePageMeta({
+  middleware: ['authenticated', 'require-admin'],
+  adminRoles: ['comercio', 'master', 'inspeccion'],
+})
+</script>
+
 <script>
 export default{
   data() {

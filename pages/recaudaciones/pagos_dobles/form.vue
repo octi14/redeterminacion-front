@@ -1,22 +1,45 @@
 <template>
 <div class="page main-background">
   <Banner title="Pagos dobles" />
-  <!-- Comprobante (página 4) -->
-  <div v-if="printing">
-    <b-card no-body border-variant="success" style="margin-top: 80px" class="printing-modal shadow col-md-5 col-sm-8 mx-auto">
-      <b-card-header class="row" header-class="green text-light">
-        <h5><b>Comprobante de Solicitud - </b> Recaudaciones</h5>
+  <!-- Comprobante (impresión) -->
+  <div v-if="printing" class="pagos-dobles-comprobante-wrapper">
+    <b-card no-body border-variant="success" class="pagos-dobles-comprobante-card shadow col-md-5 col-sm-8 mx-auto">
+      <b-card-header class="pagos-dobles-comprobante-header green text-light">
+        <h5 class="mb-0"><b>Comprobante de solicitud</b> — Recaudaciones</h5>
       </b-card-header>
-      <b-card-body class="text-center">
-        <div class="row"><i class="bi bi-check"></i><h5><b class="text-green ml-1">Día: </b> {{ new Date().toLocaleDateString('es-AR') }}</h5> </div>
-
-        <div class="row"><i class="bi bi-check"></i><h5><b class="text-green ml-1">Nro de trámite:</b> R{{ nroTramite }}</h5> </div>
-        <div class="row"><i class="bi bi-check"></i><h5><b class="text-green ml-1">Solicitante: </b> {{ solicitante.nombre }}  {{ solicitante.apellido }}</h5> </div>
-        <hr/>
-        <p class="" style="text-align: justify"><i class="bi bi-caret-right-fill text-success"></i> Tené en cuenta que el Departamento Recaudaciones puede solicitarte documentación adicional vía correo electrónico.</p>
-
-        <hr/>
-        <b-button class="mt-2 btn-orange" v-if="endButton === true" @click="onResetParams">Volver</b-button>
+      <b-card-body class="pagos-dobles-comprobante-body">
+        <p class="pagos-dobles-comprobante-entity">Municipalidad de Villa Gesell — Secretaría de Hacienda</p>
+        <ul class="comprobante-datos">
+          <li>
+            <span class="comprobante-label"><i class="bi bi-check"></i> Día</span>
+            <span class="comprobante-value">{{ new Date().toLocaleDateString('es-AR') }}</span>
+          </li>
+          <li>
+            <span class="comprobante-label"><i class="bi bi-check"></i> Nro. de trámite</span>
+            <span class="comprobante-value">R{{ nroTramite }}</span>
+          </li>
+          <li>
+            <span class="comprobante-label"><i class="bi bi-check"></i> Solicitante</span>
+            <span class="comprobante-value">{{ solicitante.nombre }} {{ solicitante.apellido }}</span>
+          </li>
+        </ul>
+        <div class="comprobante-notas">
+          <div class="comprobante-nota">
+            <i class="bi bi-caret-right-fill icon-orange"></i>
+            <p>Tené en cuenta que el Departamento Recaudaciones puede solicitarte documentación adicional vía correo electrónico.</p>
+          </div>
+          <div class="comprobante-nota">
+            <i class="bi bi-caret-right-fill icon-orange"></i>
+            <p>Para consultar el estado de tu trámite ingresá en <a class="external-link" href="https://haciendavgesell.gob.ar/">haciendavgesell.gob.ar</a>, hacé click en el ícono correspondiente y escribí el número asignado en este comprobante.</p>
+          </div>
+        </div>
+        <b-button
+          v-if="endButton === true"
+          class="mt-3 btn-orange comprobante-no-print"
+          @click="onResetParams"
+        >
+          Volver
+        </b-button>
       </b-card-body>
     </b-card>
   </div>
@@ -653,12 +676,14 @@ export default{
             Asegúrese de revisar la bandeja de correos no deseados (Spam).`
           });
           this.nroTramite = response.data
-          this.showPopupFormLoading = false;
-          this.openPopup('FormOk');
+          this.showPopupFormLoading = false
+          await this.$nextTick()
+          this.openPopup('FormOk')
 
         } catch (e) {
           console.error('Error al enviar el formulario:', e);
-          this.showPopupFormLoading = false; // Cerrar popup de carga
+          this.showPopupFormLoading = false;
+          this.formSubmitted = false;
           this.showPopupFormError = true;
         }
       } else {
@@ -699,13 +724,19 @@ export default{
         return new Promise(resolve => setTimeout(resolve, ms));
       },
     async onPrintTicket() {
-        this.showPopupFormOk = false;
-        this.printing = true;
-        await this.wait(500);
-        print();
-        await this.wait(500);
-        this.endButton = true;
-      },
+      this.showPopupFormOk = false
+      this.printing = true
+      await this.wait(500)
+      if (import.meta.client) {
+        document.body.classList.add('printing-pagos-dobles-comprobante')
+      }
+      print()
+      await this.wait(500)
+      if (import.meta.client) {
+        document.body.classList.remove('printing-pagos-dobles-comprobante')
+      }
+      this.endButton = true
+    },
     async onResetParams(){
       await this.$router.push('/recaudaciones/pagos_dobles')
       this.showPopupFormOk = false;
@@ -797,11 +828,84 @@ export default{
 #captchaContainer{
   margin-bottom: 1rem;
 }
-.printing-modal .card-header h5{
-  color: white !important;
+.pagos-dobles-comprobante-wrapper {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 }
-.printing-modal h5{
-  margin: 0 0 0.5rem;
+.pagos-dobles-comprobante-card {
+  border-width: 2px;
+}
+.pagos-dobles-comprobante-header {
+  text-align: center;
+  padding: 0.85rem 1rem;
+}
+.pagos-dobles-comprobante-header h5 {
+  color: white !important;
+  margin: 0;
+}
+.pagos-dobles-comprobante-body {
+  padding: 1.5rem 1.75rem;
+}
+.pagos-dobles-comprobante-entity {
+  text-align: center;
+  color: #555;
+  font-size: 0.95rem;
+  margin-bottom: 1.25rem;
+}
+.comprobante-datos {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.25rem;
+  border: 1px solid #dee2e6;
+  border-radius: 0.375rem;
+  overflow: hidden;
+}
+.comprobante-datos li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid #eee;
+}
+.comprobante-datos li:last-child {
+  border-bottom: none;
+}
+.comprobante-datos li:nth-child(odd) {
+  background-color: #f8f9fa;
+}
+.comprobante-label {
+  font-weight: 600;
+  color: #0c681a;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.comprobante-label .bi-check {
+  display: inline-block;
+  flex-shrink: 0;
+  color: #0c681a;
+  line-height: 1;
+}
+.comprobante-value {
+  text-align: right;
+  font-weight: 600;
+  color: #333;
+}
+.comprobante-notas {
+  border-top: 1px solid #ccc;
+  padding-top: 1rem;
+}
+.comprobante-nota {
+  margin-bottom: 0.75rem;
+}
+.comprobante-nota:last-child {
+  margin-bottom: 0;
+}
+.comprobante-nota p {
+  font-size: 0.9rem;
+  color: #444;
+  line-height: 1.45;
 }
 .green{
     background-color:#0b6919;
@@ -1064,6 +1168,65 @@ h5{
 @media only screen and (min-width: 640px) {
   .layout {
     display: flex;
+  }
+}
+</style>
+
+<style>
+@media print {
+  body:has(.pagos-dobles-comprobante-wrapper) #app-navbar,
+  body:has(.pagos-dobles-comprobante-wrapper) .footer,
+  body.printing-pagos-dobles-comprobante #app-navbar,
+  body.printing-pagos-dobles-comprobante .footer,
+  body:has(.pagos-dobles-comprobante-wrapper) .title,
+  body.printing-pagos-dobles-comprobante .title,
+  body:has(.pagos-dobles-comprobante-wrapper) .comprobante-no-print,
+  body.printing-pagos-dobles-comprobante .comprobante-no-print {
+    display: none !important;
+  }
+
+  body:has(.pagos-dobles-comprobante-wrapper) #app-content,
+  body.printing-pagos-dobles-comprobante #app-content {
+    margin-top: 0 !important;
+    padding: 0 !important;
+  }
+
+  body:has(.pagos-dobles-comprobante-wrapper) .main-background,
+  body:has(.pagos-dobles-comprobante-wrapper) .page,
+  body.printing-pagos-dobles-comprobante .main-background,
+  body.printing-pagos-dobles-comprobante .page {
+    background: #fff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body:has(.pagos-dobles-comprobante-wrapper) .pagos-dobles-comprobante-wrapper,
+  body.printing-pagos-dobles-comprobante .pagos-dobles-comprobante-wrapper {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body:has(.pagos-dobles-comprobante-wrapper) .pagos-dobles-comprobante-card,
+  body.printing-pagos-dobles-comprobante .pagos-dobles-comprobante-card {
+    width: 100% !important;
+    max-width: 520px !important;
+    margin: 0 auto !important;
+    box-shadow: none !important;
+    border: 2px solid #0c681a !important;
+    page-break-inside: avoid;
+  }
+
+  body:has(.pagos-dobles-comprobante-wrapper) .pagos-dobles-comprobante-header,
+  body:has(.pagos-dobles-comprobante-wrapper) .green,
+  body.printing-pagos-dobles-comprobante .pagos-dobles-comprobante-header,
+  body.printing-pagos-dobles-comprobante .green {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body:has(.pagos-dobles-comprobante-wrapper) .comprobante-nota p,
+  body.printing-pagos-dobles-comprobante .comprobante-nota p {
+    font-size: 0.85rem;
   }
 }
 </style>

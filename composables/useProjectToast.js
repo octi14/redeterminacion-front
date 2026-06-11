@@ -12,11 +12,7 @@ import { useToastController } from 'bootstrap-vue-next'
  * - title: string | undefined
  */
 export function useProjectToast() {
-  const toastController = useToastController()
-
   const showToast = (body, options = {}) => {
-    if (!toastController?.show) return
-
     const {
       title,
       variant = 'info',
@@ -26,7 +22,7 @@ export function useProjectToast() {
       appendToast = true,
     } = options
 
-    return toastController.show({
+    const payload = {
       props: {
         body: String(body),
         title,
@@ -36,7 +32,18 @@ export function useProjectToast() {
         value,
       },
       appendToast,
-    })
+    }
+
+    const run = () => {
+      const show = useToastController()?.show
+      return show?.(payload)
+    }
+
+    const nuxtApp = useNuxtApp()
+    if (nuxtApp?.vueApp) {
+      return nuxtApp.vueApp.runWithContext(run)
+    }
+    return run()
   }
 
   return { showToast }

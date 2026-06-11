@@ -30,7 +30,7 @@
           </div>
         </b-card>
       </div>
-      <b-form class="mt-3">
+      <b-form class="mt-3" @submit.prevent>
         <div v-if="page === 1">
           <div class="banner-container">
             <img
@@ -52,12 +52,12 @@
             <div class="li-row">
               <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p>Tené en cuenta que las inspecciones se llevan a cabo en diferentes días de la semana dependiendo del lugar donde se encuentre tu comercio. Por eso, sólo podrás elegir los días correspondientes a la localidad que informaste al iniciar el trámite de habilitación:</p></div>
             </div>
-            <div class="col-md-10 mx-auto">
+            <div class="col-md-10 mx-auto turno-localidades-list">
               <div class="li-row">
-                <div class="li-icon"><i class="bi bi-check" style="font-size: 2em"></i></div><div class="li-content sub-li"><p><b>Villa Gesell:</b> Lunes, Martes y Miércoles</p></div>
+                <div class="li-icon"><i class="bi bi-check turno-localidad-check"></i></div><div class="li-content sub-li"><p><b>Villa Gesell:</b> Lunes, Martes y Miércoles</p></div>
               </div>
               <div class="li-row">
-                <div class="li-icon"><i class="bi bi-check" style="font-size: 2em"></i></div><div class="li-content sub-li"><p><b>Mar de Las Pampas / Colonia Marina / Las Gaviotas / Mar Azul:</b>  Jueves y Viernes.</p></div>
+                <div class="li-icon"><i class="bi bi-check turno-localidad-check"></i></div><div class="li-content sub-li"><p><b>Mar de Las Pampas / Colonia Marina / Las Gaviotas / Mar Azul:</b> Jueves y Viernes.</p></div>
               </div>
             </div>
             <b-calendar
@@ -180,7 +180,7 @@
             </b-card>
             <div class="btn-container">
               <b-button @click="page-= 1" class="btn-cancel">Volver</b-button>
-              <b-button :disabled="sendingForm || !areAllFieldsComplete"  @click="onSelectTurno" variant="success">Continuar</b-button>
+              <b-button type="button" :disabled="sendingForm || !areAllFieldsComplete"  @click="onSelectTurno" variant="success">Continuar</b-button>
             </div>
             <div v-if="!areAllFieldsComplete" class="validation-error">
               <i class="bi bi-exclamation-octagon text-danger"></i> Falta completar información.
@@ -189,31 +189,52 @@
         </div>
       </b-form>
         <!-- Comprobante (página 4) -->
-        <div v-if="page === 4">
-          <b-card no-body border-variant="success" style="margin-top: 80px" class="shadow col-md-5 col-sm-8 mx-auto">
-            <b-card-header class="row" header-class="green text-light">
-              <h5><b>Comprobante de turno - </b> Inspección</h5>
+        <div v-if="page === 4" class="turno-comprobante-wrapper">
+          <b-card no-body border-variant="success" class="turno-comprobante-card shadow col-md-5 col-sm-8 mx-auto">
+            <b-card-header class="turno-comprobante-header green text-light">
+              <h5 class="mb-0"><b>Comprobante de turno</b> — Inspección comercial</h5>
             </b-card-header>
-            <b-card-body class="text-center">
-              <div class="row"><i class="bi bi-check"></i><h5><b class="text-green ml-1">Día: </b> {{ formattedDate }}</h5> </div>
-              <div class="row" v-if="time === '08.30'"><i class="bi bi-check"></i><h5><b class="text-green ml-1">Horario: </b> {{ time }} - 11.30 </h5> </div>
-              <div class="row" v-if="time === '11.30'"><i class="bi bi-check"></i><h5><b class="text-green ml-1">Horario: </b> {{ time }} - 13.30 </h5> </div>
-              <div class="row"><i class="bi bi-check"></i><h5><b class="text-green ml-1">Nro de trámite:</b> {{ nroTramite }}</h5> </div>
-              <div class="row"><i class="bi bi-check"></i><h5><b class="text-green ml-1">Solicitante: </b> {{ nombre }}</h5> </div>
-              <hr/>
-             <div class="text-left">
-              <div class="row">
-                <i class="bi bi-caret-right-fill" style="font-size: 1em"></i>
-                <p class="small"><small>Para consultar el estado de tu trámite ingresá en <a class="text-success">haciendavgesell.gob.ar</a>, hacé click en el ícono
-                  correspondiente y escribí <br/>el número asignado en este comprobante. </small></p>
+            <b-card-body class="turno-comprobante-body">
+              <p class="turno-comprobante-entity">Municipalidad de Villa Gesell — Secretaría de Hacienda</p>
+              <ul class="turno-comprobante-datos">
+                <li>
+                  <span class="turno-comprobante-label"><i class="bi bi-check"></i> Día</span>
+                  <span class="turno-comprobante-value">{{ formattedDate }}</span>
+                </li>
+                <li v-if="selectedTimeDisplay">
+                  <span class="turno-comprobante-label"><i class="bi bi-check"></i> Horario</span>
+                  <span class="turno-comprobante-value">{{ selectedTimeDisplay }}</span>
+                </li>
+                <li>
+                  <span class="turno-comprobante-label"><i class="bi bi-check"></i> Nro. de trámite</span>
+                  <span class="turno-comprobante-value">{{ nroTramite }}</span>
+                </li>
+                <li>
+                  <span class="turno-comprobante-label"><i class="bi bi-check"></i> Solicitante</span>
+                  <span class="turno-comprobante-value">{{ nombre }}</span>
+                </li>
+                <li v-if="domicilio">
+                  <span class="turno-comprobante-label"><i class="bi bi-check"></i> Domicilio</span>
+                  <span class="turno-comprobante-value">{{ domicilio }}</span>
+                </li>
+              </ul>
+              <div class="turno-comprobante-notas">
+                <div class="turno-comprobante-nota">
+                  <i class="bi bi-caret-right-fill icon-orange"></i>
+                  <p>Para consultar el estado de tu trámite ingresá en <strong>haciendavgesell.gob.ar</strong>, hacé click en el ícono correspondiente y escribí el número asignado en este comprobante.</p>
+                </div>
+                <div class="turno-comprobante-nota">
+                  <i class="bi bi-caret-right-fill icon-orange"></i>
+                  <p>Podés cancelar tu turno enviando un correo a <strong>divinspectores@gesell.gob.ar</strong>.</p>
+                </div>
               </div>
-              <div class="row">
-                <i class="bi bi-caret-right-fill" style="font-size: 1em"></i>
-                <p class="small"><small>Podés cancelar tu turno enviando un correo a divinspectores@gesell.gob.ar. </small></p>
-              </div>
-
-              <b-button class="mt-2 btn-orange" v-if="endButton === true" @click="onResetParams">Volver</b-button>
-            </div>
+              <b-button
+                v-if="endButton === true"
+                class="mt-3 btn-orange turno-comprobante-no-print"
+                @click="onResetParams"
+              >
+                Volver
+              </b-button>
             </b-card-body>
           </b-card>
         </div>
@@ -232,7 +253,7 @@
       </BModal>
 
       <!-- Modal Solicitud exitosa -->
-      <BModal v-model="formOk" v-if="date && time && formOk && !printing" no-close-on-backdrop :header-bg-variant="'success'" no-footer centered>
+      <BModal v-model="formOk" no-close-on-backdrop :header-bg-variant="'success'" no-footer centered>
         <template #header>
           <div class="centeredContainer"><h3>
               <i class="bi bi-check-circle-fill text-light"></i>
@@ -416,9 +437,8 @@ export default {
       return tresTurnosPedidos;
     },
     async onSelectTurno() {
-      let success = false; // Bandera para verificar si el try se ejecutó con éxito
+      const tipoTramite = useHabilitacionesStore().single?.tipoSolicitud
 
-      let tipoTramite = useHabilitacionesStore().single.tipoSolicitud
       if (!this.nombre || !this.dni || !this.domicilio) {
         this.showToast('Existen datos incompletos', {
           title: 'Error',
@@ -426,52 +446,37 @@ export default {
           solid: true,
           pos: 'top-center',
         });
-      } else {
-        try {
-          const turno = {
-            dia: this.date,
-            horario: this.time,
-            nombre: this.nombre,
-            dni: this.dni,
-            domicilio: this.domicilio,
-            nroTramite: this.nroTramite,
-            tipoTramite: tipoTramite,
-          }
-          this.sendingForm = true
-          await useTurnosStore().create({
-            turno
-          })
-          success = true; // Cambia la bandera a true si el try se ejecutó correctamente
-        }catch(e){
-          this.showToast('No se pudo solicitar un turno por un error desconocido. Recargue la pagina e intente nuevamente más tarde.', {
-            solid: true,
-            variant: 'danger',
-            appendToast: true,
-          });
+        return;
+      }
+
+      try {
+        const turno = {
+          dia: this.date,
+          horario: this.time,
+          nombre: this.nombre,
+          dni: this.dni,
+          domicilio: this.domicilio,
+          nroTramite: this.nroTramite,
+          tipoTramite,
         }
+        this.sendingForm = true
+        await useTurnosStore().create({ turno })
 
-        // Verifica la bandera 'success' para ejecutar el código después del try...catch
-        if (success) {
-          const habilitacionId = useHabilitacionesStore().single.id;
-          const observaciones = useHabilitacionesStore().single.observaciones;
-          const habilitacion = {
-            status: 'Esperando inspección',
-            observaciones: observaciones + " - " + "Turno solicitado el día " + new Date().toLocaleDateString('es-AR') +
-              " - " + "Se debe inspeccionar el comercio el día " + new Date(this.date).toLocaleDateString('es-AR') + " a las " + this.time
-          };
-          await useHabilitacionesStore().updateLazy({
-            id: habilitacionId,
-            habilitacion,
-          });
+        const habilitacionId = useHabilitacionesStore().single.id;
+        const observaciones = useHabilitacionesStore().single.observaciones;
+        const habilitacion = {
+          status: 'Esperando inspección',
+          observaciones: observaciones + " - " + "Turno solicitado el día " + new Date().toLocaleDateString('es-AR') +
+            " - " + "Se debe inspeccionar el comercio el día " + new Date(this.date).toLocaleDateString('es-AR') + " a las " + this.time
+        };
+        await useHabilitacionesStore().updateLazy({
+          id: habilitacionId,
+          habilitacion,
+        });
 
-          // --- Enviar correo al solicitante ---
-          try {
-            const destinatario = useHabilitacionesStore().single.mail
-            if (!destinatario) {
-              console.error('No se encontró el email del solicitante')
-              return
-            }
-
+        try {
+          const destinatario = useHabilitacionesStore().single.mail
+          if (destinatario) {
             const asunto = `Turno de inspección confirmado - N° ${this.nroTramite}`
             const mensaje = `Estimado/a contribuyente,
 
@@ -489,22 +494,39 @@ IMPORTANTE:
 - Solo puede cancelar el turno hasta 5 días antes de la inspección.`
 
             await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
-          } catch (e) {
-            console.error('Error al enviar correo de confirmación de turno:', e)
+          } else {
+            console.error('No se encontró el email del solicitante')
           }
-
-          this.sendingForm = false;
-          this.formOk = true;
+        } catch (e) {
+          console.error('Error al enviar correo de confirmación de turno:', e)
         }
+
+        await this.$nextTick()
+        this.formOk = true
+      } catch (e) {
+        this.showToast('No se pudo solicitar un turno por un error desconocido. Recargue la pagina e intente nuevamente más tarde.', {
+          solid: true,
+          variant: 'danger',
+          appendToast: true,
+        });
+      } finally {
+        this.sendingForm = false
       }
     },
     async onPrintTicket() {
-      this.page = 4;
-      this.printing = true;
-      await this.wait(500);
-      print();
-      await this.wait(500);
-      this.endButton = true;
+      this.formOk = false
+      this.page = 4
+      this.printing = true
+      await this.wait(500)
+      if (import.meta.client) {
+        document.body.classList.add('printing-turno-comprobante')
+      }
+      print()
+      await this.wait(500)
+      if (import.meta.client) {
+        document.body.classList.remove('printing-turno-comprobante')
+      }
+      this.endButton = true
     },
     async onNextPage() {
       switch (this.page) {
@@ -892,7 +914,13 @@ IMPORTANTE:
     border-bottom: 2px solid #CCC;
     margin-bottom: 1rem;
   }
-  .section-card h5 .bi-calendar-check,
+  .section-card h5 .bi-calendar-check {
+    margin-right: 0.5rem;
+    border-right: 1px solid #999;
+    font-size: 2.1rem;
+    padding-right: 0.75rem;
+  }
+
   .section-card h5 .bi-clock,
   .section-card h5 .bi-ticket {
     margin-right: 0.5rem;
@@ -970,8 +998,30 @@ IMPORTANTE:
   .sub-li p{
     font-size: 1.3rem;
   }
-  .bi-caret-right-fill,
-  .bi-check {
+
+  .turno-localidades-list .li-row {
+    gap: 0.6rem;
+  }
+
+  .turno-localidades-list .li-row + .li-row {
+    margin-top: 0.85rem;
+  }
+
+  .turno-localidades-list .sub-li p {
+    line-height: 1.65;
+  }
+
+  .turno-localidades-list .turno-localidad-check {
+    color: #0c681a !important;
+    font-size: 1.35rem !important;
+    font-weight: 700;
+    line-height: 1;
+    display: block;
+    margin-top: 0.15em;
+  }
+
+  .li-icon .bi-caret-right-fill,
+  .li-icon .bi-check {
     display: block;
     margin-top: 0;
     line-height: 1;
@@ -981,4 +1031,159 @@ IMPORTANTE:
   .bi-caret-right-fill {
     color: #0c681a;
   }
+
+  .turno-comprobante-nota .bi-caret-right-fill {
+    display: inline-block !important;
+  }
+
+  .turno-comprobante-wrapper {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .turno-comprobante-card {
+    border-width: 2px;
+  }
+
+  .turno-comprobante-header {
+    text-align: center;
+    padding: 0.85rem 1rem;
+  }
+
+  .turno-comprobante-body {
+    padding: 1.5rem 1.75rem;
+  }
+
+  .turno-comprobante-entity {
+    text-align: center;
+    color: #555;
+    font-size: 0.95rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .turno-comprobante-datos {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.25rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    overflow: hidden;
+  }
+
+  .turno-comprobante-datos li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.65rem 1rem;
+    border-bottom: 1px solid #eee;
+  }
+
+  .turno-comprobante-datos li:last-child {
+    border-bottom: none;
+  }
+
+  .turno-comprobante-datos li:nth-child(odd) {
+    background-color: #f8f9fa;
+  }
+
+  .turno-comprobante-label {
+    font-weight: 600;
+    color: #0c681a;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .turno-comprobante-label .bi-check {
+    display: inline-block;
+    flex-shrink: 0;
+    color: #0c681a;
+    line-height: 1;
+  }
+
+  .turno-comprobante-value {
+    text-align: right;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .turno-comprobante-notas {
+    border-top: 1px solid #ccc;
+    padding-top: 1rem;
+  }
+
+  .turno-comprobante-nota {
+    margin-bottom: 0.75rem;
+  }
+
+  .turno-comprobante-nota:last-child {
+    margin-bottom: 0;
+  }
+
+  .turno-comprobante-nota p {
+    font-size: 0.9rem;
+    color: #444;
+    line-height: 1.45;
+  }
+</style>
+
+<style>
+@media print {
+  body:has(.turno-comprobante-wrapper) #app-navbar,
+  body:has(.turno-comprobante-wrapper) .footer,
+  body.printing-turno-comprobante #app-navbar,
+  body.printing-turno-comprobante .footer,
+  body:has(.turno-comprobante-wrapper) .title,
+  body.printing-turno-comprobante .title,
+  body:has(.turno-comprobante-wrapper) .turno-comprobante-no-print,
+  body.printing-turno-comprobante .turno-comprobante-no-print {
+    display: none !important;
+  }
+
+  body:has(.turno-comprobante-wrapper) #app-content,
+  body.printing-turno-comprobante #app-content {
+    margin-top: 0 !important;
+    padding: 0 !important;
+  }
+
+  body:has(.turno-comprobante-wrapper) .main-background,
+  body:has(.turno-comprobante-wrapper) .page,
+  body.printing-turno-comprobante .main-background,
+  body.printing-turno-comprobante .page {
+    background: #fff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body:has(.turno-comprobante-wrapper) .turno-comprobante-wrapper,
+  body.printing-turno-comprobante .turno-comprobante-wrapper {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body:has(.turno-comprobante-wrapper) .turno-comprobante-card,
+  body.printing-turno-comprobante .turno-comprobante-card {
+    width: 100% !important;
+    max-width: 520px !important;
+    margin: 0 auto !important;
+    box-shadow: none !important;
+    border: 2px solid #0c681a !important;
+    page-break-inside: avoid;
+  }
+
+  body:has(.turno-comprobante-wrapper) .turno-comprobante-header,
+  body:has(.turno-comprobante-wrapper) .green,
+  body.printing-turno-comprobante .turno-comprobante-header,
+  body.printing-turno-comprobante .green {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body:has(.turno-comprobante-wrapper) .turno-comprobante-nota p,
+  body.printing-turno-comprobante .turno-comprobante-nota p {
+    font-size: 0.85rem;
+  }
+}
 </style>

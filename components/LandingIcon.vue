@@ -52,7 +52,7 @@
 
 <script>
 import arvigeSvg from '~/assets/tas.svg'
-import { unlockNavigation } from '~/utils/modalCleanup'
+import { forceCloseAllModals } from '~/utils/modalCleanup'
 
 export default {
   inject: {
@@ -83,7 +83,7 @@ export default {
   },
   methods: {
     prepareNavigation() {
-      unlockNavigation()
+      forceCloseAllModals()
       if (typeof this.closeMoratoriaModal === 'function') {
         this.closeMoratoriaModal()
       }

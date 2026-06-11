@@ -1,5 +1,5 @@
 import { nextTick } from 'vue'
-import { cleanupModalArtifacts, unlockNavigation } from '~/utils/modalCleanup'
+import { cleanupModalArtifacts, forceCloseAllModals, syncModalBodyLock } from '~/utils/modalCleanup'
 
 /**
  * Navegación SPA: desbloquear UI en cada clic y en cada cambio de ruta.
@@ -24,7 +24,7 @@ export default defineNuxtPlugin((nuxtApp) => {
           || target.closest('.landing-tile-link')
           || target.closest('button')
         ) {
-          unlockNavigation()
+          syncModalBodyLock()
         }
       },
       true,
@@ -32,7 +32,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   }
 
   router.beforeEach(() => {
-    unlockNavigation()
+    forceCloseAllModals()
     return true
   })
 
@@ -46,7 +46,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   router.afterEach(scheduleCleanup)
   router.onError(() => {
-    unlockNavigation()
+    forceCloseAllModals()
     cleanupModalArtifacts()
   })
 })

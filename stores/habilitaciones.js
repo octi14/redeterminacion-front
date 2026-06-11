@@ -47,7 +47,7 @@ export const useHabilitacionesStore = defineStore('habilitaciones', {
     async update({ id, habilitacion }) {
       try {
         const updated = await HabilitacionService.update(useApi(), id, { habilitacion })
-        this.setSingle({ updated })
+        this.setSingle(updated)
       } catch (e) {
         throw new Error(e.message)
       }

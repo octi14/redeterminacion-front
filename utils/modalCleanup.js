@@ -1,12 +1,9 @@
 /**
- * Desbloquea la UI antes/durante una navegación.
+ * Desbloquea pointer-events en layout/navbar sin cerrar modales abiertos.
  */
-export function unlockNavigation() {
+function unlockLayoutPointerEvents() {
   if (!import.meta.client || typeof document === 'undefined') return
 
-  document.body.classList.remove('modal-open')
-  document.body.style.removeProperty('overflow')
-  document.body.style.removeProperty('padding-right')
   document.body.style.removeProperty('pointer-events')
 
   const unlock = (el) => {
@@ -17,6 +14,49 @@ export function unlockNavigation() {
   unlock(document.getElementById('app-layout'))
   unlock(document.getElementById('app-content'))
   unlock(document.getElementById('app-navbar'))
+}
+
+function hasVisibleModal() {
+  if (!import.meta.client || typeof document === 'undefined') return false
+  return document.querySelectorAll('.modal.show').length > 0
+}
+
+/**
+ * Sincroniza el bloqueo de scroll/backdrop con modales visibles.
+ * No fuerza el cierre de modales (p. ej. al pasar de "cargando" a "éxito").
+ */
+export function syncModalBodyLock() {
+  if (!import.meta.client || typeof document === 'undefined') return
+
+  unlockLayoutPointerEvents()
+
+  if (hasVisibleModal()) {
+    document.body.classList.add('modal-open')
+    return
+  }
+
+  document.body.classList.remove('modal-open')
+  document.body.style.removeProperty('overflow')
+  document.body.style.removeProperty('padding-right')
+
+  document.querySelectorAll('.modal-backdrop').forEach((el) => {
+    el.style.setProperty('display', 'none', 'important')
+    el.style.setProperty('pointer-events', 'none', 'important')
+    el.style.setProperty('opacity', '0', 'important')
+  })
+}
+
+/**
+ * Cierra modales y limpia backdrops (navegación SPA).
+ */
+export function forceCloseAllModals() {
+  if (!import.meta.client || typeof document === 'undefined') return
+
+  unlockLayoutPointerEvents()
+
+  document.body.classList.remove('modal-open')
+  document.body.style.removeProperty('overflow')
+  document.body.style.removeProperty('padding-right')
 
   document.querySelectorAll('.modal-backdrop').forEach((el) => {
     el.style.setProperty('display', 'none', 'important')
@@ -31,13 +71,18 @@ export function unlockNavigation() {
   })
 }
 
+/** @deprecated Preferir syncModalBodyLock o forceCloseAllModals según el caso. */
+export function unlockNavigation() {
+  syncModalBodyLock()
+}
+
 /**
  * Limpieza final tras completar el cambio de ruta.
  */
 export function cleanupModalArtifacts() {
   if (!import.meta.client || typeof document === 'undefined') return
 
-  unlockNavigation()
+  forceCloseAllModals()
 
   document.querySelectorAll('.modal-backdrop').forEach((el) => {
     el.remove()

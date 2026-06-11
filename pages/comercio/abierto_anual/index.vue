@@ -53,7 +53,7 @@
                 </div>
                 <hr>
                 <div class="li-row warning-li">
-                  <div class="li-icon"><i class="bi bi-exclamation-circle-fill" style="font-size: 0.75em"></i></div><div class="li-content">
+                  <div class="li-icon"><i class="bi bi-exclamation-circle-fill icon-orange"></i></div><div class="li-content">
                     El beneficio es una excepción al pago total y acreditarlo es de exclusiva responsabilidad del contribuyente.
                   </div>
                 </div>
@@ -788,8 +788,18 @@ ul{
   margin-bottom: 0.25rem;
 }
 
+.warning-li {
+  align-items: center;
+}
+
 .warning-li .li-icon {
-  margin-top: -0.1rem;
+  margin-top: 0;
+  align-self: center;
+}
+
+.warning-li .li-icon .bi-exclamation-circle-fill {
+  font-size: 1rem !important;
+  line-height: 1;
 }
 
 .li-icon {

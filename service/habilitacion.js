@@ -1,4 +1,4 @@
-﻿const FINALIZACION_PATTERNS = [
+const FINALIZACION_PATTERNS = [
   /Se finaliza(?: la solicitud)?(?: el)?(?: trámite)?(?: [^0-9]*)?(\d{1,2}\/\d{1,2}\/\d{2,4})(?:\s+(\d{1,2}:\d{2}(?::\d{2})?))?/gi,
   /Finalización[^0-9]*(\d{1,2}\/\d{1,2}\/\d{2,4})/gi,
   /Renovación finalizada[^0-9]*(\d{1,2}\/\d{1,2}\/\d{2,4})/gi,
@@ -206,7 +206,7 @@ export default {
       `/habilitaciones/${id}`,
       { habilitacion },
     )
-    return formatFile(updated)
+    return formatExtendedFile(updated)
   },
   updateLazy: async (axios, id, { habilitacion }) => {
     axios.setHeader('Access-Control-Allow-Origin', true)

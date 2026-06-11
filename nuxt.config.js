@@ -44,6 +44,7 @@ export default defineNuxtConfig({
   plugins: [
     '~/plugins/pinia-payload.server.js',
     '~/plugins/api.js',
+    '~/plugins/project-toast.client.js',
     '~/plugins/auth-hydrate.client.js',
     '~/plugins/router-cleanup.client.js',
     '~/plugins/vuelidate.js',
@@ -58,7 +59,8 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBase: 'https://redeterminacion-back.herokuapp.com/',
+      // apiBase: 'https://redeterminacion-back.herokuapp.com/',
+      apiBase: 'http://127.0.0.1:5000/',
     },
   },
 

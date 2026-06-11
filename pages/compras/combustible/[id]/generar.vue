@@ -5,19 +5,19 @@
     <LoadingState v-if="cargandoOrden" size="lg" class="mt-5" />
 
     <b-container v-else-if="orden" class="mt-4">
-      <b-card class="shadow-card">
-        <b-card-header class="bg-success text-white text-center">
-          <h3>Generando vales: orden N°</h3>
-          <h4 class="text-white font-weight-bold">{{ orden.nroOrden }}</h4>
+      <b-card no-body class="shadow-card generar-vales-card">
+        <b-card-header class="generar-vales-card-header bg-success text-white text-center border-0">
+          <h3 class="generar-vales-card-header-title mb-1">Generando vales: orden N°</h3>
+          <h4 class="text-white font-weight-bold mb-0">{{ orden.nroOrden }}</h4>
         </b-card-header>
 
-        <b-card-body>
-          <div class="row justify-content-center">
-            <h4 class="text-primary text-center mt-4 mx-2 font-weight-bold">Área asignada: </h4>
-            <h4 class="text-dark text-center mt-4 font-weight-500"> {{ orden.area }}</h4>
-          </div>
+        <b-card-body class="generar-vales-card-body">
+          <p class="generar-vales-area text-center mb-0">
+            <span class="generar-vales-area-label">Área asignada:</span>
+            <span class="generar-vales-area-value">{{ orden.area }}</span>
+          </p>
 
-          <b-form @submit.prevent="generarVales" class="m-4">
+          <b-form @submit.prevent="generarVales" class="generar-vales-form">
             <b-form-group label="Patente del Vehículo" label-for="patente">
               <div>
                 <!-- Input con autocompletado -->
@@ -602,9 +602,49 @@ export default {
 </script>
 
 <style scoped>
-/* Quita el padding del body de la card */
-.card-body {
-  padding: 0 !important;
+.generar-vales-card {
+  overflow: hidden;
+}
+
+.generar-vales-card :deep(.card-header) {
+  width: 100%;
+  margin: 0;
+  padding: 1rem 1.25rem;
+  border-radius: 0;
+}
+
+.generar-vales-card-header-title {
+  font-size: 1.35rem;
+  font-weight: 600;
+}
+
+.generar-vales-card-body {
+  padding: 0;
+}
+
+.generar-vales-area {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0.35rem;
+  padding: 1.25rem 1.5rem 0;
+}
+
+.generar-vales-area-label {
+  color: var(--bs-primary);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.generar-vales-area-value {
+  color: #212529;
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.generar-vales-form {
+  margin: 1.25rem 1.5rem 1.5rem;
 }
 
 /* Estilos para el dropdown de sugerencias */

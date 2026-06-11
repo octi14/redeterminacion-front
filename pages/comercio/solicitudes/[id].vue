@@ -10,11 +10,17 @@
     <template v-if="habilitacion && adminComercio">
       <div class="solicitud-resumen">
         <div class="row justify-content-center mt-3">
-          <p class="h5"> Número de trámite: <b> {{ habilitacion.nroTramite }}  </b></p>
-          <span v-if="mostrarIconoAdvertencia" class="iconoAdvertencia">
-            <i class="bi bi-exclamation-circle-fill"></i>
-            <span v-if="showAdvertencia" class="textoHover">El plazo administrativo del trámite está por vencer o se encuentra vencido.</span>
-          </span>
+          <div class="h5 d-flex align-items-center justify-content-center flex-wrap tramite-numero-row">
+            <span>Número de trámite: <b>{{ habilitacion.nroTramite }}</b></span>
+            <span
+              v-if="mostrarIconoAdvertencia"
+              class="iconoAdvertencia ms-2"
+              title="El plazo administrativo del trámite está por vencer o se encuentra vencido."
+            >
+              <i class="bi bi-exclamation-circle-fill text-warning"></i>
+              <span class="textoHover">El plazo administrativo del trámite está por vencer o se encuentra vencido.</span>
+            </span>
+          </div>
         </div>
         <div class="row justify-content-center mt-3">
           <p class="h5"> Tipo de trámite: <b> {{ habilitacion.tipoSolicitud }}  </b></p>
@@ -54,23 +60,44 @@
         <b-form-checkbox
           switch
           v-model="visibleLocal"
-          @change="onToggleVisibilidad"
+          @update:model-value="onToggleVisibilidad"
         >
           Visibilidad del trámite
           <i :class="visibleLocal ? 'bi bi-eye ml-1' : 'bi bi-eye-slash ml-1'"></i>
         </b-form-checkbox>
       </div>
       <!--Botones-->
-      <div class="row col-10 mx-auto justify-content-center" v-if="jefeComercio">
-        <b-button @click="onShowSolicitarDocumentacion" variant="success" class="btn-4 mt-3 mx-1" v-if="habilitacion && habilitacion.status === 'Inspeccionado'"> Solicitar documentación </b-button>
-        <!-- <b-button @click="onShowRectificacion" variant="secondary " class="btn-4 mt-3 mx-1" v-if="habilitacion && habilitacion.status === 'En revisión'"> Rectificación </b-button> -->
-        <b-button @click="onShowFinalizarSolicitud" variant="success" class="btn-4 mt-3 mx-1" v-if="(!renovacion && !reempadronamiento) && habilitacion && (habilitacion.status === 'Esperando documentación' || habilitacion.status === 'Esperando pago')"> Finalizar solicitud </b-button>
-        <b-button @click="onShowFinalizarRenovacion" variant="success" class="btn-4 mt-3 mx-1" v-if="(renovacion || reempadronamiento) && habilitacion && habilitacion.status === 'Esperando documentación'"> Finalizar solicitud </b-button>
-      </div>
       <div
         class="solicitud-quick-actions"
         v-if="jefeComercio || (adminMaster && habilitacion && habilitacion.status != 'En revisión')"
       >
+        <b-button
+          v-if="jefeComercio && habilitacion && habilitacion.status === 'Inspeccionado'"
+          @click="onShowSolicitarDocumentacion"
+          variant="success"
+          size="sm"
+          class="btn-4"
+        >
+          Solicitar documentación
+        </b-button>
+        <b-button
+          v-if="jefeComercio && (!renovacion && !reempadronamiento) && habilitacion && (habilitacion.status === 'Esperando documentación' || habilitacion.status === 'Esperando pago')"
+          @click="onShowFinalizarSolicitud"
+          variant="success"
+          size="sm"
+          class="btn-4"
+        >
+          Finalizar solicitud
+        </b-button>
+        <b-button
+          v-if="jefeComercio && (renovacion || reempadronamiento) && habilitacion && habilitacion.status === 'Esperando documentación'"
+          @click="onShowFinalizarRenovacion"
+          variant="success"
+          size="sm"
+          class="btn-4"
+        >
+          Finalizar solicitud
+        </b-button>
         <b-button
           v-if="adminMaster && habilitacion && habilitacion.status != 'En revisión'"
           size="sm"
@@ -845,7 +872,6 @@ import * as XLSX from 'xlsx';
 import MailerService from "@/service/mailer.js";
 
 export default {
-  setup(){ const { showToast } = useProjectToast(); return { showToast } },
   data() {
     return {
       statusClasses: {
@@ -862,7 +888,6 @@ export default {
         'Finalizada': 'text-darkgreen'
       },
       inspeccion: false,
-      showAdvertencia: false,
       showRectificacion: false,
       showPrevApprove: false,
       showApprove: false,
@@ -961,7 +986,7 @@ export default {
       await useHabilitacionesStore().getSingle({
         id: habilitacionId,
       })
-      this.habilitacion = useHabilitacionesStore().single
+      this.syncHabilitacionFromStore()
 
       if (!this.habilitacion) {
         console.error('No se pudo cargar la habilitación')
@@ -999,13 +1024,18 @@ export default {
           console.error('Error al registrar la actividad:', error);
       }
     },
-    async onToggleVisibilidad() {
+    async onToggleVisibilidad(visibleValue) {
       if (!this.adminMaster || !this.habilitacion) {
         return;
       }
 
+      const visible = visibleValue !== undefined ? !!visibleValue : !!this.visibleLocal;
+      const currentServer = this.habilitacion.visible !== false;
+      if (visible === currentServer) {
+        return;
+      }
+
       const id = this.habilitacion.id;
-      const visible = !!this.visibleLocal;
 
       try {
         await useHabilitacionesStore().updateLazy({
@@ -1013,6 +1043,7 @@ export default {
           habilitacion: { visible },
         });
         useHabilitacionesStore().setSingleVisible(visible);
+        this.habilitacion.visible = visible;
         this.showToast(
           visible
             ? 'El trámite ahora es visible para usuarios no administradores.'
@@ -1029,11 +1060,20 @@ export default {
           variant: 'danger',
           solid: true,
         });
-        this.visibleLocal = this.habilitacion.visible !== false;
+        this.visibleLocal = currentServer;
       }
     },
     getStatusClass(status) {
       return this.statusClasses[status] || '';
+    },
+    syncHabilitacionFromStore() {
+      const single = useHabilitacionesStore().single
+      this.habilitacion = single ? { ...single } : null
+    },
+    async updateHabilitacion(habilitacion) {
+      const id = this.habilitacion.id
+      await useHabilitacionesStore().update({ id, habilitacion })
+      this.syncHabilitacionFromStore()
     },
     wait(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
@@ -1070,14 +1110,9 @@ export default {
         status: 'Rectificación',
         observaciones: observaciones + " - " + "Solicita rectificación el día " + new Date().toLocaleDateString('es-AR')
       }
-      const id = this.habilitacion.id
-      await useHabilitacionesStore().update({
-        id,
-        habilitacion,
-      })
+      await this.updateHabilitacion(habilitacion)
       this.registrarActividad('Rectificar Trámite', 'Rectificación Solicitada', this.habilitacion.nroTramite)
       this.wait(300)
-      this.habilitacion.status = habilitacion.status
       this.showRectificacion = false
     },
     async onSendSolicitar(){
@@ -1087,11 +1122,7 @@ export default {
         status: 'Esperando documentación',
         observaciones: observaciones + " - " + "Se solicita documentación el día " + new Date().toLocaleDateString('es-AR')
       }
-      const id = this.habilitacion.id
-      await useHabilitacionesStore().update({
-        id,
-        habilitacion,
-      })
+      await this.updateHabilitacion(habilitacion)
       this.registrarActividad('Solicitar Documentación', 'Documentación Solicitada', this.habilitacion.nroTramite)
 
       // --- Enviar correo al solicitante ---
@@ -1126,7 +1157,6 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
       }
 
       this.wait(300)
-      this.habilitacion.status = habilitacion.status
       this.showSolicitarDoc = false
     },
     async onSendFinalizar(){
@@ -1143,11 +1173,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
         alcance: alcance,
         observaciones: observaciones + " - " + "Se finaliza el trámite el día " + new Date().toLocaleDateString('es-AR')
       }
-      const id = this.habilitacion.id
-      await useHabilitacionesStore().update({
-        id,
-        habilitacion,
-      })
+      await this.updateHabilitacion(habilitacion)
       if(this.baja){
         this.registrarActividad('Finalizar Baja', 'Trámite Cerrado. Expediente: ' + nroExpediente + ". Alcance: " + alcance, this.habilitacion.nroTramite)
       }else{
@@ -1182,7 +1208,6 @@ los originales de la documentación en el Departamento Comercio sito en Avda 3 N
       }
 
       this.wait(300)
-      this.habilitacion.status = habilitacion.status
       this.showFinalizar = false
       if(this.baja){
         this.showApprove = true
@@ -1199,14 +1224,9 @@ los originales de la documentación en el Departamento Comercio sito en Avda 3 N
         observaciones: observaciones + " - " + "Se restablece el trámite a 'En revisión' el día " + new Date().toLocaleDateString('es-AR')
       }
 
-      const id = this.habilitacion.id
-      await useHabilitacionesStore().update({
-        id,
-        habilitacion,
-      })
+      await this.updateHabilitacion(habilitacion)
       this.registrarActividad('Volver a En Revisión', 'Solicitud Reestablecida. Observaciones: ' + observaciones, this.habilitacion.nroTramite)
       this.wait(300)
-      this.habilitacion.status = habilitacion.status
       this.showRestoreDefault = false
     },
     async onSendApprove(){
@@ -1218,11 +1238,7 @@ los originales de la documentación en el Departamento Comercio sito en Avda 3 N
       if(this.inspeccion){
         habilitacion.status = "Esperando turno"
       }
-      const id = this.habilitacion.id
-      await useHabilitacionesStore().update({
-        id,
-        habilitacion,
-      })
+      await this.updateHabilitacion(habilitacion)
       this.registrarActividad('Aprobar Habilitación', 'Habilitación Aprobada. Inspeccion: ' + this.inspeccion, this.habilitacion.nroTramite)
 
       // --- Enviar correo al solicitante ---
@@ -1276,7 +1292,6 @@ ubicada en la Avenida Corrientes 1312, piso 11 oficina 42, CABA.`
       }
 
       this.wait(300)
-      this.habilitacion.status = habilitacion.status
       this.showPrevApprove = false
       this.showApprove = true
     },
@@ -1290,11 +1305,7 @@ ubicada en la Avenida Corrientes 1312, piso 11 oficina 42, CABA.`
         alcance: alcance,
         observaciones: observaciones + " - " + "Se aprueba la solicitud el " + new Date().toLocaleDateString('es-AR') + " " + new Date().toLocaleTimeString() + ". Esperando pago."
       }
-      const id = this.habilitacion.id
-      await useHabilitacionesStore().update({
-        id,
-        habilitacion,
-      })
+      await this.updateHabilitacion(habilitacion)
       this.registrarActividad('Aprobar Baja', 'Baja Aprobada', this.habilitacion.nroTramite)
 
       // --- Enviar correo al solicitante ---
@@ -1325,7 +1336,6 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
       }
 
       this.wait(300)
-      this.habilitacion.status = habilitacion.status
       this.showPrevApprove = false
       if(this.baja){
         this.showAprobarBaja = false
@@ -1341,11 +1351,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
         alcance: alcance,
         observaciones: observaciones + " - " + "Se finaliza la solicitud el " + new Date().toLocaleDateString('es-AR') + " " + new Date().toLocaleTimeString()
       }
-      const id = this.habilitacion.id
-      await useHabilitacionesStore().update({
-        id,
-        habilitacion,
-      })
+      await this.updateHabilitacion(habilitacion)
       if(this.reempadronamiento){
         this.registrarActividad('Finalizar Reempadronamiento', 'Reempadronamiento Finalizado', this.habilitacion.nroTramite)
       }else{
@@ -1383,7 +1389,6 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
       }
 
       this.wait(300)
-      this.habilitacion.status = habilitacion.status
       this.showPrevApprove = false
       // this.showApprove = true
     },
@@ -1403,11 +1408,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
         observaciones: observaciones + " - " + "Solicitud rechazada el " + new Date().toLocaleDateString() + ". " + elementosIncorrectosTexto,
         status: 'Rechazada'
       }
-      const id = this.habilitacion.id
-      await useHabilitacionesStore().update({
-        id,
-        habilitacion,
-      })
+      await this.updateHabilitacion(habilitacion)
       this.registrarActividad('Rechazar Solicitud', 'Rechazado por: ' + observaciones, this.habilitacion.nroTramite)
 
       // --- Enviar correo al solicitante ---
@@ -1448,7 +1449,6 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
       }
 
       this.wait(300)
-      this.habilitacion.status = habilitacion.status
       this.observaciones = ''
       this.showRejectPopup = false
     },
@@ -1770,23 +1770,45 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
 }
 
 /* etc */
-.iconoAdvertencia {
-  position: relative;
-  display: inline-block;
+.tramite-numero-row {
+  gap: 0.25rem;
 }
 
-/* Estilo del texto de advertencia */
+.iconoAdvertencia {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: help;
+  line-height: 1;
+}
+
+.iconoAdvertencia .bi {
+  font-size: 1.15em;
+}
+
 .textoHover {
+  display: none;
   position: absolute;
-  top: -60px; /* Ajusta la posición vertical del texto */
-  left: 20px; /* Ajusta la posición horizontal del texto */
+  bottom: calc(100% + 0.35rem);
+  top: auto;
+  left: 50%;
+  transform: translateX(-50%);
   background-color: #fff;
-  color: #000;
-  padding: 5px;
-  width: 450px;
+  color: #212529;
+  padding: 0.5rem 0.65rem;
+  width: min(450px, 85vw);
   border-radius: 5px;
-  z-index: 1; /* Asegura que esté encima del ícono */
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3); /* Agrega una sombra */
+  z-index: 20;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  font-size: 0.9rem;
+  font-weight: 400;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.iconoAdvertencia:hover .textoHover,
+.iconoAdvertencia:focus-within .textoHover {
+  display: block;
 }
 
 .text-loading{

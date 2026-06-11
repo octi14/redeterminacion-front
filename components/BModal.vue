@@ -1,7 +1,7 @@
 <script setup>
 import { BModal as BvModal } from 'bootstrap-vue-next'
 import { computed, useAttrs, useSlots } from 'vue'
-import { unlockNavigation } from '~/utils/modalCleanup'
+import { syncModalBodyLock } from '~/utils/modalCleanup'
 
 defineOptions({ inheritAttrs: false })
 
@@ -88,7 +88,7 @@ const passthroughSlotNames = computed(() =>
 )
 
 function onHidden() {
-  unlockNavigation()
+  syncModalBodyLock()
 }
 </script>
 

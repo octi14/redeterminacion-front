@@ -13,7 +13,7 @@
           <div class="li-row">
             <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p>Para comenzar, ingresá los siguientes datos del comercio:</p></div>
           </div>
-          <b-form @submit="sendData">
+          <b-form @submit.prevent="sendData">
             <b-row>
               <label for="cuit" class="col-6">CUIT/CUIM del titular del comercio: <span style="font-weight: 500"><i>(sin guiones)</i></span></label>
               <b-form-input class="col-6" v-model="cuit" id="cuit" type="number" placeholder="Ingrese su CUIT/CUIM" no-wheel></b-form-input>
@@ -29,13 +29,11 @@
                 <i class="bi bi-exclamation-octagon text-danger"></i>  'Completá este campo'
               </div>
             </b-row>
+            <div class="btn-container">
+              <b-button class="btn-cancel" type="button" @click="onResetParams">Cancelar</b-button>
+              <b-button type="submit" :disabled="enterKeyPressed" variant="success">Aceptar</b-button>
+            </div>
           </b-form>
-          <div class="btn-container">
-            <b-button class="btn-cancel" @click="onResetParams">Cancelar</b-button>
-            <!-- <b-button @click="sendData" :disabled="enterKeyPressed">Aceptar</b-button> -->
-            <!-- <b-button @click="openPopup('ClosedPeriod')" :disabled="enterKeyPressed">Aceptar</b-button> -->
-            <b-button @click="sendData()" :disabled="enterKeyPressed" variant="success">Aceptar</b-button>
-          </div>
         </b-card>
       </div>
 
@@ -173,50 +171,60 @@
         return new Promise(resolve => setTimeout(resolve, ms));
       },
       async sendData() {
-        this.$v.$touch(); // Marca los campos como tocados para mostrar los errores
+        if (this.enterKeyPressed) {
+          return;
+        }
+
+        this.$v.$touch();
         this.enterKeyPressed = true;
-        if (!this.$v.$invalid){
-          if (!this.cuit || !this.nroLegajo) {
-            //Faltan introducir datos
-            this.showPopupNoEntry = true;
-          } else {
-            const cuit = Number(this.cuit);
-            const nroLegajo = Number(this.nroLegajo);
-            //busco en el maestro
-            const maestroStore = useMaestroStore()
-            const abiertoAnualStore = useAbiertoAnualStore()
-            await maestroStore.getSingle({
-              cuit: cuit,
-              legajo: nroLegajo,
-            });
-            const result = maestroStore.single;
-            if (result && result.length > 0) {
-              //existe en el maestro
-              await abiertoAnualStore.getByCuitLegajo({
-                cuit: cuit,
-                nroLegajo: nroLegajo,
-              });
-              //si no estaba creado,
-              if (!abiertoAnualStore.single) {
-                // Crear un nuevo AbiertoAnual si no se encuentra uno existente
-                await abiertoAnualStore.create({
-                  cuit: cuit,
-                  nroLegajo: this.nroLegajo,
-                });
-                await abiertoAnualStore.getByCuitLegajo({
-                  cuit: cuit,
-                  nroLegajo: nroLegajo,
-                });
-              }
-              const id = abiertoAnualStore.single.id;
-              await this.$router.push('/comercio/abierto_anual/periodos');
-          } else {
-              this.showPopupFormError = true;
+
+        try {
+          if (this.$v.$invalid) {
+            return;
           }
+
+          if (!this.cuit || !this.nroLegajo) {
+            this.showPopupNoEntry = true;
+            return;
+          }
+
+          const cuit = Number(this.cuit);
+          const nroLegajo = Number(this.nroLegajo);
+          const maestroStore = useMaestroStore();
+          const abiertoAnualStore = useAbiertoAnualStore();
+
+          await maestroStore.getSingle({
+            cuit,
+            legajo: nroLegajo,
+          });
+
+          const result = maestroStore.single;
+          if (!result || result.length === 0) {
+            this.showPopupFormError = true;
+            return;
+          }
+
+          await abiertoAnualStore.getByCuitLegajo({
+            cuit,
+            nroLegajo,
+          });
+
+          if (!abiertoAnualStore.single) {
+            await abiertoAnualStore.create({
+              cuit,
+              nroLegajo: this.nroLegajo,
+            });
+            await abiertoAnualStore.getByCuitLegajo({
+              cuit,
+              nroLegajo,
+            });
+          }
+
+          await this.$router.push('/comercio/abierto_anual/periodos');
+        } finally {
           this.enterKeyPressed = false;
         }
-      }
-    },
+      },
     onResetParams() {
       this.$router.push('/comercio/abierto_anual');
       this.page = 0;

@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { unlockNavigation } from '~/utils/modalCleanup'
+import { forceCloseAllModals } from '~/utils/modalCleanup'
 
 export default {
   name: 'Default',
@@ -62,7 +62,7 @@ export default {
       } else if (this.debeMostrarMoratoria()) {
         this.mostrarMoratoria = true
       }
-      unlockNavigation()
+      forceCloseAllModals()
     },
     mostrarMoratoria(visible) {
       if (!visible && import.meta.client) {

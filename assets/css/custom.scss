@@ -440,6 +440,41 @@ body:not(.modal-open) #app-content {
   margin-right: 0.2em;
 }
 
+// Notas al pie de comprobantes (turnos, trámites, pagos dobles)
+.comprobante-nota,
+.turno-comprobante-nota {
+  display: grid !important;
+  grid-template-columns: 1.15rem 1fr;
+  column-gap: 0.5rem;
+  align-items: start;
+  margin-bottom: 0.75rem;
+}
+
+.comprobante-nota:last-child,
+.turno-comprobante-nota:last-child {
+  margin-bottom: 0;
+}
+
+.comprobante-nota > .bi-caret-right-fill,
+.turno-comprobante-nota > .bi-caret-right-fill {
+  display: inline-block !important;
+  grid-column: 1;
+  grid-row: 1;
+  margin-top: 0.2em;
+  font-size: 1rem;
+  line-height: 1;
+  color: $color-orange-primary;
+}
+
+.comprobante-nota > p,
+.turno-comprobante-nota > p {
+  grid-column: 2;
+  grid-row: 1;
+  margin: 0 !important;
+  min-width: 0;
+  text-align: left;
+}
+
 // ============================================
 // BOTONES DE PÁGINA (Volver / Iniciar trámite / Exportar)
 // ============================================

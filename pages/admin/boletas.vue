@@ -75,8 +75,114 @@
             >
               Almacenar archivo original al publicar
             </b-form-checkbox>
-            <small>Desactivado por defecto para evitar consumo innecesario de espacio.</small>
+            <small>
+              <b-spinner v-if="configLoading" small class="mr-1"></b-spinner>
+              {{ configLoading ? 'Guardando configuración...' : 'Desactivado por defecto para evitar consumo innecesario de espacio.' }}
+            </small>
           </div>
+        </div>
+      </section>
+
+      <section class="period-management-section">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">Disponibilidad pública</span>
+            <h2>Períodos cargados</h2>
+            <p>Administrá qué versión de cada período pueden descargar los contribuyentes.</p>
+          </div>
+          <div class="period-toolbar">
+            <b-form-select v-model="periodStatusFilter" size="sm">
+              <option value="all">Todos los estados</option>
+              <option value="enabled">Solo habilitados</option>
+              <option value="disabled">Solo deshabilitados</option>
+            </b-form-select>
+            <button class="btn btn-outline-success btn-sm" :disabled="periodsLoading" @click="loadPeriods">
+              <b-spinner v-if="periodsLoading" small></b-spinner>
+              <i v-else class="bi bi-arrow-clockwise"></i>
+              Actualizar
+            </button>
+          </div>
+        </div>
+
+        <div v-if="periodsLoading && !loadedPeriods.length" class="periods-empty">
+          <b-spinner variant="success"></b-spinner>
+          <span>Cargando períodos...</span>
+        </div>
+        <div v-else-if="!periodYears.length" class="periods-empty">
+          <i class="bi bi-calendar2-x"></i>
+          <span>No hay períodos publicados que coincidan con el filtro.</span>
+        </div>
+        <details
+          v-for="year in paginatedPeriodYears"
+          v-else
+          :key="year.year"
+          class="year-archive"
+          :open="year.year === newestPeriodYear"
+        >
+          <summary>
+            <div>
+              <strong>{{ year.year }}</strong>
+              <span>{{ year.periods.length }} períodos · {{ year.enabledCount }} habilitados</span>
+            </div>
+            <i class="bi bi-chevron-down"></i>
+          </summary>
+          <div class="year-periods">
+            <article v-for="period in year.periods" :key="period.periodo" class="loaded-period-card">
+              <header>
+                <div>
+                  <span>Cuota {{ String(period.cuota).padStart(2, '0') }}</span>
+                  <h3>{{ period.periodo }}</h3>
+                </div>
+                <span class="period-state" :class="period.habilitado ? 'enabled' : 'disabled'">
+                  {{ period.habilitado ? 'Habilitado' : 'Deshabilitado' }}
+                </span>
+              </header>
+              <div
+                class="period-versions"
+                :class="{ 'has-overflow': period.versions.length > 3 }"
+              >
+                <div
+                  v-for="version in period.versions"
+                  :key="`${version.importacionId}-${version.periodo}`"
+                  class="period-version"
+                  :class="{ active: version.habilitado }"
+                >
+                  <div class="version-file">
+                    <i class="bi bi-file-earmark-spreadsheet"></i>
+                    <div>
+                      <strong>{{ version.nombreArchivo }}</strong>
+                      <small>{{ formatNumber(version.cantidadEntradas) }} entradas · {{ formatDateTime(version.publicadoAt) }}</small>
+                    </div>
+                  </div>
+                  <button
+                    class="btn btn-sm"
+                    :class="version.habilitado ? 'btn-outline-danger' : 'btn-outline-success'"
+                    :disabled="changingPeriod"
+                    @click="requestPeriodStateChange(version)"
+                  >
+                    {{ version.habilitado ? 'Deshabilitar' : 'Habilitar' }}
+                  </button>
+                </div>
+              </div>
+              <footer v-if="period.versions.length > 3" class="versions-overflow-note">
+                <i class="bi bi-mouse"></i>
+                Desplazá para ver las {{ period.versions.length }} cargas
+              </footer>
+            </article>
+          </div>
+        </details>
+        <div v-if="periodYearPages > 1" class="year-pagination">
+          <span>
+            Mostrando años {{ firstVisibleYear }} a {{ lastVisibleYear }}
+          </span>
+          <b-pagination
+            v-model="periodYearPage"
+            :total-rows="periodYears.length"
+            :per-page="periodYearsPerPage"
+            size="sm"
+            align="right"
+            class="mb-0"
+          ></b-pagination>
         </div>
       </section>
 
@@ -88,20 +194,58 @@
             <p>Cargas analizadas y publicadas desde este panel.</p>
           </div>
           <div class="history-count">
-            <strong>{{ history.length }}</strong>
+            <strong>{{ filteredHistory.length }}</strong>
             <span>cargas</span>
           </div>
         </div>
 
         <div class="history-card">
+          <div class="history-toolbar">
+            <div class="history-search">
+              <i class="bi bi-search"></i>
+              <input
+                v-model.trim="historySearch"
+                type="search"
+                placeholder="Buscar por archivo o usuario..."
+              >
+            </div>
+            <b-form-select v-model="historyStatusFilter" size="sm">
+              <option value="all">Todos los estados</option>
+              <option value="published">Publicado</option>
+              <option value="validated">Listo para publicar</option>
+              <option value="rejected">Con errores</option>
+              <option value="replaced">Reemplazado</option>
+              <option value="partially-replaced">Reemplazado parcialmente</option>
+            </b-form-select>
+            <b-form-select v-model="historySortBy" size="sm">
+              <option value="uploadedAt">Fecha de subida</option>
+              <option value="periodSort">Año y período</option>
+              <option value="entries">Entradas</option>
+            </b-form-select>
+            <button
+              class="btn btn-outline-success btn-sm history-sort-direction"
+              :title="historySortDesc ? 'Orden descendente' : 'Orden ascendente'"
+              @click="historySortDesc = !historySortDesc"
+            >
+              <i :class="historySortDesc ? 'bi bi-sort-down' : 'bi bi-sort-up'"></i>
+              {{ historySortDesc ? 'Descendente' : 'Ascendente' }}
+            </button>
+          </div>
           <b-table
-            :items="history"
+            :items="paginatedHistory"
             :fields="historyFields"
+            :busy="historyLoading"
             responsive
             hover
             show-empty
             empty-text="Todavía no hay cargas registradas."
           >
+            <template #table-busy>
+              <div class="history-loading">
+                <b-spinner small variant="success"></b-spinner>
+                <span>Cargando historial...</span>
+              </div>
+            </template>
             <template #cell(fileName)="data">
               <div class="file-cell">
                 <i class="bi bi-file-earmark-excel-fill"></i>
@@ -133,15 +277,37 @@
                 v-if="data.item.errors || data.item.warnings"
                 class="btn btn-outline-secondary btn-sm"
                 title="Descargar reporte"
+                :disabled="reportDownloadingId === data.item.id"
                 @click="downloadStoredReport(data.item)"
               >
-                <i class="bi bi-download"></i>
+                <b-spinner v-if="reportDownloadingId === data.item.id" small></b-spinner>
+                <i v-else class="bi bi-download"></i>
               </button>
             </template>
           </b-table>
+          <div v-if="historyPages > 1" class="history-pagination">
+            <span>
+              Mostrando {{ historyFirstRow }}-{{ historyLastRow }} de {{ filteredHistory.length }} cargas
+            </span>
+            <b-pagination
+              v-model="historyPage"
+              :total-rows="filteredHistory.length"
+              :per-page="historyPerPage"
+              size="sm"
+              align="right"
+              class="mb-0"
+            ></b-pagination>
+          </div>
         </div>
       </section>
     </main>
+
+    <transition name="server-activity">
+      <div v-if="backgroundOperationMessage" class="server-activity" role="status" aria-live="polite">
+        <b-spinner small></b-spinner>
+        <span>{{ backgroundOperationMessage }}</span>
+      </div>
+    </transition>
 
     <b-modal
       v-model="showAnalysisModal"
@@ -176,6 +342,11 @@
         <span class="eyebrow">Análisis finalizado</span>
         <h3>{{ resultTitle }}</h3>
         <p class="result-description">{{ resultDescription }}</p>
+        <div v-if="analysisResult.fileName && selectedFile && analysisResult.fileName !== selectedFile.name" class="renamed-file-notice">
+          <i class="bi bi-files"></i>
+          Ya existía un archivo con ese nombre. Esta carga se guardó como
+          <strong>{{ analysisResult.fileName }}</strong>.
+        </div>
 
         <div class="summary-grid">
           <div><span>Entradas</span><strong>{{ formatNumber(analysisResult.entries) }}</strong></div>
@@ -283,6 +454,47 @@
         </div>
       </div>
     </b-modal>
+
+    <b-modal
+      v-model="showPeriodConfirmation"
+      centered
+      hide-header
+      hide-footer
+      :no-close-on-backdrop="changingPeriod"
+      :no-close-on-esc="changingPeriod"
+      modal-class="publish-modal"
+    >
+      <div v-if="pendingPeriodChange" class="publish-confirmation">
+        <div class="confirm-icon" :class="{ 'disable-icon': pendingPeriodChange.habilitado }">
+          <b-spinner v-if="changingPeriod" label="Actualizando"></b-spinner>
+          <i v-else :class="pendingPeriodChange.habilitado ? 'bi bi-eye-slash-fill' : 'bi bi-eye-fill'"></i>
+        </div>
+        <h3>{{ changingPeriod ? 'Actualizando período...' : periodConfirmationTitle }}</h3>
+        <p v-if="changingPeriod">Estamos actualizando las boletas disponibles para los contribuyentes.</p>
+        <template v-else>
+          <p>{{ periodConfirmationDescription }}</p>
+          <div v-if="periodChangeConflicts.length" class="overwrite-warning">
+            <div class="overwrite-warning-title">
+              <i class="bi bi-exclamation-triangle-fill"></i>
+              Se deshabilitará otra versión
+            </div>
+            <p>
+              Actualmente está habilitado el período {{ pendingPeriodChange.periodo }} desde:
+              <strong>{{ periodChangeConflicts.map(item => item.nombreArchivo).join(', ') }}</strong>.
+            </p>
+          </div>
+        </template>
+        <div class="confirm-actions">
+          <button class="btn btn-outline-secondary" :disabled="changingPeriod" @click="showPeriodConfirmation = false">
+            Cancelar
+          </button>
+          <button class="btn btn-publish" :disabled="changingPeriod" @click="changePeriodState">
+            <b-spinner v-if="changingPeriod" small class="mr-2"></b-spinner>
+            {{ changingPeriod ? 'Actualizando...' : (pendingPeriodChange.habilitado ? 'Sí, deshabilitar' : 'Sí, habilitar') }}
+          </button>
+        </div>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -305,7 +517,24 @@ export default {
       guardarOriginalHabilitado: false,
       configLoading: false,
       serverConflictPeriods: [],
+      loadedPeriods: [],
+      periodsLoading: false,
+      periodStatusFilter: 'all',
+      periodYearPage: 1,
+      periodYearsPerPage: 5,
+      showPeriodConfirmation: false,
+      pendingPeriodChange: null,
+      periodChangeConflicts: [],
+      changingPeriod: false,
       history: [],
+      historyLoading: false,
+      reportDownloadingId: null,
+      historySearch: '',
+      historyStatusFilter: 'all',
+      historySortBy: 'uploadedAt',
+      historySortDesc: true,
+      historyPage: 1,
+      historyPerPage: 10,
       historyFields: [
         { key: 'fileName', label: 'Nombre del archivo' },
         { key: 'uploadedAt', label: 'Fecha de subida' },
@@ -353,11 +582,131 @@ export default {
         ...this.currentPeriods.filter(period => publishedPeriods.has(period)),
         ...this.serverConflictPeriods
       ]))
+    },
+    periodYears() {
+      const grouped = {}
+      this.loadedPeriods.forEach(item => {
+        if (this.periodStatusFilter === 'enabled' && !item.habilitado) return
+        if (this.periodStatusFilter === 'disabled' && item.habilitado) return
+        if (!grouped[item.anio]) grouped[item.anio] = {}
+        if (!grouped[item.anio][item.periodo]) {
+          grouped[item.anio][item.periodo] = {
+            periodo: item.periodo,
+            cuota: item.cuota,
+            habilitado: false,
+            versions: []
+          }
+        }
+        grouped[item.anio][item.periodo].versions.push(item)
+        grouped[item.anio][item.periodo].habilitado = grouped[item.anio][item.periodo].habilitado || item.habilitado
+      })
+      return Object.keys(grouped)
+        .map(Number)
+        .sort((a, b) => b - a)
+        .map(year => {
+          const periods = Object.values(grouped[year]).sort((a, b) => a.cuota - b.cuota)
+          return { year, periods, enabledCount: periods.filter(item => item.habilitado).length }
+        })
+    },
+    newestPeriodYear() {
+      return this.periodYears.length ? this.periodYears[0].year : null
+    },
+    paginatedPeriodYears() {
+      const start = (this.periodYearPage - 1) * this.periodYearsPerPage
+      return this.periodYears.slice(start, start + this.periodYearsPerPage)
+    },
+    periodYearPages() {
+      return Math.ceil(this.periodYears.length / this.periodYearsPerPage)
+    },
+    firstVisibleYear() {
+      return this.paginatedPeriodYears.length ? this.paginatedPeriodYears[0].year : '-'
+    },
+    lastVisibleYear() {
+      return this.paginatedPeriodYears.length
+        ? this.paginatedPeriodYears[this.paginatedPeriodYears.length - 1].year
+        : '-'
+    },
+    periodConfirmationTitle() {
+      if (!this.pendingPeriodChange) return ''
+      return this.pendingPeriodChange.habilitado
+        ? `¿Deshabilitar ${this.pendingPeriodChange.periodo}?`
+        : `¿Habilitar ${this.pendingPeriodChange.periodo}?`
+    },
+    periodConfirmationDescription() {
+      if (!this.pendingPeriodChange) return ''
+      return this.pendingPeriodChange.habilitado
+        ? 'Los contribuyentes dejarán de encontrar y descargar las boletas de este período.'
+        : 'Las boletas de esta carga quedarán disponibles para que los contribuyentes puedan descargarlas.'
+    },
+    filteredHistory() {
+      const search = this.historySearch.toLocaleLowerCase('es')
+      return this.history
+        .filter(item => {
+          const matchesSearch = !search ||
+            item.fileName.toLocaleLowerCase('es').includes(search) ||
+            item.uploadedBy.toLocaleLowerCase('es').includes(search)
+          const matchesStatus = this.historyStatusFilter === 'all' || item.status === this.historyStatusFilter
+          return matchesSearch && matchesStatus
+        })
+        .sort((left, right) => {
+          let comparison
+          if (this.historySortBy === 'entries') {
+            comparison = left.entries - right.entries
+          } else {
+            comparison = left[this.historySortBy] - right[this.historySortBy]
+          }
+          if (comparison === 0) comparison = left.uploadedAtSort - right.uploadedAtSort
+          return this.historySortDesc ? -comparison : comparison
+        })
+    },
+    paginatedHistory() {
+      const start = (this.historyPage - 1) * this.historyPerPage
+      return this.filteredHistory.slice(start, start + this.historyPerPage)
+    },
+    historyPages() {
+      return Math.ceil(this.filteredHistory.length / this.historyPerPage)
+    },
+    historyFirstRow() {
+      return this.filteredHistory.length ? ((this.historyPage - 1) * this.historyPerPage) + 1 : 0
+    },
+    historyLastRow() {
+      return Math.min(this.historyPage * this.historyPerPage, this.filteredHistory.length)
+    },
+    backgroundOperationMessage() {
+      if (this.reportDownloadingId) return 'Preparando el reporte para descargar...'
+      if (this.configLoading) return 'Guardando la configuración...'
+      if (this.periodsLoading && this.loadedPeriods.length) return 'Actualizando períodos...'
+      if (this.historyLoading && this.history.length) return 'Actualizando historial...'
+      return ''
+    }
+  },
+  watch: {
+    periodStatusFilter() {
+      this.periodYearPage = 1
+    },
+    periodYearPages(value) {
+      if (value && this.periodYearPage > value) this.periodYearPage = value
+    },
+    historySearch() {
+      this.historyPage = 1
+    },
+    historyStatusFilter() {
+      this.historyPage = 1
+    },
+    historySortBy() {
+      this.historyPage = 1
+    },
+    historySortDesc() {
+      this.historyPage = 1
+    },
+    historyPages(value) {
+      if (value && this.historyPage > value) this.historyPage = value
     }
   },
   mounted() {
     this.loadHistory()
     this.loadStorageConfig()
+    this.loadPeriods()
   },
   methods: {
     onFileSelected(event) {
@@ -404,10 +753,18 @@ export default {
         this.processingMessage = 'Preparando el reporte...'
         await this.pause(450)
         this.analysisResult = result
+        if (result.fileName && result.fileName !== this.selectedFile.name) {
+          this.$bvToast.toast(`La carga se guardó como ${result.fileName}.`, {
+            title: 'Nombre de archivo actualizado',
+            variant: 'info',
+            solid: true,
+            autoHideDelay: 7000
+          })
+        }
         this.analysisProgress = 100
         await this.pause(250)
         this.analysisState = 'finished'
-        await this.loadHistory()
+        await Promise.all([this.loadHistory(), this.loadPeriods()])
       } catch (error) {
         this.analysisResult = {
           entries: 0,
@@ -446,7 +803,7 @@ export default {
             }
           }
         )
-        await this.loadHistory()
+        await Promise.all([this.loadHistory(), this.loadPeriods()])
         this.showPublishConfirmation = false
         this.showAnalysisModal = false
         this.clearFile()
@@ -484,7 +841,7 @@ export default {
       if (!this.analysisResult) return ''
       const lines = [
         'REPORTE DE VALIDACIÓN DE BOLETAS DE AUTOMOTORES',
-        `Archivo: ${this.selectedFile ? this.selectedFile.name : '-'}`,
+        `Archivo: ${this.analysisResult.fileName || (this.selectedFile ? this.selectedFile.name : '-')}`,
         `Fecha: ${this.formatDateTime(new Date().toISOString())}`,
         `Entradas: ${this.analysisResult.entries}`,
         `Dominios: ${this.analysisResult.domains}`,
@@ -502,7 +859,8 @@ export default {
       return lines.join('\r\n')
     },
     downloadCurrentReport() {
-      this.downloadText(this.buildReport(), `reporte-${this.selectedFile.name.replace(/\.xlsx$/i, '')}.txt`)
+      const fileName = this.analysisResult.fileName || this.selectedFile.name
+      this.downloadText(this.buildReport(), `reporte-${fileName.replace(/\.xlsx$/i, '')}.txt`)
     },
     downloadText(content, fileName) {
       const blob = new Blob([content], { type: 'text/plain;charset=utf-8' })
@@ -514,6 +872,8 @@ export default {
       URL.revokeObjectURL(url)
     },
     async downloadStoredReport(item) {
+      if (this.reportDownloadingId) return
+      this.reportDownloadingId = item.id
       try {
         const response = await this.$axios.get(`/tasas/importaciones/${item.id}/reporte`, {
           headers: this.authHeaders(),
@@ -522,15 +882,77 @@ export default {
         this.downloadText(response.data, `reporte-${item.fileName.replace(/\.xlsx$/i, '')}.txt`)
       } catch (error) {
         this.$bvToast.toast('No se pudo descargar el reporte.', { variant: 'danger', solid: true })
+      } finally {
+        this.reportDownloadingId = null
       }
     },
     async loadHistory() {
       if (!this.puedeAdministrar) return
+      this.historyLoading = true
       try {
         const response = await this.$axios.get('/tasas/importaciones', { headers: this.authHeaders() })
         this.history = response.data.data.map(this.mapHistoryItem)
       } catch (error) {
         this.history = []
+      } finally {
+        this.historyLoading = false
+      }
+    },
+    async loadPeriods() {
+      if (!this.puedeAdministrar) return
+      this.periodsLoading = true
+      try {
+        const response = await this.$axios.get('/tasas/importaciones/periodos', { headers: this.authHeaders() })
+        this.loadedPeriods = response.data.data
+      } catch (error) {
+        this.$bvToast.toast('No se pudieron cargar los períodos publicados.', { variant: 'danger', solid: true })
+      } finally {
+        this.periodsLoading = false
+      }
+    },
+    requestPeriodStateChange(version) {
+      this.pendingPeriodChange = version
+      this.periodChangeConflicts = version.habilitado
+        ? []
+        : this.loadedPeriods.filter(item =>
+          item.periodo === version.periodo &&
+          item.habilitado &&
+          item.importacionId !== version.importacionId
+        )
+      this.showPeriodConfirmation = true
+    },
+    async changePeriodState() {
+      if (!this.pendingPeriodChange || this.changingPeriod) return
+      this.changingPeriod = true
+      const habilitar = !this.pendingPeriodChange.habilitado
+      try {
+        await this.$axios.put(
+          `/tasas/importaciones/periodos/${this.pendingPeriodChange.importacionId}/estado`,
+          {
+            periodo: this.pendingPeriodChange.periodo,
+            habilitar,
+            confirmarReemplazo: this.periodChangeConflicts.length > 0
+          },
+          { headers: this.authHeaders() }
+        )
+        await Promise.all([this.loadPeriods(), this.loadHistory()])
+        this.showPeriodConfirmation = false
+        this.$bvToast.toast(
+          `El período ${this.pendingPeriodChange.periodo} fue ${habilitar ? 'habilitado' : 'deshabilitado'}.`,
+          { title: 'Disponibilidad actualizada', variant: 'success', solid: true }
+        )
+      } catch (error) {
+        if (error.response?.status === 409 && error.response.data.conflictos?.length) {
+          this.periodChangeConflicts = error.response.data.conflictos
+          return
+        }
+        this.$bvToast.toast(error.response?.data?.message || 'No se pudo actualizar el período.', {
+          title: 'Error al actualizar',
+          variant: 'danger',
+          solid: true
+        })
+      } finally {
+        this.changingPeriod = false
       }
     },
     async loadStorageConfig() {
@@ -561,6 +983,7 @@ export default {
       const observations = item.observaciones || []
       return {
         historyId: item._id,
+        fileName: item.nombreArchivo,
         entries: item.cantidadEntradas,
         domains: item.cantidadObjetos,
         period: (item.periodos || []).join(', ') || '-',
@@ -589,12 +1012,19 @@ export default {
         reemplazada: 'replaced',
         reemplazada_parcialmente: 'partially-replaced'
       }
+      const periodos = item.periodos || []
       return {
         id: item._id,
         fileName: item.nombreArchivo,
         fileSize: this.formatFileSize(item.tamanoBytes),
         uploadedAt: item.createdAt,
-        period: (item.periodos || []).join(', ') || '-',
+        uploadedAtSort: new Date(item.createdAt).getTime(),
+        period: periodos.join(', ') || '-',
+        periodSort: Math.max(0, ...periodos.map(period => {
+          const [month, year] = period.split('/').map(Number)
+          return (year * 100) + month
+        })),
+        activePeriod: (item.periodosActivos || []).join(', ') || '-',
         entries: item.cantidadEntradas,
         errors: item.cantidadErrores,
         warnings: item.cantidadAdvertencias,
@@ -674,6 +1104,45 @@ export default {
 .btn-analyze:disabled { opacity: .48; }
 .storage-option { margin-top: .9rem; padding: .8rem .9rem; border: 1px solid #dceae4; border-radius: 12px; color: #315c50; background: #f6faf8; font-size: .82rem; }
 .storage-option small { display: block; margin-top: .25rem; color: #758a83; line-height: 1.35; }
+.period-management-section { margin: 4rem 0 2rem; }
+.period-toolbar { display: flex; align-items: center; gap: .6rem; }
+.period-toolbar .custom-select { width: 190px; border-color: #d5e5de; color: #315b50; font-weight: 700; }
+.periods-empty { min-height: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .7rem; border: 1px dashed #bfd6cc; border-radius: 18px; color: #71847d; background: rgba(255,255,255,.72); }
+.periods-empty i { color: #87a49a; font-size: 2rem; }
+.year-archive { overflow: hidden; margin-bottom: 1rem; border: 1px solid #dfeae5; border-radius: 18px; background: white; box-shadow: 0 12px 32px rgba(34, 76, 63, .07); }
+.year-archive summary { display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 1.5rem; cursor: pointer; list-style: none; background: #f5faf8; }
+.year-archive summary::-webkit-details-marker { display: none; }
+.year-archive summary div { display: flex; align-items: baseline; gap: .8rem; }
+.year-archive summary strong { color: #164b3b; font-size: 1.45rem; }
+.year-archive summary span { color: #72857e; font-size: .82rem; font-weight: 700; }
+.year-archive summary i { color: #16805e; transition: transform .2s; }
+.year-archive[open] summary i { transform: rotate(180deg); }
+.year-periods { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; padding: 1.25rem; }
+.loaded-period-card { overflow: hidden; border: 1px solid #e1ebe7; border-radius: 15px; background: #fff; }
+.loaded-period-card header { display: flex; align-items: center; justify-content: space-between; padding: .9rem 1rem; border-bottom: 1px solid #edf2f0; background: #fbfdfc; }
+.loaded-period-card header span:first-child { color: #7b8d86; font-size: .7rem; font-weight: 800; text-transform: uppercase; }
+.loaded-period-card h3 { margin: .1rem 0 0; color: #22483d; font-size: 1.15rem; font-weight: 800; }
+.period-state { padding: .3rem .55rem; border-radius: 100px; font-size: .68rem; font-weight: 800; text-transform: uppercase; }
+.period-state.enabled { color: #08714d; background: #dff5ea; }
+.period-state.disabled { color: #687873; background: #e9eeec; }
+.period-versions { padding: .45rem .8rem; }
+.period-versions.has-overflow { max-height: 220px; overflow-y: auto; scrollbar-color: #9bc7b6 #edf5f1; scrollbar-width: thin; }
+.period-versions.has-overflow::-webkit-scrollbar { width: 7px; }
+.period-versions.has-overflow::-webkit-scrollbar-track { border-radius: 8px; background: #edf5f1; }
+.period-versions.has-overflow::-webkit-scrollbar-thumb { border-radius: 8px; background: #9bc7b6; }
+.period-version { display: flex; align-items: center; justify-content: space-between; gap: .6rem; padding: .7rem .2rem; border-top: 1px solid #eef3f1; }
+.period-version:first-child { border-top: 0; }
+.period-version.active { color: #0b684c; }
+.version-file { min-width: 0; display: flex; align-items: center; gap: .55rem; }
+.version-file i { flex: 0 0 auto; color: #6f8a80; font-size: 1.2rem; }
+.period-version.active .version-file i { color: #13875e; }
+.version-file div { min-width: 0; }
+.version-file strong, .version-file small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.version-file strong { max-width: 235px; font-size: .77rem; }
+.version-file small { max-width: 235px; color: #82928c; font-size: .67rem; }
+.versions-overflow-note { padding: .45rem .8rem; border-top: 1px solid #e5efea; color: #71877e; background: #f6faf8; font-size: .68rem; font-weight: 700; text-align: center; }
+.versions-overflow-note i { margin-right: .25rem; color: #16805e; }
+.year-pagination { display: flex; align-items: center; justify-content: space-between; margin-top: 1.1rem; padding: .8rem 1rem; border: 1px solid #dfeae5; border-radius: 14px; color: #70847c; background: rgba(255,255,255,.82); font-size: .76rem; font-weight: 700; }
 .history-section { margin: 4rem 0 2rem; }
 .section-heading { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.25rem; }
 .section-heading .eyebrow { color: #13875e; }
@@ -684,6 +1153,18 @@ export default {
 .history-count strong { font-size: 1.4rem; }
 .history-count span { font-size: .72rem; font-weight: 700; text-transform: uppercase; }
 .history-card { overflow: hidden; border: 1px solid #e3ece8; border-radius: 18px; background: white; box-shadow: 0 14px 40px rgba(34, 76, 63, .08); }
+.history-toolbar { display: grid; grid-template-columns: minmax(240px, 1fr) 190px 175px auto; gap: .65rem; align-items: center; padding: 1rem; border-bottom: 1px solid #e7efeb; background: #f7faf9; }
+.history-toolbar .custom-select { height: 38px; border-color: #d4e3dc; color: #315b50; font-weight: 700; }
+.history-search { display: flex; align-items: center; height: 38px; border: 1px solid #d4e3dc; border-radius: .2rem; background: white; }
+.history-search:focus-within { border-color: #16805e; box-shadow: 0 0 0 3px rgba(22,128,94,.1); }
+.history-search i { padding-left: .75rem; color: #16805e; }
+.history-search input { width: 100%; min-width: 0; border: 0; outline: 0; padding: .5rem .7rem; background: transparent; color: #294d42; font-size: .82rem; }
+.history-sort-direction { height: 38px; white-space: nowrap; font-weight: 700; }
+.history-pagination { display: flex; align-items: center; justify-content: space-between; padding: .8rem 1rem; border-top: 1px solid #e7efeb; color: #70847c; background: #f7faf9; font-size: .76rem; font-weight: 700; }
+.history-loading { display: flex; align-items: center; justify-content: center; gap: .6rem; padding: 2rem; color: #55756a; font-weight: 700; }
+.server-activity { position: fixed; z-index: 1080; right: 1.25rem; bottom: 1.25rem; display: flex; align-items: center; gap: .65rem; max-width: calc(100vw - 2.5rem); padding: .8rem 1rem; border: 1px solid rgba(255,255,255,.2); border-radius: 14px; color: white; background: #075e4a; box-shadow: 0 14px 35px rgba(7, 94, 74, .28); font-size: .82rem; font-weight: 700; }
+.server-activity-enter-active, .server-activity-leave-active { transition: .2s ease; }
+.server-activity-enter, .server-activity-leave-to { opacity: 0; transform: translateY(10px); }
 .file-cell { display: flex; align-items: center; gap: .65rem; min-width: 220px; }
 .file-cell i { color: #16845f; font-size: 1.5rem; }
 .file-cell strong, .file-cell small { display: block; }
@@ -718,6 +1199,7 @@ export default {
 .result-icon.is-success { color: #0c7654; background: #dcf5e9; }
 .result-icon.has-errors { color: #a93636; background: #ffe3e3; }
 .confirm-icon { color: #0d7655; background: #e1f6ed; }
+.confirm-icon.disable-icon { color: #a94747; background: #fde7e7; }
 .overwrite-warning { margin: 1.25rem 0 0; padding: 1rem; border: 1px solid #f1cb76; border-radius: 14px; color: #6f520d; background: #fff8e6; text-align: left; }
 .overwrite-warning-title { display: flex; align-items: center; gap: .5rem; margin-bottom: .5rem; color: #7d5900; font-weight: 800; }
 .overwrite-warning p { margin-bottom: .75rem; color: #735c25; font-size: .86rem; }
@@ -725,6 +1207,8 @@ export default {
 .overwrite-check input { margin-top: .18rem; }
 .btn-publish:disabled { cursor: not-allowed; opacity: .45; }
 .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .75rem; margin: 1.5rem 0; }
+.renamed-file-notice { margin: 1rem 0 0; padding: .8rem 1rem; border: 1px solid #cde3da; border-radius: 12px; color: #315c50; background: #f2faf6; font-size: .82rem; }
+.renamed-file-notice i { margin-right: .35rem; color: #13875e; }
 .summary-grid div { padding: .8rem; border: 1px solid #e4ece9; border-radius: 12px; background: #f8fbfa; }
 .summary-grid span, .summary-grid strong { display: block; }
 .summary-grid span { color: #7d8d88; font-size: .7rem; font-weight: 800; text-transform: uppercase; }
@@ -745,6 +1229,16 @@ export default {
 @media (max-width: 900px) {
   .upload-hero { grid-template-columns: 1fr; padding: 2rem; }
   .hero-copy h1 { font-size: 2rem; }
+  .section-heading { align-items: flex-start; flex-direction: column; gap: 1rem; }
+  .period-toolbar { width: 100%; }
+  .period-toolbar .custom-select { flex: 1; width: auto; }
+  .year-periods { grid-template-columns: 1fr; padding: .8rem; }
+  .period-version { align-items: flex-start; flex-direction: column; }
+  .period-version .btn { width: 100%; }
+  .year-pagination { align-items: flex-start; flex-direction: column; gap: .6rem; }
+  .history-toolbar { grid-template-columns: 1fr; }
+  .history-sort-direction { width: 100%; }
+  .history-pagination { align-items: flex-start; flex-direction: column; gap: .6rem; }
   .summary-grid { grid-template-columns: repeat(2, 1fr); }
   .issue-row { grid-template-columns: 1fr; gap: .2rem; }
 }

@@ -157,10 +157,11 @@
                   <button
                     class="btn btn-sm"
                     :class="version.habilitado ? 'btn-outline-danger' : 'btn-outline-success'"
-                    :disabled="changingPeriod"
+                    :disabled="changingPeriod || version.estadoImportacion === 'deshabilitada'"
+                    :title="version.estadoImportacion === 'deshabilitada' ? 'La carga completa está deshabilitada' : ''"
                     @click="requestPeriodStateChange(version)"
                   >
-                    {{ version.habilitado ? 'Deshabilitar' : 'Habilitar' }}
+                    {{ version.estadoImportacion === 'deshabilitada' ? 'Carga deshabilitada' : (version.habilitado ? 'Deshabilitar' : 'Habilitar') }}
                   </button>
                 </div>
               </div>
@@ -216,6 +217,7 @@
               <option value="rejected">Con errores</option>
               <option value="replaced">Reemplazado</option>
               <option value="partially-replaced">Reemplazado parcialmente</option>
+              <option value="disabled">Deshabilitado</option>
             </b-form-select>
             <b-form-select v-model="historySortBy" size="sm">
               <option value="uploadedAt">Fecha de subida</option>
@@ -247,7 +249,7 @@
               </div>
             </template>
             <template #cell(fileName)="data">
-              <div class="file-cell">
+              <div class="file-cell" :title="data.item.fileName">
                 <i class="bi bi-file-earmark-excel-fill"></i>
                 <div>
                   <strong>{{ data.item.fileName }}</strong>
@@ -256,7 +258,10 @@
               </div>
             </template>
             <template #cell(uploadedAt)="data">
-              {{ formatDateTime(data.item.uploadedAt) }}
+              <span class="cell-compact">{{ formatDateTime(data.item.uploadedAt) }}</span>
+            </template>
+            <template #cell(period)="data">
+              <span class="period-cell" :title="data.item.period">{{ data.item.period }}</span>
             </template>
             <template #cell(entries)="data">
               {{ formatNumber(data.item.entries) }}
@@ -272,17 +277,41 @@
                 {{ statusLabel(data.item.status) }}
               </span>
             </template>
+            <template #cell(uploadedBy)="data">
+              <span class="text-cell" :title="data.item.uploadedBy">{{ data.item.uploadedBy }}</span>
+            </template>
             <template #cell(actions)="data">
-              <button
-                v-if="data.item.errors || data.item.warnings"
-                class="btn btn-outline-secondary btn-sm"
-                title="Descargar reporte"
-                :disabled="reportDownloadingId === data.item.id"
-                @click="downloadStoredReport(data.item)"
-              >
-                <b-spinner v-if="reportDownloadingId === data.item.id" small></b-spinner>
-                <i v-else class="bi bi-download"></i>
-              </button>
+              <div class="history-actions">
+                <button
+                  v-if="data.item.errors || data.item.warnings"
+                  class="btn btn-outline-primary btn-sm"
+                  title="Ver y descargar reporte"
+                  :disabled="reportDownloadingId === data.item.id || originalDownloadingId === data.item.id || disablingImport"
+                  @click="downloadStoredReport(data.item)"
+                >
+                  <b-spinner v-if="reportDownloadingId === data.item.id" small></b-spinner>
+                  <i v-else class="bi bi-search"></i>
+                </button>
+                <button
+                  v-if="data.item.status !== 'disabled'"
+                  class="btn btn-outline-danger btn-sm"
+                  title="Deshabilitar carga"
+                  :disabled="disablingImport || originalDownloadingId === data.item.id"
+                  @click="requestDisableImport(data.item)"
+                >
+                  <i class="bi bi-trash"></i>
+                </button>
+                <button
+                  v-if="data.item.originalAvailable"
+                  class="btn btn-outline-success btn-sm"
+                  title="Descargar archivo original"
+                  :disabled="originalDownloadingId === data.item.id || disablingImport"
+                  @click="downloadOriginalFile(data.item)"
+                >
+                  <b-spinner v-if="originalDownloadingId === data.item.id" small></b-spinner>
+                  <i v-else class="bi bi-file-earmark-excel-fill"></i>
+                </button>
+              </div>
             </template>
           </b-table>
           <div v-if="historyPages > 1" class="history-pagination">
@@ -308,6 +337,50 @@
         <span>{{ backgroundOperationMessage }}</span>
       </div>
     </transition>
+
+    <b-modal
+      v-model="showDisableImportConfirmation"
+      centered
+      hide-header
+      hide-footer
+      :no-close-on-backdrop="disablingImport"
+      :no-close-on-esc="disablingImport"
+      modal-class="publish-modal"
+    >
+      <div v-if="pendingDisableImport" class="publish-confirmation">
+        <div class="confirm-icon disable-icon">
+          <b-spinner v-if="disablingImport" label="Deshabilitando"></b-spinner>
+          <i v-else class="bi bi-trash-fill"></i>
+        </div>
+        <h3>{{ disablingImport ? 'Deshabilitando carga...' : '¿Deshabilitar esta carga?' }}</h3>
+        <p v-if="disablingImport">Estamos quitando sus boletas de la consulta pública.</p>
+        <template v-else>
+          <p>
+            La carga <strong>{{ pendingDisableImport.fileName }}</strong> permanecerá en el historial,
+            pero no podrá volver a habilitarse desde esta acción.
+          </p>
+          <div v-if="pendingDisableImport.activePeriodCount" class="overwrite-warning">
+            <div class="overwrite-warning-title">
+              <i class="bi bi-exclamation-triangle-fill"></i>
+              Afectará la consulta pública
+            </div>
+            <p>
+              Se deshabilitarán las boletas de
+              <strong>{{ pendingDisableImport.activePeriodCount }} períodos activos</strong>.
+            </p>
+          </div>
+        </template>
+        <div class="confirm-actions">
+          <button class="btn btn-outline-secondary" :disabled="disablingImport" @click="showDisableImportConfirmation = false">
+            Cancelar
+          </button>
+          <button class="btn btn-danger" :disabled="disablingImport" @click="disableImport">
+            <b-spinner v-if="disablingImport" small class="mr-2"></b-spinner>
+            {{ disablingImport ? 'Deshabilitando...' : 'Sí, deshabilitar' }}
+          </button>
+        </div>
+      </div>
+    </b-modal>
 
     <b-modal
       v-model="showAnalysisModal"
@@ -432,6 +505,21 @@
             <span>Confirmo que deseo reemplazar la información publicada anteriormente.</span>
           </label>
         </div>
+        <div v-if="futurePeriods.length && !isPublishing" class="overwrite-warning future-warning">
+          <div class="overwrite-warning-title">
+            <i class="bi bi-calendar2-exclamation"></i>
+            Esta carga contiene períodos futuros
+          </div>
+          <p>
+            Los siguientes períodos pertenecen a años posteriores a {{ currentYear }}:
+            <strong>{{ futurePeriods.join(', ') }}</strong>.
+            Revisá que la información sea correcta antes de publicar.
+          </p>
+          <label class="overwrite-check">
+            <input v-model="futurePeriodsConfirmed" type="checkbox">
+            <span>Confirmo que deseo publicar períodos posteriores al año actual.</span>
+          </label>
+        </div>
         <div class="confirm-actions">
           <button
             class="btn btn-outline-secondary"
@@ -442,7 +530,7 @@
           </button>
           <button
             class="btn btn-publish"
-            :disabled="isPublishing || (overlappingPublishedPeriods.length > 0 && !overwriteConfirmed)"
+            :disabled="isPublishing || (overlappingPublishedPeriods.length > 0 && !overwriteConfirmed) || (futurePeriods.length > 0 && !futurePeriodsConfirmed)"
             @click="publishCurrentImport"
           >
             <b-spinner v-if="isPublishing" small class="mr-2"></b-spinner>
@@ -510,6 +598,7 @@ export default {
       showPublishConfirmation: false,
       isPublishing: false,
       overwriteConfirmed: false,
+      futurePeriodsConfirmed: false,
       analysisState: 'processing',
       analysisProgress: 0,
       processingMessage: 'Subiendo el archivo...',
@@ -529,6 +618,10 @@ export default {
       history: [],
       historyLoading: false,
       reportDownloadingId: null,
+      originalDownloadingId: null,
+      showDisableImportConfirmation: false,
+      pendingDisableImport: null,
+      disablingImport: false,
       historySearch: '',
       historyStatusFilter: 'all',
       historySortBy: 'uploadedAt',
@@ -536,14 +629,14 @@ export default {
       historyPage: 1,
       historyPerPage: 10,
       historyFields: [
-        { key: 'fileName', label: 'Nombre del archivo' },
-        { key: 'uploadedAt', label: 'Fecha de subida' },
-        { key: 'period', label: 'Año y período' },
-        { key: 'entries', label: 'Entradas', class: 'text-right' },
-        { key: 'result', label: 'Resultado' },
-        { key: 'uploadedBy', label: 'Subido por' },
-        { key: 'status', label: 'Estado' },
-        { key: 'actions', label: '', class: 'text-right' }
+        { key: 'fileName', label: 'Nombre del archivo', thStyle: { width: '225px' } },
+        { key: 'uploadedAt', label: 'Fecha de subida', thStyle: { width: '110px' } },
+        { key: 'period', label: 'Año y período', thStyle: { width: '155px' } },
+        { key: 'entries', label: 'Entradas', class: 'text-right', thStyle: { width: '85px' } },
+        { key: 'result', label: 'Resultado', thStyle: { width: '110px' } },
+        { key: 'uploadedBy', label: 'Subido por', thStyle: { width: '170px' } },
+        { key: 'status', label: 'Estado', thStyle: { width: '160px' } },
+        { key: 'actions', label: '', class: 'text-right', thStyle: { width: '130px' } }
       ]
     }
   },
@@ -571,6 +664,12 @@ export default {
     },
     currentPeriods() {
       return this.parsePeriods(this.analysisResult ? this.analysisResult.period : '')
+    },
+    currentYear() {
+      return new Date().getFullYear()
+    },
+    futurePeriods() {
+      return this.currentPeriods.filter(period => Number(period.split('/')[1]) > this.currentYear)
     },
     overlappingPublishedPeriods() {
       const publishedPeriods = new Set(
@@ -673,6 +772,8 @@ export default {
       return Math.min(this.historyPage * this.historyPerPage, this.filteredHistory.length)
     },
     backgroundOperationMessage() {
+      if (this.disablingImport) return 'Deshabilitando carga...'
+      if (this.originalDownloadingId) return 'Descargando archivo original...'
       if (this.reportDownloadingId) return 'Preparando el reporte para descargar...'
       if (this.configLoading) return 'Guardando la configuración...'
       if (this.periodsLoading && this.loadedPeriods.length) return 'Actualizando períodos...'
@@ -785,11 +886,16 @@ export default {
     },
     requestPublish() {
       this.overwriteConfirmed = false
+      this.futurePeriodsConfirmed = false
       this.serverConflictPeriods = []
       this.showPublishConfirmation = true
     },
     async publishCurrentImport() {
-      if (this.isPublishing || (this.overlappingPublishedPeriods.length && !this.overwriteConfirmed)) return
+      if (
+        this.isPublishing ||
+        (this.overlappingPublishedPeriods.length && !this.overwriteConfirmed) ||
+        (this.futurePeriods.length && !this.futurePeriodsConfirmed)
+      ) return
       this.isPublishing = true
       try {
         const response = await this.$axios.post(
@@ -799,6 +905,7 @@ export default {
             headers: {
               ...this.fileRequestHeaders(),
               'X-Confirmar-Reemplazo': String(this.overwriteConfirmed),
+              'X-Confirmar-Periodos-Futuros': String(this.futurePeriodsConfirmed),
               'X-Guardar-Original': String(this.guardarOriginalHabilitado)
             }
           }
@@ -820,9 +927,13 @@ export default {
           })
         }
       } catch (error) {
-        if (error.response && error.response.status === 409 && error.response.data.conflictos) {
+        if (error.response?.status === 409 && error.response.data.conflictos?.length) {
           this.serverConflictPeriods = error.response.data.conflictos
           this.overwriteConfirmed = false
+          return
+        }
+        if (error.response?.status === 409 && error.response.data.periodosFuturos?.length) {
+          this.futurePeriodsConfirmed = false
           return
         }
         this.$bvToast.toast(error.response?.data?.message || 'No se pudo publicar la carga.', {
@@ -886,6 +997,32 @@ export default {
         this.reportDownloadingId = null
       }
     },
+    async downloadOriginalFile(item) {
+      if (this.originalDownloadingId) return
+      this.originalDownloadingId = item.id
+      try {
+        const response = await this.$axios.get(`/tasas/importaciones/${item.id}/original`, {
+          headers: this.authHeaders(),
+          responseType: 'blob'
+        })
+        const url = URL.createObjectURL(new Blob([response.data], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        }))
+        const link = document.createElement('a')
+        link.href = url
+        link.download = item.fileName
+        link.click()
+        setTimeout(() => URL.revokeObjectURL(url), 1000)
+      } catch (error) {
+        this.$bvToast.toast(error.response?.data?.message || 'No se pudo descargar el archivo original.', {
+          title: 'Error al descargar',
+          variant: 'danger',
+          solid: true
+        })
+      } finally {
+        this.originalDownloadingId = null
+      }
+    },
     async loadHistory() {
       if (!this.puedeAdministrar) return
       this.historyLoading = true
@@ -896,6 +1033,35 @@ export default {
         this.history = []
       } finally {
         this.historyLoading = false
+      }
+    },
+    requestDisableImport(item) {
+      this.pendingDisableImport = item
+      this.showDisableImportConfirmation = true
+    },
+    async disableImport() {
+      if (!this.pendingDisableImport || this.disablingImport) return
+      this.disablingImport = true
+      try {
+        const response = await this.$axios.put(
+          `/tasas/importaciones/${this.pendingDisableImport.id}/deshabilitar`,
+          {},
+          { headers: this.authHeaders() }
+        )
+        await Promise.all([this.loadHistory(), this.loadPeriods()])
+        this.showDisableImportConfirmation = false
+        this.$bvToast.toast(
+          `La carga fue deshabilitada. Se quitaron ${this.formatNumber(response.data.data.boletasDeshabilitadas)} boletas activas.`,
+          { title: 'Carga deshabilitada', variant: 'success', solid: true }
+        )
+      } catch (error) {
+        this.$bvToast.toast(error.response?.data?.message || 'No se pudo deshabilitar la carga.', {
+          title: 'Error al deshabilitar',
+          variant: 'danger',
+          solid: true
+        })
+      } finally {
+        this.disablingImport = false
       }
     },
     async loadPeriods() {
@@ -1010,7 +1176,8 @@ export default {
         analizada: 'validated',
         rechazada: 'rejected',
         reemplazada: 'replaced',
-        reemplazada_parcialmente: 'partially-replaced'
+        reemplazada_parcialmente: 'partially-replaced',
+        deshabilitada: 'disabled'
       }
       const periodos = item.periodos || []
       return {
@@ -1025,10 +1192,12 @@ export default {
           return (year * 100) + month
         })),
         activePeriod: (item.periodosActivos || []).join(', ') || '-',
+        activePeriodCount: (item.periodosActivos || []).length,
         entries: item.cantidadEntradas,
         errors: item.cantidadErrores,
         warnings: item.cantidadAdvertencias,
         uploadedBy: item.subidoPor?.username || '-',
+        originalAvailable: Boolean(item.archivoOriginal?.almacenado && item.archivoOriginal?.key),
         status: statusMap[item.estado] || item.estado
       }
     },
@@ -1048,7 +1217,8 @@ export default {
         validated: 'Listo para publicar',
         rejected: 'Con errores',
         replaced: 'Reemplazado',
-        'partially-replaced': 'Reemplazado parcialmente'
+        'partially-replaced': 'Reemplazado parcialmente',
+        disabled: 'Deshabilitado'
       }[status] || status
     },
     statusClass(status) {
@@ -1165,10 +1335,15 @@ export default {
 .server-activity { position: fixed; z-index: 1080; right: 1.25rem; bottom: 1.25rem; display: flex; align-items: center; gap: .65rem; max-width: calc(100vw - 2.5rem); padding: .8rem 1rem; border: 1px solid rgba(255,255,255,.2); border-radius: 14px; color: white; background: #075e4a; box-shadow: 0 14px 35px rgba(7, 94, 74, .28); font-size: .82rem; font-weight: 700; }
 .server-activity-enter-active, .server-activity-leave-active { transition: .2s ease; }
 .server-activity-enter, .server-activity-leave-to { opacity: 0; transform: translateY(10px); }
-.file-cell { display: flex; align-items: center; gap: .65rem; min-width: 220px; }
+.file-cell { min-width: 0; display: flex; align-items: center; gap: .65rem; }
+.file-cell div { min-width: 0; }
 .file-cell i { color: #16845f; font-size: 1.5rem; }
 .file-cell strong, .file-cell small { display: block; }
+.file-cell strong, .text-cell { overflow: hidden; display: block; text-overflow: ellipsis; white-space: nowrap; }
 .file-cell small { color: #82928c; }
+.cell-compact { display: block; max-width: 105px; }
+.period-cell { overflow: hidden; display: -webkit-box; max-width: 150px; line-height: 1.35; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+.history-actions { display: flex; justify-content: flex-end; gap: .35rem; white-space: nowrap; }
 .result-cell span { display: block; white-space: nowrap; font-size: .78rem; font-weight: 700; }
 .status-badge { display: inline-block; padding: .35rem .65rem; border-radius: 100px; font-size: .73rem; font-weight: 800; white-space: nowrap; }
 .status-published { color: #0d684b; background: #dcf5e9; }
@@ -1176,6 +1351,7 @@ export default {
 .status-rejected { color: #9a3030; background: #ffe0e0; }
 .status-replaced { color: #596b65; background: #e7ecea; }
 .status-partially-replaced { color: #6d5b24; background: #f4edd2; }
+.status-disabled { color: #8c3030; background: #f7dddd; }
 .no-access { min-height: calc(100vh - 58px); display: grid; place-items: center; padding: 2rem; }
 .no-access-card { max-width: 520px; padding: 3rem; border-radius: 22px; background: white; box-shadow: 0 20px 50px rgba(0,0,0,.12); text-align: center; }
 .no-access-card i { color: #698079; font-size: 4rem; }
@@ -1183,6 +1359,8 @@ export default {
 </style>
 
 <style>
+.boletas-page .history-card table { width: 1145px; min-width: 1145px; table-layout: fixed; }
+.boletas-page .history-card th, .boletas-page .history-card td { overflow: hidden; max-width: 225px; vertical-align: top; }
 .analysis-modal .modal-content, .publish-modal .modal-content { overflow: hidden; border: 0; border-radius: 24px; box-shadow: 0 30px 80px rgba(15, 50, 40, .25); }
 .analysis-modal .modal-body, .publish-modal .modal-body { padding: 0; }
 .analysis-processing, .analysis-result, .publish-confirmation { padding: 2.5rem; text-align: center; }
@@ -1203,6 +1381,8 @@ export default {
 .overwrite-warning { margin: 1.25rem 0 0; padding: 1rem; border: 1px solid #f1cb76; border-radius: 14px; color: #6f520d; background: #fff8e6; text-align: left; }
 .overwrite-warning-title { display: flex; align-items: center; gap: .5rem; margin-bottom: .5rem; color: #7d5900; font-weight: 800; }
 .overwrite-warning p { margin-bottom: .75rem; color: #735c25; font-size: .86rem; }
+.future-warning { border-color: #e5a1a1; color: #7b3030; background: #fff1f1; }
+.future-warning .overwrite-warning-title, .future-warning p, .future-warning .overwrite-check { color: #7b3030; }
 .overwrite-check { display: flex; align-items: flex-start; gap: .55rem; margin: 0; color: #604b18; font-size: .82rem; font-weight: 700; cursor: pointer; }
 .overwrite-check input { margin-top: .18rem; }
 .btn-publish:disabled { cursor: not-allowed; opacity: .45; }

@@ -10,10 +10,34 @@
     </div>
 
     <main v-else class="container py-5">
+      <section class="tax-selector">
+        <div>
+          <span class="eyebrow">Tipo de tasa</span>
+          <h2>Administrar boletas</h2>
+        </div>
+        <div class="tax-options">
+          <button
+            v-for="tasa in tasasDisponibles"
+            :key="tasa.codigo"
+            type="button"
+            class="tax-option"
+            :class="{ active: tasa.codigo === selectedTaxCode, disabled: !tasa.importacionHabilitada }"
+            :disabled="!tasa.importacionHabilitada"
+            @click="selectTax(tasa)"
+          >
+            <i :class="`bi bi-${tasa.icono}`"></i>
+            <span>
+              <strong>{{ tasa.nombre }}</strong>
+              <small>{{ tasa.importacionHabilitada ? tasa.descripcion : 'Próximamente' }}</small>
+            </span>
+          </button>
+        </div>
+      </section>
+
       <section class="upload-hero">
         <div class="hero-copy">
           <span class="eyebrow">Administración de boletas</span>
-          <h1>Importar boletas de Automotores</h1>
+          <h1>Importar boletas de {{ selectedTax.name }}</h1>
           <p>
             Subí el archivo generado por Hacienda. Antes de publicarlo,
             verificaremos estructura, períodos, importes, vencimientos y códigos de pago.
@@ -215,6 +239,9 @@
               <option value="published">Publicado</option>
               <option value="validated">Listo para publicar</option>
               <option value="rejected">Con errores</option>
+              <option value="analyzing">Analizando</option>
+              <option value="publishing">Publicando</option>
+              <option value="failed">Proceso fallido</option>
               <option value="replaced">Reemplazado</option>
               <option value="partially-replaced">Reemplazado parcialmente</option>
               <option value="disabled">Deshabilitado</option>
@@ -423,7 +450,7 @@
 
         <div class="summary-grid">
           <div><span>Entradas</span><strong>{{ formatNumber(analysisResult.entries) }}</strong></div>
-          <div><span>Dominios</span><strong>{{ formatNumber(analysisResult.domains) }}</strong></div>
+          <div><span>{{ selectedTaxIdentifierPlural }}</span><strong>{{ formatNumber(analysisResult.domains) }}</strong></div>
           <div><span>Errores</span><strong class="text-danger">{{ analysisResult.errorCount }}</strong></div>
           <div><span>Advertencias</span><strong class="text-warning">{{ analysisResult.warningCount }}</strong></div>
         </div>
@@ -483,12 +510,11 @@
         </div>
         <h3>{{ isPublishing ? 'Publicando la carga...' : '¿Publicar esta carga?' }}</h3>
         <p v-if="isPublishing">
-          Estamos guardando las boletas y actualizando los períodos activos.
-          Este proceso puede demorar unos minutos.
+          {{ publicationProgress.message || 'El archivo fue recibido. Estamos preparando la publicación por etapas.' }}
         </p>
         <p v-else>
           Las {{ analysisResult ? formatNumber(analysisResult.entries) : 0 }} boletas validadas
-          quedarán disponibles como la carga activa de Automotores.
+          quedarán disponibles como la carga activa de {{ selectedTax.name }}.
         </p>
         <div v-if="overlappingPublishedPeriods.length && !isPublishing" class="overwrite-warning">
           <div class="overwrite-warning-title">
@@ -539,6 +565,13 @@
               {{ overlappingPublishedPeriods.length ? 'Reemplazar y publicar' : 'Sí, publicar' }}
             </template>
           </button>
+        </div>
+        <div v-if="isPublishing" class="publication-progress">
+          <b-progress :value="publicationProgress.percentage" animated height="8px"></b-progress>
+          <small>
+            {{ formatNumber(publicationProgress.processed) }} de
+            {{ formatNumber(publicationProgress.total || (analysisResult ? analysisResult.entries : 0)) }} boletas procesadas
+          </small>
         </div>
       </div>
     </b-modal>
@@ -593,10 +626,26 @@ export default {
   data() {
     return {
       selectedFile: null,
+      selectedTaxCode: 'AUTOMOTORES',
+      tasasDisponibles: [
+        {
+          codigo: 'AUTOMOTORES',
+          nombre: 'Automotores',
+          descripcion: 'Boletas asociadas al dominio de un vehículo.',
+          icono: 'car-front-fill',
+          importacionHabilitada: true
+        }
+      ],
       isDragging: false,
       showAnalysisModal: false,
       showPublishConfirmation: false,
       isPublishing: false,
+      publicationProgress: {
+        message: '',
+        percentage: 0,
+        processed: 0,
+        total: 0
+      },
       overwriteConfirmed: false,
       futurePeriodsConfirmed: false,
       analysisState: 'processing',
@@ -641,6 +690,13 @@ export default {
     }
   },
   computed: {
+    selectedTax() {
+      const tasa = this.tasasDisponibles.find(item => item.codigo === this.selectedTaxCode)
+      return tasa || { codigo: 'AUTOMOTORES', nombre: 'Automotores' }
+    },
+    selectedTaxIdentifierPlural() {
+      return this.selectedTax.identificador === 'partida' ? 'Partidas' : 'Dominios'
+    },
     puedeAdministrar() {
       return this.$store.state.user.admin === 'master'
     },
@@ -805,11 +861,27 @@ export default {
     }
   },
   mounted() {
+    this.loadTaxTypes()
     this.loadHistory()
     this.loadStorageConfig()
     this.loadPeriods()
   },
   methods: {
+    async loadTaxTypes() {
+      try {
+        const response = await this.$axios.get('/tasas/importaciones/tipos', { headers: this.authHeaders() })
+        this.tasasDisponibles = response.data.data
+      } catch (_) {}
+    },
+    async selectTax(tasa) {
+      if (!tasa.importacionHabilitada || tasa.codigo === this.selectedTaxCode) return
+      this.selectedTaxCode = tasa.codigo
+      this.clearFile()
+      this.analysisResult = null
+      this.historyPage = 1
+      this.periodYearPage = 1
+      await Promise.all([this.loadHistory(), this.loadPeriods(), this.loadStorageConfig()])
+    },
     onFileSelected(event) {
       this.setFile(event.target.files && event.target.files[0])
     },
@@ -845,14 +917,15 @@ export default {
         this.analysisProgress = 35
         this.processingMessage = 'Enviando el archivo al servidor...'
         const response = await this.$axios.post('/tasas/importaciones/analizar', this.selectedFile, {
-          headers: this.fileRequestHeaders()
+          headers: this.fileRequestHeaders(),
+          params: this.taxParams()
         })
         this.analysisProgress = 75
         this.processingMessage = 'Validando columnas y registros...'
-        const result = this.mapAnalysis(response.data.data)
-        this.analysisProgress = 88
+        const completedImport = await this.waitForAnalysis(response.data.data._id)
+        const result = this.mapAnalysis(completedImport)
+        this.analysisProgress = 95
         this.processingMessage = 'Preparando el reporte...'
-        await this.pause(450)
         this.analysisResult = result
         if (result.fileName && result.fileName !== this.selectedFile.name) {
           this.$bvToast.toast(`La carga se guardó como ${result.fileName}.`, {
@@ -884,6 +957,27 @@ export default {
         this.analysisState = 'finished'
       }
     },
+    async waitForAnalysis(importacionId) {
+      while (true) {
+        await this.pause(1600)
+        const progressResponse = await this.$axios.get(`/tasas/importaciones/${importacionId}/progreso`, {
+          headers: this.authHeaders()
+        })
+        const item = progressResponse.data.data
+        const progress = item.progresoPublicacion || {}
+        this.analysisProgress = Math.max(45, Math.min(90, progress.porcentaje || 55))
+        this.processingMessage = progress.mensaje || 'Validando columnas y registros...'
+        if (['analizada', 'rechazada'].includes(item.estado)) {
+          const response = await this.$axios.get(`/tasas/importaciones/${importacionId}`, {
+            headers: this.authHeaders()
+          })
+          return response.data.data
+        }
+        if (item.estado === 'fallida') {
+          throw new Error(progress.error || 'El análisis no pudo completarse.')
+        }
+      }
+    },
     requestPublish() {
       this.overwriteConfirmed = false
       this.futurePeriodsConfirmed = false
@@ -897,11 +991,18 @@ export default {
         (this.futurePeriods.length && !this.futurePeriodsConfirmed)
       ) return
       this.isPublishing = true
+      this.publicationProgress = {
+        message: 'Subiendo el archivo al servidor...',
+        percentage: 0,
+        processed: 0,
+        total: this.analysisResult.entries
+      }
       try {
-        const response = await this.$axios.post(
+        await this.$axios.post(
           `/tasas/importaciones/${this.analysisResult.historyId}/publicar`,
           this.selectedFile,
           {
+            params: this.taxParams(),
             headers: {
               ...this.fileRequestHeaders(),
               'X-Confirmar-Reemplazo': String(this.overwriteConfirmed),
@@ -910,6 +1011,7 @@ export default {
             }
           }
         )
+        await this.waitForPublication(this.analysisResult.historyId)
         await Promise.all([this.loadHistory(), this.loadPeriods()])
         this.showPublishConfirmation = false
         this.showAnalysisModal = false
@@ -919,13 +1021,6 @@ export default {
           variant: 'success',
           solid: true
         })
-        if (response.data.data.archivoOriginalError) {
-          this.$bvToast.toast('La publicación se completó, pero no se pudo almacenar el archivo original.', {
-            title: 'Archivo original no almacenado',
-            variant: 'warning',
-            solid: true
-          })
-        }
       } catch (error) {
         if (error.response?.status === 409 && error.response.data.conflictos?.length) {
           this.serverConflictPeriods = error.response.data.conflictos
@@ -936,7 +1031,7 @@ export default {
           this.futurePeriodsConfirmed = false
           return
         }
-        this.$bvToast.toast(error.response?.data?.message || 'No se pudo publicar la carga.', {
+        this.$bvToast.toast(error.response?.data?.message || error.message || 'No se pudo publicar la carga.', {
           title: 'Error al publicar',
           variant: 'danger',
           solid: true
@@ -945,17 +1040,37 @@ export default {
         this.isPublishing = false
       }
     },
+    async waitForPublication(importacionId) {
+      while (this.isPublishing) {
+        await this.pause(1800)
+        const response = await this.$axios.get(`/tasas/importaciones/${importacionId}/progreso`, {
+          headers: this.authHeaders()
+        })
+        const item = response.data.data
+        const progress = item.progresoPublicacion || {}
+        this.publicationProgress = {
+          message: progress.mensaje || 'Procesando la publicación...',
+          percentage: progress.porcentaje || 0,
+          processed: progress.procesadas || 0,
+          total: progress.total || this.analysisResult.entries
+        }
+        if (item.estado === 'publicada') return
+        if (item.estado === 'fallida') {
+          throw new Error(progress.error || 'La publicación no pudo completarse.')
+        }
+      }
+    },
     closeAnalysis() {
       this.showAnalysisModal = false
     },
     buildReport() {
       if (!this.analysisResult) return ''
       const lines = [
-        'REPORTE DE VALIDACIÓN DE BOLETAS DE AUTOMOTORES',
+        `REPORTE DE VALIDACIÓN DE BOLETAS DE ${this.selectedTax.name.toUpperCase()}`,
         `Archivo: ${this.analysisResult.fileName || (this.selectedFile ? this.selectedFile.name : '-')}`,
         `Fecha: ${this.formatDateTime(new Date().toISOString())}`,
         `Entradas: ${this.analysisResult.entries}`,
-        `Dominios: ${this.analysisResult.domains}`,
+        `${this.selectedTaxIdentifierPlural}: ${this.analysisResult.domains}`,
         `Períodos: ${this.analysisResult.period}`,
         `Errores: ${this.analysisResult.errorCount}`,
         `Advertencias: ${this.analysisResult.warningCount}`,
@@ -1027,7 +1142,10 @@ export default {
       if (!this.puedeAdministrar) return
       this.historyLoading = true
       try {
-        const response = await this.$axios.get('/tasas/importaciones', { headers: this.authHeaders() })
+        const response = await this.$axios.get('/tasas/importaciones', {
+          headers: this.authHeaders(),
+          params: this.taxParams()
+        })
         this.history = response.data.data.map(this.mapHistoryItem)
       } catch (error) {
         this.history = []
@@ -1068,7 +1186,10 @@ export default {
       if (!this.puedeAdministrar) return
       this.periodsLoading = true
       try {
-        const response = await this.$axios.get('/tasas/importaciones/periodos', { headers: this.authHeaders() })
+        const response = await this.$axios.get('/tasas/importaciones/periodos', {
+          headers: this.authHeaders(),
+          params: this.taxParams()
+        })
         this.loadedPeriods = response.data.data
       } catch (error) {
         this.$bvToast.toast('No se pudieron cargar los períodos publicados.', { variant: 'danger', solid: true })
@@ -1124,7 +1245,10 @@ export default {
     async loadStorageConfig() {
       if (!this.puedeAdministrar) return
       try {
-        const response = await this.$axios.get('/tasas/importaciones/configuracion', { headers: this.authHeaders() })
+        const response = await this.$axios.get('/tasas/importaciones/configuracion', {
+          headers: this.authHeaders(),
+          params: this.taxParams()
+        })
         this.guardarOriginalHabilitado = response.data.data.guardarArchivoOriginalTasas
       } catch (_) {
         this.guardarOriginalHabilitado = false
@@ -1136,7 +1260,7 @@ export default {
         await this.$axios.put(
           '/tasas/importaciones/configuracion',
           { guardarArchivoOriginalTasas: value },
-          { headers: this.authHeaders() }
+          { headers: this.authHeaders(), params: this.taxParams() }
         )
       } catch (error) {
         this.guardarOriginalHabilitado = !value
@@ -1173,8 +1297,11 @@ export default {
     mapHistoryItem(item) {
       const statusMap = {
         publicada: 'published',
+        analizando: 'analyzing',
         analizada: 'validated',
         rechazada: 'rejected',
+        publicando: 'publishing',
+        fallida: 'failed',
         reemplazada: 'replaced',
         reemplazada_parcialmente: 'partially-replaced',
         deshabilitada: 'disabled'
@@ -1207,15 +1334,22 @@ export default {
     fileRequestHeaders() {
       return {
         ...this.authHeaders(),
+        'X-Tipo-Tasa': this.selectedTaxCode,
         'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'X-File-Name': encodeURIComponent(this.selectedFile.name)
       }
     },
+    taxParams() {
+      return { tipoTasa: this.selectedTaxCode }
+    },
     statusLabel(status) {
       return {
         published: 'Publicado',
+        analyzing: 'Analizando',
         validated: 'Listo para publicar',
         rejected: 'Con errores',
+        publishing: 'Publicando',
+        failed: 'Proceso fallido',
         replaced: 'Reemplazado',
         'partially-replaced': 'Reemplazado parcialmente',
         disabled: 'Deshabilitado'
@@ -1253,12 +1387,22 @@ export default {
 <style scoped>
 .boletas-page { min-height: 100vh; padding-top: 58px; color: #17332d; }
 .container { max-width: 1240px; }
+.tax-selector { display: flex; align-items: flex-end; justify-content: space-between; gap: 1.5rem; margin-bottom: 1.25rem; }
+.tax-selector .eyebrow { margin-bottom: .25rem; color: #13875e; }
+.tax-selector h2 { margin: 0; color: #173e32; font-size: 1.35rem; font-weight: 800; }
+.tax-options { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .65rem; }
+.tax-option { min-width: 220px; display: flex; align-items: center; gap: .7rem; padding: .7rem .9rem; border: 1px solid #d8e7e1; border-radius: 14px; color: #315b50; background: white; text-align: left; transition: .2s ease; }
+.tax-option i { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 10px; color: #137b59; background: #e3f5ed; font-size: 1.05rem; }
+.tax-option span, .tax-option strong, .tax-option small { display: block; }
+.tax-option small { max-width: 180px; overflow: hidden; margin-top: .1rem; color: #778a83; font-size: .67rem; text-overflow: ellipsis; white-space: nowrap; }
+.tax-option.active { border-color: #16805e; background: #edf9f4; box-shadow: 0 0 0 3px rgba(22,128,94,.09); }
+.tax-option.disabled { cursor: not-allowed; opacity: .58; }
 .upload-hero { position: relative; overflow: hidden; display: grid; grid-template-columns: 1.12fr .88fr; gap: 3rem; align-items: center; padding: 3.5rem; border-radius: 28px; color: white; background: radial-gradient(circle at 5% 0%, rgba(255,255,255,.18), transparent 38%), linear-gradient(135deg, #075e4a, #13875e); box-shadow: 0 24px 60px rgba(7, 94, 74, .24); }
 .upload-hero::after { content: ""; position: absolute; width: 340px; height: 340px; right: -150px; bottom: -210px; border: 52px solid rgba(255,255,255,.08); border-radius: 50%; }
 .hero-copy, .upload-card { position: relative; z-index: 1; }
 .eyebrow { display: block; margin-bottom: .65rem; color: #77e0bd; font-size: .74rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
-.hero-copy h1 { max-width: 590px; margin-bottom: 1rem; font-size: 2.6rem; font-weight: 800; line-height: 1.08; }
-.hero-copy p { max-width: 620px; margin-bottom: 1.5rem; color: rgba(255,255,255,.8); font-size: 1.04rem; line-height: 1.65; }
+.hero-copy h1 { max-width: 590px; margin-bottom: 1rem; color: #fff; font-size: 2.6rem; font-weight: 800; line-height: 1.08; text-shadow: 0 2px 16px rgba(0, 48, 35, .22); }
+.hero-copy p { max-width: 620px; margin-bottom: 1.5rem; color: rgba(255,255,255,.9); font-size: 1.04rem; line-height: 1.65; }
 .hero-notes { display: flex; flex-wrap: wrap; gap: .7rem; }
 .hero-notes span { padding: .48rem .75rem; border: 1px solid rgba(255,255,255,.16); border-radius: 100px; background: rgba(255,255,255,.08); font-size: .78rem; }
 .hero-notes i { margin-right: .35rem; }
@@ -1347,6 +1491,9 @@ export default {
 .result-cell span { display: block; white-space: nowrap; font-size: .78rem; font-weight: 700; }
 .status-badge { display: inline-block; padding: .35rem .65rem; border-radius: 100px; font-size: .73rem; font-weight: 800; white-space: nowrap; }
 .status-published { color: #0d684b; background: #dcf5e9; }
+.status-analyzing { color: #075e4a; background: #d9f0ff; }
+.status-publishing { color: #075e4a; background: #d9f0ff; }
+.status-failed { color: #9d1c2f; background: #fde4e8; }
 .status-validated { color: #805d00; background: #fff3c4; }
 .status-rejected { color: #9a3030; background: #ffe0e0; }
 .status-replaced { color: #596b65; background: #e7ecea; }
@@ -1364,6 +1511,8 @@ export default {
 .analysis-modal .modal-content, .publish-modal .modal-content { overflow: hidden; border: 0; border-radius: 24px; box-shadow: 0 30px 80px rgba(15, 50, 40, .25); }
 .analysis-modal .modal-body, .publish-modal .modal-body { padding: 0; }
 .analysis-processing, .analysis-result, .publish-confirmation { padding: 2.5rem; text-align: center; }
+.publication-progress { margin-top: 1.25rem; text-align: left; }
+.publication-progress small { display: block; margin-top: .45rem; color: #71837d; text-align: center; }
 .loader-orbit { width: 110px; height: 110px; margin: 0 auto 1.5rem; display: grid; place-items: center; border: 3px solid #dcefe8; border-top-color: #13875e; border-radius: 50%; animation: orbit 1.2s linear infinite; }
 .loader-core { width: 76px; height: 76px; display: grid; place-items: center; border-radius: 50%; color: #0b6b4e; background: #e3f6ee; font-size: 2.2rem; animation: counterOrbit 1.2s linear infinite; }
 @keyframes orbit { to { transform: rotate(360deg); } }
@@ -1407,6 +1556,9 @@ export default {
 .result-actions, .confirm-actions { display: flex; justify-content: center; gap: .75rem; margin-top: 1.5rem; }
 .result-actions .btn, .confirm-actions .btn { min-width: 145px; padding: .65rem 1rem; border-radius: 10px; font-weight: 700; }
 @media (max-width: 900px) {
+  .tax-selector { align-items: stretch; flex-direction: column; }
+  .tax-options { justify-content: stretch; }
+  .tax-option { width: 100%; }
   .upload-hero { grid-template-columns: 1fr; padding: 2rem; }
   .hero-copy h1 { font-size: 2rem; }
   .section-heading { align-items: flex-start; flex-direction: column; gap: 1rem; }

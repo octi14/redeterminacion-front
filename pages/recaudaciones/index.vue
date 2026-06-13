@@ -8,6 +8,9 @@
       <MenuItem icon="car-front" to="/recaudaciones/tasa-automotor"
        title="Descargar Tasa Automotor"
         description="Consultar y descargar boletas de Automotores por dominio"/>
+      <MenuItem icon="building" to="/recaudaciones/tasa-urbana"
+       title="Descargar Tasa Urbana"
+        description="Consultar y descargar boletas de Tasa Urbana por partida"/>
     <div class="row no-gutters">
       <b-button class="mx-auto mt-3" @click="$router.push('/')" variant="primary"> Volver </b-button>
     </div>

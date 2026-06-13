@@ -1,5 +1,12 @@
 <template>
-  <b-navbar toggleable="lg" type="dark" variant="success" fixed="top" class="app-navbar navbar-dark" container="fluid">
+  <b-navbar
+    toggleable="lg"
+    type="dark"
+    variant="success"
+    fixed="top"
+    class="app-navbar navbar-dark"
+    container="fluid"
+  >
     <div class="navbar-brand-group">
       <a href="https://gesell.gob.ar/" target="_blank" rel="noopener noreferrer">
         <img
@@ -15,94 +22,70 @@
 
     <b-collapse id="nav-collapse" is-nav>
       <b-navbar-nav class="navbar-main-nav">
-        <b-nav-item-dropdown v-if="adminHacienda" text="Obras" variant="success">
-          <b-dropdown-item v-if="isAuthenticated">
-            <NuxtLink class="dropdown-nav-link" to="/obras">
-              Lista de obras
-            </NuxtLink>
-          </b-dropdown-item>
-          <b-dropdown-item v-if="isAuthenticated && adminHacienda">
-            <NuxtLink class="dropdown-nav-link" to="/obras/create">
-              Nueva obra
-            </NuxtLink>
-          </b-dropdown-item>
+        <b-nav-item-dropdown v-if="adminHacienda" text="Hacienda">
+          <b-dropdown-header>Obras</b-dropdown-header>
+          <b-dropdown-item to="/obras">Lista de obras</b-dropdown-item>
+          <b-dropdown-item to="/obras/create">Nueva obra</b-dropdown-item>
+          <b-dropdown-divider />
+          <b-dropdown-header>Indices</b-dropdown-header>
+          <b-dropdown-item to="/indices/search">Buscar indices</b-dropdown-item>
+          <b-dropdown-item to="/indices/create">Crear indice</b-dropdown-item>
         </b-nav-item-dropdown>
 
-        <b-nav-item-dropdown v-if="adminHacienda" text="Índices" variant="success">
-          <b-dropdown-item v-if="isAuthenticated && adminHacienda">
-            <NuxtLink class="dropdown-nav-link" to="/indices/create">
-              Crear
-            </NuxtLink>
-          </b-dropdown-item>
-          <b-dropdown-item v-if="isAuthenticated && adminHacienda">
-            <NuxtLink class="dropdown-nav-link" to="/indices/search">
-              Buscar
-            </NuxtLink>
-          </b-dropdown-item>
-        </b-nav-item-dropdown>
-
-        <b-nav-item v-if="adminComercio">
-          <NuxtLink class="nav-link" active-class="active" to="/comercio/solicitudes">
+        <b-nav-item-dropdown v-if="showComercioMenu" text="Comercio">
+          <b-dropdown-item v-if="adminComercio" to="/comercio/solicitudes">
             Habilitaciones
-          </NuxtLink>
-        </b-nav-item>
-
-        <b-nav-item v-if="adminComercio || adminInspeccion">
-          <NuxtLink class="nav-link" active-class="active" to="/comercio/turnos/reservas">
+          </b-dropdown-item>
+          <b-dropdown-item v-if="adminComercio || adminInspeccion" to="/comercio/turnos/reservas">
             Turnos
-          </NuxtLink>
-        </b-nav-item>
-
-        <b-nav-item v-if="adminArvige">
-          <NuxtLink class="nav-link" active-class="active" to="/comercio/abierto_anual/registros">
+          </b-dropdown-item>
+          <b-dropdown-item v-if="adminArvige" to="/comercio/abierto_anual/registros">
             Abierto anual
-          </NuxtLink>
-        </b-nav-item>
+          </b-dropdown-item>
+          <b-dropdown-item v-if="adminArvige" to="/maestro">
+            Maestro Comercial
+          </b-dropdown-item>
+        </b-nav-item-dropdown>
 
-        <b-nav-item v-if="adminRecaudaciones">
-          <NuxtLink class="nav-link" active-class="active" to="/recaudaciones/pagos_dobles/solicitudes">
+        <b-nav-item-dropdown v-if="showRecaudacionesMenu" text="Recaudaciones">
+          <b-dropdown-item v-if="adminRecaudaciones" to="/recaudaciones/pagos_dobles/solicitudes">
             Pagos dobles
-          </NuxtLink>
-        </b-nav-item>
+          </b-dropdown-item>
+          <b-dropdown-item v-if="adminMaster" to="/admin/boletas">
+            Administrar boletas
+          </b-dropdown-item>
+        </b-nav-item-dropdown>
 
-        <b-nav-item v-if="adminCementerio">
-          <NuxtLink class="nav-link" active-class="active" to="/cementerio/solicitudes">
-            Cementerio
-          </NuxtLink>
-        </b-nav-item>
-
-        <b-nav-item v-if="adminArvige">
-          <NuxtLink class="nav-link" active-class="active" to="/maestro">
-            Maestro
-          </NuxtLink>
-        </b-nav-item>
-
-        <b-nav-item v-if="adminMaster">
-          <NuxtLink class="nav-link" active-class="active" to="/actividades">
-            Actividades
-          </NuxtLink>
-        </b-nav-item>
-
-        <b-nav-item v-if="adminMaster">
-          <NuxtLink class="nav-link" active-class="active" to="/admin/dashboard">
-            Estadísticas
-          </NuxtLink>
-        </b-nav-item>
+        <b-nav-item-dropdown v-if="adminCementerio" text="Cementerio">
+          <b-dropdown-item to="/cementerio/solicitudes">
+            Solicitudes
+          </b-dropdown-item>
+        </b-nav-item-dropdown>
       </b-navbar-nav>
 
-      <b-navbar-nav class="ms-auto">
+      <b-navbar-nav class="ms-auto app-user-nav">
         <b-nav-item-dropdown v-if="isAuthenticated" :text="username" end>
           <b-dropdown-item @click="onMyAccount">
+            <i class="bi bi-person-circle app-user-menu__icon" aria-hidden="true" />
             Mi cuenta
           </b-dropdown-item>
+          <b-dropdown-divider v-if="adminMaster" />
+          <b-dropdown-item v-if="adminMaster" to="/actividades">
+            <i class="bi bi-clock-history app-user-menu__icon" aria-hidden="true" />
+            Actividades
+          </b-dropdown-item>
+          <b-dropdown-item v-if="adminMaster" to="/admin/dashboard">
+            <i class="bi bi-bar-chart-line app-user-menu__icon" aria-hidden="true" />
+            Estadisticas
+          </b-dropdown-item>
+          <b-dropdown-divider />
           <b-dropdown-item @click="onUserLogout">
-            Cerrar Sesión
+            <i class="bi bi-box-arrow-right app-user-menu__icon" aria-hidden="true" />
+            Cerrar sesion
           </b-dropdown-item>
         </b-nav-item-dropdown>
-        <b-nav-item v-else>
-          <NuxtLink class="nav-link" active-class="active" to="/login">
-            Uso interno
-          </NuxtLink>
+        <b-nav-item v-else to="/login">
+          Uso interno
         </b-nav-item>
       </b-navbar-nav>
     </b-collapse>
@@ -112,50 +95,47 @@
 <script>
 export default {
   computed: {
+    userStore() {
+      return useUserStore()
+    },
     isAuthenticated() {
-      return Boolean(useUserStore().token)
+      return Boolean(this.userStore.token)
     },
     adminHacienda() {
-      const admin = useUserStore().admin
-      return admin == 'hacienda' || admin == 'master'
+      return ['hacienda', 'master'].includes(this.userStore.admin)
     },
     adminComercio() {
-      const admin = useUserStore().admin
-      return admin == 'comercio' || admin == 'master'
+      return ['comercio', 'master'].includes(this.userStore.admin)
     },
     adminArvige() {
-      const admin = useUserStore().admin
-      return admin == 'arvige' || admin == 'master'
+      return ['arvige', 'master'].includes(this.userStore.admin)
     },
     adminInspeccion() {
-      return useUserStore().admin == 'inspeccion'
+      return ['inspeccion', 'master'].includes(this.userStore.admin)
     },
     adminRecaudaciones() {
-      const admin = useUserStore().admin
-      return admin == 'recaudaciones' || admin == 'master'
+      return ['recaudaciones', 'master'].includes(this.userStore.admin)
     },
     adminCementerio() {
-      const admin = useUserStore().admin
-      return admin == 'cementerio' || admin == 'master'
+      return ['cementerio', 'master'].includes(this.userStore.admin)
     },
     adminMaster() {
-      return useUserStore().admin === 'master'
+      return this.userStore.admin === 'master'
+    },
+    showComercioMenu() {
+      return this.adminComercio || this.adminInspeccion || this.adminArvige
+    },
+    showRecaudacionesMenu() {
+      return this.adminRecaudaciones || this.adminMaster
     },
     username() {
-      return useUserStore().username
-    },
-    userId() {
-      return useUserStore().id
+      return this.userStore.username
     },
   },
   methods: {
     async registrarActividad(evento, result) {
-      const userId = useUserStore().username
-      const actionType = evento
-      const actionResult = result
-
       try {
-        await this.$logUserActivity(userId, actionType, actionResult)
+        await this.$logUserActivity(this.userStore.username, evento, result)
       } catch (error) {
         console.error('Error al registrar la actividad:', error)
       }
@@ -163,7 +143,7 @@ export default {
     onUserLogout() {
       this.registrarActividad('User Logout', 'User Logout')
       useNuxtApp().callHook('manual-logout')
-      useUserStore().logout()
+      this.userStore.logout()
     },
     onMyAccount() {
       this.registrarActividad('My Account', 'Enter')
@@ -178,7 +158,6 @@ export default {
   --bs-navbar-color: rgba(255, 255, 255, 0.9);
   --bs-navbar-hover-color: #fff;
   --bs-navbar-active-color: #fff;
-  --bs-navbar-disabled-color: rgba(255, 255, 255, 0.55);
 }
 
 .app-navbar :deep(.navbar-nav .nav-link),
@@ -191,61 +170,57 @@ export default {
 .app-navbar :deep(.navbar-nav .nav-link:focus),
 .app-navbar :deep(.navbar-nav .dropdown-toggle:hover),
 .app-navbar :deep(.navbar-nav .dropdown-toggle:focus),
-.app-navbar :deep(.navbar-nav .nav-link.active),
-.app-navbar :deep(.navbar-nav .router-link-active),
-.app-navbar :deep(.navbar-nav .router-link-exact-active) {
+.app-navbar :deep(.navbar-nav .nav-link.active) {
   color: #fff;
 }
 
-.app-navbar :deep(.navbar-toggler) {
-  border-color: rgba(255, 255, 255, 0.55);
+.app-navbar :deep(.dropdown-menu) {
+  border-color: #08751d;
+  background: #119c2b;
 }
 
-.app-navbar :deep(.navbar-toggler-icon) {
-  filter: invert(1) grayscale(100%);
+.app-navbar :deep(.dropdown-header),
+.app-navbar :deep(.dropdown-item) {
+  color: #fff;
 }
 
-.app-navbar :deep(.navbar-collapse) {
-  flex-grow: 1;
-  align-items: center;
+.app-navbar :deep(.dropdown-header) {
+  font-size: 0.78rem;
+  font-weight: 700;
 }
 
-.app-navbar :deep(.navbar-nav) {
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
+.app-navbar :deep(.dropdown-item:hover),
+.app-navbar :deep(.dropdown-item:focus) {
+  background: #08751d;
 }
 
 .navbar-brand-group {
   display: flex;
   align-items: center;
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
+  margin: 0 0.5rem;
 }
 
 .navbar-logo {
-  height: 58px;
   width: 42px;
+  height: 58px;
 }
 
 .separador {
+  margin-left: 0.5rem;
   color: white;
   font-size: 35px;
-  opacity: 0.3;
-  margin-left: 0.5rem;
   line-height: 1;
+  opacity: 0.3;
 }
 
-.dropdown-nav-link {
-  color: inherit;
-  text-decoration: none;
-  display: block;
-  width: 100%;
+.app-user-nav {
+  white-space: nowrap;
 }
 
-.dropdown-nav-link:hover {
-  color: inherit;
-  text-decoration: none;
+.app-user-menu__icon {
+  display: inline-block;
+  width: 1rem;
+  margin-right: 0.45rem;
 }
 
 @media (max-width: 1200px) {
@@ -256,19 +231,14 @@ export default {
 
 @media (max-width: 991.98px) {
   .app-navbar :deep(.navbar-nav) {
-    flex-direction: column;
     align-items: flex-start;
     width: 100%;
   }
 
-  .app-navbar :deep(.navbar-nav.ms-auto) {
+  .app-user-nav {
     margin-top: 0.5rem;
     padding-top: 0.5rem;
     border-top: 1px solid rgba(255, 255, 255, 0.25);
   }
-}
-
-#app-iso {
-  max-height: 34px;
 }
 </style>

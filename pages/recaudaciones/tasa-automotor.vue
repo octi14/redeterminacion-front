@@ -1,5 +1,5 @@
 <template>
-  <div class="page main-background automotor-page">
+  <div class="page main-background automotor-page" :style="themeStyle">
     <Banner title="Descargar Tasa Automotor" />
 
     <main class="container py-5">
@@ -170,10 +170,18 @@ export default {
       ordenDescendente: false,
       paginaPeriodos: 1,
       periodosPorPagina: PERIODOS_POR_PAGINA,
-      maxPeriodosSeleccionados: 20
+      maxPeriodosSeleccionados: 20,
+      tema: { principal: '#13875e', oscuro: '#075e4a', suave: '#e3f5ed' }
     }
   },
   computed: {
+    themeStyle() {
+      return {
+        '--tax-primary': this.tema.principal,
+        '--tax-dark': this.tema.oscuro,
+        '--tax-soft': this.tema.suave
+      }
+    },
     dominioValido() {
       return /^[A-Z0-9]{5,9}$/.test(this.dominio)
     },
@@ -222,6 +230,13 @@ export default {
       return Math.min(this.paginaPeriodos * this.periodosPorPagina, this.periodosOrdenados.length)
     }
   },
+  mounted() {
+    this.aplicarTemaGlobal()
+    this.cargarTema()
+  },
+  beforeDestroy() {
+    this.limpiarTemaGlobal()
+  },
   watch: {
     ordenCampo() {
       this.paginaPeriodos = 1
@@ -231,6 +246,28 @@ export default {
     }
   },
   methods: {
+    async cargarTema() {
+      try {
+        const response = await this.$axios.get('/tasas/tipos')
+        const tasa = response.data.data.find(item => item.codigo === 'AUTOMOTORES')
+        if (tasa?.tema) {
+          this.tema = tasa.tema
+          this.aplicarTemaGlobal()
+        }
+      } catch (_) {}
+    },
+    aplicarTemaGlobal() {
+      if (typeof document === 'undefined') return
+      document.documentElement.style.setProperty('--tax-primary', this.tema.principal)
+      document.documentElement.style.setProperty('--tax-dark', this.tema.oscuro)
+      document.documentElement.style.setProperty('--tax-soft', this.tema.suave)
+    },
+    limpiarTemaGlobal() {
+      if (typeof document === 'undefined') return
+      document.documentElement.style.removeProperty('--tax-primary')
+      document.documentElement.style.removeProperty('--tax-dark')
+      document.documentElement.style.removeProperty('--tax-soft')
+    },
     normalizarDominio() {
       this.dominio = this.dominio.replace(/[\s-]/g, '').replace(/[^a-zA-Z0-9]/g, '').toUpperCase()
     },
@@ -327,46 +364,48 @@ export default {
 
 <style scoped>
 .automotor-page { min-height: 100vh; }
-.search-card, .periods-card { max-width: 1040px; margin: 0 auto; border-radius: 24px; background: white; box-shadow: 0 18px 55px rgba(23, 74, 58, .12); }
-.search-card { display: grid; grid-template-columns: 1.15fr .85fr; gap: 3rem; padding: 3rem; background: linear-gradient(135deg, #fff 60%, #edf8f3); }
-.eyebrow { color: #16805e; font-size: .75rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.search-card, .periods-card { max-width: 1040px; margin: 0 auto; border-radius: 24px; background: white; box-shadow: 0 18px 55px color-mix(in srgb, var(--tax-dark) 12%, transparent); }
+.search-card { display: grid; grid-template-columns: 1.15fr .85fr; gap: 3rem; padding: 3rem; border-top: 5px solid var(--tax-primary); background: linear-gradient(135deg, #fff 60%, var(--tax-soft)); }
+.eyebrow { color: var(--tax-primary); font-size: .75rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 .search-copy h1 { margin: .6rem 0 1rem; color: #173e32; font-weight: 800; }
 .search-copy p, .periods-heading p, .vehicle-heading p { margin: 0; color: #71837d; }
 .domain-form label { color: #264b40; font-weight: 700; }
 .domain-input { display: flex; align-items: center; border: 2px solid #dcebe5; border-radius: 14px; background: white; transition: .2s; }
-.domain-input:focus-within { border-color: #14835e; box-shadow: 0 0 0 4px rgba(20, 131, 94, .1); }
-.domain-input i { padding-left: 1rem; color: #14835e; font-size: 1.25rem; }
+.domain-input:focus-within { border-color: var(--tax-primary); box-shadow: 0 0 0 4px color-mix(in srgb, var(--tax-primary) 12%, transparent); }
+.domain-input i { padding-left: 1rem; color: var(--tax-primary); font-size: 1.25rem; }
 .domain-input input { width: 100%; border: 0; outline: 0; padding: .95rem; background: transparent; color: #173e32; font-size: 1.2rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-.btn-search, .btn-download { border: 0; border-radius: 12px; color: white; background: linear-gradient(135deg, #14835e, #075e4a); font-weight: 700; }
+.btn-search, .btn-download { border: 0; border-radius: 12px; color: white; background: linear-gradient(135deg, var(--tax-primary), var(--tax-dark)); font-weight: 700; }
 .btn-search { width: 100%; margin-top: 1rem; padding: .85rem; }
 .result-alert { max-width: 1040px; margin: 1.5rem auto 0; border-radius: 12px; }
 .periods-card { margin-top: 2rem; overflow: hidden; }
-.vehicle-heading { display: flex; align-items: center; gap: 1rem; padding: 2rem 2.5rem; background: #f1f9f5; }
+.vehicle-heading { display: flex; align-items: center; gap: 1rem; padding: 2rem 2.5rem; background: var(--tax-soft); }
 .vehicle-heading h2 { margin: 0; color: #173e32; font-weight: 800; letter-spacing: .08em; }
-.vehicle-heading .btn { margin-left: auto; color: #147a59; font-weight: 700; }
-.vehicle-icon { width: 62px; height: 62px; display: grid; place-items: center; border-radius: 18px; color: white; background: #14835e; font-size: 1.7rem; }
+.vehicle-heading .btn { margin-left: auto; color: var(--tax-dark); font-weight: 700; }
+.vehicle-icon { width: 62px; height: 62px; display: grid; place-items: center; border-radius: 18px; color: white; background: var(--tax-primary); font-size: 1.7rem; }
 .periods-heading { display: flex; justify-content: space-between; align-items: center; padding: 2rem 2.5rem 1rem; }
 .periods-heading h3 { margin: 0 0 .25rem; color: #173e32; font-weight: 800; }
 .period-toolbar, .period-pagination { display: flex; align-items: center; justify-content: flex-end; gap: .65rem; padding: 0 2.5rem 1rem; }
 .period-toolbar .custom-select { width: 190px; }
+.period-toolbar .btn-outline-success { border-color: var(--tax-primary); color: var(--tax-primary); }
+.period-toolbar .btn-outline-success:hover, .period-toolbar .btn-outline-success:focus { border-color: var(--tax-dark); color: white; background: var(--tax-dark); }
 .period-toolbar span, .period-pagination span { margin-right: auto; color: #71837d; font-size: .78rem; font-weight: 700; }
 .period-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; padding: 1rem 2.5rem 2.5rem; }
 .period-card { position: relative; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 1rem; margin: 0; padding: 1.15rem; border: 2px solid #e3eee9; border-radius: 16px; cursor: pointer; transition: .2s; }
-.period-card:hover, .period-card.selected { border-color: #16805e; background: #f3fbf7; transform: translateY(-2px); }
+.period-card:hover, .period-card.selected { border-color: var(--tax-primary); background: var(--tax-soft); transform: translateY(-2px); }
 .period-card.disabled { cursor: wait; opacity: .7; }
 .period-card input { position: absolute; opacity: 0; }
 .period-check { width: 28px; height: 28px; display: grid; place-items: center; border: 2px solid #cadbd4; border-radius: 8px; color: transparent; }
-.period-card.selected .period-check { border-color: #16805e; color: white; background: #16805e; }
+.period-card.selected .period-check { border-color: var(--tax-primary); color: white; background: var(--tax-primary); }
 .period-main, .period-amount { display: flex; flex-direction: column; }
 .period-main span, .period-amount span, .period-card small { color: #7d8e88; font-size: .75rem; }
 .period-main strong, .period-amount strong { color: #24483d; }
 .period-amount { text-align: right; }
 .period-card small { grid-column: 2 / 4; }
 .period-pagination { justify-content: space-between; border-top: 1px solid #e8f0ec; padding-top: 1rem; }
-.download-bar { display: flex; justify-content: space-between; align-items: center; padding: 1.4rem 2.5rem; background: #173e32; color: white; }
+.download-bar { display: flex; justify-content: space-between; align-items: center; padding: 1.4rem 2.5rem; background: var(--tax-dark); color: white; }
 .download-bar div { display: flex; flex-direction: column; }
 .download-bar span { color: #b9d0c7; font-size: .85rem; }
-.btn-download { padding: .8rem 1.25rem; background: #ef8918; }
+.btn-download { padding: .8rem 1.25rem; background: var(--tax-primary); }
 .btn:disabled { cursor: not-allowed; opacity: .6; }
 @media (max-width: 767px) {
   .search-card { grid-template-columns: 1fr; gap: 1.5rem; padding: 1.5rem; }
@@ -385,7 +424,7 @@ export default {
 .automotor-wait-modal .modal-content { overflow: hidden; border: 0; border-radius: 22px; box-shadow: 0 28px 75px rgba(15, 50, 40, .25); }
 .automotor-wait-modal .modal-body { padding: 0; }
 .wait-content { padding: 2.5rem; color: #173e32; text-align: center; }
-.wait-spinner { width: 82px; height: 82px; margin: 0 auto 1.25rem; display: grid; place-items: center; border-radius: 50%; color: #14835e; background: #e3f6ee; }
+.wait-spinner { width: 82px; height: 82px; margin: 0 auto 1.25rem; display: grid; place-items: center; border-radius: 50%; color: var(--tax-primary); background: var(--tax-soft); }
 .wait-spinner .spinner-border { width: 2.7rem; height: 2.7rem; }
 .wait-content h3 { margin: .65rem 0; font-weight: 800; }
 .wait-content p { margin-bottom: 1.4rem; color: #71837d; }

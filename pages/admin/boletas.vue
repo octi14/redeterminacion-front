@@ -9,7 +9,7 @@
       </div>
     </div>
 
-    <main v-else class="container py-5">
+    <main v-else class="container py-5" :style="selectedTaxThemeStyle">
       <section class="tax-selector">
         <div>
           <span class="eyebrow">Tipo de tasa</span>
@@ -21,7 +21,10 @@
             :key="tasa.codigo"
             type="button"
             class="tax-option"
-            :class="{ active: tasa.codigo === selectedTaxCode, disabled: !tasa.importacionHabilitada }"
+            :class="[
+              { active: tasa.codigo === selectedTaxCode, disabled: !tasa.importacionHabilitada },
+              `tax-${tasa.codigo.toLowerCase()}`
+            ]"
             :disabled="!tasa.importacionHabilitada"
             @click="selectTax(tasa)"
           >
@@ -69,7 +72,10 @@
               <i :class="selectedFile ? 'bi bi-file-earmark-check-fill' : 'bi bi-cloud-arrow-up-fill'"></i>
             </div>
             <template v-if="selectedFile">
-              <strong>{{ selectedFile.name }}</strong>
+              <strong
+                v-b-tooltip.hover
+                :title="selectedFile.name"
+              >{{ selectedFile.name }}</strong>
               <small>{{ formatFileSize(selectedFile.size) }}</small>
               <button class="btn btn-link btn-sm" type="button" @click.stop="clearFile">
                 Elegir otro archivo
@@ -174,7 +180,10 @@
                   <div class="version-file">
                     <i class="bi bi-file-earmark-spreadsheet"></i>
                     <div>
-                      <strong>{{ version.nombreArchivo }}</strong>
+                      <strong
+                        v-b-tooltip.hover
+                        :title="version.nombreArchivo"
+                      >{{ version.nombreArchivo }}</strong>
                       <small>{{ formatNumber(version.cantidadEntradas) }} entradas · {{ formatDateTime(version.publicadoAt) }}</small>
                     </div>
                   </div>
@@ -276,10 +285,13 @@
               </div>
             </template>
             <template #cell(fileName)="data">
-              <div class="file-cell" :title="data.item.fileName">
+              <div class="file-cell">
                 <i class="bi bi-file-earmark-excel-fill"></i>
                 <div>
-                  <strong>{{ data.item.fileName }}</strong>
+                  <strong
+                    v-b-tooltip.hover
+                    :title="data.item.fileName"
+                  >{{ data.item.fileName }}</strong>
                   <small>{{ data.item.fileSize }}</small>
                 </div>
               </div>
@@ -692,10 +704,22 @@ export default {
   computed: {
     selectedTax() {
       const tasa = this.tasasDisponibles.find(item => item.codigo === this.selectedTaxCode)
-      return tasa || { codigo: 'AUTOMOTORES', nombre: 'Automotores' }
+      return tasa || {
+        codigo: 'AUTOMOTORES',
+        nombre: 'Automotores',
+        tema: { principal: '#13875e', oscuro: '#075e4a', suave: '#e3f5ed' }
+      }
     },
     selectedTaxIdentifierPlural() {
       return this.selectedTax.identificador === 'partida' ? 'Partidas' : 'Dominios'
+    },
+    selectedTaxThemeStyle() {
+      const tema = this.selectedTax.tema || {}
+      return {
+        '--tax-primary': tema.principal || '#13875e',
+        '--tax-dark': tema.oscuro || '#075e4a',
+        '--tax-soft': tema.suave || '#e3f5ed'
+      }
     },
     puedeAdministrar() {
       return this.$store.state.user.admin === 'master'
@@ -1395,9 +1419,10 @@ export default {
 .tax-option i { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 10px; color: #137b59; background: #e3f5ed; font-size: 1.05rem; }
 .tax-option span, .tax-option strong, .tax-option small { display: block; }
 .tax-option small { max-width: 180px; overflow: hidden; margin-top: .1rem; color: #778a83; font-size: .67rem; text-overflow: ellipsis; white-space: nowrap; }
-.tax-option.active { border-color: #16805e; background: #edf9f4; box-shadow: 0 0 0 3px rgba(22,128,94,.09); }
+.tax-option.active { border-color: var(--tax-primary); color: var(--tax-dark); background: var(--tax-soft); box-shadow: 0 0 0 3px color-mix(in srgb, var(--tax-primary) 10%, transparent); }
+.tax-option.active i { color: var(--tax-primary); background: color-mix(in srgb, var(--tax-soft) 82%, white); }
 .tax-option.disabled { cursor: not-allowed; opacity: .58; }
-.upload-hero { position: relative; overflow: hidden; display: grid; grid-template-columns: 1.12fr .88fr; gap: 3rem; align-items: center; padding: 3.5rem; border-radius: 28px; color: white; background: radial-gradient(circle at 5% 0%, rgba(255,255,255,.18), transparent 38%), linear-gradient(135deg, #075e4a, #13875e); box-shadow: 0 24px 60px rgba(7, 94, 74, .24); }
+.upload-hero { position: relative; overflow: hidden; display: grid; grid-template-columns: 1.12fr .88fr; gap: 3rem; align-items: center; padding: 3.5rem; border-radius: 28px; color: white; background: radial-gradient(circle at 5% 0%, rgba(255,255,255,.18), transparent 38%), linear-gradient(135deg, var(--tax-dark), var(--tax-primary)); box-shadow: 0 24px 60px color-mix(in srgb, var(--tax-dark) 25%, transparent); transition: background .25s ease, box-shadow .25s ease; }
 .upload-hero::after { content: ""; position: absolute; width: 340px; height: 340px; right: -150px; bottom: -210px; border: 52px solid rgba(255,255,255,.08); border-radius: 50%; }
 .hero-copy, .upload-card { position: relative; z-index: 1; }
 .eyebrow { display: block; margin-bottom: .65rem; color: #77e0bd; font-size: .74rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
@@ -1413,7 +1438,7 @@ export default {
 .drop-zone strong { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .drop-zone span, .drop-zone small { margin-top: .25rem; color: #6b837b; }
 .upload-icon { width: 68px; height: 68px; margin-bottom: 1rem; display: grid; place-items: center; border-radius: 20px; color: #0d7655; background: #dff4eb; font-size: 2rem; }
-.btn-analyze, .btn-publish { border: none; color: white; background: linear-gradient(135deg, #13875e, #075e4a); font-weight: 700; }
+.btn-analyze, .btn-publish { border: none; color: white; background: linear-gradient(135deg, var(--tax-primary), var(--tax-dark)); font-weight: 700; }
 .btn-analyze { margin-top: 1rem; padding: .85rem; border-radius: 12px; }
 .btn-analyze:disabled { opacity: .48; }
 .storage-option { margin-top: .9rem; padding: .8rem .9rem; border: 1px solid #dceae4; border-radius: 12px; color: #315c50; background: #f6faf8; font-size: .82rem; }

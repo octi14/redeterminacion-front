@@ -228,16 +228,25 @@
       centered
       hide-header
       hide-footer
+      :no-close-on-backdrop="isPublishing"
+      :no-close-on-esc="isPublishing"
       modal-class="publish-modal"
     >
-      <div class="publish-confirmation">
-        <div class="confirm-icon"><i class="bi bi-cloud-arrow-up-fill"></i></div>
-        <h3>¿Publicar esta carga?</h3>
-        <p>
+      <div class="publish-confirmation" :class="{ 'is-publishing': isPublishing }">
+        <div class="confirm-icon">
+          <b-spinner v-if="isPublishing" label="Publicando"></b-spinner>
+          <i v-else class="bi bi-cloud-arrow-up-fill"></i>
+        </div>
+        <h3>{{ isPublishing ? 'Publicando la carga...' : '¿Publicar esta carga?' }}</h3>
+        <p v-if="isPublishing">
+          Estamos guardando las boletas y actualizando los períodos activos.
+          Este proceso puede demorar unos minutos.
+        </p>
+        <p v-else>
           Las {{ analysisResult ? formatNumber(analysisResult.entries) : 0 }} boletas validadas
           quedarán disponibles como la carga activa de Automotores.
         </p>
-        <div v-if="overlappingPublishedPeriods.length" class="overwrite-warning">
+        <div v-if="overlappingPublishedPeriods.length && !isPublishing" class="overwrite-warning">
           <div class="overwrite-warning-title">
             <i class="bi bi-exclamation-triangle-fill"></i>
             Esta carga reemplazará períodos publicados
@@ -253,13 +262,23 @@
           </label>
         </div>
         <div class="confirm-actions">
-          <button class="btn btn-outline-secondary" @click="showPublishConfirmation = false">Cancelar</button>
+          <button
+            class="btn btn-outline-secondary"
+            :disabled="isPublishing"
+            @click="showPublishConfirmation = false"
+          >
+            Cancelar
+          </button>
           <button
             class="btn btn-publish"
-            :disabled="overlappingPublishedPeriods.length > 0 && !overwriteConfirmed"
+            :disabled="isPublishing || (overlappingPublishedPeriods.length > 0 && !overwriteConfirmed)"
             @click="publishCurrentImport"
           >
-            {{ overlappingPublishedPeriods.length ? 'Reemplazar y publicar' : 'Sí, publicar' }}
+            <b-spinner v-if="isPublishing" small class="mr-2"></b-spinner>
+            <template v-if="isPublishing">Publicando...</template>
+            <template v-else>
+              {{ overlappingPublishedPeriods.length ? 'Reemplazar y publicar' : 'Sí, publicar' }}
+            </template>
           </button>
         </div>
       </div>
@@ -277,6 +296,7 @@ export default {
       isDragging: false,
       showAnalysisModal: false,
       showPublishConfirmation: false,
+      isPublishing: false,
       overwriteConfirmed: false,
       analysisState: 'processing',
       analysisProgress: 0,
@@ -412,7 +432,8 @@ export default {
       this.showPublishConfirmation = true
     },
     async publishCurrentImport() {
-      if (this.overlappingPublishedPeriods.length && !this.overwriteConfirmed) return
+      if (this.isPublishing || (this.overlappingPublishedPeriods.length && !this.overwriteConfirmed)) return
+      this.isPublishing = true
       try {
         const response = await this.$axios.post(
           `/tasas/importaciones/${this.analysisResult.historyId}/publicar`,
@@ -452,6 +473,8 @@ export default {
           variant: 'danger',
           solid: true
         })
+      } finally {
+        this.isPublishing = false
       }
     },
     closeAnalysis() {

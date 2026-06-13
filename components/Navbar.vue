@@ -111,6 +111,15 @@
           <NuxtLink
             class="nav-link"
             active-class="active"
+            to="/admin/boletas"
+          >
+              Boletas
+          </NuxtLink>
+        </b-navbar-nav>
+        <b-navbar-nav v-if="adminMaster">
+          <NuxtLink
+            class="nav-link"
+            active-class="active"
             to="/actividades"
           >
               Actividades

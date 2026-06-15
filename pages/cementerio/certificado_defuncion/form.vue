@@ -1,55 +1,12 @@
 <template>
 <div class="page main-background">
   <Banner title="Cementerio" />
+  <LoadingOverlay :show="procesando" :message="mensajeEspera" />
 
-  <b-form @submit.prevent="onSubmitForm" class="my-3" style="margin-left:10px;margin-right:10px">
-    <b-card no-body class="col-8 mt-1 section-card"  style="margin: 0px auto 2rem">
-      <fieldset>
-        <legend><h3>Datos de la funeraria</h3></legend>
-      </fieldset>
-      <b-row>
-        <b-col lg="6">
-          <b-form-group label="CUIT *" label-for="fun-cuit">
-            <b-form-input id="fun-cuit" v-model="funeraria.cuit" @blur="$v.funeraria.cuit.$touch()"></b-form-input>
-            <div v-if="$v.funeraria.cuit.$error" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Introduce un CUIT válido, sin guiones.
-            </div>
-          </b-form-group>
-        </b-col>
-        <b-col lg="6">
-          <b-form-group label="Nombre del responsable *" label-for="fun-resp">
-            <b-form-input id="fun-resp" v-model="funeraria.responsable" @blur="$v.funeraria.responsable.$touch()"></b-form-input>
-            <div v-if="$v.funeraria.responsable.$error" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Campo requerido.
-            </div>
-          </b-form-group>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col lg="6">
-          <b-form-group label="Teléfono de contacto *" label-for="fun-tel">
-            <b-form-input id="fun-tel" v-model="funeraria.telefono" @blur="$v.funeraria.telefono.$touch()"></b-form-input>
-            <div v-if="$v.funeraria.telefono.$error" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe ser numérico.
-            </div>
-          </b-form-group>
-        </b-col>
-        <b-col lg="6">
-          <b-form-group label="Correo electrónico *" label-for="fun-mail">
-            <b-form-input id="fun-mail" v-model="funeraria.mail" @blur="$v.funeraria.mail.$touch()"></b-form-input>
-            <div v-if="$v.funeraria.mail.$error" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Email inválido.
-            </div>
-          </b-form-group>
-          <b-form-group label="Repita el correo electrónico *" label-for="fun-mail2">
-            <b-form-input id="fun-mail2" v-model="funeraria.mail2" @blur="$v.funeraria.mail2.$touch()"></b-form-input>
-            <div v-if="$v.funeraria.mail2.$error" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Los correos deben coincidir.
-            </div>
-          </b-form-group>
-        </b-col>
-      </b-row>
-    </b-card>
+  <b-form @submit.prevent="onSubmitForm" class="my-3" style="margin-left:10px;margin-right:10px" :class="{ 'form-disabled': procesando }">
+    <b-alert show variant="info" class="col-8 mx-auto">
+      El ingreso se asociará automáticamente a la funeraria seleccionada y a su período mensual abierto.
+    </b-alert>
 
     <b-card no-body class="col-8 mt-1 section-card"  style="margin: 0px auto 2rem">
       <fieldset>
@@ -70,6 +27,14 @@
             <div v-if="$v.obito.nombre.$error" class="validation-error">
               <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Campo requerido.
             </div>
+          </b-form-group>
+        </b-col>
+        <b-col lg="6">
+          <b-form-group label="Tipo de sepultura *" label-for="obi-sepultura">
+            <b-form-select id="obi-sepultura" v-model="tipoSepultura" :options="tiposSepultura"></b-form-select>
+            <small v-if="tipoSepultura" class="text-muted">
+              Importe aplicado: {{ moneda(precioAplicado) }}
+            </small>
           </b-form-group>
         </b-col>
       </b-row>
@@ -116,9 +81,7 @@
       
       <b-row>
         <b-col lg="12" style="margin-bottom: 1rem;">
-          <b-form-checkbox v-model="exentoPagoTasa">
-            Exento del pago de tasa
-          </b-form-checkbox>
+          <b-form-radio-group v-model="condicionPago" :options="condicionesPago" buttons button-variant="outline-success" />
         </b-col>
       </b-row>
       <b-row>
@@ -145,8 +108,11 @@
 
     <div class="centeredContainer">
       <fieldset>
-        <b-button size="lg" @click="onCancel" variant="danger" class="btn-cancel">Cancelar</b-button>
-        <b-button size="lg" type="submit" variant="success" :disabled="!areAllFieldsComplete">Enviar</b-button>
+        <b-button size="lg" @click="onCancel" variant="danger" class="btn-cancel" :disabled="procesando">Cancelar</b-button>
+        <b-button size="lg" type="submit" variant="success" :disabled="!areAllFieldsComplete || procesando">
+          <b-spinner v-if="procesando" small class="mr-2" />
+          {{ procesando ? 'Guardando...' : (editId ? 'Guardar cambios' : 'Registrar fallecido') }}
+        </b-button>
       </fieldset>
       <div v-if="!areAllFieldsComplete" class="validation-error">
         <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Completar todos los campos marcados con (*).
@@ -161,26 +127,24 @@
       </h3></div>
     </template>
     <div class="centeredContainer">
-      <p class="modal-subtitle">¡Tu solicitud fue registrada!</p>
-      <p class="">Pronto recibirás novedades por correo electrónico.</p>
+      <p class="modal-subtitle">{{ editId ? '¡Los cambios fueron guardados!' : '¡El fallecido fue registrado!' }}</p>
+      <p>La información ya forma parte del período mensual abierto.</p>
     </div>
   </b-modal>
 </div>
 </template>
 
 <script>
-import { required, numeric, email, sameAs, maxLength, minLength } from 'vuelidate/lib/validators';
+import { required, numeric } from 'vuelidate/lib/validators';
+import { TIPOS_SEPULTURA, CONDICIONES_PAGO } from '~/config/cementerio'
+import { formatCurrency } from '~/utils/cementerio'
+import LoadingOverlay from '~/components/cementerio/LoadingOverlay.vue'
 
 export default{
+  components: { LoadingOverlay },
+  middleware: ['authenticated', 'cementerio'],
   validations() {
     return {
-      funeraria: {
-        cuit: { required, numeric, maxLength: maxLength(12), minLength: minLength(10) },
-        responsable: { required },
-        telefono: { required, numeric },
-        mail: { required, email },
-        mail2: { required, email, sameAs: sameAs(function(){ return this.funeraria.mail }) }
-      },
       obito: {
         apellido: { required },
         nombre: { required },
@@ -192,25 +156,70 @@ export default{
   },
   data(){
     return{
+      editId: null,
+      procesando: false,
+      mensajeEspera: 'Guardando el fallecido y cargando la documentación...',
       maxFileSize: 15 * 1024 * 1024,
-      funeraria: { cuit: '', responsable: '', telefono: '', mail: '', mail2: '' },
       obito: { apellido: '', nombre: '', tipoDocumento: '', numeroDocumento: '', fechaDefuncion: '' },
       documentos: { certificadoDefuncion: null, comprobantePagoTasa: null },
+      documentosExistentes: { certificadoDefuncion: false, comprobantePagoTasa: false },
       docTouched: { certificadoDefuncion: false, comprobantePagoTasa: false },
       docErrors: { certificadoDefuncion: null, comprobantePagoTasa: null },
-      exentoPagoTasa: false,
+      condicionPago: CONDICIONES_PAGO.PAGO,
+      tipoSepultura: '',
+      tiposSepultura: [
+        { value: '', text: 'Seleccioná un tipo', disabled: true },
+        ...TIPOS_SEPULTURA.map(tipo => ({ value: tipo.value, text: `${tipo.text} - ${formatCurrency(tipo.precio)}` })),
+      ],
+      condicionesPago: [
+        { value: CONDICIONES_PAGO.PAGO, text: 'Pago' },
+        { value: CONDICIONES_PAGO.EXENTO, text: 'Exento' },
+      ],
       showOk: false,
     }
   },
   computed:{
     areAllFieldsComplete(){
       if(this.$v.$invalid) return false;
-      if(!this.documentos.certificadoDefuncion || !this.documentos.comprobantePagoTasa) return false;
+      if(!this.tipoSepultura) return false;
+      if((!this.documentos.certificadoDefuncion && !this.documentosExistentes.certificadoDefuncion)
+        || (!this.documentos.comprobantePagoTasa && !this.documentosExistentes.comprobantePagoTasa)) return false;
       if(this.docErrors.certificadoDefuncion || this.docErrors.comprobantePagoTasa) return false;
       return true;
+    },
+    precioAplicado() {
+      return (TIPOS_SEPULTURA.find(tipo => tipo.value === this.tipoSepultura) || {}).precio || 0
+    },
+    exentoPagoTasa() {
+      return this.condicionPago === CONDICIONES_PAGO.EXENTO
+    }
+  },
+  async fetch() {
+    this.editId = this.$route.query.id || null
+    if (!this.editId) return
+    this.procesando = true
+    this.mensajeEspera = 'Cargando los datos del fallecido...'
+    try {
+      await this.$store.dispatch('cementerio/getSingle', { id: this.editId })
+      const item = this.$store.state.cementerio.single
+      this.obito = { ...this.obito, ...(item.obito || {}) }
+      if (this.obito.fechaDefuncion) this.obito.fechaDefuncion = String(this.obito.fechaDefuncion).slice(0, 10)
+      this.tipoSepultura = item.tipoSepultura || ''
+      this.condicionPago = item.condicionPago || CONDICIONES_PAGO.PAGO
+      const data = await this.$store.dispatch('cementerio/getDocumentos', { id: this.editId })
+      this.documentosExistentes.certificadoDefuncion = Boolean(data.certificadoDefuncion)
+      this.documentosExistentes.comprobantePagoTasa = Boolean(data.comprobantePagoTasa)
+    } catch (error) {
+      this.notify(error.message || 'No se pudo cargar el fallecido.', 'danger')
+    } finally {
+      this.procesando = false
     }
   },
   methods:{
+    moneda: formatCurrency,
+    notify(message, variant = 'success') {
+      this.$bvToast.toast(message, { variant, solid: true, appendToast: true })
+    },
     blobToBase64(blob) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -226,7 +235,7 @@ export default{
     },
     touchDoc(field){
       this.docTouched[field] = true;
-      if(!this.documentos[field]){
+      if(!this.documentos[field] && !this.documentosExistentes[field]){
         this.docErrors[field] = 'Debe seleccionar un archivo.'
       }else{
         this.docErrors[field] = null
@@ -241,10 +250,15 @@ export default{
       }
     },
     async onSubmitForm(){
+      if (this.procesando) return
       this.$v.$touch();
       this.touchDoc('certificadoDefuncion');
       this.touchDoc('comprobantePagoTasa');
       if(this.areAllFieldsComplete){
+        this.procesando = true
+        this.mensajeEspera = this.editId
+          ? 'Guardando los cambios...'
+          : 'Registrando el fallecido y cargando la documentación...'
         try{
           const documentosParaGuardar = {};
           for (const campo in this.documentos) {
@@ -262,12 +276,7 @@ export default{
           }
 
           const certificado = {
-            funeraria: {
-              cuit: this.funeraria.cuit,
-              responsable: this.funeraria.responsable,
-              telefono: this.funeraria.telefono,
-              mail: this.funeraria.mail,
-            },
+            funerariaId: this.$route.query.funerariaId || undefined,
             obito: {
               apellido: this.obito.apellido,
               nombre: this.obito.nombre,
@@ -275,13 +284,24 @@ export default{
               numeroDocumento: this.obito.numeroDocumento,
               fechaDefuncion: this.obito.fechaDefuncion,
             },
+            tipoSepultura: this.tipoSepultura,
+            precioAplicado: this.precioAplicado,
+            condicionPago: this.condicionPago,
+            estadoRevisionPago: 'PENDIENTE',
             documentos: documentosParaGuardar,
           };
 
-          await this.$store.dispatch('cementerio/create', { certificado });
+          if (this.editId) {
+            await this.$store.dispatch('cementerio/update', { id: this.editId, certificado });
+          } else {
+            await this.$store.dispatch('cementerio/create', { certificado });
+          }
           this.showOk = true;
+          this.notify(this.editId ? 'Los cambios fueron guardados.' : 'El fallecido fue registrado.')
         }catch(e){
-          console.error('Error al enviar el formulario de cementerio:', e);
+          this.notify(e.message || 'No se pudo guardar el fallecido. Intentá nuevamente.', 'danger')
+        } finally {
+          this.procesando = false
         }
       }
     }
@@ -315,10 +335,9 @@ export default{
 .btn-cancel{ background-color:#e53749; border-color:#e53749; }
 .btn-cancel:hover{ background-color:#f09658; border-color:#f09658; }
 .section-card{ box-shadow:0px 2px 5px 0px rgba(0,0,0,0.75); -webkit-box-shadow:0px 2px 5px 0px rgba(0,0,0,0.75); -moz-box-shadow:0px 2px 5px 0px rgba(0,0,0,0.75); }
+.form-disabled { pointer-events: none; opacity: 0.8; }
 h3{ font-weight:bold; color:#0c681a !important; margin:1rem 0; }
 .modal h3{ color:white !important; font-weight:bold; font-size:1.5rem; }
 .modal .modal-subtitle{ color:#0c681a !important; font-size:1.25rem; font-weight:bold; margin-bottom: 15px; }
 .modal-content .bg-success{ background-color:#0c681a !important; }
 </style>
-
-

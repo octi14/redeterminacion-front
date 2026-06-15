@@ -1,105 +1,154 @@
 <template>
   <div class="page main-background">
-    <Banner title="Certificados de defunción" subtitle="Uso interno" />
-    <div class="col-10 mx-auto" v-if="adminCementerio">
-      <b-row>
-        <b-form-group class="col-4 mx-6 mx-auto mt-4" label-class="text-success h6">
-          <label for="inputCUIT" class="bv-no-focus-ring col-form-label pt-0 text-success h6">
-            <b-icon-search></b-icon-search> Buscar por CUIT
-          </label>
-          <b-form-input id="inputCUIT" v-model="inputCUIT" placeholder="Ingresá el CUIT" @input="filtrarPorCuit" type="text" />
-        </b-form-group>
-        <b-form-group class="col-4 mx-6 mx-auto mt-4" label-class="text-success h6">
-          <label for="selectedEstado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><b-icon-funnel-fill></b-icon-funnel-fill> Filtrar por Estado</label>
-          <b-form-select plain v-model="selectedEstado">
-            <option value="">Todos</option>
-            <option v-for="estado in estados" :value="estado" :key="estado">{{ estado }}</option>
-          </b-form-select>
-        </b-form-group>
-      </b-row>
-      <b-form-checkbox class="text-center" v-model="hideFinalizados">Ocultar Finalizados/Rechazados</b-form-checkbox>
-    </div>
-
-    <b-table per-page="10" head-row-variant="warning" class="col-md-10 white col-sm-8 mx-auto mt-4 shadow-card" :items="paginatedItems" :fields="fields">
-      <template #cell(estado)="row">
-        <div :class="row.item.estadoColor"><b>{{ row.value }}</b></div>
-      </template>
-    </b-table>
-    <b-pagination class="mt-4" :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
+    <Banner title="Declaraciones juradas de cementerio" subtitle="Recaudaciones" />
+    <LoadingOverlay :show="$fetchState.pending" message="Cargando declaraciones para revisión..." />
+    <b-container class="py-4">
+      <b-alert v-if="loadError" show variant="danger">{{ loadError }}</b-alert>
+      <b-card class="shadow-card mb-4">
+        <b-row>
+          <b-col md="6">
+            <b-form-group label="Buscar declaración">
+              <b-form-input v-model="busqueda" placeholder="Funeraria, CUIT o período" />
+            </b-form-group>
+          </b-col>
+          <b-col md="3">
+            <b-form-group label="Estado">
+              <b-form-select v-model="estado" :options="estados" />
+            </b-form-group>
+          </b-col>
+          <b-col md="3">
+            <b-form-group label="Año">
+              <b-form-select v-model="anio" :options="anioOptions" />
+            </b-form-group>
+          </b-col>
+        </b-row>
+      </b-card>
+      <b-table
+        responsive
+        hover
+        striped
+        class="shadow-card white"
+        :items="paginados"
+        :fields="fields"
+        show-empty
+        empty-text="No hay declaraciones para revisar."
+      >
+        <template #cell(periodo)="row">{{ periodoLabel(row.item) }}</template>
+        <template #cell(funeraria)="row">{{ funeraria(row.item) }}</template>
+        <template #cell(total)="row">{{ moneda(row.item.total) }}</template>
+        <template #cell(estado)="row">
+          <b-badge :variant="statusVariant(row.item.estado)">{{ estadoLabel(row.item.estado) }}</b-badge>
+        </template>
+        <template #cell(detalle)="row">
+          <b-button size="sm" variant="link" class="text-primary" title="Ver detalle" aria-label="Ver detalle" @click="abrirDetalle(row.item)">
+            <b-icon-search />
+          </b-button>
+          <b-button size="sm" variant="outline-primary" :to="`/cementerio/solicitudes/${row.item.id || row.item._id}`">
+            Revisar
+          </b-button>
+        </template>
+      </b-table>
+      <ListPagination v-model="currentPage" :total-rows="filtrados.length" :per-page="perPage" />
+    </b-container>
+    <DeclarationDetailModal v-model="showDetalle" :periodo="periodoDetalle" />
   </div>
 </template>
 
 <script>
-export default{
-  middleware: ['authenticated'],
-  data() {
-    return {
-      hideFinalizados: false,
-      inputCUIT: "",
-      items: [],
-      selectedEstado: '',
-      currentPage: 1,
-      perPage: 10,
-      fields: [
-        { key: 'createdAt', label: 'Fecha de solicitud' },
-        { key: 'cuit', label: 'CUIT funeraria' },
-        { key: 'responsable', label: 'Responsable' },
-        { key: 'mail', label: 'Mail' },
-        { key: 'estado', label: 'Estado' },
-      ],
-      estados: ['Rechazada','En revisión', 'Aprobada']
-    };
-  },
+import { formatCurrency, formatPeriodLabel, getStatusVariant } from '~/utils/cementerio'
+import LoadingOverlay from '~/components/cementerio/LoadingOverlay.vue'
+import ListPagination from '~/components/cementerio/ListPagination.vue'
+import DeclarationDetailModal from '~/components/cementerio/DeclarationDetailModal.vue'
+
+export default {
+  components: { LoadingOverlay, ListPagination, DeclarationDetailModal },
+  middleware: ['authenticated', 'recaudaciones'],
+  data: () => ({
+    loadError: '',
+    busqueda: '',
+    estado: 'EN_PROCESO',
+    anio: '',
+    currentPage: 1,
+    perPage: 10,
+    showDetalle: false,
+    periodoDetalle: null,
+    estados: [
+      { value: '', text: 'Todos' },
+      { value: 'EN_PROCESO', text: 'En proceso' },
+      { value: 'APROBADO', text: 'Aprobados' },
+      { value: 'RECHAZADO', text: 'Rechazados' },
+    ],
+    fields: [
+      { key: 'periodo', label: 'Período' },
+      { key: 'funeraria', label: 'Funeraria' },
+      { key: 'cantidadFallecidos', label: 'Fallecidos' },
+      { key: 'total', label: 'Total declarado' },
+      { key: 'estado', label: 'Estado' },
+      { key: 'detalle', label: '' },
+    ],
+  }),
   async fetch() {
-    await this.$store.dispatch('cementerio/getAll')
-    this.items = this.certificados
-    this.items?.forEach(item => {
-      switch (item.estado) {
-        case 'En revisión': item.estadoColor = 'text-primary'; break;
-        case 'Rechazada': item.estadoColor = 'text-danger'; break;
-        case 'Aprobada': item.estadoColor = 'text-darkgreen'; break;
-        default: item.estadoColor = 'text-secondary';
-      }
-    });
+    try {
+      await this.$store.dispatch('cementerio/getPeriodos')
+    } catch (error) {
+      this.loadError = error.message || 'No se pudieron cargar las declaraciones.'
+    }
   },
   computed: {
-    certificados(){
-      return this.$store.state.cementerio.all
+    periodos() {
+      return (this.$store.state.cementerio.periodos || []).map(periodo => ({
+        ...periodo,
+        cantidadFallecidos: periodo.cantidadFallecidos || (periodo.fallecidos || []).length,
+      }))
     },
-    paginatedItems() {
-      if (!this.filteredItems || this.filteredItems.length === 0) return [];
-      const start = (this.currentPage - 1) * this.perPage;
-      const end = start + this.perPage;
-      return this.filteredItems.slice(start, end);
+    filtrados() {
+      const term = this.busqueda.trim().toLowerCase()
+      return this.periodos.filter(periodo => {
+        const matchesEstado = !this.estado || periodo.estado === this.estado
+        const matchesAnio = !this.anio || periodo.anio === this.anio
+        const searchable = [this.funeraria(periodo), this.periodoLabel(periodo)].join(' ').toLowerCase()
+        const matchesBusqueda = !term || searchable.includes(term)
+        return matchesEstado && matchesAnio && matchesBusqueda
+      })
     },
-    filteredItems() {
-      let items = this.items;
-      if (this.hideFinalizados) {
-        items = items.filter(item => !["Rechazada", "Finalizada"].includes(item.estado));
-      }
-      if (this.inputCUIT) {
-        items = items.filter(item => item.cuit && String(item.cuit).includes(this.inputCUIT));
-      }
-      if (this.selectedEstado) {
-        items = items.filter(item => item.estado === this.selectedEstado);
-      }
-      return items;
+    paginados() {
+      const start = (this.currentPage - 1) * this.perPage
+      return this.filtrados.slice(start, start + this.perPage)
     },
-    totalPages() {
-      return Math.ceil(this.filteredItems.length / this.perPage);
+    anioOptions() {
+      const years = [...new Set(this.periodos.map(periodo => periodo.anio).filter(Boolean))].sort((a, b) => b - a)
+      return [{ value: '', text: 'Todos' }, ...years.map(value => ({ value, text: String(value) }))]
     },
-    adminCementerio() {
-      return this.$store.state.user.admin === "cementerio" || this.$store.state.user.admin == "master"
+  },
+  watch: {
+    busqueda() {
+      this.currentPage = 1
+    },
+    estado() {
+      this.currentPage = 1
+    },
+    anio() {
+      this.currentPage = 1
+    },
+    filtrados(items) {
+      this.currentPage = Math.min(this.currentPage, Math.max(1, Math.ceil(items.length / this.perPage)))
     },
   },
   methods: {
-    onPageChange(newPage) {
-      this.currentPage = newPage;
+    moneda: formatCurrency,
+    periodoLabel: formatPeriodLabel,
+    statusVariant: getStatusVariant,
+    funeraria(periodo) {
+      const item = periodo.funeraria || {}
+      return [item.nombre, item.cuit].filter(Boolean).join(' - ') || 'Sin funeraria'
+    },
+    estadoLabel(value) {
+      return String(value || '').replaceAll('_', ' ').toLowerCase()
+    },
+    abrirDetalle(periodo) {
+      this.periodoDetalle = periodo
+      this.showDetalle = true
     },
   },
 }
 </script>
-
-
-
-

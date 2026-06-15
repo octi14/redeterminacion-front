@@ -93,6 +93,15 @@
           <NuxtLink
             class="nav-link"
             active-class="active"
+            to="/cementerio/certificado_defuncion"
+          >
+              Declaración jurada
+          </NuxtLink>
+        </b-navbar-nav>
+        <b-navbar-nav v-if="adminRecaudaciones" class="mr-2">
+          <NuxtLink
+            class="nav-link"
+            active-class="active"
             to="/cementerio/solicitudes"
           >
               Cementerio

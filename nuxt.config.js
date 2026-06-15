@@ -31,6 +31,7 @@ export default {
   plugins: [
     { src: '~/plugins/vuelidate.js', ssr: true },
     '~/plugins/logUserActivity.js',
+    '~/plugins/axiosAuth.js',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

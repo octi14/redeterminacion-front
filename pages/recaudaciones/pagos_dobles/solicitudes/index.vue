@@ -73,6 +73,10 @@ export default{
       perPage: 10,
       fields: [
         {
+          key: 'nroTramite',
+          label: 'N° de trámite',
+        },
+        {
           key: 'createdAt',
           label: 'Fecha de solicitud',
         },

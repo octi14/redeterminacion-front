@@ -15,7 +15,7 @@
     <!-- Botón -->
     <div class="container" v-if="adminModernizacion">
       <div class="row">
-        <b-button pill class="mx-auto shadow-card" variant="secondary" @click="onShowModal"> Agregar archivo </b-button>
+        <b-button class="mx-auto shadow-card" variant="secondary" @click="onShowModal"> Agregar archivo </b-button>
       </div>
     </div>
     <!-- Menú -->

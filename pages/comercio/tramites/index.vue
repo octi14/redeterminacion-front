@@ -868,7 +868,6 @@
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" class="external-link">Constancia de inscripción a Ingresos Brutos.</a></div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Libro de actas: se entrega en forma presencial al finalizar el trámite. (<i>En el caso de alojamientos se presentarán 2 libros: de quejas y de habilitación.</i>)</div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Declaración Jurada - Metros establecimiento habilitado. <b-icon-question-circle-fill @click="openPopup('decJurada')" font-scale="1.25" variant="info"></b-icon-question-circle-fill></div></div>
-                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Contrato de locación con el correspondiente Impuesto de Sellos Provincial y firma certificada por Escribano Público, Entidad Bancaria o Autoridad Administrativa. <i>(Si el contrato original se encuentra finalizado el trámite a realizar es una <a href="#card-renovacion" id="btnR" class="external-link" @click="seleccionarTramite('Renovación')">renovación</a>, no un reempadronamiento)</i></div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Planilla de Autorización de Trámite legalizada o poder autorizado por escribano <i>(únicamente si el trámite es iniciado mediante representante o apoderado/a)</i>.</div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> <b>Personas Jurídicas:</b> Escritura constitutiva de la misma con designación actual de sus representantes.</div></div>
                 <div class="separador-top">
@@ -1830,14 +1829,6 @@ p, .li-content{
 .confirmation-popup-body .li-content{
   color: black;
 }
-.btn{
-  background-color: #0c681a;
-  border-color: #0c681a;
-}
-.btn:hover{
-  background-color: green;
-  border-color: green;
-}
 .modal h5{
   color: white !important;
   font-weight: bold;
@@ -1940,12 +1931,6 @@ p, .li-content{
 .sangria{
   margin-left: 25px;
   margin-bottom: 10px;
-}
-.icon-orange{
-  color: #E27910;
-}
-.icon-green{
-  color: #0c681a;
 }
 .texto-introd{
   font-size: 1.3rem;

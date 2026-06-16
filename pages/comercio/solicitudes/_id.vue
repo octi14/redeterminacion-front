@@ -27,7 +27,29 @@
           <div class="h5 row justify-content-center"> Número de expediente: <b class="text-success ml-1"> {{ habilitacion.nroExpediente }} </b> </div>
           <div class="h5 row justify-content-center" v-if="!esHabilitacion"> Alcance: <b class="text-success ml-1"> {{ habilitacion.alcance }} </b> </div>
           <div class="h5 row justify-content-center" v-if="!esHabilitacion"> Legajo: <b class="text-success ml-1"> {{ habilitacion.nroLegajo }} </b> </div>
+        </div>        
+        <div class="row justify-content-center mt-3" v-if="adminMaster && visibleLocal">
+          <div class="h5 row"> Visibilidad:
+            <h5 :class="getStatusClass(habilitacion.status)" class="ml-2"> 
+              <b-icon-eye-slash v-if="visibleLocal" class="ml-1 text-success" title="Trámite visible" />
+              <b-icon-eye-slash v-else class="ml-1 text-danger" title="Trámite invisible" />
+              <span v-if="visibleLocal">Visible</span>
+              <span v-else>Invisible</span>
+            </h5>
+          </div>
         </div>
+      </div>
+      <div class="row justify-content-center mt-2" v-if="adminMaster">
+        <b-form-checkbox
+          switch
+          v-model="visibleLocal"
+          @change="onToggleVisibilidad"
+        >
+          Visibilidad del trámite
+          
+        <b-icon-eye v-if="visibleLocal" class="ml-1 text-success" title="Trámite visible" />
+        <b-icon-eye-slash v-else class="ml-1 text-danger" title="Trámite invisible" />
+        </b-form-checkbox>
       </div>
       <!--Botones-->
       <div class="row col-10 mx-auto justify-content-center" v-if="jefeComercio">
@@ -285,13 +307,24 @@
             </div>
             <div class="col-2 text-center">
               <strong>Revisión</strong>
-              <div class="mt-1 d-flex justify-content-center">
-                <span class="text-success mr-3">
-                  <b-icon-check-circle-fill></b-icon-check-circle-fill>
-                </span>
-                <span class="text-danger mr-3">
-                  <b-icon-x-circle-fill></b-icon-x-circle-fill>
-                </span>
+              <div class="mt-1 d-flex flex-column align-items-center">
+                <small class="text-muted mb-1">Todos:</small>
+                <div class="d-flex justify-content-center flex-wrap">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="revisionTodosDocumentos" id="todosDocumentosCorrecto"
+                           @change="marcarTodosDocumentos('correcto')">
+                    <label class="form-check-label text-success" for="todosDocumentosCorrecto" title="Marcar todos los documentos como correctos">
+                      <b-icon-check-circle-fill></b-icon-check-circle-fill>
+                    </label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="revisionTodosDocumentos" id="todosDocumentosIncorrecto"
+                           @change="marcarTodosDocumentos('incorrecto')">
+                    <label class="form-check-label text-danger" for="todosDocumentosIncorrecto" title="Marcar todos los documentos como incorrectos">
+                      <b-icon-x-circle-fill></b-icon-x-circle-fill>
+                    </label>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -302,7 +335,7 @@
                 <strong>{{ nombreDocumento }}</strong>
               </div>
               <div class="col-2 text-center">
-                <b-button size="sm" @click="openDocumento(documento, nombreDocumento)" variant="outline-primary" pill>
+                <b-button size="sm" @click="openDocumento(documento, nombreDocumento)" variant="outline-primary">
                   <b-icon icon="eye-fill" scale="1.2"></b-icon>
                 </b-button>
               </div>
@@ -821,6 +854,7 @@ export default {
       DocumentoModalTitle: "",
       showRevisionIncompleta: false,
       showRechazoAutomatico: false,
+      visibleLocal: false,
       // Variables para el sistema de revisión
       revisionSolicitante: null,
       revisionInmueble: null,
@@ -922,6 +956,18 @@ export default {
       return
     }
 
+    if (!this.adminMaster && this.habilitacion.visible === false) {
+      this.$bvToast.toast('El trámite no está disponible para este usuario.', {
+        title: 'Trámite no disponible',
+        variant: 'warning',
+        solid: true,
+      })
+      this.$router.replace('/comercio/solicitudes')
+      return
+    }
+
+    this.visibleLocal = this.habilitacion.visible !== false
+
     const nroTramite = this.habilitacion.nroTramite
     await this.$store.dispatch('turnos/getSingle', { nroTramite })
     this.turno = this.$store.state.turnos.single
@@ -944,6 +990,39 @@ export default {
           await this.$logUserActivity(userId, actionType, actionResult);
       } catch (error) {
           console.error('Error al registrar la actividad:', error);
+      }
+    },
+    async onToggleVisibilidad() {
+      if (!this.adminMaster || !this.habilitacion) {
+        return;
+      }
+
+      const id = this.habilitacion.id;
+      const visible = !!this.visibleLocal;
+
+      try {
+        await this.$store.dispatch('habilitaciones/updateLazy', {
+          id,
+          habilitacion: { visible },
+        });
+        this.$store.commit('habilitaciones/setSingleVisible', visible);
+        this.$bvToast.toast(
+          visible
+            ? 'El trámite ahora es visible para usuarios no administradores.'
+            : 'El trámite ahora es invisible para usuarios no administradores.',
+          {
+            title: 'Visibilidad actualizada',
+            variant: 'success',
+            solid: true,
+          }
+        );
+      } catch (e) {
+        this.$bvToast.toast('No se pudo actualizar la visibilidad del trámite.', {
+          title: 'Error',
+          variant: 'danger',
+          solid: true,
+        });
+        this.visibleLocal = this.habilitacion.visible !== false;
       }
     },
     getStatusClass(status) {
@@ -1031,6 +1110,8 @@ Rubro: ${this.habilitacion.rubro}
 Por favor, presente los documentos originales en el Departamento Comercio MVGesell para continuar con el trámite.
 Adicionalmente, le comentamos que puede presentar su documentación en la Casa de Villa Gesell en Buenos Aires,
 ubicada en la Avenida Corrientes 1312, piso 11 oficina 42, CABA.
+Deberá presentar los documentos originales en la oficina de comercio dentro de los próximos 10 días hábiles.
+En caso contrario, el trámite caerá y deberá iniciarlo nuevamente.
 
 Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
 
@@ -1563,6 +1644,17 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
         }
     },
 
+
+    // Marcar todos los documentos como correctos o incorrectos (similar a "seleccionar todos" en combustible)
+    marcarTodosDocumentos(valor) {
+      if (!this.documentos || typeof this.documentos !== 'object') return;
+      Object.keys(this.documentos).forEach((nombreDocumento) => {
+        this.$set(this.revisionDocumentos, nombreDocumento, valor);
+      });
+      this.actualizarElementosIncorrectos();
+      this.verificarRechazoAutomatico();
+    },
+
         // Método unificado para el sistema de revisión
     actualizarRevision(tipo, valor = null) {
       // Actualizar la lista de elementos incorrectos
@@ -1671,21 +1763,6 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
   max-width: 80% !important;
 }
 
-.col-main {
-  flex: 1;
-}
-
-.col-complementary {
-  flex: 1;
-}
-
-.icon-orange{
-  color: #E27910;
-}
-
-.col strong{
-  margin-bottom: 0%;
-}
 /* Responsive: */
 
 @media only screen and (min-width: 640px) {

@@ -71,7 +71,7 @@
                       cx="50"
                       cy="50"
                       r="40"
-                      :style="{ strokeDasharray: getProgreso(orden.saldos[index].saldo, monto.monto) }"
+                      :style="{ strokeDasharray: getProgreso(getSaldoPorTipo(monto.tipoCombustible), monto.monto) }"
                     ></circle>
                   </svg>
                 </div>
@@ -81,7 +81,7 @@
                   <p>{{ monto.tipoCombustible ? monto.tipoCombustible.toUpperCase() : 'Sin definir' }}</p>
                 </div>
                 <div class="fuel-saldos-h">
-                  <p>Restante: <span :class="['text-color-' + index]">{{ format(orden.saldos[index].saldo) }}</span></p>
+                  <p>Restante: <span :class="['text-color-' + index]">{{ format(getSaldoPorTipo(monto.tipoCombustible)) }}</span></p>
                   <p>Total: {{ format(monto.monto) }}</p>
                 </div>
             </div>
@@ -101,7 +101,35 @@
               <b-icon-receipt class="icon-orange mt-4 ml-4" scale="2"/>
               <a class="ml-3 mr-2 mt-2 separador" > | </a>
               <h2 class="text-green mt-3"><b>Vales emitidos</b></h2>
-              <div class="ml-auto mr-4 mt-2">
+              <div class="ml-auto mr-4 mt-2 d-flex align-items-center">
+                <!-- Selector de vista -->
+                <div class="btn-group mr-2" role="group">
+                  <b-button
+                    :variant="vistaVales === 'grid' ? 'primary' : 'outline-secondary'"
+                    size="sm"
+                    @click="cambiarVistaVales('grid')"
+                    title="Vista cuadrícula"
+                  >
+                    <b-icon-grid/>
+                  </b-button>
+                  <b-button
+                    :variant="vistaVales === 'list' ? 'primary' : 'outline-secondary'"
+                    size="sm"
+                    @click="cambiarVistaVales('list')"
+                    title="Vista lista"
+                  >
+                    <b-icon-list/>
+                  </b-button>
+                </div>
+                <b-button
+                  variant="success"
+                  size="sm"
+                  class="mr-2"
+                  @click="exportarValesAExcel"
+                >
+                  <b-icon-file-earmark-spreadsheet-fill/>
+                  Exportar a Excel
+                </b-button>
                 <b-button
                   :variant="ocultarAnulados ? 'primary' : 'outline-secondary'"
                   size="sm"
@@ -120,6 +148,12 @@
           <div class="container justify-content-center mx-auto" v-if="paginatedVales && paginatedVales.length">
             <!-- Botones de utilización masiva -->
             <div class="row justify-content-center">
+              <!-- Botón para deseleccionar todos -->
+              <div class="text-center mx-3 my-3" v-if="valesSeleccionados.length">
+                <button class="btn btn-secondary" @click="deseleccionarTodos">
+                  <b-icon-x-circle/> Deseleccionar todos
+                </button>
+              </div>
               <!-- Botón para reimprimir seleccionados -->
               <div class="text-center mx-3 my-3" v-if="valesSeleccionados.length">
                 <button class="btn btn-primary" @click="abrirModalReimpresion">
@@ -166,53 +200,135 @@
               </div>
             </div>
 
-            <!-- Cards de los vales -->
-            <div class="row mx-4">
-              <div v-for="(vale, index) in paginatedVales" :key="index" class="col-md-6 mb-3">
-                <b-card no-body class="border-card main-background shadow-card">
-                  <div class="m-2">
+            <!-- Vista Cuadrícula: menos margen para que el grid use más ancho del contenedor -->
+            <div v-if="vistaVales === 'grid'" class="row vale-grid-row">
+              <div v-for="(vale, index) in paginatedVales" :key="index" class="col-12 col-md-4 mb-3">
+                <b-card no-body class="border-card main-background shadow-card vale-card-compact">
+                  <div class="vale-card-body">
                     <div class="row no-gutters align-items-center">
-                      <div class="col mt-2 ml-2">
-                        <div class="row d-flex justify-content-between align-items-center">
-                          <div class="d-flex align-items-center">
-
-                            <input v-if="!vale.consumido && !vale.anulado" type="checkbox" class="mb-2 ml-2" :value="vale.id" v-model="valesSeleccionados" />
-                            <b-icon-x-square v-else disabled="disabled" class="mb-2 ml-2"></b-icon-x-square>
-
-                            <h4 class="mb-2 ml-2 font-weight-700 text-gray">
-                              VALE N° {{ vale.nro_vale }}
-                            </h4>
+                      <div class="col no-gutters">
+                        <div class="row d-flex justify-content-between align-items-center vale-card-header">
+                          <div class="d-flex row align-items-center">
+                            <input v-if="!vale.consumido && !vale.anulado" type="checkbox" class="vale-checkbox-input mr-2" :value="vale.id" v-model="valesSeleccionados" />
+                            <b-icon-x-square v-else disabled="disabled" class="mr-2 vale-icon-disabled"></b-icon-x-square>
+                            <h5 class="mb-0 ml-1 font-weight-700 text-gray vale-card-title">VALE N° {{ vale.nro_vale }}</h5>
                           </div>
-                          <!-- Botones -->
-                          <div v-if="jefeCompras && !vale.anulado" class="d-flex mr-2">
-                            <button v-if="!vale.consumido" class="btn btn-success btn-sm mx-1" title="Marcar como utilizado" @click="confirmarMarcarUtilizado(vale, (currentPage - 1) * itemsPerPage + index)">
-                              <b-icon-check />
+                          <div v-if="adminCompras && !vale.anulado" class="d-flex vale-card-actions">
+                            <button v-if="!vale.consumido" class="btn btn-success vale-card-btn" title="Marcar como utilizado" @click="confirmarMarcarUtilizado(vale, (currentPage - 1) * itemsPerPage + index)">
+                              <b-icon-check scale="0.85" />
                             </button>
-                            <button v-if="!vale.consumido" class="btn btn-primary btn-sm mx-1" title="Reimprimir" @click="confirmarReimpresion(vale, index)">
-                              <b-icon-printer-fill />
+                            <button v-if="!vale.consumido" class="btn btn-primary vale-card-btn" title="Reimprimir" @click="confirmarReimpresion(vale, index)">
+                              <b-icon-printer-fill scale="0.85" />
                             </button>
-                            <button v-if="!vale.consumido" class="btn btn-danger btn-sm mx-1" title="Eliminar" @click="confirmarEliminacion(vale.id)">
-                              <b-icon-trash-fill />
+                            <button v-if="!vale.consumido" class="btn btn-danger vale-card-btn" title="Eliminar" @click="confirmarEliminacion(vale.id)">
+                              <b-icon-trash-fill scale="0.85" />
                             </button>
                           </div>
                         </div>
-                        <p class="card-text ml-3 text-dark">Tipo de combustible: {{ vale.tipoCombustible }}</p>
-                        <p class="card-text ml-3 text-dark">Importe: {{ format(vale.monto) }}</p>
-                        <p class="card-text ml-3 text-dark">Patente: {{ vale.dominio ? vale.dominio.toUpperCase() : 'Sin patente' }}</p>
-                        <p class="card-text ml-3 text-dark">Fecha de emisión: {{ new Date(vale.fechaEmision).toLocaleDateString('es-AR') }}</p>
-                        <p class="card-text ml-3 text-dark">
-                          Estado:
-                          <span :class="vale.consumido ? 'text-danger' : 'text-success'">
-                            <b v-if="!vale.anulado">{{ vale.consumido ? 'No disponible' : 'Disponible' }}</b>
-                            <b class="text-gray" v-else>Anulado</b>
-                          </span>
-                        </p>
+                        <div class="vale-card-details">
+                          <p class="vale-card-line text-dark mb-0">Tipo de combustible: {{ vale.tipoCombustible }}</p>
+                          <p class="vale-card-line text-dark mb-0">Importe: {{ format(vale.monto) }}</p>
+                          <p class="vale-card-line text-dark mb-0">Patente: {{ vale.dominio ? vale.dominio.toUpperCase() : 'Sin patente' }}</p>
+                          <p class="vale-card-line text-dark mb-0">Fecha de emisión: {{ new Date(vale.fechaEmision).toLocaleDateString('es-AR') }}</p>
+                          <p class="vale-card-line text-dark mb-0">
+                            Estado:
+                            <span :class="vale.consumido ? 'text-danger' : 'text-success'">
+                              <b v-if="!vale.anulado">{{ vale.consumido ? 'No disponible' : 'Disponible' }}</b>
+                              <b class="text-gray" v-else>Anulado</b>
+                            </span>
+                          </p>
+                        </div>
                       </div>
-
-
                     </div>
                   </div>
                 </b-card>
+              </div>
+            </div>
+
+            <!-- Vista Lista -->
+            <div v-if="vistaVales === 'list'" class="mx-4">
+              <div class="table-responsive">
+                <table class="table table-hover vales-list-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 40px;" class="text-center">
+                        <input
+                          type="checkbox"
+                          :checked="todosValesPaginaSeleccionados"
+                          @change="toggleSeleccionarTodosPagina"
+                          class="vale-checkbox"
+                          title="Seleccionar todos los vales disponibles de esta página"
+                        />
+                      </th>
+                      <th>N° Vale</th>
+                      <th>Tipo Combustible</th>
+                      <th>Importe</th>
+                      <th>Patente</th>
+                      <th>Fecha Emisión</th>
+                      <th>Estado</th>
+                      <th v-if="adminCompras" style="width: 120px;">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      v-for="(vale, index) in paginatedVales"
+                      :key="index"
+                      :class="{ 'vale-disabled': vale.consumido || vale.anulado }"
+                      class="vale-row"
+                    >
+                      <td class="text-center">
+                        <input
+                          v-if="!vale.consumido && !vale.anulado"
+                          type="checkbox"
+                          :value="vale.id"
+                          v-model="valesSeleccionados"
+                          class="vale-checkbox"
+                        />
+                        <b-icon-x-square v-else disabled="disabled" class="text-muted"></b-icon-x-square>
+                      </td>
+                      <td class="font-weight-bold">{{ vale.nro_vale }}</td>
+                      <td>{{ vale.tipoCombustible }}</td>
+                      <td>{{ format(vale.monto) }}</td>
+                      <td>{{ vale.dominio ? vale.dominio.toUpperCase() : 'Sin patente' }}</td>
+                      <td>{{ new Date(vale.fechaEmision).toLocaleDateString('es-AR') }}</td>
+                      <td>
+                        <span :class="vale.consumido ? 'text-danger' : 'text-success'">
+                          <b v-if="!vale.anulado">{{ vale.consumido ? 'No disponible' : 'Disponible' }}</b>
+                          <b class="text-gray" v-else>Anulado</b>
+                        </span>
+                      </td>
+                      <td v-if="adminCompras && !vale.anulado" class="text-center">
+                        <div class="d-flex justify-content-center align-items-center">
+                          <button
+                            v-if="!vale.consumido"
+                            class="btn btn-success btn-sm mx-1"
+                            title="Marcar como utilizado"
+                            @click="confirmarMarcarUtilizado(vale, (currentPage - 1) * itemsPerPage + index)"
+                          >
+                            <b-icon-check />
+                          </button>
+                          <button
+                            v-if="!vale.consumido"
+                            class="btn btn-primary btn-sm mx-1"
+                            title="Reimprimir"
+                            @click="confirmarReimpresion(vale, index)"
+                          >
+                            <b-icon-printer-fill />
+                          </button>
+                          <button
+                            v-if="!vale.consumido"
+                            class="btn btn-danger btn-sm mx-1"
+                            title="Eliminar"
+                            @click="confirmarEliminacion(vale.id)"
+                          >
+                            <b-icon-trash-fill />
+                          </button>
+                        </div>
+                      </td>
+                      <td v-else-if="adminCompras"></td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
@@ -236,8 +352,8 @@
     </div>
 
     <!-- Modals -->
-    <b-modal v-model="showObservaciones" size="lg" header-bg-variant="primary" title="Observaciones" title-class="text-light" hide-footer centered>
-      <p v-html="observaciones"></p>
+    <b-modal v-model="showObservaciones" size="lg" header-bg-variant="primary" title="Observaciones" title-class="text-light" hide-footer centered body-class="observaciones-modal-body">
+      <div class="observaciones-modal-content" v-html="observaciones"></div>
     </b-modal>
 
     <!-- Modal de Confirmación para utilización -->
@@ -320,9 +436,10 @@
       <hr class="row col-9 mx-auto justify-content-center"/>
       <div class="row no-gutters justify-content-center">
         <b-button variant="success" :disabled="eliminandoVales" @click="eliminarValesSeleccionados">
+          <b-spinner v-if="eliminandoVales" small class="mr-2"></b-spinner>
           {{ eliminandoVales ? 'Eliminando...' : 'Aceptar' }}
         </b-button>
-        <b-button variant="danger" class="mx-2" @click="$bvModal.hide('modalEliminacionMasiva')">Cancelar</b-button>
+        <b-button variant="danger" class="mx-2" :disabled="eliminandoVales" @click="$bvModal.hide('modalEliminacionMasiva')">Cancelar</b-button>
       </div>
     </b-modal>
 
@@ -357,8 +474,11 @@
       <p class="h6 text-center mt-2 mb-3 font-weight-500 text-dark">¿Deseás continuar?</p>
       <hr class="row col-9 mx-auto"/>
       <div class="row no-gutters justify-content-center">
-        <button class="btn btn-success mx-2" @click="eliminarVale()">Aceptar</button>
-        <button class="btn btn-danger mx-2" @click="modalEliminacion = false">Cancelar</button>
+        <button class="btn btn-success mx-2" :disabled="eliminandoVale" @click="eliminarVale()">
+          <b-spinner v-if="eliminandoVale" small class="mr-2"></b-spinner>
+          {{ eliminandoVale ? 'Eliminando...' : 'Aceptar' }}
+        </button>
+        <button class="btn btn-danger mx-2" :disabled="eliminandoVale" @click="modalEliminacion = false">Cancelar</button>
       </div>
     </b-modal>
 
@@ -401,6 +521,8 @@
 import templateVale from "@/assets/TemplateValex2.png";
 import { numeroATexto } from "@/utils/numeroATexto";
 import jsPDF from "jspdf";
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 export default {
   data() {
     return {
@@ -417,26 +539,39 @@ export default {
       observaciones: '',
       tempNroVale: null,
       tempValeRef: null,
+      eliminandoVale: false, // Control para deshabilitar botón de eliminar vale individual
       eliminandoVales: false, // Control para deshabilitar botón de eliminar vales seleccionados
       filtroTipoCombustible: null, // Filtro por tipo de combustible
       ocultarAnulados: false, // Control para ocultar/mostrar vales anulados
+      vistaVales: 'grid', // 'grid' o 'list' - Vista actual de los vales
     }
   },
   computed: {
     orden(){
       return this.$store.state.combustible.single
     },
+    // Saldo por tipo = monto del tipo − suma de vales no anulados de ese tipo
+    saldosCalculados() {
+      if (!this.orden || !this.orden.montos) return [];
+      const vales = this.vales || [];
+      const noAnulados = vales.filter(v => !v.anulado);
+      return this.orden.montos.map((m) => {
+        const emitido = noAnulados
+          .filter(v => v.tipoCombustible === m.tipoCombustible)
+          .reduce((sum, v) => sum + (Number(v.monto) || 0), 0);
+        const saldo = (Number(m.monto) || 0) - emitido;
+        return { tipoCombustible: m.tipoCombustible, saldo };
+      });
+    },
     totalMonto() {
-      return this.orden.montos.reduce((total, m) => total + m.monto, 0);
+      if (!this.orden || !this.orden.montos) return 0;
+      return this.orden.montos.reduce((total, m) => total + (Number(m.monto) || 0), 0);
     },
     totalSaldo() {
-      return this.orden.saldos.reduce((total, s) => total + s.saldo, 0);
+      return this.saldosCalculados.reduce((total, s) => total + (Number(s.saldo) || 0), 0);
     },
     adminCompras(){
       return this.$store.state.user.admin == "compras" || this.$store.state.user.admin == "master"
-    },
-    jefeCompras(){
-      return (this.$store.state.user.admin == "compras" && this.$store.state.user.username == "martinjordan@gesell.gob.ar") || this.$store.state.user.admin == "master"
     },
     vales(){
       return this.$store.state.combustible.vales_creados
@@ -465,6 +600,13 @@ export default {
         valesFiltrados = valesFiltrados.filter(vale => !vale.anulado);
       }
 
+      // Ordenar por fecha de creación (más antiguos primero). Usar createdAt o fechaEmision como fallback.
+      valesFiltrados = [...valesFiltrados].sort((a, b) => {
+        const dateA = new Date(a.createdAt || a.fechaEmision || 0).getTime();
+        const dateB = new Date(b.createdAt || b.fechaEmision || 0).getTime();
+        return dateA - dateB;
+      });
+
       const start = (this.currentPage - 1) * this.itemsPerPage;
       return valesFiltrados.slice(start, start + this.itemsPerPage);
     },
@@ -488,6 +630,41 @@ export default {
 
       return Math.ceil(valesFiltrados.length / this.itemsPerPage);
     },
+    todosValesPaginaSeleccionados() {
+      if (!this.paginatedVales || !Array.isArray(this.paginatedVales)) {
+        return false;
+      }
+
+      // Obtener solo los vales disponibles de la página actual (no consumidos y no anulados)
+      const valesDisponiblesPagina = this.paginatedVales.filter(
+        vale => !vale.consumido && !vale.anulado
+      );
+
+      // Si no hay vales disponibles, retornar false
+      if (valesDisponiblesPagina.length === 0) {
+        return false;
+      }
+
+      // Verificar si todos los vales disponibles están seleccionados
+      return valesDisponiblesPagina.every(vale =>
+        this.valesSeleccionados.includes(vale.id)
+      );
+    },
+  },
+  watch: {
+    // Limpiar vales seleccionados que ya no están disponibles (consumidos o anulados)
+    vales: {
+      handler(newVales) {
+        if (!newVales || !Array.isArray(newVales)) return;
+
+        // Filtrar los vales seleccionados para mantener solo los que están disponibles
+        this.valesSeleccionados = this.valesSeleccionados.filter(valeId => {
+          const vale = newVales.find(v => v.id === valeId || v._id === valeId);
+          return vale && !vale.consumido && !vale.anulado;
+        });
+      },
+      deep: true
+    }
   },
   async fetch() {
     const ordenId = this.$route.params.id
@@ -500,6 +677,10 @@ export default {
     })
   },
   methods: {
+    getSaldoPorTipo(tipoCombustible) {
+      const item = this.saldosCalculados.find(s => s.tipoCombustible === tipoCombustible);
+      return item ? Number(item.saldo) || 0 : 0;
+    },
     getProgreso(saldo, monto) {
       const porcentaje = (saldo / monto) * 100; // Obtiene el porcentaje restante
       const circunferencia = 2 * Math.PI * 40; // Longitud total del círculo (basado en el radio de 40)
@@ -534,6 +715,7 @@ export default {
     },
     confirmarEliminacion(id) {
       this.valeSeleccionado = id;
+      this.eliminandoVale = false; // Resetear estado al abrir modal
       this.modalEliminacion = true;
     },
     async reimprimirVale(vale) {
@@ -687,7 +869,6 @@ export default {
       ctx.fillStyle = "black";
       ctx.font = "500 38px sans-serif";
 
-      console.log(vale)
       // Ejemplo de coordenadas, ajustalas si hace falta
       ctx.fillText(`${this.orden.proveedor}`, ...pos(600, 310));
       ctx.fillText(`${this.orden.nroOrden}`, ...pos(600, 367));
@@ -703,43 +884,67 @@ export default {
       ctx.font = "500 38px sans-serif"; // volver al tamaño original si seguís con más texto
     },
     async eliminarVale() {
-      if (!this.valeSeleccionado) return;
+      if (!this.valeSeleccionado || this.eliminandoVale) return;
 
       const id = this.valeSeleccionado;
+      this.eliminandoVale = true;
+
       try {
         const userToken = this.$store.state.user.token;
 
         // Hacer la petición al backend para eliminar el vale
         await this.$store.dispatch("combustible/anularVale", { id, userToken });
 
+        // Remover el vale de los seleccionados si estaba seleccionado
+        this.valesSeleccionados = this.valesSeleccionados.filter(valeId => valeId !== id);
+
         this.modalEliminacion = false;
         this.modalEliminado = true;
       } catch (error) {
+        console.error("Error al eliminar el vale:", error);
         alert("Ocurrió un error al eliminar el vale. Revisa la consola para más detalles.");
+      } finally {
+        this.eliminandoVale = false;
       }
     },
     async eliminarValesSeleccionados(){
-      if (this.valesSeleccionados.length === 0) return;
+      if (this.valesSeleccionados.length === 0 || this.eliminandoVales) return;
 
       this.eliminandoVales = true; // Deshabilitar botón
 
-      for (let i = 0; i < this.valesSeleccionados.length; i++) {
-        try {
-          const id = this.valesSeleccionados[i];
-          const userToken = this.$store.state.user.token;
+      const valesAEliminar = [...this.valesSeleccionados]; // Copiar el array antes de limpiarlo
+      let errores = 0;
 
-          // Hacer la petición al backend para eliminar el vale
-          await this.$store.dispatch("combustible/anularVale", { id, userToken })
-        } catch(e) {
-          alert('No se pudieron eliminar todos los vales. Hubo un problema con alguno de ellos')
+      try {
+        for (let i = 0; i < valesAEliminar.length; i++) {
+          try {
+            const id = valesAEliminar[i];
+            const userToken = this.$store.state.user.token;
+
+            // Hacer la petición al backend para eliminar el vale
+            await this.$store.dispatch("combustible/anularVale", { id, userToken })
+          } catch(e) {
+            console.error(`Error al eliminar vale ${valesAEliminar[i]}:`, e);
+            errores++;
+          }
         }
+
+        // Limpiar la selección después de eliminar
+        this.valesSeleccionados = [];
+
+        if (errores > 0) {
+          alert(`No se pudieron eliminar ${errores} vale(s). Hubo un problema con alguno(s) de ellos.`);
+        }
+
+        this.$bvModal.hide('modalEliminacionMasiva')
+        this.$bvModal.show('modalEliminadoMasivo')
+      } catch (error) {
+        console.error("Error general en eliminación masiva:", error);
+        alert("Ocurrió un error al eliminar los vales. Revisa la consola para más detalles.");
+      } finally {
+        // Resetear estado del botón siempre, incluso si hay errores
+        this.eliminandoVales = false;
       }
-
-      // Resetear estado del botón
-      this.eliminandoVales = false;
-
-      this.$bvModal.hide('modalEliminacionMasiva')
-      this.$bvModal.show('modalEliminadoMasivo')
     },
     confirmarMarcarUtilizado(valeRef, index) {
       this.tempValeRef = valeRef
@@ -780,6 +985,9 @@ export default {
           // Eliminar el vale de la lista en el frontend
           this.vales = this.vales.filter(v => v._id !== this.valeSeleccionado);
 
+          // Remover el vale de los seleccionados si estaba seleccionado
+          this.valesSeleccionados = this.valesSeleccionados.filter(valeId => valeId !== id);
+
           this.$bvModal.hide('modalUtilizacion')
           this.modalModificado = true;
         } catch (error) {
@@ -790,9 +998,11 @@ export default {
     async marcarValesSeleccionados() {
       if (this.valesSeleccionados.length === 0) return;
 
-      for (let i = 0; i < this.valesSeleccionados.length; i++) {
+      const valesAMarcar = [...this.valesSeleccionados]; // Copiar el array antes de limpiarlo
+
+      for (let i = 0; i < valesAMarcar.length; i++) {
         try {
-          const id = this.valesSeleccionados[i];
+          const id = valesAMarcar[i];
           const userToken = this.$store.state.user.token;
 
           const vale = {
@@ -810,8 +1020,12 @@ export default {
       await this.$logUserActivity(
         this.$store.state.user.username,
         'Marcar Vales como Utilizados',
-        `${this.valesSeleccionados.length} vales marcados como utilizados`
+        `${valesAMarcar.length} vales marcados como utilizados`
       );
+
+      // Limpiar la selección después de marcar como utilizados
+      this.valesSeleccionados = [];
+
       await this.wait(500)
       this.$bvModal.hide('modalUtilizacionMasiva')
       location.reload()
@@ -921,42 +1135,116 @@ export default {
       this.ocultarAnulados = !this.ocultarAnulados;
       this.currentPage = 1; // Resetear a la primera página
     },
+
+    deseleccionarTodos() {
+      this.valesSeleccionados = [];
+    },
+
+    toggleSeleccionarTodosPagina() {
+      if (!this.paginatedVales || !Array.isArray(this.paginatedVales)) {
+        return;
+      }
+
+      // Obtener solo los vales disponibles de la página actual (no consumidos y no anulados)
+      const valesDisponiblesPagina = this.paginatedVales.filter(
+        vale => !vale.consumido && !vale.anulado
+      );
+
+      // Obtener los IDs de los vales disponibles de la página
+      const idsValesPagina = valesDisponiblesPagina.map(vale => vale.id);
+
+      // Verificar si todos ya están seleccionados
+      const todosSeleccionados = idsValesPagina.every(id =>
+        this.valesSeleccionados.includes(id)
+      );
+
+      if (todosSeleccionados) {
+        // Si todos están seleccionados, deseleccionar solo los de esta página
+        this.valesSeleccionados = this.valesSeleccionados.filter(
+          id => !idsValesPagina.includes(id)
+        );
+      } else {
+        // Si no todos están seleccionados, agregar todos los de esta página
+        // Combinar los seleccionados actuales con los de la página (sin duplicados)
+        const nuevosSeleccionados = [...this.valesSeleccionados];
+        idsValesPagina.forEach(id => {
+          if (!nuevosSeleccionados.includes(id)) {
+            nuevosSeleccionados.push(id);
+          }
+        });
+        this.valesSeleccionados = nuevosSeleccionados;
+      }
+    },
+
+    cambiarVistaVales(vista) {
+      this.vistaVales = vista;
+    },
+
+    async exportarValesAExcel() {
+      try {
+        if (!this.vales || !Array.isArray(this.vales) || this.vales.length === 0) {
+          this.$bvToast.toast('No hay vales para exportar', {
+            title: 'Información',
+            variant: 'info',
+            solid: true
+          });
+          return;
+        }
+
+        // Mapeamos los datos necesarios para el Excel
+        const datosExcel = this.vales.map(vale => ({
+          'Número de orden': this.orden.nroOrden || '',
+          'Número de vale': vale.nro_vale || '',
+          'Tipo de combustible': vale.tipoCombustible || '',
+          'Monto': vale.monto || 0,
+          'Patente': vale.dominio ? vale.dominio.toUpperCase() : 'Sin patente',
+          'Fecha de emisión': vale.fechaEmision ? new Date(vale.fechaEmision).toLocaleDateString('es-AR') : '',
+          'Estado': vale.anulado ? 'Anulado' : (vale.consumido ? 'No disponible' : 'Disponible')
+        }));
+
+        // Convertimos los datos a una hoja de Excel
+        const hojaVales = XLSX.utils.json_to_sheet(datosExcel);
+
+        // Ajustamos el ancho de las columnas
+        const columnas = Object.keys(datosExcel[0]);
+        const anchos = columnas.map(col => ({ wch: Math.max(col.length, 15) }));
+        hojaVales['!cols'] = anchos;
+
+        // Creamos un libro de Excel y agregamos la hoja
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, hojaVales, 'Vales');
+
+        // Convertimos el libro a un buffer
+        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+
+        // Creamos un Blob para descargar
+        const blob = new Blob([excelBuffer], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        });
+
+        // Usamos FileSaver.js para guardar el archivo
+        const fecha = new Date().toISOString().split('T')[0];
+        const nombreArchivo = `Vales_Orden_${this.orden.nroOrden}_${fecha}.xlsx`;
+        saveAs(blob, nombreArchivo);
+
+        this.$bvToast.toast('Archivo Excel generado exitosamente', {
+          title: 'Éxito',
+          variant: 'success',
+          solid: true
+        });
+      } catch (error) {
+        console.error('Error al generar el Excel:', error);
+        this.$bvToast.toast('Error al generar el archivo Excel', {
+          title: 'Error',
+          variant: 'danger',
+          solid: true
+        });
+      }
+    },
   },
 }
 </script>
 
-<style>
-.font-weight-100{
-  font-weight: 100;
-}
-.font-weight-200{
-  font-weight: 200;
-}
-.font-weight-300{
-  font-weight: 300;
-}
-.font-weight-400{
-  font-weight: 400;
-}
-.font-weight-500{
-  font-weight: 500;
-}
-.font-weight-600{
-  font-weight: 600;
-}
-.font-weight-700{
-  font-weight: 700;
-}
-.font-weight-800{
-  font-weight: 800;
-}
-.font-weight-900{
-  font-weight: 900;
-}
-.font-weight-1000{
-  font-weight: 1000;
-}
-</style>
 
 <style scoped>
 .fuel-icon {
@@ -981,9 +1269,6 @@ export default {
   align-self: start;
 }
 
-.text-green{
-  color: #196B23;
-}
 
 .text-gray{
   color:#505050;
@@ -991,6 +1276,59 @@ export default {
 
 .border-card{
   border: #000 1px solid;
+}
+
+/* Popup de observaciones: texto más compacto */
+.observaciones-modal-content {
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+/* Cards de vales — tamaño intermedio, más uso del espacio (sobre todo a la izquierda) */
+.vale-card-compact {
+  font-size: 1rem;
+}
+.vale-card-body {
+  padding: 0.55rem 0.77rem 0.75rem 0;
+}
+.vale-card-header {
+  margin-bottom: 0.5rem;
+}
+.vale-card-title {
+  font-size: 1.15rem;
+  line-height: 1.3;
+}
+.vale-checkbox-input,
+.vale-icon-disabled {
+  flex-shrink: 0;
+}
+.vale-card-actions {
+  gap: 0.2rem;
+}
+.vale-card-btn {
+  padding: 0.1rem 0.15rem;
+  min-width: 1.6rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.vale-card-details {
+  padding-left: 0;
+}
+.vale-card-line {
+  font-size: 0.9rem;
+  line-height: 1.45;
+  margin-bottom: 0.2rem;
+}
+.vale-card-line:last-child {
+  margin-bottom: 0;
+}
+
+/* Grid de vales: usar más ancho del contenedor (menos margen lateral) */
+.vale-grid-row {
+  margin-left: 0.25rem;
+  margin-right: 0.25rem;
 }
 
 .big-container{
@@ -1159,13 +1497,7 @@ export default {
 .modal-dialog {
   max-width: 80% !important;
 }
-.icon-orange{
-  color: #e08933;
-}
 
-.col strong{
-  margin-bottom: 0%;
-}
 /* Responsive: */
 
 @media only screen and (min-width: 640px) {
@@ -1203,5 +1535,91 @@ export default {
 
 p{
   font-size: 18px;
+}
+
+/* Estilos para vista lista de vales */
+.vales-list-table {
+  margin-bottom: 0;
+  background-color: #fff;
+}
+
+.vales-list-table thead th {
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 12px 8px;
+  color: #505050;
+  text-align: left;
+}
+
+.vales-list-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+/* Filas alternadas: blanco y gris */
+.vales-list-table tbody tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.vales-list-table tbody tr:nth-child(odd) {
+  background-color: #fff;
+}
+
+.vales-list-table tbody tr:hover {
+  background-color: #e9ecef !important;
+}
+
+.vales-list-table tbody tr.vale-disabled {
+  opacity: 0.6;
+}
+
+.vales-list-table tbody tr.vale-disabled:nth-child(even) {
+  background-color: #f0f0f0;
+}
+
+.vales-list-table tbody tr.vale-disabled:nth-child(odd) {
+  background-color: #f8f8f8;
+}
+
+.vales-list-table tbody tr.vale-disabled:hover {
+  background-color: #e0e0e0 !important;
+}
+
+.vales-list-table tbody td {
+  padding: 12px 8px;
+  vertical-align: middle;
+  font-size: 14px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.vale-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.vale-row {
+  cursor: default;
+}
+
+/* Responsive para vista lista */
+@media (max-width: 768px) {
+  .vales-list-table {
+    font-size: 12px;
+  }
+
+  .vales-list-table thead th,
+  .vales-list-table tbody td {
+    padding: 8px 4px;
+    font-size: 12px;
+  }
+
+  .vales-list-table thead th:nth-child(3),
+  .vales-list-table tbody td:nth-child(3),
+  .vales-list-table thead th:nth-child(4),
+  .vales-list-table tbody td:nth-child(4) {
+    display: none;
+  }
 }
 </style>

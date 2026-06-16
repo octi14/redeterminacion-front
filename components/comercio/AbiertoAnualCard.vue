@@ -61,7 +61,7 @@
                 <b-col><div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-2"></b-icon-caret-right-fill><p class="li-content sub-texto-exp">La <b>carga</b> realizada el día {{ fecha }} es <b>incorrecta</b>, porque <b>{{ observaciones }}</b></p></div></b-col>
             </b-row>
             <b-row>
-                <b-col><div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-2"></b-icon-caret-right-fill><p class="li-content sub-texto-exp">Recibirás una notificación a tu Domicilio Fiscal Electrónico (DFE) indicando fecha y forma de rectificación.</p></div></b-col>
+                <b-col><div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-2"></b-icon-caret-right-fill><p class="li-content sub-texto-exp">Recordá que en el mes de Noviembre podés rectificar las facturas de los períodos indicados como incorrectos.</p></div></b-col>
             </b-row>
             <b-row>
                 <b-col><div class="li-row" v-if="!DFE"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-2"></b-icon-caret-right-fill><p class="li-content sub-texto-exp">Si aún no tenés DFE, tramitalo enviando un mail a <a href="mailto:arvige@gesell.gob.ar" class="icon-green">dirarvige@gesell.gob.ar</a>. En caso contrario, no se te notificará el error y deberás revisar periódicamente está página para obtener dicha información.</p></div></b-col>
@@ -74,7 +74,7 @@
                 <b-col><p class="texto-exp"><b>El plazo de carga de documentación para este período ha concluido.</b></p></b-col>
             </b-row>
             <b-row>
-                <b-col><p class="sub-texto-exp">Recibirás una notificación a tu Domicilio Fiscal Electrónico (DFE) indicando fecha y forma de rectificación.</p></b-col>
+                <b-col><p class="sub-texto-exp">Recordá que en el mes de Noviembre podés rectificar las facturas de los períodos indicados como incorrectos.</p></b-col>
             </b-row>
             <b-row>
                 <b-col class="li-row" v-if="!DFE"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-3"></b-icon-caret-right-fill><p class="li-content mini-texto-exp"><b>Si aún no tenés DFE</b>, tramitalo enviando un mail a <a href="mailto:dirarvige@gesell.gob.ar" class="icon-green">dirarvige@gesell.gob.ar</a>. En caso contrario <b>no se te notificará el error</b> y deberás <b>revisar periodicamente la información en esta página</b> (Volviendo a introducir los datos del comercio).</p></b-col>
@@ -166,7 +166,6 @@
 
   <script>
   import { requiredIf } from 'vuelidate/lib/validators';
-  import abiertoAnualConfig from '~/plugins/abiertoAnualConfig';
   export default {
     props: {
       id:{
@@ -183,7 +182,6 @@
     },
     data() {
         return {
-        config: abiertoAnualConfig,
         archivo: null,
         estadoActual: null,
 
@@ -196,6 +194,9 @@
         };
     },
     computed: {
+        config() {
+          return this.$store.getters['config/abiertoAnualPeriodos'];
+        },
         periodoTexto() {
             // Lógica para asignar un texto al periodo
             // Por ejemplo, puedes tener un array de textos correspondientes a cada periodo
@@ -260,7 +261,7 @@
                 now = new Date(this.$store.state.fechas.fecha.fecha);
                 const maxDateParts = this.config.maxDates[this.periodo].split('/');
                 const minDateParts = this.config.minDates[this.periodo].split('/');
-                const maxDate = new Date(maxDateParts[2], maxDateParts[1] - 1, maxDateParts[0]);
+                const maxDate = new Date(maxDateParts[2], maxDateParts[1] - 1, maxDateParts[0], 23, 59, 59, 999);
                 const minDate = new Date(minDateParts[2], minDateParts[1] - 1, minDateParts[0]);
             if (now > maxDate){
                 if(this.config.rectificacion){
@@ -509,12 +510,6 @@ h3{
 }
 .btn-success{
     width: 100%;
-}
-.icon-orange{
-  color: #E27910;
-}
-.icon-green{
-  color: #0c681a;
 }
 .li-icon, .li-content{
   display: inline-block;

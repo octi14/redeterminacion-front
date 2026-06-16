@@ -146,15 +146,29 @@
           <b-row>
               <b-col><div class="li-row"><b-icon-caret-right-fill class="li-icon icon-orange" font-scale="1" shift-v="-3px"></b-icon-caret-right-fill><p class="li-content texto-exp"><b>Seleccioná los motivos por los que la carga es incorrecta:</b></p></div></b-col>
           </b-row>
-          <b-row><b-radio-group class="motivos-rechazo-group">
-              <b-form-radio class="motivo-rechazo-option" :id="'motivo-1-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="La factura no corresponde al período solicitado."> La factura no corresponde al período solicitado.</b-form-radio>
-              <b-form-radio class="motivo-rechazo-option" :id="'motivo-2-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="La factura no corresponde al Legajo y/o CUIT/CUIM."> La factura no corresponde al Legajo y/o CUIT/CUIM.</b-form-radio>
-              <b-form-radio class="motivo-rechazo-option" :id="'motivo-3-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="El documento no es legible o está dañado."> El documento no es legible o está dañado.</b-form-radio>
-              <b-form-radio class="motivo-rechazo-option" :id="'motivo-4-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="El documento no es una factura."> El documento no es una factura.</b-form-radio>
-              <b-form-radio class="motivo-rechazo-option" :id="'motivo-5-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="El contribuyente cambió de categoría tirbutaria."> El contribuyente cambió de categoría tributaria.</b-form-radio>
-              <b-form-radio class="motivo-rechazo-option" :id="'motivo-6-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="La facturacion no es compatible con las reglamentaciones de AFIP."> La facturacion no es compatible con las reglamentaciones de AFIP.</b-form-radio>
-              <b-form-radio class="motivo-rechazo-option" :id="'motivo-7-' + id" :name="'radio-motivo-' + id" v-model="motivo" value="La factura no corresponde a una venta efectivamente efectuada."> La factura no corresponde a una venta efectivamente efectuada.</b-form-radio>
-            </b-radio-group></b-row>
+          <b-row>
+            <b-radio-group class="motivos-rechazo-group">
+              <b-form-radio
+                v-for="(opcion, idx) in motivosRechazoVisibles"
+                :id="'motivo-' + (idx + 1) + '-' + id"
+                :key="'motivo-' + opcion"
+                class="motivo-rechazo-option"
+                :name="'radio-motivo-' + id"
+                v-model="motivo"
+                :value="opcion"
+              >
+                {{ opcion }}
+              </b-form-radio>
+              <b-button
+                v-if="hayMasMotivosRechazo"
+                variant="link"
+                class="btn-ver-mas-motivos"
+                @click="mostrarTodosMotivos = !mostrarTodosMotivos"
+              >
+                {{ mostrarTodosMotivos ? 'Ver menos' : 'Ver más' }}
+              </b-button>
+            </b-radio-group>
+          </b-row>
       </b-card-text>
       <b-card-text v-else-if="estadoActual == 12" class="action-confirmation-card">
       <!-- estadoActual == 9 => CONFIRMACION DE RECHAZO -->
@@ -216,7 +230,6 @@
 </template>
 
 <script>
-import abiertoAnualConfig from "@/plugins/abiertoAnualConfig.js";
 import { requiredIf } from 'vuelidate/lib/validators';
 export default {
   props: {
@@ -233,12 +246,24 @@ export default {
   },
   data() {
       return {
-      config: abiertoAnualConfig,
       archivo: null,
       estadoActual: null,
       estadoPrevio: null,
       factura: null,
       motivo: '',
+      mostrarTodosMotivos: false,
+      maxMotivosIniciales: 5,
+      motivosRechazo: [
+        'La factura no corresponde al período solicitado.',
+        'La factura no corresponde al Legajo y/o CUIT/CUIM.',
+        'El documento no es legible o está dañado.',
+        'El documento no es una factura.',
+        'El contribuyente cambió de categoría tributaria.',
+        'La facturación no es compatible con las reglamentaciones de AFIP.',
+        'La factura no corresponde a una venta efectivamente efectuada.',
+        'La CUIT registra uno o más impuestos con baja de oficio según ARCA.',
+        'La facturación no constituye punto de Venta en Villa Gesell.',
+      ],
       recaptchaSiteKey: "6LfNxggoAAAAANyfZ5a2Lg_Rx28HX_lINDYX7AU-",
       captchaResponse: null,
       captchaError: false,
@@ -254,6 +279,9 @@ export default {
     })
   },
   computed: {
+    config() {
+      return this.$store.getters['config/abiertoAnualPeriodos'];
+    },
     periodoTexto() {
       // Lógica para asignar un texto al periodo
       // Por ejemplo, puedes tener un array de textos correspondientes a cada periodo
@@ -292,6 +320,13 @@ export default {
     },
     tramite(){
       return this.$store.state.abiertoAnual.single
+    },
+    hayMasMotivosRechazo() {
+      return this.motivosRechazo.length > this.maxMotivosIniciales
+    },
+    motivosRechazoVisibles() {
+      if (this.mostrarTodosMotivos) return this.motivosRechazo
+      return this.motivosRechazo.slice(0, this.maxMotivosIniciales)
     }
   },
   validations: {
@@ -302,27 +337,25 @@ export default {
       }
   },
   fetchOnServer: false,
+  /**
+   * Hook created(): inicializa la tarjeta del período de Abierto Anual.
+   * 1) Calcula estadoActual (1-13) a partir del estado del trámite y las fechas.
+   * 2) Guarda estadoPrevio y motivo; si viene hardEstado por prop, fuerza ese estado.
+   * (Las facturas/documentos se cargan después vía fetch() y se usan desde la computed facturas.)
+   */
   async created() {
-      const contenedor = document.getElementById('aaCard');
-      if( this.$store.state.facturas.all && this.$store.state.facturas.all.length <= this.periodo){
-          this.factura = this.$store.state.facturas.all[this.periodo]
-      }else{
-          console.log("Mounted no se pudo traer nada para el período " + this.periodo)
-          console.log("A pesar de que el store tiene: " + this.$store.state.facturas.all)
-      }
-      console.log(this.factura);
-
-
-      //DETERMINAR ESATDO INICIAL
-      console.log("this.config.rectificacion: " + this.config.rectificacion);
-      console.log("this.estado: " + this.estado);
-      console.log("Motivo de rechazo " + this.observaciones)
+      // Determinar estado inicial (estadoActual) según el estado del trámite.
+      // estado viene del backend (Correcto | Incorrecto | Incompleto | En revisión).
+      // estadoActual es el número que usa el template para mostrar mensajes e íconos (1-13).
       switch(this.estado){
           case "Correcto": {
+                  // Período ya aprobado: no se puede volver a subir.
                   this.estadoActual = 3;
                   break
               };
           case "Incorrecto": {
+                  // Rechazado: si está en rectificación o config lo permite → estado 7 (habilitado para subir rectificación).
+                  // Si no → estado 4 (incorrecto, sin rectificación habilitada).
                   if (this.tramite.facturas[this.periodo] && (this.tramite.facturas[this.periodo].rectificando || this.config.rectificacion)){
                       this.estadoActual =  7;
                       break
@@ -332,13 +365,15 @@ export default {
                   }
               };
           case "Incompleto": {
+                  // Aún no hay carga correcta: depende de la fecha actual vs ventana del período.
                   await this.$store.dispatch('fechas/get')
                   const now = new Date(this.$store.state.fechas.fecha.fecha);
                   const maxDateParts = this.config.maxDates[this.periodo].split('/');
                   const minDateParts = this.config.minDates[this.periodo].split('/');
-                  const maxDate = new Date(maxDateParts[2], maxDateParts[1] - 1, maxDateParts[0]);
+                  const maxDate = new Date(maxDateParts[2], maxDateParts[1] - 1, maxDateParts[0], 23, 59, 59, 999);
                   const minDate = new Date(minDateParts[2], minDateParts[1] - 1, minDateParts[0]);
                   if (now && now > maxDate){
+                      // Pasó la fecha máxima: período vencido. Si hay rectificación habilitada → 7; si no → 5 (vencido sin rectificación).
                       if(this.config.rectificacion){
                           this.estadoActual = 7;
                           break;
@@ -347,13 +382,16 @@ export default {
                       break;
                   }
                   if (now && now < minDate){
+                      // Antes de la ventana: no se puede cargar aún.
                       this.estadoActual =  1;
                       break;
                   }
+                  // Dentro de la ventana: se puede cargar por primera vez.
                   this.estadoActual =  6;
                   break
               };
           case "En revisión":{
+              // Cargó documentos y están siendo revisados.
               this.estadoActual =  2;
               break
           }
@@ -361,6 +399,7 @@ export default {
      this.estadoPrevio = this.estadoActual;
      this.motivo = this.observaciones;
 
+     // Override: si el padre pasa hardEstado, se fuerza ese estado (útil para pruebas o flujos especiales).
      if (this.hardEstado != null)
           this.estadoActual = this.hardEstado;
   },
@@ -712,12 +751,6 @@ display: none;
   margin: 2rem auto !important;
   width: 100% !important;
 }
-.icon-orange{
-color: #E27910;
-}
-.icon-green{
-color: #0c681a;
-}
 .li-icon, .li-content{
 display: inline-block;
 }
@@ -772,6 +805,11 @@ width: 100%;
 .ticket-bad-card .texto-exp, .comment-pick-card .texto-exp{
   font-size: 18px;
 }
+
+.comment-pick-card {
+  padding-bottom: 6.5rem;
+}
+
 .action-confirmation-card .importante-box .texto-exp, .periodo-vencido-card .importante-box .texto-exp, .ticket-bad-card .importante-box .texto-exp, .comment-pick-card .custom-radio, .periodo-correcto-card .sub-texto-exp, .ticket-revision-card .sub-texto-exp, .ticket-ok-card .sub-texto-exp, .periodo-esperando-card .sub-texto-exp, .ticket-revision-card .titulo-exp, .ticket-enviando-card .sub-texto-exp, .periodo-vencido-card .sub-texto-exp, .ticket-bad-card .sub-texto-exp, .ticket-enviando-fail-card .sub-texto-exp {
   font-size: 15px;
 }
@@ -822,20 +860,8 @@ width: 100%;
   margin: 1rem auto;
   text-align: center;
 }
-.btn-approve{
-  background-color: #0c681a;
-  border-color: #0c681a;
-}
-.btn-approve:hover{
-  background-color: green;
-  border-color: green;
-}
 .btn-rectific{
   cursor: pointer;
-}
-.btn-cancel:hover{
-  background-color: #f09658;
-  border-color: #f09658;
 }
 .btn-cancel{
   background-color: #e53749;
@@ -849,6 +875,7 @@ width: 100%;
 
 .motivos-rechazo-group {
   width: 100%;
+  margin: 1rem;
 }
 
 .motivo-rechazo-option {
@@ -862,6 +889,28 @@ width: 100%;
   font-size: 14px;
   line-height: 1.3;
   padding-left: 0.5rem;
+}
+
+.btn-ver-mas-motivos {
+  display: block;
+  width: fit-content !important;
+  margin-top: 0.25rem;
+  margin-left: 1.75rem;
+  padding: 0 !important;
+  font-size: 14px;
+  line-height: 1.3;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  text-decoration: underline;
+}
+
+.btn-ver-mas-motivos:focus,
+.btn-ver-mas-motivos:active,
+.btn-ver-mas-motivos:hover {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 @keyframes play-animation {
   0% {

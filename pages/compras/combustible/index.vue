@@ -1,9 +1,9 @@
 <template>
-  <div v-if="adminCompras" class="page main-background">
+  <div v-if="puedeVerPaginaCombustible" class="page main-background">
     <Banner title="Compras" subtitle="Combustible"/>
 
-    <!-- Botones de acción -->
-    <div class="row no-gutters justify-content-center mt-4">
+    <!-- Botones de acción: ocultos para quien solo ve el dashboard -->
+    <div v-if="!soloDashboardCombustible" class="row no-gutters justify-content-center mt-4">
       <b-button variant="success" class="text-center mx-3" @click="showCargarOrden = true">
         <b-icon-plus-circle class="mr-2"></b-icon-plus-circle>
         Cargar Orden de Compra
@@ -14,17 +14,17 @@
       </b-button>
     </div>
 
-    <!-- Pestañas justo encima de las tablas -->
+    <!-- Pestañas: Órdenes y Vehículos ocultas para quien solo ve dashboard (gustavociriaco) -->
     <div class="col-md-10 mx-auto mt-4">
       <b-tabs content-class="mt-0" fill class="custom-tabs">
-        <!-- Pestaña Órdenes de Compra -->
-        <b-tab title="📋 Órdenes de Compra" active class="custom-tab">
+        <!-- Pestaña Órdenes de Compra: oculta para quien solo ve dashboard -->
+        <b-tab v-if="!soloDashboardCombustible" title="📋 Órdenes de Compra" active class="custom-tab">
           <b-table per-page="10" head-row-variant="success" class="white shadow-card" :items="paginatedItems" :fields="fields">
       <template #cell(monto)="row">
         {{ format(row.item.montos.reduce((acc, combustible) => acc + combustible.monto, 0)) }}
       </template>
-      <template #cell(saldoRestante)="row">
-        {{ format(row.item.saldos.reduce((acc, saldo) => acc + saldo.saldo, 0)) }}
+      <template #cell(area)="row">
+        {{ row.item.area || '—' }}
       </template>
       <template #cell(acciones)="row">
         <b-button-group size="sm">
@@ -61,8 +61,55 @@
           <b-pagination class="mt-4" :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
         </b-tab>
 
-        <!-- Pestaña Vehículos -->
-        <b-tab title="🚗 Vehículos" class="custom-tab">
+        <!-- Pestaña Estadísticas: mismo dashboard para jefeCompras y gustavociriaco -->
+        <b-tab v-if="jefeCompras || soloDashboardCombustible" title="📊 Estadísticas" :active="soloDashboardCombustible" class="custom-tab">
+          <div class="dashboard-combustible">
+            <!-- Estado de carga -->
+            <div v-if="loadingEstadisticas" class="text-center py-5">
+              <b-spinner variant="primary" label="Cargando..."></b-spinner>
+              <p class="mt-3 text-muted">Cargando estadísticas de combustible...</p>
+            </div>
+
+            <!-- Estado de error -->
+            <b-alert
+              v-else-if="errorEstadisticas"
+              variant="danger"
+              dismissible
+              @dismissed="errorEstadisticas = null"
+              class="mb-4"
+            >
+              <i class="bi bi-exclamation-triangle-fill mr-2"></i>
+              <strong>Error:</strong> {{ errorEstadisticas }}
+            </b-alert>
+
+            <!-- Contenido del dashboard -->
+            <template v-else>
+              <!-- Análisis Detallado de Combustible -->
+              <div class="row mb-4">
+                <div class="col-12">
+                  <EstadisticasDetalladas :modulos="{ combustible: datosCombustible }" :hide-compras-info="true" />
+                </div>
+              </div>
+
+              <!-- Consumos por Área -->
+              <div class="row mb-4">
+                <div class="col-12">
+                  <CombustiblePorArea :datos-combustible="datosCombustible || {}" />
+                </div>
+              </div>
+
+              <!-- Consumos por Patente -->
+              <div class="row mb-4">
+                <div class="col-12">
+                  <EstadisticasPorPatente :datos-combustible="datosCombustible || {}" :hide-compras-info="true" />
+                </div>
+              </div>
+            </template>
+          </div>
+        </b-tab>
+
+        <!-- Pestaña Vehículos: oculta para quien solo ve dashboard -->
+        <b-tab v-if="!soloDashboardCombustible" title="🚗 Vehículos" class="custom-tab">
           <!-- Filtros -->
           <div class="row no-gutters filtro-section">
             <div class="col-md-3">
@@ -185,13 +232,12 @@
                 <b-icon-caret-right-fill class="icon-orange ml-0"/>
               <h6 class="text-dark font-weight-500 ml-1">Número de Orden de Compra</h6>
             </div>
-            <b-form-group class="col-12 ml-2">
+            <b-form-group class="col-12 ml-2" :state="nroOrdenDuplicado ? false : null" invalid-feedback="Ya existe una orden de compra con este número.">
               <div class="numero-orden-container">
                 <b-form-input size="sm" style="border-radius: 0;" type="number" class="col-7" no-wheel v-model="nroOrden1"/>
                 <span>/</span>
                 <b-form-input size="sm" style="border-radius: 0;" type="number" class="col-3" no-wheel v-model="nroOrden2"/>
               </div>
-
             </b-form-group>
 
             <!-- Proveedor -->
@@ -245,7 +291,7 @@
           <div class="row justify-content-end">
             <!-- Botón de aceptar -->
             <div class="text-center mt-3 mx-2">
-              <b-btn variant="success" :disabled="!nroOrden1 || !nroOrden2 || !orden.area || !orden.montos.length" @click="submitForm">
+              <b-btn variant="success" :disabled="!nroOrden1 || !nroOrden2 || !orden.area || !orden.montos.length || nroOrdenDuplicado" @click="submitForm">
                 Aceptar
               </b-btn>
             </div>
@@ -279,7 +325,11 @@
           </div>
         </div>
       <div v-else>
-        <p class="h5 text-center mt-3 mb-4 font-weight-500 text-dark">Estás a punto de eliminar la orden de compra.</p>
+        <p class="h5 text-center mt-3 mb-2 font-weight-500 text-dark">Estás a punto de eliminar la orden de compra.</p>
+        <p class="d-flex align-items-center justify-content-center mt-2 mb-2 px-3 py-2 rounded bg-light border border-warning">
+          <b-icon-exclamation-circle-fill scale="1.2" class="text-warning mr-2 flex-shrink-0" />
+          <span class="text-dark font-weight-600" style="font-size: 0.95rem;">Se eliminarán también todos los vales asociados a esta orden.</span>
+        </p>
         <p class="h6 text-center mt-2 mb-3 font-weight-500 text-dark">¿Deseás continuar?</p>
         <hr class="row col-9 mx-auto"/>
         <div class="row no-gutters justify-content-center">
@@ -493,8 +543,16 @@
 
 <script>
 import areas from "@/plugins/areas.js";
+import EstadisticasDetalladas from '~/components/dashboard/EstadisticasDetalladas.vue'
+import CombustiblePorArea from '~/components/dashboard/CombustiblePorArea.vue'
+import EstadisticasPorPatente from '~/components/dashboard/EstadisticasPorPatente.vue'
 
 export default {
+  components: {
+    EstadisticasDetalladas,
+    CombustiblePorArea,
+    EstadisticasPorPatente
+  },
   data() {
     return {
       areas: areas, // Agregar las áreas importadas
@@ -523,7 +581,7 @@ export default {
         { key: 'nroOrden', label: 'Nro. orden' },
         { key: 'monto', label: 'Importe' },
         { key: 'vales', label: 'Vales' },
-        { key: 'saldoRestante', label: 'Saldo' },
+        { key: 'area', label: 'Área asignada' },
         { key: 'acciones', label: 'Acciones'},
       ],
       // Datos para vehículos
@@ -557,25 +615,66 @@ export default {
         { key: 'acciones', label: 'Acciones', sortable: false },
       ],
       // areas: ahora se obtiene del plugin $areas
+      loadingEstadisticas: false,
+      errorEstadisticas: null
     };
   },
   async fetch() {
-    await this.$store.dispatch('combustible/getOrdenesCompra')
-    this.items = this.ordenesCompra
-    await this.$store.dispatch('combustible/getProveedores')
+    const soloDashboard = this.$store.state.user.username === 'gustavociriaco@gesell.gob.ar'
 
-    // Cargar vehículos
-    try {
-      await this.$store.dispatch('vehiculos/getAll')
-      this.vehiculos = this.$store.state.vehiculos ? this.$store.state.vehiculos.all : []
-    } catch (error) {
-      console.error('Error al cargar vehículos:', error)
-      this.vehiculos = []
+    if (!soloDashboard) {
+      await this.$store.dispatch('combustible/getOrdenesCompra')
+      this.items = this.ordenesCompra
+      await this.$store.dispatch('combustible/getProveedores')
+
+      try {
+        await this.$store.dispatch('vehiculos/getAll')
+        this.vehiculos = this.$store.state.vehiculos ? this.$store.state.vehiculos.all : []
+      } catch (error) {
+        console.error('Error al cargar vehículos:', error)
+        this.vehiculos = []
+      }
+    }
+
+    // Cargar estadísticas de combustible para jefeCompras o para quien solo ve el dashboard (gustavociriaco)
+    const user = this.$store.state.user
+    const puedeVerDashboard = user && (
+      (user.admin === 'compras' && user.username === 'martinjordan@gesell.gob.ar') ||
+      user.admin === 'master' ||
+      user.username === 'gustavociriaco@gesell.gob.ar'
+    )
+    if (puedeVerDashboard) {
+      try {
+        this.loadingEstadisticas = true
+        this.errorEstadisticas = null
+        const startDate = new Date(2026, 0, 1)
+        startDate.setHours(0, 0, 0, 0)
+        const endDate = new Date()
+        endDate.setHours(23, 59, 59, 999)
+        await this.$store.dispatch('estadisticas/fetchEstadisticasCombustible', { startDate, endDate })
+      } catch (error) {
+        console.error('Error al cargar estadísticas de combustible:', error)
+        this.errorEstadisticas = 'Error al cargar las estadísticas. Por favor, intenta recargar la página.'
+      } finally {
+        this.loadingEstadisticas = false
+      }
     }
   },
   computed: {
     adminCompras(){
       return this.$store.state.user.admin === "compras" || this.$store.state.user.admin === "master"
+    },
+    /** Puede entrar a la página combustible: admin compras o usuario con solo dashboard. */
+    puedeVerPaginaCombustible() {
+      return this.adminCompras || this.$store.state.user.username === "gustavociriaco@gesell.gob.ar"
+    },
+    /** Solo ve el dashboard de combustible (sin órdenes ni vehículos). */
+    soloDashboardCombustible() {
+      return this.$store.state.user.username === "gustavociriaco@gesell.gob.ar"
+    },
+    /** Solo martinjordan@gesell.gob.ar (o master) puede ver la pestaña Estadísticas dentro de la vista completa. */
+    jefeCompras() {
+      return (this.$store.state.user.admin === "compras" && this.$store.state.user.username === "martinjordan@gesell.gob.ar") || this.$store.state.user.admin === "master"
     },
     ordenesCompra() {
       return this.$store.state.combustible.all;
@@ -592,14 +691,7 @@ export default {
     paginatedItems() {
       const start = (this.currentPage - 1) * this.perPage;
       const end = start + this.perPage;
-
-      // Mapear los datos para calcular los valores necesarios antes de mostrar en la tabla
-      return this.filteredItems.slice(start, end).map(item => ({
-        ...item,
-        monto: (item.montoSuper || 0) + (item.montoVPower || 0),
-        vales: item.vales,
-        saldoRestante: (item.saldoSuper || 0) + (item.saldoVPower || 0)
-      }));
+      return this.filteredItems.slice(start, end);
     },
     filteredItems() {
       let items = this.items;
@@ -652,6 +744,18 @@ export default {
     },
     areaEditState() {
       return this.vehiculoEdit.area && this.vehiculoEdit.area.length > 0 ? null : false;
+    },
+    /** true si el número de orden ya existe en la lista (no se puede crear). */
+    nroOrdenDuplicado() {
+      if (!this.nroOrden1 || !this.nroOrden2) return false;
+      const nro = `${String(this.nroOrden1).trim()}/${String(this.nroOrden2).trim()}`;
+      return this.items.some(item => item.nroOrden && String(item.nroOrden).trim() === nro);
+    },
+    // Computed property para obtener datos de combustible desde el store
+    datosCombustible() {
+      const datos = this.$store.state.estadisticas.estadisticasModulos?.combustible || {}
+
+      return datos
     }
   },
   methods: {
@@ -682,6 +786,10 @@ export default {
       }
     },
     async submitForm() {
+      if (this.nroOrdenDuplicado) {
+        this.$bvToast.toast("Ya existe una orden de compra con ese número.", { variant: "warning" });
+        return;
+      }
       this.loadingCargar = true;
       try {
         // const userToken = this.$store.state.user.token;
@@ -921,9 +1029,6 @@ export default {
   padding: 1.5rem;
 }
 
-.icon-orange {
-  color: #FF7A00;
-}
 
 /* Sección de filtros con color personalizado */
 .filtro-section {
@@ -932,5 +1037,10 @@ export default {
   border-radius: 3px !important;
   border: 1px solid #c3cae5 !important;
   box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
+}
+
+/* Estilos para el dashboard de combustible */
+.dashboard-combustible {
+  padding: 1rem 0;
 }
 </style>

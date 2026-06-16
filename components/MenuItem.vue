@@ -40,4 +40,12 @@ export default {
 .col{
   margin: 16px;
 }
+
+/* Agregar márgenes laterales en mobile */
+@media (max-width: 767.98px) {
+  .row {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
 </style>

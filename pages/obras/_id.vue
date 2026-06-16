@@ -11,8 +11,8 @@
             <div class="my-1">
               <div v-show="!editing && adminHacienda" class="row mt-4 mb-4 justify-content-center">
                 <div class="col-12 d-flex flex-wrap justify-content-center">
-                  <b-button pill class="fixed-size-button btn-4 mb-2 mx-2" :variant="button.variant" v-for="(button, index) in filteredButtons" :key="index" @click="button.action">
-                    <b>{{ button.label }}</b>
+                  <b-button class="fixed-size-button btn-4 mb-2 mx-2" :variant="button.variant" v-for="(button, index) in filteredButtons" :key="index" @click="button.action">
+                    {{ button.label }}
                   </b-button>
                 </div>
               </div>
@@ -172,8 +172,8 @@
               </div>
               <template #modal-footer>
                 <div class="row mx-auto">
-                  <b-button pill class="mt-2 mx-1" variant="success" @click="onSubmitDelete(); $bvModal.hide('modal-delete')">Eliminar</b-button>
-                  <b-button pill class="mt-2" variant="danger" @click="$bvModal.hide('modal-delete')">Cancelar</b-button>
+                  <b-button class="mt-2 mx-1" variant="success" @click="onSubmitDelete(); $bvModal.hide('modal-delete')">Eliminar</b-button>
+                  <b-button class="mt-2" variant="danger" @click="$bvModal.hide('modal-delete')">Cancelar</b-button>
                 </div>
               </template>
             </b-modal>
@@ -382,13 +382,6 @@ export default {
 <style type="text/css">
 /* Layout: */
 
-.col-main {
-  flex: 1;
-}
-
-.col-complementary {
-  flex: 1;
-}
 
 .centeredContainer{
     width:  auto;

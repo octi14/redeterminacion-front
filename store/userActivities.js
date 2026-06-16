@@ -26,6 +26,24 @@ export const actions = {
     }
   },
 
+  /** Carga solo las actividades de los últimos N días (por defecto 30). Más rápido que getAll. */
+  async getLastDays({ commit }, { days = 30 } = {}) {
+    try {
+      commit('setLoading', true)
+      commit('setError', null)
+      const activities = await UserActivityService.getLastDays(this.$axios, { days })
+      commit('setAll', activities)
+      return activities
+    } catch (error) {
+      console.error('Error al cargar actividades de los últimos días:', error)
+      commit('setError', 'Error al cargar las actividades')
+      commit('setAll', [])
+      return []
+    } finally {
+      commit('setLoading', false)
+    }
+  },
+
   async getRecent({ commit }, { limit = 50 }) {
     try {
       commit('setLoading', true)

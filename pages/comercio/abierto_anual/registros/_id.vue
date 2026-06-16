@@ -81,6 +81,7 @@
       // }
     },
     async fetch() {
+      await this.$store.dispatch('config/getAbiertoAnualPeriodos');
       const tramiteId = this.$route.params.id
       await this.$store.dispatch('abiertoAnual/getSingle',{
         id: tramiteId,
@@ -175,21 +176,6 @@
     max-width: 80% !important;
   }
 
-  .col-main {
-    flex: 1;
-  }
-
-  .col-complementary {
-    flex: 1;
-  }
-
-  .icon-orange{
-    color: #E27910;
-  }
-
-  .col strong{
-    margin-bottom: 0%;
-  }
   /* Responsive: */
 
   /* etc */

@@ -152,4 +152,12 @@ export default {
     margin: 0 !important;
   }
 }
+
+/* Agregar márgenes laterales en mobile para los rows */
+@media (max-width: 767.98px) {
+  .row.no-gutters {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
 </style>

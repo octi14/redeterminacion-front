@@ -100,8 +100,3 @@ export default {
 }
 </script>
 
-<style scoped>
-  .icon-orange{
-    color: #E27910;
-  }
-</style>

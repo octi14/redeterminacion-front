@@ -336,7 +336,7 @@
   <template #modal-footer>
     <div class="" style="margin: auto">
       <b-button @click="onResetParams" class="btn-cancel">Volver</b-button>
-      <b-button @click="onPrintTicket">Imprimir</b-button>
+      <b-button @click="onPrintTicket" variant="success">Imprimir</b-button>
     </div>
   </template>
 </b-modal>
@@ -533,9 +533,7 @@ export default{
       return true;
     },
     areAllFieldsValid(){
-      console.log("areAllFieldsValid() CALLED");
       if(this.areAllFieldsComplete){
-        console.log("areAllFieldsValid(): this.$v.$invalid: " + this.$v.$invalid + " Object.values(this.fileTooLargeError).some(error => !!error): " + Object.values(this.fileTooLargeError).some(error => !!error));
         return !this.$v.$invalid && !Object.values(this.fileTooLargeError).some(error => !!error)
       }
       return true;
@@ -568,7 +566,6 @@ export default{
     openPopup(type) {
       // Lógica para abrir el popup correspondiente según el tipo (A, B, C, D)
       if (type === 'A') {
-        console.log("ShowPopup A")
         this.showPopupA = true;
       } else if (type === 'B') {
         this.showPopupB = true;
@@ -640,7 +637,6 @@ export default{
             En los próximos días recibirá un correo electrónico del Departamento Recaudaciones Municipal en el que le indicarán cómo continuar.
             Asegúrese de revisar la bandeja de correos no deseados (Spam).`
           });
-          //console.log(response.data)
           this.nroTramite = response.data
           this.showPopupFormLoading = false;
           this.openPopup('FormOk');
@@ -798,13 +794,6 @@ export default{
 .green{
     background-color:#0b6919;
   }
-.btn-orange{
-  background-color:#eb8a0a !important;
-  border: none;
-}
-.text-green{
-  color:#0c6919;
-}
 .centeredContainer{
   width:  auto;
   margin: auto;
@@ -833,35 +822,13 @@ p, .li-content{
   margin-top: 0.25rem;
   font-weight: 500;
 }
-.icon-orange{
-  color: #E27910;
-}
-.icon-green{
-  color: #0c681a;
-}
 ul{
   list-style-type: none; /* Elimina los puntos por defecto */
   padding: 0;
 }
-.btn{
-  background-color: #0c681a;
-  border-color: #0c681a;
-}
-.btn:hover{
-  background-color: green;
-  border-color: green;
-}
 .btn.disabled{
   background-color: #619D6A;
   border-color: #619D6A;
-}
-.btn.disabled:hover{
-  background-color: #619D6A;
-  border-color: #619D6A;
-}
-.btn-cancel:hover{
-  background-color: #f09658;
-  border-color: #f09658;
 }
 .btn-cancel{
   background-color: #e53749;
@@ -1010,23 +977,6 @@ h5{
 }
 .modal-title{
   font-weight: bold;
-}
-/* Selector para ocultar las flechas en los inputs numéricos */
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-/* Opcional: Estilos adicionales para los inputs numéricos */
-input[type="number"] {
-  -moz-appearance: textfield; /* Firefox */
-  appearance: textfield; /* Otros navegadores */
-  width: 100%; /* Ajusta el ancho según tus necesidades */
-  padding: 0.375rem 0.75rem; /* Ajusta el padding según tus necesidades */
-}
-.popup-link, .external-link {
-  color: #0c681a;
 }
 .rubro-label{
   width: 98%;

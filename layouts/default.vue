@@ -4,8 +4,10 @@
       <Navbar />
     </div>
     <div id="app-content" class="mt-5">
-      <Nuxt keep-alive />
+     <!-- <Nuxt keep-alive /> -->
+      <Nuxt />
       <ModalSessionTimeout :mostrarModal="sessionExpired" />
+      <ModalMoratoria2026 :mostrarModal="mostrarMoratoria" @close="mostrarMoratoria = false" />
     </div>
     <Foot />
   </div>
@@ -18,6 +20,7 @@ export default {
     return {
       sessionExpired: false,
       manualLogout: false, // Bandera para detectar logout manual
+      mostrarMoratoria: false,
     };
   },
   computed: {
@@ -35,6 +38,12 @@ export default {
         this.sessionExpired = !this.manualLogout;
       }
     },
+    // Cuando navegamos dentro de la SPA, `mounted()` no vuelve a correr.
+    // Este watcher asegura que el popup se muestre cada vez que entramos a `/`.
+    '$route.path'(newPath) {
+      if (!process.client) return;
+      this.mostrarMoratoria = newPath === '/';
+    },
   },
   mounted() {
     // Si existe usuario en localStorage, lo levanto
@@ -51,6 +60,11 @@ export default {
     // También chequeamos si el token ya está vencido al cargar
     if (this.token) {
       this.sessionExpired = this.checkTokenExpired(this.token);
+    }
+
+    // Popup de Moratoria 2026 al inicio de la página (`/`)
+    if (process.client && this.$route && this.$route.path === '/') {
+      this.mostrarMoratoria = true;
     }
 
     // Escuchar el evento de logout manual

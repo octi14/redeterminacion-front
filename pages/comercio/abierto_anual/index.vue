@@ -1,34 +1,43 @@
 <template>
     <div class="page main-background">
         <Banner title="Comercio Abierto Anual"/>
-        <div class="col-10 mainCarrousel" style="margin: auto; margin-top: 2rem">
+        <b-row class="justify-content-center mx-0 main-carrousel-desktop-row">
+            <b-col cols="10" class="mainCarrousel px-0">
             <b-carousel
-            id="mainCarousel"
-            v-model="slide"
-            :interval="4000"
+            id="mainCarouselDesktop"
+            v-model="slideDesktop"
+            :interval="carouselInterval"
+            controls
+            indicators
             img-width="100%"
             style="text-shadow: 1px 1px 2px #333;"
             @sliding-start="onSlideStart"
             @sliding-end="onSlideEnd"
             >
-                <b-carousel-slide img-src="../../../assets/banner-abierto-anual.png"></b-carousel-slide>
+                <b-carousel-slide img-src="../../../assets/2. Desktop períodos.png"></b-carousel-slide>
+                <b-carousel-slide img-src="../../../assets/1. Desktop requisitos.png"></b-carousel-slide>
             </b-carousel>
-        </div>
-        <div class="col-10 mobileCarrousel" style="margin: auto; margin-top: 2rem">
-            <b-carousel
-            id="mainCarousel"
-            v-model="slide"
-            :interval="4000"
-            img-width="100%"
-            style="text-shadow: 1px 1px 2px #333;"
-            @sliding-start="onSlideStart"
-            @sliding-end="onSlideEnd"
-            >
-                <b-carousel-slide img-src="../../../assets/banner-abierto-anual-mobile.png"></b-carousel-slide>
-            </b-carousel>
-        </div>
-    <b-row>
+            </b-col>
+        </b-row>
+    <div class="row-no-gutters">
         <b-col class="col-md-8 mx-auto">
+          <div class="mobileCarrousel">
+            <b-carousel
+            id="mainCarouselMobile"
+            v-model="slideMobile"
+            :interval="carouselInterval"
+            controls
+            indicators
+            img-width="100%"
+            style="text-shadow: 1px 1px 2px #333;"
+            @sliding-start="onSlideStart"
+            @sliding-end="onSlideEnd"
+            >
+                <b-carousel-slide img-src="../../../assets/1. Carrousel Mobile 1. AANUAL 2026.png"></b-carousel-slide>
+                <b-carousel-slide img-src="../../../assets/2. Carrousel Mobile 2. AANUAL 2026.png"></b-carousel-slide>
+                <b-carousel-slide img-src="../../../assets/3. Carrousel Mobile 3. AANUAL 2026.png"></b-carousel-slide>
+            </b-carousel>
+          </div>
           <br />
           <b-card class="section-card" id="card-baja" v-bind:class="{ 'expanded': isCardExpanded(0) }">
             <h4 class="section-title" @click="toggleCard(0)">
@@ -40,7 +49,13 @@
               <div v-show="isCardExpanded(0)">
                 <div class="li-row first-li">
                   <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">
-                    Es un <b>descuento del 60% </b>(sesenta por ciento) del valor <b>de la Tasa por Inspección de  Seguridad e Higiene</b> correspondiente al año fiscal 2026, otorgado en virtud del Artículo 182 de la <a href="https://arvige.gob.ar/legislacion/pdf/12" class="text-success">Ordenanza Fiscal 2156/08 (TO2025).</a></div>
+                    Es un <b>descuento del 60% </b>(sesenta por ciento) del valor <b>de la Tasa por Inspección de Seguridad e Higiene</b> correspondiente al año fiscal siguiente 2027, otorgado en virtud del Artículo 182 de la <a href="https://arvige.gob.ar/legislacion/pdf/12" class="text-success">Ordenanza Fiscal 2156/08 (TO2025).</a></div>
+                </div>
+                <hr>
+                <div class="li-row warning-li">
+                  <div class="li-icon"><b-icon-exclamation-circle-fill font-scale="0.75" class="icon-orange"></b-icon-exclamation-circle-fill></div><div class="li-content">
+                    El beneficio es una excepción al pago total y acreditarlo es de exclusiva responsabilidad del contribuyente.
+                  </div>
                 </div>
               </div>
             </transition>
@@ -56,15 +71,10 @@
                 <div class="li-row first-li"><div class="li-content">
                     Los/las <b>contribuyentes</b> que ante evaluacion del Municipio <b>acrediten</b> que:</div>
                 </div>
+                <br>
                 <div class="li-row">
                   <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">
-                    Sus <b>establecimientos</b> hayan permanecido <b>con actividad</b> en forma <b>permanente durante el ejercicio fiscal anterior y no
-                    posean deudas</b> con la Municipalidad.</div>
-                </div>
-                <div class="li-row">
-                  <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">
-                    Sus <b>establecimientos</b> hayan permanecido <b>con actividad</b> en forma <b>permanente durante los fines de semana del ejercicio anterior y
-                     no posean deudas</b> con la Municipalidad.</div>
+                    Sus <b>establecimientos</b> hayan permanecido <b>con actividad</b> en forma <b>permanente y/o durante los fines de semana del ejercicio fiscal anterior</b> y <b>no posean deudas en concepto de Tasas, Derechos, Contribuciones o Multas con el municipio</b>.</div>
                 </div>
                 <div class="li-row">
                   <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">
@@ -85,7 +95,7 @@
                   <div class="li-content mb-1"> Están <b>excluidos</b> del Beneficio: </div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
                   <div class="li-content">Aquellos/as <b>contribuyentes que no hayan acreditado</b>, ante la evaluación del Municipio, <b>contar con un comercio con
-                   actividad permanente durante el ejercicio fiscal anterior</b>. </div></div>
+                   actividad permanente y/o durante los fines de semana del ejercicio fiscal anterior</b>. </div></div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
                   <div class="li-content"> Los <b>Grandes Contribuyentes</b> incluidos en los Artículos 181 bis a 181 noveno de la <a href="https://arvige.gob.ar/legislacion/pdf/12" class="text-success">Ordenanza Fiscal 2156/08 c/ Mod</a>. </div>
                 </div>
@@ -93,14 +103,15 @@
             </transition>
           </b-card>
           <b-card class="section-card" v-bind:class="{ 'expanded': isCardExpanded(3) }">
-            <h4 class="section-title" @click="toggleCard(3)">¿Qué requisitos se necesitan para obtener el beneficio de Abierto Anual?
+            <h4 class="section-title" @click="toggleCard(3)">
+              ¿Qué requisitos se necesitan para obtener el beneficio de Abierto Anual?
               <b-icon-chevron-compact-down v-if="!isCardExpanded(3)"></b-icon-chevron-compact-down>
               <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
             </h4>
             <transition name="expand">
               <div v-show="isCardExpanded(3)">
                 <div class="li-row first-li"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                  <div class="li-content">Poseer una <b>Habilitación Comercial</b> en el Partido de Villa Gesell, con su correspondiente <b>Renovación o Reempadronamiento comercial</b> correspondientes efectuados en tiempo y forma. </div>
+                  <div class="li-content">Poseer una <b>Habilitación Comercial</b> en el Partido de Villa Gesell, con su <b>Renovación o Reempadronamiento comercial</b> correspondientes efectuados en tiempo y forma. </div>
                 </div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
                   <div class="li-content"><b>No</b> poseer <b>deudas en  concepto de Tasas, Derechos, Contribuciones o Multas con el Municipio</b>.</div>
@@ -110,6 +121,9 @@
                 </div>
                 <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
                   <div class="li-content"><b>Realizar</b> el procedimiento de <b>carga de datos</b> según lo previsto por la Autoridad de Aplicación.</div>
+                </div>
+                <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                  <div class="li-content">Haber permanecido con la <b>CUIT vigente durante todo el año fiscal en curso</b> -condición indispensable para no dar de baja la habilitación-.</div>
                 </div>
               </div>
             </transition>
@@ -125,13 +139,16 @@
                 <div class="li-row first-li mb-1"><p>Una <b>factura digital</b> o una <b>fotografía de la factura emitida en formato papel</b>, correspondiente a los
                    siguientes tres períodos del año en curso: </p></div>
                   <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                    <div class="li-content"><p><b>Período 1 (2/5/25 al 31/5/25):</b> Se deberá cargar una factura emitida durante el mes de <i>Mayo</i>.</p></div>
+                    <div class="li-content"><p><b>Período 1 (2/5/26 al 31/5/26):</b> Se deberá cargar una factura emitida durante el mes de <i>Mayo</i>.</p></div>
                   </div>
                   <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                    <div class="li-content"><p><b>Período 2 (1/8/25 al 31/8/25):</b> Se deberá cargar una factura emitida durante el mes de <i>Agosto</i>.</p></div>
+                    <div class="li-content"><p><b>Período 2 (1/8/26 al 31/8/26):</b> Se deberá cargar una factura emitida durante el mes de <i>Agosto</i>.</p></div>
                   </div>
                   <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
-                    <div class="li-content"><p><b>Período 3 (1/10/25 al 31/10/25):</b> Se deberá cargar una factura emitida durante el mes de <i>Octubre</i>.</p></div>
+                    <div class="li-content"><p><b>Período 3 (1/10/26 al 31/10/26):</b> Se deberá cargar una factura emitida durante el mes de <i>Octubre</i>.</p></div>
+                  </div>
+                  <div class="li-row"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div>
+                    <div class="li-content"><p><b>Período de rectificación (1/11/26 al 30/11/26):</b> Podrán acreditarse las facturas pendientes y rectificar aquellas marcadas como incorrectas.</p></div>
                   </div>
                   <b-card border-variant="warning" align="center" class="importante-card" >
                     <b-card-text>
@@ -143,7 +160,7 @@
                         <b-col  md="10">
                           <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Las <b>facturas</b> deberán ser <b>digitales</b> (en caso de tenerlas en formato papel <b>podés escanearlos o sacarles una foto</b>) y deben ser <b>legibles</b>. Pueden encontrarse en formato pdf o imagen y tener un peso máximo de 15Mb.</div></div>
                           <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Los <b>periodos de recepción</b> de las facturas serán <b>definidos</b> por la <b>Autoridad de Aplicación</b> en el transcurso del año. Estos periodos <b>serán notificados al DFE</b> de la persona interesada <b>y publicitados en las vías oficiales</b> de comunicación <b>del Municipio</b>.</div></div>
-                          <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Las <b>facturas</b> deberán <b>corresponder a ventas efectivamente producidas en los períodos descriptos.</b>.</div></div>
+                          <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content">Las <b>facturas</b> deberán <b>corresponder a ventas efectivamente producidas en los períodos descriptos.</b></div></div>
                         </b-col>
                       </b-row>
                     </b-card-text>
@@ -188,8 +205,8 @@
                     <p class="icon-orange">4. </p>
                   </div>
                   <div class="li-content">
-                    <p>Una vez cargada, <b>ARVIGE revisará</b> que <b>la factura</b> sea correcta:</p>
-                    <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="0.75" class="icon-orange" shift-v="3px"></b-icon-caret-right-fill></div>
+                    <p>Una vez cargada, <b>ARVIGE revisará</b> que <b>la factura</b> sea correcta.</p>
+                    <!-- <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="0.75" class="icon-orange" shift-v="3px"></b-icon-caret-right-fill></div>
                       <div class="li-content mini-content"><p>Si la <u>factura es correcta</u>, <b>no recibirás notificaciones en tu Domicilio Fiscal Electrónico (DFE)</b>. Para más información lee atentamente el paso 5.</p></div>
                     </div>
                     <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="0.75" class="icon-orange" shift-v="3px"></b-icon-caret-right-fill></div>
@@ -197,7 +214,7 @@
                     </div>
                     <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="0.75" class="icon-orange" shift-v="3px"></b-icon-caret-right-fill></div>
                       <div class="li-content mini-content"><p><i>En caso que no dispongas de DFE no se te notificará el error y deberás continuar en el paso 5.</i></p></div>
-                    </div>
+                    </div> -->
                   </div>
                 </div>
                 <div class="li-row other-li">
@@ -221,7 +238,6 @@
                     <iframe width="560" height="315" src="https://www.youtube.com/embed/NKZWxjCh1l4?si=SCCPendq9R_daKRK" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                   </div>
                 </div>
-                <p class="first-li separador-top"><b>El trámite concluye a fin de año (2025) y es requisito que hayas cargado 3 facturas (una por cada período) para obtener el Beneficio de Comercio Abierto Anual.</b></p>
               </div>
             </transition>
           </b-card>
@@ -244,7 +260,7 @@
                   <div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div>
                   <div class="li-content">
                     <p class="li-title">¿Qué sucede si no envié a tiempo las tres facturas solicitadas?</p>
-                    <p>En caso de no cumplirse con el envío de las 3 facturas solicitadas en los períodos indicados previamente SE PODRÁN ACREDITAR desde el 1 al 30 DE NOVIEMBRE DE 2025 siendo este el último plazo de acreditación posible. <b>Extinguido el plazo no podrá reclamarse el beneficio.</b></p>
+                    <p>En caso de no cumplirse con el envío de las 3 facturas solicitadas en los períodos indicados, podrán acreditarse durante el período de rectificación, que se extiende desde el 1 al 30 de noviembre del año en curso, siendo esta la última instancia de acreditación posible. <b>Extinguido el plazo no podrá reclamarse el beneficio.</b></p>
                   </div>
                 </div>
                 <div class="li-row">
@@ -257,14 +273,14 @@
               </div>
             </transition>
           </b-card>
-          <b-row>
+          <b-row class="no-gutters">
             <b-col>
               <b-button variant="success" class="float-right btn-form" @click="openPopup('Form')">Iniciar Trámite</b-button>
               <!-- <b-button variant="success" class="float-right btn-form" @click="openPopup('ClosedPeriod')">Iniciar Trámite</b-button> -->
             </b-col>
           </b-row>
         </b-col>
-      </b-row>
+    </div>
      <!-- Popup de advertencia -->
      <b-modal v-model="showConfirmationPopup" hide-footer :header-bg-variant="'success'" centered>
         <template #modal-header>
@@ -338,12 +354,13 @@
 
   <script>
   import rubros from "@/plugins/rubros.js";
-  import abiertoAnualConfig from '~/plugins/abiertoAnualConfig';
   export default {
     data:function() {
       return {
-        config: abiertoAnualConfig,
-        slide: 0,
+        slideDesktop: 0,
+        slideMobile: 0,
+        /** ms entre avances automáticos (desktop y mobile llevan índices separados) */
+        carouselInterval: 9000,
         sliding: null,
         filteredRubros: rubros,//.filter(rubro => rubro.requisitos.length > 0),
         showPopupA: false,
@@ -361,9 +378,15 @@
         expandedCards: [],
       };
     },
-    mounted() {
+    computed: {
+      config() {
+        return this.$store.getters['config/abiertoAnualPeriodos'];
+      },
+    },
+    async mounted() {
+      await this.$store.dispatch('config/getAbiertoAnualPeriodos');
+      this.showClosedPopup = this.config && this.config.popUpAbiertoAnualCerrado;
       this.filteredRubros.sort((a, b) => a.nombre.localeCompare(b.nombre));
-      this.showClosedPopup = this.config.popUpAbiertoAnualCerrado;
     },
     methods: {
       onSlideStart(slide) {
@@ -419,6 +442,9 @@
   </script>
 
 <style scoped>
+.main-carrousel-desktop-row {
+  margin-top: 2rem;
+}
 .mainCarrousel{
     display: block;
   }
@@ -461,15 +487,45 @@
     */
   }
 }
+@media (max-width: 767.98px) {
+  .page {
+    overflow-x: hidden;
+  }
+  .col-md-8.mx-auto {
+    max-width: calc(100% - 30px) !important;
+    margin-left: 15px !important;
+    margin-right: 15px !important;
+  }
+}
 @media (max-width: 720px){
   .mainCarrousel{
     display: none;
   }
   .mobileCarrousel{
     display: block;
+    width: 100%;
+    margin-top: 2rem;
+    padding-left: 0;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  .mobileCarrousel >>> .carousel {
+    width: 100%;
+  }
+  /* Todas las placas visibles: img a ancho completo sin recortes raros */
+  .mobileCarrousel >>> .carousel-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
   }
   .col-8{
     max-width: 90%;
+  }
+  .col-md-8.mx-auto {
+    max-width: calc(100% - 30px) !important;
+    margin-left: 15px !important;
+    margin-right: 15px !important;
   }
   .botonera-container .row div{
     /*Opcion 1. 2 botones por fila*/
@@ -546,10 +602,6 @@ p, .li-content{
 .btn-success{
   background-color: #0c681a;
   border-color: #0c681a;
-}
-.btn-success:hover{
-  background-color: green;
-  border-color: green;
 }
 .modal h5{
   color: white !important;
@@ -654,12 +706,6 @@ p, .li-content{
   margin-left: 25px;
   margin-bottom: 10px;
 }
-.icon-orange{
-  color: #E27910;
-}
-.icon-green{
-  color: #0c681a;
-}
 .texto-introd{
   font-size: 1.3rem;
 }
@@ -721,6 +767,9 @@ ul{
 }
 .li-title{
   margin-bottom: 0.3rem;
+}
+.warning-li .li-icon{
+  margin-top: -0.1rem;
 }
 .li-icon{
   margin-right: 1%;

@@ -32,7 +32,7 @@
 
       <div class="row justify-content-center">
         <!-- <b-form-checkbox class="mx-3 mt-2" v-model="hideFinalizados">Ocultar finalizados</b-form-checkbox> -->
-        <b-button pill variant="info" @click="exportarCSV"><b-icon-download class="mr-1"/>Exportar CSV</b-button>
+        <b-button variant="info" @click="exportarCSV"><b-icon-download class="mr-1"/>Exportar CSV</b-button>
       </div>
     </div>
 

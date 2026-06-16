@@ -2,9 +2,9 @@
   <div class="page main-background">
     <Banner title="Solicitudes de trámite" subtitle="Uso interno" />
     <div class="col-10 mx-auto" v-if="adminComercio">
-      <!-- Filtrar por estado -->
-      <b-row>
-        <b-form-group class="col-3 mx-6 mx-auto mt-4" label-class="text-success h6">
+      <!-- Filtros y búsqueda en una sola línea -->
+      <b-row class="flex-nowrap align-items-end mt-4">
+        <b-form-group class="col mt-0 mb-0" label-class="text-success h6">
           <label for="inputNroTramite" class="bv-no-focus-ring col-form-label pt-0 text-success h6">
             <b-icon-search></b-icon-search> Buscar por N° de Trámite
           </label>
@@ -16,7 +16,7 @@
             type="text"
           />
         </b-form-group>
-        <b-form-group class="col-3 mx-6 mx-auto mt-4" label-class="text-success h6">
+        <b-form-group class="col mt-0 mb-0" label-class="text-success h6">
           <label for="inputCUIT" class="bv-no-focus-ring col-form-label pt-0 text-success h6">
             <b-icon-search></b-icon-search> Buscar por CUIT
           </label>
@@ -28,23 +28,33 @@
             type="text"
           />
         </b-form-group>
-        <b-form-group class="col-3 mx-6 mx-auto mt-4" label-class="text-success h6">
+        <b-form-group class="col mt-0 mb-0" label-class="text-success h6">
+          <label for="inputNombre" class="bv-no-focus-ring col-form-label pt-0 text-success h6">
+            <b-icon-search></b-icon-search> Buscar por nombre
+          </label>
+          <b-form-input
+            id="inputNombre"
+            v-model="inputNombre"
+            placeholder="Ingresá el nombre o nombre de fantasía"
+            type="text"
+          />
+        </b-form-group>
+        <b-form-group class="col mt-0 mb-0" label-class="text-success h6">
           <label for="selectedEstado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><b-icon-funnel-fill></b-icon-funnel-fill> Filtrar por Estado</label>
           <b-form-select plain v-model="selectedEstado">
             <option value="">Todos</option>
             <option v-for="estado in estados" :value="estado" :key="estado">{{ estado }}</option>
           </b-form-select>
         </b-form-group>
-        <!-- filtrar por tipo de trámite -->
-        <b-form-group class="col-3 mx-auto mt-4" label-class="text-success h6">
-          <label for="selectedEstado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><b-icon-funnel-fill></b-icon-funnel-fill> Filtrar por tipo de trámite</label>
+        <b-form-group class="col mt-0 mb-0" label-class="text-success h6">
+          <label for="selectedTipo" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><b-icon-funnel-fill></b-icon-funnel-fill> Filtrar por tipo de trámite</label>
           <b-form-select plain v-model="selectedTipo">
             <option value="">Todos</option>
             <option v-for="tipoTramite in tiposTramite" :value="tipoTramite" :key="tipoTramite">{{ tipoTramite }}</option>
           </b-form-select>
         </b-form-group>
       </b-row>
-      <b-form-checkbox class="text-center" v-model="hideFinalizados">Ocultar Finalizados/Rechazados</b-form-checkbox>
+      <b-form-checkbox class="text-center mt-3" v-model="hideFinalizados">Ocultar Finalizados/Rechazados</b-form-checkbox>
       <div class="row no-gutters justify-content-center">
         <b-button variant="success" class="text-center mt-3" v-if="jefeComercio" @click="generarExcelTramitesNoFinalizados"> Exportar a Excel</b-button>
       </div>
@@ -57,8 +67,17 @@
 
     <b-table per-page="10" head-row-variant="warning" class="col-md-10 white col-sm-8 mx-auto mt-4 shadow-card" :items="paginatedItems" :fields="fields">
       <!-- Plantilla personalizada para la columna "detalles" -->
+      <template #cell(nroTramite)="row">
+        <span>{{ row.value }}</span>
+        <span v-if="adminMaster && row.item.visible === false" title="Trámite invisible para no administradores">
+          <b-icon-eye-slash class="text-danger mr-1" style="margin-left: 1rem;" />
+        </span>
+      </template>
       <template #cell(status)="row">
         <div :class="row.item.estadoColor"><b>{{ row.value }}</b></div>
+      </template>
+      <template #cell(nombreFantasia)="row">
+        <span :title="row.value">{{ (row.value && row.value.length > 50) ? row.value.slice(0, 50) + '...' : row.value }}</span>
       </template>
       <template #cell(detalles)="row">
         <NuxtLink :to="{ name: 'comercio-solicitudes-id', params: { id: row.item.id } }" @click.native="registrarActividad('Abrir Trámite', 'Trámite nro: ' + row.item.nroTramite)">
@@ -92,6 +111,7 @@ export default{
       lastLength: false,
       inputNroTramite: "", // Variable de búsqueda por número de trámite
       inputCUIT: "",
+      inputNombre: "",
       items: [],
       selectedEstado: '',
       selectedTipo: '',
@@ -117,8 +137,8 @@ export default{
           label: 'CUIT',
         },
         {
-          key: 'mail',
-          label: 'Mail',
+          key: 'nombreFantasia',
+          label: 'Nombre de fantasía',
         },
         {
           key: 'status',
@@ -181,6 +201,10 @@ export default{
     filteredItems() {
       let items = this.items;
 
+      if (!this.adminMaster) {
+        items = items.filter(item => item.visible !== false);
+      }
+
       // Filtrar los finalizados
       if (this.hideFinalizados) {
         items = items.filter(item => !["Rechazada", "Finalizada"].includes(item.status));
@@ -200,6 +224,15 @@ export default{
         });
       }
 
+      // Filtrar por nombre (nombre de fantasía)
+      if (this.inputNombre && this.inputNombre.trim()) {
+        const nombreBusqueda = this.inputNombre.trim().toLowerCase();
+        items = items.filter(item => {
+          const nombre = item.nombreFantasia ? String(item.nombreFantasia).toLowerCase() : '';
+          return nombre.includes(nombreBusqueda);
+        });
+      }
+
       // Filtrar por tipo de solicitud
       if (this.selectedTipo) {
         items = items.filter(item => item.tipoSolicitud === this.selectedTipo);
@@ -216,14 +249,14 @@ export default{
       return Math.ceil(this.filteredItems.length / this.perPage);
     },
     adminComercio() {
-      return this.$store.state.user.admin === "comercio" || this.$store.state.user.admin == "master"
+      return this.$store.state.user.admin === "comercio" || this.$store.state.user.admin === "master"
     },
     adminMaster() {
-      return this.$store.state.user.admin == "master"
+      return this.$store.state.user.admin === "master" || this.$store.state.user.username === "gracielabularte@gesell.gob.ar"
     },
     jefeComercio() {
-      return this.$store.state.user.username == "nataliamegias@gesell.gob.ar" ||
-      this.$store.state.user.username == "gracielabularte@gesell.gob.ar" || this.$store.state.user.admin == "master"
+      return this.$store.state.user.username === "nataliamegias@gesell.gob.ar" ||
+      this.$store.state.user.username === "gracielabularte@gesell.gob.ar" || this.$store.state.user.admin === "master"
     }
   },
   methods: {

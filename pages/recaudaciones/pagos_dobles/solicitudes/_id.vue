@@ -121,10 +121,12 @@
                 <strong>{{ nombreDocumento }}</strong><br>
               </p>
               <p class="col col-complementary" role="complementary">
-                <b-button size="sm" @click="openDocumento(documento, nombreDocumento)" variant="outline-primary">
-                  <b-icon icon="eye" scale="1.2"></b-icon>
-                  Ver
-                </b-button>
+                <FilePreview
+                  :file="documento"
+                  :title="nombreDocumento"
+                  icon="eye"
+                  font-scale="1.2"
+                />
               </p>
             </div>
           </div>
@@ -255,30 +257,6 @@
       <p v-html="observaciones"></p>
     </b-modal>
 
-    <b-modal v-model="showDocumentoModal" id="documento-modal" hide-footer centered>
-      <template #modal-header>
-        <h3 class="icon-orange text-primary text-center"><b>{{ DocumentoModalTitle + " - " + pago.nroTramite }}</b></h3>
-      </template>
-      <div class="modal-body">
-
-      </div>
-    </b-modal>
-
-    <!-- Modal para archivos HEIC -->
-    <b-modal v-model="showHeicModal" header-bg-variant="warning" title="Archivo no compatible" title-class="text-light" hide-footer centered>
-      <div class="text-center">
-        <b-icon-exclamation-triangle-fill variant="warning" scale="3" class="my-3"></b-icon-exclamation-triangle-fill>
-        <h5 class="my-3">Este archivo no pudo ser abierto desde el navegador</h5>
-        <p class="mb-4">El formato HEIC no es compatible con tu navegador.<br/> Podés descargar el archivo para visualizarlo en tu dispositivo.</p>
-        <b-button @click="downloadHeicFile" variant="success" class="mr-2 btn-download-heic">
-          <b-icon-download></b-icon-download> Descargar
-        </b-button>
-        <b-button @click="showHeicModal = false" variant="secondary">
-          Cerrar
-        </b-button>
-      </div>
-    </b-modal>
-
   </div>
 </template>
 
@@ -287,8 +265,10 @@ import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
 import MailerService from '~/service/mailer.js'
+import FilePreview from '~/components/common/FilePreview.vue'
 
 export default {
+  components: { FilePreview },
   data() {
     return {
       statusClasses: {
@@ -303,14 +283,10 @@ export default {
       showObservaciones: false,
       pago: null,
       observaciones: '',
-      showDocumentoModal: false,
-      DocumentoModalTitle: "",
       motivoRechazo: '',
       otroMotivoRechazo: '',
       aprobComentMode: 'ninguno',
       aprobComentTexto: '',
-      showHeicModal: false,
-      currentDocumento: null,
       motivosRechazo: [
         'No corresponde a una cuenta urbana',
         'Los documentos no son legibles',
@@ -321,7 +297,7 @@ export default {
   },
   computed: {
     adminComercio(){
-      return this.$store.state.user.admin == "comercio" || this.$store.state.user.admin == "master"
+      return this.$can('pagosDobles.export')
     },
     documentos(){
       return this.$store.state.documentos.all
@@ -365,13 +341,6 @@ export default {
     this.$fetch()
   },
   methods: {
-    isValidBase64(str) {
-      try {
-        return btoa(atob(str)) === str;
-      } catch (e) {
-        return false;
-      }
-    },
 
     async registrarActividad(evento, result, nroSolicitud){
       const userId = this.$store.state.user.username; // Reemplaza con el ID del usuario real
@@ -571,114 +540,6 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
         saveAs(zipContent, `Habilitacion_${nroTramite}.zip`);
       } catch (error) {
         console.error('Error al descargar la habilitación:', error);
-      }
-    },
-    openDocumento(documento, nombreDocumento) {
-      if (!this.isValidBase64(documento.data)) {
-        console.error('La cadena Base64 no es válida');
-        return;
-      }
-
-      // Verificar si es un archivo HEIC
-      if (documento.contentType === 'image/heic' || documento.contentType === 'image/heif' ||
-          (documento.filename && documento.filename.toLowerCase().endsWith('.heic'))) {
-        this.showHeicModal = true;
-        this.currentDocumento = documento;
-        return;
-      }
-
-      const decodedData = atob(documento.data); // Decodificar la data de Base64
-
-      const arrayBuffer = new ArrayBuffer(decodedData.length);
-      const arrayBufferView = new Uint8Array(arrayBuffer);
-
-      for (let i = 0; i < decodedData.length; i++) {
-        arrayBufferView[i] = decodedData.charCodeAt(i);
-      }
-
-      const blob = new Blob([arrayBuffer], { type: documento.contentType });
-      const fileURL = URL.createObjectURL(blob);
-
-      const newWindow = window.open('', '_blank');
-      newWindow.document.title = documento.filename || `Documento: ${nombreDocumento}`;
-
-      if (documento.contentType === 'application/pdf') {
-        const embed = document.createElement('embed');
-        embed.setAttribute('type', 'application/pdf');
-        embed.setAttribute('src', fileURL);
-        embed.setAttribute('width', '100%');
-        embed.setAttribute('height', '100%');
-        newWindow.document.body.appendChild(embed);
-      } else if (documento.contentType.startsWith('image/')) {
-        const img = document.createElement('img');
-        img.setAttribute('src', fileURL);
-        img.setAttribute('width', 'auto');
-        img.setAttribute('height', 'auto');
-        newWindow.document.body.appendChild(img);
-      } else if (
-        documento.contentType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
-        documento.contentType === 'application/msword'
-      ) {
-        // Crear un link de descarga automática
-        const link = document.createElement('a');
-        link.href = fileURL;
-        link.download = documento.filename || 'documento.docx';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      } else {
-        this.$bvToast.toast('Formato de contenido no compatible', {
-          variant: 'danger',
-          title: 'Error',
-          solid: true,
-          autoHideDelay: 5000
-        });
-      }
-    },
-
-    downloadHeicFile() {
-      if (!this.currentDocumento) {
-        console.error('No hay documento HEIC para descargar');
-        return;
-      }
-
-      try {
-        // Decodificar la data de Base64
-        const decodedData = atob(this.currentDocumento.data);
-        const arrayBuffer = new Uint8Array(decodedData.length);
-
-        for (let i = 0; i < decodedData.length; i++) {
-          arrayBuffer[i] = decodedData.charCodeAt(i);
-        }
-
-        // Crear el blob con el tipo MIME correcto para HEIC
-        const blob = new Blob([arrayBuffer], {
-          type: this.currentDocumento.contentType || 'image/heic'
-        });
-
-        // Crear el enlace de descarga
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = this.currentDocumento.filename || 'archivo.heic';
-        a.style.display = 'none';
-
-        // Agregar al DOM, hacer clic y limpiar
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-
-        // Liberar la URL del objeto
-        URL.revokeObjectURL(a.href);
-
-        // Cerrar el modal
-        this.showHeicModal = false;
-
-      } catch (error) {
-        console.error('Error al descargar el archivo HEIC:', error);
-        this.$bvToast.toast('Error al descargar el archivo', {
-          variant: 'danger',
-          title: 'Error'
-        });
       }
     },
 

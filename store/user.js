@@ -5,6 +5,9 @@ export const state = () => ({
   id: null,
   token: null,
   admin: null,
+  rolesExp: [],
+  permissions: [],
+  accessSource: 'legacy',
 })
 
 export const actions = {
@@ -14,9 +17,9 @@ export const actions = {
         username,
         password,
       });
-      const { id, token, admin } = authUser;
+      const { id, token, admin, rolesExp, permissions, accessSource } = authUser;
       // guardo el token y el username en state
-      commit('setAuthenticated', { id, username, token, admin });
+      commit('setAuthenticated', { id, username, token, admin, rolesExp, permissions, accessSource });
       window &&
         window.$nuxt.$bvToast.toast('Ingreso exitoso.', {
           // title: '',
@@ -91,15 +94,23 @@ export const actions = {
     }catch(e){
       console.log(e)
     }
+  },
+  async loadCurrentUser({ commit, state }) {
+    const currentUser = await UserService.getMe(this.$axios)
+    commit('setAuthenticated', { ...currentUser, token: state.token })
+    return currentUser
   }
 }
 
 export const mutations = {
-  setAuthenticated(state, { id, username, token, admin }) {
+  setAuthenticated(state, { id, username, token, admin, rolesExp = [], permissions = [], accessSource = 'legacy' }) {
     state.id = id
     state.username = username
     state.token = token
     state.admin = admin
+    state.rolesExp = rolesExp
+    state.permissions = permissions
+    state.accessSource = accessSource
 
     // localStorage.setItem('userAdmin', JSON.stringify(admin))
     if (process.client) {
@@ -107,6 +118,9 @@ export const mutations = {
       localStorage.setItem('username', username)
       localStorage.setItem('userToken', token)
       localStorage.setItem('userAdmin', admin)
+      localStorage.setItem('userRolesExp', JSON.stringify(rolesExp))
+      localStorage.setItem('userPermissions', JSON.stringify(permissions))
+      localStorage.setItem('userAccessSource', accessSource)
 
     }
   },
@@ -115,11 +129,17 @@ export const mutations = {
     state.username = null
     state.token = null
     state.admin = null
+    state.rolesExp = []
+    state.permissions = []
+    state.accessSource = 'legacy'
     if (process.client) {
       localStorage.removeItem('userId')
       localStorage.removeItem('username')
       localStorage.removeItem('userToken')
       localStorage.removeItem('userAdmin')
+      localStorage.removeItem('userRolesExp')
+      localStorage.removeItem('userPermissions')
+      localStorage.removeItem('userAccessSource')
     }
   },
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="page main-background">
     <Banner title="Obras" />
-    <template v-if="adminHacienda">
+    <template v-if="puedeVerObras">
       <ObraFeed />
     </template>
   </div>
@@ -10,8 +10,8 @@
 <script>
 export default {
   computed: {
-    adminHacienda() {
-      return this.$store.state.user.admin == "hacienda" ||  this.$store.state.user.admin == "master"
+    puedeVerObras() {
+      return this.$can('obras.read')
     },
   }
 }

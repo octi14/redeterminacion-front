@@ -17,7 +17,13 @@
         </b-col>
         <b-col md="6">
           <Detail label="Comprobante de pago o exención">
-            <a v-if="comprobanteUrl" :href="comprobanteUrl" target="_blank" title="Ver archivo" aria-label="Ver archivo"><b-icon-file-earmark-text font-scale="1.25" /></a>
+            <FilePreview v-if="comprobanteUrl" :url="comprobanteUrl" title="Comprobante de pago o exencion" />
+            <span v-else class="text-muted">Sin archivo</span>
+          </Detail>
+        </b-col>
+        <b-col md="6">
+          <Detail label="Certificado de defuncion">
+            <FilePreview v-if="certificadoDefuncionUrl" :url="certificadoDefuncionUrl" title="Certificado de defuncion" icon="file-earmark-medical" />
             <span v-else class="text-muted">Sin archivo</span>
           </Detail>
         </b-col>
@@ -36,9 +42,10 @@
 import { TIPOS_SEPULTURA } from '~/config/cementerio'
 import { formatCurrency, getStatusVariant } from '~/utils/cementerio'
 import Detail from '~/components/cementerio/DetailField.vue'
+import FilePreview from '~/components/common/FilePreview.vue'
 
 export default {
-  components: { Detail },
+  components: { Detail, FilePreview },
   props: {
     value: { type: Boolean, default: false },
     fallecido: { type: Object, default: null },
@@ -69,6 +76,10 @@ export default {
     },
     comprobanteUrl() {
       const doc = this.fallecido && this.fallecido.documentos && this.fallecido.documentos.comprobantePagoTasa
+      return doc && doc.url
+    },
+    certificadoDefuncionUrl() {
+      const doc = this.fallecido && this.fallecido.documentos && this.fallecido.documentos.certificadoDefuncion
       return doc && doc.url
     },
   },

@@ -722,7 +722,7 @@ export default {
       }
     },
     puedeAdministrar() {
-      return this.$store.state.user.admin === 'master'
+      return this.$can('boletas.manage')
     },
     analysisIssues() {
       if (!this.analysisResult) return []

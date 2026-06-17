@@ -53,8 +53,12 @@ export default {
         username: localStorage.getItem("username"),
         token: localStorage.getItem("userToken"),
         admin: localStorage.getItem("userAdmin"),
+        rolesExp: JSON.parse(localStorage.getItem("userRolesExp") || "[]"),
+        permissions: JSON.parse(localStorage.getItem("userPermissions") || "[]"),
+        accessSource: localStorage.getItem("userAccessSource") || "legacy",
       };
       this.$store.commit("user/setAuthenticated", authUser);
+      this.$store.dispatch("user/loadCurrentUser").catch(() => {});
     }
 
     // También chequeamos si el token ya está vencido al cargar

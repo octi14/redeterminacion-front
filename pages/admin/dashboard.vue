@@ -1,7 +1,7 @@
 <template>
   <div class="page main-background dashboard-container">
     <!-- Sin permisos: cartel de sección no disponible -->
-    <div v-if="!adminMaster" class="dashboard-no-access">
+    <div v-if="!puedeVerDashboard" class="dashboard-no-access">
       <div class="no-access-card">
         <div class="no-access-icon">
           <i class="bi bi-shield-lock-fill"></i>
@@ -166,12 +166,12 @@ export default {
     habilitaciones() {
       return this.$store.state.habilitaciones.all || []
     },
-    adminMaster() {
-      return this.$store.state.user.admin === 'master'
+    puedeVerDashboard() {
+      return this.$can('dashboard.read')
     }
   },
   mounted() {
-    if (this.adminMaster) {
+    if (this.puedeVerDashboard) {
       this.cargarDatos()
     }
   },
@@ -271,7 +271,7 @@ export default {
   padding-top: 80px; /* Espacio para el navbar fijo */
 }
 
-/* Cartel de sección no disponible (solo adminMaster) */
+/* Cartel de sección no disponible */
 .dashboard-no-access {
   min-height: calc(100vh - 80px);
   padding-top: 80px;

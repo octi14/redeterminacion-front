@@ -18,7 +18,7 @@
           <h4 class="text-danger ml-1" v-if="turno.status === 'Inspección rechazada'">{{ turno.status }} </h4>
         </div>
       </div>
-      <div class="row col-10 mx-auto justify-content-center" v-if="adminInspeccion">
+      <div class="row col-10 mx-auto justify-content-center" v-if="puedeModificarTurnos">
         <b-button @click="onAprobar" variant="success" class="btn-4 mt-3 mx-1"> Aprobar inspección </b-button>
         <b-button @click="onProrroga" variant="secondary" class="btn-4 mt-3 mx-1"> Prórroga </b-button>
         <!-- <b-button @click="onRechazarTurno" class="btn-3 mt-3 mx-1"> Cancelar turno </b-button> -->
@@ -40,7 +40,7 @@
             <p class="col col-complementary" role="complementary">
               <a>{{ turno.dia + " " + turno.horario}}</a>
             </p>
-          <b-btn v-if="turno.status != 'Cancelado'" @click="onRechazarTurno" style="height: 30px; width:85px" size="sm" variant="danger" class="mx-1"> Cancelar</b-btn>
+          <b-btn v-if="puedeModificarTurnos && turno.status != 'Cancelado'" @click="onRechazarTurno" style="height: 30px; width:85px" size="sm" variant="danger" class="mx-1"> Cancelar</b-btn>
           </div>
           <div class="layout">
             <p class="col col-main">
@@ -257,10 +257,13 @@ export default {
   },
   computed: {
     adminInspeccion(){
-      return this.$store.state.user.admin == "inspeccion" || this.$store.state.user.admin == "master"
+      return this.$can('turnos.read')
     },
     adminComercio(){
-      return this.$store.state.user.admin == "comercio" || this.$store.state.user.admin == "master"
+      return this.$can('habilitaciones.read')
+    },
+    puedeModificarTurnos(){
+      return this.$can('turnos.update')
     }
   },
   methods: {

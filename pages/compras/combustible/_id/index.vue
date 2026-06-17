@@ -14,7 +14,7 @@
         </div> -->
       </div>
       <!--Botones-->
-      <div class="row col-10 mx-auto justify-content-center" v-if="adminCompras">
+      <div class="row col-10 mx-auto justify-content-center" v-if="puedeGestionarVales">
         <b-button v-if="orden && orden.id" @click="$router.push(`/compras/combustible/${orden.id}/generar`)" variant="success" class="btn-4 mt-3 mx-1">
           + | Agregar vales
         </b-button>
@@ -92,7 +92,7 @@
       </b-card>
     </template>
     <!-- Vales -->
-    <template>
+    <template v-if="puedeVerVales">
       <div v-if="orden">
         <div class="container big-container col-md-7 col-sm-10 card shadow-card mt-4 mb-3 mx-auto">
           <!-- Título -->
@@ -213,7 +213,7 @@
                             <b-icon-x-square v-else disabled="disabled" class="mr-2 vale-icon-disabled"></b-icon-x-square>
                             <h5 class="mb-0 ml-1 font-weight-700 text-gray vale-card-title">VALE N° {{ vale.nro_vale }}</h5>
                           </div>
-                          <div v-if="adminCompras && !vale.anulado" class="d-flex vale-card-actions">
+                          <div v-if="puedeGestionarVales && !vale.anulado" class="d-flex vale-card-actions">
                             <button v-if="!vale.consumido" class="btn btn-success vale-card-btn" title="Marcar como utilizado" @click="confirmarMarcarUtilizado(vale, (currentPage - 1) * itemsPerPage + index)">
                               <b-icon-check scale="0.85" />
                             </button>
@@ -266,7 +266,7 @@
                       <th>Patente</th>
                       <th>Fecha Emisión</th>
                       <th>Estado</th>
-                      <th v-if="adminCompras" style="width: 120px;">Acciones</th>
+                      <th v-if="puedeGestionarVales" style="width: 120px;">Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -297,7 +297,7 @@
                           <b class="text-gray" v-else>Anulado</b>
                         </span>
                       </td>
-                      <td v-if="adminCompras && !vale.anulado" class="text-center">
+                      <td v-if="puedeGestionarVales && !vale.anulado" class="text-center">
                         <div class="d-flex justify-content-center align-items-center">
                           <button
                             v-if="!vale.consumido"
@@ -325,7 +325,7 @@
                           </button>
                         </div>
                       </td>
-                      <td v-else-if="adminCompras"></td>
+                      <td v-else-if="puedeGestionarVales"></td>
                     </tr>
                   </tbody>
                 </table>
@@ -571,7 +571,13 @@ export default {
       return this.saldosCalculados.reduce((total, s) => total + (Number(s.saldo) || 0), 0);
     },
     adminCompras(){
-      return this.$store.state.user.admin == "compras" || this.$store.state.user.admin == "master"
+      return this.$can('compras.ordenes.read')
+    },
+    puedeVerVales(){
+      return this.$can('compras.vales.read')
+    },
+    puedeGestionarVales(){
+      return this.$can('compras.vales.update')
     },
     vales(){
       return this.$store.state.combustible.vales_creados
@@ -672,9 +678,11 @@ export default {
       id: ordenId,
     })
 
-    await this.$store.dispatch('combustible/getValesSingle', {
-      id: ordenId,
-    })
+    if (this.puedeVerVales) {
+      await this.$store.dispatch('combustible/getValesSingle', {
+        id: ordenId,
+      })
+    }
   },
   methods: {
     getSaldoPorTipo(tipoCombustible) {

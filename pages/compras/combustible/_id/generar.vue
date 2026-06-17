@@ -2,7 +2,7 @@
   <div class="page main-background">
     <Banner title="Compras" subtitle="Generar vales"/>
 
-    <b-container class="mt-4" v-if="orden">
+    <b-container class="mt-4" v-if="orden && puedeGestionarVales">
       <b-card class="shadow-card">
         <b-card-header class="bg-success text-white text-center">
           <h3>Generando vales: orden N°</h3>
@@ -173,6 +173,9 @@ export default {
     };
   },
   computed: {
+    puedeGestionarVales(){
+      return this.$can('compras.vales.update')
+    },
     orden() {
       return this.$store.state.combustible.single;
     },
@@ -227,8 +230,13 @@ export default {
     }
   },
   async mounted() {
+    if (!this.puedeGestionarVales) {
+      this.$router.replace('/compras/combustible')
+      return
+    }
     // Cargar vehículos cuando se monta el componente
     await this.cargarVehiculos()
+    document.addEventListener('click', this.handleClickOutside)
   },
   watch: {
     // Cargar vehículos cuando cambie la orden (área)
@@ -240,10 +248,6 @@ export default {
       },
       immediate: true
     }
-  },
-  mounted() {
-    // Cerrar sugerencias al hacer clic fuera
-    document.addEventListener('click', this.handleClickOutside)
   },
   beforeDestroy() {
     document.removeEventListener('click', this.handleClickOutside)

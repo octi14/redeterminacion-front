@@ -249,14 +249,13 @@ export default{
       return Math.ceil(this.filteredItems.length / this.perPage);
     },
     adminComercio() {
-      return this.$store.state.user.admin === "comercio" || this.$store.state.user.admin === "master"
+      return this.$can('habilitaciones.read')
     },
     adminMaster() {
-      return this.$store.state.user.admin === "master" || this.$store.state.user.username === "gracielabularte@gesell.gob.ar"
+      return this.$can('*')
     },
     jefeComercio() {
-      return this.$store.state.user.username === "nataliamegias@gesell.gob.ar" ||
-      this.$store.state.user.username === "gracielabularte@gesell.gob.ar" || this.$store.state.user.admin === "master"
+      return this.$can('habilitaciones.status')
     }
   },
   methods: {

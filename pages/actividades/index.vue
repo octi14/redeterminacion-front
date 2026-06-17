@@ -2,7 +2,7 @@
   <div class="page main-background">
     <!-- <Banner title="Actividad de Usuarios" /> -->
     <Banner/>
-    <div class="row" v-if="adminMaster">
+    <div class="row" v-if="puedeVerActividades">
       <div class="col-12">
 
         <!-- Filters and Controls -->
@@ -228,14 +228,16 @@ export default {
       return this.filteredActivities.length
     },
 
-    adminMaster(){
-      return this.$store.state.user.admin == "master"
+    puedeVerActividades(){
+      return this.$can('activities.read')
     }
 
   },
 
   async mounted() {
-    await this.loadActivities()
+    if (this.puedeVerActividades) {
+      await this.loadActivities()
+    }
   },
 
   methods: {

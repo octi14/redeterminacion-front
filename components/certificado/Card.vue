@@ -57,10 +57,10 @@ export default {
   },
   computed: {
     isAdmin(){
-      return Boolean(this.$store.state.user.admin == "true")
+      return this.$can('obras.update')
     },
     adminHacienda(){
-      return this.$store.state.user.admin == "hacienda"
+      return this.$can('obras.update')
     },
     tableItems() {
       return this.certificado.items.map((item, index) => ({

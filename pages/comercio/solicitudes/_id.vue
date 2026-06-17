@@ -335,9 +335,12 @@
                 <strong>{{ nombreDocumento }}</strong>
               </div>
               <div class="col-2 text-center">
-                <b-button size="sm" @click="openDocumento(documento, nombreDocumento)" variant="outline-primary">
-                  <b-icon icon="eye-fill" scale="1.2"></b-icon>
-                </b-button>
+                <FilePreview
+                  :file="documento"
+                  :title="nombreDocumento"
+                  icon="eye-fill"
+                  font-scale="1.2"
+                />
               </div>
               <!-- Controles de revisión para cada documento -->
               <div class="col-2 text-center" v-if="jefeComercio && habilitacion && habilitacion.status === 'En revisión'">
@@ -758,15 +761,6 @@
       <p v-html="observaciones"></p>
     </b-modal>
 
-    <b-modal v-model="showDocumentoModal" id="documento-modal" hide-footer centered>
-      <template #modal-header>
-        <h3 class="icon-orange text-primary text-center"><b>{{ DocumentoModalTitle + " - " + habilitacion.nroTramite }}</b></h3>
-      </template>
-      <div class="modal-body">
-
-      </div>
-    </b-modal>
-
     <!--Modal revisión incompleta-->
     <b-modal v-model="showRevisionIncompleta" hide-footer :header-bg-variant="'warning'" centered>
       <template #modal-header>
@@ -815,8 +809,10 @@ import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
 import MailerService from "@/service/mailer.js";
+import FilePreview from '~/components/common/FilePreview.vue'
 
 export default {
+  components: { FilePreview },
   data() {
     return {
       statusClasses: {
@@ -850,8 +846,6 @@ export default {
       nroExpediente1: null,
       nroExpediente2: null,
       alcance: null,
-      showDocumentoModal: false,
-      DocumentoModalTitle: "",
       showRevisionIncompleta: false,
       showRechazoAutomatico: false,
       visibleLocal: false,
@@ -889,21 +883,19 @@ export default {
     },
 
     adminComercio(){
-      return this.$store.state.user.admin == "comercio" || this.$store.state.user.admin == "master"
+      return this.$can('habilitaciones.read')
     },
     adminArvige(){
-      return this.$store.state.user.admin == "arvige" || this.$store.state.user.admin == "master"
+      return this.$can('habilitaciones.export')
     },
     adminModernizacion(){
-      return this.$store.state.user.admin == "modernizacion" || this.$store.state.user.admin == "master"
+      return this.$can('habilitaciones.export')
     },
     adminMaster(){
-      return this.$store.state.user.admin == "master"
+      return this.$can('habilitaciones.status')
     },
     jefeComercio(){
-      return (this.$store.state.user.username === "myriamalonso@gesell.gob.ar"
-              || this.$store.state.user.username === "nataliamegias@gesell.gob.ar"
-              || this.$store.state.user.username === "mariaelisabetbahlcke@gesell.gob.ar") || this.$store.state.user.admin == "master"
+      return this.$can('habilitaciones.status')
     },
     hoteleria(){
       for (const item of this.habilitacion.serviciosHoteleria) {
@@ -1538,100 +1530,6 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
       }
     },
 
-    //ESTE openDocumento es la prueba fallida de Nico para abrir los docs como modales dentro de la misma pagina
-    /*openDocumento(documento, nombreDocumento) {
-      const decodedData = atob(documento.data);
-      const arrayBuffer = new ArrayBuffer(decodedData.length);
-      const arrayBufferView = new Uint8Array(arrayBuffer);
-
-      for (let i = 0; i < decodedData.length; i++) {
-        arrayBufferView[i] = decodedData.charCodeAt(i);
-      }
-
-      const blob = new Blob([arrayBuffer], { type: documento.contentType });
-      const fileURL = URL.createObjectURL(blob);
-
-      this.$bvModal.show('documento-modal'); // Abre el modal
-      this.DocumentoModalTitle = nombreDocumento;
-
-      // Utiliza $nextTick para esperar hasta que el componente esté completamente montado
-      this.$nextTick(() => {
-        const modalContent = document.querySelector('#documento-modal .modal-body'); // Obtén el elemento modal-body
-
-        if (modalContent) {
-          if (documento.contentType === 'application/pdf') {
-            const embed = document.createElement('iframe');
-            embed.setAttribute('type', 'application/pdf');
-            embed.setAttribute('src', fileURL);
-            embed.setAttribute('width', '100%');
-            embed.setAttribute('height', '100%');
-            modalContent.appendChild(embed);
-          } else if (documento.contentType.startsWith('image/')) {
-            const img = document.createElement('img');
-            img.setAttribute('src', fileURL);
-            img.style.maxWidth = '100%';
-            img.style.maxHeight = '100%';
-            img.style.display = 'block';
-            img.style.margin = 'auto';
-            modalContent.appendChild(img);
-          } else {
-            console.log('Formato de contenido no compatible');
-          }
-        } else {
-          console.log('No se encontró modalContent en el DOM');
-        }
-      });
-    },*/
-    openDocumento(documento, nombreDocumento) {
-  const decodedData = atob(documento.data); // Decodificar la data de Base64
-
-  const arrayBuffer = new ArrayBuffer(decodedData.length);
-  const arrayBufferView = new Uint8Array(arrayBuffer);
-
-  for (let i = 0; i < decodedData.length; i++) {
-    arrayBufferView[i] = decodedData.charCodeAt(i);
-  }
-
-  const blob = new Blob([arrayBuffer], { type: documento.contentType });
-  const fileURL = URL.createObjectURL(blob);
-
-  const newWindow = window.open('', '_blank');
-
-  // Limpiar el nombre del archivo para eliminar rutas internas del servidor
-  const cleanFilename = documento.filename ?
-    documento.filename.split('/').pop().split('\\').pop() :
-    null;
-
-  newWindow.document.title = cleanFilename || `Documento: ${nombreDocumento}`;
-
-  if (documento.contentType === 'application/pdf') {
-    const embed = document.createElement('embed');
-    embed.setAttribute('type', 'application/pdf');
-    embed.setAttribute('src', fileURL);
-    embed.setAttribute('width', '100%');
-    embed.setAttribute('height', '100%');
-    newWindow.document.body.appendChild(embed);
-  } else if (documento.contentType.startsWith('image/')) {
-    const img = document.createElement('img');
-    img.setAttribute('src', fileURL);
-    img.setAttribute('width', 'auto');
-    img.setAttribute('height', 'auto');
-    newWindow.document.body.appendChild(img);
-  } else if (
-    documento.contentType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
-    documento.contentType === 'application/msword'
-  ) {
-    // Crear un link de descarga automática
-    const link = document.createElement('a');
-    link.href = fileURL;
-    link.download = documento.filename || 'documento.docx';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  } else {
-    console.log('Formato de contenido no compatible');
-  }
-},
     onResetEdit() {
       this.editing = false
     },

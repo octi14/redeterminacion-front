@@ -215,10 +215,10 @@ export default{
       return Math.ceil(this.filteredItems.length / this.perPage);
     },
     adminComercio() {
-      return this.$store.state.user.admin === "comercio" || this.$store.state.user.admin == "master"
+      return this.$can('habilitaciones.read')
     },
     adminMaster() {
-      return this.$store.state.user.admin == "master"
+      return this.$can('habilitaciones.export')
     }
   },
   methods: {

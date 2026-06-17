@@ -6,7 +6,7 @@
         <h4> Por favor espere unos segundos </h4>
       </div>
       <!-- Datos del solicitante -->
-      <template v-if="tramite && adminArvige">
+      <template v-if="tramite && puedeVerAbiertoAnual">
         <div class="flex col title-row" style="width: 96%">
           <div class="row justify-content-center mt-3">
             <p class="h5"> Número de legajo: <b> {{ tramite.nroLegajo }}  </b></p>
@@ -24,6 +24,7 @@
               :estado="periodo"
               :fecha="tramite.fechasCarga[index]"
               :observaciones="tramite.observaciones"
+              :can-manage="puedeGestionarAbiertoAnual"
               />
           </b-col>
         </div>
@@ -68,13 +69,14 @@
         showObservaciones: false,
         tramite: null,
         observaciones: '',
-        showDocumentoModal: false,
-        DocumentoModalTitle: "",
       }
     },
     computed: {
-      adminArvige(){
-        return this.$store.state.user.admin == "arvige" || this.$store.state.user.admin == "master"
+      puedeVerAbiertoAnual(){
+        return this.$can('abiertoAnual.read')
+      },
+      puedeGestionarAbiertoAnual(){
+        return this.$can('abiertoAnual.update')
       },
       // facturas(){
       //   return this.$store.state.facturas.all

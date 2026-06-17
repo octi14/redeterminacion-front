@@ -55,7 +55,7 @@
 export default {
   computed: {
     adminHacienda() {
-      return this.$store.state.user.admin == "hacienda" || this.$store.state.user.admin == "master";
+      return this.$can('hacienda.read');
     }
   }
 };

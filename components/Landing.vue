@@ -5,7 +5,7 @@
         <div v-for="(link, index) in links" :key="index" class="col-lg-4 my-4 mx-auto col-md-6 col-sm-12 mb-3">
           <LandingIcon :icon="link.icon" :title="link.title" :type="link.type" :to="link.to" />
         </div>
-        <div v-if="adminHacienda" class="col-lg-4 col-md-6 mx-auto my-4 col-sm-12 mb-4">
+        <div v-if="puedeVerTransito" class="col-lg-4 col-md-6 mx-auto my-4 col-sm-12 mb-4">
             <LandingIcon icon="car-front" title="Tránsito" :type="'bootstrap-icons'" to="/transito" />
         </div>
         <div class="col-lg-4 col-md-6 mx-auto my-4 col-sm-12 mb-4">
@@ -14,7 +14,7 @@
         <div class="col-lg-4 col-md-6 mx-auto my-4 col-sm-12 mb-4">
             <LandingIcon icon="tas.svg" title="ARVIGE" :type="'svg'" to="https://arvige.gob.ar" />
         </div>
-        <div v-if="adminHacienda" class="col-lg-4 col-md-6 mx-auto my-4 col-sm-12 mb-4">
+        <div v-if="puedeVerObras" class="col-lg-4 col-md-6 mx-auto my-4 col-sm-12 mb-4">
           <LandingIcon icon="calculator" title="Obras" :type="'bootstrap-vue'" to="/obras" />
         </div>
       </div>
@@ -53,8 +53,11 @@ export default {
     };
   },
   computed: {
-    adminHacienda(){
-      return this.$store.state.user.admin == "hacienda" || this.$store.state.user.admin == "master"
+    puedeVerObras(){
+      return this.$can('obras.read')
+    },
+    puedeVerTransito(){
+      return this.$can('hacienda.read')
     }
   },
   mounted() {

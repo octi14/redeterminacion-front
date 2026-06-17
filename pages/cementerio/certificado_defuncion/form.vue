@@ -87,8 +87,8 @@
       <b-row>
         <b-col lg="6">
           <b-form-group label="Certificado de defunción *" label-for="doc-cert">
-            <b-form-file id="doc-cert" v-model="documentos.certificadoDefuncion" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*"
-              @change="checkDocumentSize('certificadoDefuncion', $event); touchDoc('certificadoDefuncion')"></b-form-file>
+            <b-form-file id="doc-cert" v-model="documentos.certificadoDefuncion" placeholder="No se seleccionó un archivo." browse-text="Examinar" :accept="acceptedDocumentTypes"
+              @change="validateDocument('certificadoDefuncion', $event); touchDoc('certificadoDefuncion')"></b-form-file>
             <div v-if="docErrors.certificadoDefuncion" class="validation-error">
               <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ docErrors.certificadoDefuncion }}
             </div>
@@ -96,8 +96,8 @@
         </b-col>
         <b-col lg="6">
           <b-form-group :label="exentoPagoTasa ? 'Comprobante de exento de pago *' : 'Comprobante de pago de Tasa Derecho de cementerio *'" label-for="doc-pago">
-            <b-form-file id="doc-pago" v-model="documentos.comprobantePagoTasa" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*"
-              @change="checkDocumentSize('comprobantePagoTasa', $event); touchDoc('comprobantePagoTasa')"></b-form-file>
+            <b-form-file id="doc-pago" v-model="documentos.comprobantePagoTasa" placeholder="No se seleccionó un archivo." browse-text="Examinar" :accept="acceptedDocumentTypes"
+              @change="validateDocument('comprobantePagoTasa', $event); touchDoc('comprobantePagoTasa')"></b-form-file>
             <div v-if="docErrors.comprobantePagoTasa" class="validation-error">
               <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ docErrors.comprobantePagoTasa }}
             </div>
@@ -160,6 +160,7 @@ export default{
       procesando: false,
       mensajeEspera: 'Guardando el fallecido y cargando la documentación...',
       maxFileSize: 15 * 1024 * 1024,
+      acceptedDocumentTypes: 'application/pdf,image/*,.pdf,.jpg,.jpeg,.png,.gif,.webp,.bmp',
       obito: { apellido: '', nombre: '', tipoDocumento: '', numeroDocumento: '', fechaDefuncion: '' },
       documentos: { certificadoDefuncion: null, comprobantePagoTasa: null },
       documentosExistentes: { certificadoDefuncion: false, comprobantePagoTasa: false },
@@ -237,17 +238,33 @@ export default{
       this.docTouched[field] = true;
       if(!this.documentos[field] && !this.documentosExistentes[field]){
         this.docErrors[field] = 'Debe seleccionar un archivo.'
-      }else{
+      }else if(this.docErrors[field] === 'Debe seleccionar un archivo.'){
         this.docErrors[field] = null
       }
     },
-    checkDocumentSize(field, event){
+    validateDocument(field, event){
       const file = event && event.target && event.target.files ? event.target.files[0] : null;
-      if(file && file.size > this.maxFileSize){
+      this.$set(this.documentos, field, file);
+      if(!file) {
+        this.docErrors[field] = null;
+        return;
+      }
+      if(!this.isAllowedDocument(file)){
+        this.docErrors[field] = 'Solo se permiten archivos PDF o imagen.';
+        return;
+      }
+      if(file.size > this.maxFileSize){
         this.docErrors[field] = 'Tu archivo pesa '+ (file.size/1024/1024).toFixed(2) + 'MB, supera el límite (' + (this.maxFileSize/1024/1024) + 'MB).';
       }else{
         this.docErrors[field] = null;
       }
+    },
+    isAllowedDocument(file) {
+      const type = String(file.type || '').toLowerCase();
+      const name = String(file.name || '').toLowerCase();
+      return type === 'application/pdf'
+        || type.startsWith('image/')
+        || /\.(pdf|jpe?g|png|gif|webp|bmp)$/.test(name);
     },
     async onSubmitForm(){
       if (this.procesando) return

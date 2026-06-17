@@ -50,6 +50,16 @@ module.exports = {
     )
     return formatOrden(createdOrden.data)
   },
+  update: async (axios, { id, orden, userToken }) => {
+    const updatedOrden = await axios.$put(
+      `/ordenesCompra/${id}`,
+      { orden },
+      {
+        headers: { Authorization: `Bearer ${userToken}` },
+      }
+    )
+    return formatOrden(updatedOrden.data)
+  },
   delete: async (axios, { id, userToken }) => {
     return await axios.$delete(`/ordenesCompra/${id}`, {
       headers: { Authorization: `Bearer ${userToken}` },

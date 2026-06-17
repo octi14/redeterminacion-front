@@ -1,7 +1,7 @@
 <template>
   <div class="page main-background">
     <Banner title="Índices"/>
-    <div class="container col-md-4 col-sm-8 card shadow-card my-5 mx-auto">
+    <div v-if="puedeVerIndices" class="container col-md-4 col-sm-8 card shadow-card my-5 mx-auto">
       <div class="col ml-5 mt-5">
         <h4>
           <b-icon-search class="icon-orange" /> |
@@ -51,6 +51,11 @@ export default {
   async fetch() {
     await this.$store.dispatch('categorias/getAll')
     this.categorias = this.$store.state.categorias.all
+  },
+  computed: {
+    puedeVerIndices() {
+      return this.$can('indices.read')
+    },
   },
   methods: {
     async onSearchIndex(){

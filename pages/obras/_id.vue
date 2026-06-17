@@ -9,7 +9,7 @@
             <h4 class="h4 text-center">Adjudicado: {{ obra.adjudicado }}</h4>
             <!-- Buttons -->
             <div class="my-1">
-              <div v-show="!editing && adminHacienda" class="row mt-4 mb-4 justify-content-center">
+              <div v-show="!editing && puedeVerObras" class="row mt-4 mb-4 justify-content-center">
                 <div class="col-12 d-flex flex-wrap justify-content-center">
                   <b-button class="fixed-size-button btn-4 mb-2 mx-2" :variant="button.variant" v-for="(button, index) in filteredButtons" :key="index" @click="button.action">
                     {{ button.label }}
@@ -243,11 +243,11 @@ export default {
         }
       ].filter(button => this.shouldShowButton(button));
     },
-    isAdmin(){
-      return Boolean(this.$store.state.user.admin == "true")
+    puedeVerObras(){
+      return this.$can('obras.read')
     },
-    adminHacienda(){
-      return this.$store.state.user.admin == "hacienda" || this.$store.state.user.admin == "master"
+    puedeGestionarObras(){
+      return this.$can('obras.update')
     },
   },
   activated() {
@@ -272,11 +272,11 @@ export default {
     },
     shouldShowButton(button) {
       if (button.label === "Agregar certificado") {
-        return this.adminHacienda && !this.adding;
+        return this.puedeGestionarObras && !this.adding;
       } else if (button.label === "Editar") {
-        return this.adminHacienda && !this.adding;
+        return this.puedeGestionarObras && !this.adding;
       } else if (button.label === "Eliminar") {
-        return this.adminHacienda && !this.adding;
+        return this.puedeGestionarObras && !this.adding;
       } else {
         return true;
       }

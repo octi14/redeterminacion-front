@@ -180,10 +180,10 @@ export default{
       return items;
     },
     adminComercio(){
-      return this.$store.state.user.admin == "comercio" || this.$store.state.user.admin == "master"
+      return this.$can('habilitaciones.read')
     },
     adminInspeccion(){
-      return this.$store.state.user.admin == "inspeccion" || this.$store.state.user.admin == "master"
+      return this.$can('turnos.read')
     }
   },
   methods: {

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="adminMaster || adminArvige" class="page main-background">
+  <div v-if="puedeVerMaestro" class="page main-background">
     <Banner title="Maestro comercial"/>
     <div class="form mx-auto mt-5">
       <b-form-group class="col-5 mx-6 mx-auto mt-4" label-class="text-success h6">
@@ -17,12 +17,12 @@
       <span class="text-center">Cargar maestro</span>
       <b-form class="col justify-content-center">
         <b-form-file v-model="file" class="row col-4 mx-auto" accept="csv" type="file" placeholder="No has seleccionado un archivo." @change="handleFileUpload"/>
-        <b-button @click="onSubirMaestro" variant="success" class="mt-4">Subir archivo</b-button>
+        <b-button v-if="puedeGestionarMaestro" @click="onSubirMaestro" variant="success" class="mt-4">Subir archivo</b-button>
       </b-form>
     </div>
     <b-table per-page="10" head-row-variant="warning" class="col-md-10 white col-sm-8 mx-auto mt-4 shadow-card" :items="paginatedItems" :fields="fields">
       <template #cell(detalles)="row">
-        <b-button variant="outline-secondary" size="sm" title="Editar" @click="editarMaestro(row.item)">
+        <b-button v-if="puedeGestionarMaestro" variant="outline-secondary" size="sm" title="Editar" @click="editarMaestro(row.item)">
           <b-icon-pen size="sm"/>
         </b-button>
       </template>
@@ -87,11 +87,11 @@ export default {
     totalPages() {
       return Math.ceil(this.filteredItems.length / this.perPage);
     },
-    adminMaster(){
-      return this.$store.state.user.admin == "master"
+    puedeVerMaestro(){
+      return this.$can('maestroComercial.read')
     },
-    adminArvige(){
-      return this.$store.state.user.admin == "arvige" || this.$store.state.user.admin == "master"
+    puedeGestionarMaestro(){
+      return this.$can('maestroComercial.update')
     }
   },
   methods: {

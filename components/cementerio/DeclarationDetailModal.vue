@@ -18,7 +18,7 @@
         <b-row align-v="center">
           <b-col>
             <strong>Comprobante mensual:</strong>
-            <a v-if="comprobanteMensualUrl" :href="comprobanteMensualUrl" target="_blank" title="Ver archivo" aria-label="Ver archivo"><b-icon-file-earmark-text font-scale="1.25" /></a>
+            <FilePreview v-if="comprobanteMensualUrl" :url="comprobanteMensualUrl" title="Comprobante de pago mensual" />
             <span v-else class="text-muted">Sin archivo</span>
           </b-col>
           <b-col cols="auto">
@@ -44,7 +44,11 @@
           </b-badge>
         </template>
         <template #cell(comprobante)="row">
-          <a v-if="comprobanteUrl(row.item)" :href="comprobanteUrl(row.item)" target="_blank" title="Ver archivo" aria-label="Ver archivo"><b-icon-file-earmark-text font-scale="1.25" /></a>
+          <FilePreview v-if="comprobanteUrl(row.item)" :url="comprobanteUrl(row.item)" title="Comprobante de pago o exencion" />
+          <span v-else class="text-muted">Sin archivo</span>
+        </template>
+        <template #cell(certificadoDefuncion)="row">
+          <FilePreview v-if="certificadoDefuncionUrl(row.item)" :url="certificadoDefuncionUrl(row.item)" title="Certificado de defuncion" icon="file-earmark-medical" />
           <span v-else class="text-muted">Sin archivo</span>
         </template>
         <template #cell(acciones)="row">
@@ -69,9 +73,10 @@ import { formatCurrency, formatPeriodLabel, getStatusVariant } from '~/utils/cem
 import PeriodSummary from '~/components/cementerio/PeriodSummary.vue'
 import ListPagination from '~/components/cementerio/ListPagination.vue'
 import DeceasedDetailModal from '~/components/cementerio/DeceasedDetailModal.vue'
+import FilePreview from '~/components/common/FilePreview.vue'
 
 export default {
-  components: { PeriodSummary, ListPagination, DeceasedDetailModal },
+  components: { PeriodSummary, ListPagination, DeceasedDetailModal, FilePreview },
   props: {
     value: { type: Boolean, default: false },
     periodo: { type: Object, default: null },
@@ -88,12 +93,13 @@ export default {
       { key: 'importe', label: 'Condición / importe' },
       { key: 'estadoRevisionPago', label: 'Revisión' },
       { key: 'comprobante', label: 'Comprobante' },
+      { key: 'certificadoDefuncion', label: 'Certificado' },
       { key: 'acciones', label: '' },
     ],
   }),
   computed: {
     fallecidos() {
-      return this.periodo && this.periodo.fallecidos || []
+      return [...(this.periodo && this.periodo.fallecidos || [])].sort(this.sortByNewest)
     },
     fallecidosPaginados() {
       const start = (this.currentPage - 1) * this.perPage
@@ -145,6 +151,23 @@ export default {
     comprobanteUrl(item) {
       const doc = item.documentos && item.documentos.comprobantePagoTasa
       return doc && doc.url
+    },
+    certificadoDefuncionUrl(item) {
+      const doc = item.documentos && item.documentos.certificadoDefuncion
+      return doc && doc.url
+    },
+    sortByNewest(a, b) {
+      return this.itemDateValue(b) - this.itemDateValue(a)
+    },
+    itemDateValue(item) {
+      const value = item && (item.createdAt || item.fechaCreacion || item._id)
+      if (!value) return 0
+      const date = new Date(value)
+      if (!Number.isNaN(date.getTime())) return date.getTime()
+      if (typeof value === 'string' && value.length >= 8) {
+        return parseInt(value.substring(0, 8), 16) * 1000 || 0
+      }
+      return 0
     },
     abrirDetalleFallecido(item) {
       this.fallecidoDetalle = item

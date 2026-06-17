@@ -45,7 +45,7 @@ export default {
   },
   computed: {
     adminModernizacion(){
-      return this.$store.state.user.admin == "modernizacion"
+      return this.$can('modernizacion.update')
     }
   },
   activated() {

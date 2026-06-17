@@ -1,7 +1,7 @@
 <template>
   <div class="page main-background">
     <Banner title="Comercio Abierto anual" subtitle="Uso interno" />
-    <div class="col-8 mx-auto" v-if="adminArvige">
+    <div class="col-8 mx-auto" v-if="puedeVerAbiertoAnual">
       <b-form-group class="col-5 mx-6 mx-auto mt-4" label-class="text-success h6">
         <label for="inputCUIT" class="bv-no-focus-ring col-form-label pt-0 text-success h6">
           <b-icon-search></b-icon-search> Buscar por CUIT
@@ -32,7 +32,7 @@
 
       <div class="row justify-content-center">
         <!-- <b-form-checkbox class="mx-3 mt-2" v-model="hideFinalizados">Ocultar finalizados</b-form-checkbox> -->
-        <b-button variant="info" @click="exportarCSV"><b-icon-download class="mr-1"/>Exportar CSV</b-button>
+        <b-button v-if="puedeExportarAbiertoAnual" variant="info" @click="exportarCSV"><b-icon-download class="mr-1"/>Exportar CSV</b-button>
       </div>
     </div>
 
@@ -48,7 +48,7 @@
         </div>
       </template>
       <template #cell(detalles)="row">
-        <NuxtLink :to="{ name: 'comercio-abierto_anual-registros-id', params: { id: row.item.id } }">
+        <NuxtLink v-if="puedeVerAbiertoAnual" :to="{ name: 'comercio-abierto_anual-registros-id', params: { id: row.item.id } }">
           <b-button variant="outline-secondary" size="sm" title="Editar">
             <b-icon-pen/>
           </b-button>
@@ -126,8 +126,14 @@ export default {
     totalPages() {
       return Math.ceil(this.filteredItems.length / this.perPage);
     },
-    adminArvige() {
-      return this.$store.state.user.admin === "arvige" || this.$store.state.user.admin === "master";
+    puedeVerAbiertoAnual() {
+      return this.$can('abiertoAnual.read');
+    },
+    puedeGestionarAbiertoAnual() {
+      return this.$can('abiertoAnual.update');
+    },
+    puedeExportarAbiertoAnual() {
+      return this.$can('abiertoAnual.export');
     }
   },
   methods: {

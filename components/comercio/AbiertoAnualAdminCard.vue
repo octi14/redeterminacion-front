@@ -190,48 +190,43 @@
       </b-card-text>
       <b-row v-if="estadoActual == 2 || estadoActual == 3 || estadoActual == 4 || estadoActual == 8">
           <b-col v-if="facturas && facturas[periodo]">
-              <b-button class="btn-show-ticket" variant="outline-primary" @click="openDocumento(facturas[periodo])"><b-icon-eye></b-icon-eye></b-button>
+            <div class="btn-show-ticket">
+              <FilePreview
+                :file="facturas[periodo]"
+                :title="`Factura periodo ${periodo + 1}`"
+                button-variant="outline-primary"
+                button-block
+                icon="eye"
+              />
+            </div>
           </b-col>
       </b-row>
       <div class="btn-abajo-container">
           <div class="btn-group">
-              <div v-if="estadoActual == 9 || estadoActual == 10 || estadoActual == 11 || estadoActual == 12" style="width: 100%;">
+              <div v-if="canManage && (estadoActual == 9 || estadoActual == 10 || estadoActual == 11 || estadoActual == 12)" style="width: 100%;">
                   <b-button @click="AvanzarPaso" variant="success" class="btn-approve float-left" disabled="disabled" v-if="(estadoActual == 11) && (!motivo)"><span>Aceptar</span></b-button>
                   <b-button @click="AvanzarPaso" variant="success" class="btn-approve float-left" v-else><span>Aceptar</span></b-button>
                   <b-button @click="RetrocederPaso" variant="danger" class="btn-cancel float-right"><span>Cancelar</span></b-button>
               </div>
-              <div v-else-if="estadoActual == 2 || estadoActual == 8" style="width: 100%;">
+              <div v-else-if="canManage && (estadoActual == 2 || estadoActual == 8)" style="width: 100%;">
                   <b-button @click="AprobarTicket" variant="success" class="btn-approve float-left"><span>Aprobar</span></b-button>
                   <b-button @click="RechazarTicket" variant="danger" class="btn-cancel float-right"><span>Rechazar</span></b-button>
               </div>
-              <div v-else-if="estadoActual == 3 || estadoActual == 4 || estadoActual == 5" style="width: 100%;">
+              <div v-else-if="canManage && (estadoActual == 3 || estadoActual == 4 || estadoActual == 5)" style="width: 100%;">
                   <b-icon-pencil-square variant="dark" scale="2" @click="RectificarTicket" class="btn-rectific"></b-icon-pencil-square>
               </div>
           </div>
       </div>
   </b-card>
   </transition>
-
-  <!-- Modal para archivos HEIC -->
-  <b-modal v-model="showHeicModal" header-bg-variant="warning" title="Archivo no compatible" title-class="text-light" hide-footer centered>
-    <div class="text-center">
-      <b-icon-exclamation-triangle-fill variant="warning" scale="3" class="my-3"></b-icon-exclamation-triangle-fill>
-      <h5 class="my-3">Este archivo no pudo ser abierto desde el navegador</h5>
-      <p class="mb-4">El formato HEIC no es compatible con tu navegador.<br/> Podés descargar el archivo para visualizarlo en tu dispositivo.</p>
-      <b-button @click="downloadHeicFile" variant="success" class="mr-2 btn-download-heic">
-        <b-icon-download></b-icon-download> Descargar
-      </b-button>
-      <b-button @click="showHeicModal = false" variant="secondary">
-        Cerrar
-      </b-button>
-    </div>
-  </b-modal>
   </div>
 </template>
 
 <script>
 import { requiredIf } from 'vuelidate/lib/validators';
+import FilePreview from '~/components/common/FilePreview.vue';
 export default {
+  components: { FilePreview },
   props: {
     id: {
       type: Number,
@@ -242,6 +237,10 @@ export default {
     fecha: String,
     observaciones: String,
     hardEstado: Number,
+    canManage: {
+      type: Boolean,
+      default: false,
+    },
     // Puedes agregar más props según sea necesario
   },
   data() {
@@ -268,8 +267,6 @@ export default {
       captchaResponse: null,
       captchaError: false,
       periodoActivo: false,
-      showHeicModal: false,
-      currentDocumento: null,
       };
   },
   async fetch(){
@@ -513,63 +510,6 @@ export default {
           if(this.TEST_submit) return true;
           return !this.captchaError;
       },
-      isValidBase64(str) {
-          try {
-              return btoa(atob(str)) == str;
-          } catch (e) {
-              return false;
-          }
-      },
-
-      openDocumento(documento) {
-        if (!this.isValidBase64(documento.data)) {
-            console.error('La cadena Base64 no es válida');
-            return;
-        }
-
-        // Verificar si es un archivo HEIC
-        if (documento.contentType === 'image/heic' || documento.contentType === 'image/heif' ||
-            (documento.filename && documento.filename.toLowerCase().endsWith('.heic'))) {
-            this.showHeicModal = true;
-            this.currentDocumento = documento;
-            return;
-        }
-
-        const decodedData = atob(documento.data); // Decodificar la data de Base64
-        const arrayBuffer = new Uint8Array(decodedData.length);
-
-        for (let i = 0; i < decodedData.length; i++) {
-            arrayBuffer[i] = decodedData.charCodeAt(i);
-        }
-
-        const blob = new Blob([arrayBuffer], { type: documento.contentType });
-        const fileURL = URL.createObjectURL(blob);
-        const newWindow = window.open('', '_blank');
-
-        if (!newWindow) return; // Check if the new window was successfully opened.
-
-        if (documento.contentType === 'application/pdf') {
-            newWindow.location.href = fileURL; // Open the PDF in a new tab using href
-        } else if (documento.contentType.startsWith('image/')) {
-            const img = document.createElement('img');
-            img.src = fileURL;
-            img.style.width = '100%';
-            img.style.height = 'auto';
-            newWindow.document.body.appendChild(img);
-            newWindow.document.title = documento.filename; // Change the title of the tab
-        } else {
-            // If the file type is not supported, try downloading the file
-            const a = document.createElement('a');
-            a.href = fileURL;
-            a.download = documento.filename;
-            a.style.display = 'none';
-            document.body.appendChild(a);
-            a.click();
-            URL.revokeObjectURL(fileURL);
-        }
-    },
-
-
 
       playAnimation(callback, newState) {
           // Agregar clase para iniciar la animación
@@ -590,51 +530,6 @@ export default {
           }, 500); // Cambia 500ms por la mitad de la duración de tu animación
       },
 
-      downloadHeicFile() {
-          if (!this.currentDocumento) {
-              console.error('No hay documento HEIC para descargar');
-              return;
-          }
-
-          try {
-              // Decodificar la data de Base64
-              const decodedData = atob(this.currentDocumento.data);
-              const arrayBuffer = new Uint8Array(decodedData.length);
-
-              for (let i = 0; i < decodedData.length; i++) {
-                  arrayBuffer[i] = decodedData.charCodeAt(i);
-              }
-
-              // Crear el blob con el tipo MIME correcto para HEIC
-              const blob = new Blob([arrayBuffer], {
-                  type: this.currentDocumento.contentType || 'image/heic'
-              });
-
-              // Crear el enlace de descarga
-              const a = document.createElement('a');
-              a.href = URL.createObjectURL(blob);
-              a.download = this.currentDocumento.filename || 'archivo.heic';
-              a.style.display = 'none';
-
-              // Agregar al DOM, hacer clic y limpiar
-              document.body.appendChild(a);
-              a.click();
-              document.body.removeChild(a);
-
-              // Liberar la URL del objeto
-              URL.revokeObjectURL(a.href);
-
-              // Cerrar el modal
-              this.showHeicModal = false;
-
-          } catch (error) {
-              console.error('Error al descargar el archivo HEIC:', error);
-              this.$bvToast.toast('Error al descargar el archivo', {
-                  variant: 'danger',
-                  title: 'Error'
-              });
-          }
-      },
   }
 }
 </script>
@@ -709,6 +604,9 @@ h3{
   max-width: 26rem !important;
 }
 #aaCard .card-body{
+  display: flex;
+  flex-direction: column;
+  min-height: 780px;
   padding: 1rem 3rem;
 }
 .modal-content div{
@@ -835,10 +733,8 @@ width: 100%;
   margin-right: 5%;
 }
 .btn-abajo-container{
+  margin: auto auto 0;
   width: 80%;
-  position: absolute;
-  bottom: 15px;
-  left: 10%;
 }
 .btn-abajo-container button{
   margin-top: 2rem;
@@ -854,6 +750,7 @@ width: 100%;
 .btn-show-ticket{
   width: 100%;
   margin-top: 2rem;
+  margin-bottom: 1.25rem;
 }
 .btn-group{
   width: 100%;

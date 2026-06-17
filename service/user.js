@@ -8,12 +8,15 @@ const formatProfile = ({
   }
 }
 
-const formatAuthenticatedUser = ({ _id: id, username, token, admin }) => {
+const formatAuthenticatedUser = ({ _id: id, username, token, admin, rolesExp = [], permissions = [], accessSource = 'legacy' }) => {
   return {
     id,
     username,
     token,
     admin,
+    rolesExp,
+    permissions,
+    accessSource,
   }
 }
 
@@ -66,6 +69,11 @@ module.exports = {
       token,
     })
     return response.data
+  },
+
+  getMe: async (axios) => {
+    const response = await axios.$get('/users/me')
+    return formatAuthenticatedUser(response.data)
   },
 
   getAll: async (axios) => {

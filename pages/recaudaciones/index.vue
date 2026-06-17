@@ -24,7 +24,7 @@
 export default {
   computed: {
     adminCementerio() {
-      return ['cementerio', 'master'].includes(this.$store.state.user.admin)
+      return this.$can('cementerio.read')
     },
   },
 }

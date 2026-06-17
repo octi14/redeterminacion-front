@@ -67,14 +67,11 @@ export default {
     }
   },
   computed: {
-    isAdmin(){
-      return Boolean(this.$store.state.user.admin == "true")
-    },
     adminModernizacion(){
-      return this.$store.state.user.admin == "modernizacion" || this.$store.state.user.admin === "master" || this.$store.state.user.username === "gustavociriaco@gesell.gob.ar"
+      return this.$can('modernizacion.update')
     },
     adminCultura(){
-      return this.$store.state.user.admin == "cultura" || this.$store.state.user.admin == "master"
+      return this.$can('modernizacion.read')
     },
   },
   methods: {

@@ -169,10 +169,10 @@ export default{
       return Math.ceil(this.filteredItems.length / this.perPage);
     },
     adminRecaudaciones() {
-      return this.$store.state.user.admin === "recaudaciones" || this.$store.state.user.admin == "master"
+      return this.$can('pagosDobles.read')
     },
     adminMaster() {
-      return this.$store.state.user.admin == "master"
+      return this.$can('pagosDobles.export')
     }
   },
   methods: {

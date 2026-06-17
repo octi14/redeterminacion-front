@@ -62,11 +62,11 @@ import DeclarationDetailModal from '~/components/cementerio/DeclarationDetailMod
 
 export default {
   components: { LoadingOverlay, ListPagination, DeclarationDetailModal },
-  middleware: ['authenticated', 'recaudaciones'],
+  middleware: ['authenticated', 'cementerioRecaudaciones'],
   data: () => ({
     loadError: '',
     busqueda: '',
-    estado: 'EN_PROCESO',
+    estado: '',
     anio: '',
     currentPage: 1,
     perPage: 10,

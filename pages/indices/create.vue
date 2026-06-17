@@ -1,7 +1,7 @@
 <template>
   <div class="page main-background">
     <Banner title="Índices"></Banner>
-    <div class="container col-md-4 col-sm-10 card shadow-card my-5">
+    <div v-if="puedeGestionarIndices" class="container col-md-4 col-sm-10 card shadow-card my-5">
       <div class="col ml-5 mt-5">
         <h4>
           <b-icon-arrow-down-left-square class="icon-orange" /> |
@@ -55,6 +55,11 @@ export default {
     // await this.$store.dispatch('tags/getTags')
   },
   fetchOnServer: false,
+  computed: {
+    puedeGestionarIndices() {
+      return this.$can('indices.update')
+    },
+  },
   methods: {
     async onSubmitCreateFile() {
     try {

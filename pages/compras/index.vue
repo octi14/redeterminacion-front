@@ -16,7 +16,7 @@
         </a>
       </div>
       <MenuItem to="/compras/proveedores" icon="pen" title="Inscripción de proveedores" description="Información acerca de la inscripción como Proveedor Municipal"/>
-      <div class="row no-gutters justify-content-center mt-5" v-if="adminCompras || puedeVerDashboardCombustible">
+      <div class="row no-gutters justify-content-center mt-5" v-if="puedeVerComprasCombustible || puedeVerDashboardCombustible">
         <NuxtLink to="/compras/combustible" class="col-md-5">
           <b-button variant="outline" class="d-flex w-100 white shadow-card">
             <div class="me-3">
@@ -41,15 +41,15 @@
 <script>
 export default {
   computed: {
-    adminHacienda() {
-      return this.$store.state.user.admin == "hacienda" || this.$store.state.user.admin == "master";
-    },
     adminCompras(){
-      return this.$store.state.user.admin == "compras" || this.$store.state.user.admin == "master";
+      return this.$can('compras.read');
+    },
+    puedeVerComprasCombustible(){
+      return this.$can('compras.ordenes.read') || this.$can('compras.vales.read');
     },
     /** Usuario que solo puede ver el dashboard de combustible (sin órdenes ni vehículos). */
     puedeVerDashboardCombustible() {
-      return this.$store.state.user.username === "gustavociriaco@gesell.gob.ar";
+      return this.$can('compras.dashboard');
     }
   }
 };

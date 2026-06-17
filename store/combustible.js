@@ -27,6 +27,16 @@ export const actions = {
     })
     return createdFile
   },
+  async update({ commit, state }, { id, orden, userToken }) {
+    const updated = await CombustibleService.update(this.$axios, {
+      id,
+      orden,
+      userToken,
+    })
+    const next = (state.all || []).map(item => item.id === id ? updated : item)
+    commit('setAll', next)
+    return updated
+  },
   async getAllVales({ commit, state}){
     const found = await CombustibleService.getAllVales(this.$axios, {
     })

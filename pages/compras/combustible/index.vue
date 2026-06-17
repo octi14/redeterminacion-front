@@ -3,12 +3,12 @@
     <Banner title="Compras" subtitle="Combustible"/>
 
     <!-- Botones de acción: ocultos para quien solo ve el dashboard -->
-    <div v-if="!soloDashboardCombustible" class="row no-gutters justify-content-center mt-4">
+    <div v-if="puedeGestionarOrdenes" class="row no-gutters justify-content-center mt-4">
       <b-button variant="success" class="text-center mx-3" @click="showCargarOrden = true">
         <b-icon-plus-circle class="mr-2"></b-icon-plus-circle>
         Cargar Orden de Compra
       </b-button>
-      <b-button variant="primary" class="text-center mx-3" @click="showCargarVehiculo = true">
+      <b-button v-if="puedeGestionarVehiculos" variant="primary" class="text-center mx-3" @click="showCargarVehiculo = true">
         <b-icon-plus-circle class="mr-2"></b-icon-plus-circle>
         Cargar Vehículo
       </b-button>
@@ -18,7 +18,7 @@
     <div class="col-md-10 mx-auto mt-4">
       <b-tabs content-class="mt-0" fill class="custom-tabs">
         <!-- Pestaña Órdenes de Compra: oculta para quien solo ve dashboard -->
-        <b-tab v-if="!soloDashboardCombustible" title="📋 Órdenes de Compra" active class="custom-tab">
+        <b-tab v-if="puedeVerOrdenes" title="Ordenes de Compra" active class="custom-tab">
           <b-table per-page="10" head-row-variant="success" class="white shadow-card" :items="paginatedItems" :fields="fields">
       <template #cell(monto)="row">
         {{ format(row.item.montos.reduce((acc, combustible) => acc + combustible.monto, 0)) }}
@@ -29,12 +29,22 @@
       <template #cell(acciones)="row">
         <b-button-group size="sm">
           <b-button
+            v-if="puedeVerVales"
             variant="outline-secondary"
             :to="{ name: 'compras-combustible-id', params: { id: row.item.id } }"
             class="outline-secondary"
             title="Detalles"
           >
             <b-icon-pen class="icon-hover" />
+          </b-button>
+
+          <b-button
+            v-if="puedeEditarOrden(row.item)"
+            variant="outline-primary"
+            title="Editar orden"
+            @click="editarOrden(row.item)"
+          >
+            <b-icon-pencil class="icon-hover" />
           </b-button>
 
 
@@ -48,6 +58,7 @@
           </b-button>
 
           <b-button
+            v-if="puedeEliminarOrden(row.item)"
             variant="outline-danger"
             title="Eliminar"
             @click="sendEliminarOrden(row.item)"
@@ -62,7 +73,7 @@
         </b-tab>
 
         <!-- Pestaña Estadísticas: mismo dashboard para jefeCompras y gustavociriaco -->
-        <b-tab v-if="jefeCompras || soloDashboardCombustible" title="📊 Estadísticas" :active="soloDashboardCombustible" class="custom-tab">
+        <b-tab v-if="puedeVerDashboard" title="Estadisticas" :active="soloDashboardCombustible" class="custom-tab">
           <div class="dashboard-combustible">
             <!-- Estado de carga -->
             <div v-if="loadingEstadisticas" class="text-center py-5">
@@ -109,7 +120,7 @@
         </b-tab>
 
         <!-- Pestaña Vehículos: oculta para quien solo ve dashboard -->
-        <b-tab v-if="!soloDashboardCombustible" title="🚗 Vehículos" class="custom-tab">
+        <b-tab v-if="puedeGestionarVehiculos" title="Vehiculos" class="custom-tab">
           <!-- Filtros -->
           <div class="row no-gutters filtro-section">
             <div class="col-md-3">
@@ -211,7 +222,7 @@
         </div>
       </template>
       <div class="confirmation-popup-body">
-        <h3 class="landing-text text-center" v-if="!successMessage"><b>Cargar orden de compra</b></h3><hr v-if="!successMessage"/>
+        <h3 class="landing-text text-center" v-if="!successMessage"><b>{{ ordenEditandoId ? 'Editar orden de compra' : 'Cargar orden de compra' }}</b></h3><hr v-if="!successMessage"/>
 
         <!-- Mensaje de éxito -->
         <div v-if="successMessage" class="text-center">
@@ -297,7 +308,7 @@
             </div>
             <!-- Botón de salir -->
             <div class="text-center mt-3 mx-2">
-              <b-btn variant="danger" @click="showCargarOrden=false">
+              <b-btn variant="danger" @click="cerrarModalOrden">
                 Cancelar
               </b-btn>
             </div>
@@ -559,6 +570,7 @@ export default {
       inputNroOrden: "",
       nroOrden1: '', // Número de orden parte 1
       nroOrden2: '', // Número de orden parte 2
+      ordenEditandoId: null,
       showCargarOrden: false,
       isLoading: false,
       loadingCargar: false,
@@ -620,30 +632,23 @@ export default {
     };
   },
   async fetch() {
-    const soloDashboard = this.$store.state.user.username === 'gustavociriaco@gesell.gob.ar'
-
-    if (!soloDashboard) {
+    if (this.puedeVerOrdenes) {
       await this.$store.dispatch('combustible/getOrdenesCompra')
       this.items = this.ordenesCompra
       await this.$store.dispatch('combustible/getProveedores')
+    }
 
+    if (this.puedeGestionarVehiculos) {
       try {
         await this.$store.dispatch('vehiculos/getAll')
         this.vehiculos = this.$store.state.vehiculos ? this.$store.state.vehiculos.all : []
       } catch (error) {
-        console.error('Error al cargar vehículos:', error)
+        console.error('Error al cargar vehiculos:', error)
         this.vehiculos = []
       }
     }
 
-    // Cargar estadísticas de combustible para jefeCompras o para quien solo ve el dashboard (gustavociriaco)
-    const user = this.$store.state.user
-    const puedeVerDashboard = user && (
-      (user.admin === 'compras' && user.username === 'martinjordan@gesell.gob.ar') ||
-      user.admin === 'master' ||
-      user.username === 'gustavociriaco@gesell.gob.ar'
-    )
-    if (puedeVerDashboard) {
+    if (this.puedeVerDashboard) {
       try {
         this.loadingEstadisticas = true
         this.errorEstadisticas = null
@@ -653,8 +658,8 @@ export default {
         endDate.setHours(23, 59, 59, 999)
         await this.$store.dispatch('estadisticas/fetchEstadisticasCombustible', { startDate, endDate })
       } catch (error) {
-        console.error('Error al cargar estadísticas de combustible:', error)
-        this.errorEstadisticas = 'Error al cargar las estadísticas. Por favor, intenta recargar la página.'
+        console.error('Error al cargar estadisticas de combustible:', error)
+        this.errorEstadisticas = 'Error al cargar las estadisticas. Por favor, intenta recargar la pagina.'
       } finally {
         this.loadingEstadisticas = false
       }
@@ -662,19 +667,40 @@ export default {
   },
   computed: {
     adminCompras(){
-      return this.$store.state.user.admin === "compras" || this.$store.state.user.admin === "master"
+      return this.$can('compras.read')
+    },
+    puedeVerOrdenes(){
+      return this.$can('compras.ordenes.read')
+    },
+    puedeGestionarOrdenes(){
+      return this.$can('compras.ordenes.update')
+    },
+    puedeBorrarOrdenes(){
+      return this.$can('compras.ordenes.delete')
+    },
+    puedeVerVales(){
+      return this.$can('compras.vales.read')
+    },
+    puedeGestionarVales(){
+      return this.$can('compras.vales.update')
+    },
+    puedeGestionarVehiculos(){
+      return this.$can('compras.vehiculos.manage')
+    },
+    puedeVerDashboard(){
+      return this.$can('compras.dashboard')
     },
     /** Puede entrar a la página combustible: admin compras o usuario con solo dashboard. */
     puedeVerPaginaCombustible() {
-      return this.adminCompras || this.$store.state.user.username === "gustavociriaco@gesell.gob.ar"
+      return this.puedeVerOrdenes || this.puedeVerVales || this.puedeVerDashboard
     },
     /** Solo ve el dashboard de combustible (sin órdenes ni vehículos). */
     soloDashboardCombustible() {
-      return this.$store.state.user.username === "gustavociriaco@gesell.gob.ar"
+      return this.puedeVerDashboard && !this.puedeVerOrdenes && !this.puedeVerVales
     },
-    /** Solo martinjordan@gesell.gob.ar (o master) puede ver la pestaña Estadísticas dentro de la vista completa. */
+    /** Puede ver la pestaña Estadísticas dentro de la vista completa. */
     jefeCompras() {
-      return (this.$store.state.user.admin === "compras" && this.$store.state.user.username === "martinjordan@gesell.gob.ar") || this.$store.state.user.admin === "master"
+      return this.puedeGestionarVales
     },
     ordenesCompra() {
       return this.$store.state.combustible.all;
@@ -749,7 +775,7 @@ export default {
     nroOrdenDuplicado() {
       if (!this.nroOrden1 || !this.nroOrden2) return false;
       const nro = `${String(this.nroOrden1).trim()}/${String(this.nroOrden2).trim()}`;
-      return this.items.some(item => item.nroOrden && String(item.nroOrden).trim() === nro);
+      return this.items.some(item => item.id !== this.ordenEditandoId && item.nroOrden && String(item.nroOrden).trim() === nro);
     },
     // Computed property para obtener datos de combustible desde el store
     datosCombustible() {
@@ -761,6 +787,39 @@ export default {
   methods: {
     onPageChange(newPage) {
       this.currentPage = newPage;
+    },
+    ordenSinVales(item) {
+      return !item || !Number(item.vales)
+    },
+    puedeEditarOrden(item) {
+      return this.puedeGestionarOrdenes && (this.puedeGestionarVales || this.ordenSinVales(item))
+    },
+    puedeEliminarOrden(item) {
+      return this.puedeBorrarOrdenes && (this.puedeGestionarVales || this.ordenSinVales(item))
+    },
+    editarOrden(item) {
+      if (!this.puedeEditarOrden(item)) {
+        this.$bvToast.toast('Solo se pueden editar ordenes sin vales asociados.', { variant: 'warning' })
+        return
+      }
+      const [nroOrden1 = '', nroOrden2 = ''] = String(item.nroOrden || '').split('/')
+      this.ordenEditandoId = item.id
+      this.nroOrden1 = nroOrden1
+      this.nroOrden2 = nroOrden2
+      this.orden = {
+        nroOrden: item.nroOrden,
+        area: item.area,
+        proveedor: item.proveedor,
+        montos: (item.montos || []).map(monto => ({ ...monto })),
+      }
+      if (!this.orden.montos.length) {
+        this.orden.montos = [{ tipoCombustible: "", monto: 0 }]
+      }
+      this.showCargarOrden = true
+    },
+    cerrarModalOrden() {
+      this.showCargarOrden = false
+      this.resetForm()
     },
     cerrarPopup(){
       this.showCargarOrden = false;  // Cerrar modal
@@ -787,38 +846,40 @@ export default {
     },
     async submitForm() {
       if (this.nroOrdenDuplicado) {
-        this.$bvToast.toast("Ya existe una orden de compra con ese número.", { variant: "warning" });
+        this.$bvToast.toast("Ya existe una orden de compra con ese numero.", { variant: "warning" });
         return;
       }
       this.loadingCargar = true;
       try {
-        // const userToken = this.$store.state.user.token;
-
-        // Concatenar nroOrden1 y nroOrden2 para formar nroOrden
         const nroOrden = `${this.nroOrden1}/${this.nroOrden2}`;
-
-        await this.$store.dispatch('combustible/create', {
+        const payload = {
           orden: {
-            nroOrden: nroOrden,
+            nroOrden,
             proveedor: this.orden.proveedor,
             area: this.orden.area,
-            montos: this.orden.montos.filter(m => m.tipoCombustible && m.monto > 0) // Evitar enviar montos vacíos
+            montos: this.orden.montos.filter(m => m.tipoCombustible && m.monto > 0)
           },
-        });
+        };
 
-        // Registrar actividad de creación de orden de compra
+        if (this.ordenEditandoId) {
+          await this.$store.dispatch('combustible/update', {
+            id: this.ordenEditandoId,
+            userToken: this.$store.state.user.token,
+            ...payload,
+          });
+        } else {
+          await this.$store.dispatch('combustible/create', payload);
+        }
+
         await this.$logUserActivity(
           this.$store.state.user.username,
-          'Crear Orden de Compra',
-          `Orden de compra ${nroOrden} creada para el área ${this.orden.area}`
+          this.ordenEditandoId ? 'Editar Orden de Compra' : 'Crear Orden de Compra',
+          `Orden de compra ${nroOrden} guardada para el area ${this.orden.area}`
         );
 
-        // Mostrar mensaje de éxito
-        // this.showCargarOrden = false
         this.successMessage = true
-
       } catch (error) {
-        this.$bvToast.toast("Error al crear la orden", { variant: "danger" });
+        this.$bvToast.toast("Error al guardar la orden", { variant: "danger" });
       } finally {
         this.loadingCargar = false;
       }
@@ -828,11 +889,18 @@ export default {
       this.orden = {
         nroOrden: "",
         area: "",
-        montoSuper: null,
-        montoVPower: null,
+        proveedor: '',
+        montos: [{ tipoCombustible: "", monto: 0 }],
       };
+      this.nroOrden1 = ''
+      this.nroOrden2 = ''
+      this.ordenEditandoId = null
     },
     sendEliminarOrden(item){
+      if (!this.puedeEliminarOrden(item)) {
+        this.$bvToast.toast('Solo se pueden eliminar ordenes sin vales asociados.', { variant: 'warning' })
+        return
+      }
       if(!this.showEliminarOrden){
         this.showEliminarOrden = true
         this.tempElim = item
@@ -1044,3 +1112,5 @@ export default {
   padding: 1rem 0;
 }
 </style>
+
+

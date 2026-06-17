@@ -101,7 +101,7 @@ export default {
       return this.$store.state.multimedias.multimedias
     },
     isAdmin(){
-      return Boolean(this.$store.state.user.admin == "true")
+      return this.$can('modernizacion.update')
     },
     paginatedItems() {
       const start = (this.currentPage - 1) * this.perPage;

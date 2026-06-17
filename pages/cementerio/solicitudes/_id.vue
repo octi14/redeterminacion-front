@@ -16,27 +16,16 @@
             </b-col>
           </b-row>
           <PeriodSummary class="mt-4" :periodo="periodo" />
+          <div class="monthly-payment-row">
+            <strong>Comprobante de pago:</strong>
+            <FilePreview v-if="comprobanteMensualUrl" :url="comprobanteMensualUrl" title="Comprobante de pago mensual" />
+            <span v-else class="text-danger">No se recibio un comprobante mensual.</span>
+            <div class="monthly-payment-row__actions">
+              <b-button size="sm" :variant="revisionMensualButtonVariant('APROBADO')" :class="revisionMensualButtonClass('APROBADO')" :title="revisionMensualButtonTitle('APROBADO')" :aria-label="revisionMensualButtonTitle('APROBADO')" :disabled="procesando" @click="revisarMensual('APROBADO')"><b-icon-check-lg /></b-button>
+              <b-button size="sm" :variant="revisionMensualButtonVariant('RECHAZADO')" :class="revisionMensualButtonClass('RECHAZADO')" :title="revisionMensualButtonTitle('RECHAZADO')" :aria-label="revisionMensualButtonTitle('RECHAZADO')" :disabled="procesando" @click="revisarMensual('RECHAZADO')"><b-icon-x font-scale="1.25" /></b-button>
+            </div>
+          </div>
         </b-card>
-
-        <b-card class="shadow-card mb-4">
-          <h3 class="text-success">Comprobante mensual</h3>
-          <b-row align-v="center">
-            <b-col>
-              <a v-if="periodo.comprobantePagoMensual && periodo.comprobantePagoMensual.url" :href="periodo.comprobantePagoMensual.url" target="_blank" title="Ver comprobante" aria-label="Ver comprobante">
-                <b-icon-file-earmark-text font-scale="1.25" />
-              </a>
-              <span v-else class="text-danger">No se recibió un comprobante mensual.</span>
-            </b-col>
-            <b-col cols="auto">
-              <b-badge :variant="statusVariant(periodo.estadoRevisionPagoMensual)">
-                {{ estadoLabel(periodo.estadoRevisionPagoMensual || 'PENDIENTE') }}
-              </b-badge>
-              <b-button size="sm" variant="success" title="Aprobar" aria-label="Aprobar" :disabled="procesando" @click="revisarMensual('APROBADO')"><b-icon-check-lg /></b-button>
-              <b-button size="sm" variant="danger" title="Rechazar" aria-label="Rechazar" :disabled="procesando" @click="revisarMensual('RECHAZADO')"><b-icon-x font-scale="1.25" /></b-button>
-            </b-col>
-          </b-row>
-        </b-card>
-
         <b-card class="shadow-card mb-4">
           <h3 class="text-success mb-3">Pagos y exenciones individuales</h3>
           <b-row>
@@ -57,28 +46,28 @@
             </b-col>
           </b-row>
           <b-table responsive hover :items="fallecidosPaginados" :fields="fields" show-empty empty-text="Sin fallecidos que coincidan con los filtros">
+            <template #cell(fechaDefuncion)="row">{{ fechaDefuncion(row.item) }}</template>
             <template #cell(fallecido)="row">{{ nombreFallecido(row.item) }}</template>
             <template #cell(importe)="row">
               <b-badge v-if="row.item.condicionPago === 'EXENTO'" variant="info">Exento</b-badge>
               <span v-else>{{ moneda(row.item.precioAplicado) }}</span>
             </template>
             <template #cell(comprobante)="row">
-              <a v-if="comprobanteUrl(row.item)" :href="comprobanteUrl(row.item)" target="_blank" title="Ver archivo" aria-label="Ver archivo"><b-icon-file-earmark-text font-scale="1.25" /></a>
+              <FilePreview v-if="comprobanteUrl(row.item)" :url="comprobanteUrl(row.item)" title="Comprobante de pago o exencion" />
               <span v-else class="text-danger">Sin archivo</span>
             </template>
-            <template #cell(estadoRevisionPago)="row">
-              <b-badge :variant="statusVariant(row.item.estadoRevisionPago || 'PENDIENTE')">
-                {{ estadoLabel(row.item.estadoRevisionPago || 'PENDIENTE') }}
-              </b-badge>
+            <template #cell(certificadoDefuncion)="row">
+              <FilePreview v-if="certificadoDefuncionUrl(row.item)" :url="certificadoDefuncionUrl(row.item)" title="Certificado de defuncion" icon="file-earmark-medical" />
+              <span v-else class="text-danger">Sin archivo</span>
             </template>
             <template #cell(acciones)="row">
               <b-button size="sm" variant="link" class="text-primary" title="Ver detalle" aria-label="Ver detalle" :disabled="procesando" @click="abrirDetalle(row.item)">
                 <b-icon-search />
               </b-button>
-              <b-button size="sm" variant="outline-success" title="Aprobar" aria-label="Aprobar" :disabled="procesando" @click="revisarIndividual(row.item, 'APROBADO')">
+              <b-button size="sm" :variant="revisionButtonVariant(row.item, 'APROBADO')" :class="revisionButtonClass(row.item, 'APROBADO')" :title="revisionButtonTitle(row.item, 'APROBADO')" :aria-label="revisionButtonTitle(row.item, 'APROBADO')" :disabled="procesando" @click="revisarIndividual(row.item, 'APROBADO')">
                 <b-icon-check-lg />
               </b-button>
-              <b-button size="sm" variant="outline-danger" title="Rechazar" aria-label="Rechazar" :disabled="procesando" @click="revisarIndividual(row.item, 'RECHAZADO')">
+              <b-button size="sm" :variant="revisionButtonVariant(row.item, 'RECHAZADO')" :class="revisionButtonClass(row.item, 'RECHAZADO')" :title="revisionButtonTitle(row.item, 'RECHAZADO')" :aria-label="revisionButtonTitle(row.item, 'RECHAZADO')" :disabled="procesando" @click="revisarIndividual(row.item, 'RECHAZADO')">
                 <b-icon-x font-scale="1.25" />
               </b-button>
             </template>
@@ -105,11 +94,12 @@ import PeriodSummary from '~/components/cementerio/PeriodSummary.vue'
 import LoadingOverlay from '~/components/cementerio/LoadingOverlay.vue'
 import ListPagination from '~/components/cementerio/ListPagination.vue'
 import DeceasedDetailModal from '~/components/cementerio/DeceasedDetailModal.vue'
+import FilePreview from '~/components/common/FilePreview.vue'
 import { formatCurrency, formatPeriodLabel, getStatusVariant } from '~/utils/cementerio'
 
 export default {
-  components: { PeriodSummary, LoadingOverlay, ListPagination, DeceasedDetailModal },
-  middleware: ['authenticated', 'recaudaciones'],
+  components: { PeriodSummary, LoadingOverlay, ListPagination, DeceasedDetailModal, FilePreview },
+  middleware: ['authenticated', 'cementerioRecaudaciones'],
   data: () => ({
     loadError: '',
     procesando: false,
@@ -122,10 +112,11 @@ export default {
     showDetalle: false,
     fallecidoDetalle: null,
     fields: [
+      { key: 'fechaDefuncion', label: 'Fecha defuncion' },
       { key: 'fallecido', label: 'Fallecido' },
       { key: 'importe', label: 'Condición / importe' },
       { key: 'comprobante', label: 'Comprobante' },
-      { key: 'estadoRevisionPago', label: 'Revisión' },
+      { key: 'certificadoDefuncion', label: 'Certificado' },
       { key: 'acciones', label: '' },
     ],
   }),
@@ -143,6 +134,9 @@ export default {
     funerariaNombre() {
       return this.periodo && this.periodo.funeraria && this.periodo.funeraria.nombre || 'Funeraria'
     },
+    comprobanteMensualUrl() {
+      return this.periodo && this.periodo.comprobantePagoMensual && this.periodo.comprobantePagoMensual.url
+    },
     puedeAprobar() {
       if (!this.periodo || this.periodo.estadoRevisionPagoMensual !== 'APROBADO') return false
       return (this.periodo.fallecidos || []).every(item => item.estadoRevisionPago === 'APROBADO')
@@ -155,7 +149,7 @@ export default {
         return (!term || searchable.includes(term))
           && (!this.condicion || item.condicionPago === this.condicion)
           && (!this.estadoRevision || (item.estadoRevisionPago || 'PENDIENTE') === this.estadoRevision)
-      })
+      }).sort(this.sortByNewest)
     },
     fallecidosPaginados() {
       const start = (this.currentPage - 1) * this.perPage
@@ -204,9 +198,70 @@ export default {
     nombreFallecido(item) {
       return [item.obito && item.obito.apellido, item.obito && item.obito.nombre].filter(Boolean).join(', ')
     },
+    fechaDefuncion(item) {
+      const value = item && item.obito && item.obito.fechaDefuncion
+      return value ? new Date(value).toLocaleDateString('es-AR') : '-'
+    },
     comprobanteUrl(item) {
-      const doc = item.documentos && item.documentos.comprobantePagoTasa
+      const doc = item && item.documentos && item.documentos.comprobantePagoTasa
       return doc && doc.url
+    },
+    certificadoDefuncionUrl(item) {
+      const doc = item && item.documentos && item.documentos.certificadoDefuncion
+      return doc && doc.url
+    },
+    revisionButtonVariant(item, estado) {
+      const actual = item.estadoRevisionPago || 'PENDIENTE'
+      if (actual === estado) return estado === 'APROBADO' ? 'success' : 'danger'
+      if (actual === 'PENDIENTE') return estado === 'APROBADO' ? 'outline-success' : 'outline-danger'
+      return 'outline-secondary'
+    },
+    revisionButtonClass(item, estado) {
+      const actual = item.estadoRevisionPago || 'PENDIENTE'
+      return {
+        'revision-button--pending': actual === 'PENDIENTE',
+        'revision-button--inactive': actual !== 'PENDIENTE' && actual !== estado,
+      }
+    },
+    revisionButtonTitle(item, estado) {
+      const actual = item.estadoRevisionPago || 'PENDIENTE'
+      const accion = estado === 'APROBADO' ? 'Aprobar' : 'Rechazar'
+      if (actual === 'PENDIENTE') return `${accion} - pendiente de revision`
+      if (actual === estado) return estado === 'APROBADO' ? 'Aprobado' : 'Rechazado'
+      return `${accion} - ya marcado como ${this.estadoLabel(actual)}`
+    },
+    revisionMensualButtonVariant(estado) {
+      const actual = this.periodo.estadoRevisionPagoMensual || 'PENDIENTE'
+      if (actual === estado) return estado === 'APROBADO' ? 'success' : 'danger'
+      if (actual === 'PENDIENTE') return estado === 'APROBADO' ? 'outline-success' : 'outline-danger'
+      return 'outline-secondary'
+    },
+    revisionMensualButtonClass(estado) {
+      const actual = this.periodo.estadoRevisionPagoMensual || 'PENDIENTE'
+      return {
+        'revision-button--pending': actual === 'PENDIENTE',
+        'revision-button--inactive': actual !== 'PENDIENTE' && actual !== estado,
+      }
+    },
+    revisionMensualButtonTitle(estado) {
+      const actual = this.periodo.estadoRevisionPagoMensual || 'PENDIENTE'
+      const accion = estado === 'APROBADO' ? 'Aprobar' : 'Rechazar'
+      if (actual === 'PENDIENTE') return `${accion} - pendiente de revision`
+      if (actual === estado) return estado === 'APROBADO' ? 'Aprobado' : 'Rechazado'
+      return `${accion} - ya marcado como ${this.estadoLabel(actual)}`
+    },
+    sortByNewest(a, b) {
+      return this.itemDateValue(b) - this.itemDateValue(a)
+    },
+    itemDateValue(item) {
+      const value = item && (item.createdAt || item.fechaCreacion || item._id)
+      if (!value) return 0
+      const date = new Date(value)
+      if (!Number.isNaN(date.getTime())) return date.getTime()
+      if (typeof value === 'string' && value.length >= 8) {
+        return parseInt(value.substring(0, 8), 16) * 1000 || 0
+      }
+      return 0
     },
     abrirDetalle(item) {
       this.fallecidoDetalle = item
@@ -260,3 +315,40 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.monthly-payment-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  border-top: 1px solid #e9ecef;
+  margin-top: 0.75rem;
+  padding-top: 0.85rem;
+}
+
+.monthly-payment-row__actions {
+  display: flex;
+  gap: 0.35rem;
+  margin-left: auto;
+}
+
+.revision-button--pending {
+  background-color: #fff;
+}
+
+.revision-button--inactive {
+  opacity: 0.45;
+}
+
+@media (max-width: 768px) {
+  .monthly-payment-row {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .monthly-payment-row__actions {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+</style>

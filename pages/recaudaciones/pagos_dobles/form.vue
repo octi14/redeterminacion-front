@@ -631,11 +631,10 @@ export default{
 
           await MailerService.enviarCorreo(this.$axios, {
             destinatario: this.solicitante.mail,
-            asunto: 'Solicitud de pago doble recibida',
-            mensaje: `Estimado/a contribuyente,
-            Su reclamo por pago doble ha sido registrado correctamente.
-            En los próximos días recibirá un correo electrónico del Departamento Recaudaciones Municipal en el que le indicarán cómo continuar.
-            Asegúrese de revisar la bandeja de correos no deseados (Spam).`
+            templateKey: 'pagosDobles.solicitud_recibida',
+            context: {
+              nroTramite: response.data
+            }
           });
           this.nroTramite = response.data
           this.showPopupFormLoading = false;

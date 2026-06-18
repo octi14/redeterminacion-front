@@ -339,7 +339,16 @@ Domicilio: ${this.turno.domicilio}
 El trámite continuará desde el Departamento Comercio MVGesell. En los próximos días recibirá un correo electrónico indicándole los pasos
 a seguir para finalizar el trámite, incluyendo el pago de la/s tasa/s correspondiente/s.`
 
-          await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+          await MailerService.enviarCorreo(this.$axios, {
+            destinatario,
+            templateKey: 'turnos.inspeccion_aprobada',
+            context: {
+              nroTramite: this.turno.nroTramite,
+              fechaInspeccion: this.turno.dia,
+              horario: this.turno.horario,
+              domicilio: this.turno.domicilio
+            }
+          })
           this.$bvToast.toast('Correo de aprobación de inspección enviado al solicitante.', { variant: 'success' })
         } else {
           console.error('No se encontró el email del solicitante')
@@ -421,7 +430,16 @@ La prórroga es de 7 días a partir de la fecha de otorgación. Para continuar c
 
 Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
 
-          await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+          await MailerService.enviarCorreo(this.$axios, {
+            destinatario,
+            templateKey: 'turnos.prorroga_otorgada',
+            context: {
+              nroTramite: this.turno.nroTramite,
+              fechaInspeccion: this.turno.dia,
+              horario: this.turno.horario,
+              domicilio: this.turno.domicilio
+            }
+          })
           this.$bvToast.toast('Correo de prórroga enviado al solicitante.', { variant: 'success' })
         } else {
           console.error('No se encontró el email del solicitante')
@@ -483,7 +501,17 @@ Motivo del rechazo: ${this.observaciones}
 
 Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
 
-          await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+          await MailerService.enviarCorreo(this.$axios, {
+            destinatario,
+            templateKey: 'turnos.inspeccion_rechazada',
+            context: {
+              nroTramite: this.turno.nroTramite,
+              fechaInspeccion: this.turno.dia,
+              horario: this.turno.horario,
+              domicilio: this.turno.domicilio,
+              motivo: this.observaciones
+            }
+          })
           this.$bvToast.toast('Correo de rechazo de inspección enviado al solicitante.', { variant: 'success' })
         } else {
           console.error('No se encontró el email del solicitante')
@@ -546,7 +574,17 @@ Para continuar con el trámite, debe solicitar un nuevo turno de inspección en 
 
 Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
 
-          await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+          await MailerService.enviarCorreo(this.$axios, {
+            destinatario,
+            templateKey: 'turnos.cancelado',
+            context: {
+              nroTramite: this.turno.nroTramite,
+              fechaInspeccion: this.turno.dia,
+              horario: this.turno.horario,
+              domicilio: this.turno.domicilio,
+              motivo: this.observaciones
+            }
+          })
           this.$bvToast.toast('Correo de cancelación de turno enviado al solicitante.', { variant: 'success' })
         } else {
           console.error('No se encontró el email del solicitante')

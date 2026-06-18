@@ -346,6 +346,66 @@
                 </template>
               </div>
 
+              <div v-else-if="currentTool.key === 'system'" class="system-tool">
+                <b-alert v-if="!canManageSystemConfig" show variant="warning" class="role-tool-alert">
+                  Necesitás permiso system.config.admin para modificar esta configuración.
+                </b-alert>
+
+                <template v-else>
+                  <div class="abierto-tool-card">
+                    <div class="abierto-tool-heading">
+                      <div>
+                        <span>Flags globales</span>
+                        <strong>Configuración del sistema</strong>
+                      </div>
+                      <b-button
+                        variant="outline-light"
+                        size="sm"
+                        :disabled="systemLoading || systemSaving"
+                        @click="loadSystemConfig"
+                      >
+                        <b-spinner v-if="systemLoading" small />
+                        <i v-else class="bi bi-arrow-clockwise"></i>
+                      </b-button>
+                    </div>
+
+                    <label
+                      v-for="option in systemOptions"
+                      :key="option.key"
+                      class="system-toggle-row"
+                    >
+                      <span>
+                        <strong>{{ option.title }}</strong>
+                        <small>{{ option.description }}</small>
+                      </span>
+                      <b-form-checkbox
+                        v-model="systemForm[option.key]"
+                        switch
+                        :disabled="systemLoading || systemSaving"
+                      />
+                    </label>
+                  </div>
+
+                  <div class="role-tool-actions">
+                    <b-button
+                      variant="outline-light"
+                      :disabled="systemLoading || systemSaving || !hasSystemChanges"
+                      @click="resetSystemConfigForm"
+                    >
+                      Deshacer
+                    </b-button>
+                    <b-button
+                      variant="success"
+                      :disabled="systemLoading || systemSaving || !canSaveSystemConfig"
+                      @click="requestSaveSystemConfig"
+                    >
+                      <b-spinner v-if="systemSaving" small class="mr-2" />
+                      {{ systemSaving ? 'Guardando...' : 'Guardar configuración' }}
+                    </b-button>
+                  </div>
+                </template>
+              </div>
+
               <div v-else class="placeholder-card">
                 <i :class="`bi bi-${currentTool.icon}`"></i>
                 <div>
@@ -393,6 +453,7 @@
 <script>
 const ExperimentalRbacService = require('@/service/experimentalRbac')
 const AbiertoAnualConfigService = require('@/service/abiertoAnualConfig')
+const GeneralConfigService = require('@/service/generalConfig')
 
 const TOOL_DEFINITIONS = [
   {
@@ -486,14 +547,40 @@ export default {
           { min: '', max: '' }
         ],
         rectificacionGlobal: false
-      }
+      },
+      systemLoading: false,
+      systemSaving: false,
+      systemLoaded: false,
+      systemOriginal: null,
+      systemForm: {
+        mailerEnabled: false,
+        logActivityEnabled: true,
+        maintenanceMode: false
+      },
+      systemOptions: [
+        {
+          key: 'mailerEnabled',
+          title: 'Módulo de mailing',
+          description: 'Habilita o deshabilita el envío automático de correos.'
+        },
+        {
+          key: 'logActivityEnabled',
+          title: 'Logueo de actividades',
+          description: 'Activa el registro de acciones de usuarios.'
+        },
+        {
+          key: 'maintenanceMode',
+          title: 'Modo mantenimiento',
+          description: 'Bloquea el sitio con respuesta 503.'
+        }
+      ]
     }
   },
   computed: {
     canShow() {
       if (!process.client) return false
       const hasDevBypass = localStorage.getItem('devToolsEnabled') === 'true'
-      return hasDevBypass || this.canReadRbac || this.canManageAbiertoAnual
+      return hasDevBypass || this.canReadRbac || this.canManageAbiertoAnual || this.canManageSystemConfig
     },
     username() {
       return this.$store.state.user.username || 'Sin usuario'
@@ -532,6 +619,9 @@ export default {
     },
     canManageAbiertoAnual() {
       return this.$can('*') || this.$can('abiertoAnual.admin')
+    },
+    canManageSystemConfig() {
+      return this.$can('*') || this.$can('system.config.admin')
     },
     roleOptions() {
       return [
@@ -599,6 +689,12 @@ export default {
       return this.canManageAbiertoAnual &&
         this.abiertoForm.periodos.every(periodo => periodo.min && periodo.max) &&
         this.hasAbiertoChanges
+    },
+    hasSystemChanges() {
+      return JSON.stringify(this.systemForm) !== JSON.stringify(this.systemOriginal)
+    },
+    canSaveSystemConfig() {
+      return this.canManageSystemConfig && this.hasSystemChanges
     }
   },
   watch: {
@@ -611,6 +707,9 @@ export default {
       }
       if (value === 'abierto-anual' && this.canManageAbiertoAnual && !this.abiertoLoaded) {
         this.loadAbiertoAnualConfig()
+      }
+      if (value === 'system' && this.canManageSystemConfig && !this.systemLoaded) {
+        this.loadSystemConfig()
       }
     },
     selectedRoleKey() {
@@ -758,6 +857,74 @@ export default {
         this.showDevError(error, 'No se pudo guardar la configuración de abierto anual.', true)
       } finally {
         this.abiertoSaving = false
+      }
+    },
+    normalizeSystemConfig(config = {}) {
+      return {
+        mailerEnabled: Boolean(config.mailerEnabled),
+        logActivityEnabled: config.logActivityEnabled !== false,
+        maintenanceMode: Boolean(config.maintenanceMode)
+      }
+    },
+    applySystemConfig(config) {
+      this.systemOriginal = this.normalizeSystemConfig(config)
+      this.resetSystemConfigForm()
+    },
+    async loadSystemConfig() {
+      this.systemLoading = true
+      try {
+        const config = await GeneralConfigService.getGeneralConfig(this.$axios)
+        this.applySystemConfig(config)
+        this.systemLoaded = true
+      } catch (error) {
+        this.showDevError(error, 'No se pudo cargar la configuración del sistema.')
+      } finally {
+        this.systemLoading = false
+      }
+    },
+    resetSystemConfigForm() {
+      const source = this.systemOriginal || {
+        mailerEnabled: false,
+        logActivityEnabled: true,
+        maintenanceMode: false
+      }
+      this.systemForm = { ...source }
+    },
+    requestSaveSystemConfig() {
+      if (!this.canSaveSystemConfig) return
+      const changed = this.systemOptions
+        .filter(option => this.systemOriginal && this.systemOriginal[option.key] !== this.systemForm[option.key])
+        .map(option => `${option.title}: ${this.systemForm[option.key] ? 'habilitado' : 'deshabilitado'}`)
+        .join(' · ')
+      this.pendingConfirmation = {
+        action: 'save-system-config',
+        title: 'Guardar configuración del sistema',
+        body: 'Se van a actualizar flags globales del sitio.',
+        detail: changed || 'Sin cambios detectados',
+        confirmText: 'Guardar',
+        variant: 'success',
+        icon: 'sliders',
+        loading: false,
+        error: ''
+      }
+    },
+    async saveSystemConfig() {
+      if (!this.canSaveSystemConfig) return
+      this.systemSaving = true
+      try {
+        const config = await GeneralConfigService.updateGeneralConfig(this.$axios, this.systemForm)
+        this.applySystemConfig(config)
+        this.pendingConfirmation = null
+        this.$bvToast.toast('Configuración del sistema actualizada.', {
+          title: 'Dev tools',
+          variant: 'success',
+          solid: true,
+          appendToast: true,
+        })
+      } catch (error) {
+        this.showDevError(error, 'No se pudo guardar la configuración del sistema.', true)
+      } finally {
+        this.systemSaving = false
       }
     },
     async loadRbac() {
@@ -950,6 +1117,8 @@ export default {
         await this.saveSelectedRole()
       } else if (action === 'save-abierto-anual') {
         await this.saveAbiertoAnual()
+      } else if (action === 'save-system-config') {
+        await this.saveSystemConfig()
       }
       if (this.pendingConfirmation) {
         this.$set(this.pendingConfirmation, 'loading', false)
@@ -1351,7 +1520,8 @@ export default {
 }
 
 .role-tool,
-.abierto-tool {
+.abierto-tool,
+.system-tool {
   display: grid;
   gap: 1rem;
 }
@@ -1541,6 +1711,37 @@ export default {
   color: #a7c9bd;
   font-size: .8rem;
   line-height: 1.4;
+}
+
+.system-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .9rem;
+  margin: 0;
+  padding: .85rem 0;
+  border-top: 1px solid rgba(126, 224, 184, .12);
+}
+
+.system-toggle-row:first-of-type {
+  border-top: 0;
+}
+
+.system-toggle-row strong,
+.system-toggle-row small {
+  display: block;
+}
+
+.system-toggle-row strong {
+  color: #ffffff;
+  font-size: .88rem;
+}
+
+.system-toggle-row small {
+  margin-top: .2rem;
+  color: #a7c9bd;
+  font-size: .76rem;
+  line-height: 1.35;
 }
 
 .period-config-list {

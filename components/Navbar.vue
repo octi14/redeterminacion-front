@@ -74,6 +74,9 @@
             <b-dropdown-item v-if="canManageAbiertoAnual" @click="onAbiertoAnualAdmin">
               Administrar abierto anual
             </b-dropdown-item>
+            <b-dropdown-item v-if="canManageSystemConfig" @click="onSystemConfigAdmin">
+              Configuraciones generales
+            </b-dropdown-item>
             <b-dropdown-item v-if="canManageFunerarias" @click="onFunerariasAdmin">
               Administrar funerarias
             </b-dropdown-item>
@@ -178,6 +181,9 @@ export default {
     canManageAbiertoAnual() {
       return this.$can('*') || this.$can('abiertoAnual.admin')
     },
+    canManageSystemConfig() {
+      return this.$can('*') || this.$can('system.config.admin')
+    },
     canManageBoletas() {
       return this.$can('boletas.manage')
     },
@@ -188,7 +194,7 @@ export default {
       return this.$can('dashboard.read')
     },
     showAdminTools() {
-      return this.canManageUsers || this.canManageAbiertoAnual || this.canManageFunerarias || this.canViewActivities || this.canViewDashboard
+      return this.canManageUsers || this.canManageAbiertoAnual || this.canManageSystemConfig || this.canManageFunerarias || this.canViewActivities || this.canViewDashboard
     },
     username() {
       return this.$store.state.user.username
@@ -225,6 +231,10 @@ export default {
     onAbiertoAnualAdmin() {
       this.registrarActividad('Abierto Anual Admin', 'Enter')
       this.$router.push('/admin/abierto-anual')
+    },
+    onSystemConfigAdmin() {
+      this.registrarActividad('System Config Admin', 'Enter')
+      this.$router.push('/admin/configuraciones')
     },
     onFunerariasAdmin() {
       this.registrarActividad('Funerarias Admin', 'Enter')

@@ -1772,7 +1772,15 @@ Tipo de solicitud: ${this.solicitante.tipoSolicitud}
 Rubro: ${this.inmueble.rubro}
 
 Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio Municipal (deptocomercio@gesell.gob.ar).`
-                await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+                await MailerService.enviarCorreo(this.$axios, {
+                  destinatario,
+                  templateKey: 'comercio.solicitud_recibida',
+                  context: {
+                    nroTramite: this.nroTramite,
+                    tipoSolicitud: this.solicitante.tipoSolicitud,
+                    rubro: this.inmueble.rubro,
+                  }
+                })
               } catch (e) {
                 console.error('Error al enviar correo de confirmación:', e)
               }

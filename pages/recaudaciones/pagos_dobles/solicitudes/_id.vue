@@ -430,7 +430,15 @@ Número de trámite: R${this.pago.nroTramite}
 Fecha de aprobación: ${new Date().toLocaleDateString('es-AR')}
 ${comentAprob ? `\nComentario:\n${comentAprob}\n` : ''}
 Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Recaudaciones Municipal (recaudaciones@gesell.gob.ar).`
-        await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+        await MailerService.enviarCorreo(this.$axios, {
+          destinatario,
+          templateKey: 'pagosDobles.aprobada',
+          context: {
+            nroTramite: this.pago.nroTramite,
+            fechaAprobacion: new Date().toLocaleDateString('es-AR'),
+            comentario: comentAprob ? `Comentario:\n${comentAprob}\n` : ''
+          }
+        })
         this.$bvToast.toast('Correo de aprobación enviado al solicitante.', { variant: 'success' })
       } catch (e) {
         this.$bvToast.toast('No se pudo enviar el correo de aprobación.', { variant: 'danger' })
@@ -476,7 +484,14 @@ Su reclamo de pago doble ha sido rechazado por el siguiente motivo:
 ${motivoTexto}
 
 Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Recaudaciones Municipal (recaudaciones@gesell.gob.ar).`
-        await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+        await MailerService.enviarCorreo(this.$axios, {
+          destinatario,
+          templateKey: 'pagosDobles.rechazada',
+          context: {
+            nroTramite: this.pago.nroTramite,
+            motivo: motivoTexto
+          }
+        })
         this.$bvToast.toast('Correo de rechazo enviado al solicitante.', { variant: 'success' })
       } catch (e) {
         this.$bvToast.toast('No se pudo enviar el correo de rechazo.', { variant: 'danger' })

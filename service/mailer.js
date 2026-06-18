@@ -1,5 +1,12 @@
 export default {
-  async enviarCorreo(axios, { destinatario, asunto, mensaje }) {
+  async enviarCorreo(axios, { destinatario, asunto, mensaje, templateKey, context }) {
+    if (templateKey) {
+      return await axios.$post('/api/mailer', {
+        destinatario,
+        templateKey,
+        context: context || {}
+      });
+    }
     const mensajeConFooter = mensaje + this.getFooter();
     return await axios.$post('/api/mailer', {
       destinatario,

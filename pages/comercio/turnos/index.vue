@@ -439,7 +439,17 @@ IMPORTANTE:
 - Si necesita cancelar o reprogramar el turno, comuníquese con divinspectores@gesell.gob.ar
 - Solo puede cancelar el turno hasta 5 días antes de la inspección.`
 
-            await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+            await MailerService.enviarCorreo(this.$axios, {
+              destinatario,
+              templateKey: 'turnos.inspeccion_confirmada',
+              context: {
+                nroTramite: this.nroTramite,
+                fechaInspeccion: new Date(this.date).toLocaleDateString('es-AR'),
+                horario: this.time,
+                domicilio: this.domicilio,
+                nombre: this.nombre,
+              }
+            })
           } catch (e) {
             console.error('Error al enviar correo de confirmación de turno:', e)
           }

@@ -1116,7 +1116,15 @@ En caso contrario, el trámite caerá y deberá iniciarlo nuevamente.
 
 Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
 
-        await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+        await MailerService.enviarCorreo(this.$axios, {
+          destinatario,
+          templateKey: 'comercio.documentacion_requerida',
+          context: {
+            nroTramite: this.habilitacion.nroTramite,
+            tipoSolicitud: this.habilitacion.tipoSolicitud,
+            rubro: this.habilitacion.rubro
+          }
+        })
         this.$bvToast.toast('Correo de solicitud de documentación enviado al solicitante.', { variant: 'success' })
       } catch (e) {
         this.$bvToast.toast('No se pudo enviar el correo de solicitud de documentación.', { variant: 'danger' })
@@ -1172,7 +1180,17 @@ Número de expediente: ${nroExpediente}${alcance ? '\nAlcance: ' + alcance : ''}
 El trámite ha sido culminado exitosamente. Recuerde que en el plazo de 10 dias hábiles deberá acreditar
 los originales de la documentación en el Departamento Comercio sito en Avda 3 N° 820 Planta Baja - Villa Gesell.`
 
-          await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+          await MailerService.enviarCorreo(this.$axios, {
+            destinatario,
+            templateKey: 'comercio.tramite_finalizado',
+            context: {
+              nroTramite: this.habilitacion.nroTramite,
+              tipoSolicitud: this.habilitacion.tipoSolicitud,
+              rubro: this.habilitacion.rubro,
+              nroExpediente,
+              alcance: alcance ? `Alcance: ${alcance}` : ''
+            }
+          })
           this.$bvToast.toast('Correo de finalización enviado al solicitante.', { variant: 'success' })
         }
       } catch (e) {
@@ -1270,7 +1288,15 @@ Adicionalmente, le comentamos que puede presentar su documentación en la Casa d
 ubicada en la Avenida Corrientes 1312, piso 11 oficina 42, CABA.`
         }
 
-        await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+        await MailerService.enviarCorreo(this.$axios, {
+          destinatario,
+          templateKey: this.inspeccion ? 'comercio.solicitud_aprobada_inspeccion' : 'comercio.solicitud_aprobada',
+          context: {
+            nroTramite: this.habilitacion.nroTramite,
+            tipoSolicitud: this.habilitacion.tipoSolicitud,
+            rubro: this.habilitacion.rubro
+          }
+        })
         this.$bvToast.toast('Correo de aprobación enviado al solicitante.', { variant: 'success' })
       } catch (e) {
         this.$bvToast.toast('No se pudo enviar el correo de aprobación.', { variant: 'danger' })
@@ -1321,7 +1347,15 @@ Para completar el trámite, debe abonar las deudas de tasas correspondientes en 
 
 Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (habilitacioncomercial@gesell.gob.ar).`
 
-        await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+        await MailerService.enviarCorreo(this.$axios, {
+          destinatario,
+          templateKey: 'comercio.baja_aprobada',
+          context: {
+            nroTramite: this.habilitacion.nroTramite,
+            tipoSolicitud: this.habilitacion.tipoSolicitud,
+            rubro: this.habilitacion.rubro
+          }
+        })
         this.$bvToast.toast('Correo de aprobación de baja enviado al solicitante.', { variant: 'success' })
       } catch (e) {
         this.$bvToast.toast('No se pudo enviar el correo de aprobación de baja.', { variant: 'danger' })
@@ -1379,7 +1413,18 @@ El trámite está completo. En los próximos días recibirá la documentación c
 
 Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (renovacioncomercial@gesell.gob.ar).`
 
-          await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+          await MailerService.enviarCorreo(this.$axios, {
+            destinatario,
+            templateKey: 'comercio.renovacion_finalizada',
+            context: {
+              nroTramite: this.habilitacion.nroTramite,
+              tipoSolicitud: this.habilitacion.tipoSolicitud,
+              tipoTramite: tipoTramite.charAt(0).toUpperCase() + tipoTramite.slice(1),
+              rubro: this.habilitacion.rubro,
+              nroExpediente,
+              alcance
+            }
+          })
           this.$bvToast.toast(`Correo de finalización de ${tipoTramite} enviado al solicitante.`, { variant: 'success' })
         }
       } catch (e) {
@@ -1447,7 +1492,16 @@ ${elementosIncorrectosTexto}
 Deberá volver a presentar la solicitud una vez subsanados los errores detectados.
 
 Importante: La documentación que adjunte debe ser legible y en formato PDF o imagen.`
-        await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
+        await MailerService.enviarCorreo(this.$axios, {
+          destinatario,
+          templateKey: 'comercio.solicitud_rechazada',
+          context: {
+            nroTramite: this.habilitacion.nroTramite,
+            tipoSolicitud: this.habilitacion.tipoSolicitud,
+            rubro: this.habilitacion.rubro,
+            elementosIncorrectos: elementosIncorrectosTexto
+          }
+        })
         this.$bvToast.toast('Correo de rechazo enviado al solicitante.', { variant: 'success' })
       } catch (e) {
         this.$bvToast.toast('No se pudo enviar el correo de rechazo.', { variant: 'danger' })

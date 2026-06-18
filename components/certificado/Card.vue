@@ -57,10 +57,10 @@ export default {
   },
   computed: {
     isAdmin(){
-      return this.$can('obras.update')
+      return this.$can('hacienda.obras.update')
     },
     adminHacienda(){
-      return this.$can('obras.update')
+      return this.$can('hacienda.obras.update')
     },
     tableItems() {
       return this.certificado.items.map((item, index) => ({

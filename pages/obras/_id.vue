@@ -244,10 +244,10 @@ export default {
       ].filter(button => this.shouldShowButton(button));
     },
     puedeVerObras(){
-      return this.$can('obras.read')
+      return this.$can('hacienda.obras.read')
     },
     puedeGestionarObras(){
-      return this.$can('obras.update')
+      return this.$can('hacienda.obras.update')
     },
   },
   activated() {

@@ -2,9 +2,9 @@
   <div class="page main-background">
     <Banner title="Administracion de usuarios" />
 
-    <div v-if="!canManageUsers" class="col-10 mx-auto mt-4">
+    <div v-if="!canAccessAdminUsers" class="col-10 mx-auto mt-4">
       <b-alert show variant="warning">
-        No tenes permisos para administrar usuarios.
+        No tenes permisos para consultar usuarios ni roles.
       </b-alert>
     </div>
 
@@ -27,10 +27,10 @@
       </div>
 
       <div class="admin-users__layout">
-        <section class="admin-users__main">
+        <section v-if="canReadUsers" class="admin-users__main">
           <b-table
             :items="paginatedUsers"
-            :fields="userFields"
+            :fields="visibleUserFields"
             responsive
             hover
             small
@@ -47,14 +47,16 @@
 
             <template #cell(rolesExp)="row">
               <div v-if="row.item.rolesExp.length" class="admin-users__badges">
-                <b-badge
+                <span
                   v-for="role in row.item.rolesExp"
                   :key="role.key"
-                  variant="info"
-                  class="mr-1 mb-1"
+                  class="admin-users__role-pill"
+                  :class="rolePillClass(role)"
+                  :title="role.key"
                 >
-                  {{ role.name || role.key }}
-                </b-badge>
+                  <span class="admin-users__role-mark">{{ roleMark(role) }}</span>
+                  <span class="admin-users__role-name">{{ role.name || role.key }}</span>
+                </span>
               </div>
               <span v-else class="text-muted">Sin roles experimentales</span>
             </template>
@@ -65,11 +67,12 @@
                   v-model="selectedRoles[row.item.id]"
                   :options="roleOptions"
                   size="sm"
+                  :disabled="!canAssignUserRoles"
                 />
                 <b-button
                   variant="outline-success"
                   size="sm"
-                  :disabled="!selectedRoles[row.item.id]"
+                  :disabled="!canAssignUserRoles || !selectedRoles[row.item.id]"
                   @click="assignRole(row.item)"
                 >
                   Asignar
@@ -106,8 +109,13 @@
             />
           </div>
         </section>
+        <section v-else class="admin-users__main">
+          <b-alert show variant="info" class="mb-0">
+            No tenes permisos para consultar usuarios.
+          </b-alert>
+        </section>
 
-        <aside class="admin-users__side">
+        <aside v-if="canReadRoles" class="admin-users__side">
           <div class="admin-users__side-header">
             <h5>{{ editingRoleKey ? 'Editar rol experimental' : 'Nuevo rol experimental' }}</h5>
             <b-button
@@ -130,14 +138,14 @@
             <b-form-input
               v-model="roleForm.key"
               placeholder="mesa_entrada"
-              :disabled="Boolean(editingRoleKey)"
+              :disabled="!canManageRoles || Boolean(editingRoleKey)"
             />
           </b-form-group>
           <b-form-group label="Nombre">
-            <b-form-input v-model="roleForm.name" placeholder="Mesa de entrada" />
+            <b-form-input v-model="roleForm.name" placeholder="Mesa de entrada" :disabled="!canManageRoles" />
           </b-form-group>
           <b-form-group label="Descripcion">
-            <b-form-textarea v-model="roleForm.description" rows="2" />
+            <b-form-textarea v-model="roleForm.description" rows="2" :disabled="!canManageRoles" />
           </b-form-group>
           <b-form-group label="Permisos">
             <div class="admin-users__permissions-toolbar">
@@ -156,6 +164,7 @@
             <b-form-checkbox-group
               v-model="roleForm.permissions"
               :options="paginatedPermissionOptions"
+              :disabled="!canManageRoles"
               stacked
               class="admin-users__permissions"
             />
@@ -174,9 +183,17 @@
               />
             </div>
           </b-form-group>
-          <b-button block variant="success" :disabled="!canSaveRole" @click="saveRole">
+          <b-button v-if="canManageRoles" block variant="success" :disabled="!canSaveRole" @click="saveRole">
             Guardar rol
           </b-button>
+          <b-alert v-else show variant="info" class="mt-3 mb-0">
+            Tenes permiso para consultar roles, pero no para modificarlos.
+          </b-alert>
+        </aside>
+        <aside v-else class="admin-users__side">
+          <b-alert show variant="info" class="mb-0">
+            No tenes permisos para consultar roles.
+          </b-alert>
         </aside>
       </div>
     </div>
@@ -224,15 +241,38 @@ export default {
       userFields: [
         { key: 'username', label: 'Usuario', sortable: true },
         { key: 'admin', label: 'Rol actual', sortable: true },
-        { key: 'rolesExp', label: 'Roles experimentales' },
+        { key: 'rolesExp', label: 'Roles experimentales', thClass: 'admin-users__roles-col', tdClass: 'admin-users__roles-cell' },
         { key: 'assign', label: 'Asignar rol' },
         { key: 'actions', label: '' },
       ],
     }
   },
   computed: {
+    canReadUsers() {
+      return this.$can('users.read') || this.$can('users.manage')
+    },
     canManageUsers() {
       return this.$can('users.manage')
+    },
+    canReadRoles() {
+      return this.$can('roles.read') || this.$can('roles.manage')
+    },
+    canManageRoles() {
+      return this.$can('roles.manage')
+    },
+    canAccessAdminUsers() {
+      return this.canReadUsers || this.canReadRoles
+    },
+    canAssignUserRoles() {
+      return this.canManageUsers && this.canReadRoles
+    },
+    visibleUserFields() {
+      return this.userFields.filter((field) => {
+        if (field.key === 'assign' || field.key === 'actions') {
+          return this.canManageUsers
+        }
+        return this.canReadUsers
+      })
     },
     filteredUsers() {
       const value = this.search.trim().toLowerCase()
@@ -329,7 +369,7 @@ export default {
     },
   },
   async mounted() {
-    if (this.canManageUsers) {
+    if (this.canAccessAdminUsers) {
       await this.loadAll()
     }
   },
@@ -338,9 +378,9 @@ export default {
       this.loading = true
       try {
         const [users, roles, permissions] = await Promise.all([
-          ExperimentalRbacService.getUsers(this.$axios),
-          ExperimentalRbacService.getRoles(this.$axios),
-          ExperimentalRbacService.getPermissions(this.$axios),
+          this.canReadUsers ? ExperimentalRbacService.getUsers(this.$axios) : Promise.resolve([]),
+          this.canReadRoles ? ExperimentalRbacService.getRoles(this.$axios) : Promise.resolve([]),
+          this.canReadRoles ? ExperimentalRbacService.getPermissions(this.$axios) : Promise.resolve([]),
         ])
         this.users = users
         this.roles = roles
@@ -352,6 +392,7 @@ export default {
       }
     },
     async saveRole() {
+      if (!this.canManageRoles) return
       try {
         await ExperimentalRbacService.saveRole(this.$axios, this.roleForm)
         this.resetRoleForm()
@@ -386,6 +427,7 @@ export default {
       this.permissionCurrentPage = 1
     },
     async assignRole(user) {
+      if (!this.canAssignUserRoles) return
       const roleKey = this.selectedRoles[user.id]
       try {
         await ExperimentalRbacService.assignRole(this.$axios, user.id, roleKey)
@@ -401,6 +443,7 @@ export default {
       }
     },
     async removeRole(user, role) {
+      if (!this.canManageUsers) return
       try {
         await ExperimentalRbacService.removeRole(this.$axios, user.id, role.key)
         await this.loadAll()
@@ -412,6 +455,33 @@ export default {
       } catch (error) {
         this.showError(error, 'No se pudo quitar el rol.')
       }
+    },
+    rolePillClass(role) {
+      const key = role.key || ''
+      if (key.includes('admin') || key === 'master') return 'admin-users__role-pill--admin'
+      if (key.includes('jefe')) return 'admin-users__role-pill--lead'
+      if (key.includes('cementerio')) return 'admin-users__role-pill--cemetery'
+      if (key.includes('compras')) return 'admin-users__role-pill--shopping'
+      if (key.includes('hacienda')) return 'admin-users__role-pill--treasury'
+      if (key.includes('pagos')) return 'admin-users__role-pill--payments'
+      if (key.includes('turnos') || key.includes('inspeccion')) return 'admin-users__role-pill--appointments'
+      if (key.includes('modernizacion')) return 'admin-users__role-pill--modernization'
+      if (key.includes('maestro')) return 'admin-users__role-pill--registry'
+      return 'admin-users__role-pill--default'
+    },
+    roleMark(role) {
+      const key = role.key || ''
+      if (key.includes('admin') || key === 'master') return 'A'
+      if (key.includes('jefe')) return 'J'
+      if (key.includes('cementerio')) return 'C'
+      if (key.includes('compras')) return 'Co'
+      if (key.includes('hacienda')) return 'H'
+      if (key.includes('pagos')) return 'P'
+      if (key.includes('turnos')) return 'T'
+      if (key.includes('inspeccion')) return 'I'
+      if (key.includes('modernizacion')) return 'M'
+      if (key.includes('maestro')) return 'MC'
+      return 'R'
     },
     showError(error, fallback) {
       const message = error && error.response && error.response.data
@@ -488,6 +558,119 @@ export default {
 .admin-users__badges {
   display: flex;
   flex-wrap: wrap;
+  gap: 0.35rem;
+  max-width: 420px;
+  min-width: 220px;
+  white-space: normal;
+}
+
+::v-deep .admin-users__roles-col,
+::v-deep .admin-users__roles-cell {
+  max-width: 440px;
+  min-width: 240px;
+  white-space: normal;
+}
+
+.admin-users__role-pill {
+  --role-bg: #edf2f7;
+  --role-border: #cbd5e1;
+  --role-color: #253041;
+  --role-mark-bg: rgba(255, 255, 255, 0.75);
+  align-items: center;
+  background: var(--role-bg);
+  border: 1px solid var(--role-border);
+  border-radius: 999px;
+  color: var(--role-color);
+  display: inline-flex;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.15;
+  max-width: 190px;
+  min-height: 24px;
+  overflow: hidden;
+  padding: 0.14rem 0.5rem 0.14rem 0.18rem;
+  vertical-align: top;
+}
+
+.admin-users__role-mark {
+  align-items: center;
+  background: var(--role-mark-bg);
+  border-radius: 999px;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 0.62rem;
+  font-weight: 800;
+  height: 18px;
+  justify-content: center;
+  margin-right: 0.32rem;
+  min-width: 18px;
+  padding: 0 0.22rem;
+}
+
+.admin-users__role-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-users__role-pill--admin {
+  --role-bg: #fee2e2;
+  --role-border: #fca5a5;
+  --role-color: #7f1d1d;
+}
+
+.admin-users__role-pill--lead {
+  --role-bg: #fef3c7;
+  --role-border: #f59e0b;
+  --role-color: #78350f;
+}
+
+.admin-users__role-pill--cemetery {
+  --role-bg: #dcfce7;
+  --role-border: #86efac;
+  --role-color: #14532d;
+}
+
+.admin-users__role-pill--shopping {
+  --role-bg: #e0f2fe;
+  --role-border: #7dd3fc;
+  --role-color: #075985;
+}
+
+.admin-users__role-pill--treasury {
+  --role-bg: #ede9fe;
+  --role-border: #c4b5fd;
+  --role-color: #4c1d95;
+}
+
+.admin-users__role-pill--payments {
+  --role-bg: #fce7f3;
+  --role-border: #f9a8d4;
+  --role-color: #831843;
+}
+
+.admin-users__role-pill--appointments {
+  --role-bg: #ccfbf1;
+  --role-border: #5eead4;
+  --role-color: #134e4a;
+}
+
+.admin-users__role-pill--modernization {
+  --role-bg: #e0e7ff;
+  --role-border: #a5b4fc;
+  --role-color: #312e81;
+}
+
+.admin-users__role-pill--registry {
+  --role-bg: #ffedd5;
+  --role-border: #fdba74;
+  --role-color: #7c2d12;
+}
+
+.admin-users__role-pill--default {
+  --role-bg: #f1f5f9;
+  --role-border: #cbd5e1;
+  --role-color: #334155;
 }
 
 .admin-users__permissions {

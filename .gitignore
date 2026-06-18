@@ -83,6 +83,12 @@ dist
 # Service worker
 sw.*
 
+# Local scripts
+scripts/seed*
+scripts/migrate*
+scripts/assign*
+docs/
+
 # macOS
 .DS_Store
 

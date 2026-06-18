@@ -142,7 +142,7 @@ import LoadingOverlay from '~/components/cementerio/LoadingOverlay.vue'
 
 export default{
   components: { LoadingOverlay },
-  middleware: ['authenticated', 'cementerio'],
+  middleware: ['authenticated', 'cementerioUpdate'],
   validations() {
     return {
       obito: {

@@ -54,10 +54,10 @@ export default {
   },
   computed: {
     puedeVerObras(){
-      return this.$can('obras.read')
+      return this.$can('hacienda.obras.read')
     },
     puedeVerTransito(){
-      return this.$can('hacienda.read')
+      return this.$can('hacienda.obras.read') || this.$can('hacienda.indices.read')
     }
   },
   mounted() {

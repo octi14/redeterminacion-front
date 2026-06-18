@@ -1580,6 +1580,38 @@ export default {
 .issues-more { display: block; padding: .7rem 1rem; color: #6f817b; background: #fafcfc; }
 .result-actions, .confirm-actions { display: flex; justify-content: center; gap: .75rem; margin-top: 1.5rem; }
 .result-actions .btn, .confirm-actions .btn { min-width: 145px; padding: .65rem 1rem; border-radius: 10px; font-weight: 700; }
+.analysis-modal .btn-outline-secondary,
+.publish-modal .btn-outline-secondary {
+  color: #6b4b00 !important;
+  border-color: #d99a00 !important;
+  background: #ffffff !important;
+}
+.analysis-modal .btn-outline-secondary:hover,
+.publish-modal .btn-outline-secondary:hover,
+.analysis-modal .btn-outline-secondary:focus,
+.publish-modal .btn-outline-secondary:focus {
+  color: #ffffff !important;
+  border-color: #c98f00 !important;
+  background: #d99a00 !important;
+}
+.analysis-modal .btn-publish,
+.publish-modal .btn-publish {
+  color: #ffffff !important;
+  border: 1px solid var(--tax-dark, #075e4a) !important;
+  background: linear-gradient(135deg, var(--tax-primary, #13875e), var(--tax-dark, #075e4a)) !important;
+}
+.analysis-modal .btn-publish:hover,
+.publish-modal .btn-publish:hover,
+.analysis-modal .btn-publish:focus,
+.publish-modal .btn-publish:focus {
+  color: #ffffff !important;
+  filter: brightness(.94);
+}
+.publish-modal .btn-danger {
+  color: #ffffff !important;
+  border-color: #b72235 !important;
+  background: #cc0025 !important;
+}
 @media (max-width: 900px) {
   .tax-selector { align-items: stretch; flex-direction: column; }
   .tax-options { justify-content: stretch; }

@@ -161,7 +161,7 @@ export default {
   fetchOnServer: false,
   computed: {
     puedeGestionarObras() {
-      return this.$can('obras.update')
+      return this.$can('hacienda.obras.update')
     },
   },
   methods: {

@@ -41,9 +41,6 @@
 <script>
 export default {
   computed: {
-    adminCompras(){
-      return this.$can('compras.read');
-    },
     puedeVerComprasCombustible(){
       return this.$can('compras.ordenes.read') || this.$can('compras.vales.read');
     },

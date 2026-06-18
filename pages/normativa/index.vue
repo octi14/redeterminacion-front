@@ -55,7 +55,7 @@
 export default {
   computed: {
     adminHacienda() {
-      return this.$can('hacienda.read');
+      return this.$can('hacienda.obras.read') || this.$can('hacienda.indices.read');
     }
   }
 };

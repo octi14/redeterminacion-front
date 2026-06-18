@@ -57,7 +57,7 @@ export default {
   fetchOnServer: false,
   computed: {
     puedeGestionarIndices() {
-      return this.$can('indices.update')
+      return this.$can('hacienda.indices.update')
     },
   },
   methods: {

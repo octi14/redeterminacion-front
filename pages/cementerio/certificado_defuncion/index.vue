@@ -24,7 +24,7 @@
             </p>
           </b-col>
           <b-col md="4" class="text-md-right mt-3 mt-md-0">
-            <b-button variant="success" size="lg" :to="nuevoFallecidoRoute" :disabled="esMaster && !funerariaSeleccionada">
+            <b-button v-if="puedeGestionarFallecidos" variant="success" size="lg" :to="nuevoFallecidoRoute" :disabled="esMaster && !funerariaSeleccionada">
               <b-icon-plus-circle class="mr-1" /> Nuevo fallecido
             </b-button>
           </b-col>
@@ -32,7 +32,7 @@
       </b-card>
 
       <b-alert
-        v-if="periodoPendienteActual"
+        v-if="puedeConfirmarPeriodos && periodoPendienteActual"
         show
         variant="warning"
         class="shadow-card pending-carousel"
@@ -141,7 +141,7 @@
             <span v-else class="text-muted">Sin archivo</span>
           </template>
           <template #cell(acciones)="row">
-            <b-button size="sm" variant="link" class="text-primary" title="Editar" aria-label="Editar" :to="`/cementerio/certificado_defuncion/form?id=${row.item.id || row.item._id}`">
+            <b-button v-if="puedeGestionarFallecidos" size="sm" variant="link" class="text-primary" title="Editar" aria-label="Editar" :to="`/cementerio/certificado_defuncion/form?id=${row.item.id || row.item._id}`">
               <b-icon-pencil />
             </b-button>
           </template>
@@ -281,9 +281,9 @@ export default {
   async fetch() {
     this.mensajeEspera = 'Cargando períodos y declaraciones juradas...'
     try {
-      const action = this.puedeVerTodosLosPeriodos ? 'cementerio/getPeriodos' : 'cementerio/getMisPeriodos'
+      const action = this.puedeSeleccionarFuneraria ? 'cementerio/getPeriodos' : 'cementerio/getMisPeriodos'
       await this.$store.dispatch(action)
-      if (this.puedeVerTodosLosPeriodos && !this.funerariaSeleccionada && this.funerarias.length) {
+      if (this.puedeSeleccionarFuneraria && !this.funerariaSeleccionada && this.funerarias.length) {
         this.funerariaSeleccionada = this.funerarias[0].value
       }
     } catch (error) {
@@ -292,10 +292,16 @@ export default {
   },
   computed: {
     esMaster() {
-      return this.puedeVerTodosLosPeriodos
+      return this.puedeSeleccionarFuneraria
     },
-    puedeVerTodosLosPeriodos() {
-      return this.$can('*') || this.$can('cementerio.review')
+    puedeSeleccionarFuneraria() {
+      return this.$can('*') || this.$can('cementerio.admin')
+    },
+    puedeGestionarFallecidos() {
+      return this.$can('*') || this.$can('cementerio.update')
+    },
+    puedeConfirmarPeriodos() {
+      return this.$can('*') || this.$can('cementerio.confirm')
     },
     todosLosPeriodos() {
       return this.$store.state.cementerio.periodos || []
@@ -483,6 +489,10 @@ export default {
       return 0
     },
     abrirConfirmacion(periodo) {
+      if (!this.puedeConfirmarPeriodos) {
+        this.notify('Necesitas permiso cementerio.confirm para confirmar periodos.', 'warning')
+        return
+      }
       this.periodoSeleccionado = periodo
       this.comprobanteMensual = null
       this.comprobanteMensualError = ''
@@ -530,6 +540,10 @@ export default {
     },
     async confirmarPeriodo() {
       if (this.enviando) return
+      if (!this.puedeConfirmarPeriodos) {
+        this.notify('Necesitas permiso cementerio.confirm para confirmar periodos.', 'warning')
+        return
+      }
       this.validateComprobanteMensual({ target: { files: [this.comprobanteMensual] } })
       if (this.comprobanteMensualError) return
       this.enviando = true

@@ -56,7 +56,7 @@
       </b-row>
       <b-form-checkbox class="text-center mt-3" v-model="hideFinalizados">Ocultar Finalizados/Rechazados</b-form-checkbox>
       <div class="row no-gutters justify-content-center">
-        <b-button variant="success" class="text-center mt-3" v-if="jefeComercio" @click="generarExcelTramitesNoFinalizados"> Exportar a Excel</b-button>
+        <b-button variant="success" class="text-center mt-3" v-if="puedeExportarHabilitaciones" @click="generarExcelTramitesNoFinalizados"> Exportar a Excel</b-button>
       </div>
       <!-- <b-form-group class="col-4 mx-auto mt-4" horizontal label-class="text-success h6" label="Filtrar por DNI">
         <b-icon-funnel-fill variant="success" />
@@ -69,7 +69,7 @@
       <!-- Plantilla personalizada para la columna "detalles" -->
       <template #cell(nroTramite)="row">
         <span>{{ row.value }}</span>
-        <span v-if="adminMaster && row.item.visible === false" title="Trámite invisible para no administradores">
+        <span v-if="puedeGestionarVisibilidad && row.item.visible === false" title="Trámite invisible para usuarios sin permiso de visibilidad">
           <b-icon-eye-slash class="text-danger mr-1" style="margin-left: 1rem;" />
         </span>
       </template>
@@ -201,7 +201,7 @@ export default{
     filteredItems() {
       let items = this.items;
 
-      if (!this.adminMaster) {
+      if (!this.puedeGestionarVisibilidad) {
         items = items.filter(item => item.visible !== false);
       }
 
@@ -251,11 +251,14 @@ export default{
     adminComercio() {
       return this.$can('habilitaciones.read')
     },
-    adminMaster() {
-      return this.$can('*')
+    puedeGestionarVisibilidad() {
+      return this.$can('habilitaciones.visibilidad')
     },
     jefeComercio() {
       return this.$can('habilitaciones.status')
+    },
+    puedeExportarHabilitaciones() {
+      return this.$can('habilitaciones.export')
     }
   },
   methods: {

@@ -24,7 +24,7 @@
 export default {
   computed: {
     adminCementerio() {
-      return this.$can('cementerio.read')
+      return this.$can('cementerio.read') || this.$can('cementerio.admin')
     },
   },
 }

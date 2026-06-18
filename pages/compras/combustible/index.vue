@@ -3,8 +3,8 @@
     <Banner title="Compras" subtitle="Combustible"/>
 
     <!-- Botones de acción: ocultos para quien solo ve el dashboard -->
-    <div v-if="puedeGestionarOrdenes" class="row no-gutters justify-content-center mt-4">
-      <b-button variant="success" class="text-center mx-3" @click="showCargarOrden = true">
+    <div v-if="puedeGestionarOrdenes || puedeGestionarVehiculos" class="row no-gutters justify-content-center mt-4">
+      <b-button v-if="puedeGestionarOrdenes" variant="success" class="text-center mx-3" @click="showCargarOrden = true">
         <b-icon-plus-circle class="mr-2"></b-icon-plus-circle>
         Cargar Orden de Compra
       </b-button>
@@ -666,9 +666,6 @@ export default {
     }
   },
   computed: {
-    adminCompras(){
-      return this.$can('compras.read')
-    },
     puedeVerOrdenes(){
       return this.$can('compras.ordenes.read')
     },
@@ -792,14 +789,14 @@ export default {
       return !item || !Number(item.vales)
     },
     puedeEditarOrden(item) {
-      return this.puedeGestionarOrdenes && (this.puedeGestionarVales || this.ordenSinVales(item))
+      return this.puedeGestionarOrdenes
     },
     puedeEliminarOrden(item) {
       return this.puedeBorrarOrdenes && (this.puedeGestionarVales || this.ordenSinVales(item))
     },
     editarOrden(item) {
       if (!this.puedeEditarOrden(item)) {
-        this.$bvToast.toast('Solo se pueden editar ordenes sin vales asociados.', { variant: 'warning' })
+        this.$bvToast.toast('No tenes permiso para editar ordenes de compra.', { variant: 'warning' })
         return
       }
       const [nroOrden1 = '', nroOrden2 = ''] = String(item.nroOrden || '').split('/')

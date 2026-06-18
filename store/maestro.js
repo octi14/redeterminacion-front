@@ -18,16 +18,18 @@ export const actions = {
     })
     commit('setSingle', found)
   },
-  async create({ commit, state }, { file }) {
+  async create({ dispatch }, { file }) {
     try {
-      const response = await MaestroService.create(this.$axios, { file });
-
-      // Si el servicio devuelve los archivos procesados, actualiza el estado con ellos
-      commit('setAll', response.filesList);
+      await MaestroService.create(this.$axios, { file });
+      await dispatch('get')
     } catch (error) {
       console.error(error);
       // Manejar errores, si es necesario
     }
+  },
+  async update({ dispatch }, { maestro }) {
+    await MaestroService.update(this.$axios, { maestro })
+    await dispatch('get')
   },
 };
 

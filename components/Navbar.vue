@@ -25,7 +25,7 @@
           <b-dropdown-item v-if="adminComercio" to="/comercio/solicitudes">
             Habilitaciones
           </b-dropdown-item>
-          <b-dropdown-item v-if="adminComercio || adminInspeccion" to="/comercio/turnos/reservas">
+          <b-dropdown-item v-if="adminInspeccion" to="/comercio/turnos/reservas">
             Turnos Inspeccion
           </b-dropdown-item>
           <b-dropdown-item v-if="adminAbiertoAnual" to="/comercio/abierto_anual/registros">
@@ -71,6 +71,9 @@
             <b-dropdown-item v-if="canManageUsers" @click="onUserAdmin">
               Administrar usuarios
             </b-dropdown-item>
+            <b-dropdown-item v-if="canManageFunerarias" @click="onFunerariasAdmin">
+              Administrar funerarias
+            </b-dropdown-item>
             <b-dropdown-item v-if="canViewActivities" @click="onActivities">
               Actividades
             </b-dropdown-item>
@@ -104,16 +107,16 @@ export default {
       return Boolean(this.$store.state.user.token)
     },
     adminObras() {
-      return this.$can('obras.read')
+      return this.$can('hacienda.obras.read')
     },
     puedeGestionarObras() {
-      return this.$can('obras.update')
+      return this.$can('hacienda.obras.update')
     },
     adminIndices() {
-      return this.$can('indices.read')
+      return this.$can('hacienda.indices.read')
     },
     puedeGestionarIndices() {
-      return this.$can('indices.update')
+      return this.$can('hacienda.indices.update')
     },
     adminComercio() {
       return this.$can('habilitaciones.read')
@@ -136,8 +139,11 @@ export default {
     adminCementerioReview() {
       return this.$can('cementerio.review')
     },
+    adminCementerioAdmin() {
+      return this.$can('cementerio.admin')
+    },
     adminCementerio() {
-      return this.$can('cementerio.read')
+      return this.$can('cementerio.read') || this.adminCementerioAdmin
     },
     adminComprasCombustible() {
       return this.$can('compras.ordenes.read') || this.$can('compras.vales.read') || this.$can('compras.dashboard')
@@ -155,13 +161,16 @@ export default {
       return this.adminPagosDobles || this.canManageBoletas
     },
     showCementerioMenu() {
-      return this.adminCementerio || this.adminCementerioReview
+      return this.adminCementerio || this.adminCementerioReview || this.adminCementerioAdmin
     },
     showComprasMenu() {
       return this.adminComprasCombustible
     },
     canManageUsers() {
-      return this.$can('users.manage')
+      return this.$can('users.read') || this.$can('users.manage') || this.$can('roles.read') || this.$can('roles.manage')
+    },
+    canManageFunerarias() {
+      return this.$can('cementerio.admin')
     },
     canManageBoletas() {
       return this.$can('boletas.manage')
@@ -173,7 +182,7 @@ export default {
       return this.$can('dashboard.read')
     },
     showAdminTools() {
-      return this.canManageUsers || this.canViewActivities || this.canViewDashboard
+      return this.canManageUsers || this.canManageFunerarias || this.canViewActivities || this.canViewDashboard
     },
     username() {
       return this.$store.state.user.username
@@ -206,6 +215,10 @@ export default {
     onUserAdmin() {
       this.registrarActividad('User Admin', 'Enter')
       this.$router.push('/admin/usuarios')
+    },
+    onFunerariasAdmin() {
+      this.registrarActividad('Funerarias Admin', 'Enter')
+      this.$router.push('/cementerio/funerarias')
     },
     onActivities() {
       this.registrarActividad('User Activities', 'Enter')

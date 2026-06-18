@@ -1,5 +1,5 @@
 const formatMaestro = (MaestroResponse) => ({
-  // id: MaestroResponse._id,
+  id: MaestroResponse._id,
   legajo: MaestroResponse.legajo,
   cuit: MaestroResponse.cuit,
   denominacion: MaestroResponse.denominacion,
@@ -30,16 +30,12 @@ module.exports = {
     )
     // return formatCertif(createdCertif.data)
   },
-  update: async (axios, { obra, userToken }) => {
-    axios.setHeader('Access-Control-Allow-Origin', true)
+  update: async (axios, { maestro }) => {
     const updated = await axios.$put(
-      `/certificados/${obra.id}`,
-      { obra },
-      {
-        headers: { Authorization: `Bearer ${userToken}` },
-      }
+      `/maestro/${maestro.id}`,
+      { maestro },
     )
-    return formatCertif(updated.data)
+    return formatMaestro(updated.data)
   },
   delete: async (axios, { id, userToken }) => {
     return await axios.$delete(`/certificados/${id}`, {

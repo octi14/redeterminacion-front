@@ -1,7 +1,7 @@
 <template>
   <div class="page main-background">
     <Banner title="Solicitudes de turnos" subtitle="Uso interno" />
-    <div v-if="adminComercio || adminInspeccion">
+    <div v-if="adminInspeccion">
       <div class="row justify-content-center">
         <b-form-group class="col-4 mx-auto mt-3" horizontal label-class="text-success">
           <label for="selectedEstado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><b-icon-funnel-fill></b-icon-funnel-fill> Filtrar por Estado</label>
@@ -178,9 +178,6 @@ export default{
       }
 
       return items;
-    },
-    adminComercio(){
-      return this.$can('habilitaciones.read')
     },
     adminInspeccion(){
       return this.$can('turnos.read')

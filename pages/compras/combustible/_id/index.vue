@@ -161,12 +161,12 @@
                 </button>
               </div>
               <!-- Botón para reimprimir seleccionados -->
-              <div class="text-center my-3" v-if="valesSeleccionados.length">
+              <div class="text-center my-3" v-if="puedeGestionarVales && valesSeleccionados.length">
                 <button class="btn btn-success" @click="abrirModalUtilizarVales">
                   <b-icon-check/> Marcar como utilizados ({{ valesSeleccionados.length }})
                 </button>
               </div>
-              <div class="text-center mx-3 my-3" v-if="valesSeleccionados.length">
+              <div class="text-center mx-3 my-3" v-if="puedeGestionarVales && valesSeleccionados.length">
                 <button class="btn btn-danger" @click="abrirModalEliminacionMasiva">
                   <b-icon-trash/> Eliminar seleccionados ({{ valesSeleccionados.length }})
                 </button>
@@ -213,14 +213,14 @@
                             <b-icon-x-square v-else disabled="disabled" class="mr-2 vale-icon-disabled"></b-icon-x-square>
                             <h5 class="mb-0 ml-1 font-weight-700 text-gray vale-card-title">VALE N° {{ vale.nro_vale }}</h5>
                           </div>
-                          <div v-if="puedeGestionarVales && !vale.anulado" class="d-flex vale-card-actions">
-                            <button v-if="!vale.consumido" class="btn btn-success vale-card-btn" title="Marcar como utilizado" @click="confirmarMarcarUtilizado(vale, (currentPage - 1) * itemsPerPage + index)">
+                          <div v-if="puedeVerVales && !vale.anulado" class="d-flex vale-card-actions">
+                            <button v-if="puedeGestionarVales && !vale.consumido" class="btn btn-success vale-card-btn" title="Marcar como utilizado" @click="confirmarMarcarUtilizado(vale, (currentPage - 1) * itemsPerPage + index)">
                               <b-icon-check scale="0.85" />
                             </button>
                             <button v-if="!vale.consumido" class="btn btn-primary vale-card-btn" title="Reimprimir" @click="confirmarReimpresion(vale, index)">
                               <b-icon-printer-fill scale="0.85" />
                             </button>
-                            <button v-if="!vale.consumido" class="btn btn-danger vale-card-btn" title="Eliminar" @click="confirmarEliminacion(vale.id)">
+                            <button v-if="puedeGestionarVales && !vale.consumido" class="btn btn-danger vale-card-btn" title="Eliminar" @click="confirmarEliminacion(vale.id)">
                               <b-icon-trash-fill scale="0.85" />
                             </button>
                           </div>
@@ -266,7 +266,7 @@
                       <th>Patente</th>
                       <th>Fecha Emisión</th>
                       <th>Estado</th>
-                      <th v-if="puedeGestionarVales" style="width: 120px;">Acciones</th>
+                      <th v-if="puedeVerVales" style="width: 120px;">Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -297,10 +297,10 @@
                           <b class="text-gray" v-else>Anulado</b>
                         </span>
                       </td>
-                      <td v-if="puedeGestionarVales && !vale.anulado" class="text-center">
+                      <td v-if="puedeVerVales && !vale.anulado" class="text-center">
                         <div class="d-flex justify-content-center align-items-center">
                           <button
-                            v-if="!vale.consumido"
+                            v-if="puedeGestionarVales && !vale.consumido"
                             class="btn btn-success btn-sm mx-1"
                             title="Marcar como utilizado"
                             @click="confirmarMarcarUtilizado(vale, (currentPage - 1) * itemsPerPage + index)"
@@ -316,7 +316,7 @@
                             <b-icon-printer-fill />
                           </button>
                           <button
-                            v-if="!vale.consumido"
+                            v-if="puedeGestionarVales && !vale.consumido"
                             class="btn btn-danger btn-sm mx-1"
                             title="Eliminar"
                             @click="confirmarEliminacion(vale.id)"
@@ -325,7 +325,7 @@
                           </button>
                         </div>
                       </td>
-                      <td v-else-if="puedeGestionarVales"></td>
+                      <td v-else-if="puedeVerVales"></td>
                     </tr>
                   </tbody>
                 </table>
@@ -722,6 +722,10 @@ export default {
       this.$bvModal.show('modalReimpresion')
     },
     confirmarEliminacion(id) {
+      if (!this.puedeGestionarVales) {
+        this.$bvToast.toast('No tenes permiso para modificar vales.', { variant: 'warning' })
+        return
+      }
       this.valeSeleccionado = id;
       this.eliminandoVale = false; // Resetear estado al abrir modal
       this.modalEliminacion = true;
@@ -892,6 +896,7 @@ export default {
       ctx.font = "500 38px sans-serif"; // volver al tamaño original si seguís con más texto
     },
     async eliminarVale() {
+      if (!this.puedeGestionarVales) return;
       if (!this.valeSeleccionado || this.eliminandoVale) return;
 
       const id = this.valeSeleccionado;
@@ -916,6 +921,7 @@ export default {
       }
     },
     async eliminarValesSeleccionados(){
+      if (!this.puedeGestionarVales) return;
       if (this.valesSeleccionados.length === 0 || this.eliminandoVales) return;
 
       this.eliminandoVales = true; // Deshabilitar botón
@@ -955,6 +961,10 @@ export default {
       }
     },
     confirmarMarcarUtilizado(valeRef, index) {
+      if (!this.puedeGestionarVales) {
+        this.$bvToast.toast('No tenes permiso para modificar vales.', { variant: 'warning' })
+        return
+      }
       this.tempValeRef = valeRef
       this.tempNroVale = index
       this.$bvModal.show('modalUtilizacion')
@@ -972,6 +982,7 @@ export default {
       location.reload()
     },
     async marcarUtilizado(){
+      if (!this.puedeGestionarVales) return;
       const id = this.tempValeRef.id;
         try {
           const userToken = this.$store.state.user.token;
@@ -1004,6 +1015,7 @@ export default {
         }
     },
     async marcarValesSeleccionados() {
+      if (!this.puedeGestionarVales) return;
       if (this.valesSeleccionados.length === 0) return;
 
       const valesAMarcar = [...this.valesSeleccionados]; // Copiar el array antes de limpiarlo
@@ -1045,9 +1057,11 @@ export default {
       this.$bvModal.show('modalReimpresionMasiva');
     },
     abrirModalUtilizarVales() {
+      if (!this.puedeGestionarVales) return;
       this.$bvModal.show('modalUtilizacionMasiva');
     },
     abrirModalEliminacionMasiva() {
+      if (!this.puedeGestionarVales) return;
       this.eliminandoVales = false; // Resetear estado al abrir modal
       this.$bvModal.show('modalEliminacionMasiva');
     },

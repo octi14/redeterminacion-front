@@ -11,7 +11,7 @@
 export default {
   computed: {
     puedeVerObras() {
-      return this.$can('obras.read')
+      return this.$can('hacienda.obras.read')
     },
   }
 }

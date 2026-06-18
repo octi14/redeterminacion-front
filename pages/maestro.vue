@@ -14,27 +14,28 @@
           type="text"
         />
       </b-form-group>
-      <span class="text-center">Cargar maestro</span>
-      <b-form class="col justify-content-center">
+      <span v-if="puedeGestionarMaestro" class="text-center">Cargar maestro</span>
+      <b-form v-if="puedeGestionarMaestro" class="col justify-content-center">
         <b-form-file v-model="file" class="row col-4 mx-auto" accept="csv" type="file" placeholder="No has seleccionado un archivo." @change="handleFileUpload"/>
-        <b-button v-if="puedeGestionarMaestro" @click="onSubirMaestro" variant="success" class="mt-4">Subir archivo</b-button>
+        <b-button @click="onSubirMaestro" variant="success" class="mt-4">Subir archivo</b-button>
       </b-form>
     </div>
     <b-table per-page="10" head-row-variant="warning" class="col-md-10 white col-sm-8 mx-auto mt-4 shadow-card" :items="paginatedItems" :fields="fields">
       <template #cell(detalles)="row">
-        <b-button v-if="puedeGestionarMaestro" variant="outline-secondary" size="sm" title="Editar" @click="editarMaestro(row.item)">
-          <b-icon-pen size="sm"/>
+        <b-button v-if="puedeVerMaestro" variant="outline-secondary" size="sm" :title="puedeGestionarMaestro ? 'Editar' : 'Ver detalle'" @click="abrirDetalleMaestro(row.item)">
+          <b-icon-pen v-if="puedeGestionarMaestro" size="sm"/>
+          <b-icon-eye v-else size="sm"/>
         </b-button>
       </template>
     </b-table>
     <b-pagination class="mt-4" :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
 
-    <b-modal id="modalEditarMaestro" hide-header-close v-model="editing" header-bg-variant="secondary" title="Editar maestro comercial" title-class="h5 text-light mx-auto" hide-footer centered>
+    <b-modal id="modalEditarMaestro" hide-header-close v-model="editing" header-bg-variant="secondary" :title="puedeGestionarMaestro ? 'Editar maestro comercial' : 'Detalle maestro comercial'" title-class="h5 text-light mx-auto" hide-footer centered>
       <MaestroComercialForm
         v-if="editing"
         v-on:show="fetch"
         :item="editarItem"
-        :create="false"
+        :can-edit="puedeGestionarMaestro"
         @submit="onSubmitEditMaestro"
         @reset="editing = false"
       ></MaestroComercialForm>
@@ -50,6 +51,7 @@ export default {
       currentPage: 1,
       perPage: 10,
       editing: false,
+      editarItem: null,
       inputCUIT: '',
       fields: [
         { key: 'cuit', label: 'CUIT' },
@@ -95,7 +97,7 @@ export default {
     }
   },
   methods: {
-    editarMaestro(item) {
+    abrirDetalleMaestro(item) {
       this.$bvModal.show('modalEditarMaestro');
       this.editarItem = item;
     },
@@ -106,10 +108,13 @@ export default {
       this.file = event.target.files[0];
     },
     async onSubirMaestro() {
-      const userToken = this.$store.state.user.token;
       const file = await this.readFileContent(this.file);
 
       await this.$store.dispatch('maestro/create', { file });
+    },
+    async onSubmitEditMaestro(maestro) {
+      await this.$store.dispatch('maestro/update', { maestro });
+      this.editing = false;
     },
     async readFileContent(file) {
       return new Promise((resolve, reject) => {

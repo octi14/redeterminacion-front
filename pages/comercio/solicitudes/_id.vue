@@ -28,10 +28,10 @@
           <div class="h5 row justify-content-center" v-if="!esHabilitacion"> Alcance: <b class="text-success ml-1"> {{ habilitacion.alcance }} </b> </div>
           <div class="h5 row justify-content-center" v-if="!esHabilitacion"> Legajo: <b class="text-success ml-1"> {{ habilitacion.nroLegajo }} </b> </div>
         </div>        
-        <div class="row justify-content-center mt-3" v-if="adminMaster && visibleLocal">
+        <div class="row justify-content-center mt-3" v-if="puedeGestionarVisibilidad">
           <div class="h5 row"> Visibilidad:
             <h5 :class="getStatusClass(habilitacion.status)" class="ml-2"> 
-              <b-icon-eye-slash v-if="visibleLocal" class="ml-1 text-success" title="Trámite visible" />
+              <b-icon-eye v-if="visibleLocal" class="ml-1 text-success" title="Trámite visible" />
               <b-icon-eye-slash v-else class="ml-1 text-danger" title="Trámite invisible" />
               <span v-if="visibleLocal">Visible</span>
               <span v-else>Invisible</span>
@@ -39,7 +39,7 @@
           </div>
         </div>
       </div>
-      <div class="row justify-content-center mt-2" v-if="adminMaster">
+      <div class="row justify-content-center mt-2" v-if="puedeGestionarVisibilidad">
         <b-form-checkbox
           switch
           v-model="visibleLocal"
@@ -57,9 +57,11 @@
         <!-- <b-button @click="onShowRectificacion" variant="secondary " class="btn-4 mt-3 mx-1" v-if="habilitacion && habilitacion.status === 'En revisión'"> Rectificación </b-button> -->
         <b-button @click="onShowFinalizarSolicitud" variant="success" class="btn-4 mt-3 mx-1" v-if="(!renovacion && !reempadronamiento) && habilitacion && (habilitacion.status === 'Esperando documentación' || habilitacion.status === 'Esperando pago')"> Finalizar solicitud </b-button>
         <b-button @click="onShowFinalizarRenovacion" variant="success" class="btn-4 mt-3 mx-1" v-if="(renovacion || reempadronamiento) && habilitacion && habilitacion.status === 'Esperando documentación'"> Finalizar solicitud </b-button>
-        <b-button @click="onRestablecer" variant="secondary" class="btn-4 mt-3 mx-1" v-if="adminMaster && habilitacion && habilitacion.status != 'En revisión'"> Volver a estado En Revisión </b-button>
+        <b-button @click="onRestablecer" variant="secondary" class="btn-4 mt-3 mx-1" v-if="jefeComercio && habilitacion && habilitacion.status != 'En revisión'"> Volver a estado En Revisión </b-button>
         <b-button @click="onShowObservaciones" variant="primary" class="btn-2 mt-3 mx-1"> Ver observaciones </b-button>
-        <b-button @click="onDescargarHabilitacion(); registrarActividad('Descargar Trámite', 'Trámite Descargado', habilitacion.nroTramite)" v-if="adminComercio || adminArvige || adminModernizacion" variant="success" class="btn-4 mt-3 mx-1">
+      </div>
+      <div class="row col-10 mx-auto justify-content-center" v-if="puedeExportarHabilitaciones">
+        <b-button @click="onDescargarHabilitacion(); registrarActividad('Descargar Trámite', 'Trámite Descargado', habilitacion.nroTramite)" variant="success" class="btn-4 mt-3 mx-1">
           <b-icon icon="download" class="mr-1"></b-icon> Descargar trámite
         </b-button>
       </div>
@@ -885,14 +887,11 @@ export default {
     adminComercio(){
       return this.$can('habilitaciones.read')
     },
-    adminArvige(){
+    puedeExportarHabilitaciones(){
       return this.$can('habilitaciones.export')
     },
-    adminModernizacion(){
-      return this.$can('habilitaciones.export')
-    },
-    adminMaster(){
-      return this.$can('habilitaciones.status')
+    puedeGestionarVisibilidad(){
+      return this.$can('habilitaciones.visibilidad')
     },
     jefeComercio(){
       return this.$can('habilitaciones.status')
@@ -937,9 +936,19 @@ export default {
   },
   async fetch() {
     const habilitacionId = this.$route.params.id
-    await this.$store.dispatch('habilitaciones/getSingle',{
-      id: habilitacionId,
-    })
+    try {
+      await this.$store.dispatch('habilitaciones/getSingle',{
+        id: habilitacionId,
+      })
+    } catch (error) {
+      this.$bvToast.toast('El trámite no está disponible para este usuario.', {
+        title: 'Trámite no disponible',
+        variant: 'warning',
+        solid: true,
+      })
+      this.$router.replace('/comercio/solicitudes')
+      return
+    }
     this.habilitacion = this.$store.state.habilitaciones.single
 
     // Verificar que habilitacion existe antes de acceder a sus propiedades
@@ -948,7 +957,7 @@ export default {
       return
     }
 
-    if (!this.adminMaster && this.habilitacion.visible === false) {
+    if (!this.puedeGestionarVisibilidad && this.habilitacion.visible === false) {
       this.$bvToast.toast('El trámite no está disponible para este usuario.', {
         title: 'Trámite no disponible',
         variant: 'warning',
@@ -985,7 +994,7 @@ export default {
       }
     },
     async onToggleVisibilidad() {
-      if (!this.adminMaster || !this.habilitacion) {
+      if (!this.puedeGestionarVisibilidad || !this.habilitacion) {
         return;
       }
 
@@ -1000,8 +1009,8 @@ export default {
         this.$store.commit('habilitaciones/setSingleVisible', visible);
         this.$bvToast.toast(
           visible
-            ? 'El trámite ahora es visible para usuarios no administradores.'
-            : 'El trámite ahora es invisible para usuarios no administradores.',
+            ? 'El trámite ahora es visible para usuarios sin permiso de visibilidad.'
+            : 'El trámite ahora es invisible para usuarios sin permiso de visibilidad.',
           {
             title: 'Visibilidad actualizada',
             variant: 'success',

@@ -23,9 +23,9 @@
       </div>
       <!--Botones-->
       <div class="row col-10 mx-auto justify-content-center">
-        <b-button @click="onShowAprobarSolicitud" variant="success" class="btn-4 mt-3 mx-1" v-if="pago.status==='En revisión'"> Aprobar solicitud </b-button>
+        <b-button @click="onShowAprobarSolicitud" variant="success" class="btn-4 mt-3 mx-1" v-if="canManageSolicitudStatus"> Aprobar solicitud </b-button>
         <!-- <b-button @click="onRestablecer" variant="secondary" class="btn-4 mt-3 mx-1" v-if="pago.status != 'En revisión'"> Volver a estado En Revisión </b-button> -->
-        <b-button @click="onRechazarSolicitud" class="btn-3 mt-3 mx-1"> Rechazar solicitud </b-button>
+        <b-button @click="onRechazarSolicitud" class="btn-3 mt-3 mx-1" v-if="canManageSolicitudStatus"> Rechazar solicitud </b-button>
         <b-button @click="onShowObservaciones" variant="primary" class="btn-2 mt-3 mx-1"> Ver observaciones </b-button>
       </div>
       <!-- <div class="row no-gutters">
@@ -299,6 +299,12 @@ export default {
     adminComercio(){
       return this.$can('pagosDobles.export')
     },
+    canUpdatePagosDobles() {
+      return this.$can('pagosDobles.update')
+    },
+    canManageSolicitudStatus() {
+      return Boolean(this.canUpdatePagosDobles && this.pago && this.pago.status === 'En revisión')
+    },
     documentos(){
       return this.$store.state.documentos.all
     },
@@ -360,6 +366,10 @@ export default {
       return new Promise(resolve => setTimeout(resolve, ms));
     },
     async onShowAprobarSolicitud(){
+      if (!this.canManageSolicitudStatus) {
+        this.notifyStatusPermissionDenied()
+        return
+      }
       this.aprobComentMode = 'ninguno'
       this.aprobComentTexto = ''
       this.showPrevApprove = true
@@ -379,6 +389,10 @@ export default {
       this.showObservaciones = true
     },
     async onSendApprove(){
+      if (!this.canManageSolicitudStatus) {
+        this.notifyStatusPermissionDenied()
+        return
+      }
       const observaciones = this.pago.observaciones || " "
       const comentAprob = this.aprobComentMode === 'comentario' ? (this.aprobComentTexto || '').trim() : ''
       const lineaAprob =
@@ -423,11 +437,19 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
       }
     },
     onRechazarSolicitud(){
+      if (!this.canManageSolicitudStatus) {
+        this.notifyStatusPermissionDenied()
+        return
+      }
       this.motivoRechazo = ''
       this.otroMotivoRechazo = ''
       this.showRejectPopup = true
     },
     async onSendReject(){
+      if (!this.canManageSolicitudStatus) {
+        this.notifyStatusPermissionDenied()
+        return
+      }
       const motivoTexto = this.textoRechazoParaGuardarYCorreo()
       const observaciones = this.pago.observaciones || " "
       const pago = {
@@ -544,9 +566,17 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
     },
 
     onRestablecer(){
+      if (!this.canUpdatePagosDobles) {
+        this.notifyStatusPermissionDenied()
+        return
+      }
       this.showRestoreDefault = !this.showRestoreDefault
     },
     async onSendRestablecer(){
+      if (!this.canUpdatePagosDobles) {
+        this.notifyStatusPermissionDenied()
+        return
+      }
 
       const observaciones = this.pago.observaciones || ""
       const pago = {
@@ -567,6 +597,13 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
     },
     onResetEdit() {
       this.editing = false
+    },
+    notifyStatusPermissionDenied() {
+      this.$bvToast.toast('Necesitás permiso pagosDobles.update para cambiar el estado de la solicitud.', {
+        title: 'Permisos insuficientes',
+        variant: 'warning',
+        solid: true,
+      })
     },
   },
 }

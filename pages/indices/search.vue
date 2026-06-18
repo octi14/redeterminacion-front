@@ -54,7 +54,7 @@ export default {
   },
   computed: {
     puedeVerIndices() {
-      return this.$can('indices.read')
+      return this.$can('hacienda.indices.read')
     },
   },
   methods: {

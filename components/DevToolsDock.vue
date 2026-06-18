@@ -256,6 +256,96 @@
                 </template>
               </div>
 
+              <div v-else-if="currentTool.key === 'abierto-anual'" class="abierto-tool">
+                <b-alert v-if="!canManageAbiertoAnual" show variant="warning" class="role-tool-alert">
+                  Necesitás permiso abiertoAnual.admin para modificar esta configuración.
+                </b-alert>
+
+                <template v-else>
+                  <div class="abierto-tool-card">
+                    <div class="abierto-tool-heading">
+                      <div>
+                        <span>Ventanas de carga</span>
+                        <strong>Año {{ currentYear }}</strong>
+                      </div>
+                      <b-button
+                        variant="outline-light"
+                        size="sm"
+                        :disabled="abiertoLoading || abiertoSaving"
+                        @click="loadAbiertoAnualConfig"
+                      >
+                        <b-spinner v-if="abiertoLoading" small />
+                        <i v-else class="bi bi-arrow-clockwise"></i>
+                      </b-button>
+                    </div>
+
+                    <div class="period-config-list">
+                      <div
+                        v-for="(periodo, index) in abiertoForm.periodos"
+                        :key="index"
+                        class="period-config-row"
+                      >
+                        <div>
+                          <span>Periodo {{ index + 1 }}</span>
+                          <small>{{ dateLabel(periodo.min) }} - {{ dateLabel(periodo.max) }}</small>
+                        </div>
+                        <label>
+                          Inicio
+                          <b-form-input
+                            v-model="periodo.min"
+                            type="date"
+                            :disabled="abiertoLoading || abiertoSaving"
+                          />
+                        </label>
+                        <label>
+                          Final
+                          <b-form-input
+                            v-model="periodo.max"
+                            type="date"
+                            :disabled="abiertoLoading || abiertoSaving"
+                          />
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="abierto-tool-card">
+                    <div class="abierto-tool-heading">
+                      <div>
+                        <span>Rectificación global</span>
+                        <strong>{{ abiertoForm.rectificacionGlobal ? 'Habilitada' : 'Deshabilitada' }}</strong>
+                      </div>
+                      <b-form-checkbox
+                        v-model="abiertoForm.rectificacionGlobal"
+                        switch
+                        :disabled="abiertoLoading || abiertoSaving"
+                      />
+                    </div>
+                    <p>
+                      Este switch fuerza la rectificación para todo el sitio, independientemente de la ventana de fechas configurada.
+                    </p>
+                  </div>
+
+                  <div class="role-tool-actions">
+                    <b-button
+                      variant="outline-light"
+                      :disabled="abiertoLoading || abiertoSaving || !hasAbiertoChanges"
+                      @click="resetAbiertoAnualForm"
+                    >
+                      Deshacer
+                    </b-button>
+                    <b-button
+                      variant="success"
+                      :disabled="abiertoLoading || abiertoSaving || !canSaveAbiertoAnual"
+                      @click="requestSaveAbiertoAnual"
+                    >
+                      <b-spinner v-if="abiertoSaving" small class="mr-2" />
+                      {{ abiertoSaving ? 'Guardando...' : 'Guardar configuración' }}
+                    </b-button>
+                  </div>
+                </template>
+              </div>
+
               <div v-else class="placeholder-card">
                 <i :class="`bi bi-${currentTool.icon}`"></i>
                 <div>
@@ -302,6 +392,7 @@
 
 <script>
 const ExperimentalRbacService = require('@/service/experimentalRbac')
+const AbiertoAnualConfigService = require('@/service/abiertoAnualConfig')
 
 const TOOL_DEFINITIONS = [
   {
@@ -382,14 +473,27 @@ export default {
         { value: 12, text: '12' },
         { value: 24, text: '24' },
         { value: 48, text: '48' }
-      ]
+      ],
+      abiertoLoading: false,
+      abiertoSaving: false,
+      abiertoLoaded: false,
+      abiertoConfig: null,
+      abiertoOriginal: null,
+      abiertoForm: {
+        periodos: [
+          { min: '', max: '' },
+          { min: '', max: '' },
+          { min: '', max: '' }
+        ],
+        rectificacionGlobal: false
+      }
     }
   },
   computed: {
     canShow() {
       if (!process.client) return false
       const hasDevBypass = localStorage.getItem('devToolsEnabled') === 'true'
-      return hasDevBypass || this.canReadRbac
+      return hasDevBypass || this.canReadRbac || this.canManageAbiertoAnual
     },
     username() {
       return this.$store.state.user.username || 'Sin usuario'
@@ -404,6 +508,9 @@ export default {
     },
     currentTool() {
       return this.tools.find(item => item.key === this.activeTool) || this.tools[0]
+    },
+    currentYear() {
+      return new Date().getFullYear()
     },
     canManageRbac() {
       return this.canReadRbac
@@ -422,6 +529,9 @@ export default {
     },
     canReadRbac() {
       return this.canReadUsers || this.canReadRoles
+    },
+    canManageAbiertoAnual() {
+      return this.$can('*') || this.$can('abiertoAnual.admin')
     },
     roleOptions() {
       return [
@@ -481,6 +591,14 @@ export default {
     },
     canSaveSelectedRole() {
       return Boolean(this.selectedRole && this.roleForm.key && this.roleForm.name && this.hasRoleChanges)
+    },
+    hasAbiertoChanges() {
+      return JSON.stringify(this.abiertoPayloadFromForm()) !== JSON.stringify(this.abiertoOriginal)
+    },
+    canSaveAbiertoAnual() {
+      return this.canManageAbiertoAnual &&
+        this.abiertoForm.periodos.every(periodo => periodo.min && periodo.max) &&
+        this.hasAbiertoChanges
     }
   },
   watch: {
@@ -490,6 +608,9 @@ export default {
     activeTool(value) {
       if (value === 'access' && this.canReadRbac && !this.rbacLoaded) {
         this.loadRbac()
+      }
+      if (value === 'abierto-anual' && this.canManageAbiertoAnual && !this.abiertoLoaded) {
+        this.loadAbiertoAnualConfig()
       }
     },
     selectedRoleKey() {
@@ -529,6 +650,115 @@ export default {
     selectTool(key) {
       this.activeTool = this.activeTool === key ? '' : key
       this.pendingConfirmation = null
+    },
+    ddmmToInput(value) {
+      if (!value) return ''
+      const [day, month] = String(value).split('/')
+      return `${this.currentYear}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+    },
+    inputToDDMM(value) {
+      if (!value) return ''
+      const [, month, day] = String(value).split('-')
+      return `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}`
+    },
+    dateLabel(value) {
+      if (!value) return 'Sin fecha'
+      const [year, month, day] = String(value).split('-')
+      return `${day}/${month}/${year}`
+    },
+    abiertoPayloadFromForm() {
+      return {
+        periodos: this.abiertoForm.periodos.map(periodo => ({
+          min: this.inputToDDMM(periodo.min),
+          max: this.inputToDDMM(periodo.max)
+        })),
+        rectificacion: this.abiertoOriginal && this.abiertoOriginal.rectificacion
+          ? { ...this.abiertoOriginal.rectificacion }
+          : { min: '01/11', max: '30/11' },
+        rectificacionGlobal: Boolean(this.abiertoForm.rectificacionGlobal)
+      }
+    },
+    applyAbiertoConfig(config) {
+      const raw = config && config.raw
+        ? config.raw
+        : {
+          periodos: [
+            { min: '01/05', max: '31/05' },
+            { min: '01/08', max: '31/08' },
+            { min: '01/10', max: '31/10' }
+          ],
+          rectificacion: { min: '01/11', max: '30/11' },
+          rectificacionGlobal: Boolean(config && config.rectificacionGlobal)
+        }
+      this.abiertoConfig = config
+      this.abiertoOriginal = {
+        periodos: raw.periodos.map(periodo => ({ min: periodo.min, max: periodo.max })),
+        rectificacion: { ...(raw.rectificacion || { min: '01/11', max: '30/11' }) },
+        rectificacionGlobal: typeof raw.rectificacionGlobal === 'boolean'
+          ? raw.rectificacionGlobal
+          : false
+      }
+      this.resetAbiertoAnualForm()
+    },
+    async loadAbiertoAnualConfig() {
+      this.abiertoLoading = true
+      try {
+        const config = await AbiertoAnualConfigService.getAbiertoAnualPeriodos(this.$axios)
+        this.applyAbiertoConfig(config)
+        this.abiertoLoaded = true
+      } catch (error) {
+        this.showDevError(error, 'No se pudo cargar la configuración de abierto anual.')
+      } finally {
+        this.abiertoLoading = false
+      }
+    },
+    resetAbiertoAnualForm() {
+      const source = this.abiertoOriginal || {
+        periodos: [
+          { min: '01/05', max: '31/05' },
+          { min: '01/08', max: '31/08' },
+          { min: '01/10', max: '31/10' }
+        ],
+        rectificacionGlobal: false
+      }
+      this.abiertoForm = {
+        periodos: source.periodos.map(periodo => ({
+          min: this.ddmmToInput(periodo.min),
+          max: this.ddmmToInput(periodo.max)
+        })),
+        rectificacionGlobal: Boolean(source.rectificacionGlobal)
+      }
+    },
+    requestSaveAbiertoAnual() {
+      if (!this.canSaveAbiertoAnual) return
+      const payload = this.abiertoPayloadFromForm()
+      const detail = payload.periodos
+        .map((periodo, index) => `P${index + 1}: ${periodo.min}-${periodo.max}`)
+        .join(' · ')
+      this.pendingConfirmation = {
+        action: 'save-abierto-anual',
+        title: 'Guardar Abierto Anual',
+        body: 'Se van a actualizar las fechas de los periodos y el estado de rectificación global. Después se recargará la página.',
+        detail: `${detail} · Rectificación: ${payload.rectificacionGlobal ? 'habilitada' : 'deshabilitada'}`,
+        confirmText: 'Guardar y recargar',
+        variant: 'success',
+        icon: 'calendar-check',
+        loading: false,
+        error: ''
+      }
+    },
+    async saveAbiertoAnual() {
+      if (!this.canSaveAbiertoAnual) return
+      this.abiertoSaving = true
+      try {
+        const config = await AbiertoAnualConfigService.updateAbiertoAnualPeriodos(this.$axios, this.abiertoPayloadFromForm())
+        this.applyAbiertoConfig(config)
+        window.location.reload()
+      } catch (error) {
+        this.showDevError(error, 'No se pudo guardar la configuración de abierto anual.', true)
+      } finally {
+        this.abiertoSaving = false
+      }
     },
     async loadRbac() {
       this.rbacLoading = true
@@ -718,6 +948,8 @@ export default {
         await this.removeCurrentRole(this.pendingConfirmation.roleKey)
       } else if (action === 'save-role') {
         await this.saveSelectedRole()
+      } else if (action === 'save-abierto-anual') {
+        await this.saveAbiertoAnual()
       }
       if (this.pendingConfirmation) {
         this.$set(this.pendingConfirmation, 'loading', false)
@@ -1118,7 +1350,8 @@ export default {
   line-height: 1.35;
 }
 
-.role-tool {
+.role-tool,
+.abierto-tool {
   display: grid;
   gap: 1rem;
 }
@@ -1251,20 +1484,93 @@ export default {
 }
 
 .role-tool ::v-deep .custom-select,
-.role-tool ::v-deep .form-control {
+.role-tool ::v-deep .form-control,
+.abierto-tool ::v-deep .custom-select,
+.abierto-tool ::v-deep .form-control {
   border-color: rgba(126, 224, 184, .26);
   color: #dff8ef;
   background-color: rgba(255, 255, 255, .08);
   font-weight: 700;
 }
 
-.role-tool ::v-deep .custom-select option {
+.role-tool ::v-deep .custom-select option,
+.abierto-tool ::v-deep .custom-select option {
   color: #193d33;
   background: #ffffff;
 }
 
-.role-tool ::v-deep .form-control::placeholder {
+.role-tool ::v-deep .form-control::placeholder,
+.abierto-tool ::v-deep .form-control::placeholder {
   color: #89aca0;
+}
+
+.abierto-tool-card {
+  display: grid;
+  gap: .95rem;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, .045);
+}
+
+.abierto-tool-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .8rem;
+}
+
+.abierto-tool-heading span,
+.period-config-row > div span {
+  display: block;
+  color: #65e6b8;
+  font-size: .68rem;
+  font-weight: 900;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.abierto-tool-heading strong {
+  display: block;
+  color: #ffffff;
+  font-size: .94rem;
+}
+
+.abierto-tool-card p {
+  margin: 0;
+  color: #a7c9bd;
+  font-size: .8rem;
+  line-height: 1.4;
+}
+
+.period-config-list {
+  display: grid;
+  gap: .65rem;
+}
+
+.period-config-row {
+  display: grid;
+  grid-template-columns: minmax(110px, 1fr) minmax(120px, 150px) minmax(120px, 150px);
+  gap: .65rem;
+  align-items: end;
+  padding: .75rem;
+  border: 1px solid rgba(126, 224, 184, .14);
+  border-radius: 13px;
+  background: rgba(126, 224, 184, .055);
+}
+
+.period-config-row > div small {
+  display: block;
+  margin-top: .2rem;
+  color: #a7c9bd;
+  font-size: .74rem;
+}
+
+.period-config-row label {
+  margin: 0;
+  color: #cce6dd;
+  font-size: .72rem;
+  font-weight: 800;
 }
 
 .permission-tool {

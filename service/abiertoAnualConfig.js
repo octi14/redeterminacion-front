@@ -15,5 +15,9 @@ module.exports = {
       return getDefaultConfig(year)
     }
   },
+  updateAbiertoAnualPeriodos: async (axios, payload) => {
+    const response = await axios.$put('/config/abiertoAnualPeriodos', payload)
+    return response.data
+  },
   getDefaultConfig,
 }

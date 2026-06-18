@@ -71,6 +71,9 @@
             <b-dropdown-item v-if="canManageUsers" @click="onUserAdmin">
               Administrar usuarios
             </b-dropdown-item>
+            <b-dropdown-item v-if="canManageAbiertoAnual" @click="onAbiertoAnualAdmin">
+              Administrar abierto anual
+            </b-dropdown-item>
             <b-dropdown-item v-if="canManageFunerarias" @click="onFunerariasAdmin">
               Administrar funerarias
             </b-dropdown-item>
@@ -172,6 +175,9 @@ export default {
     canManageFunerarias() {
       return this.$can('cementerio.admin')
     },
+    canManageAbiertoAnual() {
+      return this.$can('*') || this.$can('abiertoAnual.admin')
+    },
     canManageBoletas() {
       return this.$can('boletas.manage')
     },
@@ -182,7 +188,7 @@ export default {
       return this.$can('dashboard.read')
     },
     showAdminTools() {
-      return this.canManageUsers || this.canManageFunerarias || this.canViewActivities || this.canViewDashboard
+      return this.canManageUsers || this.canManageAbiertoAnual || this.canManageFunerarias || this.canViewActivities || this.canViewDashboard
     },
     username() {
       return this.$store.state.user.username
@@ -215,6 +221,10 @@ export default {
     onUserAdmin() {
       this.registrarActividad('User Admin', 'Enter')
       this.$router.push('/admin/usuarios')
+    },
+    onAbiertoAnualAdmin() {
+      this.registrarActividad('Abierto Anual Admin', 'Enter')
+      this.$router.push('/admin/abierto-anual')
     },
     onFunerariasAdmin() {
       this.registrarActividad('Funerarias Admin', 'Enter')

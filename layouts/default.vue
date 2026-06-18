@@ -8,6 +8,7 @@
       <Nuxt />
       <ModalSessionTimeout :mostrarModal="sessionExpired" />
       <ModalMoratoria2026 :mostrarModal="mostrarMoratoria" @close="mostrarMoratoria = false" />
+      <DevToolsDock />
     </div>
     <Foot />
   </div>

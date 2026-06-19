@@ -406,6 +406,95 @@
                 </template>
               </div>
 
+              <div v-else-if="currentTool.key === 'boletas'" class="boletas-tool">
+                <b-alert v-if="!canManageSystemConfig" show variant="warning" class="role-tool-alert">
+                  Necesitás permiso system.config.admin para modificar los colores de boletas.
+                </b-alert>
+
+                <template v-else>
+                  <div class="abierto-tool-card">
+                    <div class="abierto-tool-heading">
+                      <div>
+                        <span>Colores de boletas</span>
+                        <strong>{{ selectedBoletaTax ? selectedBoletaTax.title : 'Seleccionar tasa' }}</strong>
+                      </div>
+                      <b-button
+                        variant="outline-light"
+                        size="sm"
+                        :disabled="boletasLoading || boletasSaving"
+                        @click="loadBoletasConfig"
+                      >
+                        <b-spinner v-if="boletasLoading" small />
+                        <i v-else class="bi bi-arrow-clockwise"></i>
+                      </b-button>
+                    </div>
+
+                    <label class="boletas-tax-select">
+                      Tasa
+                      <b-form-select
+                        v-model="selectedBoletaTaxKey"
+                        :options="boletaTaxOptions"
+                        :disabled="boletasLoading || boletasSaving"
+                      />
+                    </label>
+
+                    <div v-if="selectedBoletaTaxKey" class="boletas-preview">
+                      <span :style="{ backgroundColor: selectedBoletaColors.oscuro }"></span>
+                      <span :style="{ backgroundColor: selectedBoletaColors.principal }"></span>
+                      <span :style="{ backgroundColor: selectedBoletaColors.suave }"></span>
+                    </div>
+
+                    <div v-if="selectedBoletaTaxKey" class="boletas-color-list">
+                      <label
+                        v-for="field in boletaColorFields"
+                        :key="field.key"
+                        class="boletas-color-row"
+                      >
+                        <span>
+                          <strong>{{ field.title }}</strong>
+                          <small>{{ field.description }}</small>
+                        </span>
+                        <span class="boletas-color-inputs">
+                          <b-form-input
+                            v-model="boletasForm[selectedBoletaTaxKey][field.key]"
+                            type="color"
+                            :disabled="boletasLoading || boletasSaving"
+                          />
+                          <b-form-input
+                            v-model.trim="boletasForm[selectedBoletaTaxKey][field.key]"
+                            :state="isHexColor(boletasForm[selectedBoletaTaxKey][field.key])"
+                            maxlength="7"
+                            :disabled="boletasLoading || boletasSaving"
+                          />
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="role-tool-actions">
+                    <b-button
+                      variant="outline-light"
+                      :disabled="boletasLoading || boletasSaving || !hasBoletasChanges"
+                      @click="resetBoletasConfigForm"
+                    >
+                      Deshacer
+                    </b-button>
+                    <b-button
+                      variant="success"
+                      :disabled="boletasLoading || boletasSaving || !canSaveBoletasConfig"
+                      @click="requestSaveBoletasConfig"
+                    >
+                      <b-spinner v-if="boletasSaving" small class="mr-2" />
+                      {{ boletasSaving ? 'Guardando...' : 'Guardar colores' }}
+                    </b-button>
+                  </div>
+                </template>
+              </div>
+
+              <div v-else-if="currentTool.key === 'testing-assistant'" class="testing-assistant-tool">
+                <TestingAssistantConfig @launched="onTestingAssistantLaunched" />
+              </div>
+
               <div v-else class="placeholder-card">
                 <i :class="`bi bi-${currentTool.icon}`"></i>
                 <div>
@@ -451,9 +540,26 @@
 </template>
 
 <script>
+import TestingAssistantConfig from '@/components/devtools/TestingAssistantConfig.vue'
+
 const ExperimentalRbacService = require('@/service/experimentalRbac')
 const AbiertoAnualConfigService = require('@/service/abiertoAnualConfig')
 const GeneralConfigService = require('@/service/generalConfig')
+
+const DEFAULT_BOLETA_TASAS_COLORS = {
+  AUTOMOTORES: {
+    principal: '#bd3041',
+    oscuro: '#771a28',
+    suave: '#fbdde1'
+  },
+  URBANA: {
+    principal: '#13875e',
+    oscuro: '#075e4a',
+    suave: '#e3f5ed'
+  }
+}
+
+const cloneBoletaTasasColors = () => JSON.parse(JSON.stringify(DEFAULT_BOLETA_TASAS_COLORS))
 
 const TOOL_DEFINITIONS = [
   {
@@ -487,10 +593,10 @@ const TOOL_DEFINITIONS = [
     key: 'boletas',
     icon: 'receipt',
     title: 'Boletas',
-    description: 'Atajos de administración',
+    description: 'Colores de PDF por tasa',
     kicker: 'Recaudaciones',
-    body: 'Área pensada para utilidades rápidas de cargas, períodos publicados y datos demo de boletas.',
-    placeholder: 'Después agregamos acciones seguras para seeds, limpieza y estados.'
+    body: 'Ajusta los colores usados en las boletas PDF. Primero elegí la tasa y después modificá su paleta.',
+    placeholder: 'Seleccionar tasa y editar colores.'
   },
   {
     key: 'system',
@@ -500,16 +606,28 @@ const TOOL_DEFINITIONS = [
     kicker: 'Configuración',
     body: 'Lugar para flags temporales, modo mantenimiento, datos de entorno y diagnósticos útiles.',
     placeholder: 'Después conectamos las configs reales que convenga operar desde QA.'
+  },
+  {
+    key: 'testing-assistant',
+    icon: 'list-check',
+    title: 'Asistente de Testing',
+    description: 'Quest helper para QA',
+    kicker: 'QA guiado',
+    body: 'Configura una sesion de testing por modulos y submodulos. Al lanzarla, queda una ventana flotante con pasos, permisos, rutas y checkpoints.',
+    placeholder: 'Configurar quests de testing.'
   }
 ]
 
 export default {
   name: 'DevToolsDock',
+  components: {
+    TestingAssistantConfig
+  },
   data() {
     return {
       isOpen: false,
       activeTool: '',
-      tools: TOOL_DEFINITIONS,
+      tools: TOOL_DEFINITIONS.filter(item => !['tramites'].includes(item.key)),
       rbacLoading: false,
       rbacSaving: false,
       rbacLoaded: false,
@@ -573,6 +691,33 @@ export default {
           title: 'Modo mantenimiento',
           description: 'Bloquea el sitio con respuesta 503.'
         }
+      ],
+      boletasLoading: false,
+      boletasSaving: false,
+      boletasLoaded: false,
+      boletasOriginal: null,
+      selectedBoletaTaxKey: 'AUTOMOTORES',
+      boletasForm: cloneBoletaTasasColors(),
+      boletaTaxOptions: [
+        { value: 'AUTOMOTORES', text: 'Tasa Automotor', title: 'Tasa Automotor' },
+        { value: 'URBANA', text: 'Tasa Urbana', title: 'Tasa Urbana' }
+      ],
+      boletaColorFields: [
+        {
+          key: 'principal',
+          title: 'Principal',
+          description: 'Lineas, divisores y acentos.'
+        },
+        {
+          key: 'oscuro',
+          title: 'Encabezado',
+          description: 'Banda superior de la boleta.'
+        },
+        {
+          key: 'suave',
+          title: 'Fondo suave',
+          description: 'Franjas y textos secundarios.'
+        }
       ]
     }
   },
@@ -580,7 +725,7 @@ export default {
     canShow() {
       if (!process.client) return false
       const hasDevBypass = localStorage.getItem('devToolsEnabled') === 'true'
-      return hasDevBypass || this.canReadRbac || this.canManageAbiertoAnual || this.canManageSystemConfig
+      return hasDevBypass || this.canReadRbac || this.canManageAbiertoAnual || this.canManageSystemConfig || this.testingAssistantActive
     },
     username() {
       return this.$store.state.user.username || 'Sin usuario'
@@ -622,6 +767,9 @@ export default {
     },
     canManageSystemConfig() {
       return this.$can('*') || this.$can('system.config.admin')
+    },
+    testingAssistantActive() {
+      return Boolean(this.$store.state.testingAssistant && this.$store.state.testingAssistant.active)
     },
     roleOptions() {
       return [
@@ -695,10 +843,31 @@ export default {
     },
     canSaveSystemConfig() {
       return this.canManageSystemConfig && this.hasSystemChanges
+    },
+    selectedBoletaTax() {
+      return this.boletaTaxOptions.find(option => option.value === this.selectedBoletaTaxKey) || null
+    },
+    selectedBoletaColors() {
+      const defaults = this.defaultBoletaTasasColors()
+      return (this.boletasForm && this.boletasForm[this.selectedBoletaTaxKey]) ||
+        defaults[this.selectedBoletaTaxKey] ||
+        { principal: '#13875e', oscuro: '#075e4a', suave: '#e3f5ed' }
+    },
+    hasBoletasChanges() {
+      return JSON.stringify(this.boletasForm) !== JSON.stringify(this.boletasOriginal)
+    },
+    hasValidBoletasColors() {
+      return this.boletaTaxOptions.every(tax => (
+        this.boletaColorFields.every(field => this.isHexColor(this.boletasForm[tax.value][field.key]))
+      ))
+    },
+    canSaveBoletasConfig() {
+      return this.canManageSystemConfig && this.hasBoletasChanges && this.hasValidBoletasColors
     }
   },
   watch: {
     '$route.fullPath'() {
+      if (this.testingAssistantActive) return
       this.close()
     },
     activeTool(value) {
@@ -710,6 +879,9 @@ export default {
       }
       if (value === 'system' && this.canManageSystemConfig && !this.systemLoaded) {
         this.loadSystemConfig()
+      }
+      if (value === 'boletas' && this.canManageSystemConfig && !this.boletasLoaded) {
+        this.loadBoletasConfig()
       }
     },
     selectedRoleKey() {
@@ -749,6 +921,15 @@ export default {
     selectTool(key) {
       this.activeTool = this.activeTool === key ? '' : key
       this.pendingConfirmation = null
+    },
+    onTestingAssistantLaunched() {
+      this.close()
+      this.$bvToast.toast('Sesion de testing iniciada. El asistente queda flotando sobre la pantalla.', {
+        title: 'Asistente de Testing',
+        variant: 'success',
+        solid: true,
+        appendToast: true,
+      })
     },
     ddmmToInput(value) {
       if (!value) return ''
@@ -925,6 +1106,80 @@ export default {
         this.showDevError(error, 'No se pudo guardar la configuración del sistema.', true)
       } finally {
         this.systemSaving = false
+      }
+    },
+    defaultBoletaTasasColors() {
+      return cloneBoletaTasasColors()
+    },
+    isHexColor(value) {
+      return /^#[0-9a-fA-F]{6}$/.test(String(value || ''))
+    },
+    normalizeBoletaTasasColors(value = {}) {
+      const defaults = this.defaultBoletaTasasColors()
+      return Object.keys(defaults).reduce((acc, taxKey) => {
+        acc[taxKey] = Object.keys(defaults[taxKey]).reduce((colors, colorKey) => {
+          const candidate = value && value[taxKey] ? value[taxKey][colorKey] : ''
+          colors[colorKey] = this.isHexColor(candidate) ? candidate : defaults[taxKey][colorKey]
+          return colors
+        }, {})
+        return acc
+      }, {})
+    },
+    applyBoletasConfig(config) {
+      this.boletasOriginal = this.normalizeBoletaTasasColors(config && config.boletaTasasColors)
+      this.resetBoletasConfigForm()
+    },
+    async loadBoletasConfig() {
+      this.boletasLoading = true
+      try {
+        const config = await GeneralConfigService.getGeneralConfig(this.$axios)
+        this.applyBoletasConfig(config)
+        this.boletasLoaded = true
+      } catch (error) {
+        this.showDevError(error, 'No se pudieron cargar los colores de boletas.')
+      } finally {
+        this.boletasLoading = false
+      }
+    },
+    resetBoletasConfigForm() {
+      const source = this.boletasOriginal || this.defaultBoletaTasasColors()
+      this.boletasForm = JSON.parse(JSON.stringify(source))
+    },
+    requestSaveBoletasConfig() {
+      if (!this.canSaveBoletasConfig) return
+      const taxLabel = this.selectedBoletaTax ? this.selectedBoletaTax.text : this.selectedBoletaTaxKey
+      const colors = this.selectedBoletaColors
+      this.pendingConfirmation = {
+        action: 'save-boletas-config',
+        title: 'Guardar colores de boletas',
+        body: 'Se van a actualizar los colores usados para generar nuevas boletas PDF.',
+        detail: `${taxLabel}: ${colors.oscuro} / ${colors.principal} / ${colors.suave}`,
+        confirmText: 'Guardar colores',
+        variant: 'success',
+        icon: 'palette',
+        loading: false,
+        error: ''
+      }
+    },
+    async saveBoletasConfig() {
+      if (!this.canSaveBoletasConfig) return
+      this.boletasSaving = true
+      try {
+        const config = await GeneralConfigService.updateGeneralConfig(this.$axios, {
+          boletaTasasColors: this.boletasForm
+        })
+        this.applyBoletasConfig(config)
+        this.pendingConfirmation = null
+        this.$bvToast.toast('Colores de boletas actualizados.', {
+          title: 'Dev tools',
+          variant: 'success',
+          solid: true,
+          appendToast: true,
+        })
+      } catch (error) {
+        this.showDevError(error, 'No se pudieron guardar los colores de boletas.', true)
+      } finally {
+        this.boletasSaving = false
       }
     },
     async loadRbac() {
@@ -1119,6 +1374,8 @@ export default {
         await this.saveAbiertoAnual()
       } else if (action === 'save-system-config') {
         await this.saveSystemConfig()
+      } else if (action === 'save-boletas-config') {
+        await this.saveBoletasConfig()
       }
       if (this.pendingConfirmation) {
         this.$set(this.pendingConfirmation, 'loading', false)
@@ -1521,7 +1778,9 @@ export default {
 
 .role-tool,
 .abierto-tool,
-.system-tool {
+.system-tool,
+.boletas-tool,
+.testing-assistant-tool {
   display: grid;
   gap: 1rem;
 }
@@ -1656,7 +1915,9 @@ export default {
 .role-tool ::v-deep .custom-select,
 .role-tool ::v-deep .form-control,
 .abierto-tool ::v-deep .custom-select,
-.abierto-tool ::v-deep .form-control {
+.abierto-tool ::v-deep .form-control,
+.boletas-tool ::v-deep .custom-select,
+.boletas-tool ::v-deep .form-control {
   border-color: rgba(126, 224, 184, .26);
   color: #dff8ef;
   background-color: rgba(255, 255, 255, .08);
@@ -1664,13 +1925,15 @@ export default {
 }
 
 .role-tool ::v-deep .custom-select option,
-.abierto-tool ::v-deep .custom-select option {
+.abierto-tool ::v-deep .custom-select option,
+.boletas-tool ::v-deep .custom-select option {
   color: #193d33;
   background: #ffffff;
 }
 
 .role-tool ::v-deep .form-control::placeholder,
-.abierto-tool ::v-deep .form-control::placeholder {
+.abierto-tool ::v-deep .form-control::placeholder,
+.boletas-tool ::v-deep .form-control::placeholder {
   color: #89aca0;
 }
 
@@ -1742,6 +2005,74 @@ export default {
   color: #a7c9bd;
   font-size: .76rem;
   line-height: 1.35;
+}
+
+.boletas-tax-select {
+  display: grid;
+  gap: .4rem;
+  margin: 0;
+  color: #dff8ef;
+  font-size: .74rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.boletas-preview {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  min-height: 58px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 14px;
+}
+
+.boletas-preview span {
+  min-width: 0;
+}
+
+.boletas-color-list {
+  display: grid;
+  gap: .7rem;
+}
+
+.boletas-color-row {
+  display: grid;
+  grid-template-columns: minmax(130px, 1fr) minmax(170px, 220px);
+  gap: .75rem;
+  align-items: center;
+  margin: 0;
+  padding: .75rem;
+  border: 1px solid rgba(126, 224, 184, .14);
+  border-radius: 13px;
+  background: rgba(126, 224, 184, .055);
+}
+
+.boletas-color-row strong,
+.boletas-color-row small {
+  display: block;
+}
+
+.boletas-color-row strong {
+  color: #ffffff;
+  font-size: .84rem;
+}
+
+.boletas-color-row small {
+  margin-top: .18rem;
+  color: #a7c9bd;
+  font-size: .74rem;
+  line-height: 1.35;
+}
+
+.boletas-color-inputs {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  gap: .45rem;
+}
+
+.boletas-color-inputs ::v-deep input[type="color"] {
+  min-width: 46px;
+  padding: .16rem;
 }
 
 .period-config-list {
@@ -1936,6 +2267,10 @@ export default {
   .dev-tools-sidebar {
     border-top: 1px solid rgba(255, 255, 255, .08);
     border-left: 0;
+  }
+
+  .boletas-color-row {
+    grid-template-columns: 1fr;
   }
 }
 </style>

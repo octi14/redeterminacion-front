@@ -50,6 +50,61 @@
 
           <b-card class="shadow-card mt-3">
             <template #header>
+              <strong>Colores de boletas de tasas</strong>
+            </template>
+
+            <p class="general-config__card-intro">
+              Define los colores usados al generar los PDF de boletas. El cambio aplica a nuevas descargas.
+            </p>
+
+            <div class="general-config__tax-colors">
+              <section
+                v-for="tax in taxColorOptions"
+                :key="tax.key"
+                class="general-config__tax-card"
+              >
+                <div class="general-config__tax-heading">
+                  <div>
+                    <span>{{ tax.code }}</span>
+                    <h3>{{ tax.title }}</h3>
+                  </div>
+                  <div class="general-config__tax-preview">
+                    <span :style="{ backgroundColor: form.boletaTasasColors[tax.key].oscuro }"></span>
+                    <span :style="{ backgroundColor: form.boletaTasasColors[tax.key].principal }"></span>
+                    <span :style="{ backgroundColor: form.boletaTasasColors[tax.key].suave }"></span>
+                  </div>
+                </div>
+
+                <div
+                  v-for="color in colorFields"
+                  :key="`${tax.key}-${color.key}`"
+                  class="general-config__color-row"
+                >
+                  <label :for="`tax-color-${tax.key}-${color.key}`">
+                    <strong>{{ color.title }}</strong>
+                    <small>{{ color.description }}</small>
+                  </label>
+                  <div class="general-config__color-inputs">
+                    <b-form-input
+                      :id="`tax-color-${tax.key}-${color.key}`"
+                      v-model="form.boletaTasasColors[tax.key][color.key]"
+                      type="color"
+                      :disabled="saving"
+                    />
+                    <b-form-input
+                      v-model.trim="form.boletaTasasColors[tax.key][color.key]"
+                      :state="isHexColor(form.boletaTasasColors[tax.key][color.key])"
+                      maxlength="7"
+                      :disabled="saving"
+                    />
+                  </div>
+                </div>
+              </section>
+            </div>
+          </b-card>
+
+          <b-card class="shadow-card mt-3">
+            <template #header>
               <strong>Plantillas de correo automatico</strong>
             </template>
 
@@ -269,7 +324,29 @@ export default {
         mailerEnabled: false,
         logActivityEnabled: true,
         maintenanceMode: false,
+        boletaTasasColors: this.defaultBoletaTasasColors(),
       },
+      taxColorOptions: [
+        { key: 'AUTOMOTORES', code: 'AUTOMOTORES', title: 'Tasa Automotor' },
+        { key: 'URBANA', code: 'URBANA', title: 'Tasa Urbana' },
+      ],
+      colorFields: [
+        {
+          key: 'principal',
+          title: 'Principal',
+          description: 'Lineas, divisores y acentos.'
+        },
+        {
+          key: 'oscuro',
+          title: 'Encabezado',
+          description: 'Banda superior de la boleta.'
+        },
+        {
+          key: 'suave',
+          title: 'Fondo suave',
+          description: 'Franjas y textos secundarios.'
+        },
+      ],
       options: [
         {
           key: 'logActivityEnabled',
@@ -351,11 +428,40 @@ export default {
     ])
   },
   methods: {
+    defaultBoletaTasasColors() {
+      return {
+        AUTOMOTORES: {
+          principal: '#bd3041',
+          oscuro: '#771a28',
+          suave: '#fbdde1',
+        },
+        URBANA: {
+          principal: '#13875e',
+          oscuro: '#075e4a',
+          suave: '#e3f5ed',
+        },
+      }
+    },
+    isHexColor(value) {
+      return /^#[0-9a-fA-F]{6}$/.test(String(value || ''))
+    },
+    normalizeBoletaTasasColors(value = {}) {
+      const defaults = this.defaultBoletaTasasColors()
+      return Object.keys(defaults).reduce((acc, taxKey) => {
+        acc[taxKey] = Object.keys(defaults[taxKey]).reduce((colors, colorKey) => {
+          const candidate = value && value[taxKey] ? value[taxKey][colorKey] : ''
+          colors[colorKey] = this.isHexColor(candidate) ? candidate : defaults[taxKey][colorKey]
+          return colors
+        }, {})
+        return acc
+      }, {})
+    },
     normalizeConfig(config = {}) {
       return {
         mailerEnabled: Boolean(config.mailerEnabled),
         logActivityEnabled: config.logActivityEnabled !== false,
         maintenanceMode: Boolean(config.maintenanceMode),
+        boletaTasasColors: this.normalizeBoletaTasasColors(config.boletaTasasColors),
       }
     },
     applyConfig(config) {
@@ -367,8 +473,9 @@ export default {
         mailerEnabled: false,
         logActivityEnabled: true,
         maintenanceMode: false,
+        boletaTasasColors: this.defaultBoletaTasasColors(),
       }
-      this.form = { ...source }
+      this.form = JSON.parse(JSON.stringify(source))
     },
     async loadConfig() {
       this.loading = true
@@ -487,6 +594,13 @@ export default {
     },
     async confirmSave() {
       if (!this.hasChanges) return
+      const invalidColor = this.taxColorOptions.some(tax => (
+        this.colorFields.some(color => !this.isHexColor(this.form.boletaTasasColors[tax.key][color.key]))
+      ))
+      if (invalidColor) {
+        this.error = 'Revisa los colores de boletas. Deben tener formato hexadecimal, por ejemplo #13875e.'
+        return
+      }
       const confirmed = await this.$bvModal.msgBoxConfirm(
         'Se van a actualizar configuraciones globales del sitio.',
         {
@@ -577,6 +691,98 @@ export default {
 .general-config__option p {
   margin: 0;
   color: #6c757d;
+}
+
+.general-config__card-intro {
+  margin: 0 0 1rem;
+  color: #6c757d;
+}
+
+.general-config__tax-colors {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.general-config__tax-card {
+  display: grid;
+  gap: .9rem;
+  padding: 1rem;
+  border: 1px solid #e3ece7;
+  border-radius: 8px;
+  background: #fbfdfc;
+}
+
+.general-config__tax-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.general-config__tax-heading span {
+  display: block;
+  color: #008a22;
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+
+.general-config__tax-heading h3 {
+  margin: .15rem 0 0;
+  color: #063f18;
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.general-config__tax-preview {
+  display: grid;
+  grid-template-columns: repeat(3, 28px);
+  overflow: hidden;
+  border: 1px solid #d7e6dc;
+  border-radius: 8px;
+}
+
+.general-config__tax-preview span {
+  height: 34px;
+}
+
+.general-config__color-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 160px;
+  gap: .75rem;
+  align-items: center;
+}
+
+.general-config__color-row label {
+  margin: 0;
+}
+
+.general-config__color-row strong,
+.general-config__color-row small {
+  display: block;
+}
+
+.general-config__color-row strong {
+  color: #234236;
+  font-size: .9rem;
+}
+
+.general-config__color-row small {
+  color: #6c757d;
+  font-size: .78rem;
+}
+
+.general-config__color-inputs {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: .45rem;
+  align-items: center;
+}
+
+.general-config__color-inputs input[type="color"] {
+  min-width: 44px;
+  padding: .2rem;
 }
 
 .general-config__summary {
@@ -755,7 +961,9 @@ export default {
   .general-config__mailing-toggle,
   .general-config__picker-controls,
   .general-config__selected-template,
-  .general-config__test-mail {
+  .general-config__test-mail,
+  .general-config__tax-colors,
+  .general-config__color-row {
     grid-template-columns: 1fr;
   }
 }

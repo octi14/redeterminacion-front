@@ -9,14 +9,20 @@
       <ModalSessionTimeout :mostrarModal="sessionExpired" />
       <ModalMoratoria2026 :mostrarModal="mostrarMoratoria" @close="mostrarMoratoria = false" />
       <DevToolsDock />
+      <TestingAssistantFloatingWindow />
     </div>
     <Foot />
   </div>
 </template>
 
 <script>
+import TestingAssistantFloatingWindow from '@/components/devtools/TestingAssistantFloatingWindow.vue'
+
 export default {
   name: 'Default',
+  components: {
+    TestingAssistantFloatingWindow
+  },
   data() {
     return {
       sessionExpired: false,
@@ -47,6 +53,8 @@ export default {
     },
   },
   mounted() {
+    this.$store.dispatch('testingAssistant/hydrate')
+
     // Si existe usuario en localStorage, lo levanto
     if (localStorage.getItem("userId")) {
       const authUser = {

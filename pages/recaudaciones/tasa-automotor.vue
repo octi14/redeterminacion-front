@@ -19,17 +19,22 @@
               maxlength="9"
               autocomplete="off"
               placeholder="Ejemplo: AB123CD"
-              :disabled="buscando || descargando"
+              :disabled="!moduloHabilitado || buscando || descargando"
               @input="normalizarDominio"
             >
           </div>
-          <button class="btn btn-search" type="submit" :disabled="!dominioValido || buscando || descargando">
+          <button class="btn btn-search" type="submit" :disabled="!moduloHabilitado || !dominioValido || buscando || descargando">
             <b-spinner v-if="buscando" small class="mr-2"></b-spinner>
             <i v-else class="bi bi-search mr-2"></i>
-            {{ buscando ? 'Buscando...' : 'Buscar boletas' }}
+            {{ botonBusquedaTexto }}
           </button>
         </form>
       </section>
+
+      <b-alert v-if="!moduloHabilitado" show variant="warning" class="result-alert">
+        <i class="bi bi-exclamation-triangle-fill mr-2"></i>
+        La consulta de Tasa Automotor no esta disponible temporalmente.
+      </b-alert>
 
       <b-alert v-if="mensajeError" show variant="danger" class="result-alert">
         <i class="bi bi-exclamation-circle-fill mr-2"></i>{{ mensajeError }}
@@ -171,6 +176,7 @@ export default {
       paginaPeriodos: 1,
       periodosPorPagina: PERIODOS_POR_PAGINA,
       maxPeriodosSeleccionados: 20,
+      moduloHabilitado: true,
       tema: { principal: '#13875e', oscuro: '#075e4a', suave: '#e3f5ed' }
     }
   },
@@ -206,6 +212,10 @@ export default {
       return this.descargando
         ? `Preparando ${this.seleccionados.length} ${this.seleccionados.length === 1 ? 'boleta' : 'boletas'}. Esto puede demorar unos segundos.`
         : `Consultando el dominio ${this.dominio}.`
+    },
+    botonBusquedaTexto() {
+      if (!this.moduloHabilitado) return 'Consulta no disponible'
+      return this.buscando ? 'Buscando...' : 'Buscar boletas'
     },
     periodosOrdenados() {
       if (!this.resultado) return []
@@ -250,6 +260,7 @@ export default {
       try {
         const response = await this.$axios.get('/tasas/tipos')
         const tasa = response.data.data.find(item => item.codigo === 'AUTOMOTORES')
+        this.moduloHabilitado = !tasa || tasa.importacionHabilitada !== false
         if (tasa?.tema) {
           this.tema = tasa.tema
           this.aplicarTemaGlobal()
@@ -272,6 +283,7 @@ export default {
       this.dominio = this.dominio.replace(/[\s-]/g, '').replace(/[^a-zA-Z0-9]/g, '').toUpperCase()
     },
     async buscar() {
+      if (!this.moduloHabilitado) return
       if (!this.dominioValido) return
       this.buscando = true
       this.mensajeError = ''

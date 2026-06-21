@@ -50,6 +50,50 @@
 
           <b-card class="shadow-card mt-3">
             <template #header>
+              <strong>Importaciones de boletas</strong>
+            </template>
+
+            <p class="general-config__card-intro">
+              Controla que modulos pueden publicar importaciones y si se conserva el XLSX original.
+            </p>
+
+            <div class="general-config__option">
+              <div>
+                <h3>Almacenamiento de archivo original</h3>
+                <p>Permite conservar el XLSX original en S3 cuando se publica una importacion de boletas.</p>
+              </div>
+              <b-form-checkbox
+                v-model="form.boletaTasasUploadEnabled"
+                switch
+                size="lg"
+                :disabled="saving"
+              >
+                {{ form.boletaTasasUploadEnabled ? 'Habilitado' : 'Deshabilitado' }}
+              </b-form-checkbox>
+            </div>
+
+            <div
+              v-for="tax in taxImportOptions"
+              :key="tax.key"
+              class="general-config__option"
+            >
+              <div>
+                <h3>{{ tax.title }}</h3>
+                <p>{{ tax.description }}</p>
+              </div>
+              <b-form-checkbox
+                v-model="form.boletaTasasImportaciones[tax.key]"
+                switch
+                size="lg"
+                :disabled="saving"
+              >
+                {{ form.boletaTasasImportaciones[tax.key] ? 'Habilitado' : 'Deshabilitado' }}
+              </b-form-checkbox>
+            </div>
+          </b-card>
+
+          <b-card class="shadow-card mt-3">
+            <template #header>
               <strong>Colores de boletas de tasas</strong>
             </template>
 
@@ -242,6 +286,19 @@
               <dd :class="{ 'is-danger': original && original.maintenanceMode }">
                 {{ original && original.maintenanceMode ? 'Activo' : 'Inactivo' }}
               </dd>
+              <dt>Archivo original</dt>
+              <dd :class="{ 'is-active': original && original.boletaTasasUploadEnabled }">
+                {{ original && original.boletaTasasUploadEnabled ? 'Activo' : 'Inactivo' }}
+              </dd>
+              <template v-for="tax in taxImportOptions">
+                <dt :key="`${tax.key}-label`">Importacion {{ tax.shortTitle }}</dt>
+                <dd
+                  :key="`${tax.key}-value`"
+                  :class="{ 'is-active': original && original.boletaTasasImportaciones && original.boletaTasasImportaciones[tax.key] }"
+                >
+                  {{ original && original.boletaTasasImportaciones && original.boletaTasasImportaciones[tax.key] ? 'Activo' : 'Inactivo' }}
+                </dd>
+              </template>
             </dl>
           </b-card>
 
@@ -297,6 +354,25 @@ const GeneralConfigService = require('@/service/generalConfig')
 const MailerServiceModule = require('@/service/mailer')
 const MailerService = MailerServiceModule.default || MailerServiceModule
 
+const TAX_IMPORT_OPTIONS = [
+  {
+    key: 'AUTOMOTORES',
+    title: 'Importacion de Automotores',
+    shortTitle: 'Automotores',
+    description: 'Permite analizar y publicar archivos XLSX de boletas de automotores.',
+  },
+  {
+    key: 'URBANA',
+    title: 'Importacion de Tasa Urbana',
+    shortTitle: 'Urbana',
+    description: 'Permite analizar y publicar archivos XLSX de boletas de tasa urbana.',
+  },
+]
+const TAX_IMPORT_LABELS = TAX_IMPORT_OPTIONS.reduce((acc, option) => {
+  acc[option.key] = option
+  return acc
+}, {})
+
 export default {
   middleware: ['authenticated', 'systemConfigAdmin'],
   data() {
@@ -324,6 +400,8 @@ export default {
         mailerEnabled: false,
         logActivityEnabled: true,
         maintenanceMode: false,
+        boletaTasasUploadEnabled: true,
+        boletaTasasImportaciones: this.defaultBoletaTasasImportaciones(),
         boletaTasasColors: this.defaultBoletaTasasColors(),
       },
       taxColorOptions: [
@@ -362,6 +440,19 @@ export default {
     }
   },
   computed: {
+    taxImportOptions() {
+      const values = this.form && this.form.boletaTasasImportaciones
+        ? this.form.boletaTasasImportaciones
+        : this.defaultBoletaTasasImportaciones()
+      return Object.keys(values).map((key) => {
+        return TAX_IMPORT_LABELS[key] || {
+          key,
+          title: `Importacion ${key}`,
+          shortTitle: key,
+          description: `Permite analizar y publicar archivos XLSX de boletas para ${key}.`,
+        }
+      })
+    },
     hasChanges() {
       return JSON.stringify(this.form) !== JSON.stringify(this.original)
     },
@@ -428,6 +519,12 @@ export default {
     ])
   },
   methods: {
+    defaultBoletaTasasImportaciones() {
+      return TAX_IMPORT_OPTIONS.reduce((acc, tax) => {
+        acc[tax.key] = true
+        return acc
+      }, {})
+    },
     defaultBoletaTasasColors() {
       return {
         AUTOMOTORES: {
@@ -456,11 +553,21 @@ export default {
         return acc
       }, {})
     },
+    normalizeBoletaTasasImportaciones(value = {}) {
+      const defaults = this.defaultBoletaTasasImportaciones()
+      const keys = Array.from(new Set([...Object.keys(defaults), ...Object.keys(value || {})]))
+      return keys.reduce((acc, taxKey) => {
+        acc[taxKey] = typeof value[taxKey] === 'boolean' ? value[taxKey] : defaults[taxKey]
+        return acc
+      }, {})
+    },
     normalizeConfig(config = {}) {
       return {
         mailerEnabled: Boolean(config.mailerEnabled),
         logActivityEnabled: config.logActivityEnabled !== false,
         maintenanceMode: Boolean(config.maintenanceMode),
+        boletaTasasUploadEnabled: config.boletaTasasUploadEnabled !== false,
+        boletaTasasImportaciones: this.normalizeBoletaTasasImportaciones(config.boletaTasasImportaciones),
         boletaTasasColors: this.normalizeBoletaTasasColors(config.boletaTasasColors),
       }
     },
@@ -473,6 +580,8 @@ export default {
         mailerEnabled: false,
         logActivityEnabled: true,
         maintenanceMode: false,
+        boletaTasasUploadEnabled: true,
+        boletaTasasImportaciones: this.defaultBoletaTasasImportaciones(),
         boletaTasasColors: this.defaultBoletaTasasColors(),
       }
       this.form = JSON.parse(JSON.stringify(source))

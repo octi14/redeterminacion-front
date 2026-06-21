@@ -19,17 +19,22 @@
               maxlength="16"
               autocomplete="off"
               placeholder="Ejemplo: 0000018A"
-              :disabled="buscando || descargando"
+              :disabled="!moduloHabilitado || buscando || descargando"
               @input="normalizarPartida"
             >
           </div>
-          <button class="btn btn-search" type="submit" :disabled="!partidaValida || buscando || descargando">
+          <button class="btn btn-search" type="submit" :disabled="!moduloHabilitado || !partidaValida || buscando || descargando">
             <b-spinner v-if="buscando" small class="mr-2"></b-spinner>
             <i v-else class="bi bi-search mr-2"></i>
-            {{ buscando ? 'Buscando...' : 'Buscar boletas' }}
+            {{ botonBusquedaTexto }}
           </button>
         </form>
       </section>
+
+      <b-alert v-if="!moduloHabilitado" show variant="warning" class="result-alert">
+        <i class="bi bi-exclamation-triangle-fill mr-2"></i>
+        La consulta de Tasa Urbana no esta disponible temporalmente.
+      </b-alert>
 
       <b-alert v-if="mensajeError" show variant="danger" class="result-alert">
         <i class="bi bi-exclamation-circle-fill mr-2"></i>{{ mensajeError }}
@@ -171,6 +176,7 @@ export default {
       paginaPeriodos: 1,
       periodosPorPagina: PERIODOS_POR_PAGINA,
       maxPeriodosSeleccionados: 20,
+      moduloHabilitado: true,
       tema: { principal: '#bd3041', oscuro: '#771a28', suave: '#fbdde1' }
     }
   },
@@ -211,6 +217,10 @@ export default {
       return this.descargando
         ? `Preparando ${this.seleccionados.length} ${this.seleccionados.length === 1 ? 'boleta' : 'boletas'}. Esto puede demorar unos segundos.`
         : `Consultando la partida ${this.partida}.`
+    },
+    botonBusquedaTexto() {
+      if (!this.moduloHabilitado) return 'Consulta no disponible'
+      return this.buscando ? 'Buscando...' : 'Buscar boletas'
     },
     periodosOrdenados() {
       if (!this.resultado) return []
@@ -255,6 +265,7 @@ export default {
       try {
         const response = await this.$axios.get('/tasas/tipos')
         const tasa = response.data.data.find(item => item.codigo === 'URBANA')
+        this.moduloHabilitado = !tasa || tasa.importacionHabilitada !== false
         if (tasa?.tema) {
           this.tema = tasa.tema
           this.aplicarTemaGlobal()
@@ -277,6 +288,7 @@ export default {
       this.partida = this.partida.replace(/\s/g, '').replace(/[^a-zA-Z0-9]/g, '').toUpperCase()
     },
     async buscar() {
+      if (!this.moduloHabilitado) return
       if (!this.partidaValida) return
       this.partida = this.partida.padStart(8, '0')
       this.buscando = true

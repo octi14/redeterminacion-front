@@ -56,10 +56,10 @@
           <div
             class="drop-zone"
             :class="{ dragging: isDragging, selected: selectedFile }"
-            @dragover.prevent="isDragging = true"
+            @dragover.prevent="onDragOver"
             @dragleave.prevent="isDragging = false"
             @drop.prevent="onDrop"
-            @click="$refs.fileInput.click()"
+            @click="openFileDialog"
           >
             <input
               ref="fileInput"
@@ -82,8 +82,8 @@
               </button>
             </template>
             <template v-else>
-              <strong>Arrastrá el archivo aquí</strong>
-              <span>o hacé clic para seleccionarlo</span>
+              <strong>Arrastra el archivo aqui</strong>
+              <span>o hace clic para seleccionarlo</span>
               <small>Solamente archivos .xlsx</small>
             </template>
           </div>
@@ -100,14 +100,14 @@
             <b-form-checkbox
               v-model="guardarOriginalHabilitado"
               switch
-              :disabled="configLoading"
+              :disabled="configLoading || !boletaTasasUploadEnabled"
               @change="updateStorageConfig"
             >
               Almacenar archivo original al publicar
             </b-form-checkbox>
             <small>
               <b-spinner v-if="configLoading" small class="mr-1"></b-spinner>
-              {{ configLoading ? 'Guardando configuración...' : 'Desactivado por defecto para evitar consumo innecesario de espacio.' }}
+              {{ storageOptionHelpText }}
             </small>
           </div>
         </div>
@@ -526,21 +526,22 @@
         </p>
         <p v-else>
           Las {{ analysisResult ? formatNumber(analysisResult.entries) : 0 }} boletas validadas
-          quedarán disponibles como la carga activa de {{ selectedTax.name }}.
+          quedarán disponibles como la única carga activa de {{ selectedTax.name }}.
         </p>
-        <div v-if="overlappingPublishedPeriods.length && !isPublishing" class="overwrite-warning">
+        <div v-if="publishedPeriodsAffectedByPublication.length && !isPublishing" class="overwrite-warning">
           <div class="overwrite-warning-title">
             <i class="bi bi-exclamation-triangle-fill"></i>
-            Esta carga reemplazará períodos publicados
+            Esta carga deshabilitará períodos publicados
           </div>
           <p>
-            Ya existe información publicada para:
-            <strong>{{ overlappingPublishedPeriods.join(', ') }}</strong>.
-            Al continuar, las cargas anteriores de esos períodos dejarán de estar activas.
+            Al continuar, todos los períodos previamente activos de {{ selectedTax.name }} se deshabilitarán:
+            <strong>{{ publishedPeriodsAffectedByPublication.join(', ') }}</strong>.
+            Solo quedarán habilitados los períodos del archivo nuevo:
+            <strong>{{ currentPeriods.join(', ') || '-' }}</strong>.
           </p>
           <label class="overwrite-check">
             <input v-model="overwriteConfirmed" type="checkbox">
-            <span>Confirmo que deseo reemplazar la información publicada anteriormente.</span>
+            <span>Confirmo que deseo deshabilitar las cargas anteriores y dejar activos solamente los períodos de este archivo.</span>
           </label>
         </div>
         <div v-if="futurePeriods.length && !isPublishing" class="overwrite-warning future-warning">
@@ -568,13 +569,13 @@
           </button>
           <button
             class="btn btn-publish"
-            :disabled="isPublishing || (overlappingPublishedPeriods.length > 0 && !overwriteConfirmed) || (futurePeriods.length > 0 && !futurePeriodsConfirmed)"
+            :disabled="isPublishing || (publishedPeriodsAffectedByPublication.length > 0 && !overwriteConfirmed) || (futurePeriods.length > 0 && !futurePeriodsConfirmed)"
             @click="publishCurrentImport"
           >
             <b-spinner v-if="isPublishing" small class="mr-2"></b-spinner>
             <template v-if="isPublishing">Publicando...</template>
             <template v-else>
-              {{ overlappingPublishedPeriods.length ? 'Reemplazar y publicar' : 'Sí, publicar' }}
+              {{ publishedPeriodsAffectedByPublication.length ? 'Deshabilitar anteriores y publicar' : 'Sí, publicar' }}
             </template>
           </button>
         </div>
@@ -665,6 +666,7 @@ export default {
       processingMessage: 'Subiendo el archivo...',
       analysisResult: null,
       guardarOriginalHabilitado: false,
+      boletaTasasUploadEnabled: true,
       configLoading: false,
       serverConflictPeriods: [],
       loadedPeriods: [],
@@ -724,6 +726,13 @@ export default {
     puedeAdministrar() {
       return this.$can('boletas.manage')
     },
+    storageOptionHelpText() {
+      if (this.configLoading) return 'Guardando configuracion...'
+      if (!this.boletaTasasUploadEnabled) {
+        return 'El almacenamiento de originales esta deshabilitado desde configuraciones generales.'
+      }
+      return 'Desactivado por defecto para evitar consumo innecesario de espacio.'
+    },
     analysisIssues() {
       if (!this.analysisResult) return []
       return [...this.analysisResult.errors, ...this.analysisResult.warnings]
@@ -751,14 +760,21 @@ export default {
     futurePeriods() {
       return this.currentPeriods.filter(period => Number(period.split('/')[1]) > this.currentYear)
     },
-    overlappingPublishedPeriods() {
+    activePublishedPeriods() {
       const publishedPeriods = new Set(
         this.history
           .filter(item => ['published', 'partially-replaced'].includes(item.status))
           .flatMap(item => this.parsePeriods(item.activePeriod))
       )
+      return Array.from(publishedPeriods).sort((left, right) => {
+        const [leftMonth, leftYear] = left.split('/').map(Number)
+        const [rightMonth, rightYear] = right.split('/').map(Number)
+        return (leftYear * 100 + leftMonth) - (rightYear * 100 + rightMonth)
+      })
+    },
+    publishedPeriodsAffectedByPublication() {
       return Array.from(new Set([
-        ...this.currentPeriods.filter(period => publishedPeriods.has(period)),
+        ...this.activePublishedPeriods,
         ...this.serverConflictPeriods
       ]))
     },
@@ -888,9 +904,18 @@ export default {
     this.loadTaxTypes()
     this.loadHistory()
     this.loadStorageConfig()
+    this.loadGeneralConfig()
     this.loadPeriods()
   },
   methods: {
+    async loadGeneralConfig() {
+      try {
+        const config = await this.$axios.$get('/config/general', { headers: this.authHeaders() })
+        this.boletaTasasUploadEnabled = config.boletaTasasUploadEnabled !== false
+      } catch (_) {
+        this.boletaTasasUploadEnabled = true
+      }
+    },
     async loadTaxTypes() {
       try {
         const response = await this.$axios.get('/tasas/importaciones/tipos', { headers: this.authHeaders() })
@@ -908,6 +933,12 @@ export default {
     },
     onFileSelected(event) {
       this.setFile(event.target.files && event.target.files[0])
+    },
+    openFileDialog() {
+      this.$refs.fileInput.click()
+    },
+    onDragOver() {
+      this.isDragging = true
     },
     onDrop(event) {
       this.isDragging = false
@@ -1011,7 +1042,7 @@ export default {
     async publishCurrentImport() {
       if (
         this.isPublishing ||
-        (this.overlappingPublishedPeriods.length && !this.overwriteConfirmed) ||
+        (this.publishedPeriodsAffectedByPublication.length && !this.overwriteConfirmed) ||
         (this.futurePeriods.length && !this.futurePeriodsConfirmed)
       ) return
       this.isPublishing = true
@@ -1031,7 +1062,7 @@ export default {
               ...this.fileRequestHeaders(),
               'X-Confirmar-Reemplazo': String(this.overwriteConfirmed),
               'X-Confirmar-Periodos-Futuros': String(this.futurePeriodsConfirmed),
-              'X-Guardar-Original': String(this.guardarOriginalHabilitado)
+              'X-Guardar-Original': String(this.boletaTasasUploadEnabled && this.guardarOriginalHabilitado)
             }
           }
         )

@@ -86,7 +86,7 @@
               Administrar funerarias
             </b-dropdown-item>
             <b-dropdown-item v-if="canViewActivities" @click="onActivities">
-              <b-icon-activity class="app-user-menu__icon" />
+              <b-icon-clock-history class="app-user-menu__icon" />
               Actividades
             </b-dropdown-item>
             <b-dropdown-item v-if="canViewDashboard" @click="onDashboard">

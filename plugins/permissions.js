@@ -1,9 +1,10 @@
 const LEGACY_ROLE_PERMISSIONS = {
+  admin: ['*'],
   master: [
-    'users.read',
-    'users.manage',
-    'roles.read',
-    'roles.manage',
+    '*',
+  ],
+  true: [
+    '*',
   ],
 }
 

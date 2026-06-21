@@ -1,6 +1,8 @@
 export default function ({ store, redirect }) {
+  const legacyAdmin = ['admin', 'master', true, 'true'].includes(store.state.user.admin)
   const permissions = store.state.user.permissions || []
-  const canAccess = permissions.includes('*') ||
+  const canAccess = legacyAdmin ||
+    permissions.includes('*') ||
     permissions.includes('cementerio.admin')
 
   if (!canAccess) {

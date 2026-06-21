@@ -1,6 +1,6 @@
 <template>
   <div class="page main-background">
-    <Banner title="Administracion de usuarios" />
+    <Banner title="Administracion de roles y permisos" />
 
     <div v-if="!canAccessAdminUsers" class="col-10 mx-auto mt-4">
       <b-alert show variant="warning">

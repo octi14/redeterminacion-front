@@ -1,7 +1,6 @@
 const TestingCases = require('../config/testingCases')
 
 const STORAGE_KEY = 'testingAssistantSession'
-
 function defaultPosition() {
   return {
     top: 96,
@@ -15,6 +14,11 @@ function defaultSession() {
     active: false,
     sessionId: null,
     createdAt: null,
+    elapsedSeconds: 0,
+    timerEnabled: false,
+    timerRunning: false,
+    completedAt: null,
+    summaryVisible: false,
     selectedModuleKeys: [],
     selectedCaseIds: [],
     currentIndex: 0,
@@ -45,6 +49,11 @@ function persist(state) {
     active: state.active,
     sessionId: state.sessionId,
     createdAt: state.createdAt,
+    elapsedSeconds: state.elapsedSeconds,
+    timerEnabled: state.timerEnabled,
+    timerRunning: state.timerRunning,
+    completedAt: state.completedAt,
+    summaryVisible: state.summaryVisible,
     selectedModuleKeys: state.selectedModuleKeys,
     selectedCaseIds: state.selectedCaseIds,
     currentIndex: state.currentIndex,
@@ -73,7 +82,9 @@ export const getters = {
       .filter(Boolean)
 
     if (selected.length) return selected
-    return TestingCases.CASES.filter(item => state.selectedModuleKeys.includes(item.module))
+    return TestingCases.CASES.filter(item => (
+      state.selectedModuleKeys.some(moduleKey => TestingCases.caseBelongsToModule(item, moduleKey))
+    ))
   },
   currentCase(state, getters) {
     return getters.selectedCases[state.currentIndex] || null
@@ -108,6 +119,47 @@ export const getters = {
       completedSteps
     }
   },
+  sessionSummary(state, getters) {
+    const cases = getters.selectedCases
+    return {
+      sessionId: state.sessionId,
+      createdAt: state.createdAt,
+      completedAt: state.completedAt,
+      elapsedSeconds: state.elapsedSeconds,
+      timerEnabled: state.timerEnabled,
+      timerRunning: state.timerRunning,
+      selectedModules: state.selectedModuleKeys
+        .map(key => TestingCases.moduleByKey(key))
+        .filter(Boolean),
+      totalCases: cases.length,
+      completedCases: state.completedCaseIds.filter(id => cases.some(item => item.id === id)).length,
+      blockedCases: state.blockedCaseIds.filter(id => cases.some(item => item.id === id)).length,
+      totalSteps: getters.progress.totalSteps,
+      completedSteps: getters.progress.completedSteps,
+      cases: cases.map(item => {
+        const steps = item.steps || []
+        const completedSteps = steps.filter(step => state.completedStepIds.includes(step.id))
+        return {
+          id: item.id,
+          title: item.title,
+          module: item.module,
+          modules: TestingCases.caseModules(item),
+          submodule: item.submodule,
+          route: item.route,
+          suggestedUser: item.suggestedUser,
+          permissions: item.permissions || [],
+          completed: state.completedCaseIds.includes(item.id),
+          blocked: state.blockedCaseIds.includes(item.id),
+          totalSteps: steps.length,
+          completedSteps: completedSteps.length,
+          pendingSteps: steps
+            .filter(step => !state.completedStepIds.includes(step.id))
+            .map(step => step.text),
+          note: state.notesByCaseId[item.id] || ''
+        }
+      })
+    }
+  },
   testUsers() {
     return TestingCases.TEST_USERS
   },
@@ -125,16 +177,17 @@ export const actions = {
       commit('setHydrated')
     }
   },
-  startSession({ commit }, { moduleKeys = [], caseIds = [] }) {
+  startSession({ commit }, { moduleKeys = [], caseIds = [], timerEnabled = false }) {
     const selectedModuleKeys = unique(moduleKeys)
     const selectedCaseIds = unique(caseIds)
     const fallbackCaseIds = TestingCases.CASES
-      .filter(item => selectedModuleKeys.includes(item.module))
+      .filter(item => selectedModuleKeys.some(moduleKey => TestingCases.caseBelongsToModule(item, moduleKey)))
       .map(item => item.id)
 
     commit('startSession', {
       sessionId: `testing-${Date.now()}`,
       createdAt: new Date().toISOString(),
+      timerEnabled: Boolean(timerEnabled),
       selectedModuleKeys,
       selectedCaseIds: selectedCaseIds.length ? selectedCaseIds : fallbackCaseIds
     })
@@ -177,6 +230,25 @@ export const actions = {
   },
   setPosition({ commit }, position) {
     commit('setPosition', position)
+  },
+  tickTimer({ commit, state }) {
+    if (!state.active || !state.timerEnabled || !state.timerRunning || state.completedAt) return
+    commit('tickTimer')
+  },
+  toggleTimer({ commit }) {
+    commit('toggleTimer')
+  },
+  setTimerRunning({ commit }, value) {
+    commit('setTimerRunning', value)
+  },
+  finishSession({ commit }) {
+    commit('finishSession')
+  },
+  setSummaryVisible({ commit }, value) {
+    commit('setSummaryVisible', value)
+  },
+  persistSession({ commit }) {
+    commit('persistSession')
   }
 }
 
@@ -186,6 +258,11 @@ export const mutations = {
       ...defaultSession(),
       ...saved,
       hydrated: true,
+      elapsedSeconds: Math.max(0, Number(saved.elapsedSeconds) || 0),
+      timerEnabled: Boolean(saved.timerEnabled),
+      timerRunning: Boolean(saved.timerEnabled) && Boolean(saved.timerRunning),
+      completedAt: saved.completedAt || null,
+      summaryVisible: Boolean(saved.summaryVisible),
       selectedModuleKeys: unique(saved.selectedModuleKeys),
       selectedCaseIds: unique(saved.selectedCaseIds),
       completedStepIds: unique(saved.completedStepIds),
@@ -207,6 +284,11 @@ export const mutations = {
       active: true,
       sessionId: payload.sessionId,
       createdAt: payload.createdAt,
+      elapsedSeconds: 0,
+      timerEnabled: Boolean(payload.timerEnabled),
+      timerRunning: Boolean(payload.timerEnabled),
+      completedAt: null,
+      summaryVisible: false,
       selectedModuleKeys: unique(payload.selectedModuleKeys),
       selectedCaseIds: unique(payload.selectedCaseIds),
       position: defaultPosition()
@@ -260,6 +342,32 @@ export const mutations = {
       ...state.position,
       ...position
     }
+    persist(state)
+  },
+  tickTimer(state) {
+    state.elapsedSeconds = Math.max(0, Number(state.elapsedSeconds) || 0) + 1
+  },
+  toggleTimer(state) {
+    if (!state.timerEnabled) return
+    state.timerRunning = !state.timerRunning
+    persist(state)
+  },
+  setTimerRunning(state, value) {
+    state.timerRunning = state.timerEnabled ? Boolean(value) : false
+    persist(state)
+  },
+  finishSession(state) {
+    state.completedAt = state.completedAt || new Date().toISOString()
+    state.timerRunning = false
+    state.summaryVisible = true
+    state.minimized = false
+    persist(state)
+  },
+  setSummaryVisible(state, value) {
+    state.summaryVisible = Boolean(value)
+    persist(state)
+  },
+  persistSession(state) {
     persist(state)
   }
 }

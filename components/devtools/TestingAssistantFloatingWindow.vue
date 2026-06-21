@@ -3,7 +3,7 @@
     <aside
       v-if="active && currentCase"
       class="testing-window"
-      :class="{ minimized }"
+      :class="{ minimized, summary: summaryVisibleProxy && !minimized }"
       :style="windowStyle"
       aria-label="Asistente de Testing"
     >
@@ -13,7 +13,16 @@
           <strong>{{ currentCase.id }}</strong>
         </div>
         <div class="testing-window__actions">
-          <button type="button" :title="minimized ? 'Expandir' : 'Minimizar'" @click.stop="toggleMinimized">
+          <button
+            v-if="timerEnabled"
+            type="button"
+            :title="timerRunning ? 'Pausar timer y deteccion' : 'Reanudar timer y deteccion'"
+            :disabled="sessionFinished"
+            @click.stop="toggleTimer"
+          >
+            <i :class="timerRunning ? 'bi bi-pause-fill' : 'bi bi-play-fill'"></i>
+          </button>
+          <button v-if="!summaryVisibleProxy" type="button" :title="minimized ? 'Expandir' : 'Minimizar'" @click.stop="toggleMinimized">
             <i :class="minimized ? 'bi bi-arrows-angle-expand' : 'bi bi-dash-lg'"></i>
           </button>
           <button type="button" title="Finalizar sesion" @click.stop="confirmEndSession">
@@ -22,11 +31,115 @@
         </div>
       </header>
 
-      <template v-if="!minimized">
+      <template v-if="!minimized && summaryVisibleProxy">
+        <section class="testing-window__progress">
+          <div>
+            <span>Sesion finalizada</span>
+            <strong>Resumen de testing</strong>
+          </div>
+          <div class="testing-window__session-metrics">
+            <div class="testing-window__timer paused">
+              <i class="bi bi-stopwatch"></i>
+              <span>{{ formattedElapsedTime }}</span>
+              <small>finalizado</small>
+            </div>
+            <div class="testing-window__step-counter">
+              <i class="bi bi-list-check"></i>
+              <span>{{ progress.completedSteps }}/{{ progress.totalSteps }}</span>
+              <small>pasos</small>
+            </div>
+          </div>
+          <div class="testing-window__bar" aria-hidden="true">
+            <span :style="{ width: progressWidth }"></span>
+          </div>
+        </section>
+
+        <section class="testing-window__body">
+          <section class="testing-summary">
+            <div class="testing-summary__stats">
+              <div>
+                <span>Duracion</span>
+                <strong>{{ formattedElapsedTime }}</strong>
+              </div>
+              <div>
+                <span>Casos</span>
+                <strong>{{ summary.completedCases }} / {{ summary.totalCases }}</strong>
+              </div>
+              <div>
+                <span>Pasos</span>
+                <strong>{{ summary.completedSteps }} / {{ summary.totalSteps }}</strong>
+              </div>
+              <div>
+                <span>Bloqueados</span>
+                <strong>{{ summary.blockedCases }}</strong>
+              </div>
+            </div>
+
+            <b-form-textarea
+              class="testing-summary__text"
+              :value="summaryText"
+              rows="12"
+              readonly
+            />
+
+            <div class="testing-summary__mail">
+              <label>
+                Destinatario del resumen
+                <b-form-input
+                  v-model.trim="summaryRecipient"
+                  type="email"
+                  placeholder="qa@gesell.gob.ar"
+                  :disabled="summarySending"
+                />
+              </label>
+              <b-button
+                variant="outline-success"
+                :disabled="!canSendSummary"
+                @click="sendSummary"
+              >
+                <b-spinner v-if="summarySending" small class="mr-2" />
+                {{ summarySending ? 'Enviando...' : 'Enviar resumen' }}
+              </b-button>
+            </div>
+          </section>
+        </section>
+
+        <footer class="testing-window__summary-footer">
+          <b-button size="sm" variant="outline-secondary" @click="downloadSummary">
+            <i class="bi bi-download"></i>
+            Descargar
+          </b-button>
+          <b-button size="sm" variant="outline-secondary" @click="summaryVisibleProxy = false">
+            Seguir revisando
+          </b-button>
+          <b-button size="sm" variant="danger" @click="endSession">
+            Cerrar sesion
+          </b-button>
+        </footer>
+      </template>
+
+      <template v-else-if="!minimized">
         <section class="testing-window__progress">
           <div>
             <span>Caso {{ currentCaseNumber }} de {{ totalCases }}</span>
             <strong>{{ currentCase.title }}</strong>
+          </div>
+          <div class="testing-window__session-metrics">
+            <div v-if="timerEnabled" class="testing-window__timer" :class="{ paused: !timerRunning }">
+              <i class="bi bi-stopwatch"></i>
+              <span>{{ formattedElapsedTime }}</span>
+              <small>{{ timerStatusLabel }}</small>
+            </div>
+            <div v-else class="testing-window__detection">
+              <i class="bi bi-lightning-charge"></i>
+              <span>Deteccion activa</span>
+              <small>sin timer</small>
+            </div>
+            <div class="testing-window__step-counter">
+              <i class="bi bi-list-check"></i>
+              <span>{{ progress.completedSteps }}/{{ progress.totalSteps }}</span>
+              <small>pasos</small>
+            </div>
           </div>
           <div class="testing-window__bar" aria-hidden="true">
             <span :style="{ width: progressWidth }"></span>
@@ -116,9 +229,13 @@
         <div class="testing-window__mini-title">
           <span>Caso {{ currentCaseNumber }} de {{ totalCases }}</span>
           <strong>{{ currentCase.title }}</strong>
+          <small>{{ formattedElapsedTime }} · {{ progress.completedSteps }}/{{ progress.totalSteps }} pasos · {{ timerStatusLabel }}</small>
         </div>
 
-        <ol class="testing-window__mini-steps">
+        <ol
+          class="testing-window__mini-steps"
+          :class="{ expanded: minimizedHasLongStep }"
+        >
           <li
             v-for="step in minimizedSteps"
             :key="step.id"
@@ -140,20 +257,42 @@
               <p>{{ step.text }}</p>
             </div>
           </li>
+
+          <li v-if="currentCaseCompleted" class="testing-window__mini-nav">
+            <b-button
+              size="sm"
+              variant="outline-secondary"
+              :disabled="currentCaseNumber <= 1"
+              @click="previousCase"
+            >
+              <i class="bi bi-arrow-left"></i>
+              Anterior
+            </b-button>
+            <b-button size="sm" variant="success" @click="completeAndNext">
+              {{ currentCaseNumber === totalCases ? 'Ver resumen' : 'Siguiente' }}
+              <i class="bi bi-arrow-right"></i>
+            </b-button>
+          </li>
         </ol>
       </section>
+
     </aside>
   </transition>
 </template>
 
 <script>
+import MailerService from '@/service/mailer'
+
 export default {
   name: 'TestingAssistantFloatingWindow',
   data() {
     return {
       dragging: false,
       dragStart: null,
-      note: ''
+      note: '',
+      timerInterval: null,
+      summaryRecipient: '',
+      summarySending: false
     }
   },
   computed: {
@@ -162,6 +301,49 @@ export default {
     },
     minimized() {
       return this.$store.state.testingAssistant.minimized
+    },
+    timerRunning() {
+      return this.$store.state.testingAssistant.timerRunning
+    },
+    timerEnabled() {
+      return Boolean(this.$store.state.testingAssistant.timerEnabled)
+    },
+    autoDetectionEnabled() {
+      return !this.timerEnabled || this.timerRunning
+    },
+    elapsedSeconds() {
+      return this.$store.state.testingAssistant.elapsedSeconds || 0
+    },
+    formattedElapsedTime() {
+      return this.formatDuration(this.elapsedSeconds)
+    },
+    timerStatusLabel() {
+      if (!this.timerEnabled) return 'sin timer'
+      return this.timerRunning ? 'timer activo' : 'timer pausado'
+    },
+    summaryVisibleProxy: {
+      get() {
+        return this.$store.state.testingAssistant.summaryVisible
+      },
+      set(value) {
+        this.$store.dispatch('testingAssistant/setSummaryVisible', value)
+      }
+    },
+    summary() {
+      return this.$store.getters['testingAssistant/sessionSummary'] || {
+        totalCases: 0,
+        completedCases: 0,
+        blockedCases: 0,
+        totalSteps: 0,
+        completedSteps: 0,
+        cases: []
+      }
+    },
+    summaryText() {
+      return this.buildSummaryText()
+    },
+    canSendSummary() {
+      return this.isEmail(this.summaryRecipient) && !this.summarySending
     },
     position() {
       return this.$store.state.testingAssistant.position || { top: 96, right: 24 }
@@ -182,9 +364,17 @@ export default {
       return this.currentSteps.find(step => !this.isStepDone(step)) || this.currentSteps[this.currentSteps.length - 1] || null
     },
     minimizedSteps() {
+      if (this.currentCaseCompleted) {
+        return this.currentSteps.slice(Math.max(0, this.currentSteps.length - 1))
+      }
+
       const nextIndex = this.currentSteps.findIndex(step => !this.isStepDone(step))
       if (nextIndex < 0) {
         return this.currentSteps.slice(Math.max(0, this.currentSteps.length - 2))
+      }
+
+      if (this.stepIsLong(this.currentSteps[nextIndex])) {
+        return [this.currentSteps[nextIndex]]
       }
 
       const previousCompleted = this.currentSteps
@@ -193,6 +383,9 @@ export default {
         .find(step => this.isStepDone(step))
 
       return [previousCompleted, this.currentSteps[nextIndex]].filter(Boolean)
+    },
+    minimizedHasLongStep() {
+      return this.minimizedSteps.some(step => this.stepIsLong(step))
     },
     currentCaseCompleted() {
       return this.$store.getters['testingAssistant/currentCaseCompleted']
@@ -233,6 +426,9 @@ export default {
       return this.currentCase
         ? this.$store.state.testingAssistant.notesByCaseId[this.currentCase.id] || ''
         : ''
+    },
+    sessionFinished() {
+      return Boolean(this.$store.state.testingAssistant.completedAt)
     }
   },
   watch: {
@@ -243,6 +439,17 @@ export default {
         this.$nextTick(() => this.checkCurrentStep())
       }
     },
+    active: {
+      immediate: true,
+      handler(value) {
+        if (!process.client) return
+        if (value && this.timerEnabled && this.timerRunning) {
+          this.startTimerInterval()
+        } else {
+          this.stopTimerInterval()
+        }
+      }
+    },
     '$route.fullPath'() {
       this.checkCurrentStep()
     },
@@ -251,6 +458,22 @@ export default {
     },
     currentUsername() {
       this.checkCurrentStep()
+    },
+    timerRunning(value) {
+      if (value && this.timerEnabled) {
+        this.startTimerInterval()
+        this.checkCurrentStep()
+        return
+      }
+      this.stopTimerInterval()
+    },
+    timerEnabled(value) {
+      if (value && this.timerRunning) {
+        this.startTimerInterval()
+        return
+      }
+      this.stopTimerInterval()
+      this.checkCurrentStep()
     }
   },
   mounted() {
@@ -258,17 +481,42 @@ export default {
     if (process.client) {
       window.addEventListener('mousemove', this.onDrag)
       window.addEventListener('mouseup', this.stopDrag)
+      window.addEventListener('beforeunload', this.persistSession)
     }
   },
   beforeDestroy() {
     if (process.client) {
       window.removeEventListener('mousemove', this.onDrag)
       window.removeEventListener('mouseup', this.stopDrag)
+      window.removeEventListener('beforeunload', this.persistSession)
+      this.persistSession()
+      this.stopTimerInterval()
     }
   },
   methods: {
+    startTimerInterval() {
+      if (!this.active || !this.timerEnabled || !this.timerRunning || this.sessionFinished) return
+      if (this.timerInterval) return
+      this.timerInterval = window.setInterval(() => {
+        this.$store.dispatch('testingAssistant/tickTimer')
+      }, 1000)
+    },
+    stopTimerInterval() {
+      if (!this.timerInterval) return
+      window.clearInterval(this.timerInterval)
+      this.timerInterval = null
+    },
+    persistSession() {
+      this.$store.dispatch('testingAssistant/persistSession')
+    },
     checkpointIsAuto(step) {
       return step.checkpoint && step.checkpoint.type !== 'manual'
+    },
+    stepIsLong(step) {
+      const text = String(step && step.text ? step.text : '').trim()
+      const words = text.split(/\s+/).filter(Boolean)
+
+      return text.length > 105 || words.length > 16 || words.some(word => word.length > 22)
     },
     checkpointLabel(step) {
       if (this.isStepDone(step)) return 'Completado'
@@ -283,14 +531,87 @@ export default {
         this.$store.dispatch('testingAssistant/uncompleteStep', step.id)
       } else {
         this.$store.dispatch('testingAssistant/completeStep', step.id)
+        this.$nextTick(() => this.finishSessionIfAllStepsCompleted())
       }
     },
     checkCurrentStep() {
+      if (!this.autoDetectionEnabled || this.sessionFinished) return
       if (!this.currentStep || !this.checkpointIsAuto(this.currentStep)) return
       if (this.checkpointPasses(this.currentStep)) {
         this.$store.dispatch('testingAssistant/completeStep', this.currentStep.id)
-        this.$nextTick(() => this.checkCurrentStep())
+        this.$nextTick(() => {
+          this.checkCurrentStep()
+          this.finishSessionIfAllStepsCompleted()
+        })
       }
+    },
+    finishSessionIfAllStepsCompleted() {
+      if (this.sessionFinished || !this.progress.totalSteps) return
+      if (this.currentCaseCompleted) {
+        this.$store.dispatch('testingAssistant/completeCurrentCase')
+      }
+      if (this.progress.completedSteps >= this.progress.totalSteps) {
+        this.$store.dispatch('testingAssistant/finishSession')
+      }
+    },
+    formatDuration(totalSeconds) {
+      const seconds = Math.max(0, Number(totalSeconds) || 0)
+      const hours = Math.floor(seconds / 3600)
+      const minutes = Math.floor((seconds % 3600) / 60)
+      const rest = seconds % 60
+      return [hours, minutes, rest]
+        .map(value => String(value).padStart(2, '0'))
+        .join(':')
+    },
+    formatDateTime(value) {
+      if (!value) return 'Sin dato'
+      return new Date(value).toLocaleString('es-AR')
+    },
+    isEmail(value) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || ''))
+    },
+    buildSummaryText() {
+      const summary = this.summary
+      const modules = (summary.selectedModules || []).map(module => module.label).join(', ') || 'Sin modulos'
+      const lines = [
+        'Resumen de sesion de testing',
+        '',
+        `Sesion: ${summary.sessionId || 'Sin ID'}`,
+        `Tester: ${this.currentUsername || 'Sin usuario'}`,
+        `Inicio: ${this.formatDateTime(summary.createdAt)}`,
+        `Cierre: ${this.formatDateTime(summary.completedAt || new Date().toISOString())}`,
+        `Timer: ${summary.timerEnabled ? 'Si' : 'No'}`,
+        `Duracion: ${this.formattedElapsedTime}`,
+        `Modulos: ${modules}`,
+        '',
+        `Casos completados: ${summary.completedCases}/${summary.totalCases}`,
+        `Pasos completados: ${summary.completedSteps}/${summary.totalSteps}`,
+        `Casos bloqueados: ${summary.blockedCases}`,
+        '',
+        'Detalle de casos:'
+      ]
+
+      ;(summary.cases || []).forEach(item => {
+        const status = item.blocked ? 'BLOQUEADO' : (item.completed ? 'OK' : 'PENDIENTE')
+        lines.push('')
+        lines.push(`- ${item.id} ${item.title} [${status}]`)
+        lines.push(`  Ruta: ${item.route || 'Sin ruta'}`)
+        lines.push(`  Pasos: ${item.completedSteps}/${item.totalSteps}`)
+        if (item.permissions && item.permissions.length) {
+          lines.push(`  Permisos: ${item.permissions.join(', ')}`)
+        }
+        if (item.pendingSteps && item.pendingSteps.length) {
+          lines.push(`  Pendientes: ${item.pendingSteps.join(' | ')}`)
+        }
+        if (item.note) {
+          lines.push(`  Nota: ${item.note}`)
+        }
+      })
+
+      return lines.join('\n')
+    },
+    toggleTimer() {
+      this.$store.dispatch('testingAssistant/toggleTimer')
     },
     checkpointPasses(step) {
       const checkpoint = step.checkpoint || { type: 'manual' }
@@ -350,6 +671,9 @@ export default {
         this.$store.dispatch('testingAssistant/endSession')
       }
     },
+    endSession() {
+      this.$store.dispatch('testingAssistant/endSession')
+    },
     blockCase() {
       this.saveNote()
       this.$store.dispatch('testingAssistant/blockCurrentCase', this.note)
@@ -359,10 +683,47 @@ export default {
       this.saveNote()
       this.$store.dispatch('testingAssistant/completeCurrentCase')
       if (this.currentCaseNumber === this.totalCases) {
-        this.$store.dispatch('testingAssistant/setMinimized', true)
+        this.$store.dispatch('testingAssistant/finishSession')
         return
       }
       this.$store.dispatch('testingAssistant/nextCase')
+    },
+    async sendSummary() {
+      if (!this.canSendSummary) return
+      this.summarySending = true
+      try {
+        await MailerService.enviarCorreo(this.$axios, {
+          destinatario: this.summaryRecipient,
+          asunto: `Resumen de testing ${this.summary.sessionId || ''}`.trim(),
+          mensaje: this.summaryText
+        })
+        this.$bvToast.toast('Resumen de testing enviado.', {
+          title: 'Asistente de Testing',
+          variant: 'success',
+          solid: true,
+        })
+      } catch (error) {
+        this.$bvToast.toast(error.response?.data?.message || 'No se pudo enviar el resumen.', {
+          title: 'Asistente de Testing',
+          variant: 'danger',
+          solid: true,
+        })
+      } finally {
+        this.summarySending = false
+      }
+    },
+    downloadSummary() {
+      if (!process.client) return
+      const blob = new Blob([this.summaryText], { type: 'text/plain;charset=utf-8' })
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      const sessionId = this.summary.sessionId || 'testing-session'
+      link.href = url
+      link.download = `${sessionId}-resumen.txt`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(url)
     },
     previousCase() {
       this.saveNote()
@@ -412,7 +773,11 @@ export default {
 }
 
 .testing-window.minimized {
-  width: min(360px, calc(100vw - 24px));
+  width: min(430px, calc(100vw - 24px));
+}
+
+.testing-window.summary {
+  width: min(560px, calc(100vw - 24px));
 }
 
 .testing-window__header {
@@ -446,6 +811,7 @@ export default {
 
 .testing-window__actions {
   display: flex;
+  align-items: center;
   gap: .35rem;
 }
 
@@ -500,6 +866,54 @@ export default {
   border-radius: inherit;
   background: #10b981;
   transition: width .2s ease;
+}
+
+.testing-window__session-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+  align-items: center;
+}
+
+.testing-window__timer,
+.testing-window__detection,
+.testing-window__step-counter {
+  display: inline-flex;
+  align-items: center;
+  gap: .38rem;
+  width: max-content;
+  max-width: 100%;
+  padding: .32rem .48rem;
+  border: 1px solid #c9e2d9;
+  border-radius: 999px;
+  color: #0f513f;
+  background: #effcf7;
+  font-size: .76rem;
+  font-weight: 850;
+}
+
+.testing-window__timer.paused {
+  color: #7a5b00;
+  background: #fff8db;
+}
+
+.testing-window__detection {
+  color: #075985;
+  background: #e0f2fe;
+}
+
+.testing-window__step-counter {
+  color: #064e3b;
+  background: #e7f8f0;
+}
+
+.testing-window__timer small,
+.testing-window__detection small,
+.testing-window__step-counter small {
+  color: inherit;
+  font-size: .68rem;
+  font-weight: 800;
+  opacity: .74;
 }
 
 .testing-window__body {
@@ -622,6 +1036,13 @@ export default {
   font-size: 1.1rem;
 }
 
+.testing-window__steps button:disabled,
+.testing-window__mini-steps li:not(.testing-window__mini-nav) button:disabled {
+  color: #8aa79d;
+  cursor: not-allowed;
+  opacity: .55;
+}
+
 .testing-window__notes {
   margin: 0;
 }
@@ -640,6 +1061,23 @@ export default {
   padding: .75rem .85rem;
   border-top: 1px solid #dcebe5;
   background: #f4fbf8;
+}
+
+.testing-window__summary-footer {
+  display: grid;
+  grid-template-columns: minmax(112px, 1fr) minmax(122px, 1fr) minmax(112px, 1fr);
+  gap: .5rem;
+  padding: .75rem .85rem;
+  border-top: 1px solid #dcebe5;
+  background: #f4fbf8;
+}
+
+.testing-window__summary-footer .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .35rem;
+  font-weight: 800;
 }
 
 .testing-window__mini {
@@ -672,6 +1110,69 @@ export default {
   white-space: nowrap;
 }
 
+.testing-window__mini-title small {
+  display: block;
+  margin-top: .22rem;
+  color: #477267;
+  font-size: .72rem;
+  font-weight: 800;
+}
+
+.testing-summary {
+  display: grid;
+  gap: 1rem;
+}
+
+.testing-summary__stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: .65rem;
+}
+
+.testing-summary__stats > div {
+  padding: .75rem;
+  border: 1px solid #dcebe5;
+  border-radius: 8px;
+  background: #f4fbf8;
+}
+
+.testing-summary__stats span,
+.testing-summary__mail label {
+  display: block;
+  color: #477267;
+  font-size: .68rem;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.testing-summary__stats strong {
+  display: block;
+  margin-top: .16rem;
+  color: #0f241e;
+  font-size: 1.05rem;
+}
+
+.testing-summary__text {
+  font-family: Consolas, Monaco, monospace;
+  font-size: .82rem;
+}
+
+.testing-summary__mail {
+  display: grid;
+  grid-template-columns: 1fr max-content;
+  gap: .75rem;
+  align-items: end;
+}
+
+.testing-summary__mail label {
+  margin: 0;
+}
+
+.testing-summary__mail ::v-deep .form-control {
+  margin-top: .35rem;
+}
+
 .testing-window__mini-steps {
   display: grid;
   gap: .45rem;
@@ -680,6 +1181,10 @@ export default {
   padding: 0;
   overflow-y: auto;
   list-style: none;
+}
+
+.testing-window__mini-steps.expanded {
+  max-height: 230px;
 }
 
 .testing-window__mini-steps li {
@@ -706,7 +1211,24 @@ export default {
   border-style: dashed;
 }
 
-.testing-window__mini-steps button {
+.testing-window__mini-steps li.testing-window__mini-nav {
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  min-height: 60px;
+  border-color: #c9e2d9;
+  background: #f4fbf8;
+}
+
+.testing-window__mini-nav .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .35rem;
+  min-height: 34px;
+  font-weight: 800;
+}
+
+.testing-window__mini-steps li:not(.testing-window__mini-nav) button {
   width: 26px;
   height: 26px;
   display: grid;
@@ -737,6 +1259,11 @@ export default {
   -webkit-line-clamp: 2;
 }
 
+.testing-window__mini-steps.expanded p {
+  display: block;
+  -webkit-line-clamp: initial;
+}
+
 .testing-window-enter-active,
 .testing-window-leave-active {
   transition: opacity .18s ease, transform .18s ease;
@@ -755,6 +1282,12 @@ export default {
   }
 
   .testing-window__meta {
+    grid-template-columns: 1fr;
+  }
+
+  .testing-summary__stats,
+  .testing-summary__mail,
+  .testing-window__summary-footer {
     grid-template-columns: 1fr;
   }
 }

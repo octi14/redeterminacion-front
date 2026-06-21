@@ -29,7 +29,8 @@
         class="dev-tools-panel"
         :class="{
           expanded: Boolean(activeTool),
-          confirming: Boolean(pendingConfirmation)
+          confirming: Boolean(pendingConfirmation),
+          'testing-detail': testingAssistantDetailOpen && activeTool === 'testing-assistant' && !pendingConfirmation
         }"
         role="dialog"
         aria-modal="true"
@@ -49,7 +50,8 @@
           class="dev-tools-layout"
           :class="{
             expanded: Boolean(activeTool),
-            confirming: Boolean(pendingConfirmation)
+            confirming: Boolean(pendingConfirmation),
+            'testing-detail': testingAssistantDetailOpen && activeTool === 'testing-assistant' && !pendingConfirmation
           }"
         >
           <transition name="dev-tools-workspace">
@@ -492,7 +494,11 @@
               </div>
 
               <div v-else-if="currentTool.key === 'testing-assistant'" class="testing-assistant-tool">
-                <TestingAssistantConfig @launched="onTestingAssistantLaunched" />
+                <TestingAssistantConfig
+                  @launched="onTestingAssistantLaunched"
+                  @resumed="onTestingAssistantResumed"
+                  @module-detail-active="testingAssistantDetailOpen = $event"
+                />
               </div>
 
               <div v-else class="placeholder-card">
@@ -627,6 +633,7 @@ export default {
     return {
       isOpen: false,
       activeTool: '',
+      testingAssistantDetailOpen: false,
       tools: TOOL_DEFINITIONS.filter(item => !['tramites'].includes(item.key)),
       rbacLoading: false,
       rbacSaving: false,
@@ -916,10 +923,14 @@ export default {
     close() {
       this.isOpen = false
       this.activeTool = ''
+      this.testingAssistantDetailOpen = false
       this.pendingConfirmation = null
     },
     selectTool(key) {
       this.activeTool = this.activeTool === key ? '' : key
+      if (this.activeTool !== 'testing-assistant') {
+        this.testingAssistantDetailOpen = false
+      }
       this.pendingConfirmation = null
     },
     onTestingAssistantLaunched() {
@@ -927,6 +938,15 @@ export default {
       this.$bvToast.toast('Sesion de testing iniciada. El asistente queda flotando sobre la pantalla.', {
         title: 'Asistente de Testing',
         variant: 'success',
+        solid: true,
+        appendToast: true,
+      })
+    },
+    onTestingAssistantResumed() {
+      this.close()
+      this.$bvToast.toast('Sesion de testing retomada. El asistente queda flotando sobre la pantalla.', {
+        title: 'Asistente de Testing',
+        variant: 'info',
         solid: true,
         appendToast: true,
       })
@@ -1482,6 +1502,10 @@ export default {
   width: min(1180px, calc(100vw - 104px));
 }
 
+.dev-tools-panel.testing-detail {
+  width: min(1180px, calc(100vw - 104px));
+}
+
 .dev-tools-header {
   display: flex;
   align-items: flex-start;
@@ -1534,6 +1558,10 @@ export default {
 
 .dev-tools-layout.confirming {
   grid-template-columns: minmax(280px, 340px) minmax(420px, 1fr) 320px;
+}
+
+.dev-tools-layout.testing-detail {
+  grid-template-columns: minmax(640px, 1fr) 320px;
 }
 
 .dev-tools-sidebar {
@@ -2255,6 +2283,10 @@ export default {
   }
 
   .dev-tools-layout.confirming {
+    grid-template-columns: 1fr;
+  }
+
+  .dev-tools-layout.testing-detail {
     grid-template-columns: 1fr;
   }
 

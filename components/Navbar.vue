@@ -65,29 +65,37 @@
         <template v-if="isAuthenticated">
           <b-nav-item-dropdown :text="username" right>
             <b-dropdown-item @click="onMyAccount">
+              <b-icon-person-circle class="app-user-menu__icon" />
               Mi cuenta
             </b-dropdown-item>
             <b-dropdown-divider v-if="showAdminTools" />
             <b-dropdown-item v-if="canManageUsers" @click="onUserAdmin">
-              Administrar usuarios
+              <b-icon-shield-lock class="app-user-menu__icon" />
+              Roles y permisos
             </b-dropdown-item>
             <b-dropdown-item v-if="canManageAbiertoAnual" @click="onAbiertoAnualAdmin">
+              <b-icon-calendar-range class="app-user-menu__icon" />
               Administrar abierto anual
             </b-dropdown-item>
             <b-dropdown-item v-if="canManageSystemConfig" @click="onSystemConfigAdmin">
+              <b-icon-sliders class="app-user-menu__icon" />
               Configuraciones generales
             </b-dropdown-item>
             <b-dropdown-item v-if="canManageFunerarias" @click="onFunerariasAdmin">
+              <b-icon-building class="app-user-menu__icon" />
               Administrar funerarias
             </b-dropdown-item>
             <b-dropdown-item v-if="canViewActivities" @click="onActivities">
+              <b-icon-activity class="app-user-menu__icon" />
               Actividades
             </b-dropdown-item>
             <b-dropdown-item v-if="canViewDashboard" @click="onDashboard">
+              <b-icon-bar-chart-line class="app-user-menu__icon" />
               Estadisticas
             </b-dropdown-item>
             <b-dropdown-divider />
             <b-dropdown-item @click="onUserLogout">
+              <b-icon-box-arrow-right class="app-user-menu__icon" />
               Cerrar sesion
             </b-dropdown-item>
           </b-nav-item-dropdown>
@@ -308,6 +316,12 @@ export default {
 
 .app-user-nav {
   white-space: nowrap;
+}
+
+.app-user-menu__icon {
+  margin-right: 0.45rem;
+  min-width: 1rem;
+  vertical-align: -0.12em;
 }
 
 @media (max-width: 1200px) {

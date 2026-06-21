@@ -8,7 +8,6 @@
       <Nuxt />
       <ModalSessionTimeout :mostrarModal="sessionExpired" />
       <ModalMoratoria2026 :mostrarModal="mostrarMoratoria" @close="mostrarMoratoria = false" />
-      <DevToolsDock v-if="devToolsEnabled" />
     </div>
     <Foot />
   </div>
@@ -27,9 +26,6 @@ export default {
   computed: {
     token() {
       return this.$store.state.user.token;
-    },
-    devToolsEnabled() {
-      return Boolean(this.$config && this.$config.devToolsEnabled);
     },
   },
   watch: {

@@ -1,8 +1,5 @@
 export default {
   target: 'server',
-  publicRuntimeConfig: {
-    devToolsEnabled: process.env.DEVTOOLS_ENABLED === 'true' || (process.env.NODE_ENV !== 'production' && process.env.DEVTOOLS_ENABLED !== 'false')
-  },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     title: 'Hacienda Villa Gesell',

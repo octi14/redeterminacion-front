@@ -8,8 +8,8 @@
       <Nuxt />
       <ModalSessionTimeout :mostrarModal="sessionExpired" />
       <ModalMoratoria2026 :mostrarModal="mostrarMoratoria" @close="mostrarMoratoria = false" />
-      <DevToolsDock />
-      <TestingAssistantFloatingWindow />
+      <DevToolsDock v-if="devToolsEnabled" />
+      <TestingAssistantFloatingWindow v-if="devToolsEnabled" />
     </div>
     <Foot />
   </div>
@@ -34,6 +34,9 @@ export default {
     token() {
       return this.$store.state.user.token;
     },
+    devToolsEnabled() {
+      return Boolean(this.$config && this.$config.devToolsEnabled);
+    },
   },
   watch: {
     token(newToken) {
@@ -53,7 +56,9 @@ export default {
     },
   },
   mounted() {
-    this.$store.dispatch('testingAssistant/hydrate')
+    if (this.devToolsEnabled) {
+      this.$store.dispatch('testingAssistant/hydrate')
+    }
 
     // Si existe usuario en localStorage, lo levanto
     if (localStorage.getItem("userId")) {

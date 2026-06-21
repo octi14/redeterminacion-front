@@ -29,8 +29,7 @@
         class="dev-tools-panel"
         :class="{
           expanded: Boolean(activeTool),
-          confirming: Boolean(pendingConfirmation),
-          'testing-detail': testingAssistantDetailOpen && activeTool === 'testing-assistant' && !pendingConfirmation
+          confirming: Boolean(pendingConfirmation)
         }"
         role="dialog"
         aria-modal="true"
@@ -50,8 +49,7 @@
           class="dev-tools-layout"
           :class="{
             expanded: Boolean(activeTool),
-            confirming: Boolean(pendingConfirmation),
-            'testing-detail': testingAssistantDetailOpen && activeTool === 'testing-assistant' && !pendingConfirmation
+            confirming: Boolean(pendingConfirmation)
           }"
         >
           <transition name="dev-tools-workspace">
@@ -493,14 +491,6 @@
                 </template>
               </div>
 
-              <div v-else-if="currentTool.key === 'testing-assistant'" class="testing-assistant-tool">
-                <TestingAssistantConfig
-                  @launched="onTestingAssistantLaunched"
-                  @resumed="onTestingAssistantResumed"
-                  @module-detail-active="testingAssistantDetailOpen = $event"
-                />
-              </div>
-
               <div v-else class="placeholder-card">
                 <i :class="`bi bi-${currentTool.icon}`"></i>
                 <div>
@@ -546,8 +536,6 @@
 </template>
 
 <script>
-import TestingAssistantConfig from '@/components/devtools/TestingAssistantConfig.vue'
-
 const ExperimentalRbacService = require('@/service/experimentalRbac')
 const AbiertoAnualConfigService = require('@/service/abiertoAnualConfig')
 const GeneralConfigService = require('@/service/generalConfig')
@@ -613,27 +601,14 @@ const TOOL_DEFINITIONS = [
     body: 'Lugar para flags temporales, modo mantenimiento, datos de entorno y diagnósticos útiles.',
     placeholder: 'Después conectamos las configs reales que convenga operar desde QA.'
   },
-  {
-    key: 'testing-assistant',
-    icon: 'list-check',
-    title: 'Asistente de Testing',
-    description: 'Quest helper para QA',
-    kicker: 'QA guiado',
-    body: 'Configura una sesion de testing por modulos y submodulos. Al lanzarla, queda una ventana flotante con pasos, permisos, rutas y checkpoints.',
-    placeholder: 'Configurar quests de testing.'
-  }
 ]
 
 export default {
   name: 'DevToolsDock',
-  components: {
-    TestingAssistantConfig
-  },
   data() {
     return {
       isOpen: false,
       activeTool: '',
-      testingAssistantDetailOpen: false,
       tools: TOOL_DEFINITIONS.filter(item => !['tramites'].includes(item.key)),
       rbacLoading: false,
       rbacSaving: false,
@@ -732,7 +707,7 @@ export default {
     canShow() {
       if (!process.client) return false
       const hasDevBypass = localStorage.getItem('devToolsEnabled') === 'true'
-      return hasDevBypass || this.canReadRbac || this.canManageAbiertoAnual || this.canManageSystemConfig || this.testingAssistantActive
+      return hasDevBypass || this.canReadRbac || this.canManageAbiertoAnual || this.canManageSystemConfig
     },
     username() {
       return this.$store.state.user.username || 'Sin usuario'
@@ -774,9 +749,6 @@ export default {
     },
     canManageSystemConfig() {
       return this.$can('*') || this.$can('system.config.admin')
-    },
-    testingAssistantActive() {
-      return Boolean(this.$store.state.testingAssistant && this.$store.state.testingAssistant.active)
     },
     roleOptions() {
       return [
@@ -874,7 +846,6 @@ export default {
   },
   watch: {
     '$route.fullPath'() {
-      if (this.testingAssistantActive) return
       this.close()
     },
     activeTool(value) {
@@ -923,33 +894,11 @@ export default {
     close() {
       this.isOpen = false
       this.activeTool = ''
-      this.testingAssistantDetailOpen = false
       this.pendingConfirmation = null
     },
     selectTool(key) {
       this.activeTool = this.activeTool === key ? '' : key
-      if (this.activeTool !== 'testing-assistant') {
-        this.testingAssistantDetailOpen = false
-      }
       this.pendingConfirmation = null
-    },
-    onTestingAssistantLaunched() {
-      this.close()
-      this.$bvToast.toast('Sesion de testing iniciada. El asistente queda flotando sobre la pantalla.', {
-        title: 'Asistente de Testing',
-        variant: 'success',
-        solid: true,
-        appendToast: true,
-      })
-    },
-    onTestingAssistantResumed() {
-      this.close()
-      this.$bvToast.toast('Sesion de testing retomada. El asistente queda flotando sobre la pantalla.', {
-        title: 'Asistente de Testing',
-        variant: 'info',
-        solid: true,
-        appendToast: true,
-      })
     },
     ddmmToInput(value) {
       if (!value) return ''
@@ -1502,10 +1451,6 @@ export default {
   width: min(1180px, calc(100vw - 104px));
 }
 
-.dev-tools-panel.testing-detail {
-  width: min(1180px, calc(100vw - 104px));
-}
-
 .dev-tools-header {
   display: flex;
   align-items: flex-start;
@@ -1558,10 +1503,6 @@ export default {
 
 .dev-tools-layout.confirming {
   grid-template-columns: minmax(280px, 340px) minmax(420px, 1fr) 320px;
-}
-
-.dev-tools-layout.testing-detail {
-  grid-template-columns: minmax(640px, 1fr) 320px;
 }
 
 .dev-tools-sidebar {
@@ -1807,8 +1748,7 @@ export default {
 .role-tool,
 .abierto-tool,
 .system-tool,
-.boletas-tool,
-.testing-assistant-tool {
+.boletas-tool {
   display: grid;
   gap: 1rem;
 }
@@ -2283,10 +2223,6 @@ export default {
   }
 
   .dev-tools-layout.confirming {
-    grid-template-columns: 1fr;
-  }
-
-  .dev-tools-layout.testing-detail {
     grid-template-columns: 1fr;
   }
 

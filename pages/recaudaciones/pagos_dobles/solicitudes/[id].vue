@@ -302,8 +302,8 @@ definePageMeta({
 
 <script>
 import { loadJSZip } from '~/utils/loadJszip';
+import { loadXlsx } from '~/utils/loadXlsx';
 import { saveAsFile } from '~/utils/saveAsFile';
-import * as XLSX from 'xlsx';
 import MailerService from '~/service/mailer.js'
 
 export default {
@@ -522,6 +522,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
 
         const JSZip = await loadJSZip();
         const zip = new JSZip();
+        const XLSX = await loadXlsx();
 
         // Convertir los datos de la habilitación a Excel
         const datosHabilitacion = XLSX.utils.json_to_sheet([pago]);

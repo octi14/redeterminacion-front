@@ -5,7 +5,7 @@ const formatMultimedia = (MultimediaResponse) => ({
   categoria: MultimediaResponse.categoria,
 })
 
-module.exports = {
+export default {
   getLatest: async (axios,
     //  { skip = 0, limit = 6 }
      ) => {
@@ -24,7 +24,8 @@ module.exports = {
     const filesResponse = await axios.$post('/multimedias/search', {
       categoria,
     })
-    return filesResponse.data.map(formatMultimedia)
+    const list = filesResponse?.data
+    return Array.isArray(list) ? list.map(formatMultimedia) : []
   },
   searchSingle: async (
     axios,
@@ -67,3 +68,4 @@ module.exports = {
     })
   },
 }
+

@@ -172,7 +172,7 @@ const formatExtendedFile = (FileResponse) => {
   }
 }
 
-module.exports = {
+export default {
   getAll: async (axios, { userToken } = {}) => {
     const config = {};
     if (userToken) {
@@ -206,7 +206,7 @@ module.exports = {
       `/habilitaciones/${id}`,
       { habilitacion },
     )
-    return formatFile(updated)
+    return formatExtendedFile(updated)
   },
   updateLazy: async (axios, id, { habilitacion }) => {
     axios.setHeader('Access-Control-Allow-Origin', true)
@@ -241,3 +241,4 @@ module.exports = {
   //   return filesResponse.data.map(formatFile)
   // },
 }
+

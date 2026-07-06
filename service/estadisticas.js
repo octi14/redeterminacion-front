@@ -1,11 +1,11 @@
 // Importar servicios existentes
-const HabilitacionService = require('./habilitacion')
-const ObraService = require('./obra')
-const TurnoService = require('./turno')
-const PagoDobleService = require('./pagoDoble')
-const IndiceService = require('./indice')
-const AbiertoAnualService = require('./abiertoAnual')
-const CombustibleService = require('./combustible')
+import HabilitacionService from './habilitacion'
+import ObraService from './obra'
+import TurnoService from './turno'
+import PagoDobleService from './pagoDoble'
+import IndiceService from './indice'
+import AbiertoAnualService from './abiertoAnual'
+import CombustibleService from './combustible'
 
 const FINALIZACION_PATTERNS = [
   /Se finaliza(?: la solicitud)?(?: el)?(?: trámite)?(?: [^0-9]*)?(\d{1,2}\/\d{1,2}\/\d{2,4})(?:\s+(\d{1,2}:\d{2}(?::\d{2})?))?/gi,
@@ -1180,7 +1180,7 @@ async function getHabilitacionesExtendidas(axios) {
   }
 }
 
-module.exports = {
+export default {
 
 
   // Obtener estadísticas por módulo usando endpoints existentes
@@ -1791,3 +1791,4 @@ module.exports = {
   }
 
 };
+

@@ -1,15 +1,24 @@
 <template>
-  <div v-if="puedeVerPaginaCombustible" class="page main-background">
+  <div v-if="!puedeVerPaginaCombustible" class="page main-background">
+    <Banner title="Compras" subtitle="Combustible"/>
+    <div class="col-md-8 col-sm-10 mx-auto mt-5 text-center">
+      <p class="h5 text-muted mb-4">No tenés permisos para acceder al módulo de combustible.</p>
+      <NuxtLink to="/compras">
+        <b-button variant="primary" size="sm" class="page-btn-volver">Volver a Compras</b-button>
+      </NuxtLink>
+    </div>
+  </div>
+  <div v-else class="page main-background">
     <Banner title="Compras" subtitle="Combustible"/>
 
     <!-- Botones de acción: ocultos para quien solo ve el dashboard -->
-    <div v-if="!soloDashboardCombustible" class="row no-gutters justify-content-center mt-4">
-      <b-button variant="success" class="text-center mx-3" @click="showCargarOrden = true">
-        <b-icon-plus-circle class="mr-2"></b-icon-plus-circle>
+    <div v-if="!soloDashboardCombustible" class="combustible-actions d-flex flex-wrap justify-content-center gap-2 mt-4 mb-2">
+      <b-button variant="success" size="sm" @click="showCargarOrden = true">
+        <i class="bi bi-plus-circle"></i>
         Cargar Orden de Compra
       </b-button>
-      <b-button variant="primary" class="text-center mx-3" @click="showCargarVehiculo = true">
-        <b-icon-plus-circle class="mr-2"></b-icon-plus-circle>
+      <b-button variant="primary" size="sm" @click="showCargarVehiculo = true">
+        <i class="bi bi-plus-circle"></i>
         Cargar Vehículo
       </b-button>
     </div>
@@ -19,9 +28,19 @@
       <b-tabs content-class="mt-0" fill class="custom-tabs">
         <!-- Pestaña Órdenes de Compra: oculta para quien solo ve dashboard -->
         <b-tab v-if="!soloDashboardCombustible" title="📋 Órdenes de Compra" active class="custom-tab">
-          <b-table per-page="10" head-row-variant="success" class="white shadow-card" :items="paginatedItems" :fields="fields">
+          <b-table
+            per-page="10"
+            head-row-variant="success"
+            class="white shadow-card"
+            :items="paginatedItems"
+            :fields="fields"
+            :busy="loadingOrdenes"
+          >
+            <template #table-busy>
+              <LoadingState text="Cargando..." variant="primary" />
+            </template>
       <template #cell(monto)="row">
-        {{ format(row.item.montos.reduce((acc, combustible) => acc + combustible.monto, 0)) }}
+        {{ format(montoTotalOrden(row.item)) }}
       </template>
       <template #cell(area)="row">
         {{ row.item.area || '—' }}
@@ -34,7 +53,7 @@
             class="outline-secondary"
             title="Detalles"
           >
-            <b-icon-pen class="icon-hover" />
+            <i class="bi bi-pen"></i>
           </b-button>
 
 
@@ -44,7 +63,7 @@
             variant="outline-primary"
             title="Observaciones"
           >
-            <b-icon-eye />
+            <i class="bi bi-eye"></i>
           </b-button>
 
           <b-button
@@ -52,7 +71,7 @@
             title="Eliminar"
             @click="sendEliminarOrden(row.item)"
           >
-            <b-icon-trash />
+            <i class="bi bi-trash"></i>
           </b-button>
         </b-button-group>
       </template>
@@ -65,10 +84,12 @@
         <b-tab v-if="jefeCompras || soloDashboardCombustible" title="📊 Estadísticas" :active="soloDashboardCombustible" class="custom-tab">
           <div class="dashboard-combustible">
             <!-- Estado de carga -->
-            <div v-if="loadingEstadisticas" class="text-center py-5">
-              <b-spinner variant="primary" label="Cargando..."></b-spinner>
-              <p class="mt-3 text-muted">Cargando estadísticas de combustible...</p>
-            </div>
+            <LoadingState
+              v-if="loadingEstadisticas"
+              text="Cargando estadísticas de combustible..."
+              size="lg"
+              variant="primary"
+            />
 
             <!-- Estado de error -->
             <b-alert
@@ -146,7 +167,7 @@
                 @click="limpiarFiltros"
                 class="mb-3"
               >
-                <b-icon-x-circle class="mr-1" />
+                <i class="bi bi-x-circle"></i>
                 Limpiar filtros
               </b-button>
             </div>
@@ -161,10 +182,7 @@
             :busy="loadingVehiculos"
           >
             <template #table-busy>
-              <div class="text-center text-primary my-2">
-                <b-spinner class="align-middle"></b-spinner>
-                <strong> Cargando vehículos...</strong>
-              </div>
+              <LoadingState text="Cargando..." variant="primary" />
             </template>
             <template #cell(acciones)="row">
               <b-button-group size="sm">
@@ -173,14 +191,14 @@
                   title="Editar"
                   @click="editarVehiculo(row.item)"
                 >
-                  <b-icon-pen class="icon-hover" />
+                  <i class="bi bi-pen"></i>
                 </b-button>
                 <b-button
                   variant="outline-danger"
                   title="Eliminar"
                   @click="sendEliminarVehiculo(row.item)"
                 >
-                  <b-icon-trash />
+                  <i class="bi bi-trash"></i>
                 </b-button>
               </b-button-group>
             </template>
@@ -192,22 +210,20 @@
     </div>
 
     <!-- Botón Volver -->
-    <div class="text-center mb-3 mt-4">
+    <div class="page-btn-volver-wrap">
       <NuxtLink to="/compras">
-        <b-button variant="primary">Volver</b-button>
+        <b-button variant="primary" size="sm" class="page-btn-volver">Volver</b-button>
       </NuxtLink>
     </div>
 
-    <b-modal no-close-on-backdrop no-close-on-esc v-model="showCargarOrden" hide-footer :header-bg-variant="'success'" centered>
-      <template #modal-header>
-        <div class="confirmation-popup-header mx-auto">
-          <b-iconstack v-if="!successMessage" class="my-3">
-            <b-icon-circle scale="2.7" variant="light"/>
-            <b-icon-upload scale="1.5" variant="light" />
-          </b-iconstack>
-          <b-iconstack class="my-3" v-else>
-            <b-icon-check-circle scale="2.5" variant="light"/>
-          </b-iconstack>
+    <BModal no-close-on-backdrop no-close-on-esc v-model="showCargarOrden" no-footer :header-bg-variant="'success'" centered>
+      <template #header>
+        <div v-if="!successMessage" class="confirmation-popup-header combustible-modal-icon">
+          <i class="bi bi-circle text-light" aria-hidden="true"></i>
+          <i class="bi bi-upload text-light" aria-hidden="true"></i>
+        </div>
+        <div v-else class="confirmation-popup-header">
+          <i class="bi bi-check-circle text-light" aria-hidden="true"></i>
         </div>
       </template>
       <div class="confirmation-popup-body">
@@ -217,11 +233,8 @@
         <div v-if="successMessage" class="text-center">
           <p class="h5 font-weight-bold text-dark mt-2" style="font-size: 1.15rem;">La orden de compra fue cargada con éxito</p>
 
-          <!-- Botón de aceptar -->
-          <div class="text-center mt-5">
-            <b-btn style="border-radius: 0;" variant="success" @click="cerrarPopup()">
-              Aceptar
-            </b-btn>
+          <div class="modal-confirm-actions mt-4">
+            <b-button variant="success" @click="cerrarPopup()">Aceptar</b-button>
           </div>
         </div>
 
@@ -229,7 +242,7 @@
           <div class="mx-auto">
             <!-- Número de orden de compra -->
             <div class="row mt-4 mx-1">
-                <b-icon-caret-right-fill class="icon-orange ml-0"/>
+                <i class="bi bi-caret-right-fill"></i>
               <h6 class="text-dark font-weight-500 ml-1">Número de Orden de Compra</h6>
             </div>
             <b-form-group class="col-12 ml-2" :state="nroOrdenDuplicado ? false : null" invalid-feedback="Ya existe una orden de compra con este número.">
@@ -242,7 +255,7 @@
 
             <!-- Proveedor -->
             <div class="row mt-4 mx-1">
-              <b-icon-caret-right-fill class="icon-orange ml-0"/>
+              <i class="bi bi-caret-right-fill"></i>
               <h6 class="text-dark font-weight-500 ml-1">Proveedor</h6>
             </div>
             <b-form-group label-class="text-dark font-weight-bold" class="col-11  ml-2">
@@ -253,7 +266,7 @@
 
             <!-- Área asignada -->
             <div class="row mt-4 mx-1">
-              <b-icon-caret-right-fill class="icon-orange ml-0"/>
+              <i class="bi bi-caret-right-fill"></i>
               <h6 class="text-dark font-weight-500 ml-1">Área asignada</h6>
             </div>
             <b-form-group label-class="text-dark font-weight-bold" class="col-11  ml-2">
@@ -262,7 +275,7 @@
             </b-form-group>
             <!-- Combustibles -->
             <div class="row mt-4 mx-1">
-              <b-icon-caret-right-fill class="icon-orange ml-0"/>
+              <i class="bi bi-caret-right-fill"></i>
               <h6 class="text-dark font-weight-500 ml-1">Montos asignados por tipo de combustible</h6>
             </div>
             <b-form-group class="col-12  ml-2" >
@@ -278,7 +291,7 @@
                 <h6 class="font-weight-500 text-dark ml-3 mr-1 mt-1">$ </h6>
                 <b-form-input style="border-radius: 0;" size="sm" class="col-5" type="number" placeholder="Monto" no-wheel v-model="combustible.monto" />
                 <b-button v-if="orden.montos.length > 1" variant="outline-danger" size="sm" class="ml-2" @click="removeCombustible(index)">
-                  <b-icon-trash-fill/>
+                  <i class="bi bi-trash-fill"></i>
                 </b-button>
               </div>
               <b-button variant="primary" :disabled="this.orden.montos.length >= 4" size="sm" @click="addCombustible">+ Agregar combustible</b-button>
@@ -288,96 +301,83 @@
 
           </div>
 
-          <div class="row justify-content-end">
-            <!-- Botón de aceptar -->
-            <div class="text-center mt-3 mx-2">
-              <b-btn variant="success" :disabled="!nroOrden1 || !nroOrden2 || !orden.area || !orden.montos.length || nroOrdenDuplicado" @click="submitForm">
-                Aceptar
-              </b-btn>
-            </div>
-            <!-- Botón de salir -->
-            <div class="text-center mt-3 mx-2">
-              <b-btn variant="danger" @click="showCargarOrden=false">
-                Cancelar
-              </b-btn>
-            </div>
+          <div class="modal-confirm-actions">
+            <b-button variant="success" :disabled="!nroOrden1 || !nroOrden2 || !orden.area || !orden.montos.length || nroOrdenDuplicado" @click="submitForm">
+              Aceptar
+            </b-button>
+            <b-button variant="danger" @click="showCargarOrden = false">Cancelar</b-button>
           </div>
         </div>
       </div>
-    </b-modal>
+    </BModal>
 
-    <b-modal v-model="showEliminarOrden" hide-footer header-class="justify-content-center" :header-bg-variant="'danger'" centered>
-      <template #modal-header>
-        <b-iconstack class="my-3">
-          <b-icon-circle scale="2.7" variant="light"/>
-          <b-icon-trash-fill scale="1.5" variant="light" />
-        </b-iconstack>
+    <BModal v-model="showEliminarOrden" no-footer header-class="justify-content-center" :header-bg-variant="'danger'" centered>
+      <template #header>
+        <div class="confirmation-popup-header combustible-modal-icon">
+          <i class="bi bi-circle text-light" aria-hidden="true"></i>
+          <i class="bi bi-trash-fill text-light" aria-hidden="true"></i>
+        </div>
       </template>
       <!-- Mensaje de éxito -->
       <div v-if="eliminarSuccess" class="text-center">
           <p class="h5 font-weight-bold text-dark mt-2" style="font-size: 1.15rem;">La orden de compra fue eliminada con éxito</p>
 
-          <!-- Botón de aceptar -->
-          <div class="text-center mt-5">
-            <b-btn style="border-radius: 0;" variant="success" @click="cerrarPopup()">
-              Aceptar
-            </b-btn>
+          <div class="modal-confirm-actions mt-4">
+            <b-button variant="success" @click="cerrarPopup()">Aceptar</b-button>
           </div>
         </div>
       <div v-else>
         <p class="h5 text-center mt-3 mb-2 font-weight-500 text-dark">Estás a punto de eliminar la orden de compra.</p>
         <p class="d-flex align-items-center justify-content-center mt-2 mb-2 px-3 py-2 rounded bg-light border border-warning">
-          <b-icon-exclamation-circle-fill scale="1.2" class="text-warning mr-2 flex-shrink-0" />
+          <i class="bi bi-exclamation-circle-fill"></i>
           <span class="text-dark font-weight-600" style="font-size: 0.95rem;">Se eliminarán también todos los vales asociados a esta orden.</span>
         </p>
         <p class="h6 text-center mt-2 mb-3 font-weight-500 text-dark">¿Deseás continuar?</p>
         <hr class="row col-9 mx-auto"/>
-        <div class="row no-gutters justify-content-center">
-          <button class="btn btn-success mx-2" @click="sendEliminarOrden(tempElim)">Aceptar</button>
-          <button class="btn btn-danger mx-2" @click="showEliminarOrden = false">Cancelar</button>
+        <div class="modal-confirm-actions">
+          <button type="button" class="btn btn-success" @click="sendEliminarOrden(tempElim)">Aceptar</button>
+          <button type="button" class="btn btn-danger" @click="showEliminarOrden = false">Cancelar</button>
         </div>
       </div>
 
-    </b-modal>
+    </BModal>
 
     <!-- Modal de carga -->
-    <b-modal v-model="isLoading" hide-footer header-bg-variant="success" title-class="text-center text-light" centered>
-      <template #modal-header>
+    <BModal v-model="isLoading" no-footer header-bg-variant="success" title-class="text-center text-light" centered>
+      <template #header>
         <div class="confirmation-popup-header mx-auto">
           <b-spinner scale="2.5" class="my-3" variant="light"/>
         </div>
       </template>
       <p class="h5 text-center font-weight-bold text-dark mt-4 mb-4">Se está borrando la orden de compra</p>
       <p class="h6 text-center font-weight-400 text-dark mt-2 mb-5">Por favor, esperá un momento</p>
-    </b-modal>
+    </BModal>
 
     <!-- Modal de carga (crear orden) -->
-    <b-modal v-model="loadingCargar" hide-footer header-bg-variant="success" title-class="text-center text-light" centered>
-      <template #modal-header>
+    <BModal v-model="loadingCargar" no-footer header-bg-variant="success" title-class="text-center text-light" centered>
+      <template #header>
         <div class="confirmation-popup-header mx-auto">
           <b-spinner scale="2.5" class="my-3" variant="light"/>
         </div>
       </template>
       <p class="h5 text-center font-weight-bold text-dark mt-4 mb-4">Se está creando la orden de compra</p>
       <p class="h6 text-center font-weight-400 text-dark mt-2 mb-5">Por favor, esperá un momento</p>
-    </b-modal>
+    </BModal>
 
 
-    <b-modal size="lg" v-model="showObservaciones" header-bg-variant="primary" title="Observaciones" title-class="text-light" hide-footer centered>
+    <BModal size="lg" v-model="showObservaciones" header-bg-variant="primary" title="Observaciones" title-class="text-light" no-footer centered>
       <p v-html="observaciones"></p>
-    </b-modal>
+    </BModal>
 
     <!-- Modal para cargar vehículo -->
-    <b-modal no-close-on-backdrop no-close-on-esc v-model="showCargarVehiculo" hide-footer :header-bg-variant="'primary'" centered>
-      <template #modal-header>
-        <div class="confirmation-popup-header mx-auto">
-          <b-iconstack v-if="!successMessageVehiculo" class="my-3">
-            <b-icon-circle scale="2.7" variant="light"/>
-            <b-icon-plus scale="1.5" variant="light" />
-          </b-iconstack>
-          <b-iconstack class="my-3" v-else>
-            <b-icon-check-circle scale="2.5" variant="light"/>
-          </b-iconstack>
+    <BModal no-close-on-backdrop no-close-on-esc v-model="showCargarVehiculo" no-footer :header-bg-variant="'primary'" centered>
+      <template #header>
+        <div v-if="!successMessageVehiculo" class="confirmation-popup-header combustible-modal-icon">
+          <i class="bi bi-circle text-light" aria-hidden="true"></i>
+          <i class="bi bi-plus text-light" aria-hidden="true"></i>
+        </div>
+        <div v-else class="confirmation-popup-header">
+          <i class="bi bi-check-circle text-light" aria-hidden="true"></i>
         </div>
       </template>
       <div class="confirmation-popup-body">
@@ -386,10 +386,8 @@
         <!-- Mensaje de éxito -->
         <div v-if="successMessageVehiculo" class="text-center">
           <p class="h5 font-weight-bold text-dark mt-2" style="font-size: 1.15rem;">El vehículo fue cargado con éxito</p>
-          <div class="text-center mt-5">
-            <b-btn style="border-radius: 0;" variant="primary" @click="cerrarPopupVehiculo()">
-              Aceptar
-            </b-btn>
+          <div class="modal-confirm-actions mt-4">
+            <b-button variant="primary" @click="cerrarPopupVehiculo()">Aceptar</b-button>
           </div>
         </div>
 
@@ -397,7 +395,7 @@
           <div class="mx-auto">
              <!-- Patente -->
              <div class="row mt-4 mx-1">
-               <b-icon-caret-right-fill class="icon-orange ml-0"/>
+               <i class="bi bi-caret-right-fill"></i>
                <h6 class="text-dark font-weight-500 ml-1">Patente del Vehículo</h6>
              </div>
              <b-form-group class="col-12 ml-2">
@@ -406,7 +404,7 @@
 
              <!-- Área asignada -->
              <div class="row mt-4 mx-1">
-               <b-icon-caret-right-fill class="icon-orange ml-0"/>
+               <i class="bi bi-caret-right-fill"></i>
                <h6 class="text-dark font-weight-500 ml-1">Área asignada</h6>
              </div>
              <b-form-group label-class="text-dark font-weight-bold" class="col-11 ml-2">
@@ -416,68 +414,60 @@
             <hr/>
           </div>
 
-          <div class="row justify-content-end">
-             <div class="text-center mt-3 mx-2">
-               <b-btn variant="primary" :disabled="!vehiculo.patente || !vehiculo.area" @click="submitFormVehiculo">
-                 Aceptar
-               </b-btn>
-             </div>
-            <div class="text-center mt-3 mx-2">
-              <b-btn variant="danger" @click="showCargarVehiculo=false">
-                Cancelar
-              </b-btn>
-            </div>
+          <div class="modal-confirm-actions">
+            <b-button variant="primary" :disabled="!vehiculo.patente || !vehiculo.area" @click="submitFormVehiculo">
+              Aceptar
+            </b-button>
+            <b-button variant="danger" @click="showCargarVehiculo = false">Cancelar</b-button>
           </div>
         </div>
       </div>
-    </b-modal>
+    </BModal>
 
     <!-- Modal de carga para vehículos -->
-    <b-modal v-model="loadingCargarVehiculo" hide-footer header-bg-variant="primary" title-class="text-center text-light" centered>
-      <template #modal-header>
+    <BModal v-model="loadingCargarVehiculo" no-footer header-bg-variant="primary" title-class="text-center text-light" centered>
+      <template #header>
         <div class="confirmation-popup-header mx-auto">
           <b-spinner scale="2.5" class="my-3" variant="light"/>
         </div>
       </template>
       <p class="h5 text-center font-weight-bold text-dark mt-4 mb-4">Se está creando el vehículo</p>
       <p class="h6 text-center font-weight-400 text-dark mt-2 mb-5">Por favor, esperá un momento</p>
-    </b-modal>
+    </BModal>
 
     <!-- Modal para eliminar vehículo -->
-    <b-modal v-model="showEliminarVehiculo" hide-footer header-class="justify-content-center" :header-bg-variant="'danger'" centered>
-      <template #modal-header>
-        <b-iconstack class="my-3">
-          <b-icon-circle scale="2.7" variant="light"/>
-          <b-icon-trash-fill scale="1.5" variant="light" />
-        </b-iconstack>
+    <BModal v-model="showEliminarVehiculo" no-footer header-class="justify-content-center" :header-bg-variant="'danger'" centered>
+      <template #header>
+        <div class="confirmation-popup-header combustible-modal-icon">
+          <i class="bi bi-circle text-light" aria-hidden="true"></i>
+          <i class="bi bi-trash-fill text-light" aria-hidden="true"></i>
+        </div>
       </template>
       <!-- Mensaje de éxito -->
       <div v-if="eliminarSuccessVehiculo" class="text-center">
           <p class="h5 font-weight-bold text-dark mt-2" style="font-size: 1.15rem;">El vehículo fue eliminado con éxito</p>
-          <div class="text-center mt-5">
-            <b-btn style="border-radius: 0;" variant="success" @click="cerrarPopupVehiculo()">
-              Aceptar
-            </b-btn>
+          <div class="modal-confirm-actions mt-4">
+            <b-button variant="success" @click="cerrarPopupVehiculo()">Aceptar</b-button>
           </div>
         </div>
       <div v-else>
         <p class="h5 text-center mt-3 mb-4 font-weight-500 text-dark">Estás a punto de eliminar el vehículo.</p>
         <p class="h6 text-center mt-2 mb-3 font-weight-500 text-dark">¿Deseás continuar?</p>
         <hr class="row col-9 mx-auto"/>
-        <div class="row no-gutters justify-content-center">
-          <button class="btn btn-success mx-2" @click="sendEliminarVehiculo(tempElimVehiculo)">Aceptar</button>
-          <button class="btn btn-danger mx-2" @click="showEliminarVehiculo = false">Cancelar</button>
+        <div class="modal-confirm-actions">
+          <button type="button" class="btn btn-success" @click="sendEliminarVehiculo(tempElimVehiculo)">Aceptar</button>
+          <button type="button" class="btn btn-danger" @click="showEliminarVehiculo = false">Cancelar</button>
         </div>
       </div>
-    </b-modal>
+    </BModal>
 
     <!-- Modal para editar vehículo -->
-    <b-modal v-model="showEditarVehiculo" hide-footer header-class="justify-content-center" :header-bg-variant="'primary'" centered>
-      <template #modal-header>
-        <b-iconstack class="my-3">
-          <b-icon-circle scale="2.7" variant="light"/>
-          <b-icon-pencil-fill scale="1.5" variant="light" />
-        </b-iconstack>
+    <BModal v-model="showEditarVehiculo" no-footer header-class="justify-content-center" :header-bg-variant="'primary'" centered>
+      <template #header>
+        <div class="confirmation-popup-header combustible-modal-icon">
+          <i class="bi bi-circle text-light" aria-hidden="true"></i>
+          <i class="bi bi-pencil-fill text-light" aria-hidden="true"></i>
+        </div>
       </template>
       <div class="text-center">
         <h4 class="text-center mt-3 mb-4 font-weight-bold text-dark">Editar Vehículo</h4>
@@ -516,10 +506,10 @@
           </b-form-group>
 
           <hr class="row col-9 mx-auto"/>
-          <div class="row no-gutters justify-content-center">
+          <div class="modal-confirm-actions">
             <button
               type="submit"
-              class="btn btn-primary mx-2"
+              class="btn btn-primary"
               :disabled="loadingEditarVehiculo"
             >
               <b-spinner v-if="loadingEditarVehiculo" small class="mr-2"></b-spinner>
@@ -527,7 +517,7 @@
             </button>
             <button
               type="button"
-              class="btn btn-secondary mx-2"
+              class="btn btn-secondary"
               @click="cerrarModalEditar"
               :disabled="loadingEditarVehiculo"
             >
@@ -536,18 +526,30 @@
           </div>
         </b-form>
       </div>
-    </b-modal>
+    </BModal>
 
   </div>
 </template>
 
+<script setup>
+import { COMBUSTIBLE_DASHBOARD_USERNAMES } from '~/utils/access-control'
+
+definePageMeta({
+  middleware: ['authenticated', 'require-admin'],
+  adminRoles: ['compras', 'master'],
+  allowedUsernames: COMBUSTIBLE_DASHBOARD_USERNAMES,
+})
+</script>
+
 <script>
-import areas from "@/plugins/areas.js";
+import { COMBUSTIBLE_DASHBOARD_USERNAMES } from '~/utils/access-control'
+import areas from '~/constants/areas.js'
 import EstadisticasDetalladas from '~/components/dashboard/EstadisticasDetalladas.vue'
 import CombustiblePorArea from '~/components/dashboard/CombustiblePorArea.vue'
 import EstadisticasPorPatente from '~/components/dashboard/EstadisticasPorPatente.vue'
 
 export default {
+  setup(){ const { showToast } = useProjectToast(); return { showToast } },
   components: {
     EstadisticasDetalladas,
     CombustiblePorArea,
@@ -615,78 +617,46 @@ export default {
         { key: 'acciones', label: 'Acciones', sortable: false },
       ],
       // areas: ahora se obtiene del plugin $areas
+      loadingOrdenes: true,
+      loadingVehiculos: true,
       loadingEstadisticas: false,
       errorEstadisticas: null
     };
   },
-  async fetch() {
-    const soloDashboard = this.$store.state.user.username === 'gustavociriaco@gesell.gob.ar'
-
-    if (!soloDashboard) {
-      await this.$store.dispatch('combustible/getOrdenesCompra')
-      this.items = this.ordenesCompra
-      await this.$store.dispatch('combustible/getProveedores')
-
-      try {
-        await this.$store.dispatch('vehiculos/getAll')
-        this.vehiculos = this.$store.state.vehiculos ? this.$store.state.vehiculos.all : []
-      } catch (error) {
-        console.error('Error al cargar vehículos:', error)
-        this.vehiculos = []
-      }
-    }
-
-    // Cargar estadísticas de combustible para jefeCompras o para quien solo ve el dashboard (gustavociriaco)
-    const user = this.$store.state.user
-    const puedeVerDashboard = user && (
-      (user.admin === 'compras' && user.username === 'martinjordan@gesell.gob.ar') ||
-      user.admin === 'master' ||
-      user.username === 'gustavociriaco@gesell.gob.ar'
-    )
-    if (puedeVerDashboard) {
-      try {
-        this.loadingEstadisticas = true
-        this.errorEstadisticas = null
-        const startDate = new Date(2026, 0, 1)
-        startDate.setHours(0, 0, 0, 0)
-        const endDate = new Date()
-        endDate.setHours(23, 59, 59, 999)
-        await this.$store.dispatch('estadisticas/fetchEstadisticasCombustible', { startDate, endDate })
-      } catch (error) {
-        console.error('Error al cargar estadísticas de combustible:', error)
-        this.errorEstadisticas = 'Error al cargar las estadísticas. Por favor, intenta recargar la página.'
-      } finally {
-        this.loadingEstadisticas = false
-      }
-    }
+  async mounted() {
+    await this.loadCombustiblePage()
   },
   computed: {
     adminCompras(){
-      return this.$store.state.user.admin === "compras" || this.$store.state.user.admin === "master"
+      const admin = useUserStore().admin
+      return admin === "compras" || admin === "master"
     },
     /** Puede entrar a la página combustible: admin compras o usuario con solo dashboard. */
     puedeVerPaginaCombustible() {
-      return this.adminCompras || this.$store.state.user.username === "gustavociriaco@gesell.gob.ar"
+      return this.adminCompras || COMBUSTIBLE_DASHBOARD_USERNAMES.includes(useUserStore().username)
     },
     /** Solo ve el dashboard de combustible (sin órdenes ni vehículos). */
     soloDashboardCombustible() {
-      return this.$store.state.user.username === "gustavociriaco@gesell.gob.ar"
+      return COMBUSTIBLE_DASHBOARD_USERNAMES.includes(useUserStore().username)
     },
     /** Solo martinjordan@gesell.gob.ar (o master) puede ver la pestaña Estadísticas dentro de la vista completa. */
     jefeCompras() {
-      return (this.$store.state.user.admin === "compras" && this.$store.state.user.username === "martinjordan@gesell.gob.ar") || this.$store.state.user.admin === "master"
+      const userStore = useUserStore()
+      return (userStore.admin === "compras" && userStore.username === "martinjordan@gesell.gob.ar") || userStore.admin === "master"
     },
     ordenesCompra() {
-      return this.$store.state.combustible.all;
+      return useCombustibleStore().all;
     },
     proveedores() {
-      return this.$store.state.combustible.proveedores;
+      return useCombustibleStore().proveedores;
     },
     tiposCombustibleProveedor() {
-      const proveedorSeleccionado = this.proveedores.find(p => p.nombre === this.orden.proveedor);
-      return proveedorSeleccionado
-        ? proveedorSeleccionado.tiposCombustible.map(tipo => ({ value: tipo, text: tipo }))
-        : [];
+      const proveedores = Array.isArray(this.proveedores) ? this.proveedores : []
+      const proveedorSeleccionado = proveedores.find(p => p.nombre === this.orden.proveedor)
+      const tipos = proveedorSeleccionado?.tiposCombustible
+      return Array.isArray(tipos)
+        ? tipos.map(tipo => ({ value: tipo, text: tipo }))
+        : []
     },
     paginatedItems() {
       const start = (this.currentPage - 1) * this.perPage;
@@ -701,11 +671,6 @@ export default {
       }
 
       return items;
-    },
-    // Computed properties para vehículos
-    loadingVehiculos() {
-      // Ya no tenemos loading state en el store simplificado
-      return false
     },
     paginatedVehiculos() {
       const start = (this.currentPageVehiculos - 1) * this.perPageVehiculos;
@@ -732,11 +697,11 @@ export default {
       return filtered;
     },
     opcionesAreasVehiculos() {
-      // Usar las áreas importadas
-      return this.areas.map(area => ({
+      const list = Array.isArray(this.areas) ? this.areas : []
+      return list.map(area => ({
         value: area,
-        text: area
-      }));
+        text: area,
+      }))
     },
     // Validaciones para editar vehículo
     patenteEditState() {
@@ -753,12 +718,69 @@ export default {
     },
     // Computed property para obtener datos de combustible desde el store
     datosCombustible() {
-      const datos = this.$store.state.estadisticas.estadisticasModulos?.combustible || {}
-
-      return datos
+      const datos = useEstadisticasStore().estadisticasModulos?.combustible
+      return datos && typeof datos === 'object' && Object.keys(datos).length > 0 ? datos : null
     }
   },
   methods: {
+    async loadCombustiblePage() {
+      const soloDashboard = COMBUSTIBLE_DASHBOARD_USERNAMES.includes(useUserStore().username)
+
+      if (!soloDashboard) {
+        this.loadingOrdenes = true
+        this.loadingVehiculos = true
+        try {
+          await useCombustibleStore().getOrdenesCompra()
+          this.items = this.ordenesCompra
+          await useCombustibleStore().getProveedores()
+        } catch (error) {
+          console.error('Error al cargar órdenes de compra:', error)
+          this.items = []
+        } finally {
+          this.loadingOrdenes = false
+        }
+
+        try {
+          await useVehiculosStore().getAll()
+          this.vehiculos = useVehiculosStore().all || []
+        } catch (error) {
+          console.error('Error al cargar vehículos:', error)
+          this.vehiculos = []
+        } finally {
+          this.loadingVehiculos = false
+        }
+      } else {
+        this.loadingOrdenes = false
+        this.loadingVehiculos = false
+      }
+
+      const userStore = useUserStore()
+      const puedeVerDashboard = userStore && (
+        (userStore.admin === 'compras' && userStore.username === 'martinjordan@gesell.gob.ar') ||
+        userStore.admin === 'master' ||
+        COMBUSTIBLE_DASHBOARD_USERNAMES.includes(userStore.username)
+      )
+      if (puedeVerDashboard) {
+        try {
+          this.loadingEstadisticas = true
+          this.errorEstadisticas = null
+          const startDate = new Date(2026, 0, 1)
+          startDate.setHours(0, 0, 0, 0)
+          const endDate = new Date()
+          endDate.setHours(23, 59, 59, 999)
+          await useEstadisticasStore().fetchEstadisticasCombustible({ startDate, endDate })
+        } catch (error) {
+          console.error('Error al cargar estadísticas de combustible:', error)
+          this.errorEstadisticas = 'Error al cargar las estadísticas. Por favor, intenta recargar la página.'
+        } finally {
+          this.loadingEstadisticas = false
+        }
+      }
+    },
+    montoTotalOrden(item) {
+      const montos = Array.isArray(item?.montos) ? item.montos : []
+      return montos.reduce((acc, combustible) => acc + (Number(combustible?.monto) || 0), 0)
+    },
     onPageChange(newPage) {
       this.currentPage = newPage;
     },
@@ -787,17 +809,15 @@ export default {
     },
     async submitForm() {
       if (this.nroOrdenDuplicado) {
-        this.$bvToast.toast("Ya existe una orden de compra con ese número.", { variant: "warning" });
+        this.showToast("Ya existe una orden de compra con ese número.", { variant: "warning" });
         return;
       }
       this.loadingCargar = true;
       try {
-        // const userToken = this.$store.state.user.token;
-
         // Concatenar nroOrden1 y nroOrden2 para formar nroOrden
         const nroOrden = `${this.nroOrden1}/${this.nroOrden2}`;
 
-        await this.$store.dispatch('combustible/create', {
+        await useCombustibleStore().create({
           orden: {
             nroOrden: nroOrden,
             proveedor: this.orden.proveedor,
@@ -808,7 +828,7 @@ export default {
 
         // Registrar actividad de creación de orden de compra
         await this.$logUserActivity(
-          this.$store.state.user.username,
+          useUserStore().username,
           'Crear Orden de Compra',
           `Orden de compra ${nroOrden} creada para el área ${this.orden.area}`
         );
@@ -818,7 +838,7 @@ export default {
         this.successMessage = true
 
       } catch (error) {
-        this.$bvToast.toast("Error al crear la orden", { variant: "danger" });
+        this.showToast("Error al crear la orden", { variant: "danger" });
       } finally {
         this.loadingCargar = false;
       }
@@ -845,8 +865,8 @@ export default {
       this.isLoading = true
       this.showEliminarOrden = false
       const id = item.id
-      const userToken = this.$store.state.user.token
-      const success = await this.$store.dispatch('combustible/eliminarOrden',{
+      const userToken = useUserStore().token
+      const success = await useCombustibleStore().eliminarOrden({
         id,
         userToken
       })
@@ -884,8 +904,8 @@ export default {
       this.showEliminarVehiculo = false;
       this.resetFormVehiculo();
       // Recargar vehículos
-      this.$store.dispatch('vehiculos/getAll').then(() => {
-        this.vehiculos = this.$store.state.vehiculos ? this.$store.state.vehiculos.all : [];
+      useVehiculosStore().getAll().then(() => {
+        this.vehiculos = useVehiculosStore().all || [];
       }).catch(() => {
         this.vehiculos = [];
       });
@@ -899,16 +919,16 @@ export default {
     async submitFormVehiculo() {
       this.loadingCargarVehiculo = true;
       try {
-        const userToken = this.$store.state.user.token;
+        const userToken = useUserStore().token;
 
-        await this.$store.dispatch('vehiculos/create', {
+        await useVehiculosStore().create({
           vehiculo: this.vehiculo,
           userToken
         });
 
         this.successMessageVehiculo = true;
       } catch (error) {
-        this.$bvToast.toast("Error al crear el vehículo", { variant: "danger" });
+        this.showToast("Error al crear el vehículo", { variant: "danger" });
       } finally {
         this.loadingCargarVehiculo = false;
       }
@@ -925,9 +945,9 @@ export default {
       this.isLoading = true;
       this.showEliminarVehiculo = false;
       const id = item.id;
-      const userToken = this.$store.state.user.token;
+      const userToken = useUserStore().token;
 
-      const success = await this.$store.dispatch('vehiculos/delete', {
+      const success = await useVehiculosStore().delete({
         id,
         userToken
       });
@@ -967,14 +987,14 @@ export default {
       this.loadingEditarVehiculo = true;
 
       try {
-        const userToken = this.$store.state.user.token;
+        const userToken = useUserStore().token;
 
         const vehiculoData = {
           patente: this.vehiculoEdit.patente,
           area: this.vehiculoEdit.area
         };
 
-        await this.$store.dispatch('vehiculos/update', {
+        await useVehiculosStore().update({
           id: this.vehiculoEdit.id,
           vehiculo: vehiculoData,
           userToken
@@ -984,13 +1004,13 @@ export default {
         // Verificar si el área cambió para registrar específicamente el cambio de área
         if (this.vehiculoEdit.areaOriginal !== this.vehiculoEdit.area) {
           await this.$logUserActivity(
-            this.$store.state.user.username,
+            useUserStore().username,
             'Modificar Vehículo - Cambio de Área',
             `Vehículo ${this.vehiculoEdit.patente}: área cambiada de ${this.vehiculoEdit.areaOriginal} a ${this.vehiculoEdit.area}`
           );
         } else {
           await this.$logUserActivity(
-            this.$store.state.user.username,
+            useUserStore().username,
             'Modificar Vehículo',
             `Vehículo ${this.vehiculoEdit.patente} actualizado en el área ${this.vehiculoEdit.area}`
           );
@@ -998,19 +1018,19 @@ export default {
 
         // Cerrar modal y mostrar mensaje de éxito
         this.cerrarModalEditar();
-        this.$bvToast.toast('Vehículo actualizado correctamente', {
+        this.showToast('Vehículo actualizado correctamente', {
           title: 'Éxito',
           variant: 'success',
           solid: true
         });
 
         // Recargar vehículos
-        await this.$store.dispatch('vehiculos/getAll');
-        this.vehiculos = this.$store.state.vehiculos ? this.$store.state.vehiculos.all : [];
+        await useVehiculosStore().getAll();
+        this.vehiculos = useVehiculosStore().all || [];
 
       } catch (error) {
         console.error('Error al actualizar vehículo:', error);
-        this.$bvToast.toast('Error al actualizar el vehículo', {
+        this.showToast('Error al actualizar el vehículo', {
           title: 'Error',
           variant: 'danger',
           solid: true
@@ -1042,5 +1062,10 @@ export default {
 /* Estilos para el dashboard de combustible */
 .dashboard-combustible {
   padding: 1rem 0;
+}
+
+.combustible-actions .btn {
+  width: auto;
+  flex: 0 0 auto;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <!-- Modal del Certificado con tabla de detalles -->
-  <b-modal v-model="visible" title="Detalles del Certificado" header-bg-variant="info" @hide="closeModal" size="xl">
+  <BModal v-model="visible" title="Detalles del Certificado" header-bg-variant="info" @hide="closeModal" size="xl">
     <div v-if="certificado">
       <div class="text-center mb-3">
         <NuxtLink v-if="!certificado.redeterminado" :to="{ name: 'redeterminaciones-id', params: { id: certificado.id } }">
@@ -16,15 +16,16 @@
       <!-- Tabla de detalles del certificado -->
       <b-table :items="tableItems" :fields="tableFields" striped hover responsive class="mt-3"></b-table>
     </div>
-    <template #modal-footer>
+    <template #footer>
       <b-button variant="secondary" @click="closeModal">Cerrar</b-button>
     </template>
-  </b-modal>
+  </BModal>
 </template>
 
 <script>
 import certificado from '~/service/certificado'
 export default {
+  setup(){ const { showToast } = useProjectToast(); return { showToast } },
   props: {
     obra: {
       type: Object,
@@ -52,15 +53,15 @@ export default {
       ]
     }
   },
-  async fetch() {
-    this.obraUvi = (this.obra.ponderacion[0].porcentaje == null)
+  mounted() {
+    this.obraUvi = this.obra?.ponderacion?.[0]?.porcentaje == null
   },
   computed: {
     isAdmin(){
-      return Boolean(this.$store.state.user.admin == "true")
+      return Boolean(useUserStore().admin == "true")
     },
     adminHacienda(){
-      return this.$store.state.user.admin == "hacienda"
+      return useUserStore().admin == "hacienda"
     },
     tableItems() {
       return this.certificado.items.map((item, index) => ({
@@ -103,7 +104,7 @@ export default {
     },
     async eliminarCert() {
       try {
-        const userToken = this.$store.state.user.token;
+        const userToken = useUserStore().token;
         const certificado = this.certificado;
         const obra = this.obra;
 
@@ -114,21 +115,21 @@ export default {
         const obraSinFechas = { ...obra, fecha_contrato: undefined, acta_inicio: undefined /* excluye el campo fecha_contrato */ };
 
         // Llamar a una acción de Vuex para actualizar los certificados de la obra en el estado
-        await this.$store.dispatch('obras/actualizarCertificados', certificadosActualizados);
+        await useObrasStore().actualizarCertificados(certificadosActualizados);
 
         // Llamar a una acción de Vuex para actualizar la obra en la base de datos
-        await this.$store.dispatch('obras/update', {
+        await useObrasStore().update({
           obra: obraSinFechas,
           userToken
         });
 
         // Llamar a una acción de Vuex para eliminar el certificado
-        await this.$store.dispatch('certificados/delete', {
+        await useCertificadosStore().delete({
           certificado,
           userToken
         });
 
-        this.$bvToast.toast('Eliminada correctamente', {
+        this.showToast('Eliminada correctamente', {
           title: '',
           variant: 'success',
           appendToast: true,
@@ -137,7 +138,7 @@ export default {
 
         await this.$router.push('/');
       } catch (e) {
-        this.$bvToast.toast('Error eliminando', {
+        this.showToast('Error eliminando', {
           title: 'Error',
           variant: 'danger',
           appendToast: true,
@@ -148,13 +149,13 @@ export default {
     async eliminarRedet(){
       try {
         const redeterminacion = this.redet
-        const userToken = this.$store.state.user.token
+        const userToken = useUserStore().token
 
-        await this.$store.dispatch('redeterminaciones/delete', {
+        await useRedeterminacionesStore().delete({
           redeterminacion,
           userToken
         })
-        this.$bvToast.toast('Eliminada correctamente', {
+        this.showToast('Eliminada correctamente', {
           title: '',
           variant: 'success',
           appendToast: true,
@@ -162,7 +163,7 @@ export default {
         })
         await this.$router.push('/')
       } catch (e) {
-        this.$bvToast.toast('Error eliminando', {
+        this.showToast('Error eliminando', {
           title: 'Error',
           variant: 'danger',
           appendToast: true,

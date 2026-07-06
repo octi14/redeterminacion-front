@@ -7,11 +7,19 @@
   </div>
 </template>
 
+<script setup>
+definePageMeta({
+  middleware: ['authenticated', 'require-admin'],
+  adminRoles: ['hacienda', 'master'],
+})
+</script>
+
 <script>
 export default {
   computed: {
     adminHacienda() {
-      return this.$store.state.user.admin == "hacienda" ||  this.$store.state.user.admin == "master"
+      const admin = useUserStore().admin
+      return admin == "hacienda" ||  admin == "master"
     },
   }
 }

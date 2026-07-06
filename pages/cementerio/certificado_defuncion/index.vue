@@ -12,7 +12,7 @@
         @sliding-start="onSlideStart"
         @sliding-end="onSlideEnd"
       >
-        <b-carousel-slide img-src="../../../assets/banner-pago-doble.png"></b-carousel-slide>
+        <b-carousel-slide :img-src="bannerPagoDoble"></b-carousel-slide>
       </b-carousel>
     </div>
     <div class="col-10 mobileCarrousel" style="margin: auto; margin-top: 2rem">
@@ -25,7 +25,7 @@
         @sliding-start="onSlideStart"
         @sliding-end="onSlideEnd"
       >
-        <b-carousel-slide img-src="../../../assets/banner-pago-doble.png"></b-carousel-slide>
+        <b-carousel-slide :img-src="bannerPagoDoble"></b-carousel-slide>
       </b-carousel>
     </div>
 
@@ -36,16 +36,16 @@
           <b-card class="section-card shadow-card my-2" v-bind:class="{ 'expanded': isCardExpanded(0) }" >
             <h4 class="section-title" @click="toggleCard(0)">
               ¿A qué nos referimos con este trámite?
-              <b-icon-chevron-compact-down v-if="!isCardExpanded(0)"></b-icon-chevron-compact-down>
-              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
+              <i class="bi bi-chevron-compact-down"></i>
+              <i class="bi bi-chevron-compact-up"></i>
             </h4>
             <transition name="expand">
               <div v-show="isCardExpanded(0)">
                 <div class="li-row first-li">
-                  <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Información del trámite de <b>certificado de defunción</b>. (Contenido provisorio, se copió el layout de Recaudaciones hasta contar con el texto oficial).</div>
+                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Información del trámite de <b>certificado de defunción</b>. (Contenido provisorio, se copió el layout de Recaudaciones hasta contar con el texto oficial).</div>
                 </div>
                 <div class="li-row first-p">
-                  <div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content"> Recordá que el Municipio puede solicitar <b>documentación adicional</b> y que los archivos deben ser <b>legibles</b> y pesar <b>hasta 15Mb</b>.</div>
+                  <div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content"> Recordá que el Municipio puede solicitar <b>documentación adicional</b> y que los archivos deben ser <b>legibles</b> y pesar <b>hasta 15Mb</b>.</div>
                 </div>
               </div>
             </transition>
@@ -54,26 +54,26 @@
           <b-card class="section-card shadow-card my-2">
             <h4 class="section-title" @click="toggleCard(1)">
               Requisitos
-              <b-icon-chevron-compact-down v-if="!isCardExpanded(1)"></b-icon-chevron-compact-down>
-              <b-icon-chevron-compact-up v-else></b-icon-chevron-compact-up>
+              <i class="bi bi-chevron-compact-down"></i>
+              <i class="bi bi-chevron-compact-up"></i>
             </h4>
             <transition name="expand">
               <div v-show="isCardExpanded(1)">
-                <div class="li-row first-li"><div class="li-icon"><b-icon-check-lg font-scale="0.75" class="icon-orange"></b-icon-check-lg></div><div class="li-content">Contar con la documentación digitalizada en formato imagen o PDF.</div></div>
+                <div class="li-row first-li"><div class="li-icon"><i class="bi bi-check-lg" style="font-size: 0.75em"></i></div><div class="li-content">Contar con la documentación digitalizada en formato imagen o PDF.</div></div>
               </div>
             </transition>
           </b-card>
 
-          <b-button variant="success" class="float-right btn-form" @click="showPopupConf()">Iniciar Trámite</b-button>
+          <div class="page-btn-iniciar-tramite-wrap"><b-button variant="success" size="sm" class="btn-form page-btn-iniciar-tramite" @click="showPopupConf()">Iniciar Trámite</b-button></div>
         </b-col>
       </b-row>
     </b-container>
 
     <!-- Popup de confirmación -->
-    <b-modal v-model="showConfirmationPopup" hide-footer :header-bg-variant="'success'" centered>
-      <template #modal-header>
+    <BModal v-model="showConfirmationPopup" no-footer :header-bg-variant="'success'" centered>
+      <template #header>
         <div class="confirmation-popup-header">
-          <b-icon icon="exclamation-triangle" scale="2" variant="light" ></b-icon>
+          <i class="bi bi-exclamation-triangle text-light"></i>
         </div>
       </template>
       <div class="confirmation-popup-body">
@@ -84,20 +84,23 @@
         </div>
         <div class="text-center mt-3">
           <nuxt-link :class="{ 'disabled': !documentCheckboxChecked }" :to="{path: '/cementerio/certificado_defuncion/form' }">
-            <b-btn variant="success" :disabled="!documentCheckboxChecked" @click="proceedToForm()" >
+            <b-button variant="success" :disabled="!documentCheckboxChecked" @click="proceedToForm()" >
               Aceptar
-            </b-btn>
+            </b-button>
           </nuxt-link>
         </div>
       </div>
-    </b-modal>
+    </BModal>
   </div>
 </template>
 
 <script>
-export default({
+import bannerPagoDoble from '~/assets/banner-pago-doble.png'
+
+export default {
   data(){
     return{
+      bannerPagoDoble,
       showConfirmationPopup: false,
       documentCheckboxChecked: false,
       expandedCards: [],
@@ -124,7 +127,7 @@ export default({
     onSlideStart() {},
     onSlideEnd() {},
   }
-})
+}
 </script>
 
 <style scoped>

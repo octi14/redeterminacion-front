@@ -12,7 +12,7 @@
           <b-form-group label="CUIT *" label-for="fun-cuit">
             <b-form-input id="fun-cuit" v-model="funeraria.cuit" @blur="$v.funeraria.cuit.$touch()"></b-form-input>
             <div v-if="$v.funeraria.cuit.$error" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Introduce un CUIT válido, sin guiones.
+              <i class="bi bi-exclamation-octagon text-danger"></i> Introduce un CUIT válido, sin guiones.
             </div>
           </b-form-group>
         </b-col>
@@ -20,7 +20,7 @@
           <b-form-group label="Nombre del responsable *" label-for="fun-resp">
             <b-form-input id="fun-resp" v-model="funeraria.responsable" @blur="$v.funeraria.responsable.$touch()"></b-form-input>
             <div v-if="$v.funeraria.responsable.$error" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Campo requerido.
+              <i class="bi bi-exclamation-octagon text-danger"></i> Campo requerido.
             </div>
           </b-form-group>
         </b-col>
@@ -30,7 +30,7 @@
           <b-form-group label="Teléfono de contacto *" label-for="fun-tel">
             <b-form-input id="fun-tel" v-model="funeraria.telefono" @blur="$v.funeraria.telefono.$touch()"></b-form-input>
             <div v-if="$v.funeraria.telefono.$error" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe ser numérico.
+              <i class="bi bi-exclamation-octagon text-danger"></i> Debe ser numérico.
             </div>
           </b-form-group>
         </b-col>
@@ -38,13 +38,13 @@
           <b-form-group label="Correo electrónico *" label-for="fun-mail">
             <b-form-input id="fun-mail" v-model="funeraria.mail" @blur="$v.funeraria.mail.$touch()"></b-form-input>
             <div v-if="$v.funeraria.mail.$error" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Email inválido.
+              <i class="bi bi-exclamation-octagon text-danger"></i> Email inválido.
             </div>
           </b-form-group>
           <b-form-group label="Repita el correo electrónico *" label-for="fun-mail2">
             <b-form-input id="fun-mail2" v-model="funeraria.mail2" @blur="$v.funeraria.mail2.$touch()"></b-form-input>
             <div v-if="$v.funeraria.mail2.$error" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Los correos deben coincidir.
+              <i class="bi bi-exclamation-octagon text-danger"></i> Los correos deben coincidir.
             </div>
           </b-form-group>
         </b-col>
@@ -60,7 +60,7 @@
           <b-form-group label="Apellido *" label-for="obi-apellido">
             <b-form-input id="obi-apellido" v-model="obito.apellido" @blur="$v.obito.apellido.$touch()"></b-form-input>
             <div v-if="$v.obito.apellido.$error" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Campo requerido.
+              <i class="bi bi-exclamation-octagon text-danger"></i> Campo requerido.
             </div>
           </b-form-group>
         </b-col>
@@ -68,7 +68,7 @@
           <b-form-group label="Nombre *" label-for="obi-nombre">
             <b-form-input id="obi-nombre" v-model="obito.nombre" @blur="$v.obito.nombre.$touch()"></b-form-input>
             <div v-if="$v.obito.nombre.$error" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Campo requerido.
+              <i class="bi bi-exclamation-octagon text-danger"></i> Campo requerido.
             </div>
           </b-form-group>
         </b-col>
@@ -83,7 +83,7 @@
               <option>Otro</option>
             </b-form-select>
             <div v-if="$v.obito.tipoDocumento.$error" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Campo requerido.
+              <i class="bi bi-exclamation-octagon text-danger"></i> Campo requerido.
             </div>
           </b-form-group>
         </b-col>
@@ -91,7 +91,7 @@
           <b-form-group label="Nro de documento *" label-for="obi-num">
             <b-form-input id="obi-num" v-model="obito.numeroDocumento" @blur="$v.obito.numeroDocumento.$touch()"></b-form-input>
             <div v-if="$v.obito.numeroDocumento.$error" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe ser numérico.
+              <i class="bi bi-exclamation-octagon text-danger"></i> Debe ser numérico.
             </div>
           </b-form-group>
         </b-col>
@@ -101,7 +101,7 @@
           <b-form-group label="Fecha de defunción *" label-for="obi-fecha">
             <b-form-input id="obi-fecha" type="date" v-model="obito.fechaDefuncion" @blur="$v.obito.fechaDefuncion.$touch()"></b-form-input>
             <div v-if="$v.obito.fechaDefuncion.$error" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Campo requerido.
+              <i class="bi bi-exclamation-octagon text-danger"></i> Campo requerido.
             </div>
           </b-form-group>
         </b-col>
@@ -127,7 +127,7 @@
             <b-form-file id="doc-cert" v-model="documentos.certificadoDefuncion" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*"
               @change="checkDocumentSize('certificadoDefuncion', $event); touchDoc('certificadoDefuncion')"></b-form-file>
             <div v-if="docErrors.certificadoDefuncion" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ docErrors.certificadoDefuncion }}
+              <i class="bi bi-exclamation-octagon text-danger"></i> {{ docErrors.certificadoDefuncion }}
             </div>
           </b-form-group>
         </b-col>
@@ -136,7 +136,7 @@
             <b-form-file id="doc-pago" v-model="documentos.comprobantePagoTasa" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*"
               @change="checkDocumentSize('comprobantePagoTasa', $event); touchDoc('comprobantePagoTasa')"></b-form-file>
             <div v-if="docErrors.comprobantePagoTasa" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ docErrors.comprobantePagoTasa }}
+              <i class="bi bi-exclamation-octagon text-danger"></i> {{ docErrors.comprobantePagoTasa }}
             </div>
           </b-form-group>
         </b-col>
@@ -149,27 +149,27 @@
         <b-button size="lg" type="submit" variant="success" :disabled="!areAllFieldsComplete">Enviar</b-button>
       </fieldset>
       <div v-if="!areAllFieldsComplete" class="validation-error">
-        <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Completar todos los campos marcados con (*).
+        <i class="bi bi-exclamation-octagon text-danger"></i> Completar todos los campos marcados con (*).
       </div>
     </div>
   </b-form>
 
-  <b-modal v-model="showOk" title="" ok-only :header-bg-variant="'success'" centered>
-    <template #modal-header>
+  <BModal v-model="showOk" title="" ok-only :header-bg-variant="'success'" centered>
+    <template #header>
       <div class="centeredContainer"><h3>
-        <b-icon icon="check-circle-fill" scale="1.5" variant="light"></b-icon>
+        <i class="bi bi-check-circle-fill text-light"></i>
       </h3></div>
     </template>
     <div class="centeredContainer">
       <p class="modal-subtitle">¡Tu solicitud fue registrada!</p>
       <p class="">Pronto recibirás novedades por correo electrónico.</p>
     </div>
-  </b-modal>
+  </BModal>
 </div>
 </template>
 
 <script>
-import { required, numeric, email, sameAs, maxLength, minLength } from 'vuelidate/lib/validators';
+import { required, numeric, email, sameAs, maxLength, minLength } from '@vuelidate/validators';
 
 export default{
   validations() {
@@ -278,7 +278,7 @@ export default{
             documentos: documentosParaGuardar,
           };
 
-          await this.$store.dispatch('cementerio/create', { certificado });
+          await useCementerioStore().create({ certificado });
           this.showOk = true;
         }catch(e){
           console.error('Error al enviar el formulario de cementerio:', e);
@@ -320,5 +320,6 @@ h3{ font-weight:bold; color:#0c681a !important; margin:1rem 0; }
 .modal .modal-subtitle{ color:#0c681a !important; font-size:1.25rem; font-weight:bold; margin-bottom: 15px; }
 .modal-content .bg-success{ background-color:#0c681a !important; }
 </style>
+
 
 

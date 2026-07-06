@@ -137,7 +137,7 @@
 </template>
 
 <script>
-import Chart from '~/plugins/chart.js'
+import Chart from '~/utils/chart-setup.js'
 
 export default {
   name: 'GraficosComercio',
@@ -713,7 +713,7 @@ export default {
       })
     }
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.chartTramitesPorMes) {
       this.chartTramitesPorMes.destroy()
     }
@@ -749,3 +749,4 @@ export default {
   width: 100%;
 }
 </style>
+

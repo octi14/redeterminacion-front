@@ -70,7 +70,7 @@
                   </b-form-group>
                 </div>
                 <div class="col-auto mx-4">
-                  <b-btn
+                  <b-button
                     :disabled="items.length <= 1"
                     variant="danger"
                     size="md"
@@ -78,11 +78,11 @@
                     @click="deleteItem(index)"
                   >
                     x
-                  </b-btn>
+                  </b-button>
                 </div>
               </div>
             </b-list-group-item>
-            <b-btn class="col-md-3 my-2" @click="addItem">Agregar Item</b-btn>
+            <b-button class="col-md-3 my-2" @click="addItem">Agregar Item</b-button>
           <hr />
           </b-list-group>
 
@@ -109,17 +109,24 @@
 
           <hr />
         <div class="row-5 my-3 mx-auto">
-          <b-btn type="submit" class="mx-auto" variant="success">Enviar</b-btn>
-          <b-btn @click="onReturn" class="mx-auto" variant="danger">Cancelar</b-btn>
+          <b-button type="submit" class="mx-auto" variant="success">Enviar</b-button>
+          <b-button @click="onReturn" class="mx-auto" variant="danger">Cancelar</b-button>
         </div>
       </b-form>
     </div>
   </div>
 </template>
 
+<script setup>
+definePageMeta({
+  middleware: ['authenticated', 'require-admin'],
+  adminRoles: ['hacienda', 'master'],
+})
+</script>
+
 <script>
 export default {
-  middleware: ['authenticated'],
+  setup(){ const { showToast } = useProjectToast(); return { showToast } },
   data() {
     return {
       expediente: '',
@@ -148,9 +155,9 @@ export default {
       uvis: false,
     }
   },
-  async fetch() {
-    await this.$store.dispatch('categorias/getAll')
-    this.categorias = this.$store.state.categorias.all
+  async mounted() {
+    await useCategoriasStore().getAll()
+    this.categorias = useCategoriasStore().all
     for (var i = 0; i < this.categorias.length; i++) {
       this.ponderacion.push({
         categoria: this.categorias[i],
@@ -158,7 +165,6 @@ export default {
       })
     }
   },
-  fetchOnServer: false,
   methods: {
     async onSubmitCreateFile() {
     for (var i = 0; i < this.ponderacion.length; i++) {
@@ -166,8 +172,8 @@ export default {
       this.ponderacion[i].categoria = id
     }
     try {
-      const userToken = this.$store.state.user.token
-      await this.$store.dispatch('obras/create', {
+      const userToken = useUserStore().token
+      await useObrasStore().create({
         userToken,
         obra: {
           expediente: this.expediente,
@@ -189,7 +195,7 @@ export default {
           ponderacion: this.ponderacion,
         },
       })
-      this.$bvToast.toast('Creada correctamente', {
+      this.showToast('Creada correctamente', {
         title: 'Creada',
         variant: 'success',
         appendToast: true,
@@ -197,7 +203,7 @@ export default {
       })
       await this.$router.push('/redeterminacion')
       } catch (e) {
-        this.$bvToast.toast('Error Cargando la Obra', {
+        this.showToast('Error Cargando la Obra', {
           title: 'Error',
           variant: 'danger',
           appendToast: true,

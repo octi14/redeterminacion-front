@@ -29,6 +29,7 @@
 
 <script>
 export default {
+  setup(){ const { showToast } = useProjectToast(); return { showToast } },
   middleware: ['authenticated'],
   props: {
     obra: {
@@ -59,11 +60,6 @@ export default {
       saldoTotal: 0,
     }
   },
-  async fetch() {
-    // await this.$store.dispatch('ingredients/getIngredients')
-    // await this.$store.dispatch('tags/getTags')
-  },
-  fetchOnServer: false,
   created() {
     this.initializeObra()
     this.initializeCertif()
@@ -100,7 +96,7 @@ export default {
         certificado.id = this.certificado.id
       }
 
-      this.$bvToast.toast('Certificación agregada', {
+      this.showToast('Certificación agregada', {
         title: 'Agregada',
         variant: 'success',
         appendToast: true,

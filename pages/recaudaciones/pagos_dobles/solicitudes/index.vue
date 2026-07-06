@@ -1,12 +1,12 @@
 <template>
   <div class="page main-background">
     <Banner title="Reclamos de pago doble" subtitle="Uso interno" />
-    <div class="col-10 mx-auto" v-if="adminRecaudaciones">
+    <div class="internal-use-toolbar internal-use-wide" v-if="adminRecaudaciones">
       <!-- Filtrar por estado -->
       <b-row>
         <b-form-group class="col-4 mx-6 mx-auto mt-4" label-class="text-success h6">
           <label for="inputCUIT" class="bv-no-focus-ring col-form-label pt-0 text-success h6">
-            <b-icon-search></b-icon-search> Buscar por CUIT
+            <i class="bi bi-search"></i> Buscar por CUIT
           </label>
           <b-form-input
             id="inputCUIT"
@@ -17,44 +17,63 @@
           />
         </b-form-group>
         <b-form-group class="col-4 mx-6 mx-auto mt-4" label-class="text-success h6">
-          <label for="selectedEstado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><b-icon-funnel-fill></b-icon-funnel-fill> Filtrar por Estado</label>
+          <label for="selectedEstado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><i class="bi bi-funnel-fill"></i> Filtrar por Estado</label>
           <b-form-select plain v-model="selectedEstado">
             <option value="">Todos</option>
             <option v-for="estado in estados" :value="estado" :key="estado">{{ estado }}</option>
           </b-form-select>
         </b-form-group>
       </b-row>
-      <b-form-checkbox class="text-center" v-model="hideFinalizados">Ocultar Finalizados/Rechazados</b-form-checkbox>
-      <!-- <div class="row no-gutters justify-content-center">
-        <b-button variant="success" class="text-center mt-3" v-if="adminMaster" @click="generarExcelTramitesNoFinalizados"> Exportar a Excel</b-button>
-      </div> -->
+      <div class="internal-use-checkbox-row">
+        <b-form-checkbox v-model="hideFinalizados">Ocultar Finalizados/Rechazados</b-form-checkbox>
+      </div>
+      <div class="page-btn-export-wrap">
+        <b-button variant="success" size="sm" class="page-btn-export" v-if="adminMaster" @click="generarExcelTramitesNoFinalizados"> Exportar a Excel</b-button>
+      </div>
     </div>
 
-    <b-table per-page="10" head-row-variant="warning" class="col-md-10 white col-sm-8 mx-auto mt-4 shadow-card" :items="paginatedItems" :fields="fields">
+    <b-table
+      per-page="10"
+      head-row-variant="warning"
+      class="internal-use-table internal-use-wide white mt-4 shadow-card"
+      :items="paginatedItems"
+      :fields="fields"
+      :busy="loading"
+    >
+      <template #table-busy>
+        <LoadingState text="Cargando..." variant="primary" />
+      </template>
       <!-- Plantilla personalizada para la columna "detalles" -->
       <template #cell(status)="row">
         <div :class="row.item.estadoColor"><b>{{ row.value }}</b></div>
       </template>
       <template #cell(detalles)="row">
-        <NuxtLink :to="{ name: 'recaudaciones-pagos_dobles-solicitudes-id', params: { id: row.item.id } }" @click.native="registrarActividad('Abrir Trámite', 'Trámite nro: ' + row.item.nroTramite)">
+        <NuxtLink :to="{ name: 'recaudaciones-pagos_dobles-solicitudes-id', params: { id: row.item.id } }" @click="registrarActividad('Abrir Trámite', 'Trámite nro: ' + row.item.nroTramite)">
           <b-button variant="outline-secondary" size="sm" title="Editar">
-            <b-icon-pen/>
+            <i class="bi bi-pen"></i>
           </b-button>
         </NuxtLink>
       </template>
       <template #cell(observaciones)="row">
         <b-button v-if="row.item.observaciones && row.item.observaciones != ''" @click="onShowObservaciones(row.item.id)" variant="outline-primary" size="sm" title="Observaciones">
-          <b-icon-eye/>
+          <i class="bi bi-eye"></i>
         </b-button>
       </template>
     </b-table>
-    <b-pagination class="mt-4" :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
+    <b-pagination v-if="!loading" class="internal-use-pagination internal-use-wide mt-4" :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
 
-    <b-modal v-model="observacionesModal" header-bg-variant="primary" title="Observaciones" title-class="text-light" hide-footer centered>
+    <BModal v-model="observacionesModal" header-bg-variant="primary" title="Observaciones" title-class="text-light" no-footer centered>
       <p v-html="singleContent"></p>
-    </b-modal>
+    </BModal>
   </div>
 </template>
+
+<script setup>
+definePageMeta({
+  middleware: ['authenticated', 'require-admin'],
+  adminRoles: ['recaudaciones', 'master'],
+})
+</script>
 
 <script>
 import * as XLSX from 'xlsx';
@@ -104,35 +123,16 @@ export default{
           key: 'observaciones'
         }
       ],
-      estados: ['Rechazada','En revisión', 'Aprobada']
+      estados: ['Rechazada','En revisión', 'Aprobada'],
+      loading: true,
     };
   },
-  async fetch() {
-    await this.$store.dispatch('pagosDobles/getAll')
-    this.items = this.pagosDobles
-    // Asignar el color adecuado según el estado
-    this.items?.forEach(item => {
-      switch (item.status) {
-        case 'En revisión':
-          item.estadoColor = 'text-primary';
-          break;
-        case 'Rechazada':
-          item.estadoColor = 'text-danger';
-          break;
-        case 'Aprobada':
-          item.estadoColor = 'text-darkgreen';
-          break;
-        default:
-          item.estadoColor = 'text-secondary';
-      }
-    });
-    this.$store.commit('pagosDobles/ordenarPagos')
-
-    const perPage = 10;
+  async mounted() {
+    await this.loadSolicitudes()
   },
   computed: {
     pagosDobles(){
-      return this.$store.state.pagosDobles.all
+      return usePagosDoblesStore().all
     },
     paginatedItems() {
       if (!this.filteredItems || this.filteredItems.length === 0) {
@@ -148,7 +148,8 @@ export default{
 
       // Filtrar los finalizados
       if (this.hideFinalizados) {
-        items = items.filter(item => !["Rechazada", "Finalizada"].includes(item.status));
+        // Estados finales en este módulo: Rechazada / Aprobada (compat con Finalizada si backend aún usa ese string)
+        items = items.filter(item => !["Rechazada", "Aprobada", "Finalizada"].includes(item.status));
       }
 
       // Filtrar por CUIT
@@ -169,15 +170,41 @@ export default{
       return Math.ceil(this.filteredItems.length / this.perPage);
     },
     adminRecaudaciones() {
-      return this.$store.state.user.admin === "recaudaciones" || this.$store.state.user.admin == "master"
+      const admin = useUserStore().admin
+      return admin === "recaudaciones" || admin == "master"
     },
     adminMaster() {
-      return this.$store.state.user.admin == "master"
+      return useUserStore().admin == "master"
     }
   },
   methods: {
+    async loadSolicitudes() {
+      this.loading = true
+      try {
+        await usePagosDoblesStore().getAll()
+        this.items = this.pagosDobles
+        this.items?.forEach(item => {
+          switch (item.status) {
+            case 'En revisión':
+              item.estadoColor = 'text-primary';
+              break;
+            case 'Rechazada':
+              item.estadoColor = 'text-danger';
+              break;
+            case 'Aprobada':
+              item.estadoColor = 'text-darkgreen';
+              break;
+            default:
+              item.estadoColor = 'text-secondary';
+          }
+        });
+        usePagosDoblesStore().ordenarPagos()
+      } finally {
+        this.loading = false
+      }
+    },
     async registrarActividad(evento, result){
-      const userId = this.$store.state.user.username; // Reemplaza con el ID del usuario real
+      const userId = useUserStore().username; // Reemplaza con el ID del usuario real
       const actionType = evento;
       const actionResult = result;
 
@@ -191,7 +218,7 @@ export default{
       this.currentPage = newPage;
     },
     async onShowObservaciones(id) {
-      const pago = this.$store.state.pagosDobles.all.find(pago => pago.id === id);
+      const pago = this.pagosDobles.find(pago => pago.id === id);
 
       // Dividir el texto en líneas en función del guión medio "-" y unirlo con etiquetas <br>
       const observacionesDivididas = pago.observaciones.split('-').join('<br>');

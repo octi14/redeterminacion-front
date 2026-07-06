@@ -4,18 +4,26 @@
       <Navbar />
     </div>
     <div id="app-content" class="mt-5">
-     <!-- <Nuxt keep-alive /> -->
-      <Nuxt />
-      <ModalSessionTimeout :mostrarModal="sessionExpired" />
-      <ModalMoratoria2026 :mostrarModal="mostrarMoratoria" @close="mostrarMoratoria = false" />
+      <slot />
+      <ModalSessionTimeout :mostrarModal="showSessionTimeoutModal" />
+      <ModalMoratoria2026 v-model:mostrar-modal="mostrarMoratoria" />
     </div>
     <Foot />
   </div>
 </template>
 
 <script>
+import { forceCloseAllModals } from '~/utils/modalCleanup'
+
 export default {
   name: 'Default',
+  provide() {
+    return {
+      closeMoratoriaModal: () => {
+        this.cerrarMoratoria()
+      },
+    }
+  },
   data() {
     return {
       sessionExpired: false,
@@ -25,24 +33,41 @@ export default {
   },
   computed: {
     token() {
-      return this.$store.state.user.token;
+      return useUserStore().token
+    },
+    showSessionTimeoutModal() {
+      const path = this.$route?.path || ''
+      return this.sessionExpired && path !== '/login'
     },
   },
   watch: {
     token(newToken) {
       if (newToken) {
-        this.sessionExpired = this.checkTokenExpired(newToken);
-        this.manualLogout = false; // Resetear la bandera cuando hay token
-      } else {
-        // Solo mostrar el popup si NO fue un logout manual
+        const expired = this.checkTokenExpired(newToken)
+        this.sessionExpired = expired
+        if (!expired) {
+          this.manualLogout = false
+        }
+      } else if (this.$route?.path !== '/login') {
+        // Solo mostrar el popup si NO fue un logout manual (nunca en /login)
         this.sessionExpired = !this.manualLogout;
+      } else {
+        this.sessionExpired = false;
       }
     },
-    // Cuando navegamos dentro de la SPA, `mounted()` no vuelve a correr.
-    // Este watcher asegura que el popup se muestre cada vez que entramos a `/`.
     '$route.path'(newPath) {
-      if (!process.client) return;
-      this.mostrarMoratoria = newPath === '/';
+      if (!import.meta.client) return
+      if (newPath !== '/') {
+        this.mostrarMoratoria = false
+      } else if (this.debeMostrarMoratoria()) {
+        this.mostrarMoratoria = true
+      }
+      forceCloseAllModals()
+    },
+    mostrarMoratoria(visible) {
+      if (!visible && import.meta.client) {
+        localStorage.setItem('moratoria2026cerrada', '1')
+      }
     },
   },
   mounted() {
@@ -54,7 +79,7 @@ export default {
         token: localStorage.getItem("userToken"),
         admin: localStorage.getItem("userAdmin"),
       };
-      this.$store.commit("user/setAuthenticated", authUser);
+      useUserStore().setAuthenticated(authUser);
     }
 
     // También chequeamos si el token ya está vencido al cargar
@@ -62,17 +87,28 @@ export default {
       this.sessionExpired = this.checkTokenExpired(this.token);
     }
 
-    // Popup de Moratoria 2026 al inicio de la página (`/`)
-    if (process.client && this.$route && this.$route.path === '/') {
-      this.mostrarMoratoria = true;
+    if (import.meta.client && this.$route?.path === '/' && this.debeMostrarMoratoria()) {
+      this.$nextTick(() => {
+        this.mostrarMoratoria = true
+      })
     }
 
     // Escuchar el evento de logout manual
-    this.$nuxt.$on('manual-logout', () => {
+    useNuxtApp().hook('manual-logout', () => {
       this.manualLogout = true;
     });
   },
   methods: {
+    debeMostrarMoratoria() {
+      if (!import.meta.client) return false
+      return !localStorage.getItem('moratoria2026cerrada')
+    },
+    cerrarMoratoria() {
+      this.mostrarMoratoria = false
+      if (import.meta.client) {
+        localStorage.setItem('moratoria2026cerrada', '1')
+      }
+    },
     checkTokenExpired(token) {
       if (!token) return true;
 

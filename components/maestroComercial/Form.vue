@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="maestro-comercial-form form">
     <b-form class="col-md-10 mx-auto justify-content-center">
       <b-form-group label="CUIT">
@@ -22,12 +22,12 @@
       <b-form-group label="DFE">
         <b-form-input v-model="dfe" type="text" readonly />
       </b-form-group>
-      <b-btn type="submit" size="md" variant="success" disabled>
+      <b-button type="submit" size="md" variant="success" disabled>
         <h5 class="my-auto" style="color:white">{{ create ? 'Crear' : 'Editar' }}</h5>
-      </b-btn>
-      <b-btn type="reset" size="md" @click="volver">
+      </b-button>
+      <b-button type="reset" size="md" @click="volver">
         <h5 class="my-auto" style="color:white">Volver</h5>
-      </b-btn>
+      </b-button>
     </b-form>
   </div>
 </template>

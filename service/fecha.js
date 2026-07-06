@@ -1,10 +1,11 @@
-const formatFecha = (fecha) => ({
+﻿const formatFecha = (fecha) => ({
   fecha: fecha.data,
 })
 
-module.exports = {
+export default {
   get: async (axios) => {
     const fecha = await axios.$get('/fecha')
     return formatFecha(fecha)
   },
 }
+

@@ -20,3 +20,5 @@ export async function agregar(axios, { id, factura, periodo }) {
   });
   return formatDocs(fileResponse.data); // Esto también
 }
+
+export default { getById, agregar }

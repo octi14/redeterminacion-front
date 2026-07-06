@@ -145,13 +145,21 @@
   </div>
 </template>
 
+<script setup>
+definePageMeta({
+  middleware: ['authenticated', 'require-admin'],
+  adminRoles: ['master'],
+})
+</script>
+
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { useUserActivitiesStore } from '~/stores/userActivities'
 import ActiveSessions from '@/components/userActivity/ActiveSessions.vue'
 
 export default {
+  setup(){ const { showToast } = useProjectToast(); return { showToast } },
   name: 'ActividadesPage',
-  middleware: 'authenticated',
   components: {
     ActiveSessions
   },
@@ -179,7 +187,7 @@ export default {
   },
 
   computed: {
-    ...mapState('userActivities', ['all', 'recent', 'filtered']),
+    ...mapState(useUserActivitiesStore, ['all', 'recent', 'filtered']),
 
     breadcrumbItems() {
       return [
@@ -229,7 +237,7 @@ export default {
     },
 
     adminMaster(){
-      return this.$store.state.user.admin == "master"
+      return useUserStore().admin == "master"
     }
 
   },
@@ -239,7 +247,7 @@ export default {
   },
 
   methods: {
-    ...mapActions('userActivities', ['getAll', 'getLastDays', 'getFiltered']),
+    ...mapActions(useUserActivitiesStore, ['getAll', 'getLastDays', 'getFiltered']),
 
     async loadActivities() {
       await this.getLastDays({ days: 30 })
@@ -251,11 +259,11 @@ export default {
       try {
         await this.getAll()
         this.loadMode = 'all'
-        this.$bvToast.toast('Se cargaron todas las actividades', {
+        this.showToast('Se cargaron todas las actividades', {
           title: 'Carga completada',
           variant: 'success',
           solid: true,
-          toaster: 'b-toaster-top-right'
+          pos: 'top-end'
         })
       } finally {
         this.loadingAll = false
@@ -306,19 +314,19 @@ export default {
             limit: this.limit
           })
 
-          this.$bvToast.toast('Filtro de fechas aplicado', {
+          this.showToast('Filtro de fechas aplicado', {
             title: 'Filtro Aplicado',
             variant: 'success',
             solid: true,
-            toaster: 'b-toaster-top-right'
+            pos: 'top-end'
           })
         } catch (error) {
           console.error('Error aplicando filtro de fechas:', error)
-          this.$bvToast.toast('Error al aplicar el filtro de fechas', {
+          this.showToast('Error al aplicar el filtro de fechas', {
             title: 'Error',
             variant: 'danger',
             solid: true,
-            toaster: 'b-toaster-top-right'
+            pos: 'top-end'
           })
         }
       }
@@ -335,11 +343,11 @@ export default {
         await this.getAll()
       }
 
-      this.$bvToast.toast('Filtro de fechas removido', {
+      this.showToast('Filtro de fechas removido', {
         title: 'Filtro Removido',
         variant: 'info',
         solid: true,
-        toaster: 'b-toaster-top-right'
+        pos: 'top-end'
       })
     },
 

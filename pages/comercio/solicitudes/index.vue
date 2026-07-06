@@ -1,36 +1,34 @@
 <template>
   <div class="page main-background">
     <Banner title="Solicitudes de trámite" subtitle="Uso interno" />
-    <div class="col-10 mx-auto" v-if="adminComercio">
+    <div class="internal-use-toolbar internal-use-wide" v-if="adminComercio">
       <!-- Filtros y búsqueda en una sola línea -->
-      <b-row class="flex-nowrap align-items-end mt-4">
+      <b-row class="align-items-end mt-4">
         <b-form-group class="col mt-0 mb-0" label-class="text-success h6">
           <label for="inputNroTramite" class="bv-no-focus-ring col-form-label pt-0 text-success h6">
-            <b-icon-search></b-icon-search> Buscar por N° de Trámite
+            <i class="bi bi-search"></i> Buscar por N° de Trámite
           </label>
           <b-form-input
             id="inputNroTramite"
             v-model="inputNroTramite"
             placeholder="Ingresá el número de trámite"
-            @input="filtrarPorNroTramite"
             type="text"
           />
         </b-form-group>
         <b-form-group class="col mt-0 mb-0" label-class="text-success h6">
           <label for="inputCUIT" class="bv-no-focus-ring col-form-label pt-0 text-success h6">
-            <b-icon-search></b-icon-search> Buscar por CUIT
+            <i class="bi bi-search"></i> Buscar por CUIT
           </label>
           <b-form-input
             id="inputCUIT"
             v-model="inputCUIT"
             placeholder="Ingresá el CUIT"
-            @input="filtrarPorCuit"
             type="text"
           />
         </b-form-group>
         <b-form-group class="col mt-0 mb-0" label-class="text-success h6">
           <label for="inputNombre" class="bv-no-focus-ring col-form-label pt-0 text-success h6">
-            <b-icon-search></b-icon-search> Buscar por nombre
+            <i class="bi bi-search"></i> Buscar por nombre
           </label>
           <b-form-input
             id="inputNombre"
@@ -40,37 +38,49 @@
           />
         </b-form-group>
         <b-form-group class="col mt-0 mb-0" label-class="text-success h6">
-          <label for="selectedEstado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><b-icon-funnel-fill></b-icon-funnel-fill> Filtrar por Estado</label>
+          <label for="selectedEstado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><i class="bi bi-funnel-fill"></i> Filtrar por Estado</label>
           <b-form-select plain v-model="selectedEstado">
             <option value="">Todos</option>
             <option v-for="estado in estados" :value="estado" :key="estado">{{ estado }}</option>
           </b-form-select>
         </b-form-group>
         <b-form-group class="col mt-0 mb-0" label-class="text-success h6">
-          <label for="selectedTipo" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><b-icon-funnel-fill></b-icon-funnel-fill> Filtrar por tipo de trámite</label>
+          <label for="selectedTipo" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><i class="bi bi-funnel-fill"></i> Filtrar por tipo de trámite</label>
           <b-form-select plain v-model="selectedTipo">
             <option value="">Todos</option>
             <option v-for="tipoTramite in tiposTramite" :value="tipoTramite" :key="tipoTramite">{{ tipoTramite }}</option>
           </b-form-select>
         </b-form-group>
       </b-row>
-      <b-form-checkbox class="text-center mt-3" v-model="hideFinalizados">Ocultar Finalizados/Rechazados</b-form-checkbox>
-      <div class="row no-gutters justify-content-center">
-        <b-button variant="success" class="text-center mt-3" v-if="jefeComercio" @click="generarExcelTramitesNoFinalizados"> Exportar a Excel</b-button>
+      <div class="internal-use-checkbox-row">
+        <b-form-checkbox v-model="hideFinalizados">Ocultar Finalizados/Rechazados</b-form-checkbox>
+      </div>
+      <div class="page-btn-export-wrap">
+        <b-button variant="success" size="sm" class="page-btn-export" v-if="jefeComercio" @click="generarExcelTramitesNoFinalizados"> Exportar a Excel</b-button>
       </div>
       <!-- <b-form-group class="col-4 mx-auto mt-4" horizontal label-class="text-success h6" label="Filtrar por DNI">
-        <b-icon-funnel-fill variant="success" />
+        <i class="bi bi-funnel-fill text-success"></i>
         <b-form-input v-model="selectedDocumento" @keypress="onSearchByDocumento">
         </b-form-input>
       </b-form-group> -->
     </div>
 
-    <b-table per-page="10" head-row-variant="warning" class="col-md-10 white col-sm-8 mx-auto mt-4 shadow-card" :items="paginatedItems" :fields="fields">
+    <b-table
+      per-page="10"
+      head-row-variant="warning"
+      class="internal-use-table internal-use-wide white mt-4 shadow-card"
+      :items="paginatedItems"
+      :fields="fields"
+      :busy="loading"
+    >
+      <template #table-busy>
+        <LoadingState text="Cargando..." variant="primary" />
+      </template>
       <!-- Plantilla personalizada para la columna "detalles" -->
       <template #cell(nroTramite)="row">
         <span>{{ row.value }}</span>
         <span v-if="adminMaster && row.item.visible === false" title="Trámite invisible para no administradores">
-          <b-icon-eye-slash class="text-danger mr-1" style="margin-left: 1rem;" />
+          <i class="bi bi-eye-slash"></i>
         </span>
       </template>
       <template #cell(status)="row">
@@ -80,31 +90,39 @@
         <span :title="row.value">{{ (row.value && row.value.length > 50) ? row.value.slice(0, 50) + '...' : row.value }}</span>
       </template>
       <template #cell(detalles)="row">
-        <NuxtLink :to="{ name: 'comercio-solicitudes-id', params: { id: row.item.id } }" @click.native="registrarActividad('Abrir Trámite', 'Trámite nro: ' + row.item.nroTramite)">
+        <NuxtLink :to="{ name: 'comercio-solicitudes-id', params: { id: row.item.id } }" @click="registrarActividad('Abrir Trámite', 'Trámite nro: ' + row.item.nroTramite)">
           <b-button variant="outline-secondary" size="sm" title="Editar">
-            <b-icon-pen/>
+            <i class="bi bi-pen"></i>
           </b-button>
         </NuxtLink>
       </template>
       <template #cell(observaciones)="row">
         <b-button v-if="row.item.observaciones && row.item.observaciones != ''" @click="onShowObservaciones(row.item.id)" variant="outline-primary" size="sm" title="Observaciones">
-          <b-icon-eye/>
+          <i class="bi bi-eye"></i>
         </b-button>
       </template>
     </b-table>
-    <b-pagination class="mt-4" :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
+    <b-pagination v-if="!loading" class="internal-use-pagination internal-use-wide mt-4" :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
 
-    <b-modal v-model="observacionesModal" header-bg-variant="primary" title="Observaciones" title-class="text-light" hide-footer centered>
+    <BModal v-model="observacionesModal" header-bg-variant="primary" title="Observaciones" title-class="text-light" no-footer centered>
       <p v-html="singleContent"></p>
-    </b-modal>
+    </BModal>
   </div>
 </template>
 
+<script setup>
+definePageMeta({
+  middleware: ['authenticated', 'require-admin'],
+  adminRoles: ['comercio', 'master'],
+})
+</script>
+
 <script>
 import * as XLSX from 'xlsx';
-import { saveAs } from 'file-saver';
+import { saveAsFile } from '~/utils/saveAsFile';
 
 export default{
+  setup(){ const { showToast } = useProjectToast(); return { showToast } },
   data() {
     return {
       hideFinalizados: false,
@@ -154,44 +172,15 @@ export default{
       ],
       estados: ['Rechazada','En revisión', 'Rectificación', 'Esperando turno','Esperando inspección','Inspeccionado', 'Esperando documentación', 'Prórroga 1', 'Prórroga 2', 'Finalizada'],
       tiposTramite: ['Habilitación','Baja', 'Renovación', 'Reempadronamiento', 'Cambio de Titular'],
+      loading: true,
     };
   },
-  async fetch() {
-    await this.$store.dispatch('habilitaciones/getAll')
-    this.items = this.habilitaciones
-
-    // Asignar el color adecuado según el estado
-    this.items.forEach(item => {
-      switch (item.status) {
-        case 'En revisión':
-          item.estadoColor = 'text-primary';
-          break;
-        case 'Rectificación':
-          item.estadoColor = 'text-lightblue';
-          break;
-        case 'Inspeccionado':
-          item.estadoColor = 'text-lightgreen';
-          break;
-        case 'Rechazada':
-          item.estadoColor = 'text-danger';
-          break;
-        case 'Esperando documentación':
-          item.estadoColor = 'text-success';
-          break;
-        case 'Finalizada':
-          item.estadoColor = 'text-darkgreen';
-          break;
-        default:
-          item.estadoColor = 'text-secondary';
-      }
-    });
-    this.$store.commit('habilitaciones/ordenarHabilitaciones')
-
-    const perPage = 10;
+  async mounted() {
+    await this.loadSolicitudes()
   },
   computed: {
     habilitaciones(){
-      return this.$store.state.habilitaciones.all
+      return useHabilitacionesStore().all
     },
     paginatedItems() {
       const start = (this.currentPage - 1) * this.perPage;
@@ -249,19 +238,56 @@ export default{
       return Math.ceil(this.filteredItems.length / this.perPage);
     },
     adminComercio() {
-      return this.$store.state.user.admin === "comercio" || this.$store.state.user.admin === "master"
+      const admin = useUserStore().admin
+      return admin === "comercio" || admin === "master"
     },
     adminMaster() {
-      return this.$store.state.user.admin === "master" || this.$store.state.user.username === "gracielabularte@gesell.gob.ar"
+      const userStore = useUserStore()
+      return userStore.admin === "master" || userStore.username === "gracielabularte@gesell.gob.ar"
     },
     jefeComercio() {
-      return this.$store.state.user.username === "nataliamegias@gesell.gob.ar" ||
-      this.$store.state.user.username === "gracielabularte@gesell.gob.ar" || this.$store.state.user.admin === "master"
+      const userStore = useUserStore()
+      return userStore.username === "nataliamegias@gesell.gob.ar" ||
+      userStore.username === "gracielabularte@gesell.gob.ar" || userStore.admin === "master"
     }
   },
   methods: {
+    async loadSolicitudes() {
+      this.loading = true
+      try {
+        await useHabilitacionesStore().getAll()
+        this.items = this.habilitaciones
+        this.items.forEach(item => {
+          switch (item.status) {
+            case 'En revisión':
+              item.estadoColor = 'text-primary';
+              break;
+            case 'Rectificación':
+              item.estadoColor = 'text-lightblue';
+              break;
+            case 'Inspeccionado':
+              item.estadoColor = 'text-lightgreen';
+              break;
+            case 'Rechazada':
+              item.estadoColor = 'text-danger';
+              break;
+            case 'Esperando documentación':
+              item.estadoColor = 'text-success';
+              break;
+            case 'Finalizada':
+              item.estadoColor = 'text-darkgreen';
+              break;
+            default:
+              item.estadoColor = 'text-secondary';
+          }
+        });
+        useHabilitacionesStore().ordenarHabilitaciones()
+      } finally {
+        this.loading = false
+      }
+    },
     async registrarActividad(evento, result){
-      const userId = this.$store.state.user.username; // Reemplaza con el ID del usuario real
+      const userId = useUserStore().username; // Reemplaza con el ID del usuario real
       const actionType = evento;
       const actionResult = result;
 
@@ -274,8 +300,8 @@ export default{
     async generarExcelTramitesNoFinalizados() {
       try {
         // Obtenemos todos los trámites del store
-        await this.$store.dispatch('habilitaciones/getAll')
-        const tramites = this.$store.state.habilitaciones.all
+        await useHabilitacionesStore().getAll()
+        const tramites = useHabilitacionesStore().all
 
         // Filtramos los trámites que no están finalizados
         const tramitesNoFinalizados = tramites.filter(tramite =>
@@ -284,7 +310,7 @@ export default{
 
         if (tramitesNoFinalizados.length === 0) {
           this.registrarActividad("Descargar trámites no finalizados", "No hay trámites no finalizados.");
-          this.$bvToast.toast('No hay trámites no finalizados para exportar', {
+          this.showToast('No hay trámites no finalizados para exportar', {
             title: 'Información',
             variant: 'info',
             solid: true
@@ -328,11 +354,11 @@ export default{
         // Usamos FileSaver.js para guardar el archivo
         const fecha = new Date().toISOString().split('T')[0];
         const nombreArchivo = `Tramites_No_Finalizados_${fecha}.xlsx`;
-        saveAs(blob, nombreArchivo);
+        await saveAsFile(blob, nombreArchivo);
 
         this.registrarActividad("Descargar trámites no finalizados", `Archivo descargado: ${nombreArchivo}`);
 
-        this.$bvToast.toast('Archivo Excel generado exitosamente', {
+        this.showToast('Archivo Excel generado exitosamente', {
           title: 'Éxito',
           variant: 'success',
           solid: true
@@ -340,7 +366,7 @@ export default{
       } catch (error) {
         this.registrarActividad("Descargar trámites no finalizados", "Error al generar el Excel: " + error.message);
 
-        this.$bvToast.toast('Error al generar el archivo Excel', {
+        this.showToast('Error al generar el archivo Excel', {
           title: 'Error',
           variant: 'danger',
           solid: true
@@ -351,10 +377,18 @@ export default{
       this.currentPage = newPage;
     },
     async onShowObservaciones(id) {
-      const habilitacion = this.$store.state.habilitaciones.all.find(habilitacion => habilitacion.id === id);
+      const habilitacion = useHabilitacionesStore().all.find(habilitacion => habilitacion.id === id);
+      if (!habilitacion) {
+        this.showToast('No se encontraron observaciones para este trámite.', {
+          title: 'Información',
+          variant: 'info',
+          solid: true,
+        });
+        return;
+      }
 
       // Dividir el texto en líneas en función del guión medio "-" y unirlo con etiquetas <br>
-      const observacionesDivididas = habilitacion.observaciones.split('-').join('<br>');
+      const observacionesDivididas = (habilitacion.observaciones || 'No hay observaciones para mostrar.').split('-').join('<br>');
 
       this.singleContent = observacionesDivididas;
       this.observacionesModal = true;

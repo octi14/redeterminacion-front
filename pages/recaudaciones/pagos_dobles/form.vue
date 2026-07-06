@@ -1,34 +1,57 @@
 <template>
 <div class="page main-background">
   <Banner title="Pagos dobles" />
-  <!-- Comprobante (página 4) -->
-  <div v-if="printing">
-    <b-card no-body border-variant="success" style="margin-top: 80px" class="printing-modal shadow col-md-5 col-sm-8 mx-auto">
-      <b-card-header class="row" header-class="green text-light">
-        <h5><b>Comprobante de Solicitud - </b> Recaudaciones</h5>
+  <!-- Comprobante (impresión) -->
+  <div v-if="printing" class="pagos-dobles-comprobante-wrapper">
+    <b-card no-body border-variant="success" class="pagos-dobles-comprobante-card shadow col-md-5 col-sm-8 mx-auto">
+      <b-card-header class="pagos-dobles-comprobante-header green text-light">
+        <h5 class="mb-0"><b>Comprobante de solicitud</b> — Recaudaciones</h5>
       </b-card-header>
-      <b-card-body class="text-center">
-        <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Día: </b> {{ new Date().toLocaleDateString('es-AR') }}</h5> </div>
-
-        <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Nro de trámite:</b> R{{ nroTramite }}</h5> </div>
-        <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Solicitante: </b> {{ solicitante.nombre }}  {{ solicitante.apellido }}</h5> </div>
-        <hr/>
-        <p class="" style="text-align: justify"><b-icon-caret-right-fill variant="success"></b-icon-caret-right-fill> Tené en cuenta que el Departamento Recaudaciones puede solicitarte documentación adicional vía correo electrónico.</p>
-
-        <hr/>
-        <b-button class="mt-2 btn-orange" v-if="endButton === true" @click="onResetParams">Volver</b-button>
+      <b-card-body class="pagos-dobles-comprobante-body">
+        <p class="pagos-dobles-comprobante-entity">Municipalidad de Villa Gesell — Secretaría de Hacienda</p>
+        <ul class="comprobante-datos">
+          <li>
+            <span class="comprobante-label"><i class="bi bi-check"></i> Día</span>
+            <span class="comprobante-value">{{ new Date().toLocaleDateString('es-AR') }}</span>
+          </li>
+          <li>
+            <span class="comprobante-label"><i class="bi bi-check"></i> Nro. de trámite</span>
+            <span class="comprobante-value">R{{ nroTramite }}</span>
+          </li>
+          <li>
+            <span class="comprobante-label"><i class="bi bi-check"></i> Solicitante</span>
+            <span class="comprobante-value">{{ solicitante.nombre }} {{ solicitante.apellido }}</span>
+          </li>
+        </ul>
+        <div class="comprobante-notas">
+          <div class="comprobante-nota">
+            <i class="bi bi-caret-right-fill icon-orange"></i>
+            <p>Tené en cuenta que el Departamento Recaudaciones puede solicitarte documentación adicional vía correo electrónico.</p>
+          </div>
+          <div class="comprobante-nota">
+            <i class="bi bi-caret-right-fill icon-orange"></i>
+            <p>Para consultar el estado de tu trámite ingresá en <a class="external-link" href="https://haciendavgesell.gob.ar/">haciendavgesell.gob.ar</a>, hacé click en el ícono correspondiente y escribí el número asignado en este comprobante.</p>
+          </div>
+        </div>
+        <b-button
+          v-if="endButton === true"
+          class="mt-3 btn-orange comprobante-no-print"
+          @click="onResetParams"
+        >
+          Volver
+        </b-button>
       </b-card-body>
     </b-card>
   </div>
 
   <b-form @submit.prevent="onSubmitForm" class="my-3" style="margin-left:10px;margin-right:10px" v-else>
     <!-- <b-card no-body class="col-8 mt-1 section-card"  style="margin: 0px auto">
-      <h5 style="margin-top:0px; margin-bottom: 0px; text-align:center;" ><b-icon-exclamation-circle-fill class="icon-orange"></b-icon-exclamation-circle-fill> El siguiente formulario tiene carácter de declaración jurada.</h5>
+      <h5 style="margin-top:0px; margin-bottom: 0px; text-align:center;" ><i class="bi bi-exclamation-circle-fill"></i> El siguiente formulario tiene carácter de declaración jurada.</h5>
     </b-card> -->
   <b-card no-body class="col-8 mt-1 section-card"  style="margin: 0px auto">
     <!-- Sección: Datos del solicitante -->
     <fieldset >
-      <legend><h3>Datos del Solicitante <b-icon-question-circle-fill @click="openPopup('DatosDelSolicitante')" font-scale="1" variant="info"></b-icon-question-circle-fill></h3></legend>
+      <h3 class="legend-title">Datos del Solicitante <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1em" role="button" tabindex="0" @click.stop.prevent="openPopup('DatosDelSolicitante')" @keydown.enter.stop.prevent="openPopup('DatosDelSolicitante')"></i></h3>
     </fieldset>
     <fieldset >
       <b-row>
@@ -36,7 +59,7 @@
           <b-form-group label="Nombre *" label-for="nombreSolicitante">
             <b-form-input id="nombreSolicitante" v-model="solicitante.nombre" @blur="$v.solicitante.nombre.$touch()"></b-form-input>
             <div v-if="$v.solicitante.nombre.$error" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El Nombre no puede estar vacío.
+              <i class="bi bi-exclamation-octagon text-danger"></i> El Nombre no puede estar vacío.
             </div>
           </b-form-group>
         </b-col>
@@ -44,7 +67,7 @@
           <b-form-group label="Apellido *" label-for="apellidoSolicitante" >
             <b-form-input id="apellidoSolicitante" v-model="solicitante.apellido" @blur="$v.solicitante.apellido.$touch()"></b-form-input>
             <div v-if="$v.solicitante.apellido.$error" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El Apellido no puede estar vacío.
+              <i class="bi bi-exclamation-octagon text-danger"></i> El Apellido no puede estar vacío.
             </div>
           </b-form-group>
         </b-col>
@@ -54,7 +77,7 @@
           <b-form-group label="DNI / Pasaporte *" label-for="DNISolicitante" >
             <b-form-input id="DNISolicitante" v-model="solicitante.dni" @blur="$v.solicitante.dni.$touch()"></b-form-input>
             <div v-if="$v.solicitante.dni.$error" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Introduce un DNI válido.
+              <i class="bi bi-exclamation-octagon text-danger"></i> Introduce un DNI válido.
             </div>
           </b-form-group>
         </b-col>
@@ -62,7 +85,7 @@
           <b-form-group label="CUIT *" label-for="cuit" >
             <b-form-input id="cuit" v-model="solicitante.cuit" @blur="$v.solicitante.cuit.$touch()"></b-form-input>
             <div v-if="$v.solicitante.cuit.$error" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Introduce un CUIT válido, sin guiones ni caracteres especiales.
+              <i class="bi bi-exclamation-octagon text-danger"></i> Introduce un CUIT válido, sin guiones ni caracteres especiales.
             </div>
           </b-form-group>
         </b-col>
@@ -70,13 +93,13 @@
       <b-form-group label="Número de cuenta" label-for="nro-cuenta" >
         <b-form-input id="nro-cuenta" v-model="solicitante.nroCuenta" @blur="$v.solicitante.nroCuenta.$touch()"></b-form-input>
         <div v-if="$v.solicitante.nroCuenta.$error" class="validation-error">
-          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El Número de cuenta no puede estar vacío.
+          <i class="bi bi-exclamation-octagon text-danger"></i> El Número de cuenta no puede estar vacío.
         </div>
       </b-form-group>
       <b-form-group label="Domicilio Real y/o Legal *" label-for="domicilio-real" >
         <b-form-input id="domicilio-real" v-model="solicitante.domicilioReal" @blur="$v.solicitante.domicilioReal.$touch()"></b-form-input>
         <div v-if="$v.solicitante.domicilioReal.$error" class="validation-error">
-          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El Domicilio Real y/o Legal no puede estar vacío.
+          <i class="bi bi-exclamation-octagon text-danger"></i> El Domicilio Real y/o Legal no puede estar vacío.
         </div>
       </b-form-group>
       <b-row>
@@ -84,7 +107,7 @@
           <b-form-group label="Teléfono *" label-for="telefonoTitular" >
             <b-form-input id="telefonoTitular" v-model="solicitante.telefono" no-wheel @blur="$v.solicitante.telefono.$touch()"></b-form-input>
             <div v-if="$v.solicitante.telefono.$error" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El teléfono no puede estar vacío, contener letras o caracteres especiales.
+              <i class="bi bi-exclamation-octagon text-danger"></i> El teléfono no puede estar vacío, contener letras o caracteres especiales.
             </div>
           </b-form-group>
         </b-col>
@@ -95,7 +118,7 @@
             </b-col>
             <b-col lg="12" style="padding-left: 0px;">
               <div v-if="$v.solicitante.codigoPostal.$error" class="validation-error">
-                <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> El código postal no puede estar vacío, contener letras o caracteres especiales.
+                <i class="bi bi-exclamation-octagon text-danger"></i> El código postal no puede estar vacío, contener letras o caracteres especiales.
               </div>
             </b-col>
           </b-form-group>
@@ -106,7 +129,7 @@
           <b-form-group label="Localidad *" label-for="localidadSolicitante" >
             <b-form-input id="localidadSolicitante" v-model="solicitante.localidad" @blur="$v.solicitante.localidad.$touch()"></b-form-input>
             <div v-if="$v.solicitante.localidad.$error" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> La localidad no puede estar vacía.
+              <i class="bi bi-exclamation-octagon text-danger"></i> La localidad no puede estar vacía.
             </div>
           </b-form-group>
         </b-col>
@@ -119,7 +142,7 @@
               </option>
             </b-form-select>
             <div v-if="$v.solicitante.provincia.$error" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe seleccionar una provincia.
+              <i class="bi bi-exclamation-octagon text-danger"></i> Debe seleccionar una provincia.
             </div>
           </b-form-group>
         </b-col>
@@ -127,13 +150,13 @@
       <b-form-group label="Correo Electrónico *" label-for="mail" >
         <b-form-input id="mail" v-model="solicitante.mail" @blur="$v.solicitante.mail.$touch()"></b-form-input>
         <div v-if="$v.solicitante.mail.$error" class="validation-error">
-          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe introducir un email válido. Ejemplo: nombre@dominio.com
+          <i class="bi bi-exclamation-octagon text-danger"></i> Debe introducir un email válido. Ejemplo: nombre@dominio.com
         </div>
       </b-form-group>
       <b-form-group label="Repita el Correo Electrónico *" label-for="mail" >
         <b-form-input id="mail" v-model="solicitante.mail2" @blur="$v.solicitante.mail2.$touch()"></b-form-input>
         <div v-if="$v.solicitante.mail2.$error" class="validation-error">
-          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Los correos deben coincidir.
+          <i class="bi bi-exclamation-octagon text-danger"></i> Los correos deben coincidir.
         </div>
       </b-form-group>
       <!-- <b-form-group label="Seleccioná el caso que corresponda *" label-for="esPropietario">
@@ -142,22 +165,18 @@
         <b-form-checkbox v-model="solicitante.esPropietario" name="esPropietario" >
           <span>Soy o represento al propietario del inmueble</span></b-form-checkbox>
         <div v-if="$v.solicitante.esTitular.$error || $v.solicitante.esPropietario.$error" class="validation-error">
-          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Debe seleccionar por lo menos una opción.
+          <i class="bi bi-exclamation-octagon text-danger"></i> Debe seleccionar por lo menos una opción.
         </div>
       </b-form-group> -->
     </fieldset>
 
-    <b-row>
+    <b-row class="align-items-center si-no-radios-row">
       <b-col lg="6" md="8" sm="8">
-        <h5>¿Sos titular del inmueble?</h5>
+        <h5 class="mb-0">¿Sos titular del inmueble?</h5>
       </b-col>
-      <b-col class="form-check-inline" sm="4">
-        <b-col lg="3" sm="3">
-          <b-form-radio  id="esTitular-no" v-model="solicitante.esTitular" name="radio-esTitular" checked="checked" value="false"> No</b-form-radio>
-        </b-col>
-        <b-col lg="3" sm="1">
-          <b-form-radio  id="esTitular-si" v-model="solicitante.esTitular" name="radio-esTitular" value="true"> Sí</b-form-radio>
-        </b-col>
+      <b-col cols="12" sm="auto" class="si-no-radios">
+        <b-form-radio id="esTitular-no" v-model="solicitante.esTitular" name="radio-esTitular" value="false">No</b-form-radio>
+        <b-form-radio id="esTitular-si" v-model="solicitante.esTitular" name="radio-esTitular" value="true">Sí</b-form-radio>
       </b-col>
     </b-row>
   </b-card>
@@ -173,7 +192,7 @@
               @change="handleDocumentUpdate('dniFrente'); checkDocumentSize('dniFrente', $event); $v.documentos.dniFrente.contenido.$touch()"
               @input="clearFormFieldState('dniFrente')"></b-form-file>
             <div v-if="$v.documentos.dniFrente.contenido.$error || fileTooLargeError.dniFrente" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.dniFrente || 'Debe seleccionar un archivo.' }}
+              <i class="bi bi-exclamation-octagon text-danger"></i> {{ fileTooLargeError.dniFrente || 'Debe seleccionar un archivo.' }}
             </div>
           </b-form-group>
         </b-col>
@@ -184,21 +203,21 @@
             @change="handleDocumentUpdate('dniDorso'); checkDocumentSize('dniDorso', $event); $v.documentos.dniDorso.contenido.$touch()"
             @input="clearFormFieldState('dniDorso')"></b-form-file>
             <div v-if="$v.documentos.dniDorso.contenido.$error || fileTooLargeError.dniDorso" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.dniDorso || 'Debe seleccionar un archivo.' }}
+              <i class="bi bi-exclamation-octagon text-danger"></i> {{ fileTooLargeError.dniDorso || 'Debe seleccionar un archivo.' }}
             </div>
           </b-form-group>
         </b-col>
       </b-row>
       <b-form-group>
         <label for="comprobantePago" class="rubro-label">Comprobante de pago *
-          <!-- <b-icon-question-circle-fill @click="openPopup('ComprobantePago')" font-scale="1" variant="info"></b-icon-question-circle-fill> -->
+          <!-- <i class="bi bi-question-circle-fill text-info" style="font-size: 1em"></i> -->
         </label>
         <b-form-file v-model="documentos.comprobantePago.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
         accept=".pdf, image/*"  :state="getFormFieldState('comprobantePago')"
         @change="handleDocumentUpdate('comprobantePago'); checkDocumentSize('comprobantePago', $event); $v.documentos.comprobantePago.contenido.$touch()"
         @input="clearFormFieldState('comprobantePago')"></b-form-file>
         <div v-if="$v.documentos.comprobantePago.contenido.$error || fileTooLargeError.comprobantePago" class="validation-error">
-          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.comprobantePago || 'Debe seleccionar un archivo.' }}
+          <i class="bi bi-exclamation-octagon text-danger"></i> {{ fileTooLargeError.comprobantePago || 'Debe seleccionar un archivo.' }}
         </div>
       </b-form-group>
       <b-form-group>
@@ -208,7 +227,7 @@
         @change="handleDocumentUpdate('comprobantePago2'); checkDocumentSize('comprobantePago2', $event); $v.documentos.comprobantePago2.contenido.$touch()"
         @input="clearFormFieldState('comprobantePago2')"></b-form-file>
         <div v-if="$v.documentos.comprobantePago2.contenido.$error || fileTooLargeError.comprobantePago2" class="validation-error">
-          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.comprobantePago2 || 'Debe seleccionar un archivo.' }}
+          <i class="bi bi-exclamation-octagon text-danger"></i> {{ fileTooLargeError.comprobantePago2 || 'Debe seleccionar un archivo.' }}
         </div>
       </b-form-group>
 
@@ -218,7 +237,7 @@
           <label for="planillaAutorizacion">Planilla de autorización de trámite *</label>
           <b-form-file v-model="documentos.planillaAutorizacion.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('planillaAutorizacion')" @change="checkDocumentSize('planillaAutorizacion', $event); $v.documentos.planillaAutorizacion.contenido.$touch()" @input="clearFormFieldState('planillaAutorizacion')"></b-form-file>
           <div v-if="$v.documentos.planillaAutorizacion.contenido.$error || fileTooLargeError.planillaAutorizacion" class="validation-error">
-            <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.planillaAutorizacion || 'Debe seleccionar un archivo.' }}
+            <i class="bi bi-exclamation-octagon text-danger"></i> {{ fileTooLargeError.planillaAutorizacion || 'Debe seleccionar un archivo.' }}
           </div>
         </b-form-group>
         <b-form-group >
@@ -228,7 +247,7 @@
           @change="handleDocumentUpdate('acreditacionTitularidad'); checkDocumentSize('acreditacionTitularidad', $event); $v.documentos.acreditacionTitularidad.contenido.$touch()"
           @input="clearFormFieldState('acreditacionTitularidad')"></b-form-file>
           <div v-if="$v.documentos.acreditacionTitularidad.contenido.$error || fileTooLargeError.acreditacionTitularidad" class="validation-error">
-            <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> {{ fileTooLargeError.acreditacionTitularidad || 'Debe seleccionar un archivo.' }}
+            <i class="bi bi-exclamation-octagon text-danger"></i> {{ fileTooLargeError.acreditacionTitularidad || 'Debe seleccionar un archivo.' }}
           </div>
         </b-form-group>
       </div>
@@ -238,12 +257,12 @@
       <b-card-text>
         <b-row >
           <b-col md="2">
-            <b-icon-exclamation-triangle variant="warning" font-scale="5"></b-icon-exclamation-triangle>
+            <i class="bi bi-exclamation-triangle text-warning" style="font-size: 5em"></i>
             <p class="li-title"><u><b>¡Importante!</b></u></p>
           </b-col>
           <b-col  md="10">
-              <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content"><span>Una vez completado el formulario, el Dpto. Recaudaciones se comunicará a través del correo electrónico oficial (<a href="mailto:deptocomercio@gesell.gob.ar" class="external-link" target="_blank" >recaudaciones@gesell.gob.ar</a>).</span></div></div>
-              <!-- <div class="li-row"><div class="li-icon"><b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill></div><div class="li-content"><span><b>El trámite de baja comercial será efectivo una vez abonado el importe del mismo y obtenido el certificado respectivo.</b></span></div></div> -->
+              <div class="li-row"><div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div><div class="li-content"><span>Una vez completado el formulario, el Dpto. Recaudaciones se comunicará a través del correo electrónico oficial (<a href="mailto:deptocomercio@gesell.gob.ar" class="external-link" target="_blank" >recaudaciones@gesell.gob.ar</a>).</span></div></div>
+              <!-- <div class="li-row"><div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div><div class="li-content"><span><b>El trámite de baja comercial será efectivo una vez abonado el importe del mismo y obtenido el certificado respectivo.</b></span></div></div> -->
           </b-col>
         </b-row>
       </b-card-text>
@@ -252,7 +271,7 @@
       <b-form-group>
         <div id="captchaContainer" class="g-recaptcha" :data-sitekey="recaptchaSiteKey"></div>
         <div v-if="captchaError" class="validation-error">
-          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Por favor completa la verificación para continuar.
+          <i class="bi bi-exclamation-octagon text-danger"></i> Por favor completa la verificación para continuar.
         </div>
       </b-form-group>
     </div>
@@ -265,49 +284,49 @@
         </b-button>
       </fieldset>
         <div v-if="!areAllFieldsComplete" class="validation-error">
-          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Completar todos los campos marcados con (*).
+          <i class="bi bi-exclamation-octagon text-danger"></i> Completar todos los campos marcados con (*).
         </div>
         <div v-if="!areAllFieldsValid" class="validation-error">
-          <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Por favor, revisa el formulario en busca de errores.
+          <i class="bi bi-exclamation-octagon text-danger"></i> Por favor, revisa el formulario en busca de errores.
         </div>
         <div v-if="formSubmitted" class="validation-success">
-          <b-icon-check-circle variant="success"></b-icon-check-circle> Tu solicitud ha sido enviada exitosamente. No es necesario enviarla nuevamente.
+          <i class="bi bi-check-circle text-success"></i> Tu solicitud ha sido enviada exitosamente. No es necesario enviarla nuevamente.
         </div>
     </div>
   </b-card>
   </b-form>
 <!-- PopUps -->
-<b-modal v-model="showPopupDatosDelSolicitante" title="" :hide-footer="true" @click-outside="showPopupDatosDelSolicitante = false" :header-bg-variant="'success'"  centered>
-  <template #modal-header>
+<BModal v-model="showPopupDatosDelSolicitante" title="" :no-footer="true" @click-outside="showPopupDatosDelSolicitante = false" :header-bg-variant="'success'"  centered>
+  <template #header>
     <div class="modal-info">
       <h5>
-          <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
+          <i class="bi bi-question-circle text-light"></i>
           Información Adicional
       </h5>
     </div>
     <button type="button" aria-label="Close" class="close" @click="showPopupDatosDelSolicitante = false">×</button>
   </template>
   <div class="modal-info">
-    <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>El interesado futuro comerciante / industrial o afín mayor de 18 años.</p>
-    <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>El representante o apoderado/a de la persona interesada con documentación que acredite el carácter de tal.</p>
+    <p><i class="bi bi-caret-right-fill"></i>El interesado futuro comerciante / industrial o afín mayor de 18 años.</p>
+    <p><i class="bi bi-caret-right-fill"></i>El representante o apoderado/a de la persona interesada con documentación que acredite el carácter de tal.</p>
   </div>
-</b-modal>
-<b-modal v-model="showPopupNroInmueble" title="" :hide-footer="true" @click-outside="showPopupNroInmueble = false" :header-bg-variant="'success'"  centered>
-  <template #modal-header>
+</BModal>
+<BModal v-model="showPopupNroInmueble" title="" :no-footer="true" @click-outside="showPopupNroInmueble = false" :header-bg-variant="'success'"  centered>
+  <template #header>
     <div class="modal-info">
       <h5>
-          <b-icon icon="question-circle" scale="1.25" variant="light"></b-icon>
+          <i class="bi bi-question-circle text-light"></i>
           Información Adicional
       </h5>
     </div>
     <button type="button" aria-label="Close" class="close" @click="showPopupNroInmueble = false">×</button>
   </template>
   <div class="modal-info">
-    <p><b-icon-caret-right-fill ></b-icon-caret-right-fill>Podés consultar el número enviando un correo electrónico a <a href="mailto:catatro@gesell.gob.ar" target="_blank">catastro@gesell.gob.ar</a>, indicando nomenclatura catastral del bien que se encuentra en la escritura del mismo.</p>
+    <p><i class="bi bi-caret-right-fill"></i>Podés consultar el número enviando un correo electrónico a <a href="mailto:catatro@gesell.gob.ar" target="_blank">catastro@gesell.gob.ar</a>, indicando nomenclatura catastral del bien que se encuentra en la escritura del mismo.</p>
   </div>
-</b-modal>
-<b-modal v-model="showPopupFormLoading" no-close-on-backdrop title="" :header-bg-variant="'success'" hide-footer centered>
-  <template #modal-header>
+</BModal>
+<BModal v-model="showPopupFormLoading" no-close-on-backdrop title="" :header-bg-variant="'success'" no-footer centered>
+  <template #header>
     <h5 class="centeredContainer">Solicitud en Proceso</h5>
   </template>
   <div class="centeredContainer">
@@ -315,11 +334,11 @@
     <b-spinner variant="success" style="width: 3rem; height: 3rem;" label="Large Spinner"></b-spinner>
     <p>No cierres esta página</p>
   </div>
-</b-modal>
-<b-modal v-model="showPopupFormOk" title="" ok-only @click-outside="onPopupClose" @ok="onPopupClose" :header-bg-variant="'success'" centered>
-  <template #modal-header>
+</BModal>
+<BModal v-model="showPopupFormOk" title="" ok-only @click-outside="onPopupClose" @ok="onPopupClose" :header-bg-variant="'success'" centered>
+  <template #header>
     <div class="centeredContainer"><h3>
-      <b-icon icon="check-circle-fill" scale="1.5" variant="light"></b-icon>
+      <i class="bi bi-check-circle-fill text-light"></i>
     </h3></div>
   </template>
   <div class="centeredContainer">
@@ -330,20 +349,20 @@
     <p class="">Por favor, conservá este número. Será solicitado más adelante.</p>
   </div>
     <div class="centeredContainer" style="padding:0 1rem; padding-top: 1rem; border-top:1px solid #CCC; ">
-      <p class="" style="text-align: justify; margin-bottom:0; font-size: 0.75rem "><b-icon-caret-right-fill variant="success"></b-icon-caret-right-fill> Tené en cuenta que el Departamento Recaudaciones puede solicitarte documentación adicional vía correo electrónico.</p>
-      <p class="" style="text-align: justify; font-size: 0.75rem; margin-bottom:0; "><b-icon-caret-right-fill variant="success"></b-icon-caret-right-fill> Para consultar el estado de tu trámite ingresá en <a class="external-link" href="https://haciendavgesell.gob.ar/">haciendavgesell.gob.ar</a>, hacé click en el ícono correspondiente y escribí el número asignado en este comprobante.</p>
+      <p class="" style="text-align: justify; margin-bottom:0; font-size: 0.75rem "><i class="bi bi-caret-right-fill text-success"></i> Tené en cuenta que el Departamento Recaudaciones puede solicitarte documentación adicional vía correo electrónico.</p>
+      <p class="" style="text-align: justify; font-size: 0.75rem; margin-bottom:0; "><i class="bi bi-caret-right-fill text-success"></i> Para consultar el estado de tu trámite ingresá en <a class="external-link" href="https://haciendavgesell.gob.ar/">haciendavgesell.gob.ar</a>, hacé click en el ícono correspondiente y escribí el número asignado en este comprobante.</p>
     </div>
-  <template #modal-footer>
+  <template #footer>
     <div class="" style="margin: auto">
       <b-button @click="onResetParams" class="btn-cancel">Volver</b-button>
       <b-button @click="onPrintTicket" variant="success">Imprimir</b-button>
     </div>
   </template>
-</b-modal>
-<b-modal v-model="showPopupFormError" title="Error en el envío!" @click-outside="showPopupFormError = false" :header-bg-variant="'danger'" centered>
-  <template #modal-header>
+</BModal>
+<BModal v-model="showPopupFormError" title="Error en el envío!" @click-outside="showPopupFormError = false" :header-bg-variant="'danger'" centered>
+  <template #header>
     <div class="centeredContainer"><h3>
-        <b-icon-exclamation-octagon scale="1.5" variant="light"></b-icon-exclamation-octagon>
+        <i class="bi bi-exclamation-octagon text-light"></i>
     </h3></div>
     <button type="button" aria-label="Close" class="close" @click="showPopupFormError = false">×</button>
   </template>
@@ -352,17 +371,17 @@
     <p class="">Por favor, verificá tu conexión a internet e intentalo nuevamente más tarde.</p>
     <p class="minitext">Si el problema persiste, comunicate con <a target="_blank" href="mailto:deptocmercio@gesell.gob.ar" class="external-link">deptocomercio@gesell.gob.ar</a> para que podamos ayudarte.</p>
   </div>
-  <template #modal-footer>
+  <template #footer>
     <div class="" style="margin: auto">
       <b-button @click="showPopupFormError = false" variant="danger" class="btn-cancel" >Aceptar</b-button>
     </div>
   </template>
-</b-modal>
+</BModal>
 </div>
 </template>
 
 <script>
-import { required, requiredIf, alpha, numeric, email, minLength, maxLength, sameAs } from 'vuelidate/lib/validators';
+import { required, requiredIf, alpha, numeric, email, minLength, maxLength, sameAs } from '@vuelidate/validators';
 import MailerService from '~/service/mailer.js'
 
 export default{
@@ -380,7 +399,13 @@ export default{
         localidad: { required },
         provincia: { required },
         mail: { required, email },
-        mail2: { required, email, sameAs: sameAs( function(){return this.solicitante.mail } ) },
+        mail2: {
+          required,
+          email,
+          sameAs: sameAs(function () {
+            return this?.solicitante?.mail || ''
+          }),
+        },
         // esPropietario: { requiredIfAtLeastOneChecked: (value) => {
         //     return value || this.solicitante.esTitular;
         //   } },
@@ -392,14 +417,24 @@ export default{
         //Validaciones compartidas
         dniFrente: { contenido:{ required} },
         dniDorso: { contenido:{ required} },
-        planillaAutorizacion: { contenido:{requiredIf: requiredIf(function () {
-          return this.solicitante.esTitular !== 'true' })}},
+        planillaAutorizacion: {
+          contenido: {
+            requiredIf: requiredIf(function () {
+              return this?.solicitante?.esTitular !== 'true'
+            }),
+          },
+        },
         //Validaciones exclusivas de Habilitación
         comprobantePago: { contenido:{required} },
         comprobantePago2: { contenido:{required } },
         //Validaciones con varias condiciones
-        acreditacionTitularidad: { contenido:{ requiredIf: requiredIf(function () {
-          return this.solicitante.esTitular !== 'true' })}},
+        acreditacionTitularidad: {
+          contenido: {
+            requiredIf: requiredIf(function () {
+              return this?.solicitante?.esTitular !== 'true'
+            }),
+          },
+        },
       }
     }
     // Otras validaciones aquí...
@@ -434,7 +469,8 @@ export default{
         localidad: '',
         provincia: '',
         mail: '',
-        esTitular: false,
+        mail2: '',
+        esTitular: 'false',
         esPropietario: false,
       },
       documentos: {
@@ -565,7 +601,9 @@ export default{
     },
     openPopup(type) {
       // Lógica para abrir el popup correspondiente según el tipo (A, B, C, D)
-      if (type === 'A') {
+      if (type === 'DatosDelSolicitante') {
+        this.showPopupDatosDelSolicitante = true;
+      } else if (type === 'A') {
         this.showPopupA = true;
       } else if (type === 'B') {
         this.showPopupB = true;
@@ -625,11 +663,11 @@ export default{
           };
 
           // Usar el store como en tramites/form.vue
-          const response = await this.$store.dispatch('pagosDobles/create', {
+          const response = await usePagosDoblesStore().create({
             pagoDoble,
           });
 
-          await MailerService.enviarCorreo(this.$axios, {
+          await MailerService.enviarCorreo(useApi(), {
             destinatario: this.solicitante.mail,
             asunto: 'Solicitud de pago doble recibida',
             mensaje: `Estimado/a contribuyente,
@@ -638,12 +676,14 @@ export default{
             Asegúrese de revisar la bandeja de correos no deseados (Spam).`
           });
           this.nroTramite = response.data
-          this.showPopupFormLoading = false;
-          this.openPopup('FormOk');
+          this.showPopupFormLoading = false
+          await this.$nextTick()
+          this.openPopup('FormOk')
 
         } catch (e) {
           console.error('Error al enviar el formulario:', e);
-          this.showPopupFormLoading = false; // Cerrar popup de carga
+          this.showPopupFormLoading = false;
+          this.formSubmitted = false;
           this.showPopupFormError = true;
         }
       } else {
@@ -684,13 +724,19 @@ export default{
         return new Promise(resolve => setTimeout(resolve, ms));
       },
     async onPrintTicket() {
-        this.showPopupFormOk = false;
-        this.printing = true;
-        await this.wait(500);
-        print();
-        await this.wait(500);
-        this.endButton = true;
-      },
+      this.showPopupFormOk = false
+      this.printing = true
+      await this.wait(500)
+      if (import.meta.client) {
+        document.body.classList.add('printing-pagos-dobles-comprobante')
+      }
+      print()
+      await this.wait(500)
+      if (import.meta.client) {
+        document.body.classList.remove('printing-pagos-dobles-comprobante')
+      }
+      this.endButton = true
+    },
     async onResetParams(){
       await this.$router.push('/recaudaciones/pagos_dobles')
       this.showPopupFormOk = false;
@@ -773,9 +819,6 @@ export default{
   h5{
     font-size: 1.15rem;
   }
-  .form-check-inline{
-    margin-right: 0;
-  }
 }
 @media (max-width: 480px) {
   .col-8{
@@ -785,11 +828,84 @@ export default{
 #captchaContainer{
   margin-bottom: 1rem;
 }
-.printing-modal .card-header h5{
-  color: white !important;
+.pagos-dobles-comprobante-wrapper {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 }
-.printing-modal h5{
-  margin: 0 0 0.5rem;
+.pagos-dobles-comprobante-card {
+  border-width: 2px;
+}
+.pagos-dobles-comprobante-header {
+  text-align: center;
+  padding: 0.85rem 1rem;
+}
+.pagos-dobles-comprobante-header h5 {
+  color: white !important;
+  margin: 0;
+}
+.pagos-dobles-comprobante-body {
+  padding: 1.5rem 1.75rem;
+}
+.pagos-dobles-comprobante-entity {
+  text-align: center;
+  color: #555;
+  font-size: 0.95rem;
+  margin-bottom: 1.25rem;
+}
+.comprobante-datos {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.25rem;
+  border: 1px solid #dee2e6;
+  border-radius: 0.375rem;
+  overflow: hidden;
+}
+.comprobante-datos li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid #eee;
+}
+.comprobante-datos li:last-child {
+  border-bottom: none;
+}
+.comprobante-datos li:nth-child(odd) {
+  background-color: #f8f9fa;
+}
+.comprobante-label {
+  font-weight: 600;
+  color: #0c681a;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.comprobante-label .bi-check {
+  display: inline-block;
+  flex-shrink: 0;
+  color: #0c681a;
+  line-height: 1;
+}
+.comprobante-value {
+  text-align: right;
+  font-weight: 600;
+  color: #333;
+}
+.comprobante-notas {
+  border-top: 1px solid #ccc;
+  padding-top: 1rem;
+}
+.comprobante-nota {
+  margin-bottom: 0.75rem;
+}
+.comprobante-nota:last-child {
+  margin-bottom: 0;
+}
+.comprobante-nota p {
+  font-size: 0.9rem;
+  color: #444;
+  line-height: 1.45;
 }
 .green{
     background-color:#0b6919;
@@ -966,10 +1082,17 @@ form p{
   font-weight: 600;
   color: #666;
 }
-h3{
+h3 {
   font-weight: bold;
   color: #0c681a !important;
   margin: 1rem 0;
+}
+
+.legend-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: nowrap;
 }
 h5{
   margin: 1rem 0;
@@ -983,9 +1106,6 @@ h5{
 }
 .rubro-label a{
   margin-left: 10px;
-}
-.form-check-inline div{
-  margin-right: 10px;
 }
 .bi-question-circle-fill{
   cursor: pointer;
@@ -1051,3 +1171,63 @@ h5{
   }
 }
 </style>
+
+<style>
+@media print {
+  body:has(.pagos-dobles-comprobante-wrapper) #app-navbar,
+  body:has(.pagos-dobles-comprobante-wrapper) .footer,
+  body.printing-pagos-dobles-comprobante #app-navbar,
+  body.printing-pagos-dobles-comprobante .footer,
+  body:has(.pagos-dobles-comprobante-wrapper) .title,
+  body.printing-pagos-dobles-comprobante .title,
+  body:has(.pagos-dobles-comprobante-wrapper) .comprobante-no-print,
+  body.printing-pagos-dobles-comprobante .comprobante-no-print {
+    display: none !important;
+  }
+
+  body:has(.pagos-dobles-comprobante-wrapper) #app-content,
+  body.printing-pagos-dobles-comprobante #app-content {
+    margin-top: 0 !important;
+    padding: 0 !important;
+  }
+
+  body:has(.pagos-dobles-comprobante-wrapper) .main-background,
+  body:has(.pagos-dobles-comprobante-wrapper) .page,
+  body.printing-pagos-dobles-comprobante .main-background,
+  body.printing-pagos-dobles-comprobante .page {
+    background: #fff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body:has(.pagos-dobles-comprobante-wrapper) .pagos-dobles-comprobante-wrapper,
+  body.printing-pagos-dobles-comprobante .pagos-dobles-comprobante-wrapper {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body:has(.pagos-dobles-comprobante-wrapper) .pagos-dobles-comprobante-card,
+  body.printing-pagos-dobles-comprobante .pagos-dobles-comprobante-card {
+    width: 100% !important;
+    max-width: 520px !important;
+    margin: 0 auto !important;
+    box-shadow: none !important;
+    border: 2px solid #0c681a !important;
+    page-break-inside: avoid;
+  }
+
+  body:has(.pagos-dobles-comprobante-wrapper) .pagos-dobles-comprobante-header,
+  body:has(.pagos-dobles-comprobante-wrapper) .green,
+  body.printing-pagos-dobles-comprobante .pagos-dobles-comprobante-header,
+  body.printing-pagos-dobles-comprobante .green {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body:has(.pagos-dobles-comprobante-wrapper) .comprobante-nota p,
+  body.printing-pagos-dobles-comprobante .comprobante-nota p {
+    font-size: 0.85rem;
+  }
+}
+</style>
+

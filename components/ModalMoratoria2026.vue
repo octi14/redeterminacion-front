@@ -1,16 +1,18 @@
 <template>
-  <b-modal
+  <BModal
     id="modalMoratoria2026"
-    v-model="visible"
+    :model-value="mostrarModal"
     centered
-    hide-header
-    hide-footer
-    hide-header-close
-    no-close-on-backdrop
+    no-header
+    no-footer
+    no-header-close
     no-close-on-esc
+    lazy
     modal-class="moratoria-modal"
     content-class="moratoria-modal-content-wrapper"
     body-class="moratoria-modal-body"
+    @update:model-value="onUpdate"
+    @hidden="cleanupModalArtifacts"
   >
     <div class="moratoria-modal-content">
       <div class="moratoria-frame">
@@ -22,42 +24,48 @@
           X
         </button>
         <img
-          src="~/assets/Moratoria 2026.png"
+          :src="moratoriaImg"
           alt="Moratoria 2026"
           class="moratoria-img"
         />
       </div>
     </div>
-  </b-modal>
+  </BModal>
 </template>
 
 <script>
+import moratoriaImg from '~/assets/Moratoria 2026.png'
+import { cleanupModalArtifacts as removeStaleModalLayers } from '~/utils/modalCleanup'
+
 export default {
   name: 'ModalMoratoria2026',
   props: {
-    mostrarModal: Boolean,
-  },
-  data() {
-    return {
-      visible: false,
-    };
-  },
-  watch: {
-    mostrarModal(val) {
-      this.visible = !!val;
+    mostrarModal: {
+      type: Boolean,
+      default: false,
     },
   },
-  mounted() {
-    // Por si el componente se monta cuando ya veníamos habilitando el modal.
-    if (this.mostrarModal) this.visible = true;
+  emits: ['close', 'update:mostrarModal'],
+  data() {
+    return {
+      moratoriaImg,
+    }
   },
   methods: {
     cerrar() {
-      this.visible = false;
-      this.$emit('close');
+      this.$emit('update:mostrarModal', false)
+      this.$emit('close')
+    },
+    onUpdate(value) {
+      if (!value) {
+        this.cerrar()
+      }
+    },
+    cleanupModalArtifacts() {
+      removeStaleModalLayers()
     },
   },
-};
+}
 </script>
 
 <style scoped>
@@ -117,7 +125,6 @@ export default {
   display: block;
 }
 
-/* Mobile-first: pantallas pequeñas */
 @media (max-width: 575.98px) {
   .moratoria-frame {
     max-width: 94vw;
@@ -140,7 +147,6 @@ export default {
   }
 }
 
-/* Tablet */
 @media (min-width: 576px) and (max-width: 991.98px) {
   .moratoria-frame {
     max-width: 92vw;
@@ -151,7 +157,6 @@ export default {
   }
 }
 
-/* Desktop: límite razonable en pantallas grandes */
 @media (min-width: 992px) {
   .moratoria-frame {
     max-width: 760px;
@@ -175,7 +180,10 @@ export default {
 </style>
 
 <style>
-/* Estilos globales para el modal Moratoria (Bootstrap Vue) */
+.moratoria-modal.show {
+  display: block !important;
+}
+
 .moratoria-modal .modal-dialog {
   margin: 0.5rem;
   width: auto;
@@ -193,9 +201,6 @@ export default {
   border: 0;
   background: transparent;
   box-shadow: none;
-}
-
-.moratoria-modal .modal-content {
   background-color: transparent !important;
 }
 
@@ -214,7 +219,6 @@ export default {
   }
 }
 
-/* Evitar padding/bordes extra que desalinean la X vs la imagen */
 .moratoria-modal-content-wrapper {
   padding: 0 !important;
   border: 0 !important;
@@ -222,4 +226,3 @@ export default {
   border-radius: 0 !important;
 }
 </style>
-

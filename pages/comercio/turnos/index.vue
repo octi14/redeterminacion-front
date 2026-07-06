@@ -3,18 +3,26 @@
     <Banner title="Inspección de Comercios"/>
     <div class="mx-auto">
       <div class="mt-3" v-if="page === 0">
-        <div class="row justify-content-center banner-container" style="width: 100%">
-          <img src="../../../assets/turnera-banner-1.png" style="max-width: 100%"/>
+        <div class="banner-container">
+          <img
+            :src="turneraBanner1"
+            class="turnera-banner-img"
+            width="803"
+            height="289"
+            alt=""
+          />
         </div>
         <b-card class="section-card col-md-6 mx-auto">
-          <div class="li-row">
-            <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Estás a punto de seleccionar un turno de inspección para tu comercio.</p></div>
-          </div>
-          <div class="li-row">
-            <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Para iniciar, ingresá el <b>número de trámite</b> que recibiste luego de haber enviado el Formulario de Solicitud de Habilitaciones.</p></div>
+          <div class="turno-instrucciones">
+            <div class="li-row">
+              <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p>Estás a punto de seleccionar un turno de inspección para tu comercio.</p></div>
+            </div>
+            <div class="li-row">
+              <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p>Para iniciar, ingresá el <b>número de trámite</b> que recibiste luego de haber enviado el Formulario de Solicitud de Habilitaciones.</p></div>
+            </div>
           </div>
           <b-form>
-            <b-form-input :disabled="enterKeyPressed" @keydown.enter.native="onNextPage" v-model="nroTramiteIngresado" type="number" size="lg" class="col-md-6 col-sm-10 mt-4 mx-auto" placeholder="Número de trámite" no-wheel></b-form-input>
+            <b-form-input :disabled="enterKeyPressed" @keydown.enter="onNextPage" v-model="nroTramiteIngresado" type="number" size="lg" class="col-md-6 col-sm-10 mt-4 mx-auto" placeholder="Número de trámite" no-wheel></b-form-input>
           </b-form>
           <div class="btn-container">
             <b-button class="btn-cancel" @click="onResetParams">Cancelar</b-button>
@@ -22,36 +30,47 @@
           </div>
         </b-card>
       </div>
-      <b-form class="mt-3">
+      <b-form class="mt-3" @submit.prevent>
         <div v-if="page === 1">
-          <div class="row justify-content-center" style="width: 100%">
-            <img src="../../../assets/turnera-banner-2.png" style="max-width: 100%"/>
+          <div class="banner-container">
+            <img
+              :src="turneraBanner2"
+              class="turnera-banner-img"
+              width="803"
+              height="289"
+              alt=""
+            />
           </div>
           <b-card class="section-card col-md-6 mx-auto">
             <h5>
-              <b-icon-calendar-check class="icon-orange" />
+              <i class="bi bi-calendar-check icon-orange"></i>
               Selección de fecha
             </h5>
             <div class="li-row">
-              <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Elegí una fecha dentro de los días señalados.</p></div>
+              <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p>Elegí una fecha dentro de los días señalados.</p></div>
             </div>
             <div class="li-row">
-              <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Tené en cuenta que las inspecciones se llevan a cabo en diferentes días de la semana dependiendo del lugar donde se encuentre tu comercio. Por eso, sólo podrás elegir los días correspondientes a la localidad que informaste al iniciar el trámite de habilitación:</p></div>
+              <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p>Tené en cuenta que las inspecciones se llevan a cabo en diferentes días de la semana dependiendo del lugar donde se encuentre tu comercio. Por eso, sólo podrás elegir los días correspondientes a la localidad que informaste al iniciar el trámite de habilitación:</p></div>
             </div>
-            <div class="col-md-10 mx-auto">
+            <div class="col-md-10 mx-auto turno-localidades-list">
               <div class="li-row">
-                <div class="li-icon"><b-icon-check font-scale="2" class="icon-green"></b-icon-check></div><div class="li-content sub-li"><p><b>Villa Gesell:</b> Lunes, Martes y Miércoles</p></div>
+                <div class="li-icon"><i class="bi bi-check turno-localidad-check"></i></div><div class="li-content sub-li"><p><b>Villa Gesell:</b> Lunes, Martes y Miércoles</p></div>
               </div>
               <div class="li-row">
-                <div class="li-icon"><b-icon-check font-scale="2" class="icon-green"></b-icon-check></div><div class="li-content sub-li"><p><b>Mar de Las Pampas / Colonia Marina / Las Gaviotas / Mar Azul:</b>  Jueves y Viernes.</p></div>
+                <div class="li-icon"><i class="bi bi-check turno-localidad-check"></i></div><div class="li-content sub-li"><p><b>Mar de Las Pampas / Colonia Marina / Las Gaviotas / Mar Azul:</b> Jueves y Viernes.</p></div>
               </div>
             </div>
             <b-calendar
-              class="col-8 mx-auto mt-3"
-              block hide-header
+              class="turnera-calendar col-8 mx-auto mt-3"
+              block
+              hide-header
+              selected-variant="success"
+              today-variant="success"
+              nav-button-variant="outline-secondary"
+              label-help="Elegí un día habilitado según la localidad de tu comercio."
               :date-format-options="{ year: 'numeric', day: '2-digit', weekday: 'short' }"
-              :min="addDays(new Date(),2)"
-              :max="daysFromNow()"
+              :min="minTurnoDate"
+              :max="maxTurnoDate"
               locale="es"
               value-as-date
               :date-disabled-fn="dateDisabled"
@@ -64,16 +83,26 @@
           </b-card>
         </div>
         <div v-if="page === 2">
-          <div class="row justify-content-center" style="width: 100%">
-            <img src="../../../assets/turnera-banner-3.png" style="max-width: 100%"/>
+          <div class="banner-container">
+            <img
+              :src="turneraBanner3"
+              class="turnera-banner-img"
+              width="803"
+              height="289"
+              alt=""
+            />
           </div>
           <b-card class="section-card col-md-6 mx-auto">
             <h5>
-              <b-icon-clock class="icon-orange"></b-icon-clock>
+              <i class="bi bi-clock icon-orange"></i>
               Selección de horario
             </h5>
+            <div v-if="selectedDateDisplay" class="li-row turno-fecha-elegida">
+              <div class="li-icon"><i class="bi bi-calendar-check icon-orange" style="font-size: 1.25em"></i></div>
+              <div class="li-content"><p><b>Fecha elegida:</b> {{ selectedDateDisplay }}</p></div>
+            </div>
             <div class="li-row">
-              <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Seleccioná una franja horaria para recibir la visita de inspección.</p></div>
+              <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p>Seleccioná una franja horaria para recibir la visita de inspección.</p></div>
             </div>
             <b-form-select v-model="timePicked" class="col-11 mx-auto">
               <!-- <b-form-select-option
@@ -99,18 +128,34 @@
           </b-card>
         </div>
         <div v-if="page === 3">
-          <div class="row justify-content-center" style="width: 100%">
-            <img src="../../../assets/turnera-banner-4.png" style="max-width: 100%"/>
+          <div class="banner-container">
+            <img
+              :src="turneraBanner4"
+              class="turnera-banner-img"
+              width="803"
+              height="289"
+              alt=""
+            />
           </div>
           <b-card class="section-card col-md-6 mx-auto">
             <h5><img class="bi-ticket" src="../../../assets/icon-num-rifa.png" /> Confirmación de turno</h5>
-            <div class="li-row">
-              <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p>Completá los datos que te solicitamos a continuación.</p></div>
+            <div v-if="selectedDateDisplay" class="li-row turno-fecha-elegida">
+              <div class="li-icon"><i class="bi bi-calendar-check icon-orange" style="font-size: 1.25em"></i></div>
+              <div class="li-content"><p><b>Fecha elegida:</b> {{ selectedDateDisplay }}</p></div>
             </div>
-            <div class="li-row">
-              <div class="li-icon"><b-icon-caret-right-fill font-scale="1.5" class="icon-green"></b-icon-caret-right-fill></div><div class="li-content"><p> Al finalizar se emitirá un comprobante que deberás mostrar el día de la inspección.</p></div>
+            <div v-if="selectedTimeDisplay" class="li-row turno-fecha-elegida">
+              <div class="li-icon"><i class="bi bi-clock icon-orange" style="font-size: 1.25em"></i></div>
+              <div class="li-content"><p><b>Franja horaria elegida:</b> {{ selectedTimeDisplay }}</p></div>
             </div>
-            <div class="col-10 mx-auto">
+            <div class="turno-instrucciones">
+              <div class="li-row">
+                <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p>Completá los datos que te solicitamos a continuación.</p></div>
+              </div>
+              <div class="li-row">
+                <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p>Al finalizar se emitirá un comprobante que deberás mostrar el día de la inspección.</p></div>
+              </div>
+            </div>
+            <div class="col-10 mx-auto turno-form-datos">
                <b-form-group>
                 <label for="nombre">Nombre</label>
                 <b-form-input id="nombre" v-model="nombre" required></b-form-input>
@@ -124,7 +169,7 @@
               <b-card-text>
                 <b-row class="v-align">
                   <b-col md="2">
-                    <b-icon-exclamation-triangle variant="warning" font-scale="4"></b-icon-exclamation-triangle>
+                    <i class="bi bi-exclamation-triangle text-warning" style="font-size: 4em"></i>
                     <p class="li-title"><u><b>¡Importante!</b></u></p>
                   </b-col>
                   <b-col  md="10">
@@ -135,48 +180,69 @@
             </b-card>
             <div class="btn-container">
               <b-button @click="page-= 1" class="btn-cancel">Volver</b-button>
-              <b-button :disabled="sendingForm || !areAllFieldsComplete"  @click="onSelectTurno" variant="success">Continuar</b-button>
+              <b-button type="button" :disabled="sendingForm || !areAllFieldsComplete"  @click="onSelectTurno" variant="success">Continuar</b-button>
             </div>
             <div v-if="!areAllFieldsComplete" class="validation-error">
-              <b-icon-exclamation-octagon variant="danger"></b-icon-exclamation-octagon> Falta completar información.
+              <i class="bi bi-exclamation-octagon text-danger"></i> Falta completar información.
             </div>
           </b-card>
         </div>
       </b-form>
         <!-- Comprobante (página 4) -->
-        <div v-if="page === 4">
-          <b-card no-body border-variant="success" style="margin-top: 80px" class="shadow col-md-5 col-sm-8 mx-auto">
-            <b-card-header class="row" header-class="green text-light">
-              <h5><b>Comprobante de turno - </b> Inspección</h5>
+        <div v-if="page === 4" class="turno-comprobante-wrapper">
+          <b-card no-body border-variant="success" class="turno-comprobante-card shadow col-md-5 col-sm-8 mx-auto">
+            <b-card-header class="turno-comprobante-header green text-light">
+              <h5 class="mb-0"><b>Comprobante de turno</b> — Inspección comercial</h5>
             </b-card-header>
-            <b-card-body class="text-center">
-              <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Día: </b> {{ formattedDate }}</h5> </div>
-              <div class="row" v-if="time === '08.30'"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Horario: </b> {{ time }} - 11.30 </h5> </div>
-              <div class="row" v-if="time === '11.30'"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Horario: </b> {{ time }} - 13.30 </h5> </div>
-              <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Nro de trámite:</b> {{ nroTramite }}</h5> </div>
-              <div class="row"><b-icon-check scale="1.2" class="icon-orange mt-1"/><h5><b class="text-green ml-1">Solicitante: </b> {{ nombre }}</h5> </div>
-              <hr/>
-             <div class="text-left">
-              <div class="row">
-                <b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill>
-                <p class="small"><small>Para consultar el estado de tu trámite ingresá en <a class="text-success">haciendavgesell.gob.ar</a>, hacé click en el ícono
-                  correspondiente y escribí <br/>el número asignado en este comprobante. </small></p>
+            <b-card-body class="turno-comprobante-body">
+              <p class="turno-comprobante-entity">Municipalidad de Villa Gesell — Secretaría de Hacienda</p>
+              <ul class="turno-comprobante-datos">
+                <li>
+                  <span class="turno-comprobante-label"><i class="bi bi-check"></i> Día</span>
+                  <span class="turno-comprobante-value">{{ formattedDate }}</span>
+                </li>
+                <li v-if="selectedTimeDisplay">
+                  <span class="turno-comprobante-label"><i class="bi bi-check"></i> Horario</span>
+                  <span class="turno-comprobante-value">{{ selectedTimeDisplay }}</span>
+                </li>
+                <li>
+                  <span class="turno-comprobante-label"><i class="bi bi-check"></i> Nro. de trámite</span>
+                  <span class="turno-comprobante-value">{{ nroTramite }}</span>
+                </li>
+                <li>
+                  <span class="turno-comprobante-label"><i class="bi bi-check"></i> Solicitante</span>
+                  <span class="turno-comprobante-value">{{ nombre }}</span>
+                </li>
+                <li v-if="domicilio">
+                  <span class="turno-comprobante-label"><i class="bi bi-check"></i> Domicilio</span>
+                  <span class="turno-comprobante-value">{{ domicilio }}</span>
+                </li>
+              </ul>
+              <div class="turno-comprobante-notas">
+                <div class="turno-comprobante-nota">
+                  <i class="bi bi-caret-right-fill icon-orange"></i>
+                  <p>Para consultar el estado de tu trámite ingresá en <strong>haciendavgesell.gob.ar</strong>, hacé click en el ícono correspondiente y escribí el número asignado en este comprobante.</p>
+                </div>
+                <div class="turno-comprobante-nota">
+                  <i class="bi bi-caret-right-fill icon-orange"></i>
+                  <p>Podés cancelar tu turno enviando un correo a <strong>divinspectores@gesell.gob.ar</strong>.</p>
+                </div>
               </div>
-              <div class="row">
-                <b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill>
-                <p class="small"><small>Podés cancelar tu turno enviando un correo a divinspectores@gesell.gob.ar. </small></p>
-              </div>
-
-              <b-button class="mt-2 btn-orange" v-if="endButton === true" @click="onResetParams">Volver</b-button>
-            </div>
+              <b-button
+                v-if="endButton === true"
+                class="mt-3 btn-orange turno-comprobante-no-print"
+                @click="onResetParams"
+              >
+                Volver
+              </b-button>
             </b-card-body>
           </b-card>
         </div>
       </div>
 
       <!-- Modal enviando turno -->
-      <b-modal v-model="sendingForm" title="" no-close-on-backdrop :header-bg-variant="'success'" hide-footer  centered>
-        <template #modal-header>
+      <BModal v-model="sendingForm" title="" no-close-on-backdrop :header-bg-variant="'success'" no-footer  centered>
+        <template #header>
           <h5 class="centeredContainer text-light"> <b>Solicitando turno</b></h5>
         </template>
         <div class="centeredContainer">
@@ -184,13 +250,13 @@
           <b-spinner variant="success" style="width: 3rem; height: 3rem;" label="Large Spinner"></b-spinner>
           <p>No cierres esta página</p>
         </div>
-      </b-modal>
+      </BModal>
 
       <!-- Modal Solicitud exitosa -->
-      <b-modal v-model="formOk" v-if="date && time && formOk && !printing" no-close-on-backdrop :header-bg-variant="'success'" hide-footer centered>
-        <template #modal-header>
+      <BModal v-model="formOk" no-close-on-backdrop :header-bg-variant="'success'" no-footer centered>
+        <template #header>
           <div class="centeredContainer"><h3>
-              <b-icon icon="check-circle-fill" scale="1.5" variant="light"></b-icon>
+              <i class="bi bi-check-circle-fill text-light"></i>
           </h3></div>
         </template>
         <div class="text-center modal-success">
@@ -202,13 +268,13 @@
             <b-button @click="onPrintTicket" variant="success">Imprimir</b-button>
           </div>
         </div>
-      </b-modal>
+      </BModal>
 
       <!-- Modal número de trámite incorrecto -->
-      <b-modal v-model="showPopupFormError" @click-outside="showPopupFormError = false" :header-bg-variant="'danger'" centered>
-        <template #modal-header>
+      <BModal v-model="showPopupFormError" @click-outside="showPopupFormError = false" :header-bg-variant="'danger'" centered>
+        <template #header>
           <div class="centeredContainer"><h3>
-              <b-icon-exclamation-octagon scale="1.5" variant="light"></b-icon-exclamation-octagon>
+              <i class="bi bi-exclamation-octagon text-light"></i>
           </h3></div>
         </template>
         <div class="centeredContainer modal-error">
@@ -216,18 +282,18 @@
           <p class="">Por favor, corroborá que los datos ingresados sean correctos. Recordá que el número de trámite que te solicitamos fue enviado a tu correo electrónico.</p>
           <p class="minitext">Si el problema persiste, envianos un correo a <a target="_blank" href="mailto:deptocomercio@gesell.gob.ar" class="icon-green">deptocomercio@gesell.gob.ar</a>.</p>
         </div>
-        <template #modal-footer>
+        <template #footer>
           <div class="" style="margin: auto">
             <b-button @click="showPopupFormError = false" variant="danger" class="btn-cancel" >Aceptar</b-button>
           </div>
         </template>
-      </b-modal>
+      </BModal>
 
       <!-- Modal No estás habilitado a sacar turno todavía -->
-      <b-modal v-model="showPopupNotAllowed" @click-outside="showPopupNotAllowed = false" :header-bg-variant="'secondary'" centered>
-        <template #modal-header>
+      <BModal v-model="showPopupNotAllowed" @click-outside="showPopupNotAllowed = false" :header-bg-variant="'secondary'" centered>
+        <template #header>
           <div class="centeredContainer">
-            <b-icon-exclamation-octagon scale="3" variant="light"></b-icon-exclamation-octagon>
+            <i class="bi bi-exclamation-octagon text-light"></i>
           </div>
         </template>
         <div class="centeredContainer modal-warning">
@@ -236,36 +302,36 @@
           <p class="">Revisá tu correo electrónico para corroborar si tu solicitud fue aprobada sin necesitar inspección.</p>
           <p class="minitext">Si tenés dudas, envianos un correo a <a target="_blank" href="mailto:deptocomercio@gesell.gob.ar" class="icon-green">deptocomercio@gesell.gob.ar</a>.</p>
         </div>
-        <template #modal-footer>
+        <template #footer>
           <div style="margin: auto">
             <b-button @click="showPopupNotAllowed = false" variant="primary">Aceptar</b-button>
           </div>
         </template>
-      </b-modal>
+      </BModal>
 
       <!-- Modal No ha ingresado un número de trámite -->
-      <b-modal v-model="showPopupNoEntry" @click-outside="showPopupNoEntry = false" :header-bg-variant="'danger'" centered>
-        <template #modal-header>
+      <BModal v-model="showPopupNoEntry" @click-outside="showPopupNoEntry = false" :header-bg-variant="'danger'" centered>
+        <template #header>
           <div class="centeredContainer"><h3>
-              <b-icon-exclamation-octagon scale="1.5" variant="light"></b-icon-exclamation-octagon>
+              <i class="bi bi-exclamation-octagon text-light"></i>
           </h3></div>
         </template>
         <div class="centeredContainer modal-error">
           <p class="modal-subtitle">No has ingresado un número de trámite.</p>
           <p class="">Por favor, completá este campo para continuar.</p>
         </div>
-        <template #modal-footer>
+        <template #footer>
           <div class="" style="margin: auto">
             <b-button @click="showPopupNoEntry = false" variant="danger" class="btn-cancel" >Aceptar</b-button>
           </div>
         </template>
-      </b-modal>
+      </BModal>
 
       <!-- Modal Usted ya ha solicitado un turno -->
-      <b-modal v-model="showPopupAlready" @click-outside="showPopupAlready = false" :header-bg-variant="'danger'" centered>
-        <template #modal-header>
+      <BModal v-model="showPopupAlready" @click-outside="showPopupAlready = false" :header-bg-variant="'danger'" centered>
+        <template #header>
           <div class="centeredContainer"><h3>
-              <b-icon-exclamation-octagon scale="1.5" variant="light"></b-icon-exclamation-octagon>
+              <i class="bi bi-exclamation-octagon text-light"></i>
           </h3></div>
         </template>
         <div class="centeredContainer modal-error">
@@ -273,22 +339,33 @@
           <p class="">Si deseas cancelarlo o reprogramarlo, debes comunicarte con divinspectores@gesell.gob.ar.</p>
           <p class="">Recordá que podés cancelar el turno sólo hasta 5 días antes del momento de inspección. </p>
         </div>
-        <template #modal-footer>
+        <template #footer>
           <div class="" style="margin: auto">
             <b-button @click="showPopupAlready = false" variant="danger" class="btn-cancel" >Aceptar</b-button>
           </div>
         </template>
-      </b-modal>
+      </BModal>
   </div>
 
 </template>
 
 <script>
 import MailerService from "@/service/mailer.js";
+import BCalendar from '~/components/BCalendarField.vue'
+import turneraBanner1 from '~/assets/turnera-banner-1.png?url'
+import turneraBanner2 from '~/assets/turnera-banner-2.png?url'
+import turneraBanner3 from '~/assets/turnera-banner-3.png?url'
+import turneraBanner4 from '~/assets/turnera-banner-4.png?url'
 
 export default {
+  components: { BCalendar },
+  setup(){ const { showToast } = useProjectToast(); return { showToast } },
   data() {
     return {
+      turneraBanner1,
+      turneraBanner2,
+      turneraBanner3,
+      turneraBanner4,
       nroTramite: null,
       nroTramiteIngresado: null,
       page: 0,
@@ -321,13 +398,6 @@ export default {
     wait(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
     },
-    addDays(date, days) {
-      date.setDate(date.getDate() + days);
-      return date;
-    },
-    daysFromNow() {
-      return this.addDays(new Date(), this.maxRange);
-    },
     generateTimeOptions() {
       const startTime = 570; // 9:30 (in minutes)
       const endTime = 700; // 11:30 (in minutes)
@@ -349,7 +419,7 @@ export default {
       const day = date.getDate();
 
       // Verificar si la fecha tiene 6 turnos pedidos
-      const turnos = this.$store.state.turnos.all;
+      const turnos = useTurnosStore().all;
       const turnosParaFecha = turnos.filter(turno => turno.dia === new Date(date).toLocaleDateString('es-AR'));
       const seisTurnosPedidos = turnosParaFecha.length >= 6;
 
@@ -360,69 +430,53 @@ export default {
     },
     timeDisabled(time) {
       // Obtener la cantidad de turnos reservados para la franja horaria específica
-      const turnos = this.$store.state.turnos.all;
+      const turnos = useTurnosStore().all;
       const turnosParaFranja = turnos.filter(turno => turno.dia === new Date(this.date).toLocaleDateString('es-AR') && turno.horario === time);
       const tresTurnosPedidos = turnosParaFranja.length >= 3; // Suponiendo que 3 es el límite de turnos por franja horaria
 
       return tresTurnosPedidos;
     },
     async onSelectTurno() {
-      let success = false; // Bandera para verificar si el try se ejecutó con éxito
+      const tipoTramite = useHabilitacionesStore().single?.tipoSolicitud
 
-      let tipoTramite = this.$store.state.habilitaciones.single.tipoSolicitud
       if (!this.nombre || !this.dni || !this.domicilio) {
-        this.$bvToast.toast('Existen datos incompletos', {
+        this.showToast('Existen datos incompletos', {
           title: 'Error',
           variant: 'danger',
           solid: true,
-          toaster: 'b-toaster-top-center',
+          pos: 'top-center',
         });
-      } else {
-        try {
-          const turno = {
-            dia: this.date,
-            horario: this.time,
-            nombre: this.nombre,
-            dni: this.dni,
-            domicilio: this.domicilio,
-            nroTramite: this.nroTramite,
-            tipoTramite: tipoTramite,
-          }
-          this.sendingForm = true
-          await this.$store.dispatch('turnos/create',{
-            turno
-          })
-          success = true; // Cambia la bandera a true si el try se ejecutó correctamente
-        }catch(e){
-          this.$bvToast.toast('No se pudo solicitar un turno por un error desconocido. Recargue la pagina e intente nuevamente más tarde.', {
-            solid: true,
-            variant: 'danger',
-            appendToast: true,
-          });
+        return;
+      }
+
+      try {
+        const turno = {
+          dia: this.date,
+          horario: this.time,
+          nombre: this.nombre,
+          dni: this.dni,
+          domicilio: this.domicilio,
+          nroTramite: this.nroTramite,
+          tipoTramite,
         }
+        this.sendingForm = true
+        await useTurnosStore().create({ turno })
 
-        // Verifica la bandera 'success' para ejecutar el código después del try...catch
-        if (success) {
-          const habilitacionId = this.$store.state.habilitaciones.single.id;
-          const observaciones = this.$store.state.habilitaciones.single.observaciones;
-          const habilitacion = {
-            status: 'Esperando inspección',
-            observaciones: observaciones + " - " + "Turno solicitado el día " + new Date().toLocaleDateString('es-AR') +
-              " - " + "Se debe inspeccionar el comercio el día " + new Date(this.date).toLocaleDateString('es-AR') + " a las " + this.time
-          };
-          await this.$store.dispatch('habilitaciones/updateLazy', {
-            id: habilitacionId,
-            habilitacion,
-          });
+        const habilitacionId = useHabilitacionesStore().single.id;
+        const observaciones = useHabilitacionesStore().single.observaciones;
+        const habilitacion = {
+          status: 'Esperando inspección',
+          observaciones: observaciones + " - " + "Turno solicitado el día " + new Date().toLocaleDateString('es-AR') +
+            " - " + "Se debe inspeccionar el comercio el día " + new Date(this.date).toLocaleDateString('es-AR') + " a las " + this.time
+        };
+        await useHabilitacionesStore().updateLazy({
+          id: habilitacionId,
+          habilitacion,
+        });
 
-          // --- Enviar correo al solicitante ---
-          try {
-            const destinatario = this.$store.state.habilitaciones.single.mail
-            if (!destinatario) {
-              console.error('No se encontró el email del solicitante')
-              return
-            }
-
+        try {
+          const destinatario = useHabilitacionesStore().single.mail
+          if (destinatario) {
             const asunto = `Turno de inspección confirmado - N° ${this.nroTramite}`
             const mensaje = `Estimado/a contribuyente,
 
@@ -439,23 +493,40 @@ IMPORTANTE:
 - Si necesita cancelar o reprogramar el turno, comuníquese con divinspectores@gesell.gob.ar
 - Solo puede cancelar el turno hasta 5 días antes de la inspección.`
 
-            await MailerService.enviarCorreo(this.$axios, { destinatario, asunto, mensaje })
-          } catch (e) {
-            console.error('Error al enviar correo de confirmación de turno:', e)
+            await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
+          } else {
+            console.error('No se encontró el email del solicitante')
           }
-
-          this.sendingForm = false;
-          this.formOk = true;
+        } catch (e) {
+          console.error('Error al enviar correo de confirmación de turno:', e)
         }
+
+        await this.$nextTick()
+        this.formOk = true
+      } catch (e) {
+        this.showToast('No se pudo solicitar un turno por un error desconocido. Recargue la pagina e intente nuevamente más tarde.', {
+          solid: true,
+          variant: 'danger',
+          appendToast: true,
+        });
+      } finally {
+        this.sendingForm = false
       }
     },
     async onPrintTicket() {
-      this.page = 4;
-      this.printing = true;
-      await this.wait(500);
-      print();
-      await this.wait(500);
-      this.endButton = true;
+      this.formOk = false
+      this.page = 4
+      this.printing = true
+      await this.wait(500)
+      if (import.meta.client) {
+        document.body.classList.add('printing-turno-comprobante')
+      }
+      print()
+      await this.wait(500)
+      if (import.meta.client) {
+        document.body.classList.remove('printing-turno-comprobante')
+      }
+      this.endButton = true
     },
     async onNextPage() {
       switch (this.page) {
@@ -466,17 +537,17 @@ IMPORTANTE:
           } else {
             try{
               const nroTramite = this.nroTramiteIngresado
-              await this.$store.dispatch('habilitaciones/getByNroTramite',  { nroTramite })
-              if(this.$store.state.habilitaciones.single){
-                const status = this.$store.state.habilitaciones.single.status
+              await useHabilitacionesStore().getByNroTramite({ nroTramite })
+              if(useHabilitacionesStore().single){
+                const status = useHabilitacionesStore().single.status
                 if(status === "Esperando turno"){
                   this.nroTramite = this.nroTramiteIngresado
-                  this.localidad = this.$store.state.habilitaciones.single.localidad
+                  this.localidad = useHabilitacionesStore().single.localidad
                   this.page += 1
-                  await this.$store.dispatch('turnos/getAll')
+                  await useTurnosStore().getAll()
                 }else{
                   if(status === "Esperando inspección" || status === "Prórroga 1" || status === "Prórroga 2" || status === "Inspeccionado"){
-                    await this.$store.dispatch('turnos/getSingle', { nroTramite })
+                    await useTurnosStore().getSingle({ nroTramite })
                     this.showPopupAlready = true
                   }else{
                     this.showPopupNotAllowed = true
@@ -487,12 +558,12 @@ IMPORTANTE:
               }
             }catch(e){
               console.log(e)
-              this.$bvToast.toast('Algo salió mal buscando la habilitación.', {
+              this.showToast('Algo salió mal buscando la habilitación.', {
                 title: 'Error',
                 variant: 'danger',
                 appendToast: true,
                 solid: true,
-                toaster: 'b-toaster-top-center',
+                pos: 'top-center',
               });
             }
           }
@@ -501,12 +572,12 @@ IMPORTANTE:
 
         case 1:
           if (!this.datePicked) {
-            this.$bvToast.toast('No ha seleccionado una fecha', {
+            this.showToast('No ha seleccionado una fecha', {
               title: 'Error',
               variant: 'danger',
               appendToast: true,
               solid: true,
-              toaster: 'b-toaster-top-center',
+              pos: 'top-center',
             });
           } else {
             this.date = this.datePicked
@@ -516,12 +587,12 @@ IMPORTANTE:
 
         case 2:
           if (!this.timePicked) {
-            this.$bvToast.toast('No ha seleccionado un horario', {
+            this.showToast('No ha seleccionado un horario', {
               title: 'Error',
               variant: 'danger',
               appendToast: true,
               solid: true,
-              toaster: 'b-toaster-top-center',
+              pos: 'top-center',
             });
           } else {
             this.time = this.timePicked
@@ -551,14 +622,52 @@ IMPORTANTE:
     },
   },
   computed: {
+    minTurnoDate() {
+      const d = new Date()
+      d.setDate(d.getDate() + 2)
+      return d
+    },
+    maxTurnoDate() {
+      const d = new Date()
+      d.setDate(d.getDate() + this.maxRange)
+      return d
+    },
     formattedDate() {
-      if (this.date) {
-        const day = this.date.getDate();
-        const month = this.date.getMonth() + 1;
-        const year = this.date.getFullYear();
-        return `${day}/${month}/${year}`;
+      const d = this.date || this.datePicked
+      if (!d) return ''
+      const date = d instanceof Date ? d : new Date(d)
+      if (Number.isNaN(date.getTime())) return ''
+      const day = date.getDate()
+      const month = date.getMonth() + 1
+      const year = date.getFullYear()
+      return `${day}/${month}/${year}`
+    },
+    selectedDateDisplay() {
+      const d = this.date || this.datePicked
+      if (!d) return ''
+      const date = d instanceof Date ? d : new Date(d)
+      if (Number.isNaN(date.getTime())) return ''
+      const text = date.toLocaleDateString('es-AR', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
+      return text.charAt(0).toUpperCase() + text.slice(1)
+    },
+    selectedTimeDisplay() {
+      const t = this.time || this.timePicked
+      if (!t) return ''
+      const slots = this.horariosDisponibles
+      if (!slots.length) return t
+      const idx = slots.indexOf(t)
+      if (idx === 0 && slots[1]) {
+        return `${slots[0]} - ${slots[1]}`
       }
-      return '';
+      if (idx === 1) {
+        return `${slots[1]} - 13:30`
+      }
+      return t
     },
     areAllFieldsComplete(){
         return (this.date && this.time && this.nroTramite && this.nombre && this.dni && this.domicilio)
@@ -568,14 +677,40 @@ IMPORTANTE:
 </script>
 
 <style scoped>
+.banner-container {
+  width: 100%;
+  max-width: 803px;
+  margin: 0 auto 0.5rem;
+  line-height: 0;
+}
+
+.turnera-banner-img {
+  display: block;
+  width: min(100%, 803px);
+  height: auto;
+  aspect-ratio: 803 / 289;
+  margin: 0 auto;
+  flex-shrink: 0;
+}
+
+.turnera-calendar :deep(.b-calendar-grid) {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
 @media (max-width: 720px){
-  .b-calendar{
+  .turnera-calendar,
+  .turnera-calendar :deep(.b-calendar),
+  .turnera-calendar :deep(.b-calendar-inner) {
     width: 100% !important;
     max-width: 100% !important;
-    padding: 0 0 !important;
+    padding: 0 !important;
   }
   .banner-container{
-    margin:auto;
+    margin: auto;
+    max-width: 100%;
+  }
+  .turnera-banner-img {
+    max-width: 100%;
   }
   .section-card{
     padding: 1rem 1rem !important;
@@ -588,11 +723,9 @@ IMPORTANTE:
   .btn{
     width: 9rem !important;
   }
-  .bi-ticket{
-    width: 10% !important;
-  }
-  .modal-dialog{
-    max-width: 100px !important;
+  .bi-ticket {
+    width: 12% !important;
+    min-width: 2rem !important;
   }
   .justify-content-center{
     margin: auto;
@@ -611,10 +744,31 @@ IMPORTANTE:
   .disabled-option {
     color: rgb(164, 163, 163);
   }
-  .centeredContainer{
-    width:  auto;
+  .centeredContainer {
+    width: auto;
     margin: auto;
     text-align: center;
+  }
+
+  .modal-header .centeredContainer {
+    width: 100%;
+    flex: 1 1 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+  }
+
+  .modal-header .centeredContainer h3,
+  .modal-header .centeredContainer h5 {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   .centeredContainer button{
     width: 40%;
@@ -671,9 +825,10 @@ IMPORTANTE:
     font-weight: 500;
     padding: 0 1rem;
   }
-  .modal-error .minitext{
+  .modal-error .minitext {
     font-size: 0.8rem;
-    font-weight: 100;
+    font-weight: 400;
+    color: #888;
   }
 
   .modal-success p{
@@ -682,9 +837,10 @@ IMPORTANTE:
     font-size: 1.2rem;
     padding: 0 1.5rem;
   }
-  .modal-success .minitext{
+  .modal-success .minitext {
     font-size: 0.8rem;
-    font-weight: 100;
+    font-weight: 400;
+    color: #888;
   }
 
   .modal-warning p{
@@ -692,9 +848,10 @@ IMPORTANTE:
     font-weight: 500;
     padding: 0 1rem;
   }
-  .modal-warning .minitext{
+  .modal-warning .minitext {
     font-size: 0.9rem;
-    font-weight: 100;
+    font-weight: 400;
+    color: #888;
   }
 
   .small{
@@ -728,6 +885,26 @@ IMPORTANTE:
     background-color: #e53749;
     border-color: #e53749;
   }
+  .turno-fecha-elegida {
+    margin-bottom: 0.5rem;
+  }
+
+  .turno-fecha-elegida p {
+    margin-bottom: 0;
+  }
+
+  .turno-instrucciones .li-row + .li-row {
+    margin-top: 1rem;
+  }
+
+  .turno-instrucciones .li-content p {
+    margin-bottom: 0;
+  }
+
+  .turno-form-datos {
+    margin-top: 1.5rem;
+  }
+
   .section-card h5{
     font-size: 2rem;
     font-weight: bold;
@@ -737,14 +914,30 @@ IMPORTANTE:
     border-bottom: 2px solid #CCC;
     margin-bottom: 1rem;
   }
-  .section-card h5 .bi-calendar-check, .section-card h5 .bi-clock, .section-card h5 .bi-ticket{
+  .section-card h5 .bi-calendar-check {
+    margin-right: 0.5rem;
+    border-right: 1px solid #999;
+    font-size: 2.1rem;
+    padding-right: 0.75rem;
+  }
+
+  .section-card h5 .bi-clock,
+  .section-card h5 .bi-ticket {
     margin-right: 0.5rem;
     border-right: 1px solid #999;
     font-size: 2.5rem;
     padding-right: 0.75rem;
   }
-  .section-card h5 .bi-ticket{
-    width: 5%;
+
+  .section-card h5 .bi-calendar-check,
+  .section-card h5 .bi-clock,
+  .turno-fecha-elegida .bi-calendar-check,
+  .turno-fecha-elegida .bi-clock {
+    color: #E27910;
+  }
+  .section-card h5 .bi-ticket {
+    width: 6.5%;
+    min-width: 2.25rem;
   }
   .importante-card{
     margin: 2rem auto;
@@ -771,16 +964,33 @@ IMPORTANTE:
   .li-title{
     margin-bottom: 0.3rem;
   }
-  .li-icon{
-    margin-right: 1%;
-    vertical-align: top;
-  }
-  .li-row{
+  .li-row {
     display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
     width: 100%;
   }
-  .li-icon, .li-content{
-    display: inline-block;
+  .li-icon {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    line-height: 1;
+    margin-right: 0;
+    padding-top: 0.12em;
+  }
+  .li-content {
+    display: block;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .li-content p {
+    margin-top: 0;
+    margin-bottom: 0.65rem;
+    line-height: 1.4;
+  }
+  .li-content p:last-child {
+    margin-bottom: 0;
   }
   .li-p{
     margin-bottom: 1rem;
@@ -788,15 +998,192 @@ IMPORTANTE:
   .sub-li p{
     font-size: 1.3rem;
   }
-  .bi-caret-right-fill, .bi-check{
+
+  .turno-localidades-list .li-row {
+    gap: 0.6rem;
+  }
+
+  .turno-localidades-list .li-row + .li-row {
+    margin-top: 0.85rem;
+  }
+
+  .turno-localidades-list .sub-li p {
+    line-height: 1.65;
+  }
+
+  .turno-localidades-list .turno-localidad-check {
+    color: #0c681a !important;
+    font-size: 1.35rem !important;
+    font-weight: 700;
+    line-height: 1;
+    display: block;
+    margin-top: 0.15em;
+  }
+
+  .li-icon .bi-caret-right-fill,
+  .li-icon .bi-check {
+    display: block;
+    margin-top: 0;
+    line-height: 1;
+  }
+
+  .li-icon .bi-caret-right-fill,
+  .bi-caret-right-fill {
+    color: #0c681a;
+  }
+
+  .turno-comprobante-nota .bi-caret-right-fill {
+    display: inline-block !important;
+  }
+
+  .turno-comprobante-wrapper {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .turno-comprobante-card {
+    border-width: 2px;
+  }
+
+  .turno-comprobante-header {
+    text-align: center;
+    padding: 0.85rem 1rem;
+  }
+
+  .turno-comprobante-body {
+    padding: 1.5rem 1.75rem;
+  }
+
+  .turno-comprobante-entity {
+    text-align: center;
+    color: #555;
+    font-size: 0.95rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .turno-comprobante-datos {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.25rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    overflow: hidden;
+  }
+
+  .turno-comprobante-datos li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.65rem 1rem;
+    border-bottom: 1px solid #eee;
+  }
+
+  .turno-comprobante-datos li:last-child {
+    border-bottom: none;
+  }
+
+  .turno-comprobante-datos li:nth-child(odd) {
+    background-color: #f8f9fa;
+  }
+
+  .turno-comprobante-label {
+    font-weight: 600;
+    color: #0c681a;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .turno-comprobante-label .bi-check {
     display: inline-block;
+    flex-shrink: 0;
+    color: #0c681a;
+    line-height: 1;
   }
-  .bi-caret-right-fill{
-    vertical-align: top;
-    margin-top: 0.5rem;
-    font-size: 1.05rem;
+
+  .turno-comprobante-value {
+    text-align: right;
+    font-weight: 600;
+    color: #333;
   }
-  .bi-check{
-    vertical-align: top;
+
+  .turno-comprobante-notas {
+    border-top: 1px solid #ccc;
+    padding-top: 1rem;
   }
+
+  .turno-comprobante-nota {
+    margin-bottom: 0.75rem;
+  }
+
+  .turno-comprobante-nota:last-child {
+    margin-bottom: 0;
+  }
+
+  .turno-comprobante-nota p {
+    font-size: 0.9rem;
+    color: #444;
+    line-height: 1.45;
+  }
+</style>
+
+<style>
+@media print {
+  body:has(.turno-comprobante-wrapper) #app-navbar,
+  body:has(.turno-comprobante-wrapper) .footer,
+  body.printing-turno-comprobante #app-navbar,
+  body.printing-turno-comprobante .footer,
+  body:has(.turno-comprobante-wrapper) .title,
+  body.printing-turno-comprobante .title,
+  body:has(.turno-comprobante-wrapper) .turno-comprobante-no-print,
+  body.printing-turno-comprobante .turno-comprobante-no-print {
+    display: none !important;
+  }
+
+  body:has(.turno-comprobante-wrapper) #app-content,
+  body.printing-turno-comprobante #app-content {
+    margin-top: 0 !important;
+    padding: 0 !important;
+  }
+
+  body:has(.turno-comprobante-wrapper) .main-background,
+  body:has(.turno-comprobante-wrapper) .page,
+  body.printing-turno-comprobante .main-background,
+  body.printing-turno-comprobante .page {
+    background: #fff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body:has(.turno-comprobante-wrapper) .turno-comprobante-wrapper,
+  body.printing-turno-comprobante .turno-comprobante-wrapper {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body:has(.turno-comprobante-wrapper) .turno-comprobante-card,
+  body.printing-turno-comprobante .turno-comprobante-card {
+    width: 100% !important;
+    max-width: 520px !important;
+    margin: 0 auto !important;
+    box-shadow: none !important;
+    border: 2px solid #0c681a !important;
+    page-break-inside: avoid;
+  }
+
+  body:has(.turno-comprobante-wrapper) .turno-comprobante-header,
+  body:has(.turno-comprobante-wrapper) .green,
+  body.printing-turno-comprobante .turno-comprobante-header,
+  body.printing-turno-comprobante .green {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body:has(.turno-comprobante-wrapper) .turno-comprobante-nota p,
+  body.printing-turno-comprobante .turno-comprobante-nota p {
+    font-size: 0.85rem;
+  }
+}
 </style>

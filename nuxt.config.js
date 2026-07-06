@@ -1,73 +1,88 @@
-export default {
-  target: 'server',
-  // Global page headers: https://go.nuxtjs.dev/config-head
-  head: {
-    title: 'Hacienda Villa Gesell',
-    htmlAttrs: {
-      lang: 'es'
-    },
-    meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
-      { name: 'format-detection', content: 'telephone=no' }
-    ],
-    link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' }
-    ],
-    script: [
-      { src: 'https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit', async: true, defer: true }
-    ]
+// https://nuxt.com/docs/api/configuration/nuxt-config
+export default defineNuxtConfig({
+  ssr: true,
+
+  nitro: {
+    preset: 'node-server',
   },
 
-  // Global CSS: https://go.nuxtjs.dev/config-css
+  app: {
+    pageTransition: {
+      name: 'page',
+      mode: 'out-in',
+    },
+    layoutTransition: false,
+    head: {
+      title: 'Hacienda Villa Gesell',
+      htmlAttrs: { lang: 'es' },
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { name: 'description', content: '' },
+        { name: 'format-detection', content: 'telephone=no' },
+      ],
+      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.png' }],
+      script: [
+        {
+          src: 'https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit',
+          async: true,
+          defer: true,
+        },
+      ],
+    },
+  },
+
   css: [
     '~/assets/css/style.scss',
-    'bootstrap-icons/font/bootstrap-icons.css'
+    'bootstrap-icons/font/bootstrap-icons.css',
   ],
 
+  bootstrapVueNext: {
+    css: true,
+  },
 
-  // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    { src: '~/plugins/vuelidate.js', ssr: true },
-    '~/plugins/logUserActivity.js',
+    '~/plugins/pinia-payload.server.js',
+    '~/plugins/api.js',
+    '~/plugins/project-toast.client.js',
+    '~/plugins/auth-hydrate.client.js',
+    '~/plugins/router-cleanup.client.js',
+    '~/plugins/vuelidate.js',
+    '~/plugins/logUserActivity.client.js',
   ],
 
-  // Auto import components: https://go.nuxtjs.dev/config-components
+  alias: {
+    'vuelidate/lib/validators': '@vuelidate/validators',
+  },
+
+  modules: ['./modules/nuxt-dev-fix.js', '@bootstrap-vue-next/nuxt', '@pinia/nuxt'],
+
+  runtimeConfig: {
+    public: {
+      apiBase: 'https://redeterminacion-back.herokuapp.com/',
+      // apiBase: 'http://127.0.0.1:5000/',
+    },
+  },
+
   components: true,
 
-  // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
-  buildModules: [
-  ],
+  compatibilityDate: '2024-11-01',
 
-  // Modules: https://go.nuxtjs.dev/config-modules
-  modules: [
-    // https://go.nuxtjs.dev/bootstrap
-    'bootstrap-vue/nuxt',
-    // https://go.nuxtjs.dev/axios
-    '@nuxtjs/axios',
-  ],
-
-  // Axios module configuration: https://go.nuxtjs.dev/config-axios
-  axios: {
-    baseURL: 'https://redeterminacion-back.herokuapp.com/',
-    // baseURL: 'http://localhost:5000/',  // Used as fallback if no runtime config is provided
+  future: {
+    compatibilityVersion: 3,
   },
 
-
-  // BootstrapVue module configuration https://bootstrap-vue.org/docs#nuxtjs-module
-  bootstrapVue: {
-    bootstrapCSS: false, // Or `css: false`
-    icons: true,
-    bootstrapVueCSS: false, // Or `bvCSS: false`
+  vite: {
+    ssr: {
+      // Librerías que usan navigator/DOM: no evaluarlas en el bundle SSR.
+      external: ['file-saver', 'jspdf', 'jszip'],
+    },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          silenceDeprecations: ['import', 'global-builtin', 'color-functions', 'if-function'],
+        },
+      },
+    },
   },
-
-  // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {
-    loaders: {
-      sass: {
-        implementation: require('sass')
-      }
-    }
-  }
-}
+})

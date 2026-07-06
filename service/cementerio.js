@@ -1,4 +1,4 @@
-const formatFile = (res) => ({
+﻿const formatFile = (res) => ({
   id: res._id,
   estado: res.estado,
   createdAt: new Date(res.createdAt).toLocaleDateString('es-AR'),
@@ -10,7 +10,7 @@ const formatFile = (res) => ({
   responsable: res.funeraria && res.funeraria.responsable,
 });
 
-module.exports = {
+export default {
   getAll: async (axios) => {
     const response = await axios.$get('/cementerio/certificadosDefuncion');
     return response.data.map(formatFile);
@@ -35,5 +35,6 @@ module.exports = {
     return await axios.$delete(`/cementerio/certificadosDefuncion/${id}`);
   },
 }
+
 
 

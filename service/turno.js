@@ -1,4 +1,4 @@
-const formatTurno = (TurnoResponse) => ({
+﻿const formatTurno = (TurnoResponse) => ({
   id: TurnoResponse._id,
   dia: new Date(TurnoResponse.dia).toLocaleDateString('es-AR'),
   horario: TurnoResponse.horario,
@@ -13,7 +13,7 @@ const formatTurno = (TurnoResponse) => ({
   createdAt: new Date(TurnoResponse.createdAt).toLocaleDateString('es-AR'),
 })
 
-module.exports = {
+export default {
   getAll: async (axios,
      ) => {
     const turnosResponse = await axios.$get('/turnos/', {
@@ -73,3 +73,4 @@ module.exports = {
     })
   },
 }
+

@@ -1,4 +1,4 @@
-const formatMaestro = (MaestroResponse) => ({
+﻿const formatMaestro = (MaestroResponse) => ({
   // id: MaestroResponse._id,
   legajo: MaestroResponse.legajo,
   cuit: MaestroResponse.cuit,
@@ -9,7 +9,7 @@ const formatMaestro = (MaestroResponse) => ({
   mail: MaestroResponse.mail,
 })
 
-module.exports = {
+export default {
   get: async (axios,
     //  { skip = 0, limit = 6 }
      ) => {
@@ -47,3 +47,4 @@ module.exports = {
     })
   },
 }
+

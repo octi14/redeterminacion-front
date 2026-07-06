@@ -11,7 +11,7 @@
             @sliding-start="onSlideStart"
             @sliding-end="onSlideEnd"
             >
-                <b-carousel-slide img-src="../../assets/banner-normativa.png"></b-carousel-slide>
+                <b-carousel-slide :img-src="bannerNormativa"></b-carousel-slide>
             </b-carousel>
         </div>
         <div class="col-10 mobileCarrousel" style="margin: auto; margin-top: 2rem">
@@ -24,68 +24,55 @@
             @sliding-start="onSlideStart"
             @sliding-end="onSlideEnd"
             >
-                <b-carousel-slide img-src="../../assets/banner-normativa-mobile.png"></b-carousel-slide>
+                <b-carousel-slide :img-src="bannerNormativaMobile"></b-carousel-slide>
             </b-carousel>
         </div>
     <div class="mt-5">
       <MenuItem to="/normativa/comercio" icon="shop" title="Digesto Comercial" description="Normativa vigente para los comercios de Villa Gesell"/>
-      <div class="row no-gutters justify-content-center mt-5">
-        <NuxtLink to="/normativa/obras" class="col-md-5">
-          <b-button variant="outline" class="d-flex w-100 white shadow-card">
-            <div class="me-3">
-              <ObraIcon class="my-3 obra-icon"/>
-            </div>
-            <div class="col text-left my-auto">
-              <h3 class="landing-text"><b> Normativa de Obras Públicas </b></h3>
-              <h6>Normativa vigente para Obras Públicas de la localidad de Villa Gesell</h6>
-            </div>
-          </b-button>
-        </NuxtLink>
-      </div>
+      <MenuItem
+        to="/normativa/obras"
+        title="Normativa de Obras Públicas"
+        description="Normativa vigente para Obras Públicas de la localidad de Villa Gesell"
+      >
+        <template #icon>
+          <ObraIcon />
+        </template>
+      </MenuItem>
     </div>
-    <div class="text-center m-4 float-lg-end">
+    <div class="page-btn-volver-wrap">
       <NuxtLink to="/">
-        <b-button variant="primary"> Volver </b-button>
+        <b-button variant="primary" size="sm" class="page-btn-volver"> Volver </b-button>
       </NuxtLink>
     </div>
   </div>
 </template>
 
 <script>
+import bannerNormativa from '~/assets/banner-normativa.png'
+import bannerNormativaMobile from '~/assets/banner-normativa-mobile.png'
+
 export default {
+  data() {
+    return {
+      slide: 0,
+      bannerNormativa,
+      bannerNormativaMobile,
+    }
+  },
   computed: {
     adminHacienda() {
-      return this.$store.state.user.admin == "hacienda" || this.$store.state.user.admin == "master";
-    }
-  }
-};
+      const admin = useUserStore().admin
+      return admin == "hacienda" || admin == "master";
+    },
+  },
+  methods: {
+    onSlideStart() {},
+    onSlideEnd() {},
+  },
+}
 </script>
 
 <style scoped>
-.landing-icon {
-  width: 60px;
-  height: 60px;
-  color: #ef8918;
-  transition: transform 0.2s ease;
-}
-/* Aplicar escala al hacer hover en el ícono */
-.landing-icon:hover {
-  transform: scale(1.15);
-}
-.obra-icon{
-  padding-left: 8px;
-  color:#ef8918;
-  transition: transform 0.2s ease; /* Cambia la duración a medio segundo (0.5s) */
-}
-/* Aplicar escala al hacer hover en el ícono */
-.obra-icon:hover {
-  transform: scale(1.15); /* Ajusta el valor según desees el efecto de escala */
-}
-
-.col{
-  margin: 16px;
-}
-
 .mainCarrousel{
     display: block;
   }

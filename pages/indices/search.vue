@@ -4,7 +4,7 @@
     <div class="container col-md-4 col-sm-8 card shadow-card my-5 mx-auto">
       <div class="col ml-5 mt-5">
         <h4>
-          <b-icon-search class="icon-orange" /> |
+          <i class="bi bi-search"></i> |
           <b class="landing-text"> Buscar índice </b>
         </h4>
       </div>
@@ -25,9 +25,7 @@
         </b-form-select>
         <b-row class="justify-content-center mt-2">
           <b-button type="submit" class="mx-2" variant="success"> Buscar </b-button>
-          <b-button variant="secondary" @click="goBack">
-            Volver
-          </b-button>
+          <b-button variant="primary" size="sm" class="page-btn-volver" @click="goBack">Volver</b-button>
         </b-row>
       </b-form>
       <div class="my-2" v-if="result">
@@ -36,6 +34,13 @@
     </div>
   </div>
 </template>
+
+<script setup>
+definePageMeta({
+  middleware: ['authenticated', 'require-admin'],
+  adminRoles: ['hacienda', 'master'],
+})
+</script>
 
 <script>
 export default {
@@ -48,18 +53,18 @@ export default {
       result: null,
     }
   },
-  async fetch() {
-    await this.$store.dispatch('categorias/getAll')
-    this.categorias = this.$store.state.categorias.all
+  async mounted() {
+    await useCategoriasStore().getAll()
+    this.categorias = useCategoriasStore().all
   },
   methods: {
     async onSearchIndex(){
-      await this.$store.dispatch('indices/searchSingle', {
+      await useIndicesStore().searchSingle({
         mes: this.mes,
         año: this.año,
         categoria: this.categoria,
       })
-      this.result = this.$store.state.indices.single.valor
+      this.result = useIndicesStore().single?.valor
     },
     async goBack(){
       await this.$router.push('/obras')

@@ -4,7 +4,7 @@
     <div class="container col-md-4 col-sm-10 card shadow-card my-5">
       <div class="col ml-5 mt-5">
         <h4>
-          <b-icon-arrow-down-left-square class="icon-orange" /> |
+          <i class="bi bi-arrow-down-left-square"></i> |
           <b class="landing-text"> Crear índice </b>
         </h4>
       </div>
@@ -29,17 +29,24 @@
             </b-form-group>
         </b-form-group>
         <b-row class="justify-content-center mb-3">
-          <b-btn variant="success" class="mx-2" type="submit">Crear índice</b-btn>
-          <b-btn variant="secondary" @click="goBack">Volver</b-btn>
+          <b-button variant="success" class="mx-2" type="submit">Crear índice</b-button>
+          <b-button variant="primary" size="sm" class="page-btn-volver" @click="goBack">Volver</b-button>
         </b-row>
       </b-form>
     </div>
   </div>
 </template>
 
+<script setup>
+definePageMeta({
+  middleware: ['authenticated', 'require-admin'],
+  adminRoles: ['hacienda', 'master'],
+})
+</script>
+
 <script>
 export default {
-  middleware: ['authenticated'],
+  setup(){ const { showToast } = useProjectToast(); return { showToast } },
   data() {
     return {
       año: '',
@@ -49,17 +56,15 @@ export default {
       categorias: [],
     }
   },
-  async fetch() {
-    await this.$store.dispatch('categorias/getAll')
-    this.categorias = this.$store.state.categorias.all
-    // await this.$store.dispatch('tags/getTags')
+  async mounted() {
+    await useCategoriasStore().getAll()
+    this.categorias = useCategoriasStore().all
   },
-  fetchOnServer: false,
   methods: {
     async onSubmitCreateFile() {
     try {
-      const userToken = this.$store.state.user.token
-      await this.$store.dispatch('indices/create', {
+      const userToken = useUserStore().token
+      await useIndicesStore().create({
         userToken,
         indice: {
           año: this.año,
@@ -68,7 +73,7 @@ export default {
           valor: this.valor,
         },
       })
-      this.$bvToast.toast('Creado correctamente', {
+      this.showToast('Creado correctamente', {
         title: 'Creada',
         variant: 'success',
         appendToast: true,
@@ -76,7 +81,7 @@ export default {
       })
       await this.$router.push('/')
       } catch (e) {
-        this.$bvToast.toast('Error Cargando el índice', {
+        this.showToast('Error Cargando el índice', {
           title: 'Error',
           variant: 'danger',
           appendToast: true,

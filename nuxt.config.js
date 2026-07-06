@@ -75,7 +75,7 @@ export default defineNuxtConfig({
   vite: {
     ssr: {
       // Librerías que usan navigator/DOM: no evaluarlas en el bundle SSR.
-      external: ['file-saver', 'jspdf', 'jszip'],
+      external: ['file-saver', 'jspdf', 'jszip', 'xlsx'],
     },
     css: {
       preprocessorOptions: {

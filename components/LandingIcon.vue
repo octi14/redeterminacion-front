@@ -1,11 +1,11 @@
 <template>
   <a
-    v-if="isExternalLink"
+    :key="to"
     :href="to"
-    target="_blank"
-    rel="noopener noreferrer"
+    :target="isExternalLink ? '_blank' : undefined"
+    :rel="isExternalLink ? 'noopener noreferrer' : undefined"
     class="landing-tile-link"
-    @click.stop="onExternalClick"
+    @click.stop="onClick"
   >
     <div class="landing-tile">
       <img
@@ -24,30 +24,6 @@
       </h5>
     </div>
   </a>
-
-  <NuxtLink
-    v-else
-    :to="to"
-    class="landing-tile-link"
-    @click.stop="onInternalClick"
-  >
-    <div class="landing-tile">
-      <img
-        v-if="type === 'svg'"
-        :src="svgSrc"
-        class="landing-tile-icon landing-tile-icon--svg"
-        :alt="title"
-      />
-      <i
-        v-else
-        :class="iconClasses"
-        aria-hidden="true"
-      />
-      <h5 class="landing-text landing-tile-title mb-0">
-        <b>{{ title }}</b>
-      </h5>
-    </div>
-  </NuxtLink>
 </template>
 
 <script>
@@ -88,11 +64,12 @@ export default {
         this.closeMoratoriaModal()
       }
     },
-    onInternalClick() {
+    onClick(event) {
       this.prepareNavigation()
-    },
-    onExternalClick() {
-      this.prepareNavigation()
+      if (!this.isExternalLink) {
+        event.preventDefault()
+        navigateTo(this.to)
+      }
     },
   },
 }

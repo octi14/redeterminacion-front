@@ -45,6 +45,7 @@ export default defineNuxtConfig({
     '~/plugins/pinia-payload.server.js',
     '~/plugins/api.js',
     '~/plugins/project-toast.client.js',
+    '~/plugins/bform-file-fix.client.js',
     '~/plugins/auth-hydrate.client.js',
     '~/plugins/router-cleanup.client.js',
     '~/plugins/vuelidate.js',

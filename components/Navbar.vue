@@ -51,7 +51,7 @@
           <b-dropdown-item v-if="adminRecaudaciones" to="/recaudaciones/pagos_dobles/solicitudes">
             Pagos dobles
           </b-dropdown-item>
-          <b-dropdown-item v-if="adminMaster" to="/admin/boletas">
+          <b-dropdown-item v-if="canManageBoletas" to="/admin/boletas">
             Administrar boletas
           </b-dropdown-item>
         </b-nav-item-dropdown>
@@ -122,11 +122,14 @@ export default {
     adminMaster() {
       return this.userStore.admin === 'master'
     },
+    canManageBoletas() {
+      return ['admin', 'master', 'true'].includes(String(this.userStore.admin || '').trim().toLowerCase())
+    },
     showComercioMenu() {
       return this.adminComercio || this.adminInspeccion || this.adminArvige
     },
     showRecaudacionesMenu() {
-      return this.adminRecaudaciones || this.adminMaster
+      return this.adminRecaudaciones || this.canManageBoletas
     },
     username() {
       return this.userStore.username

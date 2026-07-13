@@ -71,7 +71,7 @@
               v-model="guardarOriginalHabilitado"
               switch
               :disabled="configLoading"
-              @change="updateStorageConfig"
+              @update:model-value="updateStorageConfig"
             >
               Almacenar archivo original al publicar
             </b-form-checkbox>
@@ -379,6 +379,13 @@
             {{ disablingImport ? 'Deshabilitando...' : 'Sí, deshabilitar' }}
           </button>
         </div>
+        <div v-if="isPublishing" class="publication-progress">
+          <b-progress :value="publicationProgress.percentage" animated height="8px"></b-progress>
+          <small>
+            {{ formatNumber(publicationProgress.processed) }} de
+            {{ formatNumber(publicationProgress.total || (analysisResult ? analysisResult.entries : 0)) }} boletas procesadas
+          </small>
+        </div>
       </div>
     </b-modal>
 
@@ -488,21 +495,22 @@
         </p>
         <p v-else>
           Las {{ analysisResult ? formatNumber(analysisResult.entries) : 0 }} boletas validadas
-          quedarán disponibles como la carga activa de Automotores.
+          quedarán disponibles como la única carga activa de Automotores.
         </p>
-        <div v-if="overlappingPublishedPeriods.length && !isPublishing" class="overwrite-warning">
+        <div v-if="publishedPeriodsAffectedByPublication.length && !isPublishing" class="overwrite-warning">
           <div class="overwrite-warning-title">
             <i class="bi bi-exclamation-triangle-fill"></i>
-            Esta carga reemplazará períodos publicados
+            Esta carga deshabilitará períodos publicados
           </div>
           <p>
-            Ya existe información publicada para:
-            <strong>{{ overlappingPublishedPeriods.join(', ') }}</strong>.
-            Al continuar, las cargas anteriores de esos períodos dejarán de estar activas.
+            Al continuar, todos los períodos previamente activos de Automotores se deshabilitarán:
+            <strong>{{ publishedPeriodsAffectedByPublication.join(', ') }}</strong>.
+            Solo quedarán habilitados los períodos del archivo nuevo:
+            <strong>{{ currentPeriods.join(', ') || '-' }}</strong>.
           </p>
           <label class="overwrite-check">
             <input v-model="overwriteConfirmed" type="checkbox">
-            <span>Confirmo que deseo reemplazar la información publicada anteriormente.</span>
+            <span>Confirmo que deseo deshabilitar las cargas anteriores y dejar activos solamente los períodos de este archivo.</span>
           </label>
         </div>
         <div v-if="futurePeriods.length && !isPublishing" class="overwrite-warning future-warning">
@@ -530,13 +538,13 @@
           </button>
           <button
             class="btn btn-publish"
-            :disabled="isPublishing || (overlappingPublishedPeriods.length > 0 && !overwriteConfirmed) || (futurePeriods.length > 0 && !futurePeriodsConfirmed)"
+            :disabled="isPublishing || (publishedPeriodsAffectedByPublication.length > 0 && !overwriteConfirmed) || (futurePeriods.length > 0 && !futurePeriodsConfirmed)"
             @click="publishCurrentImport"
           >
             <b-spinner v-if="isPublishing" small class="mr-2"></b-spinner>
             <template v-if="isPublishing">Publicando...</template>
             <template v-else>
-              {{ overlappingPublishedPeriods.length ? 'Reemplazar y publicar' : 'Sí, publicar' }}
+              {{ publishedPeriodsAffectedByPublication.length ? 'Deshabilitar anteriores y publicar' : 'Sí, publicar' }}
             </template>
           </button>
         </div>
@@ -586,10 +594,18 @@
   </div>
 </template>
 
+<script setup>
+definePageMeta({
+  middleware: ['authenticated', 'require-admin'],
+  adminRoles: ['admin', 'master'],
+})
+
+useHead({ title: 'Administrar boletas - Hacienda Villa Gesell' })
+</script>
+
 <script>
 export default {
   name: 'AdminBoletas',
-  middleware: ['authenticated'],
   data() {
     return {
       selectedFile: null,
@@ -597,6 +613,12 @@ export default {
       showAnalysisModal: false,
       showPublishConfirmation: false,
       isPublishing: false,
+      publicationProgress: {
+        message: '',
+        percentage: 0,
+        processed: 0,
+        total: 0
+      },
       overwriteConfirmed: false,
       futurePeriodsConfirmed: false,
       analysisState: 'processing',
@@ -642,7 +664,7 @@ export default {
   },
   computed: {
     puedeAdministrar() {
-      return this.$store.state.user.admin === 'master'
+      return ['admin', 'master', 'true'].includes(String(useUserStore().admin || '').trim().toLowerCase())
     },
     analysisIssues() {
       if (!this.analysisResult) return []
@@ -671,14 +693,21 @@ export default {
     futurePeriods() {
       return this.currentPeriods.filter(period => Number(period.split('/')[1]) > this.currentYear)
     },
-    overlappingPublishedPeriods() {
+    activePublishedPeriods() {
       const publishedPeriods = new Set(
         this.history
           .filter(item => ['published', 'partially-replaced'].includes(item.status))
           .flatMap(item => this.parsePeriods(item.activePeriod))
       )
+      return Array.from(publishedPeriods).sort((left, right) => {
+        const [leftMonth, leftYear] = left.split('/').map(Number)
+        const [rightMonth, rightYear] = right.split('/').map(Number)
+        return (leftYear * 100 + leftMonth) - (rightYear * 100 + rightMonth)
+      })
+    },
+    publishedPeriodsAffectedByPublication() {
       return Array.from(new Set([
-        ...this.currentPeriods.filter(period => publishedPeriods.has(period)),
+        ...this.activePublishedPeriods,
         ...this.serverConflictPeriods
       ]))
     },
@@ -820,7 +849,7 @@ export default {
     setFile(file) {
       if (!file) return
       if (!file.name.toLowerCase().endsWith('.xlsx')) {
-        this.$bvToast.toast('Seleccioná un archivo con extensión .xlsx.', {
+        this.showToast('Seleccioná un archivo con extensión .xlsx.', {
           title: 'Formato no permitido',
           variant: 'danger',
           solid: true
@@ -849,13 +878,13 @@ export default {
         })
         this.analysisProgress = 75
         this.processingMessage = 'Validando columnas y registros...'
-        const result = this.mapAnalysis(response.data.data)
-        this.analysisProgress = 88
+        const completedImport = await this.waitForAnalysis(response.data.data._id)
+        const result = this.mapAnalysis(completedImport)
+        this.analysisProgress = 95
         this.processingMessage = 'Preparando el reporte...'
-        await this.pause(450)
         this.analysisResult = result
         if (result.fileName && result.fileName !== this.selectedFile.name) {
-          this.$bvToast.toast(`La carga se guardó como ${result.fileName}.`, {
+          this.showToast(`La carga se guardó como ${result.fileName}.`, {
             title: 'Nombre de archivo actualizado',
             variant: 'info',
             solid: true,
@@ -884,6 +913,27 @@ export default {
         this.analysisState = 'finished'
       }
     },
+    async waitForAnalysis(importacionId) {
+      while (true) {
+        await this.pause(1600)
+        const progressResponse = await this.$axios.get(`/tasas/importaciones/${importacionId}/progreso`, {
+          headers: this.authHeaders()
+        })
+        const item = progressResponse.data.data
+        const progress = item.progresoPublicacion || {}
+        this.analysisProgress = Math.max(45, Math.min(90, progress.porcentaje || 55))
+        this.processingMessage = progress.mensaje || 'Validando columnas y registros...'
+        if (['analizada', 'rechazada'].includes(item.estado)) {
+          const response = await this.$axios.get(`/tasas/importaciones/${importacionId}`, {
+            headers: this.authHeaders()
+          })
+          return response.data.data
+        }
+        if (item.estado === 'fallida') {
+          throw new Error(progress.error || 'El análisis no pudo completarse.')
+        }
+      }
+    },
     requestPublish() {
       this.overwriteConfirmed = false
       this.futurePeriodsConfirmed = false
@@ -893,12 +943,18 @@ export default {
     async publishCurrentImport() {
       if (
         this.isPublishing ||
-        (this.overlappingPublishedPeriods.length && !this.overwriteConfirmed) ||
+        (this.publishedPeriodsAffectedByPublication.length && !this.overwriteConfirmed) ||
         (this.futurePeriods.length && !this.futurePeriodsConfirmed)
       ) return
       this.isPublishing = true
+      this.publicationProgress = {
+        message: 'Subiendo el archivo al servidor...',
+        percentage: 0,
+        processed: 0,
+        total: this.analysisResult.entries
+      }
       try {
-        const response = await this.$axios.post(
+        await this.$axios.post(
           `/tasas/importaciones/${this.analysisResult.historyId}/publicar`,
           this.selectedFile,
           {
@@ -910,22 +966,16 @@ export default {
             }
           }
         )
+        await this.waitForPublication(this.analysisResult.historyId)
         await Promise.all([this.loadHistory(), this.loadPeriods()])
         this.showPublishConfirmation = false
         this.showAnalysisModal = false
         this.clearFile()
-        this.$bvToast.toast('La carga fue publicada correctamente.', {
+        this.showToast('La carga fue publicada correctamente.', {
           title: 'Publicación confirmada',
           variant: 'success',
           solid: true
         })
-        if (response.data.data.archivoOriginalError) {
-          this.$bvToast.toast('La publicación se completó, pero no se pudo almacenar el archivo original.', {
-            title: 'Archivo original no almacenado',
-            variant: 'warning',
-            solid: true
-          })
-        }
       } catch (error) {
         if (error.response?.status === 409 && error.response.data.conflictos?.length) {
           this.serverConflictPeriods = error.response.data.conflictos
@@ -936,13 +986,33 @@ export default {
           this.futurePeriodsConfirmed = false
           return
         }
-        this.$bvToast.toast(error.response?.data?.message || 'No se pudo publicar la carga.', {
+        this.showToast(error.response?.data?.message || 'No se pudo publicar la carga.', {
           title: 'Error al publicar',
           variant: 'danger',
           solid: true
         })
       } finally {
         this.isPublishing = false
+      }
+    },
+    async waitForPublication(importacionId) {
+      while (this.isPublishing) {
+        await this.pause(1800)
+        const response = await this.$axios.get(`/tasas/importaciones/${importacionId}/progreso`, {
+          headers: this.authHeaders()
+        })
+        const item = response.data.data
+        const progress = item.progresoPublicacion || {}
+        this.publicationProgress = {
+          message: progress.mensaje || 'Procesando la publicación...',
+          percentage: progress.porcentaje || 0,
+          processed: progress.procesadas || 0,
+          total: progress.total || this.analysisResult.entries
+        }
+        if (item.estado === 'publicada') return
+        if (item.estado === 'fallida') {
+          throw new Error(progress.error || 'La publicación no pudo completarse.')
+        }
       }
     },
     closeAnalysis() {
@@ -992,7 +1062,7 @@ export default {
         })
         this.downloadText(response.data, `reporte-${item.fileName.replace(/\.xlsx$/i, '')}.txt`)
       } catch (error) {
-        this.$bvToast.toast('No se pudo descargar el reporte.', { variant: 'danger', solid: true })
+        this.showToast('No se pudo descargar el reporte.', { variant: 'danger', solid: true })
       } finally {
         this.reportDownloadingId = null
       }
@@ -1014,7 +1084,7 @@ export default {
         link.click()
         setTimeout(() => URL.revokeObjectURL(url), 1000)
       } catch (error) {
-        this.$bvToast.toast(error.response?.data?.message || 'No se pudo descargar el archivo original.', {
+        this.showToast(error.response?.data?.message || 'No se pudo descargar el archivo original.', {
           title: 'Error al descargar',
           variant: 'danger',
           solid: true
@@ -1050,12 +1120,12 @@ export default {
         )
         await Promise.all([this.loadHistory(), this.loadPeriods()])
         this.showDisableImportConfirmation = false
-        this.$bvToast.toast(
+        this.showToast(
           `La carga fue deshabilitada. Se quitaron ${this.formatNumber(response.data.data.boletasDeshabilitadas)} boletas activas.`,
           { title: 'Carga deshabilitada', variant: 'success', solid: true }
         )
       } catch (error) {
-        this.$bvToast.toast(error.response?.data?.message || 'No se pudo deshabilitar la carga.', {
+        this.showToast(error.response?.data?.message || 'No se pudo deshabilitar la carga.', {
           title: 'Error al deshabilitar',
           variant: 'danger',
           solid: true
@@ -1071,7 +1141,7 @@ export default {
         const response = await this.$axios.get('/tasas/importaciones/periodos', { headers: this.authHeaders() })
         this.loadedPeriods = response.data.data
       } catch (error) {
-        this.$bvToast.toast('No se pudieron cargar los períodos publicados.', { variant: 'danger', solid: true })
+        this.showToast('No se pudieron cargar los períodos publicados.', { variant: 'danger', solid: true })
       } finally {
         this.periodsLoading = false
       }
@@ -1103,7 +1173,7 @@ export default {
         )
         await Promise.all([this.loadPeriods(), this.loadHistory()])
         this.showPeriodConfirmation = false
-        this.$bvToast.toast(
+        this.showToast(
           `El período ${this.pendingPeriodChange.periodo} fue ${habilitar ? 'habilitado' : 'deshabilitado'}.`,
           { title: 'Disponibilidad actualizada', variant: 'success', solid: true }
         )
@@ -1112,7 +1182,7 @@ export default {
           this.periodChangeConflicts = error.response.data.conflictos
           return
         }
-        this.$bvToast.toast(error.response?.data?.message || 'No se pudo actualizar el período.', {
+        this.showToast(error.response?.data?.message || 'No se pudo actualizar el período.', {
           title: 'Error al actualizar',
           variant: 'danger',
           solid: true
@@ -1131,16 +1201,18 @@ export default {
       }
     },
     async updateStorageConfig(value) {
+      const enabled = value === true
       this.configLoading = true
       try {
-        await this.$axios.put(
+        const response = await this.$axios.put(
           '/tasas/importaciones/configuracion',
-          { guardarArchivoOriginalTasas: value },
+          { guardarArchivoOriginalTasas: enabled },
           { headers: this.authHeaders() }
         )
+        this.guardarOriginalHabilitado = response.data.data.value === true
       } catch (error) {
-        this.guardarOriginalHabilitado = !value
-        this.$bvToast.toast('No se pudo actualizar la configuración.', { variant: 'danger', solid: true })
+        this.guardarOriginalHabilitado = !enabled
+        this.showToast('No se pudo actualizar la configuración.', { variant: 'danger', solid: true })
       } finally {
         this.configLoading = false
       }
@@ -1202,7 +1274,7 @@ export default {
       }
     },
     authHeaders() {
-      return { Authorization: `Bearer ${this.$store.state.user.token}` }
+      return { Authorization: `Bearer ${useUserStore().token}` }
     },
     fileRequestHeaders() {
       return {
@@ -1243,9 +1315,6 @@ export default {
     pause(ms) {
       return new Promise(resolve => setTimeout(resolve, ms))
     }
-  },
-  head() {
-    return { title: 'Administrar boletas - Hacienda Villa Gesell' }
   }
 }
 </script>
@@ -1364,6 +1433,8 @@ export default {
 .analysis-modal .modal-content, .publish-modal .modal-content { overflow: hidden; border: 0; border-radius: 24px; box-shadow: 0 30px 80px rgba(15, 50, 40, .25); }
 .analysis-modal .modal-body, .publish-modal .modal-body { padding: 0; }
 .analysis-processing, .analysis-result, .publish-confirmation { padding: 2.5rem; text-align: center; }
+.publication-progress { margin-top: 1.25rem; text-align: left; }
+.publication-progress small { display: block; margin-top: .45rem; color: #71837d; text-align: center; }
 .loader-orbit { width: 110px; height: 110px; margin: 0 auto 1.5rem; display: grid; place-items: center; border: 3px solid #dcefe8; border-top-color: #13875e; border-radius: 50%; animation: orbit 1.2s linear infinite; }
 .loader-core { width: 76px; height: 76px; display: grid; place-items: center; border-radius: 50%; color: #0b6b4e; background: #e3f6ee; font-size: 2.2rem; animation: counterOrbit 1.2s linear infinite; }
 @keyframes orbit { to { transform: rotate(360deg); } }

@@ -131,7 +131,7 @@
     </main>
 
     <b-modal
-      :visible="operacionActiva"
+      :model-value="operacionActiva"
       centered
       hide-header
       hide-footer
@@ -152,6 +152,10 @@
     </b-modal>
   </div>
 </template>
+
+<script setup>
+useHead({ title: 'Tasa Automotor - Hacienda Villa Gesell' })
+</script>
 
 <script>
 const PERIODOS_POR_PAGINA = 12
@@ -270,7 +274,7 @@ export default {
       this.seleccionados = [...this.seleccionados, periodo]
     },
     mostrarLimiteSeleccion() {
-      this.$bvToast.toast(
+      this.showToast(
         `Podés descargar hasta ${this.maxPeriodosSeleccionados} períodos por vez. Desmarcá alguno para seleccionar otro.`,
         { title: 'Límite de períodos alcanzado', variant: 'warning', solid: true, autoHideDelay: 7000 }
       )
@@ -302,7 +306,7 @@ export default {
         link.download = `tasa-automotor-${this.resultado.dominio}.pdf`
         link.click()
         setTimeout(() => URL.revokeObjectURL(url), 1000)
-        this.$bvToast.toast('El PDF fue generado y la descarga debería comenzar automáticamente.', {
+        this.showToast('El PDF fue generado y la descarga debería comenzar automáticamente.', {
           title: 'Descarga preparada',
           variant: 'success',
           solid: true

@@ -41,7 +41,12 @@ export default {
       type: String,
       default: '',
     },
+    live: {
+      type: Boolean,
+      default: false,
+    },
   },
+  emits: ['query-change'],
   data() {
     return {
       query: this.initialQuery,
@@ -52,10 +57,21 @@ export default {
     initialQuery(value) {
       this.query = value || ''
     },
+    query(value) {
+      if (this.live) {
+        this.$emit('query-change', value || '')
+      }
+    },
   },
   methods: {
     runSearch() {
       const trimmed = this.query.trim()
+
+      if (this.live) {
+        this.$emit('query-change', this.query || '')
+        return
+      }
+
       if (!trimmed) {
         this.clearSearch()
         return
@@ -68,6 +84,9 @@ export default {
     },
     clearSearch() {
       this.query = ''
+      if (this.live) {
+        this.$emit('query-change', '')
+      }
     },
   },
 }

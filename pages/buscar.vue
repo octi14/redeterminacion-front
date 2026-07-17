@@ -1,16 +1,24 @@
 <template>
   <div class="page main-background">
     <Banner title="Buscador de trámites" subtitle="MUNICIPALIDAD DE VILLA GESELL" />
-    <SiteSearch :initial-query="submittedQuery" />
+    <SiteSearch
+      :initial-query="activeQuery"
+      live
+      @query-change="onQueryChange"
+    />
 
     <section
-      v-if="hasQuery"
       class="search-results mx-auto"
       aria-live="polite"
     >
       <div v-if="results.length > 0">
         <p class="search-results-count mb-2">
-          {{ results.length }} resultado{{ results.length === 1 ? '' : 's' }} para "{{ submittedQuery }}"
+          <template v-if="activeQuery">
+            {{ results.length }} resultado{{ results.length === 1 ? '' : 's' }} para "{{ activeQuery }}"
+          </template>
+          <template v-else>
+            {{ results.length }} trámite{{ results.length === 1 ? '' : 's' }} disponible{{ results.length === 1 ? '' : 's' }}
+          </template>
         </p>
         <div class="search-results-list">
           <SearchResultItem
@@ -25,8 +33,8 @@
         </div>
       </div>
 
-      <div v-else class="search-results-empty text-center">
-        <p class="mb-0">No se encontraron resultados para "{{ submittedQuery }}".</p>
+      <div v-else-if="activeQuery" class="search-results-empty text-center">
+        <p class="mb-0">No se encontraron resultados para "{{ activeQuery }}".</p>
       </div>
     </section>
 
@@ -41,28 +49,40 @@
 <script>
 export default {
   setup() {
-    const { search } = useSiteSearch()
-    return { searchItems: search }
+    const { search, visibleItems } = useSiteSearch()
+    return { searchItems: search, visibleItems }
   },
   data() {
     return {
-      submittedQuery: '',
+      activeQuery: '',
       results: [],
     }
-  },
-  computed: {
-    hasQuery() {
-      return !!this.submittedQuery
-    },
   },
   watch: {
     '$route.query.q': {
       immediate: true,
       handler(query) {
-        const trimmed = (query || '').trim()
-        this.submittedQuery = trimmed
-        this.results = trimmed ? this.searchItems(trimmed) : []
+        this.applyQuery((query || '').trim())
       },
+    },
+  },
+  methods: {
+    applyQuery(query) {
+      this.activeQuery = query
+      this.results = query ? this.searchItems(query) : this.visibleItems
+    },
+    onQueryChange(query) {
+      const trimmed = (query || '').trim()
+      this.applyQuery(trimmed)
+
+      const nextQuery = trimmed ? { q: trimmed } : {}
+      const currentQuery = this.$route.query.q
+        ? { q: String(this.$route.query.q).trim() }
+        : {}
+
+      if (JSON.stringify(nextQuery) !== JSON.stringify(currentQuery)) {
+        this.$router.replace({ path: '/buscar', query: nextQuery })
+      }
     },
   },
 }

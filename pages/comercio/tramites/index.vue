@@ -1679,9 +1679,8 @@ export default {
       }
     })
 
-    ;[...this.expandedCards].forEach((card) => {
-      if (this.isCardExpanded(card)) this.toggleCard(card)
-    })
+    // Mostrar las secciones cerradas; se abren con click en el título
+    this.expandedCards = []
 
     this.$nextTick(() => {
       const scrollId = TRAMITE_SCROLL_IDS[tramite]

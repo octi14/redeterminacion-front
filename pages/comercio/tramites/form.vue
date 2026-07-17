@@ -1900,18 +1900,27 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
           };
         }
       },
-      checkDocumentSize(field, event){
-        //console.log('checkDocumentSize CALLED');
-        const file = event.target.files[0];
+      checkDocumentSize(field, eventOrFile) {
+        // BFormFile puede emitir el File (update:modelValue) o el evento nativo change.
+        // En algunos navegadores event.target.files no está disponible.
+        let file = null
+        if (eventOrFile instanceof Blob) {
+          file = eventOrFile
+        } else if (eventOrFile?.target?.files?.[0]) {
+          file = eventOrFile.target.files[0]
+        } else if (this.documentos[field]?.contenido instanceof Blob) {
+          file = this.documentos[field].contenido
+        }
 
-        //console.log('event.target.files[0]: ' + event.target.files[0]);
-
-        //console.log('file.size: ' + file.size + '> this.maxFileSize: ' + this.maxFileSize);
-         if (file && file.size > this.maxFileSize) {
-          // El archivo excede el tamaño máximo permitido
-          this.fileTooLargeError[field] = 'Tu archivo pesa '+ (file.size/1024/1024).toFixed(2) + 'MB'+ ', superando el límite de peso permitido (' + this.maxFileSize/1024/1024 + 'MB'+ '). Reducilo y volvé a cargarlo.' ;
-          return;
-        }else
+        if (file && file.size > this.maxFileSize) {
+          this.fileTooLargeError[field] =
+            'Tu archivo pesa ' +
+            (file.size / 1024 / 1024).toFixed(2) +
+            'MB, superando el límite de peso permitido (' +
+            this.maxFileSize / 1024 / 1024 +
+            'MB). Reducilo y volvé a cargarlo.'
+          return
+        }
         this.fileTooLargeError[field] = null
       },
       getFormFieldState(fieldName) {

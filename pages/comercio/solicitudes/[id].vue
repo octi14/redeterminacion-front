@@ -99,6 +99,14 @@
           Finalizar solicitud
         </b-button>
         <b-button
+          v-if="jefeComercio && habilitacion && habilitacion.status === 'Esperando documentación'"
+          @click="onRechazarSolicitud"
+          size="sm"
+          class="btn-3"
+        >
+          Rechazar solicitud
+        </b-button>
+        <b-button
           v-if="adminMaster && habilitacion && habilitacion.status != 'En revisión'"
           size="sm"
           variant="secondary"

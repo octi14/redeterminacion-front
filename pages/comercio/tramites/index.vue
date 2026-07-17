@@ -237,7 +237,7 @@
         </b-col>
         <b-col v-if="tramiteSeleccionado=='Habilitación'">
           <br />
-          <b-card class="section-card" id="card-baja" :class="{ expanded: isCardExpanded(5) }">
+          <b-card class="section-card" id="card-habilitacion" :class="{ expanded: isCardExpanded(5) }">
             <h4 class="section-title" @click="toggleCard(5)">
               ¿Qué significa realizar una Habilitacion Comercial?
               <i class="bi bi-chevron-compact-down"></i>
@@ -264,7 +264,7 @@
                 </div>
             </div>
           </b-card>
-          <b-card class="section-card" id="card-habilitacion" :class="{ expanded: isCardExpanded(6) }">
+          <b-card class="section-card" :class="{ expanded: isCardExpanded(6) }">
             <h4 class="section-title" @click="toggleCard(6)">
               ¿Quién puede iniciar una Habilitación Comercial?
               <i class="bi bi-chevron-compact-down"></i>
@@ -610,7 +610,7 @@
         </b-col>
         <b-col v-if="tramiteSeleccionado=='Renovación'">
           <br />
-          <b-card class="section-card" id="card-baja" :class="{ expanded: isCardExpanded(11) }">
+          <b-card class="section-card" id="card-renovacion" :class="{ expanded: isCardExpanded(11) }">
             <h4 class="section-title" @click="toggleCard(11)">
               ¿Qué significa realizar una Renovación Comercial?
               <i class="bi bi-chevron-compact-down"></i>
@@ -654,7 +654,7 @@
                 </div>
             </div>
           </b-card>
-          <b-card class="section-card" id="card-habilitacion" :class="{ expanded: isCardExpanded(12) }">
+          <b-card class="section-card" :class="{ expanded: isCardExpanded(12) }">
             <h4 class="section-title" @click="toggleCard(12)">
               ¿Quién puede iniciar una Renovación Comercial?
               <i class="bi bi-chevron-compact-down"></i>
@@ -785,7 +785,7 @@
         </b-col>
         <b-col v-if="tramiteSeleccionado=='Reempadronamiento'">
           <br />
-          <b-card class="section-card" id="card-baja" :class="{ expanded: isCardExpanded(17) }">
+          <b-card class="section-card" id="card-reempadronamiento" :class="{ expanded: isCardExpanded(17) }">
             <h4 class="section-title" @click="toggleCard(17)">
               ¿Qué significa realizar un Reempadronamiento Comercial?
               <i class="bi bi-chevron-compact-down"></i>
@@ -826,7 +826,7 @@
                 </div>
             </div>
           </b-card>
-          <b-card class="section-card" id="card-habilitacion" :class="{ expanded: isCardExpanded(18) }">
+          <b-card class="section-card" :class="{ expanded: isCardExpanded(18) }">
             <h4 class="section-title" @click="toggleCard(18)">
               ¿Quién puede iniciar un Reempadronamiento Comercial?
               <i class="bi bi-chevron-compact-down"></i>
@@ -961,7 +961,7 @@
         </b-col>
         <b-col v-if="tramiteSeleccionado=='Cambio de Titular'">
           <br />
-          <b-card class="section-card" id="card-baja" :class="{ expanded: isCardExpanded(22) }">
+          <b-card class="section-card" id="card-cambio-titular" :class="{ expanded: isCardExpanded(22) }">
             <h4 class="section-title" @click="toggleCard(22)">
               ¿Qué significa realizar un Cambio de Titular?
               <i class="bi bi-chevron-compact-down"></i>
@@ -1008,7 +1008,7 @@
                 </div>
             </div>
           </b-card>
-          <b-card class="section-card" id="card-habilitacion" :class="{ expanded: isCardExpanded(23) }">
+          <b-card class="section-card" :class="{ expanded: isCardExpanded(23) }">
             <h4 class="section-title" @click="toggleCard(23)">
               ¿Quién puede realizar un Cambio de Titular?
               <i class="bi bi-chevron-compact-down"></i>
@@ -1411,13 +1411,17 @@ const TRAMITE_BTN_IDS = {
   'Cambio de Titular': 'btn-Cambio-Titular',
 }
 
+/** Primer card de cada trámite (scroll al seleccionar). */
 const TRAMITE_SCROLL_IDS = {
   'Habilitación': 'card-habilitacion',
   Baja: 'card-baja',
-  'Renovación': 'card-baja',
-  Reempadronamiento: 'card-habilitacion',
-  'Cambio de Titular': 'card-habilitacion',
+  'Renovación': 'card-renovacion',
+  Reempadronamiento: 'card-reempadronamiento',
+  'Cambio de Titular': 'card-cambio-titular',
 }
+
+/** Trámites válidos (p. ej. desde ?tramite= del buscador). */
+const TRAMITES_VALIDOS = Object.keys(TRAMITE_BTN_IDS)
 
 export default {
   data:function() {
@@ -1482,6 +1486,10 @@ export default {
   },
   mounted() {
     this.filteredRubros.sort((a, b) => a.nombre.localeCompare(b.nombre));
+    const tramiteFromQuery = this.$route.query.tramite
+    if (typeof tramiteFromQuery === 'string' && TRAMITES_VALIDOS.includes(tramiteFromQuery)) {
+      this.seleccionarTramite(tramiteFromQuery)
+    }
   },
   computed:{
     // estaAbierto(){
@@ -1612,9 +1620,8 @@ export default {
       }
     })
 
-    ;[...this.expandedCards].forEach((card) => {
-      if (this.isCardExpanded(card)) this.toggleCard(card)
-    })
+    // Mostrar las secciones cerradas; se abren con click en el título
+    this.expandedCards = []
 
     this.$nextTick(() => {
       const scrollId = TRAMITE_SCROLL_IDS[tramite]

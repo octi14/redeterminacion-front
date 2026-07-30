@@ -18,14 +18,13 @@
         <b-carousel-slide :img-src="carouselHabilita2" />
       </b-carousel>
     </div>
-    <div class="col-12 moblieCarrousel" style="padding: 0 10%; margin-top: 0; background-color: #FFFEF7;">
+    <div class="col-12 moblieCarrousel" style="margin-top: 0; background-color: #FFFEF7;">
       <b-carousel
         id="moblieCarousel"
         v-model="slideMobile"
-        :interval="4000"
-        controls
-        indicators
-        ride="carousel"
+        :interval="0"
+        :controls="false"
+        :indicators="false"
         style="text-shadow: 1px 1px 2px #333;"
         @sliding-start="onSlideStart"
         @sliding-end="onSlideEnd"
@@ -1880,9 +1879,13 @@ export default {
 }
 
 @media (max-width: 720px) {
-  #mainCarousel {
+  #mainCarousel,
+  #moblieCarousel {
+    .carousel-control-prev,
+    .carousel-control-next,
     .carousel-control-prev-icon,
     .carousel-control-next-icon,
+    .carousel-indicators,
     .carousel-indicators li,
     .carousel-indicators button {
       display: none;
@@ -1931,7 +1934,7 @@ export default {
   .moblieCarrousel{
     display: none;
   }
-  .botonera-container .row div{
+  .botonera-container .row > div{
     /*Opcion 1. 2 botones por fila*/
   width: 50%;
   margin: 0.5rem auto;
@@ -1947,21 +1950,36 @@ export default {
   }
   .moblieCarrousel{
     display: block;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
   }
   .col-8{
-    max-width: 90%;
+    flex: 0 0 100%;
+    max-width: 100%;
+    width: 100%;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
   }
-  .botonera-container .row div{
+  .botonera-container .row{
+    margin-left: -0.25rem;
+    margin-right: -0.25rem;
+  }
+  .botonera-container .row > div{
     /*Opcion 1. 2 botones por fila*/
-  width: 50%;
-  margin: 0.5rem auto;
+    flex: 0 0 50%;
+    max-width: 50%;
+    width: 50%;
+    margin: 0.35rem 0;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
     /* Opcion 2. 1 boton por fila
   width: 100%;
   margin: 0.5rem 10%;
     */
   }
-  .botonera-container .row div img{
+  .botonera-container .row > div img{
     margin: 0 !important;
+    width: 100%;
   }
 }
 p, .li-content{
@@ -1989,6 +2007,7 @@ p, .li-content{
 .tramite-btn {
   cursor: pointer;
   display: block;
+  width: 100%;
 }
 .tramite-btn img.selected,
 .botonera-container img.selected {

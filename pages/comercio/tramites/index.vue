@@ -36,58 +36,6 @@
     <b-container class="col-8">
       <b-row>
         <b-col class="botonera">
-          <h2 class="icon-green"><i class="bi bi-question-octagon-fill icon-orange"></i> ¿Qué trámite estás buscando?</h2>
-          <div class="tramites-buscador">
-            <div class="tramites-buscador-input-wrap">
-              <b-form-input
-                v-model="busquedaTramite"
-                type="search"
-                class="tramites-buscador-input"
-                placeholder="Buscar trámite (ej.: baja, habilitación, cambio de titular…)"
-                autocomplete="off"
-                aria-label="Buscar trámite comercial"
-                @input="handleBusquedaTramiteInput"
-                @focus="busquedaTramiteFocused = true"
-                @blur="onBusquedaBlur"
-                @keydown.enter.prevent="seleccionarPrimerResultado"
-                @keydown.escape="limpiarBusquedaTramite"
-              />
-              <b-button
-                v-if="busquedaTramite"
-                variant="link"
-                class="tramites-buscador-limpiar"
-                @click="limpiarBusquedaTramite"
-              >
-                Limpiar
-              </b-button>
-            </div>
-            <ul
-              v-if="mostrarResultadosBusqueda && resultadosBusquedaTramite.length"
-              class="tramites-buscador-resultados"
-              role="listbox"
-            >
-              <li
-                v-for="tramite in resultadosBusquedaTramite"
-                :key="tramite.id"
-                role="option"
-                tabindex="0"
-                class="tramites-buscador-item"
-                :class="{ 'tramites-buscador-item--disabled': !tramite.habilitado }"
-                @mousedown.prevent="seleccionarTramiteDesdeBusqueda(tramite)"
-                @keydown.enter.prevent="seleccionarTramiteDesdeBusqueda(tramite)"
-              >
-                <span class="tramites-buscador-item-label">{{ tramite.etiqueta }}</span>
-                <span v-if="!tramite.habilitado" class="tramites-buscador-item-badge">Próximamente</span>
-                <span v-else class="tramites-buscador-item-desc">{{ tramite.descripcionCorta }}</span>
-              </li>
-            </ul>
-            <p
-              v-else-if="mostrarResultadosBusqueda && busquedaTramite.trim()"
-              class="tramites-buscador-sin-resultados"
-            >
-              No se encontraron trámites para "{{ busquedaTramite.trim() }}".
-            </p>
-          </div>
           <div class="botonera-container">
             <b-row>
               <b-col lg="3" md="4" sm="6">
@@ -1441,7 +1389,6 @@
 
 <script>
 import rubros from '~/utils/rubros.js'
-import { buscarTramites } from '~/utils/tramitesCatalog.js'
 import carouselHabilita1 from '~/assets/habilita-en-simples-pasos.png'
 import carouselHabilita2 from '~/assets/habilita-en-simples-pasos-2.png'
 import carouselHabilitaMobile from '~/assets/habilita-en-simples-pasos-mobile.png'
@@ -1471,7 +1418,7 @@ const TRAMITE_SCROLL_IDS = {
   'Cambio de Titular': 'card-cambio-titular',
 }
 
-/** Trámites válidos (p. ej. desde ?tramite= del buscador). */
+/** Trámites válidos (p. ej. desde ?tramite= del buscador general del sitio). */
 const TRAMITES_VALIDOS = Object.keys(TRAMITE_BTN_IDS)
 
 export default {
@@ -1533,10 +1480,6 @@ export default {
       },
       captchaResponse: null,
       expandedCards: [],
-      busquedaTramite: '',
-      resultadosBusquedaTramite: [],
-      busquedaTramiteFocused: false,
-      busquedaTramiteTimeout: null,
     };
   },
   mounted() {
@@ -1547,9 +1490,6 @@ export default {
     }
   },
   computed:{
-    mostrarResultadosBusqueda() {
-      return this.busquedaTramiteFocused && this.busquedaTramite.trim().length >= 2
-    },
     // estaAbierto(){
     //   // Obtener fecha y hora actuales
     //   const ahora = new Date();
@@ -1687,33 +1627,6 @@ export default {
         document.getElementById(scrollId)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
       }
     })
-  },
-  handleBusquedaTramiteInput() {
-    clearTimeout(this.busquedaTramiteTimeout)
-    this.busquedaTramiteTimeout = setTimeout(() => {
-      this.resultadosBusquedaTramite = buscarTramites(this.busquedaTramite)
-    }, 200)
-  },
-  onBusquedaBlur() {
-    setTimeout(() => {
-      this.busquedaTramiteFocused = false
-    }, 150)
-  },
-  limpiarBusquedaTramite() {
-    this.busquedaTramite = ''
-    this.resultadosBusquedaTramite = []
-    this.busquedaTramiteFocused = false
-  },
-  seleccionarTramiteDesdeBusqueda(tramite) {
-    if (!tramite?.habilitado) return
-    this.limpiarBusquedaTramite()
-    this.seleccionarTramite(tramite.id)
-  },
-  seleccionarPrimerResultado() {
-    const primerHabilitado = this.resultadosBusquedaTramite.find((tramite) => tramite.habilitado)
-    if (primerHabilitado) {
-      this.seleccionarTramiteDesdeBusqueda(primerHabilitado)
-    }
   },
 }
 }
@@ -2239,104 +2152,6 @@ ul{
   max-height: 0; /* Altura inicial y final de la animación */
   overflow: hidden;
 }
-.tramites-buscador {
-  margin: 0 0 1.5rem;
-  position: relative;
-}
-
-.tramites-buscador-input-wrap {
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.tramites-buscador-input {
-  flex: 1 1 14rem;
-  max-width: 100%;
-  min-width: 0;
-}
-
-.tramites-buscador-limpiar {
-  flex-shrink: 0;
-  padding-left: 0;
-  padding-right: 0;
-}
-
-.tramites-buscador-resultados {
-  background: #fff;
-  border: 1px solid #ccc;
-  border-radius: 0.25rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  left: 0;
-  list-style: none;
-  margin: 0.35rem 0 0;
-  max-height: 16rem;
-  overflow-y: auto;
-  padding: 0;
-  position: absolute;
-  right: 0;
-  z-index: 10;
-}
-
-.tramites-buscador-item {
-  border-bottom: 1px solid #eee;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-  padding: 0.65rem 0.85rem;
-}
-
-.tramites-buscador-item:last-child {
-  border-bottom: none;
-}
-
-.tramites-buscador-item:hover,
-.tramites-buscador-item:focus {
-  background: #f5faf6;
-  outline: none;
-}
-
-.tramites-buscador-item--disabled {
-  cursor: default;
-  opacity: 0.75;
-}
-
-.tramites-buscador-item--disabled:hover,
-.tramites-buscador-item--disabled:focus {
-  background: #fafafa;
-}
-
-.tramites-buscador-item-label {
-  color: #0c681a;
-  font-weight: 600;
-}
-
-.tramites-buscador-item-desc {
-  color: #555;
-  font-size: 0.9rem;
-}
-
-.tramites-buscador-item-badge {
-  color: #888;
-  font-size: 0.85rem;
-  font-style: italic;
-}
-
-.tramites-buscador-sin-resultados {
-  color: #666;
-  font-size: 0.95rem;
-  margin: 0.5rem 0 0;
-}
-
-.botonera h2 {
-  font-weight: bold;
-  margin: 0.5rem 0;
-  padding-bottom: 1rem;
-  border-bottom: 1px #666 solid;
-}
-
 .botonera h2 .bi-question-octagon-fill {
   font-size: 0.8em;
   vertical-align: -0.08em;

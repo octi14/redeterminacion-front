@@ -2,8 +2,7 @@ import { COMBUSTIBLE_DASHBOARD_USERNAMES } from '~/utils/access-control'
 
 /**
  * Índice de navegación buscable del sitio.
- * Incluye MenuItems, trámites individuales y accesos externos frecuentes
- * que no necesariamente aparecen en el menú.
+ * Incluye ítems de la landing, MenuItems y trámites comerciales de este sitio.
  *
  * @typedef {Object} SiteNavItem
  * @property {string} id
@@ -228,103 +227,6 @@ export const SITE_NAVIGATION_ITEMS = [
     to: '/normativa/obras',
     section: 'Normativa',
     aliases: ['ordenanzas obras', 'código de edificación'],
-  },
-
-  // —— Accesos frecuentes que no están como MenuItem en este sitio ——
-  {
-    id: 'arvige-pagos-online',
-    title: 'Pagá online / Descargá tu boleta',
-    description: 'Descargar boletas y pagar tasas municipales online (ARVIGE)',
-    to: 'https://arvige.gob.ar/lpagos',
-    section: 'ARVIGE',
-    external: true,
-    aliases: [
-      'pagar online',
-      'descargar boleta',
-      'imprimir boleta',
-      'vencimientos',
-      'lpagos',
-    ],
-  },
-  {
-    id: 'arvige-autogestion',
-    title: 'Autogestión ARVIGE',
-    description: 'Ingresá a tu cuenta de contribuyente para gestionar pagos',
-    to: 'https://autogestion.arvige.gob.ar/',
-    section: 'ARVIGE',
-    external: true,
-    aliases: ['autogestión', 'mi cuenta', 'contribuyente online', 'login arvige'],
-  },
-  {
-    id: 'arvige-patente-automotor',
-    title: 'Patente Automotor',
-    description: 'Consulta y pago de patente de vehículos automotores',
-    to: 'https://arvige.gob.ar/lpagos',
-    section: 'ARVIGE',
-    external: true,
-    aliases: [
-      'patente',
-      'automotor',
-      'rodado',
-      'rodados',
-      'vehículo',
-      'vehiculo',
-      'auto',
-      'impuesto automotor',
-      'patente automotor',
-    ],
-  },
-  {
-    id: 'arvige-patente-rodados-menores',
-    title: 'Patente — Rodados Menores',
-    description: 'Consulta y pago de patente de rodados menores',
-    to: 'https://arvige.gob.ar/lpagos',
-    section: 'ARVIGE',
-    external: true,
-    aliases: ['moto', 'motocicleta', 'ciclomotor', 'rodado menor', 'patente moto'],
-  },
-  {
-    id: 'arvige-tasas-urbanas',
-    title: 'Tasas Urbanas',
-    description: 'Consulta y pago de tasas urbanas municipales',
-    to: 'https://arvige.gob.ar/lpagos',
-    section: 'ARVIGE',
-    external: true,
-    aliases: [
-      'tasa urbana',
-      'servicios urbanos',
-      'tasa municipal',
-      'impuesto municipal',
-      'inmueble',
-      'cuenta municipal',
-    ],
-  },
-  {
-    id: 'arvige-tish',
-    title: 'TISH — Tasa de Inspección de Seguridad e Higiene',
-    description: 'Consulta y pago de TISH / grandes contribuyentes',
-    to: 'https://arvige.gob.ar/lpagos',
-    section: 'ARVIGE',
-    external: true,
-    aliases: ['tish', 'seguridad e higiene', 'inspección de seguridad', 'grandes contribuyentes'],
-  },
-  {
-    id: 'arvige-red-vial',
-    title: 'Red Vial',
-    description: 'Consulta y pago de tasa de red vial',
-    to: 'https://arvige.gob.ar/lpagos',
-    section: 'ARVIGE',
-    external: true,
-    aliases: ['red vial', 'vialidad'],
-  },
-  {
-    id: 'contribuyente-tasas',
-    title: 'Imprimir tasas municipales',
-    description: 'Imprimí las tasas municipales vigentes con tu número de cuenta',
-    to: 'https://contribuyente.gesell.gob.ar/tasas-municipales.html',
-    section: 'Recaudaciones',
-    external: true,
-    aliases: ['imprimir tasa', 'número de cuenta', 'contribuyente'],
   },
 ]
 

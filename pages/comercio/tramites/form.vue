@@ -1672,31 +1672,67 @@
               try {
 
               this.openPopup('FormLoading');
-              const documentosParaGuardar = {};
               if (this.solicitante.tipoSolicitud === 'Baja') {
                 this.inmueble.espacioPublico = false;
               }
-              // Recorrer los campos en this.documentos
+
+              // 1) Armar lista de archivos (sin base64: van directo a S3)
+              const filesMeta = [];
+              const blobsByCampo = {};
               for (const campo in this.documentos) {
                 const nombreDoc = this.documentos[campo].nombreDocumento;
                 const contenidoDoc = this.documentos[campo].contenido;
-
                 if (contenidoDoc instanceof Blob) {
-                  // Verificar que el campo sea un Blob válido (archivo PDF seleccionado)
-                  const fileBlob = new Blob([contenidoDoc], { type: contenidoDoc.type });
-
-                    // Agregar el archivo PDF a documentosParaGuardar
-                    documentosParaGuardar[campo] = {
-                      nombreDocumento: nombreDoc,
-                      contenido: {
-                        data: await this.blobToBase64(fileBlob),
-                        contentType: contenidoDoc.type,
-                      }
-                    };
-                  }
+                  const contentType = contenidoDoc.type || 'application/octet-stream';
+                  filesMeta.push({
+                    campo,
+                    nombreDocumento: nombreDoc,
+                    contentType,
+                  });
+                  blobsByCampo[campo] = contenidoDoc;
                 }
+              }
 
-              // Crear copia del inmueble sin la propiedad ningunaAnterior
+              // 2) Presign: reserva nroTramite + URLs PUT
+              const { nroTramite, uploads } = await useHabilitacionesStore().presignDocumentos({
+                files: filesMeta.map(({ nombreDocumento, contentType }) => ({
+                  nombreDocumento,
+                  contentType,
+                })),
+              });
+
+              // 3) Subir cada archivo directo a S3 (binario, sin pasar por el dyno)
+              const documentosParaGuardar = {};
+              const uploadsByNombre = {};
+              for (const upload of uploads || []) {
+                uploadsByNombre[upload.nombreDocumento] = upload;
+              }
+
+              for (const meta of filesMeta) {
+                const upload = uploadsByNombre[meta.nombreDocumento];
+                if (!upload || !upload.uploadUrl) {
+                  throw new Error(`No se recibió URL de subida para ${meta.nombreDocumento}`);
+                }
+                const blob = blobsByCampo[meta.campo];
+                const putRes = await fetch(upload.uploadUrl, {
+                  method: 'PUT',
+                  body: blob,
+                  headers: {
+                    'Content-Type': meta.contentType,
+                  },
+                });
+                if (!putRes.ok) {
+                  throw new Error(
+                    `Error subiendo ${meta.nombreDocumento} a S3 (HTTP ${putRes.status}).`
+                  );
+                }
+                documentosParaGuardar[meta.campo] = {
+                  nombreDocumento: meta.nombreDocumento,
+                  url: upload.url,
+                };
+              }
+
+              // 4) Crear trámite solo con metadatos + URLs (JSON chico)
               const { ningunaAnterior, ...inmuebleParaEnviar } = this.inmueble;
 
               const habilitacion = {
@@ -1704,12 +1740,11 @@
                 solicitante: this.solicitante,
                 inmueble: inmuebleParaEnviar,
                 nroLegajo: this.nroLegajo,
+                nroSolicitud: nroTramite,
               };
-              // habilitacion.nroTramite = nroTramite
               const response = await useHabilitacionesStore().create({
                 habilitacion,
               });
-              //console.log(response.data)
               this.nroTramite = response.data
 
               // --- Enviar correo al solicitante ---
@@ -1736,6 +1771,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
 
               this.openPopup('FormOk');
             } catch (e) {
+              console.error('Error al enviar trámite comercial:', e);
               this.openPopup('FormError');
             }
           };

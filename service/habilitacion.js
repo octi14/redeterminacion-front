@@ -200,6 +200,15 @@ export default {
 
     return createdFile;
   },
+
+  /**
+   * Reserva nro de trámite y URLs firmadas PUT a S3.
+   * @param {Array<{ nombreDocumento: string, contentType: string }>} files
+   */
+  presignDocumentos: async (axios, { files }) => {
+    const response = await axios.$post('/habilitaciones/presign', { files });
+    return response.data;
+  },
   update: async (axios, id, { habilitacion }) => {
     axios.setHeader('Access-Control-Allow-Origin', true)
     const updated = await axios.$put(

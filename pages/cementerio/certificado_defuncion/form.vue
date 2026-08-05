@@ -232,8 +232,15 @@ export default{
         this.docErrors[field] = null
       }
     },
-    checkDocumentSize(field, event){
-      const file = event && event.target && event.target.files ? event.target.files[0] : null;
+    checkDocumentSize(field, eventOrFile){
+      let file = null
+      if (eventOrFile instanceof Blob) {
+        file = eventOrFile
+      } else if (eventOrFile?.target?.files?.[0]) {
+        file = eventOrFile.target.files[0]
+      } else if (this.documentos[field] instanceof Blob) {
+        file = this.documentos[field]
+      }
       if(file && file.size > this.maxFileSize){
         this.docErrors[field] = 'Tu archivo pesa '+ (file.size/1024/1024).toFixed(2) + 'MB, supera el límite (' + (this.maxFileSize/1024/1024) + 'MB).';
       }else{

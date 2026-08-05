@@ -200,7 +200,7 @@
                   <b-button @click="RechazarTicket" variant="danger" class="btn-cancel"><span>Rechazar</span></b-button>
               </div>
               <div v-else-if="estadoActual == 3 || estadoActual == 4 || estadoActual == 5" class="card-actions-row card-actions-row-center">
-                  <i class="bi bi-pencil-square text-dark"></i>
+                  <i class="bi bi-pencil-square text-dark btn-rectific" role="button" tabindex="0" @click="RectificarTicket"></i>
               </div>
           </div>
       </div>
@@ -453,11 +453,15 @@ export default {
         switch (this.estadoActual) {
             case 9:
                 nextCard = 7;
-                facturas[this.periodo] = {
-                    contenido: facturas[this.periodo].contenido,
-                    rectificando: true,
-                };
                 status[this.periodo] = "Incorrecto";
+                if (facturas[this.periodo]) {
+                    facturas[this.periodo] = {
+                        ...facturas[this.periodo],
+                        rectificando: true,
+                    };
+                } else {
+                    facturas[this.periodo] = { rectificando: true };
+                }
                 break;
             case 10:
                 nextCard = 3;

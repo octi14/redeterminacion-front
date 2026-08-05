@@ -9,6 +9,7 @@ export const AREAS = [
   'Dir. Coordinación',
   'Dirección de Deportes',
   'Dirección de Obras Particulares',
+  'Higiene urbana',
   'Inspección General',
   'Intendente Municipal',
   'Juzgado de Faltas',

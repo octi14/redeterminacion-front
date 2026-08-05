@@ -76,8 +76,6 @@ definePageMeta({
 </script>
 
 <script>
-import * as XLSX from 'xlsx';
-
 export default{
   data() {
     return {

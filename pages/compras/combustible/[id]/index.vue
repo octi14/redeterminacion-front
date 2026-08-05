@@ -516,7 +516,7 @@ definePageMeta({
 <script>
 import templateVale from "@/assets/TemplateValex2.png";
 import { numeroATexto } from "@/utils/numeroATexto";
-import * as XLSX from 'xlsx';
+import { loadXlsx } from '~/utils/loadXlsx';
 import { saveAsFile } from '~/utils/saveAsFile';
 export default {
   setup(){ const { showToast } = useProjectToast(); return { showToast } },
@@ -1225,6 +1225,8 @@ export default {
           'Fecha de emisión': vale.fechaEmision ? new Date(vale.fechaEmision).toLocaleDateString('es-AR') : '',
           'Estado': vale.anulado ? 'Anulado' : (vale.consumido ? 'No disponible' : 'Disponible')
         }));
+
+        const XLSX = await loadXlsx();
 
         // Convertimos los datos a una hoja de Excel
         const hojaVales = XLSX.utils.json_to_sheet(datosExcel);

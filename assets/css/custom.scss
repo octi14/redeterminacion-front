@@ -938,6 +938,45 @@ form .field-help-icon,
   white-space: nowrap;
 }
 
+// Checkbox del popup IMPORTANTE: BS5 usa appearance:none + borde muy claro
+// (#dee2e6), que en varios monitores/navegadores parece “invisible”.
+.confirmation-popup-body .form-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin: 1rem auto 0;
+  padding-left: 0;
+  min-height: auto;
+
+  .form-check-input {
+    float: none;
+    margin: 0.2em 0 0;
+    flex-shrink: 0;
+    width: 1.15em;
+    height: 1.15em;
+    border: 2px solid $color-gray-dark;
+    background-color: #fff;
+    cursor: pointer;
+
+    &:checked {
+      background-color: $color-green-primary;
+      border-color: $color-green-primary;
+    }
+
+    &:focus {
+      border-color: $color-green-primary;
+      box-shadow: 0 0 0 0.2rem rgba($color-green-primary, 0.25);
+    }
+  }
+
+  .form-check-label {
+    padding-left: 0;
+    margin: 0;
+    color: $color-gray-dark;
+    cursor: pointer;
+  }
+}
+
 .confirmation-popup-body .li-row {
   display: flex;
   align-items: flex-start;

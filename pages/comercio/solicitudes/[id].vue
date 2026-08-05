@@ -99,6 +99,14 @@
           Finalizar solicitud
         </b-button>
         <b-button
+          v-if="jefeComercio && habilitacion && habilitacion.status === 'Esperando documentación'"
+          @click="onRechazarSolicitud"
+          size="sm"
+          class="btn-3"
+        >
+          Rechazar solicitud
+        </b-button>
+        <b-button
           v-if="adminMaster && habilitacion && habilitacion.status != 'En revisión'"
           size="sm"
           variant="secondary"
@@ -867,8 +875,8 @@ definePageMeta({
 
 <script>
 import { loadJSZip } from '~/utils/loadJszip';
+import { loadXlsx } from '~/utils/loadXlsx';
 import { saveAsFile } from '~/utils/saveAsFile';
-import * as XLSX from 'xlsx';
 import MailerService from "@/service/mailer.js";
 
 export default {
@@ -1462,6 +1470,7 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
 
         const JSZip = await loadJSZip();
         const zip = new JSZip();
+        const XLSX = await loadXlsx();
 
         // Convertir los datos de la habilitación a Excel
         const datosHabilitacion = XLSX.utils.json_to_sheet([habilitacion]);

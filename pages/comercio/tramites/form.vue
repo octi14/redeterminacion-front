@@ -1647,72 +1647,6 @@
       cancelForm(){
         //console.log("CANCEL FORM");
       },
-      documentos: {
-          planillaAutorizacion: {
-            nombreDocumento: 'Planilla de autorización de trámite',
-            contenido: null
-          },
-          dniFrente:{
-            nombreDocumento: 'DNI (Frente)',
-            contenido: null
-          },
-          dniDorso:{
-            nombreDocumento: 'DNI (Dorso)',
-            contenido: null
-          },
-          constanciaCuit:{
-            nombreDocumento: 'Constancia de CUIT',
-            contenido: null
-          },
-          constanciaIngresosBrutos:{
-            nombreDocumento: 'Constancia de inscripción a Ingresos Brutos',
-            contenido: null
-          },
-          actaPersonaJuridica:{
-            nombreDocumento: 'Acta de Constitución de Persona Jurídica',
-            contenido: null
-          },
-          actaDirectorio:{
-            nombreDocumento: 'Acta de Directorio Actualizada',
-            contenido: null
-          },
-          libreDeudaUrbana:{
-            nombreDocumento: 'Libre Deuda de Tasa por Servicios Urbanos',
-            contenido: null
-          },
-          libreDeudaSegHig:{
-            nombreDocumento: 'Libre Deuda de Tasa de Inspección de Seguridad e Higiene',
-            contenido: null
-          },
-          libreDeudaIB:{
-            nombreDocumento: 'Libre Deuda de Ingresos Brutos',
-            contenido: null
-          },
-          showPopupConstanciaLibreDeudaSegHig:{
-            nombreDocumento: 'Libre Deuda de Tasa de Inspección de Seguridad e Higiene',
-            contenido: null
-          },
-          tituloPropiedad:{
-            nombreDocumento: 'Escritura traslativa de Dominio del inmueble / Contrato de locación / Boleto de Compraventa',
-            contenido: null
-          },
-          plano:{
-            nombreDocumento: 'Plano o Informe técnico',
-            contenido: null
-          },
-          decJurada:{
-            nombreDocumento: 'Declaración Jurada Metros Establecimiento habilitado',
-            contenido: null
-          },
-          certificadoDomicilio:{
-            nombreDocumento: 'Certificado de domicilio Ingresos Brutos - Punto de venta Villa Gesell ',
-            contenido: null
-          },
-          croquis:{
-            nombreDocumento: 'Croquis',
-            contenido: null
-          }
-        },
         async submitForm() {
           if(false){
             console.log("SUBMIT FORM CALLED");
@@ -1966,18 +1900,27 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
           };
         }
       },
-      checkDocumentSize(field, event){
-        //console.log('checkDocumentSize CALLED');
-        const file = event.target.files[0];
+      checkDocumentSize(field, eventOrFile) {
+        // BFormFile puede emitir el File (update:modelValue) o el evento nativo change.
+        // En algunos navegadores event.target.files no está disponible.
+        let file = null
+        if (eventOrFile instanceof Blob) {
+          file = eventOrFile
+        } else if (eventOrFile?.target?.files?.[0]) {
+          file = eventOrFile.target.files[0]
+        } else if (this.documentos[field]?.contenido instanceof Blob) {
+          file = this.documentos[field].contenido
+        }
 
-        //console.log('event.target.files[0]: ' + event.target.files[0]);
-
-        //console.log('file.size: ' + file.size + '> this.maxFileSize: ' + this.maxFileSize);
-         if (file && file.size > this.maxFileSize) {
-          // El archivo excede el tamaño máximo permitido
-          this.fileTooLargeError[field] = 'Tu archivo pesa '+ (file.size/1024/1024).toFixed(2) + 'MB'+ ', superando el límite de peso permitido (' + this.maxFileSize/1024/1024 + 'MB'+ '). Reducilo y volvé a cargarlo.' ;
-          return;
-        }else
+        if (file && file.size > this.maxFileSize) {
+          this.fileTooLargeError[field] =
+            'Tu archivo pesa ' +
+            (file.size / 1024 / 1024).toFixed(2) +
+            'MB, superando el límite de peso permitido (' +
+            this.maxFileSize / 1024 / 1024 +
+            'MB). Reducilo y volvé a cargarlo.'
+          return
+        }
         this.fileTooLargeError[field] = null
       },
       getFormFieldState(fieldName) {

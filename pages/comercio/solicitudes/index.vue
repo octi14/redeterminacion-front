@@ -118,7 +118,7 @@ definePageMeta({
 </script>
 
 <script>
-import * as XLSX from 'xlsx';
+import { loadXlsx } from '~/utils/loadXlsx';
 import { saveAsFile } from '~/utils/saveAsFile';
 
 export default{
@@ -330,6 +330,8 @@ export default{
           'Fecha de Creación': tramite.createdAt || '',
           'Observaciones': tramite.observaciones || '',
         }));
+
+        const XLSX = await loadXlsx();
 
         // Convertimos los datos a una hoja de Excel
         const hojaTramites = XLSX.utils.json_to_sheet(datosExcel);

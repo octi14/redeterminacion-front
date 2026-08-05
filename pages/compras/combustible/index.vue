@@ -216,7 +216,7 @@
       </NuxtLink>
     </div>
 
-    <BModal no-close-on-backdrop no-close-on-esc v-model="showCargarOrden" no-footer :header-bg-variant="'success'" centered>
+    <BModal no-close-on-backdrop no-close-on-esc v-model="showCargarOrden" no-footer :header-bg-variant="'success'" size="lg" centered>
       <template #header>
         <div v-if="!successMessage" class="confirmation-popup-header combustible-modal-icon">
           <i class="bi bi-circle text-light" aria-hidden="true"></i>
@@ -238,71 +238,104 @@
           </div>
         </div>
 
-        <div v-else>
-          <div class="mx-auto">
-            <!-- Número de orden de compra -->
-            <div class="row mt-4 mx-1">
-                <i class="bi bi-caret-right-fill"></i>
-              <h6 class="text-dark font-weight-500 ml-1">Número de Orden de Compra</h6>
+        <div v-else class="combustible-form">
+          <div class="combustible-form-fields">
+            <div class="li-row combustible-field-label">
+              <div class="li-icon"><i class="bi bi-caret-right-fill" aria-hidden="true" /></div>
+              <div class="li-content">
+                <h6 class="text-dark font-weight-500 mb-0">Número de Orden de Compra</h6>
+              </div>
             </div>
-            <b-form-group class="col-12 ml-2" :state="nroOrdenDuplicado ? false : null" invalid-feedback="Ya existe una orden de compra con este número.">
+            <b-form-group class="combustible-form-group" :state="nroOrdenDuplicado ? false : null" invalid-feedback="Ya existe una orden de compra con este número.">
               <div class="numero-orden-container">
-                <b-form-input size="sm" style="border-radius: 0;" type="number" class="col-7" no-wheel v-model="nroOrden1"/>
-                <span>/</span>
-                <b-form-input size="sm" style="border-radius: 0;" type="number" class="col-3" no-wheel v-model="nroOrden2"/>
+                <b-form-input size="sm" type="number" class="numero-orden-input" no-wheel v-model="nroOrden1" />
+                <span class="numero-orden-separator">/</span>
+                <b-form-input size="sm" type="number" class="numero-orden-input numero-orden-input--short" no-wheel v-model="nroOrden2" />
               </div>
             </b-form-group>
 
-            <!-- Proveedor -->
-            <div class="row mt-4 mx-1">
-              <i class="bi bi-caret-right-fill"></i>
-              <h6 class="text-dark font-weight-500 ml-1">Proveedor</h6>
+            <div class="li-row combustible-field-label">
+              <div class="li-icon"><i class="bi bi-caret-right-fill" aria-hidden="true" /></div>
+              <div class="li-content">
+                <h6 class="text-dark font-weight-500 mb-0">Proveedor</h6>
+              </div>
             </div>
-            <b-form-group label-class="text-dark font-weight-bold" class="col-11  ml-2">
-              <b-form-select style="border-radius: 0;" size="sm"
-               :options="proveedores.map(p => ({value: p.nombre, text: p.nombre}))"
-               v-model="orden.proveedor"/>
+            <b-form-group class="combustible-form-group">
+              <b-form-select
+                size="sm"
+                :options="opcionesProveedores"
+                v-model="orden.proveedor"
+              />
             </b-form-group>
 
-            <!-- Área asignada -->
-            <div class="row mt-4 mx-1">
-              <i class="bi bi-caret-right-fill"></i>
-              <h6 class="text-dark font-weight-500 ml-1">Área asignada</h6>
+            <div class="li-row combustible-field-label">
+              <div class="li-icon"><i class="bi bi-caret-right-fill" aria-hidden="true" /></div>
+              <div class="li-content">
+                <h6 class="text-dark font-weight-500 mb-0">Área asignada</h6>
+              </div>
             </div>
-            <b-form-group label-class="text-dark font-weight-bold" class="col-11  ml-2">
-              <b-form-select style="border-radius: 0;" size="sm" :options="areas" v-model="orden.area"/>
-              <!-- <b-form-input style="border-radius: 0;" size="sm" class="col-8" type="text" v-model="orden.area"/> -->
+            <b-form-group class="combustible-form-group">
+              <b-form-select size="sm" :options="areas" v-model="orden.area" />
             </b-form-group>
-            <!-- Combustibles -->
-            <div class="row mt-4 mx-1">
-              <i class="bi bi-caret-right-fill"></i>
-              <h6 class="text-dark font-weight-500 ml-1">Montos asignados por tipo de combustible</h6>
+
+            <div class="li-row combustible-field-label">
+              <div class="li-icon"><i class="bi bi-caret-right-fill" aria-hidden="true" /></div>
+              <div class="li-content">
+                <h6 class="text-dark font-weight-500 mb-0">Montos asignados por tipo de combustible</h6>
+              </div>
             </div>
-            <b-form-group class="col-12  ml-2" >
-              <div v-for="(combustible, index) in orden.montos" :key="index" class="d-flex align-items-center mb-2">
-                <b-form-select
-                  style="border-radius: 0;"
+            <b-form-group class="combustible-form-group combustible-montos-group">
+              <p v-if="!orden.proveedor" class="combustible-form-hint mb-2">
+                Seleccioná un proveedor para cargar los tipos de combustible.
+              </p>
+              <div
+                v-for="(combustible, index) in orden.montos"
+                :key="`monto-${index}`"
+                class="combustible-monto-row"
+              >
+                <div class="combustible-monto-tipo">
+                  <b-form-select
+                    size="sm"
+                    :options="opcionesTiposCombustible"
+                    v-model="combustible.tipoCombustible"
+                  />
+                </div>
+                <span class="combustible-monto-currency">$</span>
+                <div class="combustible-monto-importe">
+                  <b-form-input
+                    size="sm"
+                    type="number"
+                    placeholder="Monto"
+                    no-wheel
+                    v-model="combustible.monto"
+                  />
+                </div>
+                <b-button
+                  v-if="orden.montos.length > 1"
+                  variant="outline-danger"
                   size="sm"
-                  class="col-5"
-                  :options="tiposCombustibleProveedor"
-                  v-model="combustible.tipoCombustible"
-                  placeholder="Seleccione un tipo de combustible"
-                />
-                <h6 class="font-weight-500 text-dark ml-3 mr-1 mt-1">$ </h6>
-                <b-form-input style="border-radius: 0;" size="sm" class="col-5" type="number" placeholder="Monto" no-wheel v-model="combustible.monto" />
-                <b-button v-if="orden.montos.length > 1" variant="outline-danger" size="sm" class="ml-2" @click="removeCombustible(index)">
-                  <i class="bi bi-trash-fill"></i>
+                  class="combustible-monto-remove"
+                  @click="removeCombustible(index)"
+                >
+                  <i class="bi bi-trash-fill" aria-hidden="true" />
                 </b-button>
               </div>
-              <b-button variant="primary" :disabled="this.orden.montos.length >= 4" size="sm" @click="addCombustible">+ Agregar combustible</b-button>
+              <b-button
+                variant="primary"
+                :disabled="orden.montos.length >= 4"
+                size="sm"
+                class="combustible-add-btn"
+                @click="addCombustible"
+              >
+                + Agregar combustible
+              </b-button>
             </b-form-group>
 
-            <hr/>
-
+            <hr class="combustible-form-divider" />
           </div>
 
           <div class="modal-confirm-actions">
-            <b-button variant="success" :disabled="!nroOrden1 || !nroOrden2 || !orden.area || !orden.montos.length || nroOrdenDuplicado" @click="submitForm">
+            <b-button variant="success" :disabled="!formOrdenValido || nroOrdenDuplicado" @click="submitForm">
               Aceptar
             </b-button>
             <b-button variant="danger" @click="showCargarOrden = false">Cancelar</b-button>
@@ -370,7 +403,7 @@
     </BModal>
 
     <!-- Modal para cargar vehículo -->
-    <BModal no-close-on-backdrop no-close-on-esc v-model="showCargarVehiculo" no-footer :header-bg-variant="'primary'" centered>
+    <BModal no-close-on-backdrop no-close-on-esc v-model="showCargarVehiculo" no-footer :header-bg-variant="'primary'" size="lg" centered>
       <template #header>
         <div v-if="!successMessageVehiculo" class="confirmation-popup-header combustible-modal-icon">
           <i class="bi bi-circle text-light" aria-hidden="true"></i>
@@ -391,27 +424,35 @@
           </div>
         </div>
 
-        <div v-else>
-          <div class="mx-auto">
-             <!-- Patente -->
-             <div class="row mt-4 mx-1">
-               <i class="bi bi-caret-right-fill"></i>
-               <h6 class="text-dark font-weight-500 ml-1">Patente del Vehículo</h6>
-             </div>
-             <b-form-group class="col-12 ml-2">
-               <b-form-input style="border-radius: 0;" size="sm" class="col-8" type="text" v-model="vehiculo.patente" placeholder="Ej: ABC123"/>
-             </b-form-group>
+        <div v-else class="combustible-form">
+          <div class="combustible-form-fields">
+            <div class="li-row combustible-field-label">
+              <div class="li-icon"><i class="bi bi-caret-right-fill" aria-hidden="true" /></div>
+              <div class="li-content">
+                <h6 class="text-dark font-weight-500 mb-0">Patente del Vehículo</h6>
+              </div>
+            </div>
+            <b-form-group class="combustible-form-group">
+              <b-form-input
+                size="sm"
+                class="combustible-form-input"
+                type="text"
+                v-model="vehiculo.patente"
+                placeholder="Ej: ABC123"
+              />
+            </b-form-group>
 
-             <!-- Área asignada -->
-             <div class="row mt-4 mx-1">
-               <i class="bi bi-caret-right-fill"></i>
-               <h6 class="text-dark font-weight-500 ml-1">Área asignada</h6>
-             </div>
-             <b-form-group label-class="text-dark font-weight-bold" class="col-11 ml-2">
-               <b-form-select style="border-radius: 0;" size="sm" :options="areas" v-model="vehiculo.area"/>
-             </b-form-group>
+            <div class="li-row combustible-field-label">
+              <div class="li-icon"><i class="bi bi-caret-right-fill" aria-hidden="true" /></div>
+              <div class="li-content">
+                <h6 class="text-dark font-weight-500 mb-0">Área asignada</h6>
+              </div>
+            </div>
+            <b-form-group class="combustible-form-group">
+              <b-form-select size="sm" :options="areas" v-model="vehiculo.area" />
+            </b-form-group>
 
-            <hr/>
+            <hr class="combustible-form-divider" />
           </div>
 
           <div class="modal-confirm-actions">
@@ -626,6 +667,18 @@ export default {
   async mounted() {
     await this.loadCombustiblePage()
   },
+  watch: {
+    showCargarOrden(isOpen) {
+      if (isOpen) {
+        this.prepareOrdenForm()
+      }
+    },
+    showCargarVehiculo(isOpen) {
+      if (isOpen) {
+        this.resetFormVehiculo()
+      }
+    },
+  },
   computed: {
     adminCompras(){
       const admin = useUserStore().admin
@@ -650,13 +703,30 @@ export default {
     proveedores() {
       return useCombustibleStore().proveedores;
     },
-    tiposCombustibleProveedor() {
+    opcionesProveedores() {
       const proveedores = Array.isArray(this.proveedores) ? this.proveedores : []
-      const proveedorSeleccionado = proveedores.find(p => p.nombre === this.orden.proveedor)
+      return proveedores.map((proveedor) => ({
+        value: proveedor.nombre,
+        text: proveedor.nombre,
+      }))
+    },
+    opcionesTiposCombustible() {
+      const options = [{ value: '', text: 'Seleccione tipo', disabled: true }]
+      const proveedores = Array.isArray(this.proveedores) ? this.proveedores : []
+      const proveedorSeleccionado = proveedores.find((p) => p.nombre === this.orden.proveedor)
       const tipos = proveedorSeleccionado?.tiposCombustible
-      return Array.isArray(tipos)
-        ? tipos.map(tipo => ({ value: tipo, text: tipo }))
-        : []
+      if (Array.isArray(tipos)) {
+        options.push(...tipos.map((tipo) => ({ value: tipo, text: tipo })))
+      }
+      return options
+    },
+    formOrdenValido() {
+      if (!this.nroOrden1 || !this.nroOrden2 || !this.orden.area || !this.orden.proveedor) {
+        return false
+      }
+      return this.orden.montos.some(
+        (combustible) => combustible.tipoCombustible && Number(combustible.monto) > 0,
+      )
     },
     paginatedItems() {
       const start = (this.currentPage - 1) * this.perPage;
@@ -799,8 +869,20 @@ export default {
       }
       this.showObservaciones = true
     },
+    prepareOrdenForm() {
+      const proveedores = Array.isArray(this.proveedores) ? this.proveedores : []
+      this.nroOrden1 = ''
+      this.nroOrden2 = ''
+      this.successMessage = false
+      this.orden = {
+        nroOrden: '',
+        area: '',
+        proveedor: proveedores[0]?.nombre || '',
+        montos: [{ tipoCombustible: '', monto: null }],
+      }
+    },
     addCombustible() {
-      this.orden.montos.push({ tipoCombustible: "", monto: 0 });
+      this.orden.montos.push({ tipoCombustible: '', monto: null });
     },
     removeCombustible(index) {
       if (this.orden.montos.length > 1) {
@@ -845,12 +927,7 @@ export default {
     },
     resetForm() {
       this.successMessage = false;
-      this.orden = {
-        nroOrden: "",
-        area: "",
-        montoSuper: null,
-        montoVPower: null,
-      };
+      this.prepareOrdenForm()
     },
     sendEliminarOrden(item){
       if(!this.showEliminarOrden){
@@ -1044,22 +1121,120 @@ export default {
 </script>
 
 <style scoped>
-/* Solo estilos que realmente se usan y funcionan */
 .confirmation-popup-body {
   padding: 1.5rem;
 }
 
+.combustible-form-fields {
+  max-width: 34rem;
+  margin: 0 auto;
+}
+
+.combustible-field-label {
+  margin-top: 1rem;
+  margin-bottom: 0.35rem;
+}
+
+.combustible-form-group {
+  margin-bottom: 0.75rem;
+}
+
+.combustible-monto-tipo,
+.combustible-monto-importe {
+  min-width: 0;
+}
+
+.combustible-monto-tipo {
+  flex: 1 1 48%;
+}
+
+.combustible-monto-importe {
+  flex: 1 1 34%;
+}
+
+.combustible-monto-tipo :deep(.form-select),
+.combustible-monto-importe :deep(.form-control),
+.combustible-form-group :deep(.form-select),
+.combustible-form-group :deep(.form-control) {
+  width: 100%;
+  border-radius: 0;
+  font-size: 0.95rem;
+}
+
+.combustible-form-input {
+  max-width: 14rem;
+}
+
+.combustible-form-hint {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.numero-orden-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 14rem;
+}
+
+.numero-orden-input {
+  width: 5.5rem;
+  text-align: center;
+}
+
+.numero-orden-input--short {
+  width: 4rem;
+}
+
+.numero-orden-separator {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.combustible-montos-group {
+  margin-top: 0.25rem;
+}
+
+.combustible-monto-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.65rem;
+}
+
+.combustible-monto-row :deep(.form-select),
+.combustible-monto-row :deep(.form-control) {
+  border-radius: 0;
+}
+
+.combustible-monto-currency {
+  flex: 0 0 auto;
+  font-weight: 600;
+  color: #212529;
+}
+
+.combustible-monto-remove {
+  flex: 0 0 auto;
+}
+
+.combustible-add-btn {
+  margin-top: 0.25rem;
+}
+
+.combustible-form-divider {
+  margin: 1.25rem 0 0.75rem;
+}
 
 /* Sección de filtros con color personalizado */
 .filtro-section {
-  background: #b4c0f3 !important; /* Azul claro suave */
+  background: #b4c0f3 !important;
   padding: 1rem 0.5rem 1rem 1rem !important;
   border-radius: 3px !important;
   border: 1px solid #c3cae5 !important;
   box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
 }
 
-/* Estilos para el dashboard de combustible */
 .dashboard-combustible {
   padding: 1rem 0;
 }
@@ -1067,5 +1242,16 @@ export default {
 .combustible-actions .btn {
   width: auto;
   flex: 0 0 auto;
+}
+
+@media (max-width: 575.98px) {
+  .combustible-monto-row {
+    flex-wrap: wrap;
+  }
+
+  .combustible-monto-tipo,
+  .combustible-monto-importe {
+    flex: 1 1 100%;
+  }
 }
 </style>

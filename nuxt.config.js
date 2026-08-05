@@ -45,6 +45,7 @@ export default defineNuxtConfig({
     '~/plugins/pinia-payload.server.js',
     '~/plugins/api.js',
     '~/plugins/project-toast.client.js',
+    '~/plugins/bform-file-fix.client.js',
     '~/plugins/auth-hydrate.client.js',
     '~/plugins/router-cleanup.client.js',
     '~/plugins/vuelidate.js',
@@ -75,7 +76,7 @@ export default defineNuxtConfig({
   vite: {
     ssr: {
       // Librerías que usan navigator/DOM: no evaluarlas en el bundle SSR.
-      external: ['file-saver', 'jspdf', 'jszip'],
+      external: ['file-saver', 'jspdf', 'jszip', 'xlsx'],
     },
     css: {
       preprocessorOptions: {

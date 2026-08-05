@@ -123,7 +123,7 @@ export default {
       return this.userStore.admin === 'master'
     },
     canManageBoletas() {
-      return ['admin', 'master', 'true'].includes(String(this.userStore.admin || '').trim().toLowerCase())
+      return ['admin', 'master', 'true', 'boletas'].includes(String(this.userStore.admin || '').trim().toLowerCase())
     },
     showComercioMenu() {
       return this.adminComercio || this.adminInspeccion || this.adminArvige

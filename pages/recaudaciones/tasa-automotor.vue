@@ -2,7 +2,7 @@
   <div class="page main-background automotor-page">
     <Banner title="Descargar Tasa Automotor" />
 
-    <main class="container py-5">
+    <main v-if="puedeVerModulo" class="container py-5">
       <section class="search-card">
         <div class="search-copy">
           <span class="eyebrow">Boletas de Automotores</span>
@@ -51,7 +51,6 @@
         <div class="periods-heading">
           <div>
             <h3>Seleccioná los períodos</h3>
-            <p>Podés seleccionar hasta {{ maxPeriodosSeleccionados }} períodos. El PDF incluirá hasta dos boletas por página.</p>
           </div>
           <b-form-checkbox
             :checked="todosSeleccionados"
@@ -114,20 +113,37 @@
 
         <div class="download-bar">
           <div>
-            <strong>{{ seleccionados.length }} de {{ maxPeriodosSeleccionados }} {{ seleccionados.length === 1 ? 'período seleccionado' : 'períodos seleccionados' }}</strong>
-            <span>Se descargará un único archivo PDF.</span>
+            <span>Se descargará un único archivo PDF con todos los períodos seleccionados.</span>
           </div>
-          <button class="btn btn-download" :disabled="!seleccionados.length || descargando" @click="descargar">
-            <b-spinner v-if="descargando" small class="mr-2"></b-spinner>
-            <i v-else class="bi bi-file-earmark-pdf-fill mr-2"></i>
-            {{ descargando ? 'Generando PDF...' : 'Descargar boletas' }}
-          </button>
+          <div class="download-actions">
+            <button class="btn btn-download" :disabled="!seleccionados.length || descargando" @click="descargar">
+              <b-spinner v-if="descargando" small class="mr-2"></b-spinner>
+              <i v-else class="bi bi-file-earmark-pdf-fill mr-2"></i>
+              {{ descargando ? 'Generando PDF...' : 'Descargar boletas' }}
+            </button>
+            <a class="btn btn-pay" href="http://arvige.gob.ar/lpagos">
+              <i class="bi bi-credit-card-fill mr-2"></i>
+              Ir a pagar
+            </a>
+          </div>
         </div>
       </section>
 
       <div class="text-center mt-4">
         <b-button variant="primary" :disabled="buscando || descargando" @click="$router.push('/recaudaciones')">Volver</b-button>
       </div>
+    </main>
+    <main v-else class="container py-5">
+      <section class="search-card unavailable-card">
+        <div class="search-copy">
+          <span class="eyebrow">Boletas de Automotores</span>
+          <h1>Servicio no disponible</h1>
+          <p>La descarga de tasa automotor no se encuentra disponible en este momento.</p>
+        </div>
+        <div class="text-center">
+          <b-button variant="primary" @click="$router.push('/recaudaciones')">Volver</b-button>
+        </div>
+      </section>
     </main>
 
     <b-modal
@@ -174,12 +190,20 @@ export default {
       ordenDescendente: false,
       paginaPeriodos: 1,
       periodosPorPagina: PERIODOS_POR_PAGINA,
-      maxPeriodosSeleccionados: 20
+      maxPeriodosSeleccionados: 20,
+      tasaAutomotorPublicaHabilitada: true
     }
   },
   computed: {
     dominioValido() {
       return /^[A-Z0-9]{5,9}$/.test(this.dominio)
+    },
+    usuarioInternoBoletas() {
+      const role = String(useUserStore().admin || '').trim().toLowerCase()
+      return ['admin', 'master', 'true', 'boletas'].includes(role)
+    },
+    puedeVerModulo() {
+      return this.usuarioInternoBoletas || this.tasaAutomotorPublicaHabilitada
     },
     descripcionVehiculo() {
       if (!this.resultado) return ''
@@ -234,18 +258,30 @@ export default {
       this.paginaPeriodos = 1
     }
   },
+  mounted() {
+    this.loadTasaAutomotorConfig()
+  },
   methods: {
+    async loadTasaAutomotorConfig() {
+      try {
+        const response = await this.$axios.get('/tasas/automotores/configuracion')
+        this.tasaAutomotorPublicaHabilitada = response.data.data.habilitada !== false
+      } catch (_) {
+        this.tasaAutomotorPublicaHabilitada = true
+      }
+    },
     normalizarDominio() {
       this.dominio = this.dominio.replace(/[\s-]/g, '').replace(/[^a-zA-Z0-9]/g, '').toUpperCase()
     },
     async buscar() {
+      if (!this.puedeVerModulo) return
       if (!this.dominioValido) return
       this.buscando = true
       this.mensajeError = ''
       this.resultado = null
       this.seleccionados = []
       try {
-        const response = await this.$axios.get(`/tasas/automotores/${this.dominio}`)
+        const response = await this.$axios.get(`/tasas/automotores/${this.dominio}`, { headers: this.authHeaders() })
         this.resultado = response.data.data
         this.maxPeriodosSeleccionados = this.resultado.maxPeriodosPorDescarga || 20
         this.seleccionados = []
@@ -287,6 +323,7 @@ export default {
       this.paginaPeriodos = 1
     },
     async descargar() {
+      if (!this.puedeVerModulo) return
       if (!this.seleccionados.length) return
       if (this.seleccionados.length > this.maxPeriodosSeleccionados) {
         this.mensajeError = `Seleccionaste ${this.seleccionados.length} períodos. El máximo permitido por descarga es ${this.maxPeriodosSeleccionados}.`
@@ -298,7 +335,7 @@ export default {
         const response = await this.$axios.post(
           `/tasas/automotores/${this.resultado.dominio}/pdf`,
           { periodos: this.seleccionados },
-          { responseType: 'blob' }
+          { responseType: 'blob', headers: this.authHeaders() }
         )
         const url = URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }))
         const link = document.createElement('a')
@@ -324,6 +361,10 @@ export default {
       const first = periodo.vencimientos && periodo.vencimientos.find(item => item.orden === 1)
       if (!first) return 'Consultar vencimiento en la boleta'
       return `1er vencimiento: ${new Intl.DateTimeFormat('es-AR', { timeZone: 'UTC' }).format(new Date(first.fecha))}`
+    },
+    authHeaders() {
+      const token = useUserStore().token
+      return token ? { Authorization: `Bearer ${token}` } : {}
     }
   }
 }
@@ -336,6 +377,7 @@ export default {
 .eyebrow { color: #16805e; font-size: .75rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 .search-copy h1 { margin: .6rem 0 1rem; color: #173e32; font-weight: 800; }
 .search-copy p, .periods-heading p, .vehicle-heading p { margin: 0; color: #71837d; }
+.unavailable-card { align-items: center; }
 .domain-form label { color: #264b40; font-weight: 700; }
 .domain-input { display: flex; align-items: center; border: 2px solid #dcebe5; border-radius: 14px; background: white; transition: .2s; }
 .domain-input:focus-within { border-color: #14835e; box-shadow: 0 0 0 4px rgba(20, 131, 94, .1); }
@@ -368,9 +410,12 @@ export default {
 .period-card small { grid-column: 2 / 4; }
 .period-pagination { justify-content: space-between; border-top: 1px solid #e8f0ec; padding-top: 1rem; }
 .download-bar { display: flex; justify-content: space-between; align-items: center; padding: 1.4rem 2.5rem; background: #173e32; color: white; }
-.download-bar div { display: flex; flex-direction: column; }
+.download-bar > div:first-child { display: flex; flex-direction: column; }
 .download-bar span { color: #b9d0c7; font-size: .85rem; }
 .btn-download { padding: .8rem 1.25rem; background: #ef8918; }
+.download-actions { display: flex; align-items: center; gap: .75rem; }
+.btn-pay { padding: .8rem 1.25rem; border: 1px solid rgba(255, 255, 255, .4); border-radius: 12px; color: white; background: transparent; font-weight: 700; }
+.btn-pay:hover { color: #173e32; background: white; }
 .btn:disabled { cursor: not-allowed; opacity: .6; }
 @media (max-width: 767px) {
   .search-card { grid-template-columns: 1fr; gap: 1.5rem; padding: 1.5rem; }
@@ -381,7 +426,8 @@ export default {
   .period-toolbar, .period-pagination { align-items: stretch; flex-direction: column; padding: 0 1.25rem 1rem; }
   .period-toolbar .custom-select, .period-toolbar .btn { width: 100%; }
   .period-grid { grid-template-columns: 1fr; padding: 1rem 1.25rem 1.5rem; }
-  .btn-download { width: 100%; }
+  .download-actions { width: 100%; flex-direction: column; align-items: stretch; }
+  .btn-download, .btn-pay { width: 100%; }
 }
 </style>
 

@@ -8,10 +8,11 @@
       description="Realizar un reclamo por pago doble de tasas"
     />
     <MenuItem
+      v-if="mostrarTasaAutomotor"
       icon="car-front"
       to="/recaudaciones/tasa-automotor"
-      title="Descargar Tasa Automotor"
-      description="Consultar y descargar boletas de Automotores por dominio"
+      title="Descargar tasa de automotores"
+      description="Consultar y descargar boletas de patente de rodados"
     />
     <div class="page-btn-volver-wrap">
       <NuxtLink to="/">
@@ -20,3 +21,36 @@
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  name: 'RecaudacionesIndex',
+  data() {
+    return {
+      tasaAutomotorPublicaHabilitada: true
+    }
+  },
+  computed: {
+    usuarioInternoBoletas() {
+      const role = String(useUserStore().admin || '').trim().toLowerCase()
+      return ['admin', 'master', 'true', 'boletas'].includes(role)
+    },
+    mostrarTasaAutomotor() {
+      return this.usuarioInternoBoletas || this.tasaAutomotorPublicaHabilitada
+    }
+  },
+  mounted() {
+    this.loadTasaAutomotorConfig()
+  },
+  methods: {
+    async loadTasaAutomotorConfig() {
+      try {
+        const response = await this.$axios.get('/tasas/automotores/configuracion')
+        this.tasaAutomotorPublicaHabilitada = response.data.data.habilitada !== false
+      } catch (_) {
+        this.tasaAutomotorPublicaHabilitada = true
+      }
+    }
+  }
+}
+</script>

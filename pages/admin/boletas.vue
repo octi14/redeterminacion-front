@@ -12,17 +12,19 @@
     <main v-else class="container py-5">
       <section class="upload-hero">
         <div class="hero-copy">
-          <span class="eyebrow">Administración de boletas</span>
-          <h1>Importar boletas de Automotores</h1>
+          <span class="eyebrow">Administración interna de boletas</span>
+          <h1 style="color:white">Importar boletas de Automotores</h1>
           <p>
             Subí el archivo generado por Hacienda. Antes de publicarlo,
             verificaremos estructura, períodos, importes, vencimientos y códigos de pago.
           </p>
+          <!--
           <div class="hero-notes">
             <span><i class="bi bi-file-earmark-excel"></i> Formato XLSX</span>
             <span><i class="bi bi-shield-check"></i> Publicación con confirmación</span>
             <span><i class="bi bi-journal-check"></i> Reporte descargable</span>
           </div>
+          -->
         </div>
 
         <div class="upload-card">
@@ -62,22 +64,23 @@
             class="btn btn-analyze btn-block"
             :disabled="!selectedFile"
             @click="startAnalysis"
+            style="width: 100%;"
           >
             <i class="bi bi-search mr-2"></i>
             Subir y analizar archivo
           </button>
-          <div class="storage-option">
+          <div v-if="puedeGestionarBoletasCompleto" class="storage-option">
             <b-form-checkbox
-              v-model="guardarOriginalHabilitado"
+              v-model="tasaAutomotorPublicaHabilitada"
               switch
               :disabled="configLoading"
-              @update:model-value="updateStorageConfig"
+              @update:model-value="updateAutomotorPublicConfig"
             >
-              Almacenar archivo original al publicar
+              Mostrar descarga pública de tasa automotor
             </b-form-checkbox>
             <small>
               <b-spinner v-if="configLoading" small class="mr-1"></b-spinner>
-              {{ configLoading ? 'Guardando configuración...' : 'Desactivado por defecto para evitar consumo innecesario de espacio.' }}
+              {{ configLoading ? 'Guardando configuración...' : 'Controla el botón en Recaudaciones y el acceso público a la página de descarga.' }}
             </small>
           </div>
         </div>
@@ -86,9 +89,8 @@
       <section class="period-management-section">
         <div class="section-heading">
           <div>
-            <span class="eyebrow">Disponibilidad pública</span>
+            <!--<span class="eyebrow">Disponibilidad pública</span>-->
             <h2>Períodos cargados</h2>
-            <p>Administrá qué versión de cada período pueden descargar los contribuyentes.</p>
           </div>
           <div class="period-toolbar">
             <b-form-select v-model="periodStatusFilter" size="sm">
@@ -96,7 +98,7 @@
               <option value="enabled">Solo habilitados</option>
               <option value="disabled">Solo deshabilitados</option>
             </b-form-select>
-            <button class="btn btn-outline-success btn-sm" :disabled="periodsLoading" @click="loadPeriods">
+            <button class="btn btn-outline-success btn-sm" :disabled="periodsLoading" @click="loadPeriods" style="width: 100%;">
               <b-spinner v-if="periodsLoading" small></b-spinner>
               <i v-else class="bi bi-arrow-clockwise"></i>
               Actualizar
@@ -133,8 +135,8 @@
                   <span>Cuota {{ String(period.cuota).padStart(2, '0') }}</span>
                   <h3>{{ period.periodo }}</h3>
                 </div>
-                <span class="period-state" :class="period.habilitado ? 'enabled' : 'disabled'">
-                  {{ period.habilitado ? 'Habilitado' : 'Deshabilitado' }}
+                <span class="period-state" :class="periodStateClass(period)">
+                  {{ periodStateLabel(period) }}
                 </span>
               </header>
               <div
@@ -154,15 +156,9 @@
                       <small>{{ formatNumber(version.cantidadEntradas) }} entradas · {{ formatDateTime(version.publicadoAt) }}</small>
                     </div>
                   </div>
-                  <button
-                    class="btn btn-sm"
-                    :class="version.habilitado ? 'btn-outline-danger' : 'btn-outline-success'"
-                    :disabled="changingPeriod || version.estadoImportacion === 'deshabilitada'"
-                    :title="version.estadoImportacion === 'deshabilitada' ? 'La carga completa está deshabilitada' : ''"
-                    @click="requestPeriodStateChange(version)"
-                  >
-                    {{ version.estadoImportacion === 'deshabilitada' ? 'Carga deshabilitada' : (version.habilitado ? 'Deshabilitar' : 'Habilitar') }}
-                  </button>
+                  <span class="version-state" :class="periodVersionStateClass(version)">
+                    {{ periodVersionStateLabel(version) }}
+                  </span>
                 </div>
               </div>
               <footer v-if="period.versions.length > 3" class="versions-overflow-note">
@@ -190,7 +186,7 @@
       <section class="history-section">
         <div class="section-heading">
           <div>
-            <span class="eyebrow">Trazabilidad</span>
+            <!-- <span class="eyebrow">Trazabilidad</span> -->
             <h2>Historial de cargas</h2>
             <p>Cargas analizadas y publicadas desde este panel.</p>
           </div>
@@ -290,10 +286,10 @@
                   @click="downloadStoredReport(data.item)"
                 >
                   <b-spinner v-if="reportDownloadingId === data.item.id" small></b-spinner>
-                  <i v-else class="bi bi-search"></i>
+                  <i v-else class="bi bi-download"></i>
                 </button>
                 <button
-                  v-if="data.item.status !== 'disabled'"
+                  v-if="puedeGestionarBoletasCompleto && data.item.status !== 'disabled'"
                   class="btn btn-outline-danger btn-sm"
                   title="Deshabilitar carga"
                   :disabled="disablingImport || originalDownloadingId === data.item.id"
@@ -302,7 +298,7 @@
                   <i class="bi bi-trash"></i>
                 </button>
                 <button
-                  v-if="data.item.originalAvailable"
+                  v-if="puedeGestionarBoletasCompleto && data.item.originalAvailable"
                   class="btn btn-outline-success btn-sm"
                   title="Descargar archivo original"
                   :disabled="originalDownloadingId === data.item.id || disablingImport"
@@ -550,54 +546,13 @@
         </div>
       </div>
     </b-modal>
-
-    <b-modal
-      v-model="showPeriodConfirmation"
-      centered
-      hide-header
-      hide-footer
-      :no-close-on-backdrop="changingPeriod"
-      :no-close-on-esc="changingPeriod"
-      modal-class="publish-modal"
-    >
-      <div v-if="pendingPeriodChange" class="publish-confirmation">
-        <div class="confirm-icon" :class="{ 'disable-icon': pendingPeriodChange.habilitado }">
-          <b-spinner v-if="changingPeriod" label="Actualizando"></b-spinner>
-          <i v-else :class="pendingPeriodChange.habilitado ? 'bi bi-eye-slash-fill' : 'bi bi-eye-fill'"></i>
-        </div>
-        <h3>{{ changingPeriod ? 'Actualizando período...' : periodConfirmationTitle }}</h3>
-        <p v-if="changingPeriod">Estamos actualizando las boletas disponibles para los contribuyentes.</p>
-        <template v-else>
-          <p>{{ periodConfirmationDescription }}</p>
-          <div v-if="periodChangeConflicts.length" class="overwrite-warning">
-            <div class="overwrite-warning-title">
-              <i class="bi bi-exclamation-triangle-fill"></i>
-              Se deshabilitará otra versión
-            </div>
-            <p>
-              Actualmente está habilitado el período {{ pendingPeriodChange.periodo }} desde:
-              <strong>{{ periodChangeConflicts.map(item => item.nombreArchivo).join(', ') }}</strong>.
-            </p>
-          </div>
-        </template>
-        <div class="confirm-actions">
-          <button class="btn btn-outline-secondary" :disabled="changingPeriod" @click="showPeriodConfirmation = false">
-            Cancelar
-          </button>
-          <button class="btn btn-publish" :disabled="changingPeriod" @click="changePeriodState">
-            <b-spinner v-if="changingPeriod" small class="mr-2"></b-spinner>
-            {{ changingPeriod ? 'Actualizando...' : (pendingPeriodChange.habilitado ? 'Sí, deshabilitar' : 'Sí, habilitar') }}
-          </button>
-        </div>
-      </div>
-    </b-modal>
   </div>
 </template>
 
 <script setup>
 definePageMeta({
   middleware: ['authenticated', 'require-admin'],
-  adminRoles: ['admin', 'master'],
+  adminRoles: ['admin', 'master', 'boletas'],
 })
 
 useHead({ title: 'Administrar boletas - Hacienda Villa Gesell' })
@@ -626,6 +581,7 @@ export default {
       processingMessage: 'Subiendo el archivo...',
       analysisResult: null,
       guardarOriginalHabilitado: false,
+      tasaAutomotorPublicaHabilitada: true,
       configLoading: false,
       serverConflictPeriods: [],
       loadedPeriods: [],
@@ -633,10 +589,6 @@ export default {
       periodStatusFilter: 'all',
       periodYearPage: 1,
       periodYearsPerPage: 5,
-      showPeriodConfirmation: false,
-      pendingPeriodChange: null,
-      periodChangeConflicts: [],
-      changingPeriod: false,
       history: [],
       historyLoading: false,
       reportDownloadingId: null,
@@ -651,12 +603,12 @@ export default {
       historyPage: 1,
       historyPerPage: 10,
       historyFields: [
-        { key: 'fileName', label: 'Nombre del archivo', thStyle: { width: '225px' } },
+        { key: 'fileName', label: 'Nombre del archivo', thStyle: { minWidth: '225px' } },
         { key: 'uploadedAt', label: 'Fecha de subida', thStyle: { width: '110px' } },
         { key: 'period', label: 'Año y período', thStyle: { width: '155px' } },
         { key: 'entries', label: 'Entradas', class: 'text-right', thStyle: { width: '85px' } },
         { key: 'result', label: 'Resultado', thStyle: { width: '110px' } },
-        { key: 'uploadedBy', label: 'Subido por', thStyle: { width: '170px' } },
+        { key: 'uploadedBy', label: 'Subido por', thStyle: { minWidth: '170px' } },
         { key: 'status', label: 'Estado', thStyle: { width: '160px' } },
         { key: 'actions', label: '', class: 'text-right', thStyle: { width: '130px' } }
       ]
@@ -664,6 +616,9 @@ export default {
   },
   computed: {
     puedeAdministrar() {
+      return ['admin', 'master', 'true', 'boletas'].includes(String(useUserStore().admin || '').trim().toLowerCase())
+    },
+    puedeGestionarBoletasCompleto() {
       return ['admin', 'master', 'true'].includes(String(useUserStore().admin || '').trim().toLowerCase())
     },
     analysisIssues() {
@@ -722,11 +677,18 @@ export default {
             periodo: item.periodo,
             cuota: item.cuota,
             habilitado: false,
+            habilitadas: 0,
+            deshabilitadas: 0,
             versions: []
           }
         }
         grouped[item.anio][item.periodo].versions.push(item)
-        grouped[item.anio][item.periodo].habilitado = grouped[item.anio][item.periodo].habilitado || item.habilitado
+        if (item.habilitado) {
+          grouped[item.anio][item.periodo].habilitadas += 1
+        } else {
+          grouped[item.anio][item.periodo].deshabilitadas += 1
+        }
+        grouped[item.anio][item.periodo].habilitado = grouped[item.anio][item.periodo].habilitadas > 0
       })
       return Object.keys(grouped)
         .map(Number)
@@ -753,18 +715,6 @@ export default {
       return this.paginatedPeriodYears.length
         ? this.paginatedPeriodYears[this.paginatedPeriodYears.length - 1].year
         : '-'
-    },
-    periodConfirmationTitle() {
-      if (!this.pendingPeriodChange) return ''
-      return this.pendingPeriodChange.habilitado
-        ? `¿Deshabilitar ${this.pendingPeriodChange.periodo}?`
-        : `¿Habilitar ${this.pendingPeriodChange.periodo}?`
-    },
-    periodConfirmationDescription() {
-      if (!this.pendingPeriodChange) return ''
-      return this.pendingPeriodChange.habilitado
-        ? 'Los contribuyentes dejarán de encontrar y descargar las boletas de este período.'
-        : 'Las boletas de esta carga quedarán disponibles para que los contribuyentes puedan descargarlas.'
     },
     filteredHistory() {
       const search = this.historySearch.toLocaleLowerCase('es')
@@ -1146,58 +1096,32 @@ export default {
         this.periodsLoading = false
       }
     },
-    requestPeriodStateChange(version) {
-      this.pendingPeriodChange = version
-      this.periodChangeConflicts = version.habilitado
-        ? []
-        : this.loadedPeriods.filter(item =>
-          item.periodo === version.periodo &&
-          item.habilitado &&
-          item.importacionId !== version.importacionId
-        )
-      this.showPeriodConfirmation = true
-    },
-    async changePeriodState() {
-      if (!this.pendingPeriodChange || this.changingPeriod) return
-      this.changingPeriod = true
-      const habilitar = !this.pendingPeriodChange.habilitado
-      try {
-        await this.$axios.put(
-          `/tasas/importaciones/periodos/${this.pendingPeriodChange.importacionId}/estado`,
-          {
-            periodo: this.pendingPeriodChange.periodo,
-            habilitar,
-            confirmarReemplazo: this.periodChangeConflicts.length > 0
-          },
-          { headers: this.authHeaders() }
-        )
-        await Promise.all([this.loadPeriods(), this.loadHistory()])
-        this.showPeriodConfirmation = false
-        this.showToast(
-          `El período ${this.pendingPeriodChange.periodo} fue ${habilitar ? 'habilitado' : 'deshabilitado'}.`,
-          { title: 'Disponibilidad actualizada', variant: 'success', solid: true }
-        )
-      } catch (error) {
-        if (error.response?.status === 409 && error.response.data.conflictos?.length) {
-          this.periodChangeConflicts = error.response.data.conflictos
-          return
-        }
-        this.showToast(error.response?.data?.message || 'No se pudo actualizar el período.', {
-          title: 'Error al actualizar',
-          variant: 'danger',
-          solid: true
-        })
-      } finally {
-        this.changingPeriod = false
-      }
-    },
     async loadStorageConfig() {
       if (!this.puedeAdministrar) return
       try {
         const response = await this.$axios.get('/tasas/importaciones/configuracion', { headers: this.authHeaders() })
         this.guardarOriginalHabilitado = response.data.data.guardarArchivoOriginalTasas
+        this.tasaAutomotorPublicaHabilitada = response.data.data.tasaAutomotorPublicaHabilitada !== false
       } catch (_) {
         this.guardarOriginalHabilitado = false
+        this.tasaAutomotorPublicaHabilitada = true
+      }
+    },
+    async updateAutomotorPublicConfig(value) {
+      const enabled = value === true
+      this.configLoading = true
+      try {
+        const response = await this.$axios.put(
+          '/tasas/importaciones/configuracion',
+          { tasaAutomotorPublicaHabilitada: enabled },
+          { headers: this.authHeaders() }
+        )
+        this.tasaAutomotorPublicaHabilitada = response.data.data.tasaAutomotorPublicaHabilitada.value === true
+      } catch (error) {
+        this.tasaAutomotorPublicaHabilitada = !enabled
+        this.showToast('No se pudo actualizar la visibilidad pública.', { variant: 'danger', solid: true })
+      } finally {
+        this.configLoading = false
       }
     },
     async updateStorageConfig(value) {
@@ -1296,6 +1220,22 @@ export default {
     statusClass(status) {
       return `status-${status}`
     },
+    periodStateLabel(period) {
+      if (period.habilitadas > 0 && period.deshabilitadas > 0) return 'Parcialmente habilitado'
+      return period.habilitadas > 0 ? 'Habilitado' : 'Deshabilitado'
+    },
+    periodStateClass(period) {
+      if (period.habilitadas > 0 && period.deshabilitadas > 0) return 'partial'
+      return period.habilitadas > 0 ? 'enabled' : 'disabled'
+    },
+    periodVersionStateLabel(version) {
+      if (version.estadoImportacion === 'deshabilitada') return 'Deshabilitado'
+      return version.habilitado ? 'Habilitado' : 'Deshabilitado'
+    },
+    periodVersionStateClass(version) {
+      if (version.estadoImportacion === 'deshabilitada') return 'disabled'
+      return version.habilitado ? 'enabled' : 'disabled'
+    },
     formatNumber(value) {
       return Number(value || 0).toLocaleString('es-AR')
     },
@@ -1363,6 +1303,7 @@ export default {
 .loaded-period-card h3 { margin: .1rem 0 0; color: #22483d; font-size: 1.15rem; font-weight: 800; }
 .period-state { padding: .3rem .55rem; border-radius: 100px; font-size: .68rem; font-weight: 800; text-transform: uppercase; }
 .period-state.enabled { color: #08714d; background: #dff5ea; }
+.period-state.partial { color: #786016; background: #fff1bd; }
 .period-state.disabled { color: #687873; background: #e9eeec; }
 .period-versions { padding: .45rem .8rem; }
 .period-versions.has-overflow { max-height: 220px; overflow-y: auto; scrollbar-color: #9bc7b6 #edf5f1; scrollbar-width: thin; }
@@ -1379,6 +1320,9 @@ export default {
 .version-file strong, .version-file small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .version-file strong { max-width: 235px; font-size: .77rem; }
 .version-file small { max-width: 235px; color: #82928c; font-size: .67rem; }
+.version-state { flex: 0 0 auto; padding: .34rem .6rem; border-radius: 999px; font-size: .67rem; font-weight: 800; text-transform: uppercase; white-space: nowrap; }
+.version-state.enabled { color: #08714d; background: #dff5ea; }
+.version-state.disabled { color: #687873; background: #e9eeec; }
 .versions-overflow-note { padding: .45rem .8rem; border-top: 1px solid #e5efea; color: #71877e; background: #f6faf8; font-size: .68rem; font-weight: 700; text-align: center; }
 .versions-overflow-note i { margin-right: .25rem; color: #16805e; }
 .year-pagination { display: flex; align-items: center; justify-content: space-between; margin-top: 1.1rem; padding: .8rem 1rem; border: 1px solid #dfeae5; border-radius: 14px; color: #70847c; background: rgba(255,255,255,.82); font-size: .76rem; font-weight: 700; }
@@ -1428,8 +1372,10 @@ export default {
 </style>
 
 <style>
-.boletas-page .history-card table { width: 1145px; min-width: 1145px; table-layout: fixed; }
-.boletas-page .history-card th, .boletas-page .history-card td { overflow: hidden; max-width: 225px; vertical-align: top; }
+.boletas-page .history-card .table-responsive { width: 100%; }
+.boletas-page .history-card table { width: 100%; min-width: 1145px; table-layout: fixed; }
+.boletas-page .history-card th, .boletas-page .history-card td { overflow: hidden; vertical-align: top; }
+.boletas-page .history-card thead th { border-bottom: 1px solid #c7d7d1; color: #25483e; background: #dfe9e5; font-weight: 800; }
 .analysis-modal .modal-content, .publish-modal .modal-content { overflow: hidden; border: 0; border-radius: 24px; box-shadow: 0 30px 80px rgba(15, 50, 40, .25); }
 .analysis-modal .modal-body, .publish-modal .modal-body { padding: 0; }
 .analysis-processing, .analysis-result, .publish-confirmation { padding: 2.5rem; text-align: center; }

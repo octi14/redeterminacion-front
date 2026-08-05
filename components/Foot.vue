@@ -1,7 +1,7 @@
 <template>
   <div class="footer">
     <!-- Sección oscura con información de contacto -->
-    <div class="footer-contact bg-dark text-light py-5">
+    <div class="footer-contact text-light py-5">
       <div class="container-fluid px-4">
         <!-- Título principal -->
         <div class="row no-gutters mb-4">
@@ -15,14 +15,14 @@
           <div class="col-12 col-md-3 col-lg-2 order-1 order-md-1 mb-3 footer-col footer-col-logo">
             <div class="logo-section text-center mb-3">
               <div class="logo-container d-inline-block">
-                <img src="../assets/logoVGheader2.png" alt="Villa Gesell" class="footer-logo">
+                <img :src="footerLogo" alt="Villa Gesell" class="footer-logo">
               </div>
             </div>
             <div class="contact-section">
               <h6 class="text-light text-big mb-3">Secretaría de Hacienda</h6>
               <div class="text-center">
-                <p class="mb-2"><b-icon-geo-alt class="mr-2"/>Av. 3 n°820 - Palacio municipal</p>
-                <p class="mb-0"><b-icon-telephone class="mr-2"/>(02255) 478073</p>
+                <p class="mb-2"><i class="bi bi-geo-alt"></i>Av. 3 n°820 - Palacio municipal</p>
+                <p class="mb-0"><i class="bi bi-telephone"></i>(02255) 478073</p>
               </div>
             </div>
           </div>
@@ -35,16 +35,16 @@
                 <div class="col-12 col-md-6 mb-3 mb-md-0">
                   <div class="department-section mb-3">
                     <h6 class="text-light mb-2">Tesorería</h6>
-                    <p class="mb-1"><b-icon-geo-alt class="mr-2"/>Av. 3 n°820 - Palacio Municipal</p>
-                    <p class="mb-1"><b-icon-telephone class="mr-2"/>(02255) 478053</p>
-                    <p class="mb-2"><b-icon-envelope class="mr-2"/>tesoreriavg@gesell.gob.ar</p>
+                    <p class="mb-1"><i class="bi bi-geo-alt"></i>Av. 3 n°820 - Palacio Municipal</p>
+                    <p class="mb-1"><i class="bi bi-telephone"></i>(02255) 478053</p>
+                    <p class="mb-2"><i class="bi bi-envelope"></i>tesoreriavg@gesell.gob.ar</p>
                   </div>
                 </div>
                 <div class="col-12 col-md-6 d-flex justify-content-end">
                   <div class="department-section mb-3">
                     <h6 class="text-light mb-2">Dpto. Recaudaciones</h6>
-                    <p class="mb-1"><b-icon-geo-alt class="mr-2"/>Av. 3 n° 820 - Palacio municipal</p>
-                    <p class="mb-0"><b-icon-envelope class="mr-2"/>recaudaciones@gesell.gob.ar</p>
+                    <p class="mb-1"><i class="bi bi-geo-alt"></i>Av. 3 n° 820 - Palacio municipal</p>
+                    <p class="mb-0"><i class="bi bi-envelope"></i>recaudaciones@gesell.gob.ar</p>
                   </div>
                 </div>
               </div>
@@ -54,16 +54,16 @@
                 <div class="col-12 col-md-6 mb-3 mb-md-0">
                   <div class="department-section mb-3">
                     <h6 class="text-light mb-2">Dpto. Compras</h6>
-                    <p class="mb-1"><b-icon-geo-alt class="mr-2"/>Av. 3 n° 820 - Palacio Municipal</p>
-                    <p class="mb-0"><b-icon-telephone class="mr-2"/>(02255) 478028 / 79</p>
+                    <p class="mb-1"><i class="bi bi-geo-alt"></i>Av. 3 n° 820 - Palacio Municipal</p>
+                    <p class="mb-0"><i class="bi bi-telephone"></i>(02255) 478028 / 79</p>
                   </div>
                 </div>
                 <div class="col-12 col-md-6 d-flex justify-content-end">
                   <div class="department-section mb-3">
                     <h6 class="text-light mb-2">Dpto. Comercio</h6>
-                    <p class="mb-1"><b-icon-geo-alt class="mr-2"/>Av. 3 n° 820 - Palacio municipal</p>
-                    <p class="mb-1"><b-icon-envelope class="mr-2"/>deptocomercio@gesell.gob.ar</p>
-                    <p class="mb-0"><b-icon-telephone class="mr-2"/>(02255) 478056</p>
+                    <p class="mb-1"><i class="bi bi-geo-alt"></i>Av. 3 n° 820 - Palacio municipal</p>
+                    <p class="mb-1"><i class="bi bi-envelope"></i>deptocomercio@gesell.gob.ar</p>
+                    <p class="mb-0"><i class="bi bi-telephone"></i>(02255) 478056</p>
                   </div>
                 </div>
               </div>
@@ -73,20 +73,20 @@
                 <div class="col-12 col-md-6 mb-3 mb-md-0">
                   <div class="department-section">
                     <h6 class="text-light mb-2">ARVIGE</h6>
-                    <p class="mb-1"><b-icon-geo-alt class="mr-2"/>Paseo 111 N° 351 - Villa Gesell</p>
-                    <p class="mb-1"><b-icon-link class="mr-2"/><a href="https://arvige.gob.ar" target="_blank" class="text-light">https://arvige.gob.ar</a></p>
-                    <p class="mb-1"><b-icon-envelope class="mr-2"/>dirarvige@gesell.gob.ar / arvige@gesell.gob.ar</p>
-                    <p class="mb-1"><b-icon-telephone class="mr-2"/>(02255) 456190</p>
-                    <p class="mb-1"><b-icon-instagram class="mr-2"/><a href="https://instagram.com/a.r.vi.ge" target="_blank" class="text-light">a.r.vi.ge</a></p>
-                    <p class="mb-0"><b-icon-facebook class="mr-2"/><a href="https://www.facebook.com/a.r.vi.ge" target="_blank" class="text-light">Agencia de Recaudación Villa Gesell</a></p>
+                    <p class="mb-1"><i class="bi bi-geo-alt"></i>Paseo 111 N° 351 - Villa Gesell</p>
+                    <p class="mb-1"><i class="bi bi-link"></i><a href="https://arvige.gob.ar" target="_blank" class="text-light">https://arvige.gob.ar</a></p>
+                    <p class="mb-1"><i class="bi bi-envelope"></i>dirarvige@gesell.gob.ar / arvige@gesell.gob.ar</p>
+                    <p class="mb-1"><i class="bi bi-telephone"></i>(02255) 456190</p>
+                    <p class="mb-1"><i class="bi bi-instagram"></i><a href="https://instagram.com/a.r.vi.ge" target="_blank" class="text-light">a.r.vi.ge</a></p>
+                    <p class="mb-0"><i class="bi bi-facebook"></i><a href="https://www.facebook.com/a.r.vi.ge" target="_blank" class="text-light">Agencia de Recaudación Villa Gesell</a></p>
                   </div>
                 </div>
                 <div class="col-12 col-md-6 d-flex justify-content-end">
                   <div class="department-section">
                     <h6 class="text-light mb-2">Dpto. Inspección</h6>
-                    <p class="mb-1"><b-icon-geo-alt class="mr-2"/>Av. 3 n° 820 - Palacio municipal</p>
-                    <p class="mb-1"><b-icon-envelope class="mr-2"/>divinspectores@gesell.gob.ar</p>
-                    <p class="mb-0"><b-icon-telephone class="mr-2"/>(02255) 478053</p>
+                    <p class="mb-1"><i class="bi bi-geo-alt"></i>Av. 3 n° 820 - Palacio municipal</p>
+                    <p class="mb-1"><i class="bi bi-envelope"></i>divinspectores@gesell.gob.ar</p>
+                    <p class="mb-0"><i class="bi bi-telephone"></i>(02255) 478053</p>
                   </div>
                 </div>
               </div>
@@ -98,9 +98,9 @@
             <div class="casa-buenos-aires">
               <h6 class="text-light mb-3">Casa de Villa Gesell<br/> en Buenos Aires</h6>
               <div>
-                <p class="mb-1"><b-icon-geo-alt class="mr-2"/>Corrientes 1312 piso 11 of 42, CABA</p>
-                <p class="mb-1"><b-icon-envelope class="mr-2"/>casadevillagesell@gesell.gob.ar</p>
-                <p class="mb-3"><b-icon-telephone class="mr-2"/>(011) 52782990</p>
+                <p class="mb-1"><i class="bi bi-geo-alt"></i>Corrientes 1312 piso 11 of 42, CABA</p>
+                <p class="mb-1"><i class="bi bi-envelope"></i>casadevillagesell@gesell.gob.ar</p>
+                <p class="mb-3"><i class="bi bi-telephone"></i>(011) 52782990</p>
               </div>
 
               <!-- Mapa de Google Maps -->
@@ -123,7 +123,7 @@
     </div>
 
     <!-- Barra verde con copyright -->
-    <div class="footer-copyright bg-success text-light py-2">
+    <div class="footer-copyright text-light py-2">
       <div class="container-fluid">
       <div class="row no-gutters">
           <div class="col-12 text-center">
@@ -137,7 +137,13 @@
 </template>
 
 <script>
-export default {}
+import footerLogo from '~/assets/logoVGheader2.png'
+
+export default {
+  data() {
+    return { footerLogo }
+  },
+}
 </script>
 
 <style>
@@ -151,9 +157,13 @@ export default {}
   font-family: 'Roboto', sans-serif;
 }
 
-/* Sección oscura con información de contacto */
+/* Sección oscura con información de contacto (gris original, no bg-dark de BS5) */
 .footer-contact {
-  background-color: #505050 !important; /* Bootstrap dark */
+  background-color: #505050 !important;
+}
+
+.footer-contact.bg-dark {
+  background-color: #505050 !important;
 }
 
 .footer-contact .text-big {
@@ -178,10 +188,10 @@ export default {}
 
 .footer-contact h6 {
   color: #f8f9fa !important;
-  font-weight: 500;
+  font-weight: 400;
   font-size: 1.35rem;
   font-family: 'Roboto', sans-serif;
-  letter-spacing: 0.18px;
+  letter-spacing: 0.22px;
 }
 
 .footer-contact p {
@@ -193,6 +203,12 @@ export default {}
   letter-spacing: 0.3px;
   line-height: 1.2;
   font-family: 'Roboto', sans-serif;
+}
+
+/* Espacio ícono–texto (antes: class="mr-2" en b-icon) */
+.footer-contact p > i.bi {
+  margin-right: 0.5rem;
+  flex-shrink: 0;
 }
 
 .footer-contact .logo-container {
@@ -557,7 +573,11 @@ export default {}
 
 /* Barra verde con copyright */
 .footer-copyright {
-  background-color: #28a745 !important; /* Verde Bootstrap success */
+  background-color: #28a745 !important;
+}
+
+.footer-copyright.bg-success {
+  background-color: #28a745 !important;
 }
 
 .footer-copyright p {

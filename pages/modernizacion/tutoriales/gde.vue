@@ -2,9 +2,9 @@
   <div class="page main-background">
     <Banner title="Tutoriales" subtitle="Sistema GDE" />
     <MultimediaFeed keyword="GDE" />
-    <div class="text-center m-5 float-lg-end">
+    <div class="page-btn-volver-wrap">
       <NuxtLink to="/modernizacion/tutoriales">
-        <b-button variant="success"> Volver </b-button>
+        <b-button variant="primary" size="sm" class="page-btn-volver"> Volver </b-button>
       </NuxtLink>
     </div>
   </div>

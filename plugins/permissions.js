@@ -12,9 +12,9 @@ function unique(values) {
   return Array.from(new Set(values.filter(Boolean)))
 }
 
-export default ({ store }, inject) => {
+export default defineNuxtPlugin(() => {
   const permissionsForCurrentUser = () => {
-    const user = store.state.user || {}
+    const user = useUserStore()
     return unique([
       ...(user.permissions || []),
       ...(LEGACY_ROLE_PERMISSIONS[user.admin] || []),
@@ -26,6 +26,5 @@ export default ({ store }, inject) => {
     return permissions.includes('*') || permissions.includes(permission)
   }
 
-  inject('can', can)
-  inject('permissionsForCurrentUser', permissionsForCurrentUser)
-}
+  return { provide: { can, permissionsForCurrentUser } }
+})

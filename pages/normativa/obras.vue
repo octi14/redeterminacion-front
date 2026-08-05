@@ -2,9 +2,9 @@
   <div class="page main-background">
     <Banner title="Normativa Obra Pública" />
     <MultimediaFeed keyword="Obras" />
-    <div class="text-center m-4 float-lg-end">
+    <div class="page-btn-volver-wrap">
       <NuxtLink to="/normativa">
-        <b-button variant="primary"> Volver </b-button>
+        <b-button variant="primary" size="sm" class="page-btn-volver"> Volver </b-button>
       </NuxtLink>
     </div>
 <!--     <div class="container">

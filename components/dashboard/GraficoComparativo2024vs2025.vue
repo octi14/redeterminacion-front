@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import Chart from '~/plugins/chart.js'
+import Chart from '~/utils/chart-setup.js'
 
 export default {
   name: 'GraficoComparativo2024vs2025',
@@ -304,7 +304,7 @@ export default {
     await this.$nextTick()
     await this.crearGrafico()
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.chart) {
       this.chart.destroy()
       this.chart = null
@@ -484,3 +484,4 @@ canvas {
   width: 100% !important;
 }
 </style>
+

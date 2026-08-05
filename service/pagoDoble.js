@@ -1,4 +1,4 @@
-const formatFile = (FileResponse) => ({
+﻿const formatFile = (FileResponse) => ({
   id: FileResponse._id,
   dni: FileResponse.solicitante.dni,
   cuit: FileResponse.solicitante.cuit,
@@ -39,7 +39,7 @@ const formatExtendedFile = (FileResponse) => ({
   createdAt: new Date(FileResponse.createdAt),
 })
 
-module.exports = {
+export default {
   getAll: async (axios) => {
     const filesResponse = await axios.$get('/pagosDobles', {})
     return filesResponse.data.map(formatFile)
@@ -82,3 +82,4 @@ module.exports = {
     });
   },
 }
+

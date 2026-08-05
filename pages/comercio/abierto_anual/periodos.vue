@@ -5,7 +5,7 @@
           <div class="section-subtitle" v-if="!todosCorrectos">
               <div class="li-row">
                   <div class="li-icon border-b border-r">
-                      <b-icon-file-arrow-up font-scale="2" class="icon-orange"></b-icon-file-arrow-up>
+                      <i class="bi bi-file-arrow-up" style="font-size: 2em"></i>
                   </div>
                   <div class="li-content border-b">
                       <p class="subtitle">Carga de documentación</p>
@@ -13,7 +13,7 @@
               </div>
               <div class="li-row sangria">
                   <div class="li-icon">
-                      <b-icon-caret-right-fill font-scale="1" class="icon-orange"></b-icon-caret-right-fill>
+                      <i class="bi bi-caret-right-fill" style="font-size: 1em"></i>
                   </div>
                   <div class="li-content">
                       Seleccioná el período que corresponda y subí la factura del legajo comercial declarado.
@@ -22,7 +22,7 @@
               <div class="li-row DFE-card">
                   <b-row style="width:100%">
                       <b-col md="2" style="padding-right: 0;">
-                          <b-icon-exclamation-circle variant="dark" font-scale="3"></b-icon-exclamation-circle>
+                          <i class="bi bi-exclamation-circle text-dark" style="font-size: 3em"></i>
                       </b-col>
                       <b-col v-if="maestro && maestro.dfe != '\r'" md="10" style="padding-left: 0;">
                           <p class="subtitle"><b>Este comercio posee Domicilio Fiscal Electrónico (DFE).</b></p>
@@ -41,7 +41,7 @@
           <div class="section-subtitle">
               <div class="li-row">
                   <div class="li-icon border-b border-r">
-                      <b-icon-file-arrow-up font-scale="2" class="icon-orange"></b-icon-file-arrow-up>
+                      <i class="bi bi-file-arrow-up" style="font-size: 2em"></i>
                   </div>
                   <div class="li-content border-b">
                       <p class="subtitle">CUIT: <b>{{ tramite ? tramite.cuit : "" }}</b></p>
@@ -86,15 +86,15 @@
 
       <b-row class="page-body" v-else>
           <b-col class="mx-auto col-4 card shadow-card m-5">
-              <b-icon-exclamation-circle variant="danger" class="mx-auto" style="margin-top: 10%;margin-bottom: 5%;" scale="2.5"/>
+              <i class="bi bi-exclamation-circle text-danger"></i>
               <hr/>
               <h5 class="text-center mt-4 mb-3"> <b>Hubo un error cargando las facturas.</b></h5>
               <h6 class="text-center mb-5"> Por favor, volvé a iniciar el proceso de carga.</h6>
           </b-col>
       </b-row>
 
-      <div class="row justify-content-center my-4" style="width: 100%;">
-          <b-button variant="success" @click="volver">Volver</b-button>
+      <div class="page-btn-volver-wrap">
+          <b-button variant="primary" size="sm" class="page-btn-volver" @click="volver">Volver</b-button>
       </div>
   </div>
 </template>
@@ -107,24 +107,26 @@ export default {
     AbiertoAnualCard
   },
   async mounted() {
-    await this.$store.dispatch('config/getAbiertoAnualPeriodos');
+    await useConfigStore().getAbiertoAnualPeriodos();
     window.addEventListener('keydown', this.preventReload);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     window.removeEventListener('keydown', this.preventReload);
   },
   computed: {
     facturas(){
-      return this.$store.state.facturas.all
+      return useFacturasStore().all
     },
     tramite(){
-      return this.$store.state.abiertoAnual.single
+      return useAbiertoAnualStore().single
     },
     maestro(){
-      return this.$store.state.maestro.single[0]
+      const single = useMaestroStore().single
+      return Array.isArray(single) ? single[0] : null
     },
     todosCorrectos() {
-      return this.tramite.status.every(estado => estado === "Correcto")
+      const statusList = Array.isArray(this.tramite?.status) ? this.tramite.status : []
+      return statusList.length > 0 && statusList.every(estado => estado === "Correcto")
     }
   },
   methods: {
@@ -318,10 +320,16 @@ export default {
     .b-row {
       height: 100%; /* Asegúrate de que el b-row tenga una altura definida (puede ser 100% o cualquier otra altura que desees). */
     }
-    .li-icon, .li-title, label{
-    font-weight: 600;
-    color: #0c681a;
-    font-size: 1rem !important;
+    .li-title,
+    label {
+      font-weight: 600;
+      color: #0c681a;
+      font-size: 1rem !important;
+    }
+
+    .li-icon {
+      font-weight: 600;
+      font-size: 1rem !important;
     }
     label{
       font-weight: bold;
@@ -329,9 +337,17 @@ export default {
     .li-title{
       margin-bottom: 0.3rem;
     }
-    .li-icon{
-      padding-right: 1%;
-      vertical-align: top;
+    .li-icon {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      align-self: flex-start;
+      padding-right: 0;
+      margin-right: 0.35rem;
+      margin-top: 0.18em;
+      min-width: 1.15em;
+      min-height: 1.15em;
     }
     .icon-verificacion{
       width: 2.85rem;
@@ -346,8 +362,10 @@ export default {
       object-fit: contain;
       transform: rotate(-25deg);
     }
-    .li-row{
+    .li-row {
       display: flex;
+      align-items: flex-start;
+      gap: 0.4rem;
       width: 100%;
     }
     .li-icon, .li-content{
@@ -361,8 +379,10 @@ export default {
       margin-top: 0.5rem;
       font-size: 1.05rem;
     }
-    .bi-check{
-      vertical-align: top;
+    .bi-check {
+      color: #E27910;
+      font-size: 1em;
+      line-height: 1;
     }
     .todos-correctos{
       background-color: #FFF !important;

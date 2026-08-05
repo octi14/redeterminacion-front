@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   getGeneralConfig: async (axios) => {
     return await axios.$get('/config/general')
   },

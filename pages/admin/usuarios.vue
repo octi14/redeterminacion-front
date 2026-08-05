@@ -45,10 +45,10 @@
               <b-badge variant="secondary">{{ row.item.admin || 'sin rol legacy' }}</b-badge>
             </template>
 
-            <template #cell(rolesExp)="row">
-              <div v-if="row.item.rolesExp.length" class="admin-users__badges">
+            <template #cell(roles)="row">
+              <div v-if="row.item.roles.length" class="admin-users__badges">
                 <span
-                  v-for="role in row.item.rolesExp"
+                  v-for="role in row.item.roles"
                   :key="role.key"
                   class="admin-users__role-pill"
                   :class="rolePillClass(role)"
@@ -58,7 +58,7 @@
                   <span class="admin-users__role-name">{{ role.name || role.key }}</span>
                 </span>
               </div>
-              <span v-else class="text-muted">Sin roles experimentales</span>
+              <span v-else class="text-muted">Sin roles asignados</span>
             </template>
 
             <template #cell(assign)="row">
@@ -83,13 +83,13 @@
             <template #cell(actions)="row">
               <b-dropdown size="sm" variant="outline-secondary" text="Roles">
                 <b-dropdown-item
-                  v-for="role in row.item.rolesExp"
+                  v-for="role in row.item.roles"
                   :key="role.key"
                   @click="removeRole(row.item, role)"
                 >
                   Quitar {{ role.name || role.key }}
                 </b-dropdown-item>
-                <b-dropdown-text v-if="!row.item.rolesExp.length">
+                <b-dropdown-text v-if="!row.item.roles.length">
                   Sin roles para quitar
                 </b-dropdown-text>
               </b-dropdown>
@@ -117,7 +117,7 @@
 
         <aside v-if="canReadRoles" class="admin-users__side">
           <div class="admin-users__side-header">
-            <h5>{{ editingRoleKey ? 'Editar rol experimental' : 'Nuevo rol experimental' }}</h5>
+            <h5>{{ editingRoleKey ? 'Editar rol' : 'Nuevo rol' }}</h5>
             <b-button
               v-if="editingRoleKey"
               size="sm"
@@ -131,7 +131,6 @@
             <b-form-select
               v-model="editingRoleKey"
               :options="editRoleOptions"
-              @change="onEditRoleSelected"
             />
           </b-form-group>
           <b-form-group label="Clave">
@@ -161,13 +160,17 @@
                 class="admin-users__permission-per-page"
               />
             </div>
-            <b-form-checkbox-group
-              v-model="roleForm.permissions"
-              :options="paginatedPermissionOptions"
-              :disabled="!canManageRoles"
-              stacked
-              class="admin-users__permissions"
-            />
+            <div class="admin-users__permissions">
+              <b-form-checkbox
+                v-for="permission in paginatedPermissionOptions"
+                :key="permission.value"
+                v-model="roleForm.permissions"
+                :value="permission.value"
+                :disabled="!canManageRoles"
+              >
+                {{ permission.text }}
+              </b-form-checkbox>
+            </div>
             <div class="admin-users__permissions-footer">
               <span class="text-muted">
                 {{ roleForm.permissions.length }} seleccionados -
@@ -200,12 +203,23 @@
   </div>
 </template>
 
+<script setup>
+definePageMeta({
+  middleware: ['authenticated', 'require-admin'],
+  permissions: ['users.read', 'users.manage', 'roles.read', 'roles.manage'],
+})
+useHead({ title: 'Roles y permisos - Hacienda Villa Gesell' })
+</script>
+
 <script>
-const ExperimentalRbacService = require('@/service/experimentalRbac')
+import RbacService from '~/service/rbac.js'
 
 export default {
+  setup() {
+    const { showToast } = useProjectToast()
+    return { showToast }
+  },
   name: 'AdminUsuariosPage',
-  middleware: 'authenticated',
   data() {
     return {
       loading: false,
@@ -241,7 +255,7 @@ export default {
       userFields: [
         { key: 'username', label: 'Usuario', sortable: true },
         { key: 'admin', label: 'Rol actual', sortable: true },
-        { key: 'rolesExp', label: 'Roles experimentales', thClass: 'admin-users__roles-col', tdClass: 'admin-users__roles-cell' },
+        { key: 'roles', label: 'Roles', thClass: 'admin-users__roles-col', tdClass: 'admin-users__roles-cell' },
         { key: 'assign', label: 'Asignar rol' },
         { key: 'actions', label: '' },
       ],
@@ -343,6 +357,9 @@ export default {
     },
   },
   watch: {
+    editingRoleKey(roleKey) {
+      this.onEditRoleSelected(roleKey)
+    },
     search() {
       this.currentPage = 1
     },
@@ -378,9 +395,9 @@ export default {
       this.loading = true
       try {
         const [users, roles, permissions] = await Promise.all([
-          this.canReadUsers ? ExperimentalRbacService.getUsers(this.$axios) : Promise.resolve([]),
-          this.canReadRoles ? ExperimentalRbacService.getRoles(this.$axios) : Promise.resolve([]),
-          this.canReadRoles ? ExperimentalRbacService.getPermissions(this.$axios) : Promise.resolve([]),
+          this.canReadUsers ? RbacService.getUsers(this.$axios) : Promise.resolve([]),
+          this.canReadRoles ? RbacService.getRoles(this.$axios) : Promise.resolve([]),
+          this.canReadRoles ? RbacService.getPermissions(this.$axios) : Promise.resolve([]),
         ])
         this.users = users
         this.roles = roles
@@ -394,13 +411,11 @@ export default {
     async saveRole() {
       if (!this.canManageRoles) return
       try {
-        await ExperimentalRbacService.saveRole(this.$axios, this.roleForm)
+        await RbacService.saveRole(this.$axios, this.roleForm)
         this.resetRoleForm()
         await this.loadAll()
-        this.$bvToast.toast('Rol guardado.', {
+        this.showToast('Rol guardado.', {
           variant: 'success',
-          solid: true,
-          appendToast: true,
         })
       } catch (error) {
         this.showError(error, 'No se pudo guardar el rol.')
@@ -430,13 +445,11 @@ export default {
       if (!this.canAssignUserRoles) return
       const roleKey = this.selectedRoles[user.id]
       try {
-        await ExperimentalRbacService.assignRole(this.$axios, user.id, roleKey)
-        this.$set(this.selectedRoles, user.id, null)
+        await RbacService.assignRole(this.$axios, user.id, roleKey)
+        this.selectedRoles[user.id] = null
         await this.loadAll()
-        this.$bvToast.toast('Rol asignado.', {
+        this.showToast('Rol asignado.', {
           variant: 'success',
-          solid: true,
-          appendToast: true,
         })
       } catch (error) {
         this.showError(error, 'No se pudo asignar el rol.')
@@ -445,12 +458,10 @@ export default {
     async removeRole(user, role) {
       if (!this.canManageUsers) return
       try {
-        await ExperimentalRbacService.removeRole(this.$axios, user.id, role.key)
+        await RbacService.removeRole(this.$axios, user.id, role.key)
         await this.loadAll()
-        this.$bvToast.toast('Rol quitado.', {
+        this.showToast('Rol quitado.', {
           variant: 'info',
-          solid: true,
-          appendToast: true,
         })
       } catch (error) {
         this.showError(error, 'No se pudo quitar el rol.')
@@ -487,11 +498,9 @@ export default {
       const message = error && error.response && error.response.data
         ? error.response.data.message
         : fallback
-      this.$bvToast.toast(message, {
+      this.showToast(message, {
         title: 'Error',
         variant: 'danger',
-        solid: true,
-        appendToast: true,
       })
     },
   },

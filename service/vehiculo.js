@@ -1,10 +1,10 @@
-const formatVehiculo = (VehiculoResponse) => ({
+﻿const formatVehiculo = (VehiculoResponse) => ({
   id: VehiculoResponse._id,
   patente: VehiculoResponse.dominio, // El backend puede devolver 'patente' o 'dominio'
   area: VehiculoResponse.area,
 })
 
-module.exports = {
+export default {
   async getAll($axios) {
     try {
       const response = await $axios.get('/vehiculos/')
@@ -93,3 +93,4 @@ module.exports = {
     }
   }
 }
+

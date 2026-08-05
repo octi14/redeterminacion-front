@@ -262,7 +262,7 @@ export default {
     // Escuchar cambios de tamaño de ventana
     window.addEventListener('resize', this.handleResize)
   },
-  beforeDestroy() {
+  beforeUnmount() {
     window.removeEventListener('resize', this.handleResize)
   },
   methods: {
@@ -590,3 +590,4 @@ export default {
   background-color: rgba(220, 53, 69, 0.1) !important;
 }
 </style>
+

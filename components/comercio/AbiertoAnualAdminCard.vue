@@ -1,21 +1,16 @@
 <template>
   <div>
-  <transition name="flip">
-  <b-card id="aaCard" ref="card" class="abierto-anual-card shadow-card" style="max-width: 20rem;">
+  <div ref="card" class="abierto-anual-card-shell">
+  <transition name="flip" mode="out-in">
+  <b-card id="aaCard" :key="estadoActual" class="abierto-anual-card shadow-card">
       <div class="icon-container">
-          <b-icon-clock-history v-if="estadoIcono ==='esperando-periodo'" scale="4" variant="warning"></b-icon-clock-history>
-          <b-icon-x-circle-fill v-else-if="estadoIcono ==='incorrecto'" scale="5" variant="danger"></b-icon-x-circle-fill>
-          <b-icon-exclamation-circle v-else-if="estadoIcono ==='rectificacion'" scale="5" variant="warning"></b-icon-exclamation-circle>
-          <b-icon-check-circle-fill v-else-if="estadoIcono ==='correcto'" scale="4" variant="success"></b-icon-check-circle-fill>
-          <b-icon-arrow-clockwise v-else-if="estadoIcono ==='loading'" scale="5" animation="spin" variant="success"></b-icon-arrow-clockwise>
-          <b-iconstack scale="4" v-else-if="estadoIcono ==='revision'">
-              <b-icon stacked icon="list-task" variant="warning" scale="0.5" shift-v="-1px"></b-icon>
-              <b-icon stacked icon="clipboard" variant="warning"></b-icon>
-              <b-iconstack stacked shift-v="-7px" shift-h="7px">
-                  <b-icon stacked icon="circle-fill" scale="0.35" shift-h="-1px" shift-v="1px" style="color: white;"></b-icon>
-                  <b-icon stacked icon="search" variant="warning" scale="0.5"></b-icon>
-              </b-iconstack>
-          </b-iconstack>
+          <i v-if="estadoIcono === 'esperando-periodo'" class="bi bi-clock-history text-warning" style="font-size: 4rem"></i>
+          <i v-else-if="estadoIcono === 'incorrecto'" class="bi bi-x-circle-fill text-danger" style="font-size: 5rem"></i>
+          <i v-else-if="estadoIcono === 'rectificacion'" class="bi bi-exclamation-circle text-warning" style="font-size: 5rem"></i>
+          <i v-else-if="estadoIcono === 'correcto'" class="bi bi-check-circle-fill text-success" style="font-size: 4rem"></i>
+          <i v-else-if="estadoIcono === 'loading'" class="bi bi-arrow-clockwise text-success" style="font-size: 5rem"></i>
+          <i v-else-if="estadoIcono === 'revision'" class="bi bi-clipboard2-check text-warning" style="font-size: 4rem"></i>
+          
       </div>
       <div class="periodo-header">
           <b-card-text><h2>Período {{ periodo + 1 }}</h2></b-card-text>
@@ -54,11 +49,11 @@
               <b-col><p class="sub-texto-exp">Estado: Incorrecto</p></b-col>
           </b-row>
           <b-row>
-              <b-col><div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-3px"></b-icon-caret-right-fill><p class="texto-exp li-content">La <b>carga</b> realizada el día {{ fecha }} es <b>incorrecta</b>, porque <b>{{ motivo ? motivo : tramite.facturas[periodo].observaciones }}</b></p></div></b-col>
+              <b-col><div class="li-row"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i><p class="texto-exp li-content">La <b>carga</b> realizada el día {{ fecha }} es <b>incorrecta</b>, porque <b>{{ motivo || observacionPeriodo || 'No se seleccionó ningún motivo.' }}</b></p></div></b-col>
           </b-row>
           <b-row>
               <b-col><div class="importante-box">
-                  <b-icon-exclamation-triangle variant="warning" font-scale="1"></b-icon-exclamation-triangle>
+                  <i class="bi bi-exclamation-triangle text-warning" style="font-size: 1em"></i>
                   <p class="texto-exp">Recordá notificar por DFE el período de rectificación.</p>
               </div></b-col>
           </b-row>
@@ -73,7 +68,7 @@
           </b-row>
           <b-row>
               <b-col><div class="importante-box">
-                  <b-icon-exclamation-triangle variant="warning" font-scale="1"></b-icon-exclamation-triangle>
+                  <i class="bi bi-exclamation-triangle text-warning" style="font-size: 1em"></i>
                   <p class="texto-exp">Recordá notificar por DFE el período de rectificación.</p>
               </div></b-col>
           </b-row>
@@ -92,16 +87,14 @@
           <b-row class="importante-box">
               <b-col><p><b>Rectificación</b></p></b-col>
           </b-row>
-          <b-row v-if="tramite.facturas[periodo]">
+          <b-row v-if="facturaPeriodo">
             <b-col>
-              <div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-3px">
-                </b-icon-caret-right-fill><p style="text-align: justify;" class="texto-exp li-content">Motivo de rechazo: <b>{{ observaciones ? observaciones : tramite.facturas[periodo].observaciones }}</b></p></div>
+              <div class="li-row"><i class="bi bi-caret-right-fill icon-orange li-icon"></i><p style="text-align: justify;" class="texto-exp li-content">Motivo de rechazo: <b>{{ observaciones || observacionPeriodo || 'No se seleccionó ningún motivo.' }}</b></p></div>
             </b-col>
           </b-row>
           <b-row v-else>
             <b-col v-if="estado === 'Rechazado'">
-              <div class="li-row"><b-icon-caret-right-fill class="icon-orange li-icon" font-scale="1" shift-v="-3px">
-                </b-icon-caret-right-fill><p style="text-align: justify;" class="texto-exp li-content">Motivo de rechazo: <b>{{ tramite.facturas[periodo] ? tramite.facturas[periodo].observaciones : "No se seleccionó ningún motivo." }}</b></p></div>
+              <div class="li-row"><i class="bi bi-caret-right-fill icon-orange li-icon"></i><p style="text-align: justify;" class="texto-exp li-content">Motivo de rechazo: <b>{{ observacionPeriodo || "No se seleccionó ningún motivo." }}</b></p></div>
             </b-col>
           </b-row>
           <b-row>
@@ -123,12 +116,12 @@
       <b-card-text v-else-if="estadoActual == 9" class="action-confirmation-card">
       <!-- estadoActual == 9 => CONFIRMAR RECTIFICACION MANUAL -->
           <b-row>
-              <b-col><p class="texto-exp"><b>Estas a punto de dar una rectificación manual.<br />¿Deseas continuar?</b></p></b-col>
+              <b-col><p class="texto-exp"><b>Estás a punto de dar una rectificación manual.<br />¿Deseas continuar?</b></p></b-col>
           </b-row>
           <b-row>
               <b-col><div class="importante-box">
-                  <b-icon-exclamation-triangle variant="warning" font-scale="1"></b-icon-exclamation-triangle>
-                  <p class="texto-exp">Opción habilitada para casos excepecionales.</p>
+                  <i class="bi bi-exclamation-triangle text-warning" style="font-size: 1em"></i>
+                  <p class="texto-exp">Opción habilitada para casos excepcionales.</p>
               </div></b-col>
           </b-row>
       </b-card-text>
@@ -144,9 +137,10 @@
       <b-card-text v-else-if="estadoActual == 11" class="comment-pick-card">
           <!-- estadoActual == 8 => Seleccionar Motivo -->
           <b-row>
-              <b-col><div class="li-row"><b-icon-caret-right-fill class="li-icon icon-orange" font-scale="1" shift-v="-3px"></b-icon-caret-right-fill><p class="li-content texto-exp"><b>Seleccioná los motivos por los que la carga es incorrecta:</b></p></div></b-col>
+              <b-col><div class="li-row"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i><p class="li-content texto-exp"><b>Seleccioná los motivos por los que la carga es incorrecta:</b></p></div></b-col>
           </b-row>
           <b-row>
+            <b-col>
             <b-radio-group class="motivos-rechazo-group">
               <b-form-radio
                 v-for="(opcion, idx) in motivosRechazoVisibles"
@@ -168,6 +162,7 @@
                 {{ mostrarTodosMotivos ? 'Ver menos' : 'Ver más' }}
               </b-button>
             </b-radio-group>
+            </b-col>
           </b-row>
       </b-card-text>
       <b-card-text v-else-if="estadoActual == 12" class="action-confirmation-card">
@@ -190,43 +185,50 @@
       </b-card-text>
       <b-row v-if="estadoActual == 2 || estadoActual == 3 || estadoActual == 4 || estadoActual == 8">
           <b-col v-if="facturas && facturas[periodo]">
-            <div class="btn-show-ticket">
-              <FilePreview
-                :file="facturas[periodo]"
-                :title="`Factura periodo ${periodo + 1}`"
-                button-variant="outline-primary"
-                button-block
-                icon="eye"
-              />
-            </div>
+              <b-button class="btn-show-ticket" variant="outline-primary" @click="openDocumento(facturas[periodo])"><i class="bi bi-eye"></i></b-button>
           </b-col>
       </b-row>
       <div class="btn-abajo-container">
-          <div class="btn-group">
-              <div v-if="canManage && (estadoActual == 9 || estadoActual == 10 || estadoActual == 11 || estadoActual == 12)" style="width: 100%;">
-                  <b-button @click="AvanzarPaso" variant="success" class="btn-approve float-left" disabled="disabled" v-if="(estadoActual == 11) && (!motivo)"><span>Aceptar</span></b-button>
-                  <b-button @click="AvanzarPaso" variant="success" class="btn-approve float-left" v-else><span>Aceptar</span></b-button>
-                  <b-button @click="RetrocederPaso" variant="danger" class="btn-cancel float-right"><span>Cancelar</span></b-button>
+          <div class="btn-group card-actions-row">
+              <div v-if="estadoActual == 9 || estadoActual == 10 || estadoActual == 11 || estadoActual == 12" class="card-actions-row">
+                  <b-button @click="AvanzarPaso" variant="success" class="btn-approve" :disabled="(estadoActual == 11) && (!motivo)" v-if="(estadoActual == 11) && (!motivo)"><span>Aceptar</span></b-button>
+                  <b-button @click="AvanzarPaso" variant="success" class="btn-approve" v-else><span>Aceptar</span></b-button>
+                  <b-button @click="RetrocederPaso" variant="danger" class="btn-cancel"><span>Cancelar</span></b-button>
               </div>
-              <div v-else-if="canManage && (estadoActual == 2 || estadoActual == 8)" style="width: 100%;">
-                  <b-button @click="AprobarTicket" variant="success" class="btn-approve float-left"><span>Aprobar</span></b-button>
-                  <b-button @click="RechazarTicket" variant="danger" class="btn-cancel float-right"><span>Rechazar</span></b-button>
+              <div v-else-if="estadoActual == 2 || estadoActual == 8" class="card-actions-row">
+                  <b-button @click="AprobarTicket" variant="success" class="btn-approve"><span>Aprobar</span></b-button>
+                  <b-button @click="RechazarTicket" variant="danger" class="btn-cancel"><span>Rechazar</span></b-button>
               </div>
-              <div v-else-if="canManage && (estadoActual == 3 || estadoActual == 4 || estadoActual == 5)" style="width: 100%;">
-                  <b-icon-pencil-square variant="dark" scale="2" @click="RectificarTicket" class="btn-rectific"></b-icon-pencil-square>
+              <div v-else-if="estadoActual == 3 || estadoActual == 4 || estadoActual == 5" class="card-actions-row card-actions-row-center">
+                  <i class="bi bi-pencil-square text-dark btn-rectific" role="button" tabindex="0" @click="RectificarTicket"></i>
               </div>
           </div>
       </div>
   </b-card>
   </transition>
   </div>
+
+  <!-- Modal para archivos HEIC -->
+  <BModal v-model="showHeicModal" header-bg-variant="warning" title="Archivo no compatible" title-class="text-light" no-footer centered>
+    <div class="text-center">
+      <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+      <h5 class="my-3">Este archivo no pudo ser abierto desde el navegador</h5>
+      <p class="mb-4">El formato HEIC no es compatible con tu navegador.<br/> Podés descargar el archivo para visualizarlo en tu dispositivo.</p>
+      <b-button @click="downloadHeicFile" variant="success" class="mr-2 btn-download-heic">
+        <i class="bi bi-download"></i> Descargar
+      </b-button>
+      <b-button @click="showHeicModal = false" variant="secondary">
+        Cerrar
+      </b-button>
+    </div>
+  </BModal>
+  </div>
 </template>
 
 <script>
-import { requiredIf } from 'vuelidate/lib/validators';
-import FilePreview from '~/components/common/FilePreview.vue';
+import { requiredIf } from '@vuelidate/validators';
 export default {
-  components: { FilePreview },
+  setup(){ const { showToast } = useProjectToast(); return { showToast } },
   props: {
     id: {
       type: Number,
@@ -237,10 +239,6 @@ export default {
     fecha: String,
     observaciones: String,
     hardEstado: Number,
-    canManage: {
-      type: Boolean,
-      default: false,
-    },
     // Puedes agregar más props según sea necesario
   },
   data() {
@@ -267,17 +265,13 @@ export default {
       captchaResponse: null,
       captchaError: false,
       periodoActivo: false,
+      showHeicModal: false,
+      currentDocumento: null,
       };
-  },
-  async fetch(){
-    const id = this.tramite.id
-    await this.$store.dispatch('facturas/getById',{
-      id
-    })
   },
   computed: {
     config() {
-      return this.$store.getters['config/abiertoAnualPeriodos'];
+      return useConfigStore().abiertoAnualPeriodos;
     },
     periodoTexto() {
       // Lógica para asignar un texto al periodo
@@ -313,10 +307,10 @@ export default {
           }
       },
     facturas(){
-      return this.$store.state.facturas.all
+      return useFacturasStore().all
     },
     tramite(){
-      return this.$store.state.abiertoAnual.single
+      return useAbiertoAnualStore().single
     },
     hayMasMotivosRechazo() {
       return this.motivosRechazo.length > this.maxMotivosIniciales
@@ -324,7 +318,13 @@ export default {
     motivosRechazoVisibles() {
       if (this.mostrarTodosMotivos) return this.motivosRechazo
       return this.motivosRechazo.slice(0, this.maxMotivosIniciales)
-    }
+    },
+    facturaPeriodo() {
+      return Array.isArray(this.tramite?.facturas) ? this.tramite.facturas[this.periodo] : null
+    },
+    observacionPeriodo() {
+      return this.facturaPeriodo?.observaciones || ''
+    },
   },
   validations: {
       factura: {
@@ -333,74 +333,82 @@ export default {
           })
       }
   },
-  fetchOnServer: false,
   /**
    * Hook created(): inicializa la tarjeta del período de Abierto Anual.
    * 1) Calcula estadoActual (1-13) a partir del estado del trámite y las fechas.
    * 2) Guarda estadoPrevio y motivo; si viene hardEstado por prop, fuerza ese estado.
-   * (Las facturas/documentos se cargan después vía fetch() y se usan desde la computed facturas.)
+   * (Las facturas/documentos se cargan en Pinia y se leen desde la computed facturas.)
    */
   async created() {
-      // Determinar estado inicial (estadoActual) según el estado del trámite.
-      // estado viene del backend (Correcto | Incorrecto | Incompleto | En revisión).
-      // estadoActual es el número que usa el template para mostrar mensajes e íconos (1-13).
-      switch(this.estado){
-          case "Correcto": {
-                  // Período ya aprobado: no se puede volver a subir.
-                  this.estadoActual = 3;
-                  break
-              };
-          case "Incorrecto": {
-                  // Rechazado: si está en rectificación o config lo permite → estado 7 (habilitado para subir rectificación).
-                  // Si no → estado 4 (incorrecto, sin rectificación habilitada).
-                  if (this.tramite.facturas[this.periodo] && (this.tramite.facturas[this.periodo].rectificando || this.config.rectificacion)){
-                      this.estadoActual =  7;
-                      break
-                  }else{
-                    this.estadoActual =  4;
-                      break
-                  }
-              };
-          case "Incompleto": {
-                  // Aún no hay carga correcta: depende de la fecha actual vs ventana del período.
-                  await this.$store.dispatch('fechas/get')
-                  const now = new Date(this.$store.state.fechas.fecha.fecha);
-                  const maxDateParts = this.config.maxDates[this.periodo].split('/');
-                  const minDateParts = this.config.minDates[this.periodo].split('/');
-                  const maxDate = new Date(maxDateParts[2], maxDateParts[1] - 1, maxDateParts[0], 23, 59, 59, 999);
-                  const minDate = new Date(minDateParts[2], minDateParts[1] - 1, minDateParts[0]);
-                  if (now && now > maxDate){
-                      // Pasó la fecha máxima: período vencido. Si hay rectificación habilitada → 7; si no → 5 (vencido sin rectificación).
-                      if(this.config.rectificacion){
-                          this.estadoActual = 7;
-                          break;
-                      }
-                      this.estadoActual =  5;
-                      break;
-                  }
-                  if (now && now < minDate){
-                      // Antes de la ventana: no se puede cargar aún.
-                      this.estadoActual =  1;
-                      break;
-                  }
-                  // Dentro de la ventana: se puede cargar por primera vez.
-                  this.estadoActual =  6;
-                  break
-              };
-          case "En revisión":{
-              // Cargó documentos y están siendo revisados.
-              this.estadoActual =  2;
-              break
-          }
-      }
-     this.estadoPrevio = this.estadoActual;
-     this.motivo = this.observaciones;
-
-     // Override: si el padre pasa hardEstado, se fuerza ese estado (útil para pruebas o flujos especiales).
-     if (this.hardEstado != null)
-          this.estadoActual = this.hardEstado;
+    await this.syncEstadoFromData(true)
+  },
+  watch: {
+    estado() {
+      void this.syncEstadoFromData()
+    },
+    observaciones(newValue) {
+      this.motivo = newValue || ''
+    },
+    facturaPeriodo: {
+      handler() {
+        void this.syncEstadoFromData()
+      },
+      deep: true,
+    },
+    config: {
+      handler() {
+        void this.syncEstadoFromData()
+      },
+      deep: true,
+    },
   },
   methods: {
+      async syncEstadoFromData(force = false) {
+        // No pisar estados de confirmación/transición en curso salvo fuerza explícita.
+        const transientStates = [9, 10, 11, 12, 13]
+        if (!force && transientStates.includes(this.estadoActual)) return
+
+        let nextState = this.estadoActual || 1
+        switch (this.estado) {
+          case 'Correcto':
+            nextState = 3
+            break
+          case 'Incorrecto':
+            nextState = (this.facturaPeriodo && (this.facturaPeriodo.rectificando || this.config?.rectificacion))
+              ? 7
+              : 4
+            break
+          case 'Incompleto': {
+            await useFechasStore().get()
+            const now = new Date(useFechasStore().fecha?.fecha || Date.now())
+            const maxDateParts = this.config?.maxDates?.[this.periodo]?.split('/') || []
+            const minDateParts = this.config?.minDates?.[this.periodo]?.split('/') || []
+            if (maxDateParts.length !== 3 || minDateParts.length !== 3) {
+              nextState = 1
+              break
+            }
+            const maxDate = new Date(maxDateParts[2], maxDateParts[1] - 1, maxDateParts[0], 23, 59, 59, 999)
+            const minDate = new Date(minDateParts[2], minDateParts[1] - 1, minDateParts[0])
+            if (now > maxDate) {
+              nextState = this.config?.rectificacion ? 7 : 5
+            } else if (now < minDate) {
+              nextState = 1
+            } else {
+              nextState = 6
+            }
+            break
+          }
+          case 'En revisión':
+            nextState = 2
+            break
+          default:
+            nextState = 1
+        }
+
+        this.estadoPrevio = nextState
+        this.motivo = this.observaciones || ''
+        this.estadoActual = this.hardEstado != null ? this.hardEstado : nextState
+      },
       RechazarTicket() {
       // Validar que el archivo no esté vacío antes de enviarlo
           var nextCard = null;
@@ -445,11 +453,15 @@ export default {
         switch (this.estadoActual) {
             case 9:
                 nextCard = 7;
-                facturas[this.periodo] = {
-                    contenido: facturas[this.periodo].contenido,
-                    rectificando: true,
-                };
                 status[this.periodo] = "Incorrecto";
+                if (facturas[this.periodo]) {
+                    facturas[this.periodo] = {
+                        ...facturas[this.periodo],
+                        rectificando: true,
+                    };
+                } else {
+                    facturas[this.periodo] = { rectificando: true };
+                }
                 break;
             case 10:
                 nextCard = 3;
@@ -469,7 +481,7 @@ export default {
         }
         const id = this.tramite.id;
         if (this.estadoActual != 11) {
-            await this.$store.dispatch('abiertoAnual/update', {
+            await useAbiertoAnualStore().update({
                 id,
                 tramite: {
                     facturas: facturas,
@@ -510,30 +522,147 @@ export default {
           if(this.TEST_submit) return true;
           return !this.captchaError;
       },
-
-      playAnimation(callback, newState) {
-          // Agregar clase para iniciar la animación
-          this.$refs.card.classList.add('playing-animation');
-          setTimeout(() => {
-              // Cambiar el estado a mitad de la animación
-              this.estadoActual = newState;
-
-              // Esperar a que termine la animación
-              setTimeout(() => {
-                  // Remover la clase para detener la animación
-                  this.$refs.card.classList.remove('playing-animation');
-                  // Llamar al callback después de la animación
-                  if (callback) {
-                      callback();
-                  }
-              }, 1000); // Cambia 1000ms por la duración de tu animación
-          }, 500); // Cambia 500ms por la mitad de la duración de tu animación
+      isValidBase64(str) {
+          try {
+              return btoa(atob(str)) == str;
+          } catch (e) {
+              return false;
+          }
       },
 
+      openDocumento(documento) {
+        if (!this.isValidBase64(documento.data)) {
+            console.error('La cadena Base64 no es válida');
+            return;
+        }
+
+        // Verificar si es un archivo HEIC
+        if (documento.contentType === 'image/heic' || documento.contentType === 'image/heif' ||
+            (documento.filename && documento.filename.toLowerCase().endsWith('.heic'))) {
+            this.showHeicModal = true;
+            this.currentDocumento = documento;
+            return;
+        }
+
+        const decodedData = atob(documento.data); // Decodificar la data de Base64
+        const arrayBuffer = new Uint8Array(decodedData.length);
+
+        for (let i = 0; i < decodedData.length; i++) {
+            arrayBuffer[i] = decodedData.charCodeAt(i);
+        }
+
+        const blob = new Blob([arrayBuffer], { type: documento.contentType });
+        const fileURL = URL.createObjectURL(blob);
+        const newWindow = window.open('', '_blank');
+
+        if (!newWindow) return; // Check if the new window was successfully opened.
+
+        if (documento.contentType === 'application/pdf') {
+            newWindow.location.href = fileURL; // Open the PDF in a new tab using href
+        } else if (documento.contentType.startsWith('image/')) {
+            const img = document.createElement('img');
+            img.src = fileURL;
+            img.style.width = '100%';
+            img.style.height = 'auto';
+            newWindow.document.body.appendChild(img);
+            newWindow.document.title = documento.filename; // Change the title of the tab
+        } else {
+            // If the file type is not supported, try downloading the file
+            const a = document.createElement('a');
+            a.href = fileURL;
+            a.download = documento.filename;
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            URL.revokeObjectURL(fileURL);
+        }
+    },
+
+
+
+      getCardRootEl() {
+        const card = this.$refs.card
+        if (!card) return null
+        if (card instanceof HTMLElement) return card
+        return card.$el ?? null
+      },
+      playAnimation(callback, newState) {
+        const cardEl = this.getCardRootEl()
+        const applyState = () => {
+          this.estadoActual = newState
+          if (typeof callback === 'function') callback()
+        }
+
+        if (!cardEl?.classList) {
+          applyState()
+          return
+        }
+
+        cardEl.classList.add('playing-animation')
+        setTimeout(() => {
+          applyState()
+          setTimeout(() => {
+            cardEl.classList.remove('playing-animation')
+          }, 1000)
+        }, 500)
+      },
+
+      downloadHeicFile() {
+          if (!this.currentDocumento) {
+              console.error('No hay documento HEIC para descargar');
+              return;
+          }
+
+          try {
+              // Decodificar la data de Base64
+              const decodedData = atob(this.currentDocumento.data);
+              const arrayBuffer = new Uint8Array(decodedData.length);
+
+              for (let i = 0; i < decodedData.length; i++) {
+                  arrayBuffer[i] = decodedData.charCodeAt(i);
+              }
+
+              // Crear el blob con el tipo MIME correcto para HEIC
+              const blob = new Blob([arrayBuffer], {
+                  type: this.currentDocumento.contentType || 'image/heic'
+              });
+
+              // Crear el enlace de descarga
+              const a = document.createElement('a');
+              a.href = URL.createObjectURL(blob);
+              a.download = this.currentDocumento.filename || 'archivo.heic';
+              a.style.display = 'none';
+
+              // Agregar al DOM, hacer clic y limpiar
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+
+              // Liberar la URL del objeto
+              URL.revokeObjectURL(a.href);
+
+              // Cerrar el modal
+              this.showHeicModal = false;
+
+          } catch (error) {
+              console.error('Error al descargar el archivo HEIC:', error);
+              this.showToast('Error al descargar el archivo', {
+                  variant: 'danger',
+                  title: 'Error'
+              });
+          }
+      },
   }
 }
 </script>
 <style scoped>
+@import "~/assets/css/abierto-anual-card-shared.css";
+
+.abierto-anual-card-shell {
+  max-width: 30rem;
+  width: 100%;
+}
+
 @media (max-width: 1200px){
   #aaCard .card-body{
       padding-left: 5% !important;
@@ -559,7 +688,8 @@ export default {
   .ticket-revision-card .titulo-exp, .ticket-enviando-card .sub-texto-exp, .periodo-vencido-card .sub-texto-exp, .ticket-bad-card .sub-texto-exp, .ticket-enviando-fail-card .sub-texto-exp {
       font-size: 14px !important;
   }
-  .comment-pick-card .custom-radio{
+  .comment-pick-card .custom-radio,
+  .comment-pick-card :deep(.form-check){
       font-size: 14px !important;
   }
   .periodo-vencido-card .sub-texto-exp, .ticket-enviando-fail-card .sub-texto-exp{
@@ -581,32 +711,12 @@ export default {
       padding-right: 5% !important;
   }
 }
-h2, h3{
-  color: #353535;
-  font-size: 28px;
-  font-weight: bold;
-  text-align: center;
-}
-h3{
-  font-size: 20px;
-  font-weight: 500;
-  min-height:48px
-}
-.periodo-header {
-  margin: 1rem 15%;
-  border-bottom: #353535 1px solid;
-}
-.periodo-header h3 {
-  margin-bottom: 2rem;
-}
 #aaCard{
   min-height: 780px;
-  max-width: 26rem !important;
+  max-width: 100% !important;
+  width: 100%;
 }
 #aaCard .card-body{
-  display: flex;
-  flex-direction: column;
-  min-height: 780px;
   padding: 1rem 3rem;
 }
 .modal-content div{
@@ -620,10 +730,6 @@ h3{
   color: #353535;
   margin-bottom: 1.5rem;
 }
-.abierto-anual-card {
-margin-bottom: 20px; /* Espacio entre las tarjetas */
-margin: 0px auto 2rem;
-}
 .abierto-anual-card p{
   color: #353535;
   font-size: 20px;
@@ -631,13 +737,6 @@ margin: 0px auto 2rem;
 .text-danger{
   color: red;
   font-size: 12px;
-}
-.icon-container{
-  margin: 3rem auto;
-  width: fit-content;
-}
-.playing-animation {
-animation: play-animation 1s forwards;
 }
 .hidden {
 display: none;
@@ -649,19 +748,8 @@ display: none;
   margin: 2rem auto !important;
   width: 100% !important;
 }
-.li-icon, .li-content{
-display: inline-block;
-}
 .li-title{
 margin-bottom: 0.3rem;
-}
-.li-icon{
-margin-right: 1%;
-vertical-align: top;
-}
-.li-row{
-display: flex;
-width: 100%;
 }
 .periodo-esperando-card, .ticket-ok-card, .ticket-enviando-card, .ticket-enviando-fail-card, .ticket-revision-card, .rectificacion-card, .action-confirmation-card{
   margin-top: 4rem;
@@ -705,7 +793,8 @@ width: 100%;
 }
 
 .comment-pick-card {
-  padding-bottom: 6.5rem;
+  margin-top: 2rem;
+  padding: 0 0.75rem 6.5rem;
 }
 
 .action-confirmation-card .importante-box .texto-exp, .periodo-vencido-card .importante-box .texto-exp, .ticket-bad-card .importante-box .texto-exp, .comment-pick-card .custom-radio, .periodo-correcto-card .sub-texto-exp, .ticket-revision-card .sub-texto-exp, .ticket-ok-card .sub-texto-exp, .periodo-esperando-card .sub-texto-exp, .ticket-revision-card .titulo-exp, .ticket-enviando-card .sub-texto-exp, .periodo-vencido-card .sub-texto-exp, .ticket-bad-card .sub-texto-exp, .ticket-enviando-fail-card .sub-texto-exp {
@@ -733,11 +822,27 @@ width: 100%;
   margin-right: 5%;
 }
 .btn-abajo-container{
-  margin: auto auto 0;
   width: 80%;
+  position: absolute;
+  bottom: 15px;
+  left: 10%;
 }
-.btn-abajo-container button{
-  margin-top: 2rem;
+.card-actions-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 0.5rem;
+}
+.card-actions-row-center {
+  justify-content: center;
+}
+.card-actions-row .btn {
+  flex: 0 1 45%;
+  max-width: 8rem;
+  margin-top: 0;
 }
 .btn{
   padding: 0.5rem 3rem;
@@ -750,9 +855,10 @@ width: 100%;
 .btn-show-ticket{
   width: 100%;
   margin-top: 2rem;
-  margin-bottom: 1.25rem;
 }
 .btn-group{
+  display: flex;
+  flex-direction: row;
   width: 100%;
   margin: 1rem auto;
   text-align: center;
@@ -764,28 +870,32 @@ width: 100%;
   background-color: #e53749;
   border-color: #e53749;
 }
-.custom-radio{
+.comment-pick-card .custom-radio,
+.comment-pick-card :deep(.form-check) {
   width: 100%;
-  padding: 0.5rem 20%;
-  line-height: 20px;
+  padding: 0.35rem 0;
+  line-height: 1.35;
 }
 
 .motivos-rechazo-group {
   width: 100%;
-  margin: 1rem;
+  margin: 1rem 0;
+  padding: 0 0.25rem;
 }
 
 .motivo-rechazo-option {
   font-size: 14px;
-  line-height: 1.3;
+  line-height: 1.35;
   margin-bottom: 0.5rem;
-  padding: 0.25rem 0;
+  padding: 0.35rem 0;
 }
 
+.motivo-rechazo-option :deep(.form-check-label),
 .motivo-rechazo-option .custom-control-label {
   font-size: 14px;
-  line-height: 1.3;
+  line-height: 1.35;
   padding-left: 0.5rem;
+  text-align: left;
 }
 
 .btn-ver-mas-motivos {
@@ -809,20 +919,5 @@ width: 100%;
   background: transparent !important;
   box-shadow: none !important;
 }
-@keyframes play-animation {
-  0% {
-  transform: rotateY(0deg);
-}
-50% {
-  transform: rotateY(90deg);
-  opacity: 0; /* Desaparece el contenido actual */
-}
-51% {
-  opacity: 0; /* Se asegura que el contenido anterior esté oculto durante la rotación */
-}
-100% {
-  transform: rotateY(0deg);
-  opacity: 1; /* Aparece el nuevo contenido */
-}
-}
 </style>
+

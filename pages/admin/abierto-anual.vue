@@ -89,11 +89,22 @@
   </div>
 </template>
 
+<script setup>
+definePageMeta({
+  middleware: ['authenticated', 'require-admin'],
+  permissions: ['abiertoAnual.admin'],
+})
+useHead({ title: 'Configuracion de abierto anual - Hacienda Villa Gesell' })
+</script>
+
 <script>
-const AbiertoAnualConfigService = require('@/service/abiertoAnualConfig')
+import AbiertoAnualConfigService from '~/service/abiertoAnualConfig.js'
 
 export default {
-  middleware: ['authenticated', 'abiertoAnualAdmin'],
+  setup() {
+    const { showToast } = useProjectToast()
+    return { showToast }
+  },
   data() {
     return {
       loading: false,
@@ -122,7 +133,7 @@ export default {
       return this.form.periodos.every(periodo => periodo.min && periodo.max) && this.hasChanges
     }
   },
-  async fetch() {
+  async mounted() {
     await this.loadConfig()
   },
   methods: {
@@ -205,16 +216,7 @@ export default {
     },
     async confirmSave() {
       if (!this.canSave) return
-      const confirmed = await this.$bvModal.msgBoxConfirm(
-        'Se va a actualizar la configuracion de abierto anual para todo el sitio.',
-        {
-          title: 'Guardar configuracion',
-          okTitle: 'Guardar',
-          cancelTitle: 'Cancelar',
-          okVariant: 'success',
-          centered: true,
-        }
-      )
+      const confirmed = window.confirm('Se va a actualizar la configuracion de abierto anual para todo el sitio. ¿Desea guardar los cambios?')
       if (!confirmed) return
       await this.save()
     },
@@ -224,7 +226,7 @@ export default {
       try {
         const config = await AbiertoAnualConfigService.updateAbiertoAnualPeriodos(this.$axios, this.payloadFromForm())
         this.applyConfig(config)
-        this.$bvToast.toast('Configuracion de abierto anual actualizada.', {
+        this.showToast('Configuracion de abierto anual actualizada.', {
           title: 'Abierto anual',
           variant: 'success',
           solid: true,

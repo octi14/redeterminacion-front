@@ -1,4 +1,4 @@
-const { unwrapData } = require('../utils/cementerio.js')
+import { unwrapData } from '~/utils/cementerio.js'
 
 const formatFuneraria = (item = {}) => ({
   id: item.id || item._id,
@@ -17,7 +17,7 @@ const formatUser = (item = {}) => ({
   funerariaId: item.funerariaId || '',
 })
 
-module.exports = {
+export default {
   getAll: async (axios) => {
     const response = await axios.$get('/cementerio/funerarias')
     return unwrapData(response).map(formatFuneraria)

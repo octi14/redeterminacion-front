@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <h4 class="section-title">
       <i class="bi bi-bar-chart-fill mr-2"></i>
@@ -18,7 +18,7 @@
         <b-col md="2" class="mb-3">
           <h6 class="text-dark mb-2 font-weight-bold">Por Estado</h6>
           <div v-for="(count, status) in modulos.comercio.porStatus" :key="status" class="d-flex justify-content-between mb-1">
-            <span class="badge badge-light text-dark">{{ status }}</span>
+            <b-badge variant="light" class="text-dark">{{ status }}</b-badge>
             <strong class="text-primary">{{ count }}</strong>
           </div>
         </b-col>
@@ -134,10 +134,7 @@
           <div v-for="[status, count] in modulos.abiertoAnual.porEstado" :key="status" class="d-flex align-items-center mb-2">
             <div class="d-flex align-items-center">
               <span v-for="(estado, index) in status.split(',')" :key="index" class="mr-1" :style="{ color: estadoColor(estado.trim()) }">
-                <b-iconstack :title="estado.trim()">
-                  <b-icon-circle variant="dark"></b-icon-circle>
-                  <b-icon icon="circle-fill"></b-icon>
-                </b-iconstack>
+                <i class="bi bi-circle-fill" :title="estado.trim()"></i>
               </span>
             </div>
             <strong class="text-info ml-3">{{ count }}</strong>
@@ -212,7 +209,7 @@
         <b-col md="4" class="mb-3">
           <h6 class="text-dark mb-2 font-weight-bold">Por Estado</h6>
           <div v-for="(count, status) in modulos.recaudaciones.porStatus" :key="status" class="d-flex justify-content-between mb-1">
-            <span class="badge badge-light text-dark">{{ status }}</span>
+            <b-badge variant="light" class="text-dark">{{ status }}</b-badge>
             <strong class="text-warning">{{ count }}</strong>
           </div>
         </b-col>
@@ -553,3 +550,4 @@ export default {
   max-width: 150px;
 }
 </style>
+

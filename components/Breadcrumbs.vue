@@ -30,22 +30,37 @@ export default {
 </script>
 
 <style scoped>
-.breadcrumb {
+.breadcrumbs :deep(.breadcrumb) {
   margin: 0 0 15px 0;
+  padding: 0;
   background: none;
+  background-color: transparent;
+  --bs-breadcrumb-bg: transparent;
+  border-radius: 0;
 }
+
 .separator {
   margin: 0 0.5em;
   color: #0c681a;
 }
+
 .breadcrumb-wrapper {
   display: inline-flex;
   align-items: center;
 }
-.breadcrumb a, .breadcrumb span {
+
+.breadcrumbs :deep(.breadcrumb a),
+.breadcrumbs :deep(.breadcrumb-item),
+.breadcrumbs :deep(.breadcrumb-item.active) {
   color: #0c681a;
 }
-.breadcrumb a {
+
+.breadcrumbs :deep(.breadcrumb a) {
   font-weight: 600;
+  text-decoration: none;
+}
+
+.breadcrumbs :deep(.breadcrumb a:hover) {
+  text-decoration: underline;
 }
 </style>

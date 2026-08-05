@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <h4 class="section-title">
       <i class="bi bi-list-ul mr-2"></i>
@@ -132,3 +132,4 @@ export default {
   }
 }
 </script>
+

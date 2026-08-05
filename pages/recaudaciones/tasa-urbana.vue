@@ -19,11 +19,11 @@
               maxlength="16"
               autocomplete="off"
               placeholder="Ejemplo: 0000018A"
-              :disabled="!moduloHabilitado || buscando || descargando"
-              @input="normalizarPartida"
+              :disabled="!puedeVerModulo || buscando || descargando"
+              @update:model-value="normalizarPartida"
             >
           </div>
-          <button class="btn btn-search" type="submit" :disabled="!moduloHabilitado || !partidaValida || buscando || descargando">
+          <button class="btn btn-search" type="submit" :disabled="!puedeVerModulo || !partidaValida || buscando || descargando">
             <b-spinner v-if="buscando" small class="mr-2"></b-spinner>
             <i v-else class="bi bi-search mr-2"></i>
             {{ botonBusquedaTexto }}
@@ -31,7 +31,7 @@
         </form>
       </section>
 
-      <b-alert v-if="!moduloHabilitado" show variant="warning" class="result-alert">
+      <b-alert v-if="!puedeVerModulo" show variant="warning" class="result-alert">
         <i class="bi bi-exclamation-triangle-fill mr-2"></i>
         La consulta de Tasa Urbana no esta disponible temporalmente.
       </b-alert>
@@ -136,7 +136,7 @@
     </main>
 
     <b-modal
-      :visible="operacionActiva"
+      :model-value="operacionActiva"
       centered
       hide-header
       hide-footer
@@ -162,6 +162,10 @@
 const PERIODOS_POR_PAGINA = 12
 
 export default {
+  setup() {
+    const { showToast } = useProjectToast()
+    return { showToast }
+  },
   name: 'TasaUrbana',
   data() {
     return {
@@ -176,7 +180,7 @@ export default {
       paginaPeriodos: 1,
       periodosPorPagina: PERIODOS_POR_PAGINA,
       maxPeriodosSeleccionados: 20,
-      moduloHabilitado: true,
+      tasaUrbanaPublicaHabilitada: true,
       tema: { principal: '#bd3041', oscuro: '#771a28', suave: '#fbdde1' }
     }
   },
@@ -190,6 +194,12 @@ export default {
     },
     partidaValida() {
       return /^[A-Z0-9]{1,16}$/.test(this.partida)
+    },
+    usuarioInternoBoletas() {
+      return this.$can('boletas.manage')
+    },
+    puedeVerModulo() {
+      return this.usuarioInternoBoletas || this.tasaUrbanaPublicaHabilitada
     },
     descripcionInmueble() {
       if (!this.resultado) return ''
@@ -219,7 +229,7 @@ export default {
         : `Consultando la partida ${this.partida}.`
     },
     botonBusquedaTexto() {
-      if (!this.moduloHabilitado) return 'Consulta no disponible'
+      if (!this.puedeVerModulo) return 'Consulta no disponible'
       return this.buscando ? 'Buscando...' : 'Buscar boletas'
     },
     periodosOrdenados() {
@@ -248,8 +258,9 @@ export default {
   mounted() {
     this.aplicarTemaGlobal()
     this.cargarTema()
+    this.loadTasaUrbanaConfig()
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.limpiarTemaGlobal()
   },
   watch: {
@@ -265,12 +276,19 @@ export default {
       try {
         const response = await this.$axios.get('/tasas/tipos')
         const tasa = response.data.data.find(item => item.codigo === 'URBANA')
-        this.moduloHabilitado = !tasa || tasa.importacionHabilitada !== false
         if (tasa?.tema) {
           this.tema = tasa.tema
           this.aplicarTemaGlobal()
         }
       } catch (_) {}
+    },
+    async loadTasaUrbanaConfig() {
+      try {
+        const response = await this.$axios.get('/tasas/urbanas/configuracion')
+        this.tasaUrbanaPublicaHabilitada = response.data.data.habilitada !== false
+      } catch (_) {
+        this.tasaUrbanaPublicaHabilitada = true
+      }
     },
     aplicarTemaGlobal() {
       if (typeof document === 'undefined') return
@@ -288,7 +306,7 @@ export default {
       this.partida = this.partida.replace(/\s/g, '').replace(/[^a-zA-Z0-9]/g, '').toUpperCase()
     },
     async buscar() {
-      if (!this.moduloHabilitado) return
+      if (!this.puedeVerModulo) return
       if (!this.partidaValida) return
       this.partida = this.partida.padStart(8, '0')
       this.buscando = true
@@ -325,7 +343,7 @@ export default {
       this.seleccionados = [...this.seleccionados, periodo]
     },
     mostrarLimiteSeleccion() {
-      this.$bvToast.toast(
+      this.showToast(
         `Podés descargar hasta ${this.maxPeriodosSeleccionados} períodos por vez. Desmarcá alguno para seleccionar otro.`,
         { title: 'Límite de períodos alcanzado', variant: 'warning', solid: true, autoHideDelay: 7000 }
       )
@@ -357,7 +375,7 @@ export default {
         link.download = `tasa-urbana-${this.resultado.partida}.pdf`
         link.click()
         setTimeout(() => URL.revokeObjectURL(url), 1000)
-        this.$bvToast.toast('El PDF fue generado y la descarga debería comenzar automáticamente.', {
+        this.showToast('El PDF fue generado y la descarga debería comenzar automáticamente.', {
           title: 'Descarga preparada',
           variant: 'success',
           solid: true

@@ -1,53 +1,66 @@
 <template>
   <div class="page main-background">
-    <Banner title="Recaudaciones"/>
-    <template>
-      <MenuItem v-if="adminCementerio" icon="file-earmark-text" to="/cementerio/certificado_defuncion"
-       title="Declaración jurada fallecidos"
-        description="Registrar fallecidos y gestionar declaraciones juradas mensuales"/>
-      <MenuItem icon="info-circle" to="/recaudaciones/pagos_dobles"
-       title="Informar pagos dobles"
-        description="Realizar un reclamo por pago doble de tasas"/>
-      <MenuItem v-if="tasaHabilitada('AUTOMOTORES')" icon="truck" to="/recaudaciones/tasa-automotor"
-       title="Descargar Tasa Automotor"
-        description="Consultar y descargar boletas de Automotores por dominio"/>
-      <MenuItem v-if="tasaHabilitada('URBANA')" icon="building" to="/recaudaciones/tasa-urbana"
-       title="Descargar Tasa Urbana"
-        description="Consultar y descargar boletas de Tasa Urbana por partida"/>
-    <div class="row no-gutters">
-      <b-button class="mx-auto mt-3" @click="$router.push('/')" variant="primary"> Volver </b-button>
+    <Banner title="Recaudaciones" />
+    <MenuItem
+      icon="info-circle"
+      to="/recaudaciones/pagos_dobles"
+      title="Informar pagos dobles"
+      description="Realizar un reclamo por pago doble de tasas"
+    />
+    <MenuItem
+      v-if="mostrarTasaAutomotor"
+      icon="car-front"
+      to="/recaudaciones/tasa-automotor"
+      title="Descargar tasa de automotores"
+      description="Consultar y descargar boletas de patente de rodados"
+    />
+    <MenuItem
+      v-if="mostrarTasaUrbana"
+      icon="building"
+      to="/recaudaciones/tasa-urbana"
+      title="Descargar tasa urbana"
+      description="Consultar y descargar boletas de partidas inmobiliarias"
+    />
+    <div class="page-btn-volver-wrap">
+      <NuxtLink to="/">
+        <b-button variant="primary" size="sm" class="page-btn-volver">Volver</b-button>
+      </NuxtLink>
     </div>
-    </template>
   </div>
 </template>
+
 <script>
 export default {
+  name: 'RecaudacionesIndex',
   data() {
     return {
-      tasas: [],
+      tasaAutomotorPublicaHabilitada: true,
+      tasaUrbanaPublicaHabilitada: true
     }
   },
   computed: {
-    adminCementerio() {
-      return this.$can('cementerio.read') || this.$can('cementerio.admin')
+    usuarioInternoBoletas() {
+      return this.$can('boletas.manage')
     },
+    mostrarTasaAutomotor() {
+      return this.usuarioInternoBoletas || this.tasaAutomotorPublicaHabilitada
+    },
+    mostrarTasaUrbana() {
+      return this.usuarioInternoBoletas || this.tasaUrbanaPublicaHabilitada
+    }
   },
   mounted() {
-    this.cargarTasas()
+    this.loadPublicConfigs()
   },
   methods: {
-    async cargarTasas() {
-      try {
-        const response = await this.$axios.get('/tasas/tipos')
-        this.tasas = response.data.data || []
-      } catch (_) {
-        this.tasas = []
-      }
-    },
-    tasaHabilitada(codigo) {
-      const tasa = this.tasas.find(item => item.codigo === codigo)
-      return !tasa || tasa.importacionHabilitada !== false
-    },
-  },
+    async loadPublicConfigs() {
+      const [automotor, urbana] = await Promise.allSettled([
+        this.$axios.get('/tasas/automotores/configuracion'),
+        this.$axios.get('/tasas/urbanas/configuracion')
+      ])
+      this.tasaAutomotorPublicaHabilitada = automotor.status !== 'fulfilled' || automotor.value.data.data.habilitada !== false
+      this.tasaUrbanaPublicaHabilitada = urbana.status !== 'fulfilled' || urbana.value.data.data.habilitada !== false
+    }
+  }
 }
 </script>

@@ -130,8 +130,16 @@
   </div>
 </template>
 
+<script setup>
+definePageMeta({
+  middleware: ['authenticated', 'require-admin'],
+  permissions: ['cementerio.admin'],
+})
+useHead({ title: 'Administrar funerarias - Hacienda Villa Gesell' })
+</script>
+
 <script>
-const FunerariasService = require('@/service/funerarias')
+import FunerariasService from '~/service/funerarias.js'
 
 const emptyForm = () => ({
   nombre: '',
@@ -143,7 +151,10 @@ const emptyForm = () => ({
 })
 
 export default {
-  middleware: ['authenticated', 'cementerioAdmin'],
+  setup() {
+    const { showToast } = useProjectToast()
+    return { showToast }
+  },
   data() {
     return {
       loading: false,
@@ -168,7 +179,7 @@ export default {
       ],
     }
   },
-  async fetch() {
+  async mounted() {
     await this.loadData()
   },
   computed: {
@@ -253,13 +264,13 @@ export default {
           ...this.form,
         })
         const index = this.funerarias.findIndex(item => item.id === saved.id)
-        if (index >= 0) this.$set(this.funerarias, index, saved)
+        if (index >= 0) this.funerarias[index] = saved
         else this.funerarias.push(saved)
         this.editingId = saved.id
         this.assignFunerariaId = saved.id
-        this.$bvToast.toast('Funeraria guardada.', { variant: 'success', solid: true })
+        this.showToast('Funeraria guardada.', { variant: 'success', solid: true })
       } catch (error) {
-        this.$bvToast.toast(error.message || 'No se pudo guardar la funeraria.', { variant: 'danger', solid: true })
+        this.showToast(error.message || 'No se pudo guardar la funeraria.', { variant: 'danger', solid: true })
       } finally {
         this.saving = false
       }
@@ -270,11 +281,11 @@ export default {
       try {
         const updated = await FunerariasService.associateUser(this.$axios, this.assignFunerariaId, this.assignUserId)
         const index = this.users.findIndex(user => user.id === updated.id)
-        if (index >= 0) this.$set(this.users, index, updated)
+        if (index >= 0) this.users[index] = updated
         this.assignUserId = ''
-        this.$bvToast.toast('Usuario asociado a la funeraria.', { variant: 'success', solid: true })
+        this.showToast('Usuario asociado a la funeraria.', { variant: 'success', solid: true })
       } catch (error) {
-        this.$bvToast.toast(error.message || 'No se pudo asociar el usuario.', { variant: 'danger', solid: true })
+        this.showToast(error.message || 'No se pudo asociar el usuario.', { variant: 'danger', solid: true })
       } finally {
         this.assigning = false
       }

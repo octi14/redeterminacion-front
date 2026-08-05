@@ -1,4 +1,4 @@
-const formatRedet = (RedeterminacionResponse) => ({
+﻿const formatRedet = (RedeterminacionResponse) => ({
   id: RedeterminacionResponse._id,
   obra: RedeterminacionResponse.obra,
   certificado: RedeterminacionResponse.certificado,
@@ -15,7 +15,7 @@ const formatItem = (ItemsData) => ({
   uvi: ItemsData.uvi,
 })
 
-module.exports = {
+export default {
   getLatest: async (axios,
     //  { skip = 0, limit = 6 }
      ) => {
@@ -87,3 +87,4 @@ module.exports = {
     })
   },
 }
+

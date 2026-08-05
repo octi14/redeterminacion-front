@@ -110,6 +110,19 @@
               {{ storageOptionHelpText }}
             </small>
           </div>
+          <div class="storage-option">
+            <b-form-checkbox
+              v-model="tasaPublicaHabilitada"
+              switch
+              :disabled="configLoading"
+              @update:model-value="updatePublicConfig"
+            >
+              Mostrar consulta pública de {{ selectedTax.name }}
+            </b-form-checkbox>
+            <small>
+              {{ configLoading ? 'Guardando configuración...' : `Controla el botón público y el acceso a la descarga de ${selectedTax.name}.` }}
+            </small>
+          </div>
         </div>
       </section>
 
@@ -632,10 +645,21 @@
   </div>
 </template>
 
+<script setup>
+definePageMeta({
+  middleware: ['authenticated', 'require-admin'],
+  permissions: ['boletas.manage'],
+})
+useHead({ title: 'Administrar boletas - Hacienda Villa Gesell' })
+</script>
+
 <script>
 export default {
+  setup() {
+    const { showToast } = useProjectToast()
+    return { showToast }
+  },
   name: 'AdminBoletas',
-  middleware: ['authenticated'],
   data() {
     return {
       selectedFile: null,
@@ -666,6 +690,7 @@ export default {
       processingMessage: 'Subiendo el archivo...',
       analysisResult: null,
       guardarOriginalHabilitado: false,
+      tasaPublicaHabilitada: true,
       boletaTasasUploadEnabled: true,
       configLoading: false,
       serverConflictPeriods: [],
@@ -947,7 +972,7 @@ export default {
     setFile(file) {
       if (!file) return
       if (!file.name.toLowerCase().endsWith('.xlsx')) {
-        this.$bvToast.toast('Seleccioná un archivo con extensión .xlsx.', {
+        this.showToast('Seleccioná un archivo con extensión .xlsx.', {
           title: 'Formato no permitido',
           variant: 'danger',
           solid: true
@@ -983,7 +1008,7 @@ export default {
         this.processingMessage = 'Preparando el reporte...'
         this.analysisResult = result
         if (result.fileName && result.fileName !== this.selectedFile.name) {
-          this.$bvToast.toast(`La carga se guardó como ${result.fileName}.`, {
+          this.showToast(`La carga se guardó como ${result.fileName}.`, {
             title: 'Nombre de archivo actualizado',
             variant: 'info',
             solid: true,
@@ -1071,7 +1096,7 @@ export default {
         this.showPublishConfirmation = false
         this.showAnalysisModal = false
         this.clearFile()
-        this.$bvToast.toast('La carga fue publicada correctamente.', {
+        this.showToast('La carga fue publicada correctamente.', {
           title: 'Publicación confirmada',
           variant: 'success',
           solid: true
@@ -1086,7 +1111,7 @@ export default {
           this.futurePeriodsConfirmed = false
           return
         }
-        this.$bvToast.toast(error.response?.data?.message || error.message || 'No se pudo publicar la carga.', {
+        this.showToast(error.response?.data?.message || error.message || 'No se pudo publicar la carga.', {
           title: 'Error al publicar',
           variant: 'danger',
           solid: true
@@ -1162,7 +1187,7 @@ export default {
         })
         this.downloadText(response.data, `reporte-${item.fileName.replace(/\.xlsx$/i, '')}.txt`)
       } catch (error) {
-        this.$bvToast.toast('No se pudo descargar el reporte.', { variant: 'danger', solid: true })
+        this.showToast('No se pudo descargar el reporte.', { variant: 'danger', solid: true })
       } finally {
         this.reportDownloadingId = null
       }
@@ -1184,7 +1209,7 @@ export default {
         link.click()
         setTimeout(() => URL.revokeObjectURL(url), 1000)
       } catch (error) {
-        this.$bvToast.toast(error.response?.data?.message || 'No se pudo descargar el archivo original.', {
+        this.showToast(error.response?.data?.message || 'No se pudo descargar el archivo original.', {
           title: 'Error al descargar',
           variant: 'danger',
           solid: true
@@ -1223,12 +1248,12 @@ export default {
         )
         await Promise.all([this.loadHistory(), this.loadPeriods()])
         this.showDisableImportConfirmation = false
-        this.$bvToast.toast(
+        this.showToast(
           `La carga fue deshabilitada. Se quitaron ${this.formatNumber(response.data.data.boletasDeshabilitadas)} boletas activas.`,
           { title: 'Carga deshabilitada', variant: 'success', solid: true }
         )
       } catch (error) {
-        this.$bvToast.toast(error.response?.data?.message || 'No se pudo deshabilitar la carga.', {
+        this.showToast(error.response?.data?.message || 'No se pudo deshabilitar la carga.', {
           title: 'Error al deshabilitar',
           variant: 'danger',
           solid: true
@@ -1247,7 +1272,7 @@ export default {
         })
         this.loadedPeriods = response.data.data
       } catch (error) {
-        this.$bvToast.toast('No se pudieron cargar los períodos publicados.', { variant: 'danger', solid: true })
+        this.showToast('No se pudieron cargar los períodos publicados.', { variant: 'danger', solid: true })
       } finally {
         this.periodsLoading = false
       }
@@ -1279,7 +1304,7 @@ export default {
         )
         await Promise.all([this.loadPeriods(), this.loadHistory()])
         this.showPeriodConfirmation = false
-        this.$bvToast.toast(
+        this.showToast(
           `El período ${this.pendingPeriodChange.periodo} fue ${habilitar ? 'habilitado' : 'deshabilitado'}.`,
           { title: 'Disponibilidad actualizada', variant: 'success', solid: true }
         )
@@ -1288,7 +1313,7 @@ export default {
           this.periodChangeConflicts = error.response.data.conflictos
           return
         }
-        this.$bvToast.toast(error.response?.data?.message || 'No se pudo actualizar el período.', {
+        this.showToast(error.response?.data?.message || 'No se pudo actualizar el período.', {
           title: 'Error al actualizar',
           variant: 'danger',
           solid: true
@@ -1305,8 +1330,25 @@ export default {
           params: this.taxParams()
         })
         this.guardarOriginalHabilitado = response.data.data.guardarArchivoOriginalTasas
+        this.tasaPublicaHabilitada = response.data.data.tasaPublicaHabilitada !== false
       } catch (_) {
         this.guardarOriginalHabilitado = false
+        this.tasaPublicaHabilitada = true
+      }
+    },
+    async updatePublicConfig(value) {
+      this.configLoading = true
+      try {
+        await this.$axios.put(
+          '/tasas/importaciones/configuracion',
+          { tasaPublicaHabilitada: value },
+          { headers: this.authHeaders(), params: this.taxParams() }
+        )
+      } catch (error) {
+        this.tasaPublicaHabilitada = !value
+        this.showToast('No se pudo actualizar la visibilidad pública.', { variant: 'danger', solid: true })
+      } finally {
+        this.configLoading = false
       }
     },
     async updateStorageConfig(value) {
@@ -1319,7 +1361,7 @@ export default {
         )
       } catch (error) {
         this.guardarOriginalHabilitado = !value
-        this.$bvToast.toast('No se pudo actualizar la configuración.', { variant: 'danger', solid: true })
+        this.showToast('No se pudo actualizar la configuración.', { variant: 'danger', solid: true })
       } finally {
         this.configLoading = false
       }
@@ -1384,7 +1426,7 @@ export default {
       }
     },
     authHeaders() {
-      return { Authorization: `Bearer ${this.$store.state.user.token}` }
+      return { Authorization: `Bearer ${useUserStore().token}` }
     },
     fileRequestHeaders() {
       return {
@@ -1433,9 +1475,6 @@ export default {
       return new Promise(resolve => setTimeout(resolve, ms))
     }
   },
-  head() {
-    return { title: 'Administrar boletas - Hacienda Villa Gesell' }
-  }
 }
 </script>
 

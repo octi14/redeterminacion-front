@@ -119,7 +119,7 @@
                     </div>
                   </td>
                   <td class="text-center">
-                    <span class="badge badge-primary">{{ patente.totalVales }}</span>
+                    <b-badge variant="primary">{{ patente.totalVales }}</b-badge>
                   </td>
                   <td class="text-right font-weight-bold">
                     {{ formatCurrency(patente.montoTotal) }}
@@ -308,7 +308,7 @@ export default {
   color: #6c757d;
 }
 
-.badge {
+:deep(.badge) {
   font-size: 0.8rem;
   padding: 0.4rem 0.6rem;
 }
@@ -327,3 +327,4 @@ export default {
   color: #856404 !important;
 }
 </style>
+

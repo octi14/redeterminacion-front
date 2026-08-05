@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import Chart from '~/plugins/chart.js'
+import Chart from '~/utils/chart-setup.js'
 
 const FINALIZACION_PATTERNS = [
   /Se finaliza(?: la solicitud)?(?: el)?(?: trámite)?(?: [^0-9]*)?(\d{1,2}\/\d{1,2}\/\d{2,4})(?:\s+(\d{1,2}:\d{2}(?::\d{2})?))?/gi,
@@ -214,7 +214,7 @@ export default {
       this.crearGrafico()
     })
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.chart) {
       this.chart.destroy()
       this.chart = null
@@ -462,4 +462,5 @@ export default {
   }
 }
 </style>
+
 

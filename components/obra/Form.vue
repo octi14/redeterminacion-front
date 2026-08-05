@@ -75,7 +75,7 @@
                   </b-form-group>
                 </div>
                 <div class="col-auto mx-4">
-                  <b-btn
+                  <b-button
                     :disabled="items.length <= 1"
                     variant="danger"
                     size="md"
@@ -83,11 +83,11 @@
                     @click="deleteItem(index)"
                   >
                     x
-                  </b-btn>
+                  </b-button>
                 </div>
               </div>
             </b-list-group-item>
-            <b-btn class="col-md-2 col-sm-4 my-2" @click="addItem">Agregar Item</b-btn>
+            <b-button class="col-md-2 col-sm-4 my-2" @click="addItem">Agregar Item</b-button>
           </b-list-group>
           <hr />
         <!-- <hr /> -->
@@ -135,14 +135,11 @@ export default {
       tags: [],
     }
   },
-  async fetch() {
-  },
   computed: {
   },
   created() {
     this.initialize()
   },
-  fetchOnServer: false,
   methods: {
     onSubmit() {
       const obra = {

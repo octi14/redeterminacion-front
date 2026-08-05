@@ -37,28 +37,23 @@ export default {
       items: [],
     }
   },
-  async fetch() {
-    await this.$store.dispatch('certificados/search', {
-      obra: this.obra.id
-      })
-    this.items = this.certificados
-
-    // const newLength = this.$store.state.certificados.latest.length
-    // this.all = newLength === this.lastLength
-    // this.lastLength = newLength
+  async mounted() {
+    await this.loadCertificados()
   },
-  fetchOnServer: false,
   computed: {
-    loading() {
-      return this.$fetchState.pending
-    },
     certificados() {
-      return this.$store.state.certificados.certifs
+      return useCertificadosStore().certifs
     },
   },
   methods: {
+    async loadCertificados() {
+      await useCertificadosStore().search({
+        obra: this.obra.id,
+      })
+      this.items = this.certificados
+    },
     loadMore() {
-      this.$fetch()
+      void this.loadCertificados()
     },
     format(value) {
         let val = (value/1).toFixed(1).replace('.', ',')

@@ -1,9 +1,9 @@
-const formatCateg = (CategResponse) => ({
+﻿const formatCateg = (CategResponse) => ({
   id: CategResponse._id,
   nombre: CategResponse.nombre,
 })
 
-module.exports = {
+export default {
   getLatest: async (axios,
     //  { skip = 0, limit = 6 }
      ) => {
@@ -72,3 +72,4 @@ module.exports = {
     })
   },
 }
+

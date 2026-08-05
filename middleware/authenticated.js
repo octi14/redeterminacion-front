@@ -1,6 +1,13 @@
-export default function ({ store, redirect }) {
-  // If the user is not authenticated
-  if (!store.state.user.token) {
-    return redirect('/')
+import { hydrateUserFromLocalStorage } from '~/utils/sessionHydrate'
+
+export default defineNuxtRouteMiddleware(() => {
+  if (import.meta.server) return
+
+  const nuxtApp = useNuxtApp()
+  hydrateUserFromLocalStorage(nuxtApp)
+  const userStore = useUserStore()
+
+  if (!userStore.token) {
+    return navigateTo('/login')
   }
-}
+})

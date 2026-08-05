@@ -1,3 +1,9 @@
+﻿const formatDate = (value) => {
+  if (!value) return ''
+  const date = new Date(value)
+  return Number.isNaN(date.getTime()) ? '' : date.toLocaleDateString('es-AR')
+}
+
 const formatFile = (FileResponse) => ({
   id: FileResponse._id,
   expediente: FileResponse.expediente,
@@ -11,17 +17,17 @@ const formatFile = (FileResponse) => ({
   garantia_contrato: FileResponse.garantia_contrato,
   adjudicacion: FileResponse.adjudicacion,
   contrato: FileResponse.contrato,
-  fecha_contrato: new Date(FileResponse.fecha_contrato).toLocaleDateString('es-AR'),
-  acta_inicio: new Date(FileResponse.acta_inicio).toLocaleDateString('es-AR'),
+  fecha_contrato: formatDate(FileResponse.fecha_contrato),
+  acta_inicio: formatDate(FileResponse.acta_inicio),
   ordenanza: FileResponse.ordenanza,
   decreto: FileResponse.decreto,
   plazo_obra: FileResponse.plazo_obra,
   anticipo_finan: FileResponse.anticipo_finan,
   ponderacion: FileResponse.ponderacion,
-  createdAt: new Date(FileResponse.createdAt),
+  createdAt: FileResponse.createdAt ? new Date(FileResponse.createdAt) : null,
 })
 
-module.exports = {
+export default {
   getLatest: async (axios,
     //  { skip = 0, limit = 6 }
      ) => {
@@ -31,7 +37,8 @@ module.exports = {
       //   limit,
       // },
     })
-    return filesResponse.data.map(formatFile)
+    const rows = Array.isArray(filesResponse?.data) ? filesResponse.data : []
+    return rows.map(formatFile)
   },
   getSingle: async (axios, { id }) => {
     const fileResponse = await axios.$get(`/obras/${id}`)
@@ -77,3 +84,4 @@ module.exports = {
     })
   },
 }
+

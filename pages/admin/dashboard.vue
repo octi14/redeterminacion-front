@@ -1,7 +1,7 @@
 <template>
   <div class="page main-background dashboard-container">
     <!-- Sin permisos: cartel de sección no disponible -->
-    <div v-if="!puedeVerDashboard" class="dashboard-no-access">
+    <div v-if="!adminMaster" class="dashboard-no-access">
       <div class="no-access-card">
         <div class="no-access-icon">
           <i class="bi bi-shield-lock-fill"></i>
@@ -40,10 +40,11 @@
       </div>
 
     <!-- Loading State: solo cuando está cargando y aún no llegó ningún módulo -->
-    <div v-if="loading && !tieneAlgunModulo" class="text-center py-5">
-      <b-spinner variant="primary" label="Cargando..."></b-spinner>
-      <p class="mt-3 text-muted">Cargando estadísticas del sistema...</p>
-    </div>
+    <LoadingState
+      v-if="loading && !tieneAlgunModulo"
+      size="lg"
+      variant="primary"
+    />
 
     <!-- Error State -->
     <b-alert
@@ -129,11 +130,20 @@
   </div>
 </template>
 
+<script setup>
+definePageMeta({
+  middleware: ['authenticated', 'require-admin'],
+  permissions: ['dashboard.read'],
+})
+useHead({ title: 'Dashboard Admin - Hacienda Villa Gesell' })
+</script>
+
 <script>
 import DashboardTabs from '~/components/dashboard/DashboardTabs.vue'
 import DateRangeSelector from '~/components/dashboard/DateRangeSelector.vue'
 
 export default {
+  setup(){ const { showToast } = useProjectToast(); return { showToast } },
   name: 'DashboardAdmin',
   components: {
     DashboardTabs,
@@ -148,41 +158,45 @@ export default {
   },
   computed: {
     loading() {
-      return this.$store.state.estadisticas.loading
+      return useEstadisticasStore().loading
     },
     estadisticasModulos() {
-      return this.$store.state.estadisticas.estadisticasModulos
+      return useEstadisticasStore().estadisticasModulos
     },
     tieneAlgunModulo() {
-      const modulos = this.$store.state.estadisticas.estadisticasModulos
+      const modulos = useEstadisticasStore().estadisticasModulos
       return modulos && Object.keys(modulos).length > 0
     },
     estadisticasUsuarios() {
-      return this.$store.state.estadisticas.estadisticasUsuarios
+      return useEstadisticasStore().estadisticasUsuarios
     },
     vehiculos() {
-      return this.$store.state.vehiculos.all || []
+      return useVehiculosStore().all || []
     },
     habilitaciones() {
-      return this.$store.state.habilitaciones.all || []
+      return useHabilitacionesStore().all || []
     },
-    puedeVerDashboard() {
-      return this.$can('dashboard.read')
+    adminMaster() {
+      const user = useUserStore()
+      const permissions = user.permissions || []
+      return ['admin', 'master', 'true'].includes(String(user.admin)) ||
+        permissions.includes('*') ||
+        permissions.includes('dashboard.read')
     }
   },
   mounted() {
-    if (this.puedeVerDashboard) {
+    if (this.adminMaster) {
       this.cargarDatos()
     }
   },
   methods: {
     cargarDatos(payload = {}) {
-      this.$store.dispatch('estadisticas/fetchAllEstadisticas', payload).catch((err) => {
+      useEstadisticasStore().fetchAllEstadisticas(payload).catch((err) => {
         this.error = 'Error al cargar las estadísticas. Verifique la conexión con el servidor.'
         console.error('Error cargando estadísticas:', err)
       })
-      this.$store.dispatch('vehiculos/getAll').catch(() => {})
-      this.$store.dispatch('habilitaciones/getAll').catch(() => {})
+      useVehiculosStore().getAll().catch(() => {})
+      useHabilitacionesStore().getAll().catch(() => {})
     },
     actualizarDatos() {
       this.cargarDatos()
@@ -191,11 +205,11 @@ export default {
       this.selectedDateRange = dateRange
 
       // Mostrar toast de confirmación
-      this.$bvToast.toast('Filtro de fechas aplicado correctamente', {
+      this.showToast('Filtro de fechas aplicado correctamente', {
         title: 'Filtro Aplicado',
         variant: 'success',
         solid: true,
-        toaster: 'b-toaster-top-right'
+        pos: 'top-end'
       })
 
       // Recargar datos con el nuevo filtro
@@ -231,11 +245,11 @@ export default {
     async clearDateFilter() {
       this.selectedDateRange = null
 
-      this.$bvToast.toast('Filtro de fechas removido', {
+      this.showToast('Filtro de fechas removido', {
         title: 'Filtro Removido',
         variant: 'info',
         solid: true,
-        toaster: 'b-toaster-top-right'
+        pos: 'top-end'
       })
 
       // Recargar datos sin filtro
@@ -243,26 +257,21 @@ export default {
     },
 
     cargarDatosConFiltro(dateRange) {
-      this.$store.dispatch('estadisticas/fetchAllEstadisticas', {
+      useEstadisticasStore().fetchAllEstadisticas({
         startDate: dateRange.startDate,
         endDate: dateRange.endDate
       }).catch((error) => {
         this.error = 'Error al aplicar el filtro de fechas'
         console.error('Error aplicando filtro:', error)
-        this.$bvToast.toast('Error al aplicar el filtro', {
+        this.showToast('Error al aplicar el filtro', {
           title: 'Error',
           variant: 'danger',
           solid: true,
-          toaster: 'b-toaster-top-right'
+          pos: 'top-end'
         })
       })
     },
   },
-  head() {
-    return {
-      title: 'Dashboard Admin - Hacienda Villa Gesell'
-    }
-  }
 }
 </script>
 
@@ -271,7 +280,7 @@ export default {
   padding-top: 80px; /* Espacio para el navbar fijo */
 }
 
-/* Cartel de sección no disponible */
+/* Cartel de sección no disponible (solo adminMaster) */
 .dashboard-no-access {
   min-height: calc(100vh - 80px);
   padding-top: 80px;

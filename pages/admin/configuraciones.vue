@@ -290,10 +290,9 @@
               <dd :class="{ 'is-active': original && original.boletaTasasUploadEnabled }">
                 {{ original && original.boletaTasasUploadEnabled ? 'Activo' : 'Inactivo' }}
               </dd>
-              <template v-for="tax in taxImportOptions">
-                <dt :key="`${tax.key}-label`">Importacion {{ tax.shortTitle }}</dt>
+              <template v-for="tax in taxImportOptions" :key="tax.key">
+                <dt>Importacion {{ tax.shortTitle }}</dt>
                 <dd
-                  :key="`${tax.key}-value`"
                   :class="{ 'is-active': original && original.boletaTasasImportaciones && original.boletaTasasImportaciones[tax.key] }"
                 >
                   {{ original && original.boletaTasasImportaciones && original.boletaTasasImportaciones[tax.key] ? 'Activo' : 'Inactivo' }}
@@ -349,10 +348,17 @@
   </div>
 </template>
 
+<script setup>
+definePageMeta({
+  middleware: ['authenticated', 'require-admin'],
+  permissions: ['system.config.admin'],
+})
+useHead({ title: 'Configuracion general - Hacienda Villa Gesell' })
+</script>
+
 <script>
-const GeneralConfigService = require('@/service/generalConfig')
-const MailerServiceModule = require('@/service/mailer')
-const MailerService = MailerServiceModule.default || MailerServiceModule
+import GeneralConfigService from '~/service/generalConfig.js'
+import MailerService from '~/service/mailer.js'
 
 const TAX_IMPORT_OPTIONS = [
   {
@@ -374,7 +380,10 @@ const TAX_IMPORT_LABELS = TAX_IMPORT_OPTIONS.reduce((acc, option) => {
 }, {})
 
 export default {
-  middleware: ['authenticated', 'systemConfigAdmin'],
+  setup() {
+    const { showToast } = useProjectToast()
+    return { showToast }
+  },
   data() {
     return {
       loading: false,
@@ -512,7 +521,7 @@ export default {
       }
     },
   },
-  async fetch() {
+  async mounted() {
     await Promise.all([
       this.loadConfig(),
       this.loadTemplates(),
@@ -665,13 +674,13 @@ export default {
           asunto: this.preview.subject,
           mensaje: this.preview.body
         })
-        this.$bvToast.toast('Correo de prueba enviado.', {
+        this.showToast('Correo de prueba enviado.', {
           title: 'Mailing',
           variant: 'success',
           solid: true,
         })
       } catch (error) {
-        this.$bvToast.toast(error.response?.data?.message || 'No se pudo enviar el correo de prueba.', {
+        this.showToast(error.response?.data?.message || 'No se pudo enviar el correo de prueba.', {
           title: 'Mailing',
           variant: 'danger',
           solid: true,
@@ -690,7 +699,7 @@ export default {
           template.key === updated.key ? updated : template
         ))
         this.resetTemplateForm()
-        this.$bvToast.toast('Plantilla de correo actualizada.', {
+        this.showToast('Plantilla de correo actualizada.', {
           title: 'Mailing',
           variant: 'success',
           solid: true,
@@ -710,16 +719,7 @@ export default {
         this.error = 'Revisa los colores de boletas. Deben tener formato hexadecimal, por ejemplo #13875e.'
         return
       }
-      const confirmed = await this.$bvModal.msgBoxConfirm(
-        'Se van a actualizar configuraciones globales del sitio.',
-        {
-          title: 'Guardar configuracion',
-          okTitle: 'Guardar',
-          cancelTitle: 'Cancelar',
-          okVariant: 'success',
-          centered: true,
-        }
-      )
+      const confirmed = window.confirm('Se van a actualizar configuraciones globales del sitio. ¿Desea guardar los cambios?')
       if (!confirmed) return
       await this.save()
     },
@@ -729,7 +729,7 @@ export default {
       try {
         const config = await GeneralConfigService.updateGeneralConfig(this.$axios, this.form)
         this.applyConfig(config)
-        this.$bvToast.toast('Configuracion general actualizada.', {
+        this.showToast('Configuracion general actualizada.', {
           title: 'Sistema',
           variant: 'success',
           solid: true,

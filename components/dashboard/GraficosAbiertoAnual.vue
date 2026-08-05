@@ -43,7 +43,7 @@
             <div v-for="motivo in rechazosPorMotivo" :key="motivo.motivo" class="motivo-item mb-3">
               <div class="d-flex justify-content-between align-items-center mb-2">
                 <h6 class="mb-0 text-warning">{{ motivo.motivo }}</h6>
-                <span class="badge badge-warning">{{ motivo.total }} total</span>
+                <b-badge variant="warning">{{ motivo.total }} total</b-badge>
               </div>
               <div class="row">
                 <div class="col-4">
@@ -116,7 +116,7 @@
 </template>
 
 <script>
-import Chart from '~/plugins/chart.js'
+import Chart from '~/utils/chart-setup.js'
 
 export default {
   name: 'GraficosAbiertoAnual',
@@ -299,7 +299,7 @@ export default {
       })
     }
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.chartBarrasConsolidado) {
       this.chartBarrasConsolidado.destroy()
     }
@@ -398,3 +398,4 @@ export default {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 </style>
+

@@ -1,4 +1,4 @@
-const formatCertif = (CertifResponse) => ({
+﻿const formatCertif = (CertifResponse) => ({
   id: CertifResponse._id,
   obra: CertifResponse.obra,
   items: CertifResponse.items.map(formatItem),
@@ -13,7 +13,7 @@ const formatItem = (ItemsData) => ({
   saldo: ItemsData.saldo,
 })
 
-module.exports = {
+export default {
   getLatest: async (axios,
     //  { skip = 0, limit = 6 }
      ) => {
@@ -83,3 +83,4 @@ module.exports = {
    })
   },
 }
+

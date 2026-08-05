@@ -1,15 +1,48 @@
-const formatFile = (FileResponse) => ({
-  id: FileResponse._id,
-  cuit: FileResponse.cuit,
-  nroLegajo: FileResponse.nroLegajo,
-  dfe: FileResponse.dfe,
-  facturas: FileResponse.facturas,
-  status: FileResponse.status,
-  fechasCarga: FileResponse.fechasCarga.map(fecha => new Date(fecha).toLocaleDateString('es-AR')),
-  createdAt: new Date(FileResponse.createdAt).toLocaleDateString('es-AR'),
-  updatedAt: new Date(FileResponse.updatedAt).toLocaleDateString('es-AR'),
-  ultimaActualizacion: new Date(FileResponse.updatedAt),
-});
+const formatFile = (FileResponse) => {
+  const rawStatus = Array.isArray(FileResponse.status) ? FileResponse.status : []
+  const rawFacturas = Array.isArray(FileResponse.facturas) ? FileResponse.facturas : []
+  const rawFechasCarga = Array.isArray(FileResponse.fechasCarga) ? FileResponse.fechasCarga : []
+
+  // La UI asume que:
+  // status[0] / facturas[0] / fechasCarga[0] => Período 1
+  // status[1] / facturas[1] / fechasCarga[1] => Período 2
+  // status[2] / facturas[2] / fechasCarga[2] => Período 3
+  // Si el backend devuelve esas 3 posiciones en otro orden, se desfasarán los círculos.
+  let status = rawStatus
+  let facturas = rawFacturas
+  let fechasCarga = rawFechasCarga
+
+  const len = Math.min(rawStatus.length, rawFacturas.length, rawFechasCarga.length)
+  if (len >= 3) {
+    const indices = rawFechasCarga.slice(0, len).map((fecha, idx) => {
+      const t = new Date(fecha).getTime()
+      return { idx, t: Number.isFinite(t) ? t : Number.POSITIVE_INFINITY }
+    })
+
+    indices.sort((a, b) => {
+      if (a.t !== b.t) return a.t - b.t
+      return a.idx - b.idx
+    })
+
+    const orderedIdx = indices.map((x) => x.idx)
+    status = orderedIdx.map((i) => rawStatus[i])
+    facturas = orderedIdx.map((i) => rawFacturas[i])
+    fechasCarga = orderedIdx.map((i) => rawFechasCarga[i])
+  }
+
+  return ({
+    id: FileResponse._id,
+    cuit: FileResponse.cuit,
+    nroLegajo: FileResponse.nroLegajo,
+    dfe: FileResponse.dfe,
+    facturas,
+    status,
+    fechasCarga: fechasCarga.map((fecha) => new Date(fecha).toLocaleDateString('es-AR')),
+    createdAt: new Date(FileResponse.createdAt).toLocaleDateString('es-AR'),
+    updatedAt: new Date(FileResponse.updatedAt).toLocaleDateString('es-AR'),
+    ultimaActualizacion: new Date(FileResponse.updatedAt),
+  })
+}
 
 
   const formatExtendedFile = (FileResponse) => ({
@@ -23,7 +56,7 @@ const formatFile = (FileResponse) => ({
     createdAt: new Date(FileResponse.createdAt),
   })
 
-  module.exports = {
+  export default {
     getAll: async (axios,
       //  { skip = 0, limit = 6 }
        ) => {
@@ -101,3 +134,4 @@ const formatFile = (FileResponse) => ({
     //   return filesResponse.data.map(formatFile)
     // },
   }
+

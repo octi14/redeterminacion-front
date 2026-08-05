@@ -1,11 +1,3 @@
-export default function ({ store, redirect }) {
-  const legacyAdmin = ['admin', 'master', true, 'true'].includes(store.state.user.admin)
-  const permissions = store.state.user.permissions || []
-  const canAccess = legacyAdmin ||
-    permissions.includes('*') ||
-    permissions.includes('cementerio.update')
+import { createPermissionMiddleware } from '~/utils/permission-middleware'
 
-  if (!canAccess) {
-    return redirect('/')
-  }
-}
+export default createPermissionMiddleware(['cementerio.update'])

@@ -1,6 +1,11 @@
 <template>
-  <svg fill="currentColor" height="800px" width="800px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
-	 viewBox="0 0 511.999 511.999" xml:space="preserve">
+  <svg
+    class="fuel-icon-svg"
+    fill="currentColor"
+    viewBox="0 0 511.999 511.999"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
+  >
 <g>
 	<g>
 		<path d="M508.94,131.998c-4.08-4.079-10.693-4.079-14.774,0l-42.727,42.727h-18.077c-5.768,0-10.446,4.677-10.446,10.446v75.664
@@ -59,3 +64,12 @@
 </g>
 </svg>
 </template>
+
+<style scoped>
+.fuel-icon-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  color: #ef8918;
+}
+</style>

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="tabla-tramites-comerciales-2025">
     <b-card class="mb-4 shadow-sm">
       <template #header>
@@ -364,3 +364,4 @@ export default {
   transition: background-color 0.2s;
 }
 </style>
+

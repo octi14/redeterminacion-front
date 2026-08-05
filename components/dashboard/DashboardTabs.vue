@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div>
     <!-- Pestañas de navegación -->
     <b-card class="mb-4">
@@ -544,3 +544,4 @@ export default {
   padding: 0.25rem 0.5rem;
 }
 </style>
+

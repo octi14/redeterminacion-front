@@ -170,7 +170,7 @@
 </template>
 
 <script>
-import Chart from '~/plugins/chart.js'
+import Chart from '~/utils/chart-setup.js'
 
 export default {
   name: 'GraficoTramitesComerciales',
@@ -403,7 +403,7 @@ export default {
       link.click()
     }
   },
-  beforeDestroy() {
+  beforeUnmount() {
     if (this.chart) {
       this.chart.destroy()
     }
@@ -523,3 +523,4 @@ export default {
   }
 }
 </style>
+

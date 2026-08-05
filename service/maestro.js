@@ -1,5 +1,5 @@
-const formatMaestro = (MaestroResponse) => ({
-  id: MaestroResponse._id,
+﻿const formatMaestro = (MaestroResponse) => ({
+  // id: MaestroResponse._id,
   legajo: MaestroResponse.legajo,
   cuit: MaestroResponse.cuit,
   denominacion: MaestroResponse.denominacion,
@@ -9,7 +9,7 @@ const formatMaestro = (MaestroResponse) => ({
   mail: MaestroResponse.mail,
 })
 
-module.exports = {
+export default {
   get: async (axios,
     //  { skip = 0, limit = 6 }
      ) => {
@@ -30,12 +30,16 @@ module.exports = {
     )
     // return formatCertif(createdCertif.data)
   },
-  update: async (axios, { maestro }) => {
+  update: async (axios, { obra, userToken }) => {
+    axios.setHeader('Access-Control-Allow-Origin', true)
     const updated = await axios.$put(
-      `/maestro/${maestro.id}`,
-      { maestro },
+      `/certificados/${obra.id}`,
+      { obra },
+      {
+        headers: { Authorization: `Bearer ${userToken}` },
+      }
     )
-    return formatMaestro(updated.data)
+    return formatCertif(updated.data)
   },
   delete: async (axios, { id, userToken }) => {
     return await axios.$delete(`/certificados/${id}`, {
@@ -43,3 +47,4 @@ module.exports = {
     })
   },
 }
+

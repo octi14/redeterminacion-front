@@ -504,7 +504,7 @@ export default {
     async crearPDFVales() {
       if (!this.valesParaImprimir?.length) return;
 
-      const { default: jsPDF } = await import('jspdf');
+      const { jsPDF } = await import('jspdf');
 
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");

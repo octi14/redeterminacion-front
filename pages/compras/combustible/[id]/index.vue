@@ -817,7 +817,7 @@ export default {
     async imprimirValesSeleccionados() {
       if (this.valesSeleccionados.length === 0) return;
 
-      const jsPDF = (await import('jspdf')).default;
+      const { jsPDF } = await import('jspdf');
 
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d");

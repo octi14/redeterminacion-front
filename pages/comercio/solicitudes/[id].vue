@@ -878,6 +878,8 @@ import { loadJSZip } from '~/utils/loadJszip';
 import { loadXlsx } from '~/utils/loadXlsx';
 import { saveAsFile } from '~/utils/saveAsFile';
 import MailerService from "@/service/mailer.js";
+import DocumentoService from '@/service/documento.js';
+import { useApi } from '~/composables/useApi';
 
 export default {
   data() {
@@ -1479,7 +1481,7 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
         const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
         zip.file('datos_habilitacion.xlsx', excelBuffer);
 
-        // Función para decodificar base64 y crear un buffer
+        // Función para decodificar base64 y crear un buffer (fallback legacy)
         const crearBufferDesdeBase64 = (base64Data) => {
           const decodedData = atob(base64Data);
           const arrayBuffer = new ArrayBuffer(decodedData.length);
@@ -1511,27 +1513,45 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
           }
         };
 
-        // Añadir documentos al zip, reemplazando caracteres especiales y añadiendo extensión
-        Object.entries(documentos).forEach(([key, doc], index) => {
-          let { data, filename, contentType } = doc;
-
-          if (data) {
-            // Reemplazar caracteres que puedan causar problemas en nombres de archivo
-            filename = filename.replace(/[\/\\?%*:|"<>]/g, '_');
-
-            // Obtener la extensión del archivo
-            const extension = obtenerExtension(contentType);
-            const nombreConExtension = `${filename}${extension}`;
-
-            console.log(`Añadiendo documento ${index + 1}: ${nombreConExtension}`);
-
-            // Decodificar el contenido de Base64 a ArrayBuffer y añadirlo al zip
-            const buffer = crearBufferDesdeBase64(data);
-            zip.file(nombreConExtension, buffer, { binary: true });
-          } else {
-            console.warn(`El documento ${filename} no tiene contenido.`);
+        // Añadir documentos al zip (URL firmada / proxy; fallback base64 legacy)
+        const entries = Object.entries(documentos);
+        for (let index = 0; index < entries.length; index++) {
+          const [nombreDocumento, doc] = entries[index];
+          if (!doc || doc.error) {
+            console.warn(`Documento ${nombreDocumento} no disponible:`, doc?.error);
+            continue;
           }
-        });
+
+          let { data, filename, contentType, url } = doc;
+          filename = (filename || nombreDocumento).replace(/[\/\\?%*:|"<>]/g, '_');
+          const extension = obtenerExtension(contentType);
+          const nombreConExtension = filename.includes('.')
+            ? filename
+            : `${filename}${extension}`;
+
+          let buffer = null;
+          if (url || !data) {
+            try {
+              buffer = await DocumentoService.downloadFileBuffer(useApi(), {
+                id,
+                nombreDocumento,
+                url,
+              });
+            } catch (e) {
+              console.warn(`No se pudo bajar ${nombreDocumento} por URL/proxy:`, e);
+            }
+          }
+          if (!buffer && data) {
+            buffer = crearBufferDesdeBase64(data);
+          }
+          if (!buffer) {
+            console.warn(`El documento ${nombreConExtension} no tiene contenido.`);
+            continue;
+          }
+
+          console.log(`Añadiendo documento ${index + 1}: ${nombreConExtension}`);
+          zip.file(nombreConExtension, buffer, { binary: true });
+        }
 
         const nroTramite = this.habilitacion.nroTramite; // Cambiamos a nroTramite
 
@@ -1588,7 +1608,18 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
       });
     },*/
     openDocumento(documento, nombreDocumento) {
-  const decodedData = atob(documento.data); // Decodificar la data de Base64
+  // Preferir URL firmada S3 (sin base64 en el store / dyno)
+  if (documento && documento.url) {
+    window.open(documento.url, '_blank');
+    return;
+  }
+
+  if (!documento || !documento.data) {
+    console.log('Documento sin url ni data');
+    return;
+  }
+
+  const decodedData = atob(documento.data); // Decodificar la data de Base64 (legacy)
 
   const arrayBuffer = new ArrayBuffer(decodedData.length);
   const arrayBufferView = new Uint8Array(arrayBuffer);

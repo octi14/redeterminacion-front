@@ -18,5 +18,27 @@ export default {
     const fileResponse = await axios.$get(`/pagosDobles/documentos/${id}`);
     return formatDocs(fileResponse.data);
   },
+
+  /**
+   * Baja un documento para ZIP: preferir URL firmada S3; si falla CORS, proxy del back.
+   */
+  downloadFileBuffer: async (axios, { id, nombreDocumento, url }) => {
+    if (url) {
+      try {
+        const res = await fetch(url);
+        if (res.ok) {
+          return await res.arrayBuffer();
+        }
+      } catch (_) {
+        // CORS u otro error de red → proxy
+      }
+    }
+    const encoded = encodeURIComponent(nombreDocumento);
+    const res = await axios.get(
+      `/habilitaciones/documentos/${id}/file/${encoded}`,
+      { responseType: 'arraybuffer' }
+    );
+    return res.data;
+  },
 };
 

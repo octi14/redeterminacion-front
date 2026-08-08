@@ -1,4 +1,3 @@
-import { hydrateUserFromLocalStorage } from '~/utils/sessionHydrate'
 import { userCanAccessAdminRoute, userHasPermission } from '~/utils/access-control'
 
 /**
@@ -9,10 +8,6 @@ import { userCanAccessAdminRoute, userHasPermission } from '~/utils/access-contr
  * Debe ejecutarse después de `authenticated`.
  */
 export default defineNuxtRouteMiddleware((to) => {
-  if (import.meta.server) return
-
-  const nuxtApp = useNuxtApp()
-  hydrateUserFromLocalStorage(nuxtApp)
   const userStore = useUserStore()
 
   if (!userStore.token) {

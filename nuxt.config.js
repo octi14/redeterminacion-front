@@ -43,6 +43,7 @@ export default defineNuxtConfig({
 
   plugins: [
     '~/plugins/pinia-payload.server.js',
+    '~/plugins/session.js',
     '~/plugins/api.js',
     '~/plugins/permissions.js',
     '~/plugins/project-toast.client.js',

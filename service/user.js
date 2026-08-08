@@ -14,6 +14,9 @@ const formatAuthenticatedUser = (user = {}) => {
     username: user.username ?? '',
     token: user.token ?? '',
     admin: user.admin ?? '',
+    roles: user.roles ?? [],
+    permissions: user.permissions ?? [],
+    accessSource: user.accessSource ?? 'legacy',
   }
 }
 

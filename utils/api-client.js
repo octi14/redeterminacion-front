@@ -37,6 +37,7 @@ export function createApiClient(options = {}) {
     })
 
   const getToken = options.getToken ?? getAuthToken
+  const onUnauthorized = options.onUnauthorized
 
   const authHeaders = () => {
     const headers = {}
@@ -89,6 +90,9 @@ export function createApiClient(options = {}) {
           status,
           data: error.data,
         }
+      }
+      if (status === 401 && getToken() && typeof onUnauthorized === 'function') {
+        await onUnauthorized(error)
       }
       throw error
     }

@@ -11,6 +11,13 @@ export default defineNuxtPlugin({
   setup(nuxtApp) {
     const api = createApiClient({
       getToken: () => nuxtApp.runWithContext(() => getAuthToken()),
+      onUnauthorized: () => nuxtApp.runWithContext(async () => {
+        const userStore = useUserStore()
+        userStore.clearSession()
+        if (useRoute().path !== '/login') {
+          await navigateTo('/login')
+        }
+      }),
     })
 
     // Nuxt 3 registra $axios como getter al hacer provide; no asignar globalProperties.

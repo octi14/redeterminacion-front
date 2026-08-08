@@ -1,6 +1,7 @@
 import UserService from '../service/user.js'
 import { defineStore } from 'pinia'
 import { authenticateUser } from '../utils/auth-login.js'
+import { useSessionCookie } from '../utils/session-cookie.js'
 import { useToastController } from 'bootstrap-vue-next'
 
 export const useUserStore = defineStore('user', {
@@ -15,42 +16,25 @@ export const useUserStore = defineStore('user', {
   }),
 
   actions: {
-    setAuthenticated({ id, username, token, admin, roles = [], permissions = [], accessSource = 'legacy' }) {
-      this.id = id
-      this.username = username
-      this.token = token
-      this.admin = admin
+    /** Solo actualiza el estado en memoria, sin tocar la cookie. Usado al hidratar. */
+    hydrate({ id, username, token, admin, roles = [], permissions = [], accessSource = 'legacy' } = {}) {
+      this.id = id ?? null
+      this.username = username ?? null
+      this.token = token ?? null
+      this.admin = admin ?? null
       this.roles = roles
       this.permissions = permissions
       this.accessSource = accessSource
-      if (import.meta.client) {
-        localStorage.setItem('userId', id)
-        localStorage.setItem('username', username)
-        localStorage.setItem('userToken', token)
-        localStorage.setItem('userAdmin', admin)
-        localStorage.setItem('userRoles', JSON.stringify(roles))
-        localStorage.setItem('userPermissions', JSON.stringify(permissions))
-        localStorage.setItem('userAccessSource', accessSource)
-      }
+    },
+
+    setAuthenticated({ id, username, token, admin, roles = [], permissions = [], accessSource = 'legacy' }) {
+      this.hydrate({ id, username, token, admin, roles, permissions, accessSource })
+      useSessionCookie().value = { id, username, token, admin, roles, permissions, accessSource }
     },
 
     clearSession() {
-      this.id = null
-      this.username = null
-      this.token = null
-      this.admin = null
-      this.roles = []
-      this.permissions = []
-      this.accessSource = 'legacy'
-      if (import.meta.client) {
-        localStorage.removeItem('userId')
-        localStorage.removeItem('username')
-        localStorage.removeItem('userToken')
-        localStorage.removeItem('userAdmin')
-        localStorage.removeItem('userRoles')
-        localStorage.removeItem('userPermissions')
-        localStorage.removeItem('userAccessSource')
-      }
+      this.hydrate(null)
+      useSessionCookie().value = null
     },
 
     async authenticate({ username, password }) {

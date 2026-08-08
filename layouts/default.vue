@@ -71,18 +71,8 @@ export default {
     },
   },
   mounted() {
-    // Si existe usuario en localStorage, lo levanto
-    if (localStorage.getItem("userId")) {
-      const authUser = {
-        id: localStorage.getItem("userId"),
-        username: localStorage.getItem("username"),
-        token: localStorage.getItem("userToken"),
-        admin: localStorage.getItem("userAdmin"),
-      };
-      useUserStore().setAuthenticated(authUser);
-    }
-
-    // También chequeamos si el token ya está vencido al cargar
+    // La sesión ya se hidrata desde la cookie en plugins/session.js.
+    // Chequeamos si el token ya está vencido al cargar.
     if (this.token) {
       this.sessionExpired = this.checkTokenExpired(this.token);
     }

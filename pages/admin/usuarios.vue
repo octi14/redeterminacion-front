@@ -573,8 +573,8 @@ export default {
   white-space: normal;
 }
 
-::v-deep .admin-users__roles-col,
-::v-deep .admin-users__roles-cell {
+:deep(.admin-users__roles-col),
+:deep(.admin-users__roles-cell) {
   max-width: 440px;
   min-width: 240px;
   white-space: normal;

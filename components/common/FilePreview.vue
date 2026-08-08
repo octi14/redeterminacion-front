@@ -142,7 +142,7 @@ export default {
       this.revokeObjectUrl()
     },
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.revokeObjectUrl()
   },
   methods: {

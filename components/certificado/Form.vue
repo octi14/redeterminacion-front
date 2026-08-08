@@ -30,7 +30,6 @@
 <script>
 export default {
   setup(){ const { showToast } = useProjectToast(); return { showToast } },
-  middleware: ['authenticated'],
   props: {
     obra: {
       type: Object,

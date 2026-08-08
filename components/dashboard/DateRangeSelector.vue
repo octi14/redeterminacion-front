@@ -28,7 +28,7 @@
             menu-class="datepicker-dropdown"
             calendar-width="100%"
             locale="es"
-            @input="onDateChange"
+            @update:model-value="onDateChange"
           />
         </b-col>
         <b-col md="2" class="d-flex align-items-end justify-content-center">
@@ -45,7 +45,7 @@
             menu-class="datepicker-dropdown"
             calendar-width="100%"
             locale="es"
-            @input="onDateChange"
+            @update:model-value="onDateChange"
           />
         </b-col>
       </b-row>

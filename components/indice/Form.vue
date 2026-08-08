@@ -31,7 +31,6 @@
 <script>
 export default {
   setup(){ const { showToast } = useProjectToast(); return { showToast } },
-  middleware: ['authenticated'],
   data() {
     return {
       año: '',

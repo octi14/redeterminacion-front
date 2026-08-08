@@ -40,7 +40,6 @@ export default {
       default: true,
     },
   },
-  middleware: ['authenticated'],
   data() {
     return {
       categorias: [

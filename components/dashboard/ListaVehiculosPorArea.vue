@@ -199,7 +199,7 @@ export default {
   },
   methods: {
     toggleArea(areaNombre) {
-      this.$set(this.areasExpanded, areaNombre, !this.areasExpanded[areaNombre])
+      this.areasExpanded[areaNombre] = !this.areasExpanded[areaNombre]
     },
     clearFilters() {
       this.searchTerm = ''
@@ -211,7 +211,7 @@ export default {
     if (this.vehiculos && this.vehiculos.length > 0) {
       const areas = [...new Set(this.vehiculos.map(v => v.area).filter(Boolean))]
       areas.forEach(area => {
-        this.$set(this.areasExpanded, area, true)
+        this.areasExpanded[area] = true
       })
     }
   }

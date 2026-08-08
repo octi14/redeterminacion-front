@@ -1324,11 +1324,11 @@
               <label class="form-check-label" for="documentCheckbox">Ya tengo todos los documentos digitalizados y la información requerida.</label>
           </div>
           <div class="text-center mt-3">
-              <nuxt-link :class="{ 'disabled': !documentCheckboxChecked }" :to="{path: '/comercio/tramites/form', query: { tramite: tramiteSeleccionado } }">
+              <NuxtLink :class="{ 'disabled': !documentCheckboxChecked }" :to="{path: '/comercio/tramites/form', query: { tramite: tramiteSeleccionado } }">
               <b-button variant="success" :disabled="!documentCheckboxChecked" @click="proceedToForm()" >
                   Aceptar
               </b-button>
-              </nuxt-link>
+              </NuxtLink>
           </div>
         </div>
     </BModal>

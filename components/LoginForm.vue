@@ -10,7 +10,7 @@
           placeholder="Nombre de usuario"
           autocomplete="username"
           style="text-align: center"
-          @input="syncAutofill"
+          @update:model-value="syncAutofill"
           @change="syncAutofill"
         />
       </div>
@@ -24,7 +24,7 @@
           placeholder="Contraseña"
           autocomplete="current-password"
           style="text-align: center"
-          @input="syncAutofill"
+          @update:model-value="syncAutofill"
           @change="syncAutofill"
         />
       </div>

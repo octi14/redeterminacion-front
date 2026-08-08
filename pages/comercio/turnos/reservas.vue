@@ -48,7 +48,7 @@
         </template>
       </b-table>
 
-      <b-pagination v-if="!loading" class="internal-use-pagination internal-use-wide" :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
+      <b-pagination v-if="!loading" class="internal-use-pagination internal-use-wide" :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @update:model-value="onPageChange"></b-pagination>
 
     </div>
 
@@ -62,6 +62,7 @@
 definePageMeta({
   middleware: ['authenticated', 'require-admin'],
   adminRoles: ['comercio', 'master', 'inspeccion'],
+  permissions: ['turnos.read', 'turnos.update'],
 })
 </script>
 
@@ -173,12 +174,10 @@ export default{
       return items;
     },
     adminComercio(){
-      const admin = useUserStore().admin
-      return admin == "comercio" || admin == "master"
+      return this.$can('turnos.read')
     },
     adminInspeccion(){
-      const admin = useUserStore().admin
-      return admin == "inspeccion" || admin == "master"
+      return this.$can('turnos.update')
     }
   },
   methods: {

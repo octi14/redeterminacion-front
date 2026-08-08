@@ -5,7 +5,7 @@
         type="text"
         class="multimedia-feed-search-input"
         v-model="search"
-        @input="handleSearchInput"
+        @update:model-value="handleSearchInput"
         placeholder="Buscar..."
       />
       <b-button class="flex-shrink-0" @click="clearSearch">Limpiar</b-button>

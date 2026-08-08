@@ -10,7 +10,7 @@
           id="inputCUIT"
           v-model="inputCUIT"
           placeholder="Ingresá un CUIT"
-          @input="filtrarPorCUIT"
+          @update:model-value="filtrarPorCUIT"
           type="text"
         />
       </b-form-group>
@@ -71,7 +71,7 @@
         </NuxtLink>
       </template>
     </b-table>
-    <b-pagination v-if="!loading" class="mt-4" :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
+    <b-pagination v-if="!loading" class="mt-4" :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @update:model-value="onPageChange"></b-pagination>
   </div>
 </template>
 
@@ -79,6 +79,7 @@
 definePageMeta({
   middleware: ['authenticated', 'require-admin'],
   adminRoles: ['arvige', 'master'],
+  permissions: ['abiertoAnual.read', 'abiertoAnual.update'],
 })
 </script>
 
@@ -156,8 +157,7 @@ export default {
       return Math.ceil(this.filteredItems.length / this.perPage);
     },
     adminArvige() {
-      const admin = useUserStore().admin
-      return admin === "arvige" || admin === "master";
+      return this.$can('abiertoAnual.read') || this.$can('abiertoAnual.update')
     }
   },
   methods: {

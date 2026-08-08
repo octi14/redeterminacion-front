@@ -10,7 +10,7 @@
           id="inputCUIT"
           v-model="inputCUIT"
           placeholder="Ingresá un CUIT"
-          @input="filtrarPorCUIT"
+          @update:model-value="filtrarPorCUIT"
           type="text"
         />
       </b-form-group>
@@ -42,7 +42,7 @@
         </b-button>
       </template>
     </b-table>
-    <b-pagination v-if="!loading" class="internal-use-pagination internal-use-wide mt-4" :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
+    <b-pagination v-if="!loading" class="internal-use-pagination internal-use-wide mt-4" :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @update:model-value="onPageChange"></b-pagination>
 
     <BModal id="modalEditarMaestro" no-header-close v-model="editing" header-bg-variant="secondary" title="Editar maestro comercial" title-class="h5 text-light mx-auto" no-footer centered>
       <MaestroComercialForm
@@ -61,6 +61,7 @@
 definePageMeta({
   middleware: ['authenticated', 'require-admin'],
   adminRoles: ['arvige', 'master'],
+  permissions: ['maestroComercial.read', 'maestroComercial.update'],
 })
 </script>
 
@@ -111,11 +112,10 @@ export default {
       return Math.ceil(this.filteredItems.length / this.perPage);
     },
     adminMaster(){
-      return useUserStore().admin == "master"
+      return this.$can('maestroComercial.read')
     },
     adminArvige(){
-      const admin = useUserStore().admin
-      return admin == "arvige" || admin == "master"
+      return this.$can('maestroComercial.update')
     }
   },
   methods: {

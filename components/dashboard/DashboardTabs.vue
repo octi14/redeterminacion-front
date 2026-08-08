@@ -10,7 +10,7 @@
         content-class="mt-4"
       >
         <!-- Pestaña Comercio -->
-        <b-tab title-link-class="tab-link-comercio">
+        <b-tab v-if="canVerComercio" title-link-class="tab-link-comercio">
           <template #title>
             <i class="bi bi-shop-fill mr-2"></i>
             <span class="d-none d-md-inline">Comercio</span>
@@ -40,7 +40,7 @@
         </b-tab>
 
         <!-- Pestaña Abierto Anual -->
-        <b-tab title-link-class="tab-link-abierto-anual">
+        <b-tab v-if="canVerAbiertoAnual" title-link-class="tab-link-abierto-anual">
           <template #title>
             <i class="bi bi-calendar-year-fill mr-2"></i>
             <span class="d-none d-md-inline">Abierto Anual</span>
@@ -70,7 +70,7 @@
         </b-tab>
 
         <!-- Pestaña Obras -->
-        <b-tab title-link-class="tab-link-obras">
+        <b-tab v-if="canVerObras" title-link-class="tab-link-obras">
           <template #title>
             <i class="bi bi-building-fill mr-2"></i>
             <span class="d-none d-md-inline">Obras</span>
@@ -100,7 +100,7 @@
         </b-tab>
 
         <!-- Pestaña Recaudaciones -->
-        <b-tab title-link-class="tab-link-recaudaciones">
+        <b-tab v-if="canVerRecaudaciones" title-link-class="tab-link-recaudaciones">
           <template #title>
             <i class="bi bi-cash-stack-fill mr-2"></i>
             <span class="d-none d-md-inline">Recaudaciones</span>
@@ -125,7 +125,7 @@
         </b-tab>
 
         <!-- Pestaña Combustible -->
-        <b-tab title-link-class="tab-link-combustible">
+        <b-tab v-if="canVerCombustible" title-link-class="tab-link-combustible">
           <template #title>
             <i class="bi bi-fuel-pump-fill mr-2"></i>
             <span class="d-none d-md-inline">Combustible</span>
@@ -160,7 +160,7 @@
         </b-tab>
 
         <!-- Pestaña Turnos -->
-        <b-tab title-link-class="tab-link-turnos">
+        <b-tab v-if="canVerTurnos" title-link-class="tab-link-turnos">
           <template #title>
             <i class="bi bi-calendar-check-fill mr-2"></i>
             <span class="d-none d-md-inline">Turnos</span>
@@ -186,7 +186,7 @@
 
 
         <!-- Pestaña Vehículos -->
-        <b-tab title-link-class="tab-link-vehiculos">
+        <b-tab v-if="canVerVehiculos" title-link-class="tab-link-vehiculos">
           <template #title>
             <i class="bi bi-car-front-fill mr-2"></i>
             <span class="d-none d-md-inline">Vehículos</span>
@@ -206,7 +206,7 @@
         </b-tab>
 
         <!-- Pestaña Informes Solicitados -->
-        <b-tab title-link-class="tab-link-informes">
+        <b-tab v-if="canVerInformes" title-link-class="tab-link-informes">
           <template #title>
             <i class="bi bi-graph-up-arrow mr-2"></i>
             <span class="d-none d-md-inline">Informes Solicitados</span>
@@ -241,7 +241,7 @@
         </b-tab>
 
         <!-- Pestaña Usuarios -->
-        <b-tab title-link-class="tab-link-usuarios">
+        <b-tab v-if="canVerUsuarios" title-link-class="tab-link-usuarios">
           <template #title>
             <i class="bi bi-people-fill mr-2"></i>
             <span class="d-none d-md-inline">Usuarios</span>
@@ -407,7 +407,36 @@ export default {
     return {
       tabIndex: 0
     }
-  }
+  },
+  computed: {
+    canVerComercio() {
+      return this.$can('habilitaciones.read')
+    },
+    canVerAbiertoAnual() {
+      return this.$can('abiertoAnual.read')
+    },
+    canVerObras() {
+      return this.$can('hacienda.obras.read')
+    },
+    canVerRecaudaciones() {
+      return this.$can('pagosDobles.read')
+    },
+    canVerCombustible() {
+      return this.$can('compras.vales.read')
+    },
+    canVerTurnos() {
+      return this.$can('turnos.read')
+    },
+    canVerVehiculos() {
+      return this.$can('compras.vales.read') || this.$can('compras.vehiculos.manage')
+    },
+    canVerInformes() {
+      return this.$can('habilitaciones.read')
+    },
+    canVerUsuarios() {
+      return this.$can('users.read') || this.$can('users.manage')
+    },
+  },
 }
 </script>
 

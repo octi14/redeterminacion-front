@@ -41,6 +41,7 @@
 definePageMeta({
   middleware: ['authenticated', 'require-admin'],
   adminRoles: ['hacienda', 'master'],
+  permissions: ['hacienda.indices.update'],
 })
 </script>
 

@@ -11,8 +11,7 @@
   <div v-else class="page main-background">
     <Banner title="Compras" subtitle="Combustible"/>
 
-    <!-- Botones de acción: ocultos para quien solo ve el dashboard -->
-    <div v-if="!soloDashboardCombustible" class="combustible-actions d-flex flex-wrap justify-content-center gap-2 mt-4 mb-2">
+    <div class="combustible-actions d-flex flex-wrap justify-content-center gap-2 mt-4 mb-2">
       <b-button variant="success" size="sm" @click="showCargarOrden = true">
         <i class="bi bi-plus-circle"></i>
         Cargar Orden de Compra
@@ -23,11 +22,9 @@
       </b-button>
     </div>
 
-    <!-- Pestañas: Órdenes y Vehículos ocultas para quien solo ve dashboard (gustavociriaco) -->
     <div class="col-md-10 mx-auto mt-4">
       <b-tabs content-class="mt-0" fill class="custom-tabs">
-        <!-- Pestaña Órdenes de Compra: oculta para quien solo ve dashboard -->
-        <b-tab v-if="!soloDashboardCombustible" title="📋 Órdenes de Compra" active class="custom-tab">
+        <b-tab title="📋 Órdenes de Compra" active class="custom-tab">
           <b-table
             per-page="10"
             head-row-variant="success"
@@ -77,11 +74,10 @@
       </template>
           </b-table>
 
-          <b-pagination class="mt-4" :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
+          <b-pagination class="mt-4" :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @update:model-value="onPageChange"></b-pagination>
         </b-tab>
 
-        <!-- Pestaña Estadísticas: mismo dashboard para jefeCompras y gustavociriaco -->
-        <b-tab v-if="jefeCompras || soloDashboardCombustible" title="📊 Estadísticas" :active="soloDashboardCombustible" class="custom-tab">
+        <b-tab v-if="jefeCompras" title="📊 Estadísticas" class="custom-tab">
           <div class="dashboard-combustible">
             <!-- Estado de carga -->
             <LoadingState
@@ -129,8 +125,7 @@
           </div>
         </b-tab>
 
-        <!-- Pestaña Vehículos: oculta para quien solo ve dashboard -->
-        <b-tab v-if="!soloDashboardCombustible" title="🚗 Vehículos" class="custom-tab">
+        <b-tab title="🚗 Vehículos" class="custom-tab">
           <!-- Filtros -->
           <div class="row no-gutters filtro-section">
             <div class="col-md-3">
@@ -156,7 +151,7 @@
                   v-model="filtroPatenteVehiculos"
                   placeholder="Buscar por patente..."
                   size="sm"
-                  @input="onFiltroPatenteChange"
+                  @update:model-value="onFiltroPatenteChange"
                 ></b-form-input>
               </b-form-group>
             </div>
@@ -204,7 +199,7 @@
             </template>
           </b-table>
 
-          <b-pagination class="mt-4" :total-rows="filteredVehiculos.length" :per-page="perPageVehiculos" v-model="currentPageVehiculos" align="center" @input="onPageChangeVehiculos"></b-pagination>
+          <b-pagination class="mt-4" :total-rows="filteredVehiculos.length" :per-page="perPageVehiculos" v-model="currentPageVehiculos" align="center" @update:model-value="onPageChangeVehiculos"></b-pagination>
         </b-tab>
       </b-tabs>
     </div>
@@ -573,17 +568,14 @@
 </template>
 
 <script setup>
-import { COMBUSTIBLE_DASHBOARD_USERNAMES } from '~/utils/access-control'
-
 definePageMeta({
   middleware: ['authenticated', 'require-admin'],
   adminRoles: ['compras', 'master'],
-  allowedUsernames: COMBUSTIBLE_DASHBOARD_USERNAMES,
+  permissions: ['compras.vales.read'],
 })
 </script>
 
 <script>
-import { COMBUSTIBLE_DASHBOARD_USERNAMES } from '~/utils/access-control'
 import areas from '~/constants/areas.js'
 import EstadisticasDetalladas from '~/components/dashboard/EstadisticasDetalladas.vue'
 import CombustiblePorArea from '~/components/dashboard/CombustiblePorArea.vue'
@@ -681,21 +673,13 @@ export default {
   },
   computed: {
     adminCompras(){
-      const admin = useUserStore().admin
-      return admin === "compras" || admin === "master"
+      return this.$can('compras.vales.read')
     },
-    /** Puede entrar a la página combustible: admin compras o usuario con solo dashboard. */
     puedeVerPaginaCombustible() {
-      return this.adminCompras || COMBUSTIBLE_DASHBOARD_USERNAMES.includes(useUserStore().username)
+      return this.adminCompras
     },
-    /** Solo ve el dashboard de combustible (sin órdenes ni vehículos). */
-    soloDashboardCombustible() {
-      return COMBUSTIBLE_DASHBOARD_USERNAMES.includes(useUserStore().username)
-    },
-    /** Solo martinjordan@gesell.gob.ar (o master) puede ver la pestaña Estadísticas dentro de la vista completa. */
     jefeCompras() {
-      const userStore = useUserStore()
-      return (userStore.admin === "compras" && userStore.username === "martinjordan@gesell.gob.ar") || userStore.admin === "master"
+      return this.$can('compras.combustible.estadisticas')
     },
     ordenesCompra() {
       return useCombustibleStore().all;
@@ -794,42 +778,31 @@ export default {
   },
   methods: {
     async loadCombustiblePage() {
-      const soloDashboard = COMBUSTIBLE_DASHBOARD_USERNAMES.includes(useUserStore().username)
-
-      if (!soloDashboard) {
-        this.loadingOrdenes = true
-        this.loadingVehiculos = true
-        try {
-          await useCombustibleStore().getOrdenesCompra()
-          this.items = this.ordenesCompra
-          await useCombustibleStore().getProveedores()
-        } catch (error) {
-          console.error('Error al cargar órdenes de compra:', error)
-          this.items = []
-        } finally {
-          this.loadingOrdenes = false
-        }
-
-        try {
-          await useVehiculosStore().getAll()
-          this.vehiculos = useVehiculosStore().all || []
-        } catch (error) {
-          console.error('Error al cargar vehículos:', error)
-          this.vehiculos = []
-        } finally {
-          this.loadingVehiculos = false
-        }
-      } else {
+      this.loadingOrdenes = true
+      this.loadingVehiculos = true
+      try {
+        await useCombustibleStore().getOrdenesCompra()
+        this.items = this.ordenesCompra
+        await useCombustibleStore().getProveedores()
+      } catch (error) {
+        console.error('Error al cargar órdenes de compra:', error)
+        this.items = []
+      } finally {
         this.loadingOrdenes = false
+      }
+
+      try {
+        await useVehiculosStore().getAll()
+        this.vehiculos = useVehiculosStore().all || []
+      } catch (error) {
+        console.error('Error al cargar vehículos:', error)
+        this.vehiculos = []
+      } finally {
         this.loadingVehiculos = false
       }
 
       const userStore = useUserStore()
-      const puedeVerDashboard = userStore && (
-        (userStore.admin === 'compras' && userStore.username === 'martinjordan@gesell.gob.ar') ||
-        userStore.admin === 'master' ||
-        COMBUSTIBLE_DASHBOARD_USERNAMES.includes(userStore.username)
-      )
+      const puedeVerDashboard = userStore && this.$can('compras.combustible.estadisticas')
       if (puedeVerDashboard) {
         try {
           this.loadingEstadisticas = true

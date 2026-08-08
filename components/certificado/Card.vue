@@ -57,12 +57,6 @@ export default {
     this.obraUvi = this.obra?.ponderacion?.[0]?.porcentaje == null
   },
   computed: {
-    isAdmin(){
-      return Boolean(useUserStore().admin == "true")
-    },
-    adminHacienda(){
-      return useUserStore().admin == "hacienda"
-    },
     tableItems() {
       return this.certificado.items.map((item, index) => ({
         item: `Item ${index + 1}: ${item.item}`,

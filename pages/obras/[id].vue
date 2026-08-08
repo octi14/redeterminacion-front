@@ -188,6 +188,7 @@
 definePageMeta({
   middleware: ['authenticated', 'require-admin'],
   adminRoles: ['hacienda', 'master'],
+  permissions: ['hacienda.obras.update'],
 })
 </script>
 
@@ -247,12 +248,8 @@ export default {
         }
       ].filter(button => this.shouldShowButton(button));
     },
-    isAdmin(){
-      return Boolean(useUserStore().admin == "true")
-    },
     adminHacienda(){
-      const admin = useUserStore().admin
-      return admin == "hacienda" || admin == "master"
+      return this.$can('hacienda.obras.update')
     },
   },
   activated() {
@@ -291,15 +288,6 @@ export default {
       } else {
         return true;
       }
-    },
-    agregarCertif() {
-      this.adding = !this.adding
-    },
-    editObra() {
-      this.editing = true
-    },
-    onShowCertif() {
-      this.watchingCertif = !this.watchingCertif
     },
     toggleProgress() {
       this.watchingProgress = !this.watchingProgress;

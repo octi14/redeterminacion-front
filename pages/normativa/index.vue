@@ -59,12 +59,6 @@ export default {
       bannerNormativaMobile,
     }
   },
-  computed: {
-    adminHacienda() {
-      const admin = useUserStore().admin
-      return admin == "hacienda" || admin == "master";
-    },
-  },
   methods: {
     onSlideStart() {},
     onSlideEnd() {},

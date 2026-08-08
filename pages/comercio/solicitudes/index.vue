@@ -102,7 +102,7 @@
         </b-button>
       </template>
     </b-table>
-    <b-pagination v-if="!loading" class="internal-use-pagination internal-use-wide mt-4" :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @input="onPageChange"></b-pagination>
+    <b-pagination v-if="!loading" class="internal-use-pagination internal-use-wide mt-4" :total-rows="filteredItems.length" :per-page="perPage" v-model="currentPage" align="center" @update:model-value="onPageChange"></b-pagination>
 
     <BModal v-model="observacionesModal" header-bg-variant="primary" title="Observaciones" title-class="text-light" no-footer centered>
       <p v-html="singleContent"></p>
@@ -114,6 +114,7 @@
 definePageMeta({
   middleware: ['authenticated', 'require-admin'],
   adminRoles: ['comercio', 'master'],
+  permissions: ['habilitaciones.read'],
 })
 </script>
 
@@ -238,17 +239,13 @@ export default{
       return Math.ceil(this.filteredItems.length / this.perPage);
     },
     adminComercio() {
-      const admin = useUserStore().admin
-      return admin === "comercio" || admin === "master"
+      return this.$can('habilitaciones.read')
     },
     adminMaster() {
-      const userStore = useUserStore()
-      return userStore.admin === "master" || userStore.username === "gracielabularte@gesell.gob.ar"
+      return this.$can('habilitaciones.visibilidad')
     },
     jefeComercio() {
-      const userStore = useUserStore()
-      return userStore.username === "nataliamegias@gesell.gob.ar" ||
-      userStore.username === "gracielabularte@gesell.gob.ar" || userStore.admin === "master"
+      return this.$can('habilitaciones.export')
     }
   },
   methods: {

@@ -66,16 +66,11 @@ export default {
     }
   },
   computed: {
-    isAdmin(){
-      return Boolean(useUserStore().admin == "true")
-    },
     adminModernizacion(){
-      const userStore = useUserStore()
-      return userStore.admin == "modernizacion" || userStore.admin === "master" || userStore.username === "gustavociriaco@gesell.gob.ar"
+      return this.$can('modernizacion.update')
     },
     adminCultura(){
-      const admin = useUserStore().admin
-      return admin == "cultura" || admin == "master"
+      return this.$can('modernizacion.update')
     },
   },
   methods: {

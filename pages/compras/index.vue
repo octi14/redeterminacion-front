@@ -10,7 +10,7 @@
       />
       <MenuItem to="/compras/proveedores" icon="pen" title="Inscripción de proveedores" description="Información acerca de la inscripción como Proveedor Municipal"/>
       <MenuItem
-        v-if="adminCompras || puedeVerDashboardCombustible"
+        v-if="adminCompras"
         to="/compras/combustible"
         title="Combustible"
         description="Administrar órdenes de compra y vales de combustible"
@@ -29,22 +29,11 @@
 </template>
 
 <script>
-import { COMBUSTIBLE_DASHBOARD_USERNAMES } from '~/utils/access-control'
-
 export default {
   computed: {
-    adminHacienda() {
-      const admin = useUserStore().admin
-      return admin == "hacienda" || admin == "master";
-    },
     adminCompras(){
-      const admin = useUserStore().admin
-      return admin == "compras" || admin == "master";
+      return this.$can('compras.ordenes.read')
     },
-    /** Usuario que solo puede ver el dashboard de combustible (sin órdenes ni vehículos). */
-    puedeVerDashboardCombustible() {
-      return COMBUSTIBLE_DASHBOARD_USERNAMES.includes(useUserStore().username)
-    }
   }
 };
 </script>

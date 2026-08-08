@@ -43,6 +43,7 @@
   definePageMeta({
     middleware: ['authenticated', 'require-admin'],
     adminRoles: ['arvige', 'master'],
+    permissions: ['abiertoAnual.read', 'abiertoAnual.update'],
   })
   </script>
 
@@ -79,8 +80,7 @@
     },
     computed: {
       adminArvige(){
-        const admin = useUserStore().admin
-        return admin == "arvige" || admin == "master"
+        return this.$can('abiertoAnual.read') || this.$can('abiertoAnual.update')
       },
       periodosEstado() {
         if (Array.isArray(this.tramite?.status) && this.tramite.status.length) {

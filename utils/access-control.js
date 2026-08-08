@@ -1,6 +1,3 @@
-/** Usuario con acceso restringido al dashboard de combustible (sin órdenes ni vehículos). */
-export const COMBUSTIBLE_DASHBOARD_USERNAMES = ['gustavociriaco@gesell.gob.ar']
-
 /**
  * Comprueba si el usuario tiene alguno de los roles de administración permitidos.
  * Los valores de `allowedRoles` deben coincidir con `userStore.admin` (ej. "recaudaciones", "master").

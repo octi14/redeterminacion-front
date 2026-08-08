@@ -11,6 +11,7 @@
 definePageMeta({
   middleware: ['authenticated', 'require-admin'],
   adminRoles: ['hacienda', 'master'],
+  permissions: ['hacienda.obras.read'],
 })
 </script>
 
@@ -18,8 +19,7 @@ definePageMeta({
 export default {
   computed: {
     adminHacienda() {
-      const admin = useUserStore().admin
-      return admin == "hacienda" ||  admin == "master"
+      return this.$can('hacienda.obras.read')
     },
   }
 }

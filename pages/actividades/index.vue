@@ -149,6 +149,7 @@
 definePageMeta({
   middleware: ['authenticated', 'require-admin'],
   adminRoles: ['master'],
+  permissions: ['activities.read'],
 })
 </script>
 
@@ -237,7 +238,7 @@ export default {
     },
 
     adminMaster(){
-      return useUserStore().admin == "master"
+      return this.$can('activities.read')
     }
 
   },

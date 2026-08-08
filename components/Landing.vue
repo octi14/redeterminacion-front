@@ -36,12 +36,11 @@ export default {
     }
   },
   computed: {
-    adminHacienda() {
-      const admin = useUserStore().admin
-      return (
-        admin === 'hacienda' ||
-        admin === 'master'
-      )
+    canVerTransito() {
+      return this.$can('habilitaciones.read')
+    },
+    canVerObras() {
+      return this.$can('hacienda.obras.read')
     },
     tileLinks() {
       if (!this.tilesReady) {
@@ -63,7 +62,7 @@ export default {
 
       const links = [...this.baseLinks]
 
-      if (this.adminHacienda) {
+      if (this.canVerTransito) {
         links.push({
           to: '/transito',
           icon: 'car-front',
@@ -86,7 +85,7 @@ export default {
         type: 'svg',
       })
 
-      if (this.adminHacienda) {
+      if (this.canVerObras) {
         links.push({
           to: '/obras',
           icon: 'calculator',
@@ -99,15 +98,7 @@ export default {
     },
   },
   mounted() {
-    if (import.meta.client && localStorage.getItem('userId')) {
-      useUserStore().setAuthenticated({
-        id: localStorage.getItem('userId'),
-        username: localStorage.getItem('username'),
-        token: localStorage.getItem('userToken'),
-        admin: localStorage.getItem('userAdmin'),
-      })
-    }
-
+    // La sesión ya se hidrata desde la cookie en plugins/session.js.
     this.$nextTick(() => {
       this.tilesReady = true
     })

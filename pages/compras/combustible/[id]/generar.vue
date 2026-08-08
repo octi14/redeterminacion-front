@@ -28,7 +28,7 @@
                   placeholder="Escriba o seleccione la patente del vehículo"
                   required
                   :disabled="loadingVehiculos"
-                  @input="onPatenteInput"
+                  @update:model-value="onPatenteInput"
                   @focus="showSugerencias = true"
                   list="patentes-list"
                   autocomplete="off"
@@ -155,6 +155,7 @@
 definePageMeta({
   middleware: ['authenticated', 'require-admin'],
   adminRoles: ['compras', 'master'],
+  permissions: ['compras.vales.read'],
 })
 </script>
 

@@ -510,6 +510,7 @@
 definePageMeta({
   middleware: ['authenticated', 'require-admin'],
   adminRoles: ['compras', 'master'],
+  permissions: ['compras.vales.read'],
 })
 </script>
 
@@ -575,8 +576,7 @@ export default {
       return this.saldosCalculados.reduce((total, s) => total + (Number(s.saldo) || 0), 0);
     },
     adminCompras(){
-      const admin = useUserStore().admin
-      return admin == "compras" || admin == "master"
+      return this.$can('compras.vales.update')
     },
     vales(){
       return Array.isArray(useCombustibleStore().vales_creados)

@@ -26,8 +26,7 @@
 export default {
   computed: {
     adminHacienda() {
-      const admin = useUserStore().admin
-      return admin === 'hacienda' || admin === 'master'
+      return this.$can('pagos.read')
     },
   },
 }

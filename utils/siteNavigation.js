@@ -1,4 +1,4 @@
-import { COMBUSTIBLE_DASHBOARD_USERNAMES } from '~/utils/access-control'
+import { userHasPermission } from '~/utils/access-control'
 
 /**
  * Índice de navegación buscable del sitio.
@@ -14,6 +14,7 @@ import { COMBUSTIBLE_DASHBOARD_USERNAMES } from '~/utils/access-control'
  * @property {string[]} [aliases] Términos alternativos de búsqueda (ej. patente → automotor)
  * @property {string[]} [adminRoles]
  * @property {string[]} [allowedUsernames]
+ * @property {string[]} [permissions]
  */
 
 /** @type {SiteNavItem[]} */
@@ -84,6 +85,7 @@ export const SITE_NAVIGATION_ITEMS = [
     to: '/transito',
     section: 'Inicio',
     adminRoles: ['hacienda', 'master'],
+    permissions: ['habilitaciones.read'],
     aliases: ['multas', 'infracciones'],
   },
   {
@@ -93,6 +95,7 @@ export const SITE_NAVIGATION_ITEMS = [
     to: '/obras',
     section: 'Inicio',
     adminRoles: ['hacienda', 'master'],
+    permissions: ['hacienda.obras.read'],
     aliases: ['obra pública', 'construcción'],
   },
 
@@ -197,7 +200,7 @@ export const SITE_NAVIGATION_ITEMS = [
     to: '/compras/combustible',
     section: 'Compras',
     adminRoles: ['compras', 'master'],
-    allowedUsernames: COMBUSTIBLE_DASHBOARD_USERNAMES,
+    permissions: ['compras.vales.read'],
     aliases: ['vales', 'nafta', 'gasoil', 'órdenes de compra'],
   },
 
@@ -249,8 +252,9 @@ function normalizeSearchText(value) {
 export function isSiteNavItemVisible(userStore, item) {
   const hasRoleRestriction = Array.isArray(item.adminRoles) && item.adminRoles.length > 0
   const hasUsernameRestriction = Array.isArray(item.allowedUsernames) && item.allowedUsernames.length > 0
+  const hasPermissionRestriction = Array.isArray(item.permissions) && item.permissions.length > 0
 
-  if (!hasRoleRestriction && !hasUsernameRestriction) {
+  if (!hasRoleRestriction && !hasUsernameRestriction && !hasPermissionRestriction) {
     return true
   }
 
@@ -262,6 +266,10 @@ export function isSiteNavItemVisible(userStore, item) {
   }
 
   if (hasUsernameRestriction && item.allowedUsernames.includes(username)) {
+    return true
+  }
+
+  if (hasPermissionRestriction && item.permissions.some((permission) => userHasPermission(userStore, permission))) {
     return true
   }
 

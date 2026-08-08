@@ -298,11 +298,11 @@
               <label class="form-check-label" for="documentCheckbox">{{ textoPopupImportante.checkbox }}</label>
           </div>
           <div class="text-center mt-3">
-              <nuxt-link :class="{ 'disabled': !documentCheckboxChecked }" :to="{path: '/comercio/abierto_anual/form'}">
+              <NuxtLink :class="{ 'disabled': !documentCheckboxChecked }" :to="{path: '/comercio/abierto_anual/form'}">
               <b-button variant="success" :disabled="!documentCheckboxChecked" @click="proceedToForm()" >
                   Aceptar
               </b-button>
-              </nuxt-link>
+              </NuxtLink>
           </div>
         </div>
     </BModal>
@@ -358,7 +358,6 @@
   import carouselMobile1 from '~/assets/1. Carrousel Mobile 1. AANUAL 2026.png'
   import carouselMobile2 from '~/assets/2. Carrousel Mobile 2. AANUAL 2026.png'
   import carouselMobile3 from '~/assets/3. Carrousel Mobile 3. AANUAL 2026.png'
-  import { computePopUpAbiertoAnualCerrado } from '~/utils/abiertoAnualPeriodos'
 
   const textoPopupImportante = {
     intro: 'Antes de continuar tené en cuenta lo siguiente:',
@@ -405,7 +404,7 @@
     },
     async mounted() {
       await useConfigStore().getAbiertoAnualPeriodos();
-      this.showClosedPopup = computePopUpAbiertoAnualCerrado(this.config);
+      this.showClosedPopup = this.config.popUpAbiertoAnualCerrado;
       this.filteredRubros.sort((a, b) => a.nombre.localeCompare(b.nombre));
     },
     methods: {

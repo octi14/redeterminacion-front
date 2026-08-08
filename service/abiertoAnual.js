@@ -106,19 +106,6 @@ const formatFile = (FileResponse) => {
       )
       return formatFile(updated)
     },
-    updateLazy: async (axios, id, { habilitacion }) => {
-      axios.setHeader('Access-Control-Allow-Origin', true)
-      const updated = await axios.$put(
-        `/habilitaciones/lazy/${id}`,
-        { habilitacion },
-      )
-      // return formatFile(updated)
-    },
-    delete: async (axios, { id, userToken }) => {
-      return await axios.$delete(`/habilitaciones/${id}`, {
-        headers: { Authorization: `Bearer ${userToken}` },
-      })
-    },
 
     // searchFiles: async (
     //   axios,

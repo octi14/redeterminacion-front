@@ -274,20 +274,13 @@ export default {
       return useConfigStore().abiertoAnualPeriodos;
     },
     periodoTexto() {
-      // Lógica para asignar un texto al periodo
-      // Por ejemplo, puedes tener un array de textos correspondientes a cada periodo
-      const periodosTextos = [
-        "Mayo",
-        "Agosto",
-        "Octubre"
-      ];
-          // Asegúrate de que el periodo esté dentro del rango del array
-          if (this.periodo >= 0 && this.periodo <= periodosTextos.length) {
-              return periodosTextos[this.periodo];
-          } else {
-              // Si el periodo está fuera de rango, retorna un mensaje de error o un valor por defecto
-              return "Periodo no válido";
-          }
+      const dateParts = this.config?.minDates?.[this.periodo]?.split('/') || []
+      if (dateParts.length !== 3) return 'Periodo no válido'
+      const month = Number(dateParts[1])
+      if (month < 1 || month > 12) return 'Periodo no válido'
+      return new Intl.DateTimeFormat('es-AR', { month: 'long' })
+        .format(new Date(2026, month - 1, 1))
+        .replace(/^./, letter => letter.toUpperCase())
       },
       estadoIcono(){
           switch(this.estadoActual){
@@ -379,6 +372,10 @@ export default {
               : 4
             break
           case 'Incompleto': {
+            if (this.config?.rectificacion) {
+              nextState = 7
+              break
+            }
             await useFechasStore().get()
             const now = new Date(useFechasStore().fecha?.fecha || Date.now())
             const maxDateParts = this.config?.maxDates?.[this.periodo]?.split('/') || []

@@ -194,21 +194,13 @@
           return useConfigStore().abiertoAnualPeriodos;
         },
         periodoTexto() {
-            // Lógica para asignar un texto al periodo
-            // Por ejemplo, puedes tener un array de textos correspondientes a cada periodo
-            const periodosTextos = [
-                "Mayo",
-                "Agosto",
-                "Octubre"
-            ];
-
-            // Asegúrate de que el periodo esté dentro del rango del array
-            if (this.periodo >= 0 && this.periodo <= periodosTextos.length) {
-                return periodosTextos[this.periodo];
-            } else {
-                // Si el periodo está fuera de rango, retorna un mensaje de error o un valor por defecto
-                return "Periodo no válido";
-            }
+            const dateParts = this.config?.minDates?.[this.periodo]?.split('/') || []
+            if (dateParts.length !== 3) return 'Periodo no válido'
+            const month = Number(dateParts[1])
+            if (month < 1 || month > 12) return 'Periodo no válido'
+            return new Intl.DateTimeFormat('es-AR', { month: 'long' })
+                .format(new Date(2026, month - 1, 1))
+                .replace(/^./, letter => letter.toUpperCase())
         },
         estadoIcono(){
             switch(this.estadoActual){
@@ -228,6 +220,9 @@
         },
         tramite(){
             return useAbiertoAnualStore().single
+        },
+        facturaPeriodo() {
+            return Array.isArray(this.tramite?.facturas) ? this.tramite.facturas[this.periodo] : null
         },
     },
     validations: {
@@ -287,7 +282,66 @@
         if (this.hardEstado != null)
             this.estadoActual = this.hardEstado;
     },
+    watch: {
+        estado() {
+            void this.recalcularEstado()
+        },
+        facturaPeriodo: {
+            handler() {
+                void this.recalcularEstado()
+            },
+            deep: true,
+        },
+        config: {
+            handler() {
+                void this.recalcularEstado()
+            },
+            deep: true,
+        },
+    },
     methods: {
+        async recalcularEstado() {
+            let nextState = this.estadoActual || 0
+            switch (this.estado) {
+                case 'Correcto':
+                    nextState = 3
+                    break
+                case 'Incorrecto':
+                    nextState = this.facturaPeriodo?.rectificando || this.config?.rectificacion ? 7 : 4
+                    break
+                case 'Incompleto': {
+                    if (this.config?.rectificacion) {
+                        nextState = 7
+                        break
+                    }
+                    await useFechasStore().get()
+                    const now = new Date(useFechasStore().fecha?.fecha || Date.now())
+                    const maxDateParts = this.config?.maxDates?.[this.periodo]?.split('/') || []
+                    const minDateParts = this.config?.minDates?.[this.periodo]?.split('/') || []
+                    if (maxDateParts.length !== 3 || minDateParts.length !== 3) {
+                        nextState = 1
+                        break
+                    }
+                    const maxDate = new Date(maxDateParts[2], maxDateParts[1] - 1, maxDateParts[0], 23, 59, 59, 999)
+                    const minDate = new Date(minDateParts[2], minDateParts[1] - 1, minDateParts[0])
+                    if (now > maxDate) {
+                        nextState = this.config?.rectificacion ? 7 : 5
+                    } else if (now < minDate) {
+                        nextState = 1
+                    } else {
+                        nextState = 6
+                    }
+                    break
+                }
+                case 'En revisión':
+                    nextState = 2
+                    break
+                default:
+                    nextState = 0
+            }
+            this.estadoPrevio = nextState
+            this.estadoActual = this.hardEstado != null ? this.hardEstado : nextState
+        },
         loadRecaptcha() {
             grecaptcha.render('captchaContainer-' + this.id, {
             sitekey: this.recaptchaSiteKey,
@@ -336,7 +390,7 @@
 
               let fileBlob = null
               // Convertir el archivo a un blob
-              if (!this.archivo instanceof Blob) {
+              if (!(this.archivo instanceof Blob)) {
                   fileBlob = new Blob([this.archivo], { type: this.archivo.type });
                   // Agregar el archivo
                   facturaParaGuardar = {

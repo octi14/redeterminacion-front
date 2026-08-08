@@ -4,19 +4,18 @@ import { defineStore } from 'pinia'
 
 export const useConfigStore = defineStore('config', {
   state: () => ({
-    abiertoAnualPeriodos: null,
+    abiertoAnualPeriodosData: null,
   }),
 
   getters: {
     abiertoAnualPeriodos(state) {
-      if (state.abiertoAnualPeriodos) return state.abiertoAnualPeriodos
-      return getDefaultAbiertoAnualPeriodos()
+      return state.abiertoAnualPeriodosData || getDefaultAbiertoAnualPeriodos()
     },
   },
 
   actions: {
     setAbiertoAnualPeriodos(data) {
-      this.abiertoAnualPeriodos = data
+      this.abiertoAnualPeriodosData = data
     },
 
     async getAbiertoAnualPeriodos() {

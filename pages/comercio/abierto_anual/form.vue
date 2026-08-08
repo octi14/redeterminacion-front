@@ -24,7 +24,7 @@
             <i class="bi bi-question-circle text-light"></i>
             <b-row>
               <label for="nroLegajo" class="col-6"> N° de legajo comercial: <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('A')" @keydown.enter.stop.prevent="openPopup('A')"></i></label>
-              <b-form-input class="col-6" v-model="nroLegajoInput" id="nroLegajo" type="text" placeholder="Ingrese un N° de Legajo Comercial" no-wheel @input="sanitizeLegajo"></b-form-input>
+              <b-form-input class="col-6" v-model="nroLegajoInput" id="nroLegajo" type="text" placeholder="Ingrese un N° de Legajo Comercial" no-wheel @update:model-value="sanitizeLegajo"></b-form-input>
               <div v-if="$v.nroLegajo.$error" class="validation-error col-12">
                 <i class="bi bi-exclamation-octagon text-danger"></i>  'Completá este campo'
               </div>
@@ -122,7 +122,6 @@
 
   <script>
   import { required, requiredIf, alpha, numeric, email, minLength, maxLength, sameAs } from '@vuelidate/validators';
-  import { computePopUpAbiertoAnualCerrado } from '~/utils/abiertoAnualPeriodos';
   export default {
     validations() {
       return {
@@ -155,8 +154,7 @@
     },
     async mounted() {
       await useConfigStore().getAbiertoAnualPeriodos();
-      const config = useConfigStore().abiertoAnualPeriodos;
-      this.showClosedPopup = computePopUpAbiertoAnualCerrado(config);
+      this.showClosedPopup = useConfigStore().abiertoAnualPeriodos.popUpAbiertoAnualCerrado;
     },
     computed: {
       config() {

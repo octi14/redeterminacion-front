@@ -46,17 +46,5 @@ export const useAbiertoAnualStore = defineStore('abiertoAnual', {
         throw new Error(e.message)
       }
     },
-
-    async updateLazy({ id, tramite }) {
-      try {
-        await AbiertoAnualService.updateLazy(useApi(), id, { tramite })
-      } catch (e) {
-        throw new Error(e.message)
-      }
-    },
-
-    async delete({ id, userToken }) {
-      return await AbiertoAnualService.delete(useApi(), { id, userToken })
-    },
   },
 })

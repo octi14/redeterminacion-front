@@ -1,5 +1,5 @@
 <template>
-  <b-modal :visible="value" size="xl" title="Detalle de declaración jurada" hide-footer @input="$emit('input', $event)">
+  <b-modal :model-value="modelValue" size="xl" title="Detalle de declaración jurada" hide-footer @update:model-value="$emit('update:modelValue', $event)">
     <template v-if="periodo">
       <b-row align-v="center" class="mb-3">
         <b-col>
@@ -60,7 +60,7 @@
       <ListPagination v-model="currentPage" :total-rows="fallecidos.length" :per-page="perPage" />
 
       <div class="text-right mt-4">
-        <b-button variant="secondary" @click="$emit('input', false)">Cerrar</b-button>
+        <b-button variant="secondary" @click="$emit('update:modelValue', false)">Cerrar</b-button>
       </div>
     </template>
     <DeceasedDetailModal v-model="showDetalleFallecido" :fallecido="fallecidoDetalle" />
@@ -76,9 +76,10 @@ import DeceasedDetailModal from '~/components/cementerio/DeceasedDetailModal.vue
 import FilePreview from '~/components/common/FilePreview.vue'
 
 export default {
+  emits: ['update:modelValue'],
   components: { PeriodSummary, ListPagination, DeceasedDetailModal, FilePreview },
   props: {
-    value: { type: Boolean, default: false },
+    modelValue: { type: Boolean, default: false },
     periodo: { type: Object, default: null },
   },
   data: () => ({

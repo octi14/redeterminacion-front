@@ -4,29 +4,30 @@
       Mostrando {{ firstRow }}-{{ lastRow }} de {{ totalRows }}
     </small>
     <b-pagination
-      :value="value"
+      :model-value="modelValue"
       :total-rows="totalRows"
       :per-page="perPage"
       align="center"
       class="mb-0"
-      @input="$emit('input', $event)"
+      @update:model-value="$emit('update:modelValue', $event)"
     />
   </div>
 </template>
 
 <script>
 export default {
+  emits: ['update:modelValue'],
   props: {
-    value: { type: Number, default: 1 },
+    modelValue: { type: Number, default: 1 },
     totalRows: { type: Number, default: 0 },
     perPage: { type: Number, default: 10 },
   },
   computed: {
     firstRow() {
-      return (this.value - 1) * this.perPage + 1
+      return (this.modelValue - 1) * this.perPage + 1
     },
     lastRow() {
-      return Math.min(this.value * this.perPage, this.totalRows)
+      return Math.min(this.modelValue * this.perPage, this.totalRows)
     },
   },
 }

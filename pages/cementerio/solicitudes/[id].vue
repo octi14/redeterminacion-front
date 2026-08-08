@@ -1,237 +1,285 @@
 <template>
   <div class="page main-background">
-    <Banner title="Detalles de solicitud"/>
-    <LoadingState
-      v-if="!item"
-      size="lg"
-      variant="primary"
-    />
+    <Banner title="Revisión de declaración jurada" subtitle="Recaudaciones" />
+    <LoadingOverlay :show="loading || procesando" :message="mensajeEspera" />
+    <b-container class="py-4">
+      <b-alert v-if="loadError" :model-value="true" variant="danger">{{ loadError }}</b-alert>
+      <template v-if="periodo">
+        <b-card class="shadow-card mb-4">
+          <b-row align-v="center">
+            <b-col>
+              <h2 class="text-success">{{ funerariaNombre }}</h2>
+              <p class="mb-0">Período {{ periodoLabel(periodo) }}</p>
+            </b-col>
+            <b-col cols="auto">
+              <b-badge :variant="statusVariant(periodo.estado)" pill>{{ estadoLabel(periodo.estado) }}</b-badge>
+            </b-col>
+          </b-row>
+          <PeriodSummary class="mt-4" :periodo="periodo" />
+        </b-card>
 
-    <template v-if="item">
-      <!-- Estado y acciones -->
-      <div class="flex col" style="width: 96%">
-        <div class="row justify-content-center mt-3">
-          <div class="h5 row"> Estado:
-            <h5 :class="getStatusClass(item.estado)" class="ml-2"> {{ item.estado }}</h5>
-          </div>
-        </div>
-      </div>
-      <div class="row col-10 mx-auto justify-content-center" v-if="adminCementerio">
-        <b-button @click="onShowApprove" variant="success" class="btn-4 mt-3 mx-1" v-if="item.estado==='En revisión'"> Aprobar solicitud </b-button>
-        <b-button @click="onShowReject" class="btn-3 mt-3 mx-1"> Rechazar solicitud </b-button>
-        <b-button @click="onShowRestore" variant="secondary" class="btn-2 mt-3 mx-1"> Volver a En revisión </b-button>
-      </div>
+        <b-card class="shadow-card mb-4">
+          <h3 class="text-success">Comprobante mensual</h3>
+          <b-row align-v="center">
+            <b-col>
+              <a v-if="periodo.comprobantePagoMensual && periodo.comprobantePagoMensual.url" :href="periodo.comprobantePagoMensual.url" target="_blank" title="Ver comprobante" aria-label="Ver comprobante">
+                <b-icon-file-earmark-text font-scale="1.25" />
+              </a>
+              <span v-else class="text-danger">No se recibió un comprobante mensual.</span>
+            </b-col>
+            <b-col cols="auto">
+              <b-badge :variant="statusVariant(periodo.estadoRevisionPagoMensual)">
+                {{ estadoLabel(periodo.estadoRevisionPagoMensual || 'PENDIENTE') }}
+              </b-badge>
+              <b-button size="sm" variant="success" title="Aprobar" aria-label="Aprobar" :disabled="procesando" @click="revisarMensual('APROBADO')"><b-icon-check-lg /></b-button>
+              <b-button size="sm" variant="danger" title="Rechazar" aria-label="Rechazar" :disabled="procesando" @click="revisarMensual('RECHAZADO')"><b-icon-x font-scale="1.25" /></b-button>
+            </b-col>
+          </b-row>
+        </b-card>
 
-      <!-- Datos funeraria y óbito -->
-      <b-card no-body class="container col-md-6 col-sm-8 shadow-card mt-4 mx-auto">
-        <div class="container text-center mx-auto">
-          <h2 class="text-success mt-2"><b> Datos de la funeraria </b></h2>
-          <hr/>
-        </div>
-        <div class="container mx-auto">
-          <div class="layout"><p class="col col-main"><strong>CUIT</strong></p><p class="col col-complementary"><a>{{ item.funeraria?.cuit }}</a></p></div>
-          <div class="layout"><p class="col col-main"><strong>Responsable</strong></p><p class="col col-complementary"><a>{{ item.funeraria?.responsable }}</a></p></div>
-          <div class="layout"><p class="col col-main"><strong>Teléfono</strong></p><p class="col col-complementary"><a>{{ item.funeraria?.telefono }}</a></p></div>
-          <div class="layout"><p class="col col-main"><strong>Mail</strong></p><p class="col col-complementary"><a>{{ item.funeraria?.mail }}</a></p></div>
-        </div>
-      </b-card>
+        <b-card class="shadow-card mb-4">
+          <h3 class="text-success mb-3">Pagos y exenciones individuales</h3>
+          <b-row>
+            <b-col md="6">
+              <b-form-group label="Buscar fallecido">
+                <b-form-input v-model="busqueda" placeholder="Nombre, apellido o documento" />
+              </b-form-group>
+            </b-col>
+            <b-col md="3">
+              <b-form-group label="Condición">
+                <b-form-select v-model="condicion" :options="condicionOptions" />
+              </b-form-group>
+            </b-col>
+            <b-col md="3">
+              <b-form-group label="Estado de revisión">
+                <b-form-select v-model="estadoRevision" :options="revisionOptions" />
+              </b-form-group>
+            </b-col>
+          </b-row>
+          <b-table responsive hover :items="fallecidosPaginados" :fields="fields" show-empty empty-text="Sin fallecidos que coincidan con los filtros">
+            <template #cell(fallecido)="row">{{ nombreFallecido(row.item) }}</template>
+            <template #cell(importe)="row">
+              <b-badge v-if="row.item.condicionPago === 'EXENTO'" variant="info">Exento</b-badge>
+              <span v-else>{{ moneda(row.item.precioAplicado) }}</span>
+            </template>
+            <template #cell(comprobante)="row">
+              <a v-if="comprobanteUrl(row.item)" :href="comprobanteUrl(row.item)" target="_blank" title="Ver archivo" aria-label="Ver archivo"><b-icon-file-earmark-text font-scale="1.25" /></a>
+              <span v-else class="text-danger">Sin archivo</span>
+            </template>
+            <template #cell(estadoRevisionPago)="row">
+              <b-badge :variant="statusVariant(row.item.estadoRevisionPago || 'PENDIENTE')">
+                {{ estadoLabel(row.item.estadoRevisionPago || 'PENDIENTE') }}
+              </b-badge>
+            </template>
+            <template #cell(acciones)="row">
+              <b-button size="sm" variant="link" class="text-primary" title="Ver detalle" aria-label="Ver detalle" :disabled="procesando" @click="abrirDetalle(row.item)">
+                <b-icon-search />
+              </b-button>
+              <b-button size="sm" variant="outline-success" title="Aprobar" aria-label="Aprobar" :disabled="procesando" @click="revisarIndividual(row.item, 'APROBADO')">
+                <b-icon-check-lg />
+              </b-button>
+              <b-button size="sm" variant="outline-danger" title="Rechazar" aria-label="Rechazar" :disabled="procesando" @click="revisarIndividual(row.item, 'RECHAZADO')">
+                <b-icon-x font-scale="1.25" />
+              </b-button>
+            </template>
+          </b-table>
+          <ListPagination v-model="currentPage" :total-rows="fallecidosFiltrados.length" :per-page="perPage" />
+        </b-card>
 
-      <b-card no-body class="container col-md-6 col-sm-8 shadow-card mt-4 mx-auto">
-        <div class="container text-center mx-auto">
-          <h2 class="text-success mt-2"><b> Datos del óbito </b></h2>
-          <hr/>
-        </div>
-        <div class="container mx-auto">
-          <div class="layout"><p class="col col-main"><strong>Apellido</strong></p><p class="col col-complementary"><a>{{ item.obito?.apellido }}</a></p></div>
-          <div class="layout"><p class="col col-main"><strong>Nombre</strong></p><p class="col col-complementary"><a>{{ item.obito?.nombre }}</a></p></div>
-          <div class="layout"><p class="col col-main"><strong>Tipo de documento</strong></p><p class="col col-complementary"><a>{{ item.obito?.tipoDocumento }}</a></p></div>
-          <div class="layout"><p class="col col-main"><strong>Nro de documento</strong></p><p class="col col-complementary"><a>{{ item.obito?.numeroDocumento }}</a></p></div>
-          <div class="layout"><p class="col col-main"><strong>Fecha de defunción</strong></p><p class="col col-complementary"><a>{{ item.obito?.fechaDefuncion ? new Date(item.obito.fechaDefuncion).toLocaleDateString('es-AR') : '' }}</a></p></div>
-        </div>
-      </b-card>
-
-      <!-- Documentación -->
-      <div class="container col-md-6 col-sm-8 card shadow-card mt-4 mb-3 mx-auto">
-        <div class="container text-center mx-auto">
-          <h2 class="text-success mt-2"><b> Documentación presentada </b></h2>
-          <hr/>
-        </div>
-        <div class="container justify-content-center mx-auto" v-if="documentos">
-          <div v-for="(doc, nombre) in documentos" :key="nombre">
-            <div class="layout" v-if="doc && doc.url">
-              <p class="col col-main"><strong>{{ nombre }}</strong></p>
-              <p class="col col-complementary">
-                <a :href="doc.url" target="_blank">
-                  <b-button size="sm" variant="outline-primary" pill>
-                    <i class="bi bi-eye"></i> Ver
-                  </b-button>
-                </a>
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="justify-content-center mx-auto" v-else>
-          <LoadingState text="Cargando..." variant="success" size="lg" />
-        </div>
-      </div>
-    </template>
-
-    <div class="page-btn-volver-wrap">
-      <NuxtLink to="/cementerio/solicitudes">
-        <b-button variant="primary" size="sm" class="page-btn-volver">Volver</b-button>
-      </NuxtLink>
-    </div>
-
-    <!-- Modals -->
-    <BModal v-model="showReject" no-footer :header-bg-variant="'danger'" centered>
-      <template #header>
-        <div class="confirmation-popup-header mx-auto">
-          <i class="bi bi-envelope text-light"></i>
+        <b-alert v-if="!puedeAprobar" :model-value="true" variant="info">
+          Para aprobar el período deben estar aprobados todos los comprobantes individuales y el comprobante mensual.
+        </b-alert>
+        <div class="text-center mb-4">
+          <NuxtLink to="/cementerio/solicitudes">
+            <b-button variant="secondary">Volver</b-button>
+          </NuxtLink>
+          <b-button variant="success" title="Aprobar período" aria-label="Aprobar período" :disabled="!puedeAprobar || procesando" @click="resolver('APROBADO')"><b-icon-check-lg /></b-button>
+          <b-button variant="danger" title="Rechazar período" aria-label="Rechazar período" :disabled="procesando" @click="resolver('RECHAZADO')"><b-icon-x font-scale="1.25" /></b-button>
         </div>
       </template>
-      <div class="confirmation-popup-body">
-        <h2 class="icon-orange text-danger text-center"><b>Rechazar solicitud</b></h2>
-        <p>Se enviará un correo a la funeraria informando el rechazo.</p>
-        <div class="text-center mt-3">
-          <b-button variant="danger" @click="onSendReject()">Enviar</b-button>
-        </div>
-      </div>
-    </BModal>
-
-    <BModal v-model="showApprove" no-footer :header-bg-variant="'success'" centered>
-      <template #header>
-        <div class="confirmation-popup-header mx-auto">
-          <i class="bi bi-check-circle text-light"></i>
-        </div>
-      </template>
-      <div class="confirmation-popup-body">
-        <h2 class="icon-orange text-success text-center"><b>Aprobar solicitud</b></h2>
-        <p class="text-center">Se enviará un correo informando la aprobación.</p>
-        <div class="text-center mt-3">
-          <b-button variant="primary" @click="onSendApprove()">Aceptar</b-button>
-        </div>
-      </div>
-    </BModal>
-
-    <BModal v-model="showRestore" no-footer :header-bg-variant="'secondary'" centered>
-      <template #header>
-        <div class="confirmation-popup-header mx-auto">
-          <i class="bi bi-exclamation-triangle text-light"></i>
-        </div>
-      </template>
-      <div class="confirmation-popup-body text-center">
-        <h3 class="text-secondary text-center mb-4"><b>Volver a En revisión</b></h3>
-        <div class="text-center mt-4">
-          <b-button variant="success" @click="onSendRestore()">Aceptar</b-button>
-          <b-button variant="danger" @click="showRestore = false">Cancelar</b-button>
-        </div>
-      </div>
-    </BModal>
+    </b-container>
+    <DeceasedDetailModal v-model="showDetalle" :fallecido="fallecidoDetalle" />
   </div>
 </template>
 
 <script setup>
 definePageMeta({
   middleware: ['authenticated', 'require-admin'],
-  adminRoles: ['cementerio', 'master'],
-  permissions: ['cementerio.read', 'cementerio.review', 'cementerio.admin'],
+  permissions: ['cementerio.review', 'cementerio.admin'],
 })
 </script>
 
 <script>
-import MailerService from '~/service/mailer.js'
+import PeriodSummary from '~/components/cementerio/PeriodSummary.vue'
+import LoadingOverlay from '~/components/cementerio/LoadingOverlay.vue'
+import ListPagination from '~/components/cementerio/ListPagination.vue'
+import DeceasedDetailModal from '~/components/cementerio/DeceasedDetailModal.vue'
+import { formatCurrency, formatPeriodLabel, getStatusVariant } from '~/utils/cementerio'
 
 export default {
-  data() {
-    return {
-      item: null,
-      documentos: null,
-      showApprove: false,
-      showReject: false,
-      showRestore: false,
-      statusClasses: { 'En revisión': 'text-primary', 'Rechazada': 'text-danger', 'Aprobada': 'text-darkgreen' },
-    }
+  components: { PeriodSummary, LoadingOverlay, ListPagination, DeceasedDetailModal },
+  setup() {
+    const { showToast } = useProjectToast()
+    return { showToast }
+  },
+  data: () => ({
+    loading: false,
+    loadError: '',
+    procesando: false,
+    mensajeEspera: 'Cargando la declaración jurada...',
+    busqueda: '',
+    condicion: '',
+    estadoRevision: '',
+    currentPage: 1,
+    perPage: 10,
+    showDetalle: false,
+    fallecidoDetalle: null,
+    fields: [
+      { key: 'fallecido', label: 'Fallecido' },
+      { key: 'importe', label: 'Condición / importe' },
+      { key: 'comprobante', label: 'Comprobante' },
+      { key: 'estadoRevisionPago', label: 'Revisión' },
+      { key: 'acciones', label: '' },
+    ],
+  }),
+  computed: {
+    periodo() {
+      return useCementerioStore().periodo
+    },
+    funerariaNombre() {
+      return this.periodo && this.periodo.funeraria && this.periodo.funeraria.nombre || 'Funeraria'
+    },
+    puedeAprobar() {
+      if (!this.periodo || this.periodo.estadoRevisionPagoMensual !== 'APROBADO') return false
+      return (this.periodo.fallecidos || []).every(item => item.estadoRevisionPago === 'APROBADO')
+    },
+    fallecidosFiltrados() {
+      const term = this.busqueda.trim().toLowerCase()
+      return (this.periodo && this.periodo.fallecidos || []).filter(item => {
+        const obito = item.obito || {}
+        const searchable = [obito.nombre, obito.apellido, obito.numeroDocumento].filter(Boolean).join(' ').toLowerCase()
+        return (!term || searchable.includes(term))
+          && (!this.condicion || item.condicionPago === this.condicion)
+          && (!this.estadoRevision || (item.estadoRevisionPago || 'PENDIENTE') === this.estadoRevision)
+      })
+    },
+    fallecidosPaginados() {
+      const start = (this.currentPage - 1) * this.perPage
+      return this.fallecidosFiltrados.slice(start, start + this.perPage)
+    },
+    condicionOptions() {
+      return [
+        { value: '', text: 'Todas' },
+        { value: 'PAGO', text: 'Pago' },
+        { value: 'EXENTO', text: 'Exento' },
+      ]
+    },
+    revisionOptions() {
+      return [
+        { value: '', text: 'Todos' },
+        { value: 'PENDIENTE', text: 'Pendientes' },
+        { value: 'APROBADO', text: 'Aprobados' },
+        { value: 'RECHAZADO', text: 'Rechazados' },
+      ]
+    },
+  },
+  watch: {
+    busqueda() {
+      this.currentPage = 1
+    },
+    condicion() {
+      this.currentPage = 1
+    },
+    estadoRevision() {
+      this.currentPage = 1
+    },
+    fallecidosFiltrados(items) {
+      this.currentPage = Math.min(this.currentPage, Math.max(1, Math.ceil(items.length / this.perPage)))
+    },
   },
   async mounted() {
-    const id = this.$route.params.id
-    await useCementerioStore().getSingle({ id })
-    this.item = useCementerioStore().single
-    const api = useApi()
-    const documentosResp = await this.$services.cementerio?.getDocumentos?.(api, { id }) || await api.$get(`/cementerio/certificadosDefuncion/documentos/${id}`)
-    this.documentos = documentosResp.data || documentosResp
+    await this.cargar()
   },
-  computed: {
-    adminCementerio(){
-      const admin = useUserStore().admin
-      return admin == "cementerio" || admin == "master"
-    },
+  async activated() {
+    await this.cargar()
   },
   methods: {
-    getStatusClass(status) { return this.statusClasses[status] || '' },
-    onShowApprove(){ this.showApprove = true },
-    onShowReject(){ this.showReject = true },
-    onShowRestore(){ this.showRestore = true },
-    async onSendApprove(){
-      const id = this.$route.params.id
-      await useCementerioStore().update({ id, certificado: { estado: 'Aprobada' } })
-      this.item.estado = 'Aprobada'
-      try{
-        const destinatario = this.item.funeraria?.mail
-        const asunto = `Aprobación de solicitud de certificado de defunción`
-        const mensaje = `Estimado/a,
-
-Su solicitud ha sido aprobada.
-
-Fecha: ${new Date().toLocaleDateString('es-AR')}
-
-Saludos cordiales.`
-        await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
-      }catch(e){}
-      this.showApprove = false
+    moneda: formatCurrency,
+    periodoLabel: formatPeriodLabel,
+    statusVariant: getStatusVariant,
+    async cargar() {
+      this.loading = true
+      this.loadError = ''
+      try {
+        await useCementerioStore().getPeriodo({ id: this.$route.params.id })
+      } catch (error) {
+        this.loadError = error.message || 'No se pudo cargar la declaración.'
+      } finally {
+        this.loading = false
+      }
     },
-    async onSendReject(){
-      const id = this.$route.params.id
-      await useCementerioStore().update({ id, certificado: { estado: 'Rechazada' } })
-      this.item.estado = 'Rechazada'
-      try{
-        const destinatario = this.item.funeraria?.mail
-        const asunto = `Rechazo de solicitud de certificado de defunción`
-        const mensaje = `Estimado/a,
-
-Su solicitud ha sido rechazada.
-
-Saludos cordiales.`
-        await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
-      }catch(e){}
-      this.showReject = false
+    notify(message, variant = 'success') {
+      this.showToast(message, { variant })
     },
-    async onSendRestore(){
-      const id = this.$route.params.id
-      await useCementerioStore().update({ id, certificado: { estado: 'En revisión' } })
-      this.item.estado = 'En revisión'
-      try{
-        const destinatario = this.item.funeraria?.mail
-        const asunto = `Actualización de solicitud de certificado de defunción`
-        const mensaje = `Estimado/a,
-
-Su solicitud ha vuelto al estado: En revisión.
-
-Saludos cordiales.`
-        await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
-      }catch(e){}
-      this.showRestore = false
+    estadoLabel(value) {
+      return String(value || '').replaceAll('_', ' ').toLowerCase()
+    },
+    nombreFallecido(item) {
+      return [item.obito && item.obito.apellido, item.obito && item.obito.nombre].filter(Boolean).join(', ')
+    },
+    comprobanteUrl(item) {
+      const doc = item.documentos && item.documentos.comprobantePagoTasa
+      return doc && doc.url
+    },
+    abrirDetalle(item) {
+      this.fallecidoDetalle = item
+      this.showDetalle = true
+    },
+    async revisarIndividual(item, estado) {
+      await this.runAction(
+        `Guardando la revisión del comprobante de ${this.nombreFallecido(item)}...`,
+        'La revisión individual fue guardada.',
+        () => useCementerioStore().revisarPago({
+          periodoId: this.periodo.id || this.periodo._id,
+          fallecidoId: item.id || item._id,
+          estado,
+        }),
+      )
+    },
+    async revisarMensual(estado) {
+      await this.runAction(
+        'Guardando la revisión del comprobante mensual...',
+        'La revisión del comprobante mensual fue guardada.',
+        () => useCementerioStore().revisarPagoMensual({
+          periodoId: this.periodo.id || this.periodo._id,
+          estado,
+        }),
+      )
+    },
+    async resolver(estado) {
+      await this.runAction(
+        estado === 'APROBADO' ? 'Aprobando el período...' : 'Rechazando el período...',
+        estado === 'APROBADO' ? 'El período fue aprobado.' : 'El período fue rechazado.',
+        () => useCementerioStore().resolverPeriodo({
+          id: this.periodo.id || this.periodo._id,
+          estado,
+        }),
+      )
+    },
+    async runAction(message, successMessage, action) {
+      if (this.procesando) return
+      this.procesando = true
+      this.mensajeEspera = message
+      try {
+        await action()
+        this.notify(successMessage)
+        await this.cargar()
+      } catch (error) {
+        this.notify(error.message || 'No se pudo completar la acción.', 'danger')
+      } finally {
+        this.procesando = false
+      }
     },
   },
 }
 </script>
-
-<style scoped>
-.col-main { flex: 1; }
-.col-complementary { flex: 1; }
-.icon-orange{ color: #E27910; }
-.text-loading{ color: #0eb7b2ab; }
-@media only screen and (min-width: 640px) { .layout { display: flex; max-width: 90%; margin: auto; } }
-</style>
-
-
-

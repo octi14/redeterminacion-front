@@ -1,5 +1,5 @@
 <template>
-  <b-modal :visible="value" size="lg" title="Detalle del fallecido y comprobante" hide-footer @input="$emit('input', $event)">
+  <b-modal :model-value="modelValue" size="lg" title="Detalle del fallecido y comprobante" hide-footer @update:model-value="$emit('update:modelValue', $event)">
     <template v-if="fallecido">
       <b-row>
         <b-col md="6"><Detail label="Fallecido" :value="nombreFallecido" /></b-col>
@@ -32,7 +32,7 @@
         </b-col>
       </b-row>
       <div class="text-right mt-3">
-        <b-button variant="secondary" @click="$emit('input', false)">Cerrar</b-button>
+        <b-button variant="secondary" @click="$emit('update:modelValue', false)">Cerrar</b-button>
       </div>
     </template>
   </b-modal>
@@ -45,9 +45,10 @@ import Detail from '~/components/cementerio/DetailField.vue'
 import FilePreview from '~/components/common/FilePreview.vue'
 
 export default {
+  emits: ['update:modelValue'],
   components: { Detail, FilePreview },
   props: {
-    value: { type: Boolean, default: false },
+    modelValue: { type: Boolean, default: false },
     fallecido: { type: Object, default: null },
   },
   computed: {

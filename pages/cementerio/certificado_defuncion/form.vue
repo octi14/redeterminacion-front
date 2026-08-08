@@ -110,10 +110,29 @@
 
     <b-card no-body class="col-8 mt-1 section-card"  style="margin: 0px auto 2rem">
       <fieldset>
+        <legend><h3>Sepultura</h3></legend>
+      </fieldset>
+      <b-row>
+        <b-col lg="6">
+          <b-form-group label="Tipo de sepultura *" label-for="tipo-sepultura">
+            <b-form-select id="tipo-sepultura" v-model="tipoSepultura" @change="$v.tipoSepultura.$touch()">
+              <option value="" disabled>Selecciona un tipo</option>
+              <option v-for="tipo in TIPOS_SEPULTURA" :key="tipo.value" :value="tipo.value">{{ tipo.text }}</option>
+            </b-form-select>
+            <div v-if="$v.tipoSepultura.$error" class="validation-error">
+              <i class="bi bi-exclamation-octagon text-danger"></i> Campo requerido.
+            </div>
+          </b-form-group>
+        </b-col>
+      </b-row>
+    </b-card>
+
+    <b-card no-body class="col-8 mt-1 section-card"  style="margin: 0px auto 2rem">
+      <fieldset>
         <legend><h3>Documentación</h3></legend>
         <p>Subí archivos legibles en formato imagen o PDF (máx. 15 Mb).</p>
       </fieldset>
-      
+
       <b-row>
         <b-col lg="12" style="margin-bottom: 1rem;">
           <b-form-checkbox v-model="exentoPagoTasa">
@@ -170,6 +189,7 @@
 
 <script>
 import { required, numeric, email, sameAs, maxLength, minLength } from '@vuelidate/validators';
+import { TIPOS_SEPULTURA } from '~/config/cementerio';
 
 export default{
   validations() {
@@ -187,14 +207,17 @@ export default{
         tipoDocumento: { required },
         numeroDocumento: { required, numeric },
         fechaDefuncion: { required }
-      }
+      },
+      tipoSepultura: { required },
     }
   },
   data(){
     return{
+      TIPOS_SEPULTURA,
       maxFileSize: 15 * 1024 * 1024,
       funeraria: { cuit: '', responsable: '', telefono: '', mail: '', mail2: '' },
       obito: { apellido: '', nombre: '', tipoDocumento: '', numeroDocumento: '', fechaDefuncion: '' },
+      tipoSepultura: '',
       documentos: { certificadoDefuncion: null, comprobantePagoTasa: null },
       docTouched: { certificadoDefuncion: false, comprobantePagoTasa: false },
       docErrors: { certificadoDefuncion: null, comprobantePagoTasa: null },
@@ -282,8 +305,13 @@ export default{
               numeroDocumento: this.obito.numeroDocumento,
               fechaDefuncion: this.obito.fechaDefuncion,
             },
+            tipoSepultura: this.tipoSepultura,
+            condicionPago: this.exentoPagoTasa ? 'EXENTO' : 'PAGO',
             documentos: documentosParaGuardar,
           };
+
+          const funerariaId = this.$route.query.funerariaId;
+          if (funerariaId) certificado.funerariaId = funerariaId;
 
           await useCementerioStore().create({ certificado });
           this.showOk = true;

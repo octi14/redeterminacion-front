@@ -1,4 +1,6 @@
-﻿const formatFile = (res) => ({
+﻿import { unwrapData } from '~/utils/cementerio.js'
+
+const formatFile = (res) => ({
   id: res._id,
   estado: res.estado,
   createdAt: new Date(res.createdAt).toLocaleDateString('es-AR'),
@@ -33,6 +35,30 @@ export default {
   },
   delete: async (axios, { id }) => {
     return await axios.$delete(`/cementerio/certificadosDefuncion/${id}`);
+  },
+
+  getPeriodos: async (axios) => {
+    return unwrapData(await axios.$get('/cementerio/periodos'));
+  },
+  getMisPeriodos: async (axios, { funerariaId } = {}) => {
+    return unwrapData(await axios.$get('/cementerio/periodos/mis-periodos', {
+      params: funerariaId ? { funerariaId } : {},
+    }));
+  },
+  getPeriodo: async (axios, { id }) => {
+    return unwrapData(await axios.$get(`/cementerio/periodos/${id}`));
+  },
+  confirmarPeriodo: async (axios, { id, comprobantePagoMensual }) => {
+    return unwrapData(await axios.$post(`/cementerio/periodos/${id}/confirmar`, { comprobantePagoMensual }));
+  },
+  revisarPago: async (axios, { periodoId, fallecidoId, estado, observacion }) => {
+    return unwrapData(await axios.$put(`/cementerio/periodos/${periodoId}/fallecidos/${fallecidoId}/revision`, { estado, observacion }));
+  },
+  revisarPagoMensual: async (axios, { periodoId, estado, observacion }) => {
+    return unwrapData(await axios.$put(`/cementerio/periodos/${periodoId}/revision-pago-mensual`, { estado, observacion }));
+  },
+  resolverPeriodo: async (axios, { id, estado, observacion }) => {
+    return unwrapData(await axios.$put(`/cementerio/periodos/${id}/resolver`, { estado, observacion }));
   },
 }
 

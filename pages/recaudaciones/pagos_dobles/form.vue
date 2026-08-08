@@ -382,7 +382,6 @@
 
 <script>
 import { required, requiredIf, alpha, numeric, email, minLength, maxLength, sameAs } from '@vuelidate/validators';
-import MailerService from '~/service/mailer.js'
 
 export default{
     validations() {
@@ -663,15 +662,12 @@ export default{
           // Usar el store como en tramites/form.vue
           const response = await usePagosDoblesStore().create({
             pagoDoble,
+            notificacion: {
+              templateKey: 'pagosDobles.solicitud_recibida',
+              context: {},
+            },
           });
 
-          await MailerService.enviarCorreo(useApi(), {
-            destinatario: this.solicitante.mail,
-            templateKey: 'pagosDobles.solicitud_recibida',
-            context: {
-              nroTramite: response.data
-            }
-          });
           this.nroTramite = response.data
           this.showPopupFormLoading = false
           await this.$nextTick()

@@ -34,13 +34,13 @@ export const usePagosDoblesStore = defineStore('pagosDobles', {
       this.setSingle(found)
     },
 
-    async create({ pagoDoble }) {
-      return await PagoDobleService.create(useApi(), { pagoDoble })
+    async create({ pagoDoble, notificacion }) {
+      return await PagoDobleService.create(useApi(), { pagoDoble, notificacion })
     },
 
-    async update({ id, pago }) {
+    async update({ id, pago, notificacion }) {
       try {
-        const updated = await PagoDobleService.update(useApi(), id, { pago })
+        const updated = await PagoDobleService.update(useApi(), id, { pago, notificacion })
         this.setSingle({ updated })
       } catch (e) {
         throw new Error(e.message)

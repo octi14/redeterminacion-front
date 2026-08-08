@@ -40,22 +40,22 @@ export const useHabilitacionesStore = defineStore('habilitaciones', {
       this.setSingle(found)
     },
 
-    async create({ habilitacion }) {
-      return await HabilitacionService.create(useApi(), { habilitacion })
+    async create({ habilitacion, notificacion }) {
+      return await HabilitacionService.create(useApi(), { habilitacion, notificacion })
     },
 
-    async update({ id, habilitacion }) {
+    async update({ id, habilitacion, notificacion }) {
       try {
-        const updated = await HabilitacionService.update(useApi(), id, { habilitacion })
+        const updated = await HabilitacionService.update(useApi(), id, { habilitacion, notificacion })
         this.setSingle(updated)
       } catch (e) {
         throw new Error(e.message)
       }
     },
 
-    async updateLazy({ id, habilitacion }) {
+    async updateLazy({ id, habilitacion, notificacion }) {
       try {
-        await HabilitacionService.updateLazy(useApi(), id, { habilitacion })
+        await HabilitacionService.updateLazy(useApi(), id, { habilitacion, notificacion })
       } catch (e) {
         throw new Error(e.message)
       }

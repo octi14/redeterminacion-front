@@ -870,6 +870,7 @@
 definePageMeta({
   middleware: ['authenticated', 'require-admin'],
   adminRoles: ['comercio', 'master'],
+  permissions: ['habilitaciones.read'],
 })
 </script>
 
@@ -877,7 +878,6 @@ definePageMeta({
 import { loadJSZip } from '~/utils/loadJszip';
 import { loadXlsx } from '~/utils/loadXlsx';
 import { saveAsFile } from '~/utils/saveAsFile';
-import MailerService from "@/service/mailer.js";
 
 export default {
   data() {
@@ -951,25 +951,19 @@ export default {
     },
 
     adminComercio(){
-      const admin = useUserStore().admin
-      return admin == "comercio" || admin == "master"
+      return this.$can('habilitaciones.read')
     },
     adminArvige(){
-      const admin = useUserStore().admin
-      return admin == "arvige" || admin == "master"
+      return this.$can('maestroComercial.read')
     },
     adminModernizacion(){
-      const admin = useUserStore().admin
-      return admin == "modernizacion" || admin == "master"
+      return this.$can('modernizacion.read')
     },
     adminMaster(){
-      return useUserStore().admin == "master"
+      return this.$can('habilitaciones.visibilidad')
     },
     jefeComercio(){
-      const userStore = useUserStore()
-      return (userStore.username === "myriamalonso@gesell.gob.ar"
-              || userStore.username === "nataliamegias@gesell.gob.ar"
-              || userStore.username === "mariaelisabetbahlcke@gesell.gob.ar") || userStore.admin == "master"
+      return this.$can('habilitaciones.status')
     },
     hoteleria(){
       const servicios = this.habilitacion?.serviciosHoteleria
@@ -1078,9 +1072,9 @@ export default {
       const single = useHabilitacionesStore().single
       this.habilitacion = single ? { ...single } : null
     },
-    async updateHabilitacion(habilitacion) {
+    async updateHabilitacion(habilitacion, notificacion) {
       const id = this.habilitacion.id
-      await useHabilitacionesStore().update({ id, habilitacion })
+      await useHabilitacionesStore().update({ id, habilitacion, notificacion })
       this.syncHabilitacionFromStore()
     },
     wait(ms) {
@@ -1130,39 +1124,15 @@ export default {
         status: 'Esperando documentación',
         observaciones: observaciones + " - " + "Se solicita documentación el día " + new Date().toLocaleDateString('es-AR')
       }
-      await this.updateHabilitacion(habilitacion)
+      await this.updateHabilitacion(habilitacion, {
+        templateKey: 'comercio.documentacion_requerida',
+        context: {
+          nroTramite: this.habilitacion.nroTramite,
+          tipoSolicitud: this.habilitacion.tipoSolicitud,
+          rubro: this.habilitacion.rubro,
+        },
+      })
       this.registrarActividad('Solicitar Documentación', 'Documentación Solicitada', this.habilitacion.nroTramite)
-
-      // --- Enviar correo al solicitante ---
-      try {
-        if (!this.habilitacion.mail) {
-          console.error('No se encontró el email del solicitante')
-          this.showToast('No se pudo enviar el correo: email del solicitante no disponible', { variant: 'danger' })
-        } else {
-          const destinatario = this.habilitacion.mail
-          const asunto = `Documentación requerida - Trámite N° ${this.habilitacion.nroTramite}`
-          const mensaje = `Estimado/a contribuyente,
-
-Su trámite comercial requiere que presente los originales de los documentos que envió online.
-
-Número de trámite: ${this.habilitacion.nroTramite}
-Tipo de solicitud: ${this.habilitacion.tipoSolicitud}
-Rubro: ${this.habilitacion.rubro}
-
-Por favor, presente los documentos originales en el Departamento Comercio MVGesell para continuar con el trámite.
-Adicionalmente, le comentamos que puede presentar su documentación en la Casa de Villa Gesell en Buenos Aires,
-ubicada en la Avenida Corrientes 1312, piso 11 oficina 42, CABA.
-Deberá presentar los documentos originales en la oficina de comercio dentro de los próximos 10 días hábiles.
-En caso contrario, el trámite caerá y deberá iniciarlo nuevamente.
-
-Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
-
-          await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
-          this.showToast('Correo de solicitud de documentación enviado al solicitante', { variant: 'success' })
-        }
-      } catch (e) {
-        this.showToast('No se pudo enviar el correo de solicitud de documentación', { variant: 'danger' })
-      }
 
       this.wait(300)
       this.showSolicitarDoc = false
@@ -1181,38 +1151,20 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
         alcance: alcance,
         observaciones: observaciones + " - " + "Se finaliza el trámite el día " + new Date().toLocaleDateString('es-AR')
       }
-      await this.updateHabilitacion(habilitacion)
+      await this.updateHabilitacion(habilitacion, {
+        templateKey: 'comercio.tramite_finalizado',
+        context: {
+          nroTramite: this.habilitacion.nroTramite,
+          tipoSolicitud: this.habilitacion.tipoSolicitud,
+          rubro: this.habilitacion.rubro,
+          nroExpediente,
+          alcance: alcance ? `Alcance: ${alcance}` : '',
+        },
+      })
       if(this.baja){
         this.registrarActividad('Finalizar Baja', 'Trámite Cerrado. Expediente: ' + nroExpediente + ". Alcance: " + alcance, this.habilitacion.nroTramite)
       }else{
         this.registrarActividad('Finalizar Habilitación', 'Trámite Cerrado. Expediente: ' + nroExpediente + ". Alcance: " + alcance, this.habilitacion.nroTramite)
-      }
-
-      // --- Enviar correo al solicitante ---
-      try {
-        if (!this.habilitacion.mail) {
-          console.error('No se encontró el email del solicitante para finalización')
-          this.showToast('No se pudo enviar el correo: email del solicitante no disponible', { variant: 'danger' })
-        } else {
-          const destinatario = this.habilitacion.mail
-          const asunto = `Trámite comercial finalizado - N° ${this.habilitacion.nroTramite}`
-          const mensaje = `Estimado/a contribuyente,
-
-Su trámite comercial ha sido finalizado exitosamente.
-
-Número de trámite: ${this.habilitacion.nroTramite}
-Tipo de solicitud: ${this.habilitacion.tipoSolicitud}
-Rubro: ${this.habilitacion.rubro}
-Número de expediente: ${nroExpediente}${alcance ? '\nAlcance: ' + alcance : ''}
-
-El trámite ha sido culminado exitosamente. Recuerde que en el plazo de 10 dias hábiles deberá acreditar
-los originales de la documentación en el Departamento Comercio sito en Avda 3 N° 820 Planta Baja - Villa Gesell.`
-
-          await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
-          this.showToast('Correo de finalización enviado al solicitante', { variant: 'success' })
-        }
-      } catch (e) {
-        this.showToast('No se pudo enviar el correo de finalización', { variant: 'danger' })
       }
 
       this.wait(300)
@@ -1246,58 +1198,15 @@ los originales de la documentación en el Departamento Comercio sito en Avda 3 N
       if(this.inspeccion){
         habilitacion.status = "Esperando turno"
       }
-      await this.updateHabilitacion(habilitacion)
+      await this.updateHabilitacion(habilitacion, {
+        templateKey: this.inspeccion ? 'comercio.solicitud_aprobada_inspeccion' : 'comercio.solicitud_aprobada',
+        context: {
+          nroTramite: this.habilitacion.nroTramite,
+          tipoSolicitud: this.habilitacion.tipoSolicitud,
+          rubro: this.habilitacion.rubro,
+        },
+      })
       this.registrarActividad('Aprobar Habilitación', 'Habilitación Aprobada. Inspeccion: ' + this.inspeccion, this.habilitacion.nroTramite)
-
-      // --- Enviar correo al solicitante ---
-      try {
-        if (!this.habilitacion.mail) {
-          console.error('No se encontró el email del solicitante')
-          this.showToast('No se pudo enviar el correo: email del solicitante no disponible', { variant: 'danger' })
-        } else {
-          const destinatario = this.habilitacion.mail
-          let asunto, mensaje
-
-          if (this.inspeccion) {
-            asunto = `Solicitud de trámite comercial aprobada - Requiere inspección - N° ${this.habilitacion.nroTramite}`
-            mensaje = `Estimado/a contribuyente,
-
-Su solicitud de trámite comercial ha sido aprobada exitosamente. Ha finalizado la etapa de revisión y la documentación presentada es correcta.
-
-Importante: Su comercio requiere inspección para continuar con el trámite.
-
-Número de trámite: ${this.habilitacion.nroTramite}
-Tipo de solicitud: ${this.habilitacion.tipoSolicitud}
-Rubro: ${this.habilitacion.rubro}
-
-Para continuar con el trámite, debe solicitar un turno para inspección comercial en la página de turnos web.
-Puede acceder a la página de turnos en: https://haciendavgesell.gob.ar/comercio/turnos .`
-          } else {
-            asunto = `Solicitud de trámite comercial aprobada - N° ${this.habilitacion.nroTramite}`
-            mensaje = `Estimado/a contribuyente,
-
-Su solicitud de trámite comercial ha sido aprobada exitosamente.
-
-Número de trámite: ${this.habilitacion.nroTramite}
-Tipo de solicitud: ${this.habilitacion.tipoSolicitud}
-Rubro: ${this.habilitacion.rubro}
-
-Para completar el trámite, en el plazo de 10 días hábiles debe:
-
-• Concurrir al Departamento Comercio MVGesell con los originales de los documentos presentados online
-y proceder al pago de la Tasa de Habilitacion pertinente.
-• Constituir el Domicilio Fiscal Electrónico (DFE) solicitando datos a dirarvige@gesell.gob.ar.
-
-Adicionalmente, le comentamos que puede presentar su documentación en la Casa de Villa Gesell en Buenos Aires,
-ubicada en la Avenida Corrientes 1312, piso 11 oficina 42, CABA.`
-          }
-
-          await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
-          this.showToast('Correo de aprobación enviado al solicitante', { variant: 'success' })
-        }
-      } catch (e) {
-        this.showToast('No se pudo enviar el correo de aprobación', { variant: 'danger' })
-      }
 
       this.wait(300)
       this.showPrevApprove = false
@@ -1313,35 +1222,15 @@ ubicada en la Avenida Corrientes 1312, piso 11 oficina 42, CABA.`
         alcance: alcance,
         observaciones: observaciones + " - " + "Se aprueba la solicitud el " + new Date().toLocaleDateString('es-AR') + " " + new Date().toLocaleTimeString() + ". Esperando pago."
       }
-      await this.updateHabilitacion(habilitacion)
+      await this.updateHabilitacion(habilitacion, {
+        templateKey: 'comercio.baja_aprobada',
+        context: {
+          nroTramite: this.habilitacion.nroTramite,
+          tipoSolicitud: this.habilitacion.tipoSolicitud,
+          rubro: this.habilitacion.rubro,
+        },
+      })
       this.registrarActividad('Aprobar Baja', 'Baja Aprobada', this.habilitacion.nroTramite)
-
-      // --- Enviar correo al solicitante ---
-      try {
-        if (!this.habilitacion.mail) {
-          console.error('No se encontró el email del solicitante para aprobación de baja')
-          this.showToast('No se pudo enviar el correo: email del solicitante no disponible', { variant: 'danger' })
-        } else {
-          const destinatario = this.habilitacion.mail
-          const asunto = `Solicitud de baja aprobada - N° ${this.habilitacion.nroTramite}`
-          const mensaje = `Estimado/a contribuyente,
-
-Su solicitud de baja ha sido aprobada exitosamente.
-
-Número de trámite: ${this.habilitacion.nroTramite}
-Tipo de solicitud: ${this.habilitacion.tipoSolicitud}
-Rubro: ${this.habilitacion.rubro}
-
-Para completar el trámite, debe abonar las deudas de tasas correspondientes en el Departamento Comercio MVGesell. Una vez realizado el pago, se le notificará la finalización del trámite.
-
-Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (habilitacioncomercial@gesell.gob.ar).`
-
-          await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
-          this.showToast('Correo de aprobación de baja enviado al solicitante', { variant: 'success' })
-        }
-      } catch (e) {
-        this.showToast('No se pudo enviar el correo de aprobación de baja', { variant: 'danger' })
-      }
 
       this.wait(300)
       this.showPrevApprove = false
@@ -1359,41 +1248,22 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
         alcance: alcance,
         observaciones: observaciones + " - " + "Se finaliza la solicitud el " + new Date().toLocaleDateString('es-AR') + " " + new Date().toLocaleTimeString()
       }
-      await this.updateHabilitacion(habilitacion)
+      const tipoTramite = this.reempadronamiento ? 'Reempadronamiento' : 'Renovación'
+      await this.updateHabilitacion(habilitacion, {
+        templateKey: 'comercio.renovacion_finalizada',
+        context: {
+          nroTramite: this.habilitacion.nroTramite,
+          tipoSolicitud: this.habilitacion.tipoSolicitud,
+          rubro: this.habilitacion.rubro,
+          tipoTramite,
+          nroExpediente,
+          alcance,
+        },
+      })
       if(this.reempadronamiento){
         this.registrarActividad('Finalizar Reempadronamiento', 'Reempadronamiento Finalizado', this.habilitacion.nroTramite)
       }else{
         this.registrarActividad('Finalizar Renovación', 'Renovación Finalizada', this.habilitacion.nroTramite)
-      }
-
-      // --- Enviar correo al solicitante ---
-      try {
-        if (!this.habilitacion.mail) {
-          console.error('No se encontró el email del solicitante para finalización de renovación')
-          this.showToast('No se pudo enviar el correo: email del solicitante no disponible', { variant: 'danger' })
-        } else {
-          const destinatario = this.habilitacion.mail
-          const tipoTramite = this.reempadronamiento ? 'reempadronamiento' : 'renovación'
-          const asunto = `${tipoTramite.charAt(0).toUpperCase() + tipoTramite.slice(1)} finalizada - N° ${this.habilitacion.nroTramite}`
-          const mensaje = `Estimado/a contribuyente,
-
-Su trámite de ${tipoTramite} ha sido finalizado exitosamente.
-
-Número de trámite: ${this.habilitacion.nroTramite}
-Tipo de solicitud: ${this.habilitacion.tipoSolicitud}
-Rubro: ${this.habilitacion.rubro}
-Número de expediente: ${nroExpediente}
-Alcance: ${alcance}
-
-El trámite está completo. En los próximos días recibirá la documentación correspondiente.
-
-Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (renovacioncomercial@gesell.gob.ar).`
-
-          await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
-          this.showToast(`Correo de finalización de ${tipoTramite} enviado al solicitante.`, { variant: 'success' })
-        }
-      } catch (e) {
-        this.showToast('No se pudo enviar el correo de finalización', { variant: 'danger' })
       }
 
       this.wait(300)
@@ -1416,45 +1286,19 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
         observaciones: observaciones + " - " + "Solicitud rechazada el " + new Date().toLocaleDateString() + ". " + elementosIncorrectosTexto,
         status: 'Rechazada'
       }
-      await this.updateHabilitacion(habilitacion)
+      const elementosIncorrectosBullets = (this.elementosIncorrectos && this.elementosIncorrectos.length > 0)
+        ? this.elementosIncorrectos.map(elemento => `• ${elemento}`).join('\n')
+        : ''
+      await this.updateHabilitacion(habilitacion, {
+        templateKey: 'comercio.solicitud_rechazada',
+        context: {
+          nroTramite: this.habilitacion.nroTramite,
+          tipoSolicitud: this.habilitacion.tipoSolicitud,
+          rubro: this.habilitacion.rubro,
+          elementosIncorrectos: elementosIncorrectosBullets,
+        },
+      })
       this.registrarActividad('Rechazar Solicitud', 'Rechazado por: ' + observaciones, this.habilitacion.nroTramite)
-
-      // --- Enviar correo al solicitante ---
-      try {
-        if (!this.habilitacion.mail) {
-          console.error('No se encontró el email del solicitante para rechazo')
-          this.showToast('No se pudo enviar el correo: email del solicitante no disponible', { variant: 'danger' })
-        } else {
-          const destinatario = this.habilitacion.mail
-          const asunto = `Solicitud de trámite comercial rechazada - N° ${this.habilitacion.nroTramite}`
-
-        // Construir la lista de elementos incorrectos
-        let elementosIncorrectosTexto = ''
-        if (this.elementosIncorrectos && this.elementosIncorrectos.length > 0) {
-          elementosIncorrectosTexto = `
-${this.elementosIncorrectos.map(elemento => `• ${elemento}`).join('\n')}`
-        }
-
-          const mensaje = `Estimado/a contribuyente,
-
-Su solicitud de trámite comercial ha sido rechazada.
-
-Número de trámite: ${this.habilitacion.nroTramite}
-Tipo de solicitud: ${this.habilitacion.tipoSolicitud}
-Rubro: ${this.habilitacion.rubro}
-
-Se han detectado elementos incorrectos en la documentación presentada, los cuales se detallan a continuación:
-${elementosIncorrectosTexto}
-
-Deberá volver a presentar la solicitud una vez subsanados los errores detectados.
-
-Importante: La documentación que adjunte debe ser legible y en formato PDF o imagen.`
-          await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
-          this.showToast('Correo de rechazo enviado al solicitante', { variant: 'success' })
-        }
-      } catch (e) {
-        this.showToast('No se pudo enviar el correo de rechazo', { variant: 'danger' })
-      }
 
       this.wait(300)
       this.observaciones = ''

@@ -194,25 +194,25 @@ export default {
     return formatExtendedFile(fileResponse.data)
   },
 
-  create: async (axios, { habilitacion }) => {
+  create: async (axios, { habilitacion, notificacion }) => {
 
-    const createdFile = await axios.$post('/habilitaciones', { habilitacion });
+    const createdFile = await axios.$post('/habilitaciones', { habilitacion, notificacion });
 
     return createdFile;
   },
-  update: async (axios, id, { habilitacion }) => {
+  update: async (axios, id, { habilitacion, notificacion }) => {
     axios.setHeader('Access-Control-Allow-Origin', true)
     const updated = await axios.$put(
       `/habilitaciones/${id}`,
-      { habilitacion },
+      { habilitacion, notificacion },
     )
     return formatExtendedFile(updated)
   },
-  updateLazy: async (axios, id, { habilitacion }) => {
+  updateLazy: async (axios, id, { habilitacion, notificacion }) => {
     axios.setHeader('Access-Control-Allow-Origin', true)
     const updated = await axios.$put(
       `/habilitaciones/lazy/${id}`,
-      { habilitacion },
+      { habilitacion, notificacion },
     )
     // return formatFile(updated)
   },

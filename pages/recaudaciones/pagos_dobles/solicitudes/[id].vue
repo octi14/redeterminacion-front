@@ -305,7 +305,6 @@ definePageMeta({
 import { loadJSZip } from '~/utils/loadJszip';
 import { loadXlsx } from '~/utils/loadXlsx';
 import { saveAsFile } from '~/utils/saveAsFile';
-import MailerService from '~/service/mailer.js'
 
 export default {
   setup(){ const { showToast } = useProjectToast(); return { showToast } },
@@ -340,10 +339,6 @@ export default {
     }
   },
   computed: {
-    adminComercio(){
-      const admin = useUserStore().admin
-      return admin == "comercio" || admin == "master"
-    },
     documentos(){
       return useDocumentosStore().all
     },
@@ -439,9 +434,17 @@ export default {
         observaciones: observaciones + " - " + lineaAprob
       }
       const id = this.pago.id
-            await usePagosDoblesStore().update({
+      await usePagosDoblesStore().update({
         id,
         pago,
+        notificacion: {
+          templateKey: 'pagosDobles.aprobada',
+          context: {
+            nroTramite: this.pago.nroTramite,
+            fechaAprobacion: new Date().toLocaleDateString('es-AR'),
+            comentario: comentAprob ? `Comentario: ${comentAprob}` : '',
+          },
+        },
       })
       this.registrarActividad('Aprobar reclamo por pago doble', 'Reclamo por Pago doble Aprobado.')
       this.wait(300)
@@ -451,25 +454,6 @@ export default {
       this.aprobComentMode = 'ninguno'
       this.aprobComentTexto = ''
       this.showApprove = true
-
-      // --- Enviar correo al solicitante ---
-      try {
-        const destinatario = this.pago.mail || this.pago.solicitante?.mail
-        const asunto = `Aprobación de reclamo de pago doble N° R${this.pago.nroTramite}`
-        const mensaje = `Estimado/a contribuyente,
-
-Su reclamo de pago doble ha sido aprobado exitosamente.
-Su documentación será procesada y recibirá las instrucciones correspondientes en los próximos días.
-
-Número de trámite: R${this.pago.nroTramite}
-Fecha de aprobación: ${new Date().toLocaleDateString('es-AR')}
-${comentAprob ? `\nComentario:\n${comentAprob}\n` : ''}
-Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Recaudaciones Municipal (recaudaciones@gesell.gob.ar).`
-        await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
-        this.showToast('Correo de aprobación enviado al solicitante.', { variant: 'success' })
-      } catch (e) {
-        this.showToast('No se pudo enviar el correo de aprobación.', { variant: 'danger' })
-      }
     },
     onRechazarSolicitud(){
       this.motivoRechazo = ''
@@ -487,27 +471,18 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
       await usePagosDoblesStore().update({
         id,
         pago,
+        notificacion: {
+          templateKey: 'pagosDobles.rechazada',
+          context: {
+            nroTramite: this.pago.nroTramite,
+            motivo: motivoTexto,
+          },
+        },
       })
       this.registrarActividad('Rechazar Solicitud', 'Rechazado por: ' + motivoTexto, this.pago.nroTramite)
       this.wait(300)
       this.pago.status = pago.status
       this.pago.observaciones = pago.observaciones
-
-      // --- Enviar correo al solicitante ---
-      try {
-        const destinatario = this.pago.mail || this.pago.solicitante?.mail
-        const asunto = `Rechazo de solicitud de pago doble N° R${this.pago.nroTramite}`
-        const mensaje = `Estimado/a contribuyente,
-
-Su reclamo de pago doble ha sido rechazado por el siguiente motivo:
-${motivoTexto}
-
-Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Recaudaciones Municipal (recaudaciones@gesell.gob.ar).`
-        await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
-        this.showToast('Correo de rechazo enviado al solicitante.', { variant: 'success' })
-      } catch (e) {
-        this.showToast('No se pudo enviar el correo de rechazo.', { variant: 'danger' })
-      }
 
       this.motivoRechazo = ''
       this.otroMotivoRechazo = ''

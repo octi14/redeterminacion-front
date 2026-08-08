@@ -220,12 +220,11 @@
 definePageMeta({
   middleware: ['authenticated', 'require-admin'],
   adminRoles: ['comercio', 'master', 'inspeccion'],
+  permissions: ['turnos.read', 'turnos.update'],
 })
 </script>
 
 <script>
-import MailerService from "@/service/mailer.js";
-
 export default {
   setup(){ const { showToast } = useProjectToast(); return { showToast } },
   data() {
@@ -252,12 +251,10 @@ export default {
   },
   computed: {
     adminInspeccion(){
-      const admin = useUserStore().admin
-      return admin == "inspeccion" || admin == "master"
+      return this.$can('turnos.update')
     },
     adminComercio(){
-      const admin = useUserStore().admin
-      return admin == "comercio" || admin == "master"
+      return this.$can('turnos.read')
     },
     turnoStatusClass() {
       const classes = {
@@ -334,14 +331,20 @@ export default {
         id,
         turno,
         userToken,
+        notificacion: {
+          templateKey: 'turnos.inspeccion_aprobada',
+          context: {
+            nroTramite: this.turno.nroTramite,
+            fechaInspeccion: this.turno.dia,
+            horario: this.turno.horario,
+            domicilio: this.turno.domicilio,
+          },
+        },
       })
       const nroTramite = this.turno.nroTramite
       await useHabilitacionesStore().getByNroTramite({
         nroTramite
       })
-
-      // Guardar el email antes del update
-      const destinatario = useHabilitacionesStore().single.mail
 
       const habId = useHabilitacionesStore().single.id
       await useHabilitacionesStore().update({
@@ -349,33 +352,6 @@ export default {
         habilitacion,
       })
       this.registrarActividad('Arobar Inspección', 'Inspección Aprobada', this.turno.nroTramite)
-
-      // --- Enviar correo al solicitante ---
-      try {
-        if (destinatario) {
-          const asunto = `Inspección comercial aprobada - N° ${this.turno.nroTramite}`
-          const mensaje = `Estimado/a contribuyente,
-
-Su inspección comercial ha sido aprobada exitosamente.
-
-Número de trámite: ${this.turno.nroTramite}
-Fecha de inspección: ${this.turno.dia}
-Horario: ${this.turno.horario}
-Domicilio: ${this.turno.domicilio}
-
-El trámite continuará desde el Departamento Comercio MVGesell. En los próximos días recibirá un correo electrónico indicándole los pasos
-a seguir para finalizar el trámite, incluyendo el pago de la/s tasa/s correspondiente/s.`
-
-          await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
-          this.showToast('Correo de aprobación de inspección enviado al solicitante', { variant: 'success' })
-        } else {
-          console.error('No se encontró el email del solicitante')
-          this.showToast('No se pudo enviar el correo: email del solicitante no disponible', { variant: 'danger' })
-        }
-      } catch (e) {
-        console.error('Error al enviar correo:', e)
-        this.showToast('No se pudo enviar el correo de aprobación de inspección', { variant: 'danger' })
-      }
 
       this.wait(300)
       void this.loadTurno()
@@ -416,14 +392,21 @@ a seguir para finalizar el trámite, incluyendo el pago de la/s tasa/s correspon
         id,
         turno,
         userToken,
+        notificacion: {
+          templateKey: 'turnos.prorroga_otorgada',
+          context: {
+            nroTramite: this.turno.nroTramite,
+            fechaInspeccion: this.turno.dia,
+            horario: this.turno.horario,
+            domicilio: this.turno.domicilio,
+          },
+        },
       })
       const nroTramite = this.turno.nroTramite
       await useHabilitacionesStore().getByNroTramite({
         nroTramite
       })
 
-      // Guardar el email antes del update
-      const destinatario = useHabilitacionesStore().single.mail
       const habId = useHabilitacionesStore().single.id
       await useHabilitacionesStore().update({
         id: habId,
@@ -431,33 +414,6 @@ a seguir para finalizar el trámite, incluyendo el pago de la/s tasa/s correspon
       })
       this.registrarActividad('Otorgar Prorroga', this.turno.status + " Otorgada", this.turno.nroTramite)
 
-      // --- Enviar correo al solicitante ---
-      try {
-        if (destinatario) {
-          const asunto = `Prórroga otorgada - N° ${this.turno.nroTramite}`
-          const mensaje = `Estimado/a contribuyente,
-
-Se le ha otorgado una prórroga para su inspección comercial.
-
-Número de trámite: ${this.turno.nroTramite}
-Fecha de inspección: ${this.turno.dia}
-Horario: ${this.turno.horario}
-Domicilio: ${this.turno.domicilio}
-
-La prórroga es de 7 días a partir de la fecha de otorgación. Para continuar con el trámite, debe completar los requisitos pendientes antes del vencimiento de la misma.
-
-Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
-
-          await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
-          this.showToast('Correo de prórroga enviado al solicitante', { variant: 'success' })
-        } else {
-          console.error('No se encontró el email del solicitante')
-          this.showToast('No se pudo enviar el correo: email del solicitante no disponible', { variant: 'danger' })
-        }
-      } catch (e) {
-        console.error('Error al enviar correo de prórroga:', e)
-        this.showToast('No se pudo enviar el correo de prórroga', { variant: 'danger' })
-      }
       this.wait(300)
       void this.loadTurno()
       this.showPrevProrroga = false
@@ -474,13 +430,21 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
         id,
         turno,
         userToken,
+        notificacion: {
+          templateKey: 'turnos.inspeccion_rechazada',
+          context: {
+            nroTramite: this.turno.nroTramite,
+            fechaInspeccion: this.turno.dia,
+            horario: this.turno.horario,
+            domicilio: this.turno.domicilio,
+            motivo: this.observaciones,
+          },
+        },
       })
       const nroTramite = this.turno.nroTramite
       await useHabilitacionesStore().getByNroTramite({
         nroTramite
       })
-      // Guardar el email antes del update
-      const destinatario = useHabilitacionesStore().single.mail
       const observaciones = useHabilitacionesStore().single.observaciones
       const habilitacion = {
         status: 'Rechazada',
@@ -493,32 +457,6 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
       })
       this.registrarActividad('Rechazar Inspección', 'Inspección Rechazada', this.turno.nroTramite)
 
-      // --- Enviar correo al solicitante ---
-      try {
-        if (destinatario) {
-          const asunto = `Inspección comercial rechazada - N° ${this.turno.nroTramite}`
-          const mensaje = `Estimado/a contribuyente,
-
-Su inspección comercial ha sido rechazada.
-
-Número de trámite: ${this.turno.nroTramite}
-Fecha de inspección: ${this.turno.dia}
-Horario: ${this.turno.horario}
-Domicilio: ${this.turno.domicilio}
-
-Motivo del rechazo: ${this.observaciones}
-
-Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
-
-          await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
-          this.showToast('Correo de rechazo de inspección enviado al solicitante', { variant: 'success' })
-        } else {
-          console.error('No se encontró el email del solicitante')
-          this.showToast('No se pudo enviar el correo: email del solicitante no disponible', { variant: 'danger' })
-        }
-      } catch (e) {
-        this.showToast('No se pudo enviar el correo de rechazo de inspección', { variant: 'danger' })
-      }
       this.wait(300)
       this.observaciones = ''
       void this.loadTurno()
@@ -535,13 +473,21 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
         id,
         turno,
         userToken,
+        notificacion: {
+          templateKey: 'turnos.cancelado',
+          context: {
+            nroTramite: this.turno.nroTramite,
+            fechaInspeccion: this.turno.dia,
+            horario: this.turno.horario,
+            domicilio: this.turno.domicilio,
+            motivo: this.observaciones,
+          },
+        },
       })
       const nroTramite = this.turno.nroTramite
       await useHabilitacionesStore().getByNroTramite({
         nroTramite
       })
-      // Guardar el email antes del update
-      const destinatario = useHabilitacionesStore().single.mail
       const observaciones = useHabilitacionesStore().single.observaciones
       const habilitacion = {
         status: "Esperando turno",
@@ -554,34 +500,6 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
       })
       this.registrarActividad('Cancelar Turno Inspección', 'Inspección Cancelada', nroTramite)
 
-      // --- Enviar correo al solicitante ---
-      try {
-        if (destinatario) {
-          const asunto = `Turno de inspección cancelado - N° ${this.turno.nroTramite}`
-          const mensaje = `Estimado/a contribuyente,
-
-Su turno de inspección comercial ha sido cancelado.
-
-Número de trámite: ${this.turno.nroTramite}
-Fecha de inspección: ${this.turno.dia}
-Horario: ${this.turno.horario}
-Domicilio: ${this.turno.domicilio}
-
-Motivo de la cancelación: ${this.observaciones}
-
-Para continuar con el trámite, debe solicitar un nuevo turno de inspección en la página de turnos web.
-
-Si tiene dudas o necesita más información, por favor comuníquese con el Departamento Comercio MVGesell (deptocomercio@gesell.gob.ar).`
-
-          await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
-          this.showToast('Correo de cancelación de turno enviado al solicitante', { variant: 'success' })
-        } else {
-          console.error('No se encontró el email del solicitante')
-          this.showToast('No se pudo enviar el correo: email del solicitante no disponible', { variant: 'danger' })
-        }
-      } catch (e) {
-        this.showToast('No se pudo enviar el correo de cancelación de turno', { variant: 'danger' })
-      }
       this.wait(300)
       this.observaciones = ''
       void this.loadTurno()

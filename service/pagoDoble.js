@@ -56,15 +56,15 @@ export default {
     const fileResponse = await axios.$get(`/pagosDobles/${id}`)
     return formatExtendedFile(fileResponse.data)
   },
-  create: async (axios, { pagoDoble }) => {
-    const createdFile = await axios.$post('/pagosDobles', { pagoDoble });
+  create: async (axios, { pagoDoble, notificacion }) => {
+    const createdFile = await axios.$post('/pagosDobles', { pagoDoble, notificacion });
     return createdFile;
   },
-  update: async (axios, id, { pago }) => {
+  update: async (axios, id, { pago, notificacion }) => {
     axios.setHeader('Access-Control-Allow-Origin', true)
     const updated = await axios.$put(
       `/pagosDobles/${id}`,
-      { pago },
+      { pago, notificacion },
     )
     return formatFile(updated)
   },

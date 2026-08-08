@@ -350,7 +350,6 @@
 </template>
 
 <script>
-import MailerService from "@/service/mailer.js";
 import BCalendar from '~/components/BCalendarField.vue'
 import turneraBanner1 from '~/assets/turnera-banner-1.png?url'
 import turneraBanner2 from '~/assets/turnera-banner-2.png?url'
@@ -460,7 +459,19 @@ export default {
           tipoTramite,
         }
         this.sendingForm = true
-        await useTurnosStore().create({ turno })
+        await useTurnosStore().create({
+          turno,
+          notificacion: {
+            templateKey: 'turnos.inspeccion_confirmada',
+            context: {
+              nroTramite: this.nroTramite,
+              fechaInspeccion: new Date(this.date).toLocaleDateString('es-AR'),
+              horario: this.time,
+              domicilio: this.domicilio,
+              nombre: this.nombre,
+            },
+          },
+        })
 
         const habilitacionId = useHabilitacionesStore().single.id;
         const observaciones = useHabilitacionesStore().single.observaciones;
@@ -473,33 +484,6 @@ export default {
           id: habilitacionId,
           habilitacion,
         });
-
-        try {
-          const destinatario = useHabilitacionesStore().single.mail
-          if (destinatario) {
-            const asunto = `Turno de inspección confirmado - N° ${this.nroTramite}`
-            const mensaje = `Estimado/a contribuyente,
-
-Su turno de inspección comercial ha sido confirmado exitosamente.
-
-Número de trámite: ${this.nroTramite}
-Fecha de inspección: ${new Date(this.date).toLocaleDateString('es-AR')}
-Horario: ${this.time}
-Domicilio: ${this.domicilio}
-Nombre: ${this.nombre}
-
-IMPORTANTE:
-- El día de la inspección debe haber alguien presente en el local
-- Si necesita cancelar o reprogramar el turno, comuníquese con divinspectores@gesell.gob.ar
-- Solo puede cancelar el turno hasta 5 días antes de la inspección.`
-
-            await MailerService.enviarCorreo(useApi(), { destinatario, asunto, mensaje })
-          } else {
-            console.error('No se encontró el email del solicitante')
-          }
-        } catch (e) {
-          console.error('Error al enviar correo de confirmación de turno:', e)
-        }
 
         await this.$nextTick()
         this.formOk = true

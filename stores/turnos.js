@@ -38,13 +38,13 @@ export const useTurnosStore = defineStore('turnos', {
       this.setSingle(found)
     },
 
-    async create({ turno }) {
-      return await TurnoService.create(useApi(), { turno })
+    async create({ turno, notificacion }) {
+      return await TurnoService.create(useApi(), { turno, notificacion })
     },
 
-    async update({ id, turno, userToken }) {
+    async update({ id, turno, userToken, notificacion }) {
       try {
-        const updated = await TurnoService.update(useApi(), { id, turno, userToken })
+        const updated = await TurnoService.update(useApi(), { id, turno, userToken, notificacion })
         this.setSingle({ updated })
       } catch (e) {
         throw new Error('Error actualizando')

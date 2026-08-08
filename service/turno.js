@@ -49,18 +49,18 @@ export default {
     const turnoResponse = await axios.$get(`/turnos/${id}`)
     return formatTurno(turnoResponse.data)
   },
-  create: async (axios, { turno, userToken }) => {
+  create: async (axios, { turno, userToken, notificacion }) => {
     const createdTurno = await axios.$post(
       '/turnos/',
-      { turno }
+      { turno, notificacion }
     )
     return formatTurno(createdTurno.data)
   },
-  update: async (axios, { id, turno, userToken }) => {
+  update: async (axios, { id, turno, userToken, notificacion }) => {
     axios.setHeader('Access-Control-Allow-Origin', true)
     const updated = await axios.$put(
       `/turnos/${id}`,
-      { turno },
+      { turno, notificacion },
       {
         headers: { Authorization: `Bearer ${userToken}` },
       }

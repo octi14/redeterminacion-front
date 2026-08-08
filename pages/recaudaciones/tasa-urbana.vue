@@ -180,7 +180,7 @@ export default {
       paginaPeriodos: 1,
       periodosPorPagina: PERIODOS_POR_PAGINA,
       maxPeriodosSeleccionados: 20,
-      tasaUrbanaPublicaHabilitada: true,
+      tasaUrbanaPublicaHabilitada: false,
       tema: { principal: '#bd3041', oscuro: '#771a28', suave: '#fbdde1' }
     }
   },
@@ -287,7 +287,7 @@ export default {
         const response = await this.$axios.get('/tasas/urbanas/configuracion')
         this.tasaUrbanaPublicaHabilitada = response.data.data.habilitada !== false
       } catch (_) {
-        this.tasaUrbanaPublicaHabilitada = true
+        this.tasaUrbanaPublicaHabilitada = false
       }
     },
     aplicarTemaGlobal() {

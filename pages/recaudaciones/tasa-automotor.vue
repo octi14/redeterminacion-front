@@ -191,7 +191,7 @@ export default {
       paginaPeriodos: 1,
       periodosPorPagina: PERIODOS_POR_PAGINA,
       maxPeriodosSeleccionados: 20,
-      tasaAutomotorPublicaHabilitada: true
+      tasaAutomotorPublicaHabilitada: false
     }
   },
   computed: {
@@ -199,8 +199,7 @@ export default {
       return /^[A-Z0-9]{5,9}$/.test(this.dominio)
     },
     usuarioInternoBoletas() {
-      const role = String(useUserStore().admin || '').trim().toLowerCase()
-      return ['admin', 'master', 'true', 'boletas'].includes(role)
+      return this.$can('boletas.manage')
     },
     puedeVerModulo() {
       return this.usuarioInternoBoletas || this.tasaAutomotorPublicaHabilitada
@@ -267,7 +266,7 @@ export default {
         const response = await this.$axios.get('/tasas/automotores/configuracion')
         this.tasaAutomotorPublicaHabilitada = response.data.data.habilitada !== false
       } catch (_) {
-        this.tasaAutomotorPublicaHabilitada = true
+        this.tasaAutomotorPublicaHabilitada = false
       }
     },
     normalizarDominio() {

@@ -34,8 +34,8 @@ export default {
   name: 'RecaudacionesIndex',
   data() {
     return {
-      tasaAutomotorPublicaHabilitada: true,
-      tasaUrbanaPublicaHabilitada: true
+      tasaAutomotorPublicaHabilitada: false,
+      tasaUrbanaPublicaHabilitada: false
     }
   },
   computed: {
@@ -58,8 +58,8 @@ export default {
         this.$axios.get('/tasas/automotores/configuracion'),
         this.$axios.get('/tasas/urbanas/configuracion')
       ])
-      this.tasaAutomotorPublicaHabilitada = automotor.status !== 'fulfilled' || automotor.value.data.data.habilitada !== false
-      this.tasaUrbanaPublicaHabilitada = urbana.status !== 'fulfilled' || urbana.value.data.data.habilitada !== false
+      this.tasaAutomotorPublicaHabilitada = automotor.status === 'fulfilled' && automotor.value.data.data.habilitada !== false
+      this.tasaUrbanaPublicaHabilitada = urbana.status === 'fulfilled' && urbana.value.data.data.habilitada !== false
     }
   }
 }

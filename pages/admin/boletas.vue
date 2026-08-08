@@ -100,7 +100,7 @@
             <b-form-checkbox
               v-model="guardarOriginalHabilitado"
               switch
-              :disabled="configLoading || !boletaTasasUploadEnabled"
+              :disabled="configLoading || !storageSwitchEnabled"
               @change="updateStorageConfig"
             >
               Almacenar archivo original al publicar
@@ -670,7 +670,7 @@ export default {
           nombre: 'Automotores',
           descripcion: 'Boletas asociadas al dominio de un vehículo.',
           icono: 'car-front-fill',
-          importacionHabilitada: true
+          importacionHabilitada: false
         }
       ],
       isDragging: false,
@@ -690,8 +690,9 @@ export default {
       processingMessage: 'Subiendo el archivo...',
       analysisResult: null,
       guardarOriginalHabilitado: false,
-      tasaPublicaHabilitada: true,
-      boletaTasasUploadEnabled: true,
+      tasaPublicaHabilitada: false,
+      boletaTasasUploadEnabled: false,
+      boletaTasasImportacionesConfig: {},
       configLoading: false,
       serverConflictPeriods: [],
       loadedPeriods: [],
@@ -751,10 +752,19 @@ export default {
     puedeAdministrar() {
       return this.$can('boletas.manage')
     },
+    taxImportGateEnabled() {
+      return this.boletaTasasImportacionesConfig[this.selectedTaxCode] !== false
+    },
+    storageSwitchEnabled() {
+      return this.boletaTasasUploadEnabled && this.taxImportGateEnabled
+    },
     storageOptionHelpText() {
       if (this.configLoading) return 'Guardando configuracion...'
       if (!this.boletaTasasUploadEnabled) {
         return 'El almacenamiento de originales esta deshabilitado desde configuraciones generales.'
+      }
+      if (!this.taxImportGateEnabled) {
+        return `El almacenamiento de originales para ${this.selectedTax.name || this.selectedTax.nombre} esta deshabilitado desde configuraciones generales.`
       }
       return 'Desactivado por defecto para evitar consumo innecesario de espacio.'
     },
@@ -937,8 +947,10 @@ export default {
       try {
         const config = await this.$axios.$get('/config/general', { headers: this.authHeaders() })
         this.boletaTasasUploadEnabled = config.boletaTasasUploadEnabled !== false
+        this.boletaTasasImportacionesConfig = config.boletaTasasImportaciones || {}
       } catch (_) {
-        this.boletaTasasUploadEnabled = true
+        this.boletaTasasUploadEnabled = false
+        this.boletaTasasImportacionesConfig = {}
       }
     },
     async loadTaxTypes() {
@@ -1087,7 +1099,7 @@ export default {
               ...this.fileRequestHeaders(),
               'X-Confirmar-Reemplazo': String(this.overwriteConfirmed),
               'X-Confirmar-Periodos-Futuros': String(this.futurePeriodsConfirmed),
-              'X-Guardar-Original': String(this.boletaTasasUploadEnabled && this.guardarOriginalHabilitado)
+              'X-Guardar-Original': String(this.storageSwitchEnabled && this.guardarOriginalHabilitado)
             }
           }
         )
@@ -1333,7 +1345,7 @@ export default {
         this.tasaPublicaHabilitada = response.data.data.tasaPublicaHabilitada !== false
       } catch (_) {
         this.guardarOriginalHabilitado = false
-        this.tasaPublicaHabilitada = true
+        this.tasaPublicaHabilitada = false
       }
     },
     async updatePublicConfig(value) {

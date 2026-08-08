@@ -47,10 +47,14 @@ export default {
     },
   },
   emits: ['query-change'],
+  setup() {
+    // useId() genera un id sincronizado entre SSR y cliente (a diferencia de Math.random()),
+    // evitando el mismatch de hidratacion en el for/id del label e input.
+    return { inputId: `site-search-${useId()}` }
+  },
   data() {
     return {
       query: this.initialQuery,
-      inputId: `site-search-${Math.random().toString(36).slice(2, 9)}`,
     }
   },
   watch: {

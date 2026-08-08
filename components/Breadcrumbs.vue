@@ -7,7 +7,7 @@
       <!-- Generación dinámica de los breadcrumbs -->
       <span v-for="(breadcrumb, index) in breadcrumbs" :key="index" class="breadcrumb-wrapper">
         <span class="separator">></span>
-        <b-breadcrumb-item :to="breadcrumb.to">{{ breadcrumb.text }}</b-breadcrumb-item>
+        <b-breadcrumb-item :to="breadcrumb.to ?? undefined">{{ breadcrumb.text }}</b-breadcrumb-item>
       </span>
     </b-breadcrumb>
   </nav>
@@ -16,14 +16,35 @@
 <script>
 export default {
   computed: {
-    // Calcula las migas de pan basadas en la ruta actual
+    // Calcula las migas de pan basadas en la ruta actual.
+    // Los segmentos intermedios que no son una pagina real (ej. "/admin")
+    // se muestran como texto plano, sin link, para no generar un
+    // "No match found for location" al intentar resolverlos como ruta.
     breadcrumbs() {
       const routeSegments = this.$route.path.split('/').filter(segment => segment !== '');
 
-      return routeSegments.map((segment, index) => ({
-        text: segment,
-        to: `/${routeSegments.slice(0, index + 1).join('/')}`,
-      }));
+      return routeSegments.map((segment, index) => {
+        const to = `/${routeSegments.slice(0, index + 1).join('/')}`;
+
+        return {
+          text: segment,
+          to: this.routeExists(to) ? to : null,
+        };
+      });
+    },
+  },
+  methods: {
+    // router.resolve() hace console.warn internamente cuando no matchea
+    // ninguna ruta, incluso usandolo solo para chequear si existe.
+    // Se silencia puntualmente ese warning para esta comprobacion.
+    routeExists(path) {
+      const originalWarn = console.warn;
+      console.warn = () => {};
+      try {
+        return this.$router.resolve(path).matched.length > 0;
+      } finally {
+        console.warn = originalWarn;
+      }
     },
   },
 };

@@ -54,13 +54,13 @@
             </template>
 
             <p class="general-config__card-intro">
-              Controla que modulos pueden publicar importaciones y si se conserva el XLSX original.
+              Controla si se puede conservar el XLSX original al publicar una importacion de boletas. Guardar el original es un caso excepcional: por defecto el switch de "Administrar boletas" para cada tasa esta deshabilitado, y ambos candados de aca abajo deben estar habilitados para poder activarlo.
             </p>
 
             <div class="general-config__option">
               <div>
                 <h3>Almacenamiento de archivo original</h3>
-                <p>Permite conservar el XLSX original en S3 cuando se publica una importacion de boletas.</p>
+                <p>Candado maestro. Si esta deshabilitado, ninguna tasa puede activar el guardado del XLSX original, sin importar los candados individuales de abajo.</p>
               </div>
               <b-form-checkbox
                 v-model="form.boletaTasasUploadEnabled"
@@ -286,12 +286,12 @@
               <dd :class="{ 'is-danger': original && original.maintenanceMode }">
                 {{ original && original.maintenanceMode ? 'Activo' : 'Inactivo' }}
               </dd>
-              <dt>Archivo original</dt>
+              <dt>Archivo original (candado maestro)</dt>
               <dd :class="{ 'is-active': original && original.boletaTasasUploadEnabled }">
                 {{ original && original.boletaTasasUploadEnabled ? 'Activo' : 'Inactivo' }}
               </dd>
               <template v-for="tax in taxImportOptions" :key="tax.key">
-                <dt>Importacion {{ tax.shortTitle }}</dt>
+                <dt>Archivo original {{ tax.shortTitle }}</dt>
                 <dd
                   :class="{ 'is-active': original && original.boletaTasasImportaciones && original.boletaTasasImportaciones[tax.key] }"
                 >
@@ -363,15 +363,15 @@ import MailerService from '~/service/mailer.js'
 const TAX_IMPORT_OPTIONS = [
   {
     key: 'AUTOMOTORES',
-    title: 'Importacion de Automotores',
+    title: 'Almacenamiento de original - Automotores',
     shortTitle: 'Automotores',
-    description: 'Permite analizar y publicar archivos XLSX de boletas de automotores.',
+    description: 'Habilita el switch "Almacenar archivo original al publicar" para Automotores en Administrar boletas.',
   },
   {
     key: 'URBANA',
-    title: 'Importacion de Tasa Urbana',
+    title: 'Almacenamiento de original - Tasa Urbana',
     shortTitle: 'Urbana',
-    description: 'Permite analizar y publicar archivos XLSX de boletas de tasa urbana.',
+    description: 'Habilita el switch "Almacenar archivo original al publicar" para Tasa Urbana en Administrar boletas.',
   },
 ]
 const TAX_IMPORT_LABELS = TAX_IMPORT_OPTIONS.reduce((acc, option) => {

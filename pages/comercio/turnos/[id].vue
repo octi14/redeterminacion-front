@@ -16,6 +16,14 @@
             <span :class="turnoStatusClass" class="ml-2">{{ turno.status }}</span>
           </div>
         </div>
+        <div
+          v-if="turno.nroLegajoComercial"
+          class="row justify-content-center mt-3"
+        >
+          <p class="h5 mb-0">
+            Legajo comercial: <b>{{ turno.nroLegajoComercial }}</b>
+          </p>
+        </div>
       </div>
       <div v-if="adminInspeccion" class="solicitud-quick-actions">
         <b-button size="sm" variant="success" class="btn-4" @click="onAprobar">Aprobar inspección</b-button>
@@ -45,7 +53,23 @@
               <strong>Nombre del solicitante</strong><br>
             </p>
             <p class="col col-complementary" role="complementary">
-              <a>{{ turno.nombre}}</a>
+              <a>{{ turno.nombreSolicitante || '—' }}</a>
+            </p>
+          </div>
+          <div class="layout">
+            <p class="col col-main">
+              <strong>Nombre del turno</strong><br>
+            </p>
+            <p class="col col-complementary" role="complementary">
+              <a>{{ nombreTurnoDisplay }}</a>
+            </p>
+          </div>
+          <div v-if="turno.nroLegajoComercial" class="layout">
+            <p class="col col-main">
+              <strong>Número de legajo comercial</strong><br>
+            </p>
+            <p class="col col-complementary" role="complementary">
+              <a>{{ turno.nroLegajoComercial }}</a>
             </p>
           </div>
           <div class="layout">
@@ -269,6 +293,11 @@ export default {
         'Inspección rechazada': 'text-danger',
       }
       return classes[this.turno?.status] || ''
+    },
+    nombreTurnoDisplay() {
+      const t = this.turno
+      if (!t) return '—'
+      return t.nombreTurno ?? t.nombre ?? '—'
     },
   },
   methods: {

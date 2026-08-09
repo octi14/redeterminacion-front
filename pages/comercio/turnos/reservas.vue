@@ -33,6 +33,15 @@
         <template #cell(status)="row">
           <div :class="row.item.estadoColor"><b>{{ row.value }}</b></div>
         </template>
+        <template #cell(nroLegajoComercial)="row">
+          <span>{{ row.value || '—' }}</span>
+        </template>
+        <template #cell(nombreSolicitante)="row">
+          <span>{{ row.item.nombreSolicitante || '—' }}</span>
+        </template>
+        <template #cell(nombreTurno)="row">
+          <span>{{ row.item.nombreTurno ?? row.item.nombre ?? '—' }}</span>
+        </template>
         <!-- Plantilla personalizada para la columna "detalles" -->
         <template #cell(detalles)="row">
         <NuxtLink :to="{ name: 'comercio-turnos-id', params: { id: row.item.id } }" @click="registrarActividad('Abrir Turno', 'Turno nro: ' + row.item.nroTramite)">
@@ -91,6 +100,10 @@ export default{
           label: 'Tipo de trámite',
         },
         {
+          key: 'nroLegajoComercial',
+          label: 'Legajo comercial',
+        },
+        {
           key: 'dia',
           label: 'Fecha de inspección',
           sortable: true,
@@ -100,8 +113,12 @@ export default{
           label: 'Horario',
         },
         {
-          key: 'nombre',
-          label: 'Nombre',
+          key: 'nombreSolicitante',
+          label: 'Nombre del solicitante',
+        },
+        {
+          key: 'nombreTurno',
+          label: 'Nombre del turno',
         },
         {
           key: 'domicilio',

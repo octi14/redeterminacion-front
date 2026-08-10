@@ -1,23 +1,103 @@
 <template>
-  <div class="page main-background">
-    <Banner title="Error en el pago" />
-    <div class="row no-gutters justify-content-center mt-4 mb-3">
-      <div class="col-md-8 col-lg-6">
-        <div class="white shadow-card p-4 text-start">
-          <p class="mb-2">
-            No se pudo completar el pago. Esta página es el retorno de error
-            de Provincia NET.
-          </p>
-          <p class="mb-0 text-muted" style="font-size: 0.9rem">
-            Podés intentar nuevamente más tarde o usar el portal de ARVIGE.
-          </p>
+  <div class="page main-background pn-result-page">
+    <div class="row no-gutters justify-content-center align-items-center pn-result-wrap">
+      <div class="col-11 col-md-7 col-lg-5">
+        <div class="pn-result-card pn-result-card--error">
+          <div class="pn-result-header">
+            <div class="pn-result-icon" aria-hidden="true">
+              <span class="pn-result-exclaim">!</span>
+            </div>
+          </div>
+          <div class="pn-result-body">
+            <p class="pn-result-title">No hemos podido procesar tu pago</p>
+            <p class="pn-result-sub">
+              Por favor, intentalo con otro método o regresá más tarde.
+            </p>
+            <b-button class="pn-result-btn pn-result-btn--error" @click="volver">
+              Volver a la página anterior
+            </b-button>
+            <p class="pn-result-note">
+              Si el problema persiste comunicate con la oficina correspondiente por las vías oficiales.
+            </p>
+          </div>
         </div>
       </div>
     </div>
-    <div class="page-btn-volver-wrap">
-      <NuxtLink to="/pagos">
-        <b-button variant="primary" size="sm" class="page-btn-volver">Volver a Pagos</b-button>
-      </NuxtLink>
-    </div>
   </div>
 </template>
+
+<script>
+const STORAGE_KEY = 'provinciaNetUUID'
+
+export default {
+  methods: {
+    volver() {
+      if (import.meta.client) localStorage.removeItem(STORAGE_KEY)
+      this.$router.push('/pagos/tasa-urbana')
+    },
+  },
+}
+</script>
+
+<style scoped>
+.pn-result-wrap {
+  min-height: 70vh;
+}
+.pn-result-card {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  overflow: hidden;
+}
+.pn-result-header {
+  background: #c62828;
+  min-height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pn-result-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #fff;
+  color: #c62828;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pn-result-exclaim {
+  font-weight: 800;
+  font-size: 1.6rem;
+  line-height: 1;
+}
+.pn-result-body {
+  padding: 2rem 1.5rem 1.75rem;
+  text-align: center;
+}
+.pn-result-title {
+  color: #c62828;
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin-bottom: 0.75rem;
+}
+.pn-result-sub {
+  color: #222;
+  margin-bottom: 1.25rem;
+}
+.pn-result-btn--error {
+  background: #c62828;
+  border-color: #c62828;
+  color: #fff;
+}
+.pn-result-btn--error:hover {
+  background: #a51f1f;
+  border-color: #a51f1f;
+  color: #fff;
+}
+.pn-result-note {
+  margin-top: 1.25rem;
+  margin-bottom: 0;
+  font-size: 0.8rem;
+  color: #9a9a9a;
+}
+</style>

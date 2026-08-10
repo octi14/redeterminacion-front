@@ -739,9 +739,16 @@ export default {
   min-height: 780px;
   max-width: 100% !important;
   width: 100%;
+  display: flex;
+  flex-direction: column;
 }
+#aaCard :deep(.card-body),
 #aaCard .card-body{
-  padding: 1rem 3rem 7.5rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 780px;
+  padding: 1rem 3rem 1.25rem;
 }
 .modal-content div{
   text-align: center;
@@ -847,10 +854,11 @@ margin-bottom: 0.3rem;
 }
 .btn-abajo-container{
   width: 80%;
-  position: absolute;
-  bottom: 15px;
-  left: 10%;
-  z-index: 2;
+  position: static;
+  margin: auto auto 0.75rem;
+  left: auto;
+  bottom: auto;
+  z-index: 1;
 }
 .card-actions-stack {
   display: flex;
@@ -858,7 +866,7 @@ margin-bottom: 0.3rem;
   align-items: center;
   gap: 0.75rem;
   width: 100%;
-  margin: 1rem auto;
+  margin: 1.25rem auto 0;
 }
 .card-actions-row {
   display: flex;

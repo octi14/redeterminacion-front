@@ -184,13 +184,7 @@
           </b-row>
       </b-card-text>
       <div class="btn-abajo-container">
-          <div
-            class="card-actions-row"
-            :class="{
-              'card-actions-row-center': estadoActual == 3 || estadoActual == 4 || estadoActual == 5,
-              'card-actions-row-spread': estadoActual == 2 || estadoActual == 8 || estadoActual == 9 || estadoActual == 10 || estadoActual == 11 || estadoActual == 12,
-            }"
-          >
+          <div class="card-actions-stack">
               <b-button
                 v-if="mostrarVerArchivo"
                 class="btn-show-ticket"
@@ -202,25 +196,33 @@
                 <i class="bi bi-eye" aria-hidden="true"></i>
               </b-button>
 
-              <div v-if="estadoActual == 9 || estadoActual == 10 || estadoActual == 11 || estadoActual == 12" class="card-actions-pair">
-                  <b-button @click="AvanzarPaso" variant="success" class="btn-approve" :disabled="(estadoActual == 11) && (!motivo)" v-if="(estadoActual == 11) && (!motivo)"><span>Aceptar</span></b-button>
-                  <b-button @click="AvanzarPaso" variant="success" class="btn-approve" v-else><span>Aceptar</span></b-button>
-                  <b-button @click="RetrocederPaso" variant="danger" class="btn-cancel"><span>Cancelar</span></b-button>
+              <div
+                class="card-actions-row"
+                :class="{
+                  'card-actions-row-center': estadoActual == 3 || estadoActual == 4 || estadoActual == 5,
+                  'card-actions-row-spread': estadoActual == 2 || estadoActual == 8 || estadoActual == 9 || estadoActual == 10 || estadoActual == 11 || estadoActual == 12,
+                }"
+              >
+                  <div v-if="estadoActual == 9 || estadoActual == 10 || estadoActual == 11 || estadoActual == 12" class="card-actions-pair">
+                      <b-button @click="AvanzarPaso" variant="success" class="btn-approve" :disabled="(estadoActual == 11) && (!motivo)" v-if="(estadoActual == 11) && (!motivo)"><span>Aceptar</span></b-button>
+                      <b-button @click="AvanzarPaso" variant="success" class="btn-approve" v-else><span>Aceptar</span></b-button>
+                      <b-button @click="RetrocederPaso" variant="danger" class="btn-cancel"><span>Cancelar</span></b-button>
+                  </div>
+                  <div v-else-if="estadoActual == 2 || estadoActual == 8" class="card-actions-pair">
+                      <b-button @click="AprobarTicket" variant="success" class="btn-approve"><span>Aprobar</span></b-button>
+                      <b-button @click="RechazarTicket" variant="danger" class="btn-cancel"><span>Rechazar</span></b-button>
+                  </div>
+                  <i
+                    v-else-if="estadoActual == 3 || estadoActual == 4 || estadoActual == 5"
+                    class="bi bi-pencil-square text-dark btn-rectific"
+                    role="button"
+                    tabindex="0"
+                    title="Rectificación manual"
+                    aria-label="Rectificación manual"
+                    @click="RectificarTicket"
+                    @keydown.enter.prevent="RectificarTicket"
+                  ></i>
               </div>
-              <div v-else-if="estadoActual == 2 || estadoActual == 8" class="card-actions-pair">
-                  <b-button @click="AprobarTicket" variant="success" class="btn-approve"><span>Aprobar</span></b-button>
-                  <b-button @click="RechazarTicket" variant="danger" class="btn-cancel"><span>Rechazar</span></b-button>
-              </div>
-              <i
-                v-else-if="estadoActual == 3 || estadoActual == 4 || estadoActual == 5"
-                class="bi bi-pencil-square text-dark btn-rectific"
-                role="button"
-                tabindex="0"
-                title="Rectificación manual"
-                aria-label="Rectificación manual"
-                @click="RectificarTicket"
-                @keydown.enter.prevent="RectificarTicket"
-              ></i>
           </div>
       </div>
   </b-card>
@@ -739,7 +741,7 @@ export default {
   width: 100%;
 }
 #aaCard .card-body{
-  padding: 1rem 3rem 6rem;
+  padding: 1rem 3rem 7.5rem;
 }
 .modal-content div{
   text-align: center;
@@ -850,6 +852,14 @@ margin-bottom: 0.3rem;
   left: 10%;
   z-index: 2;
 }
+.card-actions-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  margin: 1rem auto;
+}
 .card-actions-row {
   display: flex;
   flex-direction: row;
@@ -858,7 +868,7 @@ margin-bottom: 0.3rem;
   align-items: center;
   width: 100%;
   gap: 1rem;
-  margin: 1rem auto;
+  margin: 0;
 }
 .card-actions-row-center {
   justify-content: center;
@@ -874,12 +884,8 @@ margin-bottom: 0.3rem;
   justify-content: space-between;
   gap: 0.75rem;
   flex: 1 1 auto;
+  width: 100%;
   min-width: 0;
-}
-.card-actions-row:has(.btn-show-ticket) .card-actions-pair {
-  flex: 0 0 auto;
-  margin-left: auto;
-  justify-content: flex-end;
 }
 .card-actions-row .btn-approve,
 .card-actions-row .btn-cancel {

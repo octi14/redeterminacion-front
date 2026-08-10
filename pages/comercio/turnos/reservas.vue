@@ -4,7 +4,40 @@
     <div v-if="adminComercio || adminInspeccion">
       <div class="internal-use-toolbar internal-use-wide">
         <b-row class="align-items-end mt-3">
-        <b-form-group class="col-md-6" label-class="text-success h6">
+        <b-form-group class="col mt-0 mb-0" label-class="text-success h6">
+          <label for="inputNroTramite" class="bv-no-focus-ring col-form-label pt-0 text-success h6">
+            <i class="bi bi-search"></i> Buscar por N° de Trámite
+          </label>
+          <b-form-input
+            id="inputNroTramite"
+            v-model="inputNroTramite"
+            placeholder="Ingresá el número de trámite"
+            type="text"
+          />
+        </b-form-group>
+        <b-form-group class="col mt-0 mb-0" label-class="text-success h6">
+          <label for="inputNroLegajo" class="bv-no-focus-ring col-form-label pt-0 text-success h6">
+            <i class="bi bi-search"></i> Buscar por legajo comercial
+          </label>
+          <b-form-input
+            id="inputNroLegajo"
+            v-model="inputNroLegajo"
+            placeholder="Ingresá el legajo comercial"
+            type="text"
+          />
+        </b-form-group>
+        <b-form-group class="col mt-0 mb-0" label-class="text-success h6">
+          <label for="inputNombreSolicitante" class="bv-no-focus-ring col-form-label pt-0 text-success h6">
+            <i class="bi bi-search"></i> Buscar por nombre del solicitante
+          </label>
+          <b-form-input
+            id="inputNombreSolicitante"
+            v-model="inputNombreSolicitante"
+            placeholder="Ingresá el nombre del solicitante"
+            type="text"
+          />
+        </b-form-group>
+        <b-form-group class="col mt-0 mb-0" label-class="text-success h6">
           <label for="selectedEstado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><i class="bi bi-funnel-fill"></i> Filtrar por Estado</label>
             <b-form-select id="selectedEstado" plain v-model="selectedEstado">
             <option value="">Todos</option>
@@ -12,7 +45,7 @@
           </b-form-select>
         </b-form-group>
 
-        <b-form-group class="col-md-6" label-class="text-success h6">
+        <b-form-group class="col mt-0 mb-0" label-class="text-success h6">
           <label for="selectedTipoTramite" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><i class="bi bi-funnel-fill"></i> Filtrar por Tipo de Trámite</label>
             <b-form-select id="selectedTipoTramite" plain v-model="selectedTipoTramite">
             <option value="">Todos</option>
@@ -79,6 +112,9 @@ export default{
   data() {
     return {
       hideFinalizados: false,
+      inputNroTramite: '',
+      inputNroLegajo: '',
+      inputNombreSolicitante: '',
       singleModal: false,
       singleContent: '',
       lastLength: false,
@@ -142,6 +178,17 @@ export default{
   async mounted() {
     await this.loadReservas()
   },
+  watch: {
+    inputNroTramite() {
+      this.currentPage = 1
+    },
+    inputNroLegajo() {
+      this.currentPage = 1
+    },
+    inputNombreSolicitante() {
+      this.currentPage = 1
+    },
+  },
   computed: {
     turnos(){
       return useTurnosStore().all
@@ -171,6 +218,22 @@ export default{
     },
     filteredItems() {
       let items = this.items;
+
+      if (this.inputNroTramite) {
+        items = items.filter(item => item.nroTramite && String(item.nroTramite).includes(this.inputNroTramite));
+      }
+
+      if (this.inputNroLegajo) {
+        items = items.filter(item => item.nroLegajoComercial && String(item.nroLegajoComercial).includes(this.inputNroLegajo));
+      }
+
+      if (this.inputNombreSolicitante && this.inputNombreSolicitante.trim()) {
+        const nombreBusqueda = this.inputNombreSolicitante.trim().toLowerCase();
+        items = items.filter(item => {
+          const nombre = item.nombreSolicitante ? String(item.nombreSolicitante).toLowerCase() : '';
+          return nombre.includes(nombreBusqueda);
+        });
+      }
 
       // Filtrar por estado
       if (this.selectedEstado) {

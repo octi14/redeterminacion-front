@@ -183,25 +183,44 @@
               </b-col>
           </b-row>
       </b-card-text>
-      <b-row v-if="estadoActual == 2 || estadoActual == 3 || estadoActual == 4 || estadoActual == 8">
-          <b-col v-if="facturas && facturas[periodo]">
-              <b-button class="btn-show-ticket" variant="outline-primary" @click="openDocumento(facturas[periodo])"><i class="bi bi-eye"></i></b-button>
-          </b-col>
-      </b-row>
       <div class="btn-abajo-container">
-          <div class="btn-group card-actions-row">
-              <div v-if="estadoActual == 9 || estadoActual == 10 || estadoActual == 11 || estadoActual == 12" class="card-actions-row">
+          <div
+            class="card-actions-row"
+            :class="{
+              'card-actions-row-center': estadoActual == 3 || estadoActual == 4 || estadoActual == 5,
+              'card-actions-row-spread': estadoActual == 2 || estadoActual == 8 || estadoActual == 9 || estadoActual == 10 || estadoActual == 11 || estadoActual == 12,
+            }"
+          >
+              <b-button
+                v-if="mostrarVerArchivo"
+                class="btn-show-ticket"
+                variant="outline-primary"
+                title="Ver archivo"
+                aria-label="Ver archivo"
+                @click="openDocumento(facturas[periodo])"
+              >
+                <i class="bi bi-eye" aria-hidden="true"></i>
+              </b-button>
+
+              <div v-if="estadoActual == 9 || estadoActual == 10 || estadoActual == 11 || estadoActual == 12" class="card-actions-pair">
                   <b-button @click="AvanzarPaso" variant="success" class="btn-approve" :disabled="(estadoActual == 11) && (!motivo)" v-if="(estadoActual == 11) && (!motivo)"><span>Aceptar</span></b-button>
                   <b-button @click="AvanzarPaso" variant="success" class="btn-approve" v-else><span>Aceptar</span></b-button>
                   <b-button @click="RetrocederPaso" variant="danger" class="btn-cancel"><span>Cancelar</span></b-button>
               </div>
-              <div v-else-if="estadoActual == 2 || estadoActual == 8" class="card-actions-row">
+              <div v-else-if="estadoActual == 2 || estadoActual == 8" class="card-actions-pair">
                   <b-button @click="AprobarTicket" variant="success" class="btn-approve"><span>Aprobar</span></b-button>
                   <b-button @click="RechazarTicket" variant="danger" class="btn-cancel"><span>Rechazar</span></b-button>
               </div>
-              <div v-else-if="estadoActual == 3 || estadoActual == 4 || estadoActual == 5" class="card-actions-row card-actions-row-center">
-                  <i class="bi bi-pencil-square text-dark btn-rectific" role="button" tabindex="0" @click="RectificarTicket"></i>
-              </div>
+              <i
+                v-else-if="estadoActual == 3 || estadoActual == 4 || estadoActual == 5"
+                class="bi bi-pencil-square text-dark btn-rectific"
+                role="button"
+                tabindex="0"
+                title="Rectificación manual"
+                aria-label="Rectificación manual"
+                @click="RectificarTicket"
+                @keydown.enter.prevent="RectificarTicket"
+              ></i>
           </div>
       </div>
   </b-card>
@@ -324,6 +343,9 @@ export default {
     },
     observacionPeriodo() {
       return this.facturaPeriodo?.observaciones || ''
+    },
+    mostrarVerArchivo() {
+      return [2, 3, 4, 8].includes(this.estadoActual) && !!this.facturas?.[this.periodo]
     },
   },
   validations: {
@@ -717,7 +739,7 @@ export default {
   width: 100%;
 }
 #aaCard .card-body{
-  padding: 1rem 3rem;
+  padding: 1rem 3rem 6rem;
 }
 .modal-content div{
   text-align: center;
@@ -826,20 +848,41 @@ margin-bottom: 0.3rem;
   position: absolute;
   bottom: 15px;
   left: 10%;
+  z-index: 2;
 }
 .card-actions-row {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   width: 100%;
-  gap: 0.5rem;
+  gap: 1rem;
+  margin: 1rem auto;
 }
 .card-actions-row-center {
   justify-content: center;
 }
-.card-actions-row .btn {
+.card-actions-row-spread {
+  justify-content: space-between;
+}
+.card-actions-pair {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.card-actions-row:has(.btn-show-ticket) .card-actions-pair {
+  flex: 0 0 auto;
+  margin-left: auto;
+  justify-content: flex-end;
+}
+.card-actions-row .btn-approve,
+.card-actions-row .btn-cancel {
   flex: 0 1 45%;
   max-width: 8rem;
   margin-top: 0;
@@ -853,18 +896,20 @@ margin-bottom: 0.3rem;
   width: 8rem;
 }
 .btn-show-ticket{
-  width: 100%;
-  margin-top: 2rem;
-}
-.btn-group{
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  margin: 1rem auto;
-  text-align: center;
+  flex: 0 0 auto;
+  width: 3.5rem;
+  min-width: 3.5rem;
+  max-width: 3.5rem;
+  margin-top: 0;
+  padding: 0.5rem;
 }
 .btn-rectific{
   cursor: pointer;
+  font-size: 1.75rem;
+  line-height: 1;
+  flex: 0 0 auto;
+  position: relative;
+  z-index: 1;
 }
 .btn-cancel{
   background-color: #e53749;

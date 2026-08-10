@@ -127,7 +127,7 @@
       </div>
 
       <!--Datos del solicitante-->
-      <b-card no-body class="container col-md-6 col-sm-8 shadow-card mt-4 mx-auto">
+      <b-card no-body class="internal-use-detail-card shadow-card mt-4 mx-auto">
           <div class="col mx-auto">
             <div class="container text-center mx-auto">
               <div class="row align-items-center">
@@ -218,7 +218,7 @@
     </template>
         <!-- Datos del inmueble -->
     <template v-if="habilitacion && adminComercio">
-      <div class="container col-md-6 col-sm-8 card shadow-card mt-4 mx-auto">
+      <div class="internal-use-detail-card card shadow-card mt-4 mx-auto">
           <div class="col mx-auto">
             <div class="container text-center mx-auto">
               <div class="row align-items-center">
@@ -344,7 +344,7 @@
     </template>
     <!-- Documentación -->
     <template v-if="habilitacion && adminComercio">
-      <div class="container col-md-6 col-sm-8 card shadow-card mt-4 mb-3 mx-auto">
+      <div class="internal-use-detail-card card shadow-card mt-4 mb-3 mx-auto">
         <!-- Resto del contenido del componente -->
         <div class="col mx-auto">
           <div class="container text-center mx-auto">
@@ -435,7 +435,7 @@
 
     <!-- Turno (de existir) -->
     <template v-if="habilitacion && turno && adminComercio">
-      <div class="container col-md-6 col-sm-8 card shadow-card mt-4 mb-3 mx-auto">
+      <div class="internal-use-detail-card card shadow-card mt-4 mb-3 mx-auto">
         <!-- Resto del contenido del componente -->
         <div class="col mx-auto">
           <div class="container text-center mx-auto">
@@ -1877,16 +1877,6 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
 /* Estilos para los controles de revisión */
 .form-check-inline {
   margin-right: 0.5rem;
-}
-
-.form-check-input:checked {
-  background-color: #28a745;
-  border-color: #28a745;
-}
-
-.form-check-input[value="incorrecto"]:checked {
-  background-color: #dc3545;
-  border-color: #dc3545;
 }
 
 .form-check-label {

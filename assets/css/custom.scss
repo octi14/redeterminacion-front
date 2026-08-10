@@ -8,6 +8,19 @@ $color-orange-button: #eb8a0a;
 $color-gray-dark: #353535;
 $color-gray-light: #666;
 
+@mixin internal-use-form-control-visible {
+  width: 1.2em;
+  height: 1.2em;
+  border: 2px solid $color-gray-dark;
+  background-color: #d8d8d8;
+  cursor: pointer;
+
+  &:focus {
+    border-color: $color-gray-dark;
+    box-shadow: 0 0 0 0.2rem rgba($color-gray-dark, 0.28);
+  }
+}
+
 // ============================================
 // LAYOUT BASE
 // ============================================
@@ -223,6 +236,12 @@ body:not(.modal-open) #app-content {
     float: none;
     margin: 0;
     flex-shrink: 0;
+    @include internal-use-form-control-visible;
+
+    &:checked {
+      background-color: $color-green-primary;
+      border-color: $color-green-primary;
+    }
   }
 
   .form-check-label {
@@ -243,6 +262,44 @@ body:not(.modal-open) #app-content {
 .internal-use-table.internal-use-wide,
 .internal-use-pagination.internal-use-wide {
   max-width: min(92rem, 96vw);
+}
+
+.internal-use-detail-card {
+  width: 100%;
+  max-width: 36rem;
+  margin-left: auto;
+  margin-right: auto;
+
+  @media (max-width: 575.98px) {
+    max-width: calc(100% - 0.75rem);
+  }
+
+  > .container,
+  .container {
+    max-width: 100%;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+
+    @media (min-width: 576px) {
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+    }
+  }
+
+  .form-check-input[type='radio'],
+  .form-check-input[type='checkbox'] {
+    @include internal-use-form-control-visible;
+  }
+
+  .form-check-input:checked {
+    background-color: #28a745;
+    border-color: #28a745;
+  }
+
+  .form-check-input[value='incorrecto']:checked {
+    background-color: #dc3545;
+    border-color: #dc3545;
+  }
 }
 
 .si-no-radios-row { margin-bottom: 0.5rem; }

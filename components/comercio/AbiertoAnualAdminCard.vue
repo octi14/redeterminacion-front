@@ -683,8 +683,11 @@ export default {
 @import "~/assets/css/abierto-anual-card-shared.css";
 
 .abierto-anual-card-shell {
-  max-width: 30rem;
+  max-width: min(30rem, 100%);
   width: 100%;
+  box-sizing: border-box;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
 }
 
 @media (max-width: 1200px){

@@ -13,7 +13,7 @@
           <p class="h5 mt-3 mb-0"> CUIT: <b> {{ tramite.cuit }}  </b></p>
         </div>
         <!--Datos de facturas-->
-        <div class="row no-gutters justify-content-center abierto-anual-registros-cards">
+        <div class="row justify-content-center abierto-anual-registros-cards g-3 g-lg-4">
           <b-col v-for="(periodo, index) in periodosEstado" :key="index" cols="12" sm="10" md="6" lg="4" xl="4">
               <AbiertoAnualAdminCard
               :id="index"
@@ -234,9 +234,17 @@
     margin: 1.5em;
   } */
 
-  .abierto-anual-registros-cards > .col {
-    padding: 0.5rem;
-    margin: 0;
+  .abierto-anual-registros-cards {
+    width: 100%;
+    max-width: min(92rem, 100%);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: clamp(1rem, 4vw, 2rem);
+    padding-right: clamp(1rem, 4vw, 2rem);
+    box-sizing: border-box;
+  }
+
+  .abierto-anual-registros-cards > [class*='col'] {
     display: flex;
     justify-content: center;
   }

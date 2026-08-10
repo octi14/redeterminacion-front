@@ -45,7 +45,23 @@
               <strong>Nombre del solicitante</strong><br>
             </p>
             <p class="col col-complementary" role="complementary">
-              <a>{{ turno.nombre}}</a>
+              <a>{{ turno.nombreSolicitante || '—' }}</a>
+            </p>
+          </div>
+          <div class="layout">
+            <p class="col col-main">
+              <strong>Nombre del turno</strong><br>
+            </p>
+            <p class="col col-complementary" role="complementary">
+              <a>{{ nombreTurnoDisplay }}</a>
+            </p>
+          </div>
+          <div v-if="turno.nroLegajoComercial" class="layout">
+            <p class="col col-main">
+              <strong>Número de legajo comercial</strong><br>
+            </p>
+            <p class="col col-complementary" role="complementary">
+              <a>{{ turno.nroLegajoComercial }}</a>
             </p>
           </div>
           <div class="layout">
@@ -269,6 +285,11 @@ export default {
         'Inspección rechazada': 'text-danger',
       }
       return classes[this.turno?.status] || ''
+    },
+    nombreTurnoDisplay() {
+      const t = this.turno
+      if (!t) return '—'
+      return t.nombreTurno ?? t.nombre ?? '—'
     },
   },
   methods: {

@@ -16,14 +16,6 @@
             <span :class="turnoStatusClass" class="ml-2">{{ turno.status }}</span>
           </div>
         </div>
-        <div
-          v-if="turno.nroLegajoComercial"
-          class="row justify-content-center mt-3"
-        >
-          <p class="h5 mb-0">
-            Legajo comercial: <b>{{ turno.nroLegajoComercial }}</b>
-          </p>
-        </div>
       </div>
       <div v-if="adminInspeccion" class="solicitud-quick-actions">
         <b-button size="sm" variant="success" class="btn-4" @click="onAprobar">Aprobar inspección</b-button>

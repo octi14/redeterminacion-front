@@ -1733,7 +1733,14 @@
               }
 
               // 4) Crear trámite solo con metadatos + URLs (JSON chico)
-              const { ningunaAnterior, ...inmuebleParaEnviar } = this.inmueble;
+              const { ningunaAnterior, ...inmuebleSinNinguna } = this.inmueble;
+              // No enviar `id` de UI: Mongoose lo interpreta como `_id` y falla el cast a ObjectId.
+              const inmuebleParaEnviar = {
+                ...inmuebleSinNinguna,
+                serviciosHoteleria: (this.inmueble.serviciosHoteleria || []).map(
+                  ({ servicio, value }) => ({ servicio, value })
+                ),
+              };
 
               const habilitacion = {
                 documentos: documentosParaGuardar,

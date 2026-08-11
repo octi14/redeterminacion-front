@@ -203,6 +203,14 @@ export const SITE_NAVIGATION_ITEMS = [
 
   // —— Recaudaciones ——
   {
+    id: 'recaudaciones-tasa-automotor',
+    title: 'Descargar tasa de automotores',
+    description: 'Consultar y descargar boletas de patente de rodados',
+    to: '/recaudaciones/tasa-automotor',
+    section: 'Recaudaciones',
+    aliases: ['patente', 'rodado', 'rodados', 'automotor', 'tasa automotor'],
+  },
+  {
     id: 'recaudaciones-pagos-dobles',
     title: 'Informar pagos dobles',
     description: 'Realizar un reclamo por pago doble de tasas',

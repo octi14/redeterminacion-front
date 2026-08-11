@@ -364,23 +364,21 @@
             </div>
             <div class="col-2 text-center">
               <strong>Revisión</strong>
-              <div class="mt-1 d-flex flex-column align-items-center">
-                <small class="text-muted mb-1">Todos:</small>
-                <div class="d-flex justify-content-center flex-wrap">
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="revisionTodosDocumentos" id="todosDocumentosCorrecto"
-                           @change="marcarTodosDocumentos('correcto')">
-                    <label class="form-check-label text-success" for="todosDocumentosCorrecto" title="Marcar todos los documentos como correctos">
-                      <i class="bi bi-check-circle-fill"></i>
-                    </label>
-                  </div>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="revisionTodosDocumentos" id="todosDocumentosIncorrecto"
-                           @change="marcarTodosDocumentos('incorrecto')">
-                    <label class="form-check-label text-danger" for="todosDocumentosIncorrecto" title="Marcar todos los documentos como incorrectos">
-                      <i class="bi bi-x-circle-fill"></i>
-                    </label>
-                  </div>
+              <div class="mt-1 docs-revision-todos">
+                <small class="text-muted">Todos:</small>
+                <div class="form-check form-check-inline m-0">
+                  <input class="form-check-input" type="radio" name="revisionTodosDocumentos" id="todosDocumentosCorrecto"
+                         @change="marcarTodosDocumentos('correcto')">
+                  <label class="form-check-label text-success" for="todosDocumentosCorrecto" title="Marcar todos los documentos como correctos">
+                    <i class="bi bi-check-circle-fill"></i>
+                  </label>
+                </div>
+                <div class="form-check form-check-inline m-0">
+                  <input class="form-check-input" type="radio" name="revisionTodosDocumentos" id="todosDocumentosIncorrecto"
+                         @change="marcarTodosDocumentos('incorrecto')">
+                  <label class="form-check-label text-danger" for="todosDocumentosIncorrecto" title="Marcar todos los documentos como incorrectos">
+                    <i class="bi bi-x-circle-fill"></i>
+                  </label>
                 </div>
               </div>
             </div>
@@ -1877,6 +1875,14 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
 /* Estilos para los controles de revisión */
 .form-check-inline {
   margin-right: 0.5rem;
+}
+
+.docs-revision-todos {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
 }
 
 .form-check-label {

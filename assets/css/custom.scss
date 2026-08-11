@@ -7,17 +7,18 @@ $color-green-text: #0c6919;
 $color-orange-button: #eb8a0a;
 $color-gray-dark: #353535;
 $color-gray-light: #666;
+$color-radio-border: #555555;
 
 @mixin internal-use-form-control-visible {
   width: 1.2em;
   height: 1.2em;
-  border: 2px solid $color-gray-dark;
+  border: 2px solid $color-radio-border;
   background-color: #d8d8d8;
   cursor: pointer;
 
   &:focus {
-    border-color: $color-gray-dark;
-    box-shadow: 0 0 0 0.2rem rgba($color-gray-dark, 0.28);
+    border-color: $color-radio-border;
+    box-shadow: 0 0 0 0.2rem rgba($color-radio-border, 0.28);
   }
 }
 
@@ -266,7 +267,7 @@ body:not(.modal-open) #app-content {
 
 .internal-use-detail-card {
   width: 100%;
-  max-width: 36rem;
+  max-width: min(52rem, 92vw);
   margin-left: auto;
   margin-right: auto;
 

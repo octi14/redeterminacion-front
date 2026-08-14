@@ -3,27 +3,150 @@
     <Banner title="Pagos" />
 
     <main class="container py-5">
-      <section v-if="adminHacienda" class="urbana-card">
+      <section v-if="puedeAcceder" class="urbana-card">
         <header class="urbana-header">
-          <h1>Tasa por Servicios Urbanos</h1>
+          <h1>Pago online de tasas</h1>
           <p>
-            Ingresá la partida y los datos del pagador para continuar con el pago online.
+            Consultá el saldo, completá los datos del pagador y continuá en Provincia NET.
           </p>
         </header>
 
         <b-form class="urbana-form" @submit.prevent="iniciarPago">
           <div class="form-section">
             <h2>Datos de la cuenta</h2>
-            <b-form-group label="Partida *" label-for="partida" class="mb-0">
-              <b-form-input
-                id="partida"
-                v-model="partida"
-                required
-                autocomplete="off"
-                placeholder="Número de partida"
-                @input="normalizarPartida"
-              />
-            </b-form-group>
+            <div class="cuenta-grid">
+              <b-form-group label="Tipo de tasa *" label-for="tipoTasa" class="mb-0">
+                <b-form-select
+                  id="tipoTasa"
+                  v-model="tipoTasa"
+                  :options="tipoTasaOptions"
+                  required
+                  @change="onTipoTasaChange"
+                />
+              </b-form-group>
+              <b-form-group :label="identificadorLabel + ' *'" label-for="objetoClave" class="mb-0">
+                <div class="clave-row">
+                  <b-form-input
+                    id="objetoClave"
+                    v-model="objetoClave"
+                    required
+                    autocomplete="off"
+                    :placeholder="identificadorPlaceholder"
+                    @input="normalizarClave"
+                    @blur="consultarDeuda"
+                  />
+                  <b-button
+                    variant="outline-success"
+                    :disabled="consultando || !claveValida"
+                    @click="consultarDeuda"
+                  >
+                    <b-spinner v-if="consultando" small></b-spinner>
+                    <span v-else>Consultar</span>
+                  </b-button>
+                </div>
+              </b-form-group>
+            </div>
+          </div>
+
+          <div v-if="deuda" class="form-section deuda-section">
+            <div class="deuda-header">
+              <h2>Saldo a pagar</h2>
+              <strong class="deuda-total">{{ formatMoney(saldoSeleccionado) }}</strong>
+            </div>
+            <div class="deuda-meta">
+              <span v-if="deuda.contribuyente?.nombre">
+                <b>Titular:</b> {{ deuda.contribuyente.nombre }}
+              </span>
+              <span v-if="deuda.contribuyente?.domicilio">
+                <b>Domicilio:</b> {{ deuda.contribuyente.domicilio }}
+              </span>
+              <span>
+                <b>{{ identificadorLabel }}:</b> {{ deuda.objetoClave }}
+              </span>
+            </div>
+
+            <div v-if="itemsPagables.length" class="deuda-group">
+              <p class="deuda-group-title">Seleccioná los períodos que querés abonar</p>
+              <div class="deuda-items">
+                <label
+                  v-for="item in itemsPagables"
+                  :key="item.id"
+                  class="deuda-item"
+                  :class="{ selected: seleccionados.includes(item.id) }"
+                >
+                  <input
+                    v-model="seleccionados"
+                    type="checkbox"
+                    :value="item.id"
+                  >
+                  <div class="deuda-item-body">
+                    <strong>Período {{ item.periodo }}</strong>
+                    <small v-if="vencimientoActivo(item)">
+                      {{ etiquetaVencimiento(vencimientoActivo(item).orden) }}:
+                      {{ formatDate(vencimientoActivo(item).fecha) }}
+                      ·
+                      {{ formatMoney(vencimientoActivo(item).importe) }}
+                    </small>
+                    <small v-if="usaSegundoVencimiento(item)" class="deuda-item-hint">
+                      El 1er vencimiento ya pasó; el importe corresponde al 2do.
+                    </small>
+                  </div>
+                  <span class="deuda-item-amount">{{ formatMoney(item.importe) }}</span>
+                </label>
+              </div>
+            </div>
+
+            <div v-else class="deuda-empty">
+              <p class="mb-0">
+                Por el momento no hay períodos disponibles para abonar online.
+              </p>
+            </div>
+
+            <div v-if="itemsVencidos.length" class="deuda-group deuda-group--info">
+              <p class="deuda-group-title">Períodos fuera de término</p>
+              <p class="deuda-group-help">
+                <i class="bi bi-exclamation-circle-fill deuda-help-icon" aria-hidden="true"></i>
+                <span>
+                  <template v-if="itemsVencidos.length === 1">
+                    Este período no puede ser abonado por este medio.
+                  </template>
+                  <template v-else>
+                    Estos períodos no pueden ser abonados por este medio.
+                  </template>
+                  Si tenés dudas, podés comunicarte con
+                  <a href="mailto:recaudaciones@gesell.gob.ar">recaudaciones@gesell.gob.ar</a>.
+                </span>
+              </p>
+              <ul class="deuda-vencidos">
+                <li
+                  v-for="item in itemsVencidos"
+                  :key="item.id"
+                  class="deuda-vencido-row"
+                >
+                  <div class="deuda-item-body">
+                    <strong>Período {{ item.periodo }}</strong>
+                    <small v-if="ultimoVencimiento(item)">
+                      Venció el {{ formatDate(ultimoVencimiento(item).fecha) }}
+                    </small>
+                  </div>
+                  <span class="deuda-item-amount">{{ formatMoney(item.importe) }}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <b-alert v-else-if="deudaMsg" show :variant="deudaVariant" class="mb-0">
+            {{ deudaMsg }}
+          </b-alert>
+
+          <div v-if="mostrarToggleHomologacion" class="form-section homolog-section">
+            <b-form-checkbox v-model="useHomologacionFixture" switch>
+              Usar fixture de homologación Provincia NET
+            </b-form-checkbox>
+            <small>
+              Activo: el pago de prueba no depende de Mongo.
+              Inactivo: se pagan los períodos seleccionados con códigos de barra de la deuda.
+            </small>
           </div>
 
           <div class="form-section">
@@ -98,7 +221,7 @@
             <button
               type="submit"
               class="urbana-pay-btn"
-              :disabled="pagando || !partidaValida"
+              :disabled="pagando || !puedePagar"
               :aria-busy="pagando ? 'true' : 'false'"
             >
               <span v-if="pagando" class="urbana-pay-loading">
@@ -116,10 +239,10 @@
         </b-form>
       </section>
 
-      <section v-else class="urbana-card urbana-card--simple">
+      <section v-else-if="accesoResuelto" class="urbana-card urbana-card--simple">
         <h1>Acceso restringido</h1>
         <p class="mb-0">
-          Esta sección está disponible solo para usuarios de Hacienda / master.
+          El pago de tasa urbana no está disponible en este momento.
         </p>
       </section>
 
@@ -176,9 +299,18 @@ export default {
     return {
       btnHorizontalVerde,
       pagando: false,
+      consultando: false,
       errorMsg: '',
+      deudaMsg: '',
+      deudaVariant: 'info',
       showRedirectModal: false,
-      partida: '',
+      accesoResuelto: false,
+      pagoUrbanaPublico: false,
+      tipoTasa: 'URBANA',
+      objetoClave: '',
+      deuda: null,
+      seleccionados: [],
+      useHomologacionFixture: false,
       payer: {
         first_name: '',
         last_name: '',
@@ -188,6 +320,10 @@ export default {
         document_type: '1',
         locked_payer: false,
       },
+      tipoTasaOptions: [
+        { value: 'URBANA', text: 'Tasa urbana' },
+        { value: 'AUTOMOTORES', text: 'Automotor' },
+      ],
       documentTypeOptions: [
         { value: '1', text: 'DNI' },
         { value: '2', text: 'Pasaporte' },
@@ -201,24 +337,205 @@ export default {
     }
   },
   computed: {
-    adminHacienda() {
-      const admin = useUserStore().admin
-      return admin === 'hacienda' || admin === 'master'
+    usuarioInterno() {
+      const admin = String(useUserStore().admin || '').trim().toLowerCase()
+      return ['hacienda', 'master', 'admin', 'true', 'boletas'].includes(admin)
     },
-    partidaValida() {
-      return this.partida.length >= 3
+    puedeAcceder() {
+      return this.usuarioInterno || this.pagoUrbanaPublico
+    },
+    mostrarToggleHomologacion() {
+      const admin = String(useUserStore().admin || '').trim().toLowerCase()
+      return admin === 'master'
+    },
+    identificadorLabel() {
+      return this.tipoTasa === 'AUTOMOTORES' ? 'Dominio' : 'Partida'
+    },
+    identificadorPlaceholder() {
+      return this.tipoTasa === 'AUTOMOTORES' ? 'Dominio del vehículo' : 'Número de partida'
+    },
+    claveValida() {
+      if (this.tipoTasa === 'AUTOMOTORES') {
+        return /^[A-Z0-9]{5,9}$/.test(this.objetoClave)
+      }
+      return /^[A-Z0-9]{3,16}$/.test(this.objetoClave)
+    },
+    itemsPagables() {
+      return (this.deuda?.items || []).filter((item) => !this.esPeriodoVencido(item))
+    },
+    itemsVencidos() {
+      return (this.deuda?.items || []).filter((item) => this.esPeriodoVencido(item))
+    },
+    soloPeriodosVencidos() {
+      return Boolean(this.deuda?.items?.length) && this.itemsPagables.length === 0
+    },
+    saldoSeleccionado() {
+      if (!this.deuda?.items?.length) return 0
+      return this.deuda.items
+        .filter(
+          (item) =>
+            this.seleccionados.includes(item.id) && !this.esPeriodoVencido(item)
+        )
+        .reduce((acc, item) => acc + Number(item.importe || 0), 0)
+        .toFixed(2)
+    },
+    puedePagar() {
+      if (!this.claveValida) return false
+      if (this.useHomologacionFixture) return true
+      return this.seleccionados.some((id) =>
+        this.itemsPagables.some((item) => item.id === id)
+      )
+    },
+  },
+  mounted() {
+    this.loadAccess()
+  },
+  watch: {
+    mostrarToggleHomologacion: {
+      immediate: true,
+      handler(puedeVer) {
+        this.useHomologacionFixture = Boolean(puedeVer)
+      },
     },
   },
   methods: {
-    normalizarPartida() {
-      this.partida = String(this.partida || '')
-        .replace(/\s/g, '')
-        .toUpperCase()
+    async loadAccess() {
+      try {
+        const response = await ProvinciaNetService.getConfiguracion(this.$axios)
+        const data = response?.data || response
+        this.pagoUrbanaPublico = data?.habilitada === true
+      } catch (_) {
+        this.pagoUrbanaPublico = false
+      } finally {
+        this.accesoResuelto = true
+      }
+    },
+    onTipoTasaChange() {
+      this.objetoClave = ''
+      this.deuda = null
+      this.seleccionados = []
+      this.deudaMsg = ''
+      this.errorMsg = ''
+    },
+    normalizarClave() {
+      if (this.tipoTasa === 'AUTOMOTORES') {
+        this.objetoClave = String(this.objetoClave || '')
+          .replace(/[\s-]/g, '')
+          .toUpperCase()
+      } else {
+        this.objetoClave = String(this.objetoClave || '')
+          .replace(/\s/g, '')
+          .toUpperCase()
+      }
+    },
+    formatMoney(value) {
+      const n = Number(value || 0)
+      return n.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })
+    },
+    formatDate(value) {
+      if (!value) return '-'
+      const date = new Date(value)
+      if (Number.isNaN(date.getTime())) return '-'
+      return date.toLocaleDateString('es-AR')
+    },
+    finDelDia(value) {
+      const date = new Date(value)
+      if (Number.isNaN(date.getTime())) return NaN
+      date.setHours(23, 59, 59, 999)
+      return date.getTime()
+    },
+    esVencimientoPasado(vto) {
+      if (!vto) return false
+      if (typeof vto.vencido === 'boolean') return vto.vencido
+      if (typeof vto.vigente === 'boolean') return !vto.vigente
+      const fin = this.finDelDia(vto.fecha)
+      return Number.isNaN(fin) || fin < Date.now()
+    },
+    vencimientosOrdenados(item) {
+      return [...(item?.vencimientos || [])].sort(
+        (a, b) => Number(a.orden || 0) - Number(b.orden || 0)
+      )
+    },
+    etiquetaVencimiento(orden) {
+      return Number(orden) === 2 ? '2do vto' : '1er vto'
+    },
+    vencimientoActivo(item) {
+      if (item?.vencimientoActivo) return item.vencimientoActivo
+      const vtos = this.vencimientosOrdenados(item)
+      return vtos.find((vto) => !this.esVencimientoPasado(vto)) || null
+    },
+    ultimoVencimiento(item) {
+      const vtos = this.vencimientosOrdenados(item)
+      return vtos[vtos.length - 1] || null
+    },
+    usaSegundoVencimiento(item) {
+      if (this.esPeriodoVencido(item)) return false
+      const activo = this.vencimientoActivo(item)
+      if (activo) return Number(activo.orden) === 2
+      const vtos = this.vencimientosOrdenados(item)
+      const primero = vtos.find((vto) => Number(vto.orden) === 1) || vtos[0]
+      const segundo = vtos.find((vto) => Number(vto.orden) === 2)
+      return Boolean(
+        primero &&
+          this.esVencimientoPasado(primero) &&
+          segundo &&
+          !this.esVencimientoPasado(segundo)
+      )
+    },
+    esPeriodoVencido(item) {
+      if (!item) return false
+      if (typeof item.vencido === 'boolean') return item.vencido
+      if (typeof item.pagable === 'boolean') return !item.pagable
+      const vtos = this.vencimientosOrdenados(item)
+      if (!vtos.length) return false
+      return vtos.every((vto) => this.esVencimientoPasado(vto))
+    },
+    async consultarDeuda() {
+      this.errorMsg = ''
+      this.deudaMsg = ''
+      this.deuda = null
+      this.seleccionados = []
+
+      if (!this.claveValida) return
+
+      this.consultando = true
+      try {
+        const response = await ProvinciaNetService.getDeuda(this.$axios, {
+          tipoTasa: this.tipoTasa,
+          objetoClave: this.objetoClave,
+        })
+        const data = response?.data || response
+        this.deuda = data
+        this.seleccionados = (data.items || [])
+          .filter((item) => !this.esPeriodoVencido(item))
+          .map((item) => item.id)
+        this.deudaMsg = ''
+      } catch (e) {
+        this.deudaMsg =
+          e?.response?.data?.message ||
+          e?.data?.message ||
+          e?.message ||
+          'No se pudo consultar la deuda.'
+        this.deudaVariant = this.useHomologacionFixture ? 'warning' : 'danger'
+        if (this.useHomologacionFixture) {
+          this.deudaMsg +=
+            ' Podés continuar con el fixture de homologación.'
+        }
+      } finally {
+        this.consultando = false
+      }
     },
     iniciarPago() {
       this.errorMsg = ''
-      if (!this.partidaValida) {
-        this.errorMsg = 'Ingresá un número de partida válido.'
+      if (!this.puedePagar) {
+        if (this.useHomologacionFixture) {
+          this.errorMsg = `Ingresá un${this.tipoTasa === 'AUTOMOTORES' ? ' dominio' : 'a partida'} válido.`
+        } else if (this.soloPeriodosVencidos) {
+          this.errorMsg =
+            'Los períodos consultados están vencidos y no se pueden abonar online. Acercate a Recaudaciones para regularizarlos.'
+        } else {
+          this.errorMsg = 'Consultá la deuda y seleccioná al menos un período vigente.'
+        }
         return
       }
       this.showRedirectModal = true
@@ -233,11 +550,19 @@ export default {
       }
 
       try {
-        const res = await ProvinciaNetService.createPreorder(this.$axios, {
+        const body = {
           payer: this.payer,
-          objetoClave: this.partida,
-          useHomologacionFixture: true,
-        })
+          objetoClave: this.objetoClave,
+          tipoTasa: this.tipoTasa,
+          useHomologacionFixture: this.useHomologacionFixture,
+        }
+        if (!this.useHomologacionFixture) {
+          body.itemIds = this.seleccionados.filter((id) =>
+            this.itemsPagables.some((item) => item.id === id)
+          )
+        }
+
+        const res = await ProvinciaNetService.createPreorder(this.$axios, body)
         const data = res?.data || res
         const url = data?.url
         const uuid = data?.preorder_uuid
@@ -265,6 +590,7 @@ export default {
           checkoutWindow.close()
         }
         this.errorMsg =
+          e?.response?.data?.message ||
           e?.data?.message ||
           e?.message ||
           'No se pudo generar el link de pago.'
@@ -307,7 +633,7 @@ export default {
 
 .urbana-header {
   padding: 1.75rem 2rem 1.35rem;
-  border-bottom: 1px solid #e8eee9;
+  border-bottom: 1px solid #e2ebe4;
   background: #f7fbf8;
 }
 .urbana-header h1 {
@@ -336,6 +662,171 @@ export default {
   font-size: 1.15rem;
   font-weight: bold;
 }
+.cuenta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 1rem 1.15rem;
+}
+.clave-row {
+  display: flex;
+  gap: 0.6rem;
+}
+.clave-row .form-control,
+.clave-row input {
+  flex: 1;
+}
+
+.deuda-section {
+  padding: 1rem 1.1rem;
+  border: 1px solid #e2ebe4;
+  border-radius: 0.85rem;
+  background: #f7fbf8;
+}
+.deuda-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+.deuda-header h2 {
+  margin: 0;
+}
+.deuda-total {
+  color: #0c681a;
+  font-size: 1.25rem;
+}
+.deuda-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 1rem;
+  margin-bottom: 1rem;
+  color: #666666;
+  font-size: 0.92rem;
+}
+.deuda-group + .deuda-group {
+  margin-top: 1.1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2ebe4;
+}
+.deuda-group-title {
+  margin: 0 0 0.55rem;
+  color: #173e32;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+.deuda-group-help {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  margin: 0 0 0.7rem;
+  color: #666666;
+  font-size: 0.9rem;
+  font-weight: 400;
+  line-height: 1.45;
+}
+.deuda-help-icon {
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+  color: #e27910;
+  font-size: 1rem;
+}
+.deuda-group-help a {
+  color: #0c681a;
+  font-weight: 400;
+  text-decoration: underline;
+}
+.deuda-group--info .deuda-group-title {
+  color: #e27910;
+}
+.deuda-empty {
+  padding: 0.85rem 0.95rem;
+  border-radius: 0.65rem;
+  background: #fff;
+  border: 1px dashed #e2ebe4;
+  color: #666666;
+  font-weight: 600;
+}
+.deuda-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+.deuda-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid #e2ebe4;
+  border-radius: 0.65rem;
+  background: #fff;
+  cursor: pointer;
+  margin: 0;
+}
+.deuda-item.selected {
+  border-color: #0c681a;
+  box-shadow: inset 0 0 0 1px #0c681a;
+}
+.deuda-item-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.deuda-item-body strong {
+  color: #173e32;
+}
+.deuda-item-body small {
+  color: #666666;
+}
+.deuda-item-hint {
+  color: #666666 !important;
+  font-weight: 600;
+}
+.deuda-item-amount {
+  font-weight: 700;
+  color: #173e32;
+}
+.deuda-vencidos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+.deuda-vencido-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.65rem 0.85rem;
+  border-radius: 0.65rem;
+  background: #f0f0f0;
+  border: 1px solid #dee2e6;
+}
+.deuda-vencido-row .deuda-item-body strong,
+.deuda-vencido-row .deuda-item-body small,
+.deuda-vencido-row .deuda-item-amount {
+  color: #9aa0a6;
+}
+.deuda-vencido-row .deuda-item-amount {
+  font-weight: 600;
+}
+
+.homolog-section {
+  padding: 0.9rem 1rem;
+  border-radius: 0.75rem;
+  background: #f0f0f0;
+  border: 1px solid #ffc107;
+}
+.homolog-section small {
+  display: block;
+  margin-top: 0.35rem;
+  color: #e27910;
+  line-height: 1.4;
+}
+
 .payer-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -351,7 +842,7 @@ export default {
   justify-content: space-between;
   gap: 1.25rem;
   padding-top: 0.35rem;
-  border-top: 1px solid #e8eee9;
+  border-top: 1px solid #e2ebe4;
 }
 .pay-hint {
   color: #666;
@@ -399,8 +890,12 @@ export default {
   .urbana-header h1 {
     font-size: 1.65rem;
   }
+  .cuenta-grid,
   .payer-grid {
     grid-template-columns: 1fr;
+  }
+  .clave-row {
+    flex-direction: column;
   }
   .pay-footer {
     flex-direction: column-reverse;

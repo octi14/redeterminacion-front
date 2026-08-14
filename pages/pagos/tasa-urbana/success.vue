@@ -75,7 +75,7 @@ export default {
 }
 .pn-result-card {
   background: #fff;
-  border: 1px solid #e5e5e5;
+  border: 1px solid #dee2e6;
   overflow: hidden;
 }
 .pn-result-header {
@@ -117,8 +117,8 @@ export default {
   min-width: 140px;
 }
 .pn-result-btn--success:hover {
-  background: #095214;
-  border-color: #095214;
+  background: #15571f;
+  border-color: #15571f;
   color: #fff;
 }
 </style>

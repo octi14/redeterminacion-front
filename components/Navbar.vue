@@ -54,6 +54,9 @@
           <b-dropdown-item v-if="canManageBoletas" to="/admin/boletas">
             Administrar boletas
           </b-dropdown-item>
+          <b-dropdown-item v-if="canManageBoletas || adminHacienda" to="/admin/boletas-urbana">
+            Pago tasa urbana
+          </b-dropdown-item>
         </b-nav-item-dropdown>
 
         <b-nav-item-dropdown v-if="adminCementerio" text="Cementerio">
@@ -129,7 +132,7 @@ export default {
       return this.adminComercio || this.adminInspeccion || this.adminArvige
     },
     showRecaudacionesMenu() {
-      return this.adminRecaudaciones || this.canManageBoletas
+      return this.adminRecaudaciones || this.canManageBoletas || this.adminHacienda
     },
     username() {
       return this.userStore.username

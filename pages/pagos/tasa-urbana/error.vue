@@ -45,11 +45,11 @@ export default {
 }
 .pn-result-card {
   background: #fff;
-  border: 1px solid #e5e5e5;
+  border: 1px solid #dee2e6;
   overflow: hidden;
 }
 .pn-result-header {
-  background: #c62828;
+  background: #cc0025;
   min-height: 88px;
   display: flex;
   align-items: center;
@@ -60,7 +60,7 @@ export default {
   height: 48px;
   border-radius: 50%;
   background: #fff;
-  color: #c62828;
+  color: #cc0025;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -75,7 +75,7 @@ export default {
   text-align: center;
 }
 .pn-result-title {
-  color: #c62828;
+  color: #cc0025;
   font-weight: 700;
   font-size: 1.2rem;
   margin-bottom: 0.75rem;
@@ -85,19 +85,19 @@ export default {
   margin-bottom: 1.25rem;
 }
 .pn-result-btn--error {
-  background: #c62828;
-  border-color: #c62828;
+  background: #cc0025;
+  border-color: #cc0025;
   color: #fff;
 }
 .pn-result-btn--error:hover {
-  background: #a51f1f;
-  border-color: #a51f1f;
+  background: #cc0025;
+  border-color: #cc0025;
   color: #fff;
 }
 .pn-result-note {
   margin-top: 1.25rem;
   margin-bottom: 0;
   font-size: 0.8rem;
-  color: #9a9a9a;
+  color: #999999;
 }
 </style>

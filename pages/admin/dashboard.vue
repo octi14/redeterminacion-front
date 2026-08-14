@@ -316,7 +316,7 @@ export default {
 
 .no-access-icon i {
   font-size: 4.5rem;
-  color: #64748b;
+  color: var(--gray-bs-600);
   opacity: 0.9;
   display: inline-block;
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
@@ -325,14 +325,14 @@ export default {
 .no-access-title {
   font-size: 1.75rem;
   font-weight: 700;
-  color: #1e293b;
+  color: #353535;
   margin-bottom: 0.75rem;
   line-height: 1.3;
 }
 
 .no-access-subtitle {
   font-size: 1.05rem;
-  color: #475569;
+  color: var(--gray-bs-700);
   margin-bottom: 1.5rem;
   line-height: 1.5;
 }
@@ -341,20 +341,20 @@ export default {
   display: inline-flex;
   align-items: center;
   padding: 0.6rem 1.25rem;
-  background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+  background: #17a2b8;
   color: #fff !important;
   border: none;
   border-radius: 10px;
   font-weight: 600;
   text-decoration: none;
   transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 14px rgba(15, 118, 110, 0.35);
+  box-shadow: 0 4px 14px rgba(23, 162, 184, 0.35);
 }
 
 .btn-back-home:hover {
   color: #fff !important;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(15, 118, 110, 0.45);
+  box-shadow: 0 6px 20px rgba(23, 162, 184, 0.45);
 }
 
 /* Estilos para el selector de fechas */
@@ -363,7 +363,7 @@ export default {
 }
 
 .date-range-card {
-  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  background: var(--gray-bs-100);
   border-radius: 15px;
   border: none;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
@@ -383,8 +383,8 @@ export default {
 }
 
 .date-range-card .card-header {
-  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-  color: white;
+  background: #007bff;
+  color: var(--color-white);
   border-radius: 15px 15px 0 0 !important;
   border: none;
   padding: 1rem 1.5rem;

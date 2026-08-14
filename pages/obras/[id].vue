@@ -38,7 +38,7 @@
               <div class="col-12 mx-auto mt-3 mb-4">
                 <div class="layout">
                   <p class="col col-main">
-                    <strong style="color:green">Expediente</strong>
+                    <strong style="color:#0c681a">Expediente</strong>
                   </p>
                   <p class="col col-complementary" role="complementary">
                     <a>{{ obra.expediente }}</a>
@@ -46,7 +46,7 @@
                 </div>
                 <div class="layout">
                   <p class="col col-main">
-                    <strong style="color:green">Cotización</strong>
+                    <strong style="color:#0c681a">Cotización</strong>
                   </p>
                   <p class="col col-complementary" role="complementary">
                     <a>${{ format(obra.cotizacion) }}</a>
@@ -54,7 +54,7 @@
                 </div>
                 <div class="layout">
                   <p class="col col-main">
-                    <strong style="color:green">Proveedor</strong>
+                    <strong style="color:#0c681a">Proveedor</strong>
                   </p>
                   <p class="col col-complementary" role="complementary">
                     <a>{{ obra.proveedor }}</a>
@@ -62,7 +62,7 @@
                 </div>
                 <div class="layout">
                   <p class="col col-main">
-                    <strong style="color:green">Presupuesto oficial</strong>
+                    <strong style="color:#0c681a">Presupuesto oficial</strong>
                   </p>
                   <p class="col col-complementary" role="complementary">
                     <a>${{ format(obra.presup_oficial) }}</a>
@@ -73,7 +73,7 @@
                   <b-button variant="outline-dark" class="my-3" @click="watchItems = !watchItems"> Ocultar Items </b-button>
                   <div class="layout" v-for="(_,index) in obra.items" :key="index">
                     <p class="col col-main">
-                      <strong style="color:green" class="h6"> - {{index +1}}. {{obra.items[index].item}} </strong>
+                      <strong style="color:#0c681a" class="h6"> - {{index +1}}. {{obra.items[index].item}} </strong>
                     </p>
                     <p class="col col-complementary" role="complementary">
                       <a> ${{ format(obra.items[index].monto) }} </a>
@@ -86,7 +86,7 @@
 
                 <div class="layout">
                   <p class="col col-main">
-                    <strong style="color:green">Garantía Contrato</strong>
+                    <strong style="color:#0c681a">Garantía Contrato</strong>
                   </p>
                   <p class="col col-complementary">
                     <a>${{ format((obra.cotizacion * obra.garantia_contrato) /100) }}</a>
@@ -94,7 +94,7 @@
                 </div>
                 <div class="layout">
                   <p class="col col-main">
-                    <strong style="color:green">Adjudicación</strong>
+                    <strong style="color:#0c681a">Adjudicación</strong>
                   </p>
                   <p class="col col-complementary">
                     <a>{{ obra.adjudicacion }}</a>
@@ -102,7 +102,7 @@
                 </div>
                 <div class="layout">
                   <p class="col col-main">
-                    <strong style="color:green">Contrato</strong>
+                    <strong style="color:#0c681a">Contrato</strong>
                   </p>
                   <p class="col col-complementary">
                     <a>{{ obra.contrato }}</a>
@@ -110,7 +110,7 @@
                 </div>
                 <div class="layout">
                   <p class="col col-main">
-                    <strong style="color:green">Fecha de contrato</strong>
+                    <strong style="color:#0c681a">Fecha de contrato</strong>
                   </p>
                   <p class="col col-complementary">
                     <a>{{ obra.fecha_contrato }}</a>
@@ -118,7 +118,7 @@
                 </div>
                 <div class="layout">
                   <p class="col col-main">
-                    <strong style="color:green">Acta de inicio</strong>
+                    <strong style="color:#0c681a">Acta de inicio</strong>
                   </p>
                   <p class="col col-complementary">
                     <a>{{ obra.acta_inicio }}</a>
@@ -126,7 +126,7 @@
                 </div>
                 <div class="layout">
                   <p class="col col-main">
-                    <strong style="color:green">Ordenanza</strong>
+                    <strong style="color:#0c681a">Ordenanza</strong>
                   </p>
                   <p class="col col-complementary">
                     <a>{{ obra.ordenanza }}</a>
@@ -134,7 +134,7 @@
                 </div>
                 <div class="layout">
                   <p class="col col-main">
-                    <strong style="color:green">Decreto</strong>
+                    <strong style="color:#0c681a">Decreto</strong>
                   </p>
                   <p class="col col-complementary">
                     <a>{{ obra.decreto }}</a>
@@ -142,7 +142,7 @@
                 </div>
                 <div class="layout">
                   <p class="col col-main">
-                    <strong style="color:green">Plazo de obra</strong>
+                    <strong style="color:#0c681a">Plazo de obra</strong>
                   </p>
                   <p class="col col-complementary">
                     <a>{{ obra.plazo_obra }}</a>
@@ -150,7 +150,7 @@
                 </div>
                 <div class="layout">
                   <p class="col col-main">
-                    <strong style="color:green">Anticipo financiero</strong>
+                    <strong style="color:#0c681a">Anticipo financiero</strong>
                   </p>
                   <p class="col col-complementary">
                     <a>${{ format(obra.anticipo_finan) }}</a>

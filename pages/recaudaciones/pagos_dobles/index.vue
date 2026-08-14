@@ -8,7 +8,7 @@
             v-model="slide"
             :interval="4000"
             img-width="100%"
-            style="text-shadow: 1px 1px 2px #333;"
+            style="text-shadow: 1px 1px 2px #353535;"
             @sliding-start="onSlideStart"
             @sliding-end="onSlideEnd"
             >
@@ -21,7 +21,7 @@
             v-model="slide"
             :interval="4000"
             img-width="100%"
-            style="text-shadow: 1px 1px 2px #333;"
+            style="text-shadow: 1px 1px 2px #353535;"
             @sliding-start="onSlideStart"
             @sliding-end="onSlideEnd"
             >
@@ -394,17 +394,17 @@ p, .li-content{
 .confirmation-popup-body p{
   text-align: center;
   font-size: 1.25rem;
-  color: black;
+  color: var(--color-dark);
 }
 .confirmation-popup-body .form-check{
   margin: auto;
   margin-top: 1rem;
 }
 .confirmation-popup-body .li-content{
-  color: black;
+  color: var(--color-dark);
 }
 .modal h5{
-  color: white !important;
+  color: var(--color-white) !important;
   font-weight: bold;
   font-size: 1.5rem;
 }
@@ -622,7 +622,7 @@ ul{
 }
 .botonera-container .btn-container p{
   width: 55%;
-  color: green;
+  color: #0c681a;
   margin-left: 1rem;
   padding-left: 1rem;
   border-left: 1px solid grey;

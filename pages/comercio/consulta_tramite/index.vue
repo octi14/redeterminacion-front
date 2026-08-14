@@ -502,7 +502,7 @@ export default {
   }
 
   .modal-primary .modal-subtitle{
-    color: #1d96fe !important;
+    color: #2196f3 !important;
   }
 
   .modal-error .centeredContainer{
@@ -510,7 +510,7 @@ export default {
   }
 
   .modal-error p{
-    color: black;
+    color: var(--color-dark);
     font-weight: 500;
     font-size: 1.1rem;
     padding: 0 1rem;
@@ -522,7 +522,7 @@ export default {
   }
 
   .modal-primary p{
-    color: black;
+    color: var(--color-dark);
     font-weight: 500;
     font-size: 1.1rem;
     padding: 0 1rem;
@@ -534,7 +534,7 @@ export default {
   }
 
   .modal-success p{
-    color: black;
+    color: var(--color-dark);
     font-weight: 500;
     font-size: 1.1rem;
     padding: 0 1.5rem;

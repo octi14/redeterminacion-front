@@ -54,16 +54,16 @@ export default {
           {
             label: '2024',
             data: [],
-            backgroundColor: 'rgba(54, 162, 235, 0.6)',
-            borderColor: 'rgba(54, 162, 235, 1)',
+            backgroundColor: 'rgba(33, 150, 243, 0.6)',
+            borderColor: 'rgba(33, 150, 243, 1)',
             borderWidth: 2,
             tension: 0.4,
             pointRadius: 5,
             pointHoverRadius: 7,
-            pointBackgroundColor: 'rgba(54, 162, 235, 1)',
+            pointBackgroundColor: 'rgba(33, 150, 243, 1)',
             pointBorderColor: '#ffffff',
             pointBorderWidth: 2,
-            pointHoverBackgroundColor: 'rgba(54, 162, 235, 1)',
+            pointHoverBackgroundColor: 'rgba(33, 150, 243, 1)',
             pointHoverBorderColor: '#ffffff',
             pointHoverBorderWidth: 3
           },
@@ -206,7 +206,7 @@ export default {
             borderWidth: 1,
             borderColor: function(context) {
               const datasetIndex = context.datasetIndex || 0
-              return datasetIndex === 0 ? 'rgba(54, 162, 235, 0.5)' : 'rgba(75, 192, 192, 0.5)'
+              return datasetIndex === 0 ? 'rgba(33, 150, 243, 0.5)' : 'rgba(75, 192, 192, 0.5)'
             }
           }
         },

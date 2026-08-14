@@ -178,8 +178,8 @@ export default {
 }
 
 .app-navbar :deep(.dropdown-menu) {
-  border-color: #08751d;
-  background: #119c2b;
+  border-color: #0c681a;
+  background: #19a02d;
 }
 
 .app-navbar :deep(.dropdown-header),
@@ -194,7 +194,7 @@ export default {
 
 .app-navbar :deep(.dropdown-item:hover),
 .app-navbar :deep(.dropdown-item:focus) {
-  background: #08751d;
+  background: #0c681a;
 }
 
 .navbar-brand-group {
@@ -210,7 +210,7 @@ export default {
 
 .separador {
   margin-left: 0.5rem;
-  color: white;
+  color: var(--color-white);
   font-size: 35px;
   line-height: 1;
   opacity: 0.3;

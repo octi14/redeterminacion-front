@@ -413,7 +413,7 @@ export default {
 
 <style scoped>
 .dashboard-tabs {
-  background: white;
+  background: var(--color-white);
   border-radius: 15px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
   border: none;
@@ -427,77 +427,77 @@ export default {
   font-weight: 600;
   transition: all 0.3s ease;
   border: 2px solid transparent;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  color: #6c757d;
+  background: var(--gray-bs-100);
+  color: var(--gray-bs-600);
 }
 
 .dashboard-tabs .nav-pills .nav-link:hover {
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+  background: var(--gray-bs-200);
 }
 
 .dashboard-tabs .nav-pills .nav-link.active {
-  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-  color: white;
+  background: #28a745;
+  color: var(--color-white);
   border-color: #28a745;
   box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
 }
 
 /* Estilos específicos por pestaña */
 .tab-link-comercio.active {
-  background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%) !important;
-  border-color: #ffc107 !important;
-  box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3) !important;
+  background: #daa511 !important;
+  border-color: #daa511 !important;
+  box-shadow: 0 5px 15px rgba(218, 165, 17, 0.3) !important;
 }
 
 .tab-link-abierto-anual.active {
-  background: linear-gradient(135deg, #17a2b8 0%, #138496 100%) !important;
+  background: #17a2b8 !important;
   border-color: #17a2b8 !important;
   box-shadow: 0 5px 15px rgba(23, 162, 184, 0.3) !important;
 }
 
 .tab-link-obras.active {
-  background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+  background: #28a745 !important;
   border-color: #28a745 !important;
   box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3) !important;
 }
 
 .tab-link-recaudaciones.active {
-  background: linear-gradient(135deg, #fd7e14 0%, #e55a00 100%) !important;
-  border-color: #fd7e14 !important;
-  box-shadow: 0 5px 15px rgba(253, 126, 20, 0.3) !important;
+  background: #e27910 !important;
+  border-color: #e27910 !important;
+  box-shadow: 0 5px 15px rgba(226, 121, 16, 0.3) !important;
 }
 
 .tab-link-combustible.active {
-  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
-  border-color: #dc3545 !important;
-  box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3) !important;
+  background: #e53749 !important;
+  border-color: #e53749 !important;
+  box-shadow: 0 5px 15px rgba(229, 55, 73, 0.3) !important;
 }
 
 .tab-link-turnos.active {
-  background: linear-gradient(135deg, #17a2b8 0%, #138496 100%) !important;
+  background: #17a2b8 !important;
   border-color: #17a2b8 !important;
   box-shadow: 0 5px 15px rgba(23, 162, 184, 0.3) !important;
 }
 
 
 .tab-link-vehiculos.active {
-  background: linear-gradient(135deg, #6c757d 0%, #495057 100%) !important;
-  border-color: #6c757d !important;
+  background: var(--gray-bs-600) !important;
+  border-color: var(--gray-bs-600) !important;
   box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3) !important;
 }
 
 .tab-link-informes.active {
-  background: linear-gradient(135deg, #fd7e14 0%, #e55a00 100%) !important;
-  border-color: #fd7e14 !important;
-  box-shadow: 0 5px 15px rgba(253, 126, 20, 0.3) !important;
+  background: #e27910 !important;
+  border-color: #e27910 !important;
+  box-shadow: 0 5px 15px rgba(226, 121, 16, 0.3) !important;
 }
 
 .tab-link-usuarios.active {
-  background: linear-gradient(135deg, #343a40 0%, #23272b 100%) !important;
-  border-color: #343a40 !important;
-  box-shadow: 0 5px 15px rgba(52, 58, 64, 0.3) !important;
+  background: #353535 !important;
+  border-color: #353535 !important;
+  box-shadow: 0 5px 15px rgba(53, 53, 53, 0.3) !important;
 }
 
 /* Contenido de las pestañas */

@@ -10,7 +10,7 @@
         controls
         indicators
         ride="carousel"
-        style="text-shadow: 1px 1px 2px #333;"
+        style="text-shadow: 1px 1px 2px #353535;"
         @sliding-start="onSlideStart"
         @sliding-end="onSlideEnd"
       >
@@ -18,14 +18,14 @@
         <b-carousel-slide :img-src="carouselHabilita2" />
       </b-carousel>
     </div>
-    <div class="col-12 moblieCarrousel" style="margin-top: 0; background-color: #FFFEF7;">
+    <div class="col-12 moblieCarrousel" style="margin-top: 0; background-color: #f0f0f0;">
       <b-carousel
         id="moblieCarousel"
         v-model="slideMobile"
         :interval="0"
         :controls="false"
         :indicators="false"
-        style="text-shadow: 1px 1px 2px #333;"
+        style="text-shadow: 1px 1px 2px #353535;"
         @sliding-start="onSlideStart"
         @sliding-end="onSlideEnd"
       >
@@ -1946,17 +1946,17 @@ p, .li-content{
 .confirmation-popup-body p{
   text-align: center;
   font-size: 1.25rem;
-  color: black;
+  color: var(--color-dark);
 }
 .confirmation-popup-body .form-check{
   margin: auto;
   margin-top: 1rem;
 }
 .confirmation-popup-body .li-content{
-  color: black;
+  color: var(--color-dark);
 }
 .modal h5{
-  color: white !important;
+  color: var(--color-white) !important;
   font-weight: bold;
   font-size: 1.5rem;
 }
@@ -2175,7 +2175,7 @@ ul{
 }
 .botonera-container .btn-container p{
   width: 55%;
-  color: green;
+  color: #0c681a;
   margin-left: 1rem;
   padding-left: 1rem;
   border-left: 1px solid grey;

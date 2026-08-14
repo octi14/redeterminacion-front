@@ -191,66 +191,8 @@ export default {
   margin-bottom: 2rem;
 }
 
-.ranking-list {
-  max-height: 400px;
-  overflow-y: auto;
-}
-
-.ranking-item {
-  display: flex;
-  align-items: center;
-  padding: 1rem;
-  margin-bottom: 0.5rem;
-  border-radius: 8px;
-  background: #f8f9fa;
-  transition: all 0.2s ease;
-}
-
-.ranking-item:hover {
-  background: #e9ecef;
-  transform: translateX(5px);
-}
-
-.rank-number {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  color: white;
-  margin-right: 1rem;
-}
-
-.rank-1 .rank-number { background: #FFD700; }
-.rank-2 .rank-number { background: #C0C0C0; }
-.rank-3 .rank-number { background: #CD7F32; }
-.rank-4 .rank-number, .rank-5 .rank-number { background: #6c757d; }
-
-.rank-content {
-  flex: 1;
-}
-
-.rank-name {
-  font-weight: 600;
-  margin: 0;
-  color: #495057;
-}
-
-.rank-value {
-  font-size: 0.9rem;
-  color: #6c757d;
-  margin: 0;
-}
-
-.rank-percentage {
-  font-weight: bold;
-  color: #28a745;
-}
-
 .table-row:hover {
-  background-color: #f8f9fa;
+  background-color: var(--gray-bs-100);
 }
 
 .area-name {
@@ -261,29 +203,17 @@ export default {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: #e9ecef;
+  background: var(--gray-bs-200);
   display: flex;
   align-items: center;
   justify-content: center;
   margin-right: 0.5rem;
-  color: #6c757d;
+  color: var(--gray-bs-600);
 }
 
 :deep(.badge) {
   font-size: 0.8rem;
   padding: 0.4rem 0.6rem;
-}
-
-@media (max-width: 768px) {
-  .ranking-item {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .rank-number {
-    margin-right: 0;
-    margin-bottom: 0.5rem;
-  }
 }
 </style>
 

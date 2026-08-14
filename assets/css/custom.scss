@@ -4,7 +4,7 @@
 $color-orange-primary: #E27910;
 $color-green-primary: #0c681a;
 $color-green-text: #0c6919;
-$color-orange-button: #eb8a0a;
+$color-white: #ffffff;
 $color-gray-dark: #353535;
 $color-gray-light: #666;
 $color-radio-border: #555555;
@@ -20,6 +20,31 @@ $color-radio-border: #555555;
     border-color: $color-radio-border;
     box-shadow: 0 0 0 0.2rem rgba($color-radio-border, 0.28);
   }
+}
+
+// Escala gray default de Bootstrap (Minty redefine $gray-200/500/600/700).
+$gray-bs-100: #f8f9fa;
+$gray-bs-200: #e9ecef;
+$gray-bs-300: #dee2e6;
+$gray-bs-400: #ced4da;
+$gray-bs-500: #adb5bd;
+$gray-bs-600: #6c757d;
+$gray-bs-700: #495057;
+$gray-bs-800: #343a40;
+$gray-bs-900: #212529;
+
+:root {
+  --color-white: #{$color-white};
+  --color-dark: #{$dark};
+  --gray-bs-100: #{$gray-bs-100};
+  --gray-bs-200: #{$gray-bs-200};
+  --gray-bs-300: #{$gray-bs-300};
+  --gray-bs-400: #{$gray-bs-400};
+  --gray-bs-500: #{$gray-bs-500};
+  --gray-bs-600: #{$gray-bs-600};
+  --gray-bs-700: #{$gray-bs-700};
+  --gray-bs-800: #{$gray-bs-800};
+  --gray-bs-900: #{$gray-bs-900};
 }
 
 // ============================================
@@ -347,16 +372,16 @@ body:not(.modal-open) #app-content {
 }
 
 .landing-text{
-  color: #0b6819 !important;
+  color: #0c681a !important;
 }
 
 .banner-title{
-  color: #0b6819 !important;
+  color: #0c681a !important;
   text-shadow: 1px 1px 2px #0000004c;
 }
 
 .banner-subtitle{
-  color: #0b6819 !important;
+  color: #0c681a !important;
   text-shadow: 1px 1px 2px #0000004c;
   padding-top: 15px;
 }
@@ -391,7 +416,7 @@ body:not(.modal-open) #app-content {
 }
 
 .btn-3 {
-  background-color: rgba(244, 10, 10, 0.848);
+  background-color: #e53749;
   box-shadow: inset 0 0 0 0 rgba(69, 6, 6, 0.575), 0 1px 1px 1px rgba(121, 1, 1, 0.331);
   outline-color: rgba(94, 7, 7, 0.38);
   border: 1px;
@@ -409,7 +434,7 @@ body:not(.modal-open) #app-content {
 .btn-3:hover {
   // border: 1px solid;
   // border-radius: 12%;
-  background-color: #d70808;
+  background-color: #cc0025;
   box-shadow: inset 0 0 7px 4px rgba(73, 1, 1, 0.2), 0 2px 6px 4px rgba(94, 18, 6, 0.331);
   outline-offset: 15px;
   text-shadow: 2px 5px 12px #034c578b;
@@ -446,7 +471,7 @@ body:not(.modal-open) #app-content {
 }
 
 .white{
-  background-color: #ffffff;
+  background-color: $color-white;
 }
 
 .banner{
@@ -455,7 +480,7 @@ body:not(.modal-open) #app-content {
 }
 
 .lightblue{
-  background-color: #1d96fe;
+  background-color: #2196f3;
 }
 
 // ============================================
@@ -625,8 +650,8 @@ $form-btn-pair-gap: 0.75rem;
 
 // Hover común para botones success (verde)
 .btn-success:hover {
-  background-color: green;
-  border-color: green;
+  background-color: #0c681a;
+  border-color: #0c681a;
 }
 
 
@@ -643,7 +668,7 @@ $form-btn-pair-gap: 0.75rem;
 }
 
 .btn-orange {
-  background-color: $color-orange-button !important;
+  background-color: $color-orange-primary !important;
   border: none;
 }
 
@@ -997,7 +1022,7 @@ form .field-help-icon,
 }
 
 // Checkbox del popup IMPORTANTE: BS5 usa appearance:none + borde muy claro
-// (#dee2e6), que en varios monitores/navegadores parece “invisible”.
+// ($gray-bs-300), que en varios monitores/navegadores parece “invisible”.
 .confirmation-popup-body .form-check {
   display: flex;
   align-items: flex-start;

@@ -2044,7 +2044,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
   }
   .printing-modal .card-header h5,
   .comercio-comprobante-header h5 {
-    color: white !important;
+    color: var(--color-white) !important;
   }
   .printing-modal h5,
   .comercio-comprobante-header h5 {
@@ -2074,7 +2074,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
     list-style: none;
     padding: 0;
     margin: 0 0 1.25rem;
-    border: 1px solid #dee2e6;
+    border: 1px solid var(--gray-bs-300);
     border-radius: 0.375rem;
     overflow: hidden;
   }
@@ -2084,13 +2084,13 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
     align-items: center;
     gap: 1rem;
     padding: 0.65rem 1rem;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #f0f0f0;
   }
   .comprobante-datos li:last-child {
     border-bottom: none;
   }
   .comprobante-datos li:nth-child(odd) {
-    background-color: #f8f9fa;
+    background-color: var(--gray-bs-100);
   }
   .comprobante-label {
     font-weight: 600;
@@ -2108,7 +2108,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
   .comprobante-value {
     text-align: right;
     font-weight: 600;
-    color: #333;
+    color: #353535;
   }
   .comprobante-notas {
     border-top: 1px solid #ccc;
@@ -2126,7 +2126,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
     line-height: 1.45;
   }
   .green{
-      background-color:#0b6919;
+      background-color:#0c681a;
     }
   .centeredContainer{
     width:  auto;
@@ -2181,7 +2181,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
     padding: 1.5rem 1rem;
   }
   .modal h5, .modal h3{
-    color: white !important;
+    color: var(--color-white) !important;
     font-weight: bold;
     font-size: 1.5rem;
   }
@@ -2202,7 +2202,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
     color: #e53749 !important;
   }
   .modal-error p{
-    color: black;
+    color: var(--color-dark);
     font-weight: 500;
     padding: 0 1rem;
   }

@@ -4,8 +4,8 @@
 }
 
 .dashboard-header {
-  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-  color: white;
+  background: #28a745;
+  color: $color-white;
   border-radius: 15px;
   padding: 2rem;
   margin-bottom: 2rem;
@@ -23,7 +23,7 @@
 }
 
 .dashboard-card {
-  background: white;
+  background: $color-white;
   border-radius: 15px;
   border: none;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
@@ -36,15 +36,15 @@
   }
 
   .card-header {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    border-bottom: 2px solid #dee2e6;
+    background: $gray-bs-100;
+    border-bottom: 2px solid $gray-bs-300;
     border-radius: 15px 15px 0 0 !important;
     padding: 1.25rem 1.5rem;
 
     h4, h5 {
       margin: 0;
       font-weight: 600;
-      color: #495057;
+      color: $gray-bs-700;
     }
 
     i {
@@ -58,7 +58,7 @@
 }
 
 .stat-card {
-  background: white;
+  background: $color-white;
   border-radius: 15px;
   border: none;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
@@ -72,8 +72,8 @@
   }
 
   .card-header {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    border-bottom: 2px solid #dee2e6;
+    background: $gray-bs-100;
+    border-bottom: 2px solid $gray-bs-300;
     border-radius: 15px 15px 0 0 !important;
     padding: 1rem 1.25rem;
 
@@ -93,31 +93,31 @@
     }
 
     p {
-      color: #6c757d;
+      color: $gray-bs-600;
       margin-bottom: 0.5rem;
       font-weight: 500;
     }
 
     small {
-      color: #adb5bd;
+      color: $gray-bs-600;
     }
   }
 
   .card-footer {
     background: rgba(0, 0, 0, 0.02);
-    border-top: 1px solid #dee2e6;
+    border-top: 1px solid $gray-bs-300;
     border-radius: 0 0 15px 15px;
     padding: 0.75rem 1.25rem;
 
     small {
-      color: #6c757d;
+      color: $gray-bs-600;
       font-weight: 500;
     }
   }
 }
 
 .detail-card {
-  background: white;
+  background: $color-white;
   border-radius: 15px;
   border: none;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
@@ -130,8 +130,8 @@
   }
 
   .card-header {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    border-bottom: 2px solid #dee2e6;
+    background: $gray-bs-100;
+    border-bottom: 2px solid $gray-bs-300;
     border-radius: 15px 15px 0 0 !important;
     padding: 1rem 1.25rem;
 
@@ -149,23 +149,23 @@
     }
 
     p {
-      color: #6c757d;
+      color: $gray-bs-600;
       margin-bottom: 0.5rem;
       font-weight: 500;
     }
 
     small {
-      color: #adb5bd;
+      color: $gray-bs-600;
     }
   }
 }
 
 .btn-refresh {
-  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  background: #007bff;
   border: none;
   border-radius: 25px;
   padding: 0.5rem 1.5rem;
-  color: white;
+  color: $color-white;
   font-weight: 600;
   transition: all 0.3s ease;
 
@@ -191,11 +191,11 @@
 }
 
 .section-title {
-  color: #000000;
+  color: $dark;
   font-weight: 600;
   margin-bottom: 1.5rem;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid #e9ecef;
+  border-bottom: 2px solid $gray-bs-200;
 
   i {
     color: #28a745;
@@ -206,11 +206,11 @@
 .alert-info {
   border-radius: 15px;
   border: none;
-  background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
-  color: #0c5460;
+  background: $gray-bs-100;
+  color: #17a2b8;
 
   .alert-heading {
-    color: #0c5460;
+    color: #17a2b8;
     font-weight: 600;
   }
 }
@@ -218,8 +218,8 @@
 .alert-danger {
   border-radius: 15px;
   border: none;
-  background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
-  color: #721c24;
+  background: $gray-bs-100;
+  color: #e53749;
 }
 
 .shadow-sm {
@@ -235,11 +235,11 @@
 }
 
 .table-header {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: $gray-bs-100;
 }
 
 .section-subtitle {
-  color: #6c757d;
+  color: $gray-bs-600;
   font-size: 1.1rem;
 }
 
@@ -247,7 +247,7 @@
   display: flex;
   align-items: center;
   padding: 1rem;
-  background: #f8f9fa;
+  background: $gray-bs-100;
   border-radius: 10px;
   transition: transform 0.2s ease;
 
@@ -263,7 +263,7 @@
     align-items: center;
     justify-content: center;
     margin-right: 1rem;
-    color: white;
+    color: $color-white;
     font-size: 1.2rem;
   }
 
@@ -275,11 +275,11 @@
     font-size: 1.8rem;
     font-weight: bold;
     margin: 0;
-    color: #495057;
+    color: $gray-bs-700;
   }
 
   .stat-label {
-    color: #6c757d;
+    color: $gray-bs-600;
     margin: 0;
     font-size: 0.9rem;
   }
@@ -287,7 +287,7 @@
 
 .search-input {
   border-radius: 20px;
-  border: 1px solid #ced4da;
+  border: 1px solid $gray-bs-400;
 
   &:focus {
     border-color: #28a745;
@@ -296,7 +296,7 @@
 }
 
 .area-group {
-  background: white;
+  background: $color-white;
   border-radius: 15px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
@@ -308,12 +308,12 @@
 }
 
 .area-header {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: $gray-bs-100;
   padding: 1rem 1.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #dee2e6;
+  border-bottom: 1px solid $gray-bs-300;
 }
 
 // Responsive adjustments

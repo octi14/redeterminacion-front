@@ -450,7 +450,7 @@ export default {
   padding: 0;
   margin: 0;
   overflow: hidden;
-  border-color: #ced4da;
+  border-color: var(--gray-bs-400);
   background-color: #fff;
 }
 

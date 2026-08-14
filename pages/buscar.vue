@@ -103,12 +103,12 @@ export default {
 }
 
 .search-results-count {
-  color: #495057;
+  color: var(--gray-bs-700);
   font-size: 0.95rem;
 }
 
 .search-results-empty {
-  color: #495057;
+  color: var(--gray-bs-700);
 }
 
 @media (max-width: 575.98px) {

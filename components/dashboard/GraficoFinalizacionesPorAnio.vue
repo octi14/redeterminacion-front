@@ -442,7 +442,7 @@ export default {
 }
 
 .metric-card {
-  background: #f8f9fa;
+  background: var(--gray-bs-100);
 }
 
 .metric-label {

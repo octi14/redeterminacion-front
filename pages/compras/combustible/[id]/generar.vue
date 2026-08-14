@@ -540,7 +540,7 @@ export default {
       canvas.width = fondoWidth;
       canvas.height = fondoHeight * 2; // 👈 duplicamos la altura para dos imágenes una debajo de otra
 
-      ctx.fillStyle = "white";
+      ctx.fillStyle = "#ffffff";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       // Fila 1 (vales i y i+1)
@@ -569,12 +569,12 @@ export default {
       const pos = (x, y) => [offsetX + x, offsetY + y];
 
       // Fondo blanco (opcional, si ya lo hiciste antes)
-      // ctx.fillStyle = "white";
+      // ctx.fillStyle = "#ffffff";
       // ctx.fillRect(offsetX, offsetY, 1748, altoDelVale);
 
       const montoTexto = `Pesos ${numeroATexto(vale.monto)}`;
 
-      ctx.fillStyle = "black";
+      ctx.fillStyle = "#000000";
       ctx.font = "500 38px sans-serif";
 
       // Ejemplo de coordenadas, ajustalas si hace falta
@@ -638,7 +638,7 @@ export default {
 }
 
 .generar-vales-area-value {
-  color: #212529;
+  color: var(--gray-bs-900);
   font-size: 1.25rem;
   font-weight: 500;
 }
@@ -654,8 +654,8 @@ export default {
   width: calc(100% - 30px);
   max-height: 300px;
   overflow-y: auto;
-  background: white;
-  border: 1px solid #ced4da;
+  background: var(--color-white);
+  border: 1px solid var(--gray-bs-400);
   border-top: none;
   border-radius: 0 0 0.25rem 0.25rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -669,7 +669,7 @@ export default {
 }
 
 .sugerencia-item:hover {
-  background-color: #f8f9fa;
+  background-color: var(--gray-bs-100);
 }
 
 .sugerencia-item:last-child {
@@ -677,15 +677,15 @@ export default {
 }
 
 .sugerencia-personalizada {
-  background-color: #e7f5ff;
-  color: #0c5460;
+  background-color: var(--gray-bs-100);
+  color: #17a2b8;
   font-weight: 500;
   display: flex;
   align-items: center;
 }
 
 .sugerencia-personalizada:hover {
-  background-color: #d0ebff;
+  background-color: var(--gray-bs-200);
 }
 
 /* Scrollbar personalizado para el dropdown */
@@ -694,7 +694,7 @@ export default {
 }
 
 .sugerencias-dropdown::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #f0f0f0;
 }
 
 .sugerencias-dropdown::-webkit-scrollbar-thumb {

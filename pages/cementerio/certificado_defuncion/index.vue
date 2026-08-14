@@ -8,7 +8,7 @@
         v-model="slide"
         :interval="4000"
         img-width="100%"
-        style="text-shadow: 1px 1px 2px #333;"
+        style="text-shadow: 1px 1px 2px #353535;"
         @sliding-start="onSlideStart"
         @sliding-end="onSlideEnd"
       >
@@ -21,7 +21,7 @@
         v-model="slide"
         :interval="4000"
         img-width="100%"
-        style="text-shadow: 1px 1px 2px #333;"
+        style="text-shadow: 1px 1px 2px #353535;"
         @sliding-start="onSlideStart"
         @sliding-end="onSlideEnd"
       >
@@ -149,7 +149,7 @@ export default {
 .confirmation-popup-body p{
   text-align: center;
   font-size: 1.25rem;
-  color: black;
+  color: var(--color-dark);
 }
 .confirmation-popup-body .form-check{
   margin: auto;

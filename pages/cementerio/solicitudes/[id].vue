@@ -228,7 +228,6 @@ Saludos cordiales.`
 .col-main { flex: 1; }
 .col-complementary { flex: 1; }
 .icon-orange{ color: #E27910; }
-.text-loading{ color: #0eb7b2ab; }
 @media only screen and (min-width: 640px) { .layout { display: flex; max-width: 90%; margin: auto; } }
 </style>
 

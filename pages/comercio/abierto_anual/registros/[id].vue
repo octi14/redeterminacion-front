@@ -226,10 +226,6 @@
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3); /* Agrega una sombra */
   }
 
-  .text-loading{
-    color: #0eb7b2ab;
-  }
-
   /* body {
     margin: 1.5em;
   } */

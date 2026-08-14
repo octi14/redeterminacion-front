@@ -110,7 +110,7 @@ export default {
 }
 
 .menu-item-description {
-  color: #6c757d;
+  color: var(--gray-bs-600);
   font-weight: 400;
 }
 

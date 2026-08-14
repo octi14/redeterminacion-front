@@ -385,12 +385,12 @@ export default {
 
 <style scoped>
 .page-header {
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid var(--gray-bs-200);
   padding-bottom: 1rem;
 }
 
 .page-title {
-  color: #495057;
+  color: var(--gray-bs-700);
   font-weight: 600;
   margin-bottom: 0.5rem;
 }
@@ -402,10 +402,10 @@ export default {
 
 /* --- Filters section --- */
 .filters-section {
-  background: linear-gradient(to bottom, #fafbfc 0%, #f4f6f8 100%);
+  background: #f0f0f0;
   padding: 1.5rem 1.75rem;
   border-radius: 12px;
-  border: 1px solid #e8eaed;
+  border: 1px solid var(--gray-bs-200);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
@@ -422,7 +422,7 @@ export default {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  color: #5f6368;
+  color: #666666;
   margin-bottom: 0.4rem;
 }
 
@@ -436,14 +436,14 @@ export default {
 .filter-block__input,
 .filter-block__select {
   border-radius: 8px;
-  border-color: #dadce0;
+  border-color: var(--gray-bs-300);
   font-size: 0.9rem;
 }
 
 .filter-block__input:focus,
 .filter-block__select:focus {
-  border-color: #1a73e8;
-  box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+  border-color: #2a43a1;
+  box-shadow: 0 0 0 2px rgba(42, 67, 161, 0.2);
 }
 
 .filter-block__dates-row {
@@ -459,7 +459,7 @@ export default {
 }
 
 .filter-block__dates-sep {
-  color: #9aa0a6;
+  color: var(--gray-bs-500);
   font-weight: 500;
 }
 
@@ -492,16 +492,16 @@ export default {
 .filters-section__hint {
   margin-top: 1.25rem;
   padding-top: 1rem;
-  border-top: 1px solid #e8eaed;
+  border-top: 1px solid var(--gray-bs-200);
   font-size: 0.85rem;
-  color: #5f6368;
+  color: #666666;
   display: flex;
   align-items: flex-start;
   gap: 0.5rem;
 }
 
 .filters-section__hint-icon {
-  color: #1a73e8;
+  color: #2a43a1;
   font-size: 1rem;
   flex-shrink: 0;
   margin-top: 0.1rem;
@@ -511,14 +511,14 @@ export default {
 .activity-section {
   background: #fff;
   border-radius: 8px;
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--gray-bs-200);
   padding: 1.5rem;
 }
 
 .pagination-section {
-  background: #f8f9fa;
+  background: var(--gray-bs-100);
   border-radius: 8px;
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--gray-bs-200);
   padding: 1rem;
 }
 

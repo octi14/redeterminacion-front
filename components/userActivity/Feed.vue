@@ -279,7 +279,7 @@ export default {
 }
 
 .activity-item {
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--gray-bs-200);
   border-radius: 8px;
   background: #fff;
   transition: all 0.2s ease;
@@ -347,7 +347,7 @@ export default {
 
 .timestamp {
   font-size: 0.75rem;
-  color: #6c757d;
+  color: var(--gray-bs-600);
   white-space: nowrap;
 }
 
@@ -385,7 +385,7 @@ export default {
 
 .url-icon {
   font-size: 0.75rem;
-  color: #6c757d;
+  color: var(--gray-bs-600);
   margin-right: 6px;
   flex-shrink: 0;
 }

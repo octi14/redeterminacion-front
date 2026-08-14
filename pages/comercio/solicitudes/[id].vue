@@ -419,7 +419,7 @@
               </div>
             </div>
             <!-- Línea separadora entre documentos -->
-            <hr v-if="documento && index < Object.keys(documentos).length - 1" class="my-1" style="border-color: #dee2e6; border-width: 1px;">
+            <hr v-if="documento && index < Object.keys(documentos).length - 1" class="my-1" style="border-color: var(--gray-bs-300); border-width: 1px;">
           </div>
         </div>
         <div class="justify-content-center mx-auto" v-else>
@@ -795,7 +795,7 @@
       </template>
       <div class="confirmation-popup-body text-center">
         <h3 class="text-secondary text-center mb-4"><b>Volver a En Revisión</b></h3>
-        <p style="color:black"> ¿Estás seguro/a de que deseas volver el trámite a “En revisión”? </p>
+        <p style="color: var(--color-dark)"> ¿Estás seguro/a de que deseas volver el trámite a “En revisión”? </p>
         <small>Esta acción es permanente y reinicia el proceso de verificación del trámite.</small>
         <div class="text-center mt-4">
           <b-button variant="success" @click="onSendRestablecer()" >
@@ -830,8 +830,8 @@
       </template>
       <div class="confirmation-popup-body text-center">
         <h3 class="text-warning text-center mb-4"><b>Revisión Incompleta</b></h3>
-        <p style="color:black">No has revisado todo el trámite.</p>
-        <p style="color:black">Por favor, completa la revisión de todos los elementos antes de finalizar.</p>
+        <p style="color: var(--color-dark)">No has revisado todo el trámite.</p>
+        <p style="color: var(--color-dark)">Por favor, completa la revisión de todos los elementos antes de finalizar.</p>
         <small>Debes revisar los datos del solicitante, datos del inmueble y todos los documentos presentados.</small>
         <div class="text-center mt-4">
           <b-button variant="warning" @click="showRevisionIncompleta = false">
@@ -850,8 +850,8 @@
       </template>
       <div class="confirmation-popup-body text-center">
         <h3 class="text-danger text-center mb-4"><b>Rechazo Automático</b></h3>
-        <p class="font-weight-bold" style="color:black; font-size: 1.1rem;">Se detectó al menos un documento o dato incorrecto.</p>
-        <p style="color:black">El trámite será rechazado automáticamente al finalizar la revisión.</p>
+        <p class="font-weight-bold" style="color: var(--color-dark); font-size: 1.1rem;">Se detectó al menos un documento o dato incorrecto.</p>
+        <p style="color: var(--color-dark)">El trámite será rechazado automáticamente al finalizar la revisión.</p>
         <small>Revisá todos los elementos marcados como incorrectos<br/> antes de continuar.</small>
         <div class="text-center mt-4">
           <b-button variant="danger" @click="showRechazoAutomatico = false">
@@ -1832,7 +1832,7 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
   left: 50%;
   transform: translateX(-50%);
   background-color: #fff;
-  color: #212529;
+  color: var(--gray-bs-900);
   padding: 0.5rem 0.65rem;
   width: min(450px, 85vw);
   border-radius: 5px;
@@ -1847,10 +1847,6 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
 .iconoAdvertencia:hover .textoHover,
 .iconoAdvertencia:focus-within .textoHover {
   display: block;
-}
-
-.text-loading{
-  color: #0eb7b2ab;
 }
 
 /* body {
@@ -1896,16 +1892,16 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
 }
 
 .form-check-label .bi-x-circle-fill {
-  color: #dc3545;
+  color: #e53749;
 }
 
 /* Estilos para la sección de expediente y alcance */
 .expediente-form-container {
-  background-color: #f8f9fa;
+  background-color: var(--gray-bs-100);
   border-radius: 8px;
   padding: 1.5rem;
   margin: 1rem 0;
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--gray-bs-200);
 }
 
 .form-group {
@@ -1916,7 +1912,7 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
   display: flex;
   align-items: center;
   font-weight: 600;
-  color: #495057;
+  color: var(--gray-bs-700);
   margin-bottom: 0.5rem;
   font-size: 0.95rem;
 }
@@ -1930,7 +1926,7 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
 
 .expediente-prefix {
   font-weight: 600;
-  color: #495057;
+  color: var(--gray-bs-700);
   font-size: 0.9rem;
   white-space: nowrap;
 }
@@ -1943,7 +1939,7 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
 
 .expediente-separator {
   font-weight: 600;
-  color: #6c757d;
+  color: var(--gray-bs-600);
   font-size: 1rem;
   margin: 0 0.5rem;
 }

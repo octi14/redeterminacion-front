@@ -249,7 +249,7 @@
       </template>
       <div class="confirmation-popup-body text-center">
         <h3 class="text-secondary text-center mb-4"><b>Volver a En Revisión</b></h3>
-        <p style="color:black"> ¿Estás seguro/a de que deseas volver el trámite a “En revisión”? </p>
+        <p style="color: var(--color-dark)"> ¿Estás seguro/a de que deseas volver el trámite a “En revisión”? </p>
         <small>Esta acción es permanente y reinicia el proceso de verificación del trámite.</small>
         <div class="text-center mt-4">
           <b-button variant="success" @click="onSendRestablecer()" >
@@ -730,36 +730,6 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
 </script>
 
 <style scoped>
-.expediente-input {
-  border-radius: 6px;
-  transition: all 0.3s ease;
-}
-
-.expediente-input:focus {
-  border-color: #a0bd0a;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-}
-
-.expediente-label {
-  font-weight: 400;
-  color: #495057;
-  margin-bottom: 8px;
-}
-
-.expediente-text {
-  font-weight: 500;
-  color: #6c757d;
-  font-size: 0.95rem;
-}
-
-.expediente-container {
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  padding: 15px;
-  margin: 10px 0;
-  border: 1px solid #dee2e6;
-}
-
 .modal-dialog {
   max-width: 80% !important;
 }
@@ -792,10 +762,6 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
   border-radius: 5px;
   z-index: 1; /* Asegura que esté encima del ícono */
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3); /* Agrega una sombra */
-}
-
-.text-loading{
-  color: #0eb7b2ab;
 }
 
 /* body {

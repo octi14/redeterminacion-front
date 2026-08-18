@@ -876,12 +876,12 @@
       </div>
     </div>
   </BModal>
-  <BModal v-model="showPopupFormLoading" no-close-on-backdrop title="" :header-bg-variant="'success'" no-footer centered>
+  <BModal v-model="showPopupFormLoading" no-close-on-backdrop no-close-on-esc no-header-close title="" :header-bg-variant="'success'" no-footer centered>
     <template #header>
       <h5 class="centeredContainer">Solicitud en Proceso</h5>
     </template>
     <div class="centeredContainer">
-      <p class="popup-link">{{ uploadProgress || 'Tus archivos se están cargando.' }}</p>
+      <p class="popup-link">Tus archivos se están cargando.</p>
       <b-spinner variant="success" style="width: 3rem; height: 3rem;" label="Large Spinner"></b-spinner>
       <p>No cierres esta página</p>
     </div>
@@ -1268,7 +1268,6 @@
         showPopupFormOk: false,
         showPopupFormLoading: false,
         showPopupFormError: false,
-        uploadProgress: '',
         printing: false,
         endButton: false,
         }
@@ -1673,7 +1672,6 @@
               try {
 
               this.openPopup('FormLoading');
-              this.uploadProgress = 'Preparando archivos...';
               if (this.solicitante.tipoSolicitud === 'Baja') {
                 this.inmueble.espacioPublico = false;
               }
@@ -1713,30 +1711,23 @@
 
               // 3) Subir con concurrencia 3, reintentos y fallback al proxy
               const documentosParaGuardar = {};
-              let completed = 0;
-              this.uploadProgress = `Subiendo 0 de ${filesMeta.length}...`;
 
               await this.mapWithConcurrency(filesMeta, 3, async (meta) => {
                 const upload = uploadsByCampo[meta.campo] || uploadsByNombre[meta.nombreDocumento];
                 if (!upload || !upload.uploadUrl) {
                   throw new Error(`No se recibió URL de subida para ${meta.nombreDocumento}`);
                 }
-                this.uploadProgress = `Subiendo ${Math.min(completed + 1, filesMeta.length)} de ${filesMeta.length}: ${meta.nombreDocumento}`;
                 const result = await this.uploadOneDocumento({
                   meta,
                   upload,
                   blob: blobsByCampo[meta.campo],
                   nroTramite,
                 });
-                completed += 1;
-                this.uploadProgress = `Subiendo ${completed} de ${filesMeta.length}...`;
                 documentosParaGuardar[meta.campo] = {
                   nombreDocumento: result.nombreDocumento,
                   url: result.url,
                 };
               });
-
-              this.uploadProgress = 'Registrando solicitud...';
 
               // 4) Crear trámite solo con metadatos + URLs (JSON chico)
               const { ningunaAnterior, ...inmuebleSinNinguna } = this.inmueble;
@@ -1825,7 +1816,6 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
       onResetParams(){
         this.resetAllVuelidations()
         this.nroTramite = null
-        this.uploadProgress = ''
         this.solicitante.nombre = ''
         this.solicitante.apellido = ''
         this.solicitante.dni = ''

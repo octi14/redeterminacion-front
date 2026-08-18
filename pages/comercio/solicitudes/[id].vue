@@ -127,7 +127,7 @@
       </div>
 
       <!--Datos del solicitante-->
-      <b-card no-body class="container col-md-6 col-sm-8 shadow-card mt-4 mx-auto">
+      <b-card no-body class="internal-use-detail-card shadow-card mt-4 mx-auto">
           <div class="col mx-auto">
             <div class="container text-center mx-auto">
               <div class="row align-items-center">
@@ -218,7 +218,7 @@
     </template>
         <!-- Datos del inmueble -->
     <template v-if="habilitacion && adminComercio">
-      <div class="container col-md-6 col-sm-8 card shadow-card mt-4 mx-auto">
+      <div class="internal-use-detail-card card shadow-card mt-4 mx-auto">
           <div class="col mx-auto">
             <div class="container text-center mx-auto">
               <div class="row align-items-center">
@@ -344,7 +344,7 @@
     </template>
     <!-- Documentación -->
     <template v-if="habilitacion && adminComercio">
-      <div class="container col-md-6 col-sm-8 card shadow-card mt-4 mb-3 mx-auto">
+      <div class="internal-use-detail-card card shadow-card mt-4 mb-3 mx-auto">
         <!-- Resto del contenido del componente -->
         <div class="col mx-auto">
           <div class="container text-center mx-auto">
@@ -364,23 +364,21 @@
             </div>
             <div class="col-2 text-center">
               <strong>Revisión</strong>
-              <div class="mt-1 d-flex flex-column align-items-center">
-                <small class="text-muted mb-1">Todos:</small>
-                <div class="d-flex justify-content-center flex-wrap">
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="revisionTodosDocumentos" id="todosDocumentosCorrecto"
-                           @change="marcarTodosDocumentos('correcto')">
-                    <label class="form-check-label text-success" for="todosDocumentosCorrecto" title="Marcar todos los documentos como correctos">
-                      <i class="bi bi-check-circle-fill"></i>
-                    </label>
-                  </div>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="revisionTodosDocumentos" id="todosDocumentosIncorrecto"
-                           @change="marcarTodosDocumentos('incorrecto')">
-                    <label class="form-check-label text-danger" for="todosDocumentosIncorrecto" title="Marcar todos los documentos como incorrectos">
-                      <i class="bi bi-x-circle-fill"></i>
-                    </label>
-                  </div>
+              <div class="mt-1 docs-revision-todos">
+                <small class="text-muted">Todos:</small>
+                <div class="form-check form-check-inline m-0">
+                  <input class="form-check-input" type="radio" name="revisionTodosDocumentos" id="todosDocumentosCorrecto"
+                         @change="marcarTodosDocumentos('correcto')">
+                  <label class="form-check-label text-success" for="todosDocumentosCorrecto" title="Marcar todos los documentos como correctos">
+                    <i class="bi bi-check-circle-fill"></i>
+                  </label>
+                </div>
+                <div class="form-check form-check-inline m-0">
+                  <input class="form-check-input" type="radio" name="revisionTodosDocumentos" id="todosDocumentosIncorrecto"
+                         @change="marcarTodosDocumentos('incorrecto')">
+                  <label class="form-check-label text-danger" for="todosDocumentosIncorrecto" title="Marcar todos los documentos como incorrectos">
+                    <i class="bi bi-x-circle-fill"></i>
+                  </label>
                 </div>
               </div>
             </div>
@@ -435,7 +433,7 @@
 
     <!-- Turno (de existir) -->
     <template v-if="habilitacion && turno && adminComercio">
-      <div class="container col-md-6 col-sm-8 card shadow-card mt-4 mb-3 mx-auto">
+      <div class="internal-use-detail-card card shadow-card mt-4 mb-3 mx-auto">
         <!-- Resto del contenido del componente -->
         <div class="col mx-auto">
           <div class="container text-center mx-auto">
@@ -1879,14 +1877,12 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
   margin-right: 0.5rem;
 }
 
-.form-check-input:checked {
-  background-color: #28a745;
-  border-color: #28a745;
-}
-
-.form-check-input[value="incorrecto"]:checked {
-  background-color: #dc3545;
-  border-color: #dc3545;
+.docs-revision-todos {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
 }
 
 .form-check-label {

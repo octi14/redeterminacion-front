@@ -10,6 +10,9 @@
   nroTramite: TurnoResponse.nroTramite,
   observaciones: TurnoResponse.observaciones,
   tipoTramite: TurnoResponse.tipoTramite,
+  nombreSolicitante: TurnoResponse.nombreSolicitante ?? null,
+  nombreTurno: TurnoResponse.nombreTurno ?? TurnoResponse.nombre ?? null,
+  nroLegajoComercial: TurnoResponse.nroLegajoComercial ?? null,
   createdAt: new Date(TurnoResponse.createdAt).toLocaleDateString('es-AR'),
 })
 

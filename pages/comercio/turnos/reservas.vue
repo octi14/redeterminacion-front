@@ -4,7 +4,40 @@
     <div v-if="adminComercio || adminInspeccion">
       <div class="internal-use-toolbar internal-use-wide">
         <b-row class="align-items-end mt-3">
-        <b-form-group class="col-md-6" label-class="text-success h6">
+        <b-form-group class="col mt-0 mb-0" label-class="text-success h6">
+          <label for="inputNroTramite" class="bv-no-focus-ring col-form-label pt-0 text-success h6">
+            <i class="bi bi-search"></i> Buscar por N° de Trámite
+          </label>
+          <b-form-input
+            id="inputNroTramite"
+            v-model="inputNroTramite"
+            placeholder="Ingresá el número de trámite"
+            type="text"
+          />
+        </b-form-group>
+        <b-form-group class="col mt-0 mb-0" label-class="text-success h6">
+          <label for="inputNroLegajo" class="bv-no-focus-ring col-form-label pt-0 text-success h6">
+            <i class="bi bi-search"></i> Buscar por legajo comercial
+          </label>
+          <b-form-input
+            id="inputNroLegajo"
+            v-model="inputNroLegajo"
+            placeholder="Ingresá el legajo comercial"
+            type="text"
+          />
+        </b-form-group>
+        <b-form-group class="col mt-0 mb-0" label-class="text-success h6">
+          <label for="inputNombreSolicitante" class="bv-no-focus-ring col-form-label pt-0 text-success h6">
+            <i class="bi bi-search"></i> Buscar por nombre del solicitante
+          </label>
+          <b-form-input
+            id="inputNombreSolicitante"
+            v-model="inputNombreSolicitante"
+            placeholder="Ingresá el nombre del solicitante"
+            type="text"
+          />
+        </b-form-group>
+        <b-form-group class="col mt-0 mb-0" label-class="text-success h6">
           <label for="selectedEstado" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><i class="bi bi-funnel-fill"></i> Filtrar por Estado</label>
             <b-form-select id="selectedEstado" plain v-model="selectedEstado">
             <option value="">Todos</option>
@@ -12,7 +45,7 @@
           </b-form-select>
         </b-form-group>
 
-        <b-form-group class="col-md-6" label-class="text-success h6">
+        <b-form-group class="col mt-0 mb-0" label-class="text-success h6">
           <label for="selectedTipoTramite" class="bv-no-focus-ring col-form-label pt-0 text-success h6"><i class="bi bi-funnel-fill"></i> Filtrar por Tipo de Trámite</label>
             <b-form-select id="selectedTipoTramite" plain v-model="selectedTipoTramite">
             <option value="">Todos</option>
@@ -32,6 +65,15 @@
         </template>
         <template #cell(status)="row">
           <div :class="row.item.estadoColor"><b>{{ row.value }}</b></div>
+        </template>
+        <template #cell(nroLegajoComercial)="row">
+          <span>{{ row.value || '—' }}</span>
+        </template>
+        <template #cell(nombreSolicitante)="row">
+          <span>{{ row.item.nombreSolicitante || '—' }}</span>
+        </template>
+        <template #cell(nombreTurno)="row">
+          <span>{{ row.item.nombreTurno ?? row.item.nombre ?? '—' }}</span>
         </template>
         <!-- Plantilla personalizada para la columna "detalles" -->
         <template #cell(detalles)="row">
@@ -70,6 +112,9 @@ export default{
   data() {
     return {
       hideFinalizados: false,
+      inputNroTramite: '',
+      inputNroLegajo: '',
+      inputNombreSolicitante: '',
       singleModal: false,
       singleContent: '',
       lastLength: false,
@@ -91,6 +136,10 @@ export default{
           label: 'Tipo de trámite',
         },
         {
+          key: 'nroLegajoComercial',
+          label: 'Legajo comercial',
+        },
+        {
           key: 'dia',
           label: 'Fecha de inspección',
           sortable: true,
@@ -100,8 +149,12 @@ export default{
           label: 'Horario',
         },
         {
-          key: 'nombre',
-          label: 'Nombre',
+          key: 'nombreSolicitante',
+          label: 'Nombre del solicitante',
+        },
+        {
+          key: 'nombreTurno',
+          label: 'Nombre del turno',
         },
         {
           key: 'domicilio',
@@ -124,6 +177,17 @@ export default{
   },
   async mounted() {
     await this.loadReservas()
+  },
+  watch: {
+    inputNroTramite() {
+      this.currentPage = 1
+    },
+    inputNroLegajo() {
+      this.currentPage = 1
+    },
+    inputNombreSolicitante() {
+      this.currentPage = 1
+    },
   },
   computed: {
     turnos(){
@@ -154,6 +218,22 @@ export default{
     },
     filteredItems() {
       let items = this.items;
+
+      if (this.inputNroTramite) {
+        items = items.filter(item => item.nroTramite && String(item.nroTramite).includes(this.inputNroTramite));
+      }
+
+      if (this.inputNroLegajo) {
+        items = items.filter(item => item.nroLegajoComercial && String(item.nroLegajoComercial).includes(this.inputNroLegajo));
+      }
+
+      if (this.inputNombreSolicitante && this.inputNombreSolicitante.trim()) {
+        const nombreBusqueda = this.inputNombreSolicitante.trim().toLowerCase();
+        items = items.filter(item => {
+          const nombre = item.nombreSolicitante ? String(item.nombreSolicitante).toLowerCase() : '';
+          return nombre.includes(nombreBusqueda);
+        });
+      }
 
       // Filtrar por estado
       if (this.selectedEstado) {

@@ -745,7 +745,7 @@ export default{
       this.endButton = true
     },
     async onResetParams(){
-      await this.$router.push('/recaudaciones/pagos_dobles')
+      await this.$router.push('/tasas/pagos_dobles')
       this.showPopupFormOk = false;
       this.showPopupFormLoading = false;
       this.printing = false;

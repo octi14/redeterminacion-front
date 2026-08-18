@@ -130,7 +130,7 @@
       </section>
 
       <div class="text-center mt-4">
-        <b-button variant="primary" :disabled="buscando || descargando" @click="$router.push('/recaudaciones')">Volver</b-button>
+        <b-button variant="primary" :disabled="buscando || descargando" @click="$router.push('/tasas')">Volver</b-button>
       </div>
     </main>
     <main v-else class="container py-5">
@@ -141,7 +141,7 @@
           <p>La descarga de tasa automotor no se encuentra disponible en este momento.</p>
         </div>
         <div class="text-center">
-          <b-button variant="primary" @click="$router.push('/recaudaciones')">Volver</b-button>
+          <b-button variant="primary" @click="$router.push('/tasas')">Volver</b-button>
         </div>
       </section>
     </main>

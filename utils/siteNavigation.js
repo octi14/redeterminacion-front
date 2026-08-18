@@ -44,12 +44,12 @@ export const SITE_NAVIGATION_ITEMS = [
     aliases: ['local', 'negocio', 'habilitación comercial'],
   },
   {
-    id: 'landing-recaudaciones',
-    title: 'Recaudaciones',
-    description: 'Servicios de recaudación municipal',
-    to: '/recaudaciones',
+    id: 'landing-tasas',
+    title: 'Tasas',
+    description: 'Servicios de tasas municipales',
+    to: '/tasas',
     section: 'Inicio',
-    aliases: ['tasas', 'impuestos', 'boletas'],
+    aliases: ['recaudaciones', 'impuestos', 'boletas'],
   },
   {
     id: 'landing-pagos',
@@ -201,22 +201,22 @@ export const SITE_NAVIGATION_ITEMS = [
     aliases: ['vales', 'nafta', 'gasoil', 'órdenes de compra'],
   },
 
-  // —— Recaudaciones ——
+  // —— Tasas ——
   {
-    id: 'recaudaciones-tasa-automotor',
+    id: 'tasas-tasa-automotor',
     title: 'Descargar tasa de automotores',
     description: 'Consultar y descargar boletas de patente de rodados',
-    to: '/recaudaciones/tasa-automotor',
-    section: 'Recaudaciones',
-    aliases: ['patente', 'rodado', 'rodados', 'automotor', 'tasa automotor'],
+    to: '/tasas/tasa-automotor',
+    section: 'Tasas',
+    aliases: ['patente', 'rodado', 'rodados', 'automotor', 'tasa automotor', 'recaudaciones'],
   },
   {
-    id: 'recaudaciones-pagos-dobles',
+    id: 'tasas-pagos-dobles',
     title: 'Informar pagos dobles',
     description: 'Realizar un reclamo por pago doble de tasas',
-    to: '/recaudaciones/pagos_dobles',
-    section: 'Recaudaciones',
-    aliases: ['pago doble', 'doble pago', 'pago duplicado', 'devolución', 'saldo excedente'],
+    to: '/tasas/pagos_dobles',
+    section: 'Tasas',
+    aliases: ['pago doble', 'doble pago', 'pago duplicado', 'devolución', 'saldo excedente', 'recaudaciones'],
   },
 
   // —— Normativa ——

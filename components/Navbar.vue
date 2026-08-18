@@ -48,7 +48,7 @@
         </b-nav-item-dropdown>
 
         <b-nav-item-dropdown v-if="showRecaudacionesMenu" text="Recaudaciones">
-          <b-dropdown-item v-if="adminRecaudaciones" to="/recaudaciones/pagos_dobles/solicitudes">
+          <b-dropdown-item v-if="adminRecaudaciones" to="/tasas/pagos_dobles/solicitudes">
             Pagos dobles
           </b-dropdown-item>
           <b-dropdown-item v-if="canManageBoletas" to="/admin/boletas">

@@ -203,11 +203,42 @@ export default {
 
   /**
    * Reserva nro de trámite y URLs firmadas PUT a S3.
-   * @param {Array<{ nombreDocumento: string, contentType: string }>} files
+   * Si se pasa nroSolicitud, no incrementa la ticketera (reintento de un archivo).
+   * @param {Array<{ campo?: string, nombreDocumento: string, contentType: string }>} files
+   * @param {number} [nroSolicitud]
    */
-  presignDocumentos: async (axios, { files }) => {
-    const response = await axios.$post('/habilitaciones/presign', { files });
+  presignDocumentos: async (axios, { files, nroSolicitud }) => {
+    const body = { files };
+    if (nroSolicitud != null && nroSolicitud !== '') {
+      body.nroSolicitud = nroSolicitud;
+    }
+    const response = await axios.$post('/habilitaciones/presign', body);
     return response.data;
+  },
+
+  /**
+   * Fallback: sube UN archivo binario por el back si el PUT directo a S3 falla.
+   */
+  uploadDocumentoProxy: async (_axios, { nroSolicitud, nombreDocumento, campo, key, contentType, blob }) => {
+    const config = useRuntimeConfig();
+    const base = String(config.public.apiBase || '').replace(/\/?$/, '/');
+    const res = await fetch(`${base}habilitaciones/upload-proxy`, {
+      method: 'POST',
+      body: blob,
+      headers: {
+        'Content-Type': contentType || 'application/octet-stream',
+        'x-nro-solicitud': String(nroSolicitud),
+        'x-nombre-documento': encodeURIComponent(nombreDocumento || ''),
+        'x-campo': campo || '',
+        'x-s3-key': encodeURIComponent(key || ''),
+        'x-content-type': contentType || 'application/octet-stream',
+      },
+    });
+    if (!res.ok) {
+      throw new Error(`upload-proxy HTTP ${res.status}`);
+    }
+    const json = await res.json().catch(() => ({}));
+    return json.data ?? json;
   },
   update: async (axios, id, { habilitacion }) => {
     axios.setHeader('Access-Control-Allow-Origin', true)

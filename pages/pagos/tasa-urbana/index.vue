@@ -139,16 +139,6 @@
             {{ deudaMsg }}
           </b-alert>
 
-          <div v-if="mostrarToggleHomologacion" class="form-section homolog-section">
-            <b-form-checkbox v-model="useHomologacionFixture" switch>
-              Usar fixture de homologación Provincia NET
-            </b-form-checkbox>
-            <small>
-              Activo: el pago de prueba no depende de Mongo.
-              Inactivo: se pagan los períodos seleccionados con códigos de barra de la deuda.
-            </small>
-          </div>
-
           <div class="form-section">
             <h2>Datos del pagador</h2>
             <div class="payer-grid">
@@ -255,29 +245,63 @@
 
     <b-modal
       v-model="showRedirectModal"
-      title="Redirección al pago"
+      modal-class="pn-redirect-modal"
+      header-bg-variant="success"
+      header-class="border-0"
+      body-class="pn-redirect-body"
       centered
       hide-footer
       :no-close-on-backdrop="pagando"
       :no-close-on-esc="pagando"
     >
-      <p class="mb-2">
-        Vas a ser redirigido al sitio seguro de <b>Provincia NET</b> para completar el pago.
-      </p>
-      <p class="mb-0 text-muted">
-        Se abrirá en una <b>nueva pestaña</b>. No cierres esta ventana hasta finalizar o cancelar el pago.
-      </p>
-      <div v-if="pagando" class="d-flex align-items-center gap-2 mt-3 text-success">
-        <b-spinner small></b-spinner>
-        <span>Generando link de pago...</span>
-      </div>
-      <div class="d-flex justify-content-end gap-2 mt-4">
-        <b-button variant="outline-secondary" :disabled="pagando" @click="showRedirectModal = false">
-          Cancelar
-        </b-button>
-        <b-button variant="success" :disabled="pagando" @click="confirmarYPagar">
+      <template #header>
+        <div class="pn-redirect-header">
+          <span class="pn-redirect-header-spacer"></span>
+          <i class="bi bi-info-circle-fill pn-redirect-header-info" aria-hidden="true"></i>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            :disabled="pagando"
+            aria-label="Cerrar"
+            @click="showRedirectModal = false"
+          ></button>
+        </div>
+      </template>
+      <div class="pn-redirect-content">
+        <h2 class="pn-redirect-title">Redirección a Sitio de Pago Seguro</h2>
+        <p>
+          Estás a punto de ser redirigida/o a nuestro sitio de pago bancario seguro.
+        </p>
+        <p class="pn-redirect-lead">Por favor, tené en cuenta lo siguiente:</p>
+        <ul class="pn-redirect-list">
+          <li>
+            <i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i>
+            <span>Es posible que tu navegador o dispositivo intente bloquear la ventana emergente.</span>
+          </li>
+          <li>
+            <i class="bi bi-lock-fill" aria-hidden="true"></i>
+            <span>
+              Para continuar el trámite, no aceptes el bloqueo y permití que se abra una nueva ventana para realizar el pago.
+            </span>
+          </li>
+          <li>
+            <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+            <span>
+              Si ves un mensaje de bloqueo o aún no se abre la ventana nueva, verificá tu navegador y habilitá las ventanas emergentes para este sitio.
+            </span>
+          </li>
+        </ul>
+        <p class="pn-redirect-cta">
+          Hacé click en «Ir a pagar» para acceder al sitio de pago.
+        </p>
+        <b-button
+          variant="success"
+          class="pn-redirect-pay-btn"
+          :disabled="pagando"
+          @click="confirmarYPagar"
+        >
           <b-spinner v-if="pagando" small class="mr-2"></b-spinner>
-          {{ pagando ? 'Redirigiendo...' : 'Continuar' }}
+          {{ pagando ? 'Redirigiendo...' : 'Ir a pagar' }}
         </b-button>
       </div>
     </b-modal>
@@ -310,7 +334,6 @@ export default {
       objetoClave: '',
       deuda: null,
       seleccionados: [],
-      useHomologacionFixture: false,
       payer: {
         first_name: '',
         last_name: '',
@@ -343,10 +366,6 @@ export default {
     },
     puedeAcceder() {
       return this.usuarioInterno || this.pagoUrbanaPublico
-    },
-    mostrarToggleHomologacion() {
-      const admin = String(useUserStore().admin || '').trim().toLowerCase()
-      return admin === 'master'
     },
     identificadorLabel() {
       return this.tipoTasa === 'AUTOMOTORES' ? 'Dominio' : 'Partida'
@@ -381,7 +400,6 @@ export default {
     },
     puedePagar() {
       if (!this.claveValida) return false
-      if (this.useHomologacionFixture) return true
       return this.seleccionados.some((id) =>
         this.itemsPagables.some((item) => item.id === id)
       )
@@ -389,14 +407,6 @@ export default {
   },
   mounted() {
     this.loadAccess()
-  },
-  watch: {
-    mostrarToggleHomologacion: {
-      immediate: true,
-      handler(puedeVer) {
-        this.useHomologacionFixture = Boolean(puedeVer)
-      },
-    },
   },
   methods: {
     async loadAccess() {
@@ -516,11 +526,7 @@ export default {
           e?.data?.message ||
           e?.message ||
           'No se pudo consultar la deuda.'
-        this.deudaVariant = this.useHomologacionFixture ? 'warning' : 'danger'
-        if (this.useHomologacionFixture) {
-          this.deudaMsg +=
-            ' Podés continuar con el fixture de homologación.'
-        }
+        this.deudaVariant = 'danger'
       } finally {
         this.consultando = false
       }
@@ -528,9 +534,7 @@ export default {
     iniciarPago() {
       this.errorMsg = ''
       if (!this.puedePagar) {
-        if (this.useHomologacionFixture) {
-          this.errorMsg = `Ingresá un${this.tipoTasa === 'AUTOMOTORES' ? ' dominio' : 'a partida'} válido.`
-        } else if (this.soloPeriodosVencidos) {
+        if (this.soloPeriodosVencidos) {
           this.errorMsg =
             'Los períodos consultados están vencidos y no se pueden abonar online. Acercate a Recaudaciones para regularizarlos.'
         } else {
@@ -554,12 +558,9 @@ export default {
           payer: this.payer,
           objetoClave: this.objetoClave,
           tipoTasa: this.tipoTasa,
-          useHomologacionFixture: this.useHomologacionFixture,
-        }
-        if (!this.useHomologacionFixture) {
-          body.itemIds = this.seleccionados.filter((id) =>
+          itemIds: this.seleccionados.filter((id) =>
             this.itemsPagables.some((item) => item.id === id)
-          )
+          ),
         }
 
         const res = await ProvinciaNetService.createPreorder(this.$axios, body)
@@ -814,19 +815,6 @@ export default {
   font-weight: 600;
 }
 
-.homolog-section {
-  padding: 0.9rem 1rem;
-  border-radius: 0.75rem;
-  background: #f0f0f0;
-  border: 1px solid #ffc107;
-}
-.homolog-section small {
-  display: block;
-  margin-top: 0.35rem;
-  color: #e27910;
-  line-height: 1.4;
-}
-
 .payer-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -878,6 +866,61 @@ export default {
   font-size: 1rem;
   min-height: 40px;
   line-height: 1.2;
+}
+
+.pn-redirect-header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  width: 100%;
+}
+.pn-redirect-header-info {
+  font-size: 1.65rem;
+  color: #fff;
+  line-height: 1;
+}
+.pn-redirect-header .btn-close {
+  justify-self: end;
+}
+.pn-redirect-content {
+  text-align: center;
+  color: #212529;
+}
+.pn-redirect-title {
+  margin: 0 0 1rem;
+  color: #198754;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.pn-redirect-lead {
+  font-weight: 600;
+  margin-bottom: 0.85rem;
+}
+.pn-redirect-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.15rem;
+  text-align: left;
+}
+.pn-redirect-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin-bottom: 0.7rem;
+  line-height: 1.4;
+}
+.pn-redirect-list i {
+  color: #ffc107;
+  font-size: 1.15rem;
+  line-height: 1.35;
+  flex-shrink: 0;
+}
+.pn-redirect-cta {
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.pn-redirect-pay-btn {
+  min-width: 12rem;
 }
 
 @media (max-width: 767px) {

@@ -208,23 +208,14 @@
             <p class="pay-hint mb-0">
               Te vamos a redirigir al sitio seguro de pago en una nueva pestaña.
             </p>
-            <button
+            <b-button
               type="submit"
-              class="urbana-pay-btn"
+              variant="success"
+              class="urbana-go-pay-btn"
               :disabled="pagando || !puedePagar"
-              :aria-busy="pagando ? 'true' : 'false'"
             >
-              <span v-if="pagando" class="urbana-pay-loading">
-                <b-spinner small variant="success"></b-spinner>
-                Generando link...
-              </span>
-              <img
-                v-else
-                :src="btnHorizontalVerde"
-                alt="Pagar con Cuenta DNI, homebanking, tarjeta o QR"
-                class="urbana-pay-img"
-              >
-            </button>
+              Ir a pagar
+            </b-button>
           </div>
         </b-form>
       </section>
@@ -249,6 +240,7 @@
       header-bg-variant="success"
       header-class="border-0"
       body-class="pn-redirect-body"
+      size="lg"
       centered
       hide-footer
       :no-close-on-backdrop="pagando"
@@ -292,17 +284,26 @@
           </li>
         </ul>
         <p class="pn-redirect-cta">
-          Hacé click en «Ir a pagar» para acceder al sitio de pago.
+          Hacé click en el botón de pago para acceder al sitio de pago.
         </p>
-        <b-button
-          variant="success"
-          class="pn-redirect-pay-btn"
+        <button
+          type="button"
+          class="pn-redirect-pn-btn"
           :disabled="pagando"
+          :aria-busy="pagando ? 'true' : 'false'"
           @click="confirmarYPagar"
         >
-          <b-spinner v-if="pagando" small class="mr-2"></b-spinner>
-          {{ pagando ? 'Redirigiendo...' : 'Ir a pagar' }}
-        </b-button>
+          <span v-if="pagando" class="urbana-pay-loading">
+            <b-spinner small variant="success"></b-spinner>
+            Generando link...
+          </span>
+          <img
+            v-else
+            :src="btnHorizontalVerde"
+            alt="Pagar con Cuenta DNI, homebanking, tarjeta o QR"
+            class="urbana-pay-img"
+          >
+        </button>
       </div>
     </b-modal>
   </div>
@@ -839,32 +840,27 @@ export default {
   max-width: 22rem;
   line-height: 1.4;
 }
-.urbana-pay-btn {
+.urbana-go-pay-btn {
   flex-shrink: 0;
-  border: 0;
-  background: transparent;
-  padding: 0;
-  cursor: pointer;
-  line-height: 0;
-}
-.urbana-pay-btn:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
+  min-width: 10.5rem;
+  padding: 0.55rem 1.35rem;
+  font-weight: 600;
 }
 .urbana-pay-img {
   display: block;
-  width: 240px;
+  width: 260px;
   max-width: 100%;
   height: auto;
 }
 .urbana-pay-loading {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   color: #0c681a;
   font-weight: 600;
-  font-size: 1rem;
-  min-height: 40px;
+  font-size: 0.95rem;
+  min-height: 48px;
   line-height: 1.2;
 }
 
@@ -875,7 +871,7 @@ export default {
   width: 100%;
 }
 .pn-redirect-header-info {
-  font-size: 1.65rem;
+  font-size: 1.35rem;
   color: #fff;
   line-height: 1;
 }
@@ -885,42 +881,63 @@ export default {
 .pn-redirect-content {
   text-align: center;
   color: #212529;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+.pn-redirect-content p {
+  margin-bottom: 1rem;
 }
 .pn-redirect-title {
-  margin: 0 0 1rem;
+  margin: 0 0 1.15rem;
   color: #198754;
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 700;
+  line-height: 1.35;
 }
 .pn-redirect-lead {
   font-weight: 600;
-  margin-bottom: 0.85rem;
+  margin-bottom: 1rem;
 }
 .pn-redirect-list {
   list-style: none;
   padding: 0;
-  margin: 0 0 1.15rem;
+  margin: 0 0 1.35rem;
   text-align: left;
 }
 .pn-redirect-list li {
   display: flex;
   align-items: flex-start;
-  gap: 0.65rem;
-  margin-bottom: 0.7rem;
-  line-height: 1.4;
+  gap: 0.75rem;
+  margin-bottom: 0.95rem;
+  line-height: 1.45;
+}
+.pn-redirect-list li:last-child {
+  margin-bottom: 0;
 }
 .pn-redirect-list i {
   color: #ffc107;
-  font-size: 1.15rem;
-  line-height: 1.35;
+  font-size: 1.05rem;
+  line-height: 1.45;
   flex-shrink: 0;
+  margin-top: 0.1rem;
 }
 .pn-redirect-cta {
   font-weight: 700;
-  margin-bottom: 1rem;
+  margin: 0 0 1.35rem;
 }
-.pn-redirect-pay-btn {
-  min-width: 12rem;
+.pn-redirect-pn-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  line-height: 0;
+}
+.pn-redirect-pn-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 @media (max-width: 767px) {
@@ -948,11 +965,25 @@ export default {
     max-width: none;
     text-align: center;
   }
-  .urbana-pay-btn {
+  .urbana-go-pay-btn {
     width: 100%;
   }
   .urbana-pay-img {
     width: 100%;
+  }
+}
+</style>
+
+<style>
+.pn-redirect-modal .modal-header {
+  padding: 0.9rem 1.15rem;
+}
+.pn-redirect-modal .modal-body {
+  padding: 1.75rem 2rem 2.15rem;
+}
+@media (max-width: 767px) {
+  .pn-redirect-modal .modal-body {
+    padding: 1.35rem 1.25rem 1.65rem;
   }
 }
 </style>

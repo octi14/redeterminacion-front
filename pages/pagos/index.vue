@@ -8,11 +8,11 @@
       description="Portal de pagos y descarga de boletas (ARVIGE)"
     />
     <MenuItem
-      v-if="adminHacienda"
+      v-if="mostrarPagoUrbana"
       icon="building"
       to="/pagos/tasa-urbana"
       title="Pagar tasa urbana"
-      description="Pago de Tasa por Servicios Urbanos (en implementación)"
+      description="Pago de Tasa por Servicios Urbanos (Provincia NET)"
     />
     <div class="page-btn-volver-wrap">
       <NuxtLink to="/">
@@ -23,11 +23,35 @@
 </template>
 
 <script>
+import ProvinciaNetService from '~/service/provinciaNet.js'
+
 export default {
+  data() {
+    return {
+      pagoUrbanaPublico: false,
+    }
+  },
   computed: {
-    adminHacienda() {
-      const admin = useUserStore().admin
-      return admin === 'hacienda' || admin === 'master'
+    usuarioInternoPagoUrbana() {
+      const admin = String(useUserStore().admin || '').trim().toLowerCase()
+      return ['hacienda', 'master', 'admin', 'true', 'boletas'].includes(admin)
+    },
+    mostrarPagoUrbana() {
+      return this.usuarioInternoPagoUrbana || this.pagoUrbanaPublico
+    },
+  },
+  mounted() {
+    this.loadConfig()
+  },
+  methods: {
+    async loadConfig() {
+      try {
+        const response = await ProvinciaNetService.getConfiguracion(this.$axios)
+        const data = response?.data || response
+        this.pagoUrbanaPublico = data?.habilitada === true
+      } catch (_) {
+        this.pagoUrbanaPublico = false
+      }
     },
   },
 }

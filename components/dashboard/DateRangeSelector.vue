@@ -295,7 +295,7 @@ export default {
 
 .quick-range-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+  box-shadow: 0 2px 8px var(--blue-glow);
 }
 
 .custom-date-range {
@@ -322,7 +322,7 @@ export default {
 
 .date-picker:focus {
   border-color: #007bff;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  box-shadow: 0 0 0 0.2rem var(--blue-focus);
 }
 
 /* Estilos para el dropdown del calendario */
@@ -405,13 +405,13 @@ export default {
 
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+    box-shadow: 0 0 0 0 var(--green-glow);
   }
   70% {
-    box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
+    box-shadow: 0 0 0 10px transparent;
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+    box-shadow: 0 0 0 0 transparent;
   }
 }
 

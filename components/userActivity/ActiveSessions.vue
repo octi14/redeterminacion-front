@@ -299,7 +299,7 @@ export default {
   background: var(--color-white);
   padding: 1.5rem;
   border-radius: 0.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px var(--shadow-mid);
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -319,7 +319,7 @@ export default {
 }
 
 .session-card:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 8px var(--shadow-hover);
   transform: translateY(-2px);
 }
 

@@ -9,7 +9,7 @@
   border-radius: 15px;
   padding: 2rem;
   margin-bottom: 2rem;
-  box-shadow: 0 10px 30px rgba(40, 167, 69, 0.3);
+  box-shadow: 0 10px 30px var(--green-glow);
 
   h2 {
     font-weight: 700;
@@ -26,13 +26,13 @@
   background: $color-white;
   border-radius: 15px;
   border: none;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 5px 20px var(--shadow-soft);
   transition: all 0.3s ease;
   overflow: hidden;
 
   &:hover {
     transform: translateY(-5px);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 15px 40px var(--shadow-hover);
   }
 
   .card-header {
@@ -61,14 +61,14 @@
   background: $color-white;
   border-radius: 15px;
   border: none;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 5px 20px var(--shadow-soft);
   transition: all 0.3s ease;
   overflow: hidden;
   height: 100%;
 
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 10px 30px var(--shadow-hover);
   }
 
   .card-header {
@@ -104,7 +104,7 @@
   }
 
   .card-footer {
-    background: rgba(0, 0, 0, 0.02);
+    background: var(--gray-bs-100);
     border-top: 1px solid $gray-bs-300;
     border-radius: 0 0 15px 15px;
     padding: 0.75rem 1.25rem;
@@ -120,13 +120,13 @@
   background: $color-white;
   border-radius: 15px;
   border: none;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 5px 20px var(--shadow-soft);
   transition: all 0.3s ease;
   overflow: hidden;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 10px 30px var(--shadow-mid);
   }
 
   .card-header {
@@ -171,7 +171,7 @@
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+    box-shadow: 0 5px 15px var(--blue-glow);
   }
 
   &:disabled {
@@ -223,14 +223,14 @@
 }
 
 .shadow-sm {
-  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+  box-shadow: 0 0.125rem 0.25rem var(--shadow-soft) !important;
 }
 
 .summary-card,
 .table-card,
 .ranking-card {
   border-radius: 15px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px var(--shadow-mid);
   border: none;
 }
 
@@ -291,19 +291,19 @@
 
   &:focus {
     border-color: #28a745;
-    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+    box-shadow: 0 0 0 0.2rem var(--green-focus);
   }
 }
 
 .area-group {
   background: $color-white;
   border-radius: 15px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px var(--shadow-mid);
   overflow: hidden;
   transition: all 0.3s ease;
 
   &:hover {
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 15px var(--shadow-hover);
   }
 }
 

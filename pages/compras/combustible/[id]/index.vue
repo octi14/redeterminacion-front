@@ -27,7 +27,7 @@
         <b-button v-if="orden && orden.id" @click="$router.push(`/compras/combustible/${orden.id}/generar`)" variant="success" class="btn-4 mt-3 mx-1 orden-acciones-btn">
           + | Agregar vales
         </b-button>
-        <b-button @click="onShowObservaciones" variant="primary" class="btn-2 mt-3 mx-1 orden-acciones-btn"> Ver observaciones </b-button>
+        <b-button @click="onShowObservaciones" variant="primary" class="mt-3 mx-1 orden-acciones-btn"> Ver observaciones </b-button>
       </div>
 
       <!--Datos de orden de compra-->
@@ -1525,7 +1525,7 @@ export default {
   }
 }
 .separador{
-  color:rgba(0, 0, 0, 0.5);
+  color:var(--color-gray-light);
   font-size: 35px;
   opacity:0.3;
 }
@@ -1563,7 +1563,7 @@ export default {
   align-items: center;  /* Alinear los elementos verticalmente */
   background: #f0f0f0;
   border-radius: 8px;
-  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 2px 8px var(--shadow-mid);
   padding: 16px;
   min-width: 400px;  /* Ajusta el tamaño de la tarjeta */
   min-height: 150px; /* Ajusta la altura para que todas sean iguales */
@@ -1577,13 +1577,13 @@ export default {
 
 .fuel-container-h:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px var(--shadow-hover);
 }
 
 .fuel-container-selected {
   background: var(--gray-bs-200) !important;
   border-color: #2196f3 !important;
-  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3) !important;
+  box-shadow: 0 4px 12px var(--blue-glow) !important;
   transform: translateY(-2px);
 }
 
@@ -1709,7 +1709,7 @@ export default {
   width: 450px;
   border-radius: 5px;
   z-index: 1; /* Asegura que esté encima del ícono */
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3); /* Agrega una sombra */
+  box-shadow: 0px 0px 5px var(--shadow-hover); /* Agrega una sombra */
 }
 
 .combustible-detalle-page .fuel-saldos-h p {

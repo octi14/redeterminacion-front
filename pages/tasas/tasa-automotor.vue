@@ -372,7 +372,7 @@ export default {
 
 <style scoped>
 .automotor-page { min-height: 100vh; }
-.search-card, .periods-card { max-width: 1040px; margin: 0 auto; border-radius: 24px; background: var(--color-white); box-shadow: 0 18px 55px rgba(23, 74, 58, .12); }
+.search-card, .periods-card { max-width: 1040px; margin: 0 auto; border-radius: 24px; background: var(--color-white); box-shadow: 0 18px 55px var(--mint-shadow-soft); }
 .search-card { display: grid; grid-template-columns: 1.15fr .85fr; gap: 3rem; padding: 3rem; background: linear-gradient(135deg, #fff 60%, #f7fbf8); }
 .eyebrow { color: #14835e; font-size: .75rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 .search-copy h1 { margin: .6rem 0 1rem; color: #173e32; font-weight: 800; }
@@ -380,7 +380,7 @@ export default {
 .unavailable-card { align-items: center; }
 .domain-form label { color: #284c42; font-weight: 700; }
 .domain-input { display: flex; align-items: center; border: 2px solid #e2ebe4; border-radius: 14px; background: var(--color-white); transition: .2s; }
-.domain-input:focus-within { border-color: #14835e; box-shadow: 0 0 0 4px rgba(20, 131, 94, .1); }
+.domain-input:focus-within { border-color: #14835e; box-shadow: 0 0 0 4px var(--mint-focus); }
 .domain-input i { padding-left: 1rem; color: #14835e; font-size: 1.25rem; }
 .domain-input input { width: 100%; border: 0; outline: 0; padding: .95rem; background: transparent; color: #173e32; font-size: 1.2rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 .btn-search, .btn-download { border: 0; border-radius: 12px; color: var(--color-white); background: linear-gradient(135deg, #14835e, #075e4a); font-weight: 700; }
@@ -414,7 +414,7 @@ export default {
 .download-bar span { color: #f0f0f0; font-size: .85rem; }
 .btn-download { padding: .8rem 1.25rem; background: #ef8918; }
 .download-actions { display: flex; align-items: center; gap: .75rem; }
-.btn-pay { padding: .8rem 1.25rem; border: 1px solid rgba(255, 255, 255, .4); border-radius: 12px; color: var(--color-white); background: transparent; font-weight: 700; }
+.btn-pay { padding: .8rem 1.25rem; border: 1px solid var(--white-veil-mid); border-radius: 12px; color: var(--color-white); background: transparent; font-weight: 700; }
 .btn-pay:hover { color: #173e32; background: var(--color-white); }
 .btn:disabled { cursor: not-allowed; opacity: .6; }
 @media (max-width: 767px) {
@@ -432,7 +432,7 @@ export default {
 </style>
 
 <style>
-.automotor-wait-modal .modal-content { overflow: hidden; border: 0; border-radius: 22px; box-shadow: 0 28px 75px rgba(15, 50, 40, .25); }
+.automotor-wait-modal .modal-content { overflow: hidden; border: 0; border-radius: 22px; box-shadow: 0 28px 75px var(--mint-shadow-mid); }
 .automotor-wait-modal .modal-body { padding: 0; }
 .wait-content { padding: 2.5rem; color: #173e32; text-align: center; }
 .wait-spinner { width: 82px; height: 82px; margin: 0 auto 1.25rem; display: grid; place-items: center; border-radius: 50%; color: #14835e; background: #e3f6ee; }

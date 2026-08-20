@@ -554,9 +554,9 @@ export default {
     margin: 2rem auto !important;
     padding: 2rem 4rem;
     border-radius: 1rem;
-    box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
-    -webkit-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
-    -moz-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
+    box-shadow: 0px 2px 5px 0px var(--shadow-card);
+    -webkit-box-shadow: 0px 2px 5px 0px var(--shadow-card);
+    -moz-box-shadow: 0px 2px 5px 0px var(--shadow-card);
   }
   .section-card .btn-container{
     width: fit-content;

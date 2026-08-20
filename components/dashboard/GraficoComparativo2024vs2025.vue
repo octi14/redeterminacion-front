@@ -54,32 +54,32 @@ export default {
           {
             label: '2024',
             data: [],
-            backgroundColor: 'rgba(33, 150, 243, 0.6)',
-            borderColor: 'rgba(33, 150, 243, 1)',
+            backgroundColor: 'rgba(0, 123, 255, 0.35)',
+            borderColor: '#007bff',
             borderWidth: 2,
             tension: 0.4,
             pointRadius: 5,
             pointHoverRadius: 7,
-            pointBackgroundColor: 'rgba(33, 150, 243, 1)',
+            pointBackgroundColor: '#007bff',
             pointBorderColor: '#ffffff',
             pointBorderWidth: 2,
-            pointHoverBackgroundColor: 'rgba(33, 150, 243, 1)',
+            pointHoverBackgroundColor: '#007bff',
             pointHoverBorderColor: '#ffffff',
             pointHoverBorderWidth: 3
           },
           {
             label: '2025',
             data: [],
-            backgroundColor: 'rgba(75, 192, 192, 0.6)',
-            borderColor: 'rgba(75, 192, 192, 1)',
+            backgroundColor: 'rgba(23, 162, 184, 0.35)',
+            borderColor: '#17a2b8',
             borderWidth: 2,
             tension: 0.4,
             pointRadius: 5,
             pointHoverRadius: 7,
-            pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+            pointBackgroundColor: '#17a2b8',
             pointBorderColor: '#ffffff',
             pointBorderWidth: 2,
-            pointHoverBackgroundColor: 'rgba(75, 192, 192, 1)',
+            pointHoverBackgroundColor: '#17a2b8',
             pointHoverBorderColor: '#ffffff',
             pointHoverBorderWidth: 3
           }
@@ -195,7 +195,7 @@ export default {
               weight: 'bold',
               size: 11
             },
-            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            backgroundColor: '#ffffff',
             padding: {
               top: 4,
               bottom: 4,
@@ -206,7 +206,7 @@ export default {
             borderWidth: 1,
             borderColor: function(context) {
               const datasetIndex = context.datasetIndex || 0
-              return datasetIndex === 0 ? 'rgba(33, 150, 243, 0.5)' : 'rgba(75, 192, 192, 0.5)'
+              return datasetIndex === 0 ? '#007bff' : '#17a2b8'
             }
           }
         },

@@ -40,7 +40,7 @@
           Aprobar solicitud
         </b-button>
         <b-button size="sm" class="btn-3" @click="onRechazarSolicitud">Rechazar solicitud</b-button>
-        <b-button size="sm" variant="primary" class="btn-2" @click="onShowObservaciones">Ver observaciones</b-button>
+        <b-button size="sm" variant="primary" class="" @click="onShowObservaciones">Ver observaciones</b-button>
       </div>
       <!-- <div class="row no-gutters">
         <b-button @click="onDescargarHabilitacion(); registrarActividad('Descargar Trámite', 'Trámite Descargado', pago.nroTramite)" v-if="adminComercio || adminArvige || adminModernizacion" variant="success" class="btn-4 mx-auto mt-3 mx-1">
@@ -761,7 +761,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
   width: 450px;
   border-radius: 5px;
   z-index: 1; /* Asegura que esté encima del ícono */
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3); /* Agrega una sombra */
+  box-shadow: 0px 0px 5px var(--shadow-hover); /* Agrega una sombra */
 }
 
 /* body {

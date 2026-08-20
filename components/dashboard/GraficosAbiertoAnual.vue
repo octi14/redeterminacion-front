@@ -395,7 +395,7 @@ export default {
 .periodo-tarde:hover {
   background: var(--gray-bs-200);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px var(--shadow-mid);
 }
 </style>
 

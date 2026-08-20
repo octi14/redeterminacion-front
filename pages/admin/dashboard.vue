@@ -295,7 +295,7 @@ export default {
   text-align: center;
   background: #fff;
   border-radius: 20px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 25px 50px -12px var(--shadow-hover), 0 0 0 1px var(--shadow-soft);
   animation: noAccessFadeIn 0.5s ease-out;
 }
 
@@ -319,7 +319,7 @@ export default {
   color: var(--gray-bs-600);
   opacity: 0.9;
   display: inline-block;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+  filter: drop-shadow(0 4px 8px var(--shadow-mid));
 }
 
 .no-access-title {
@@ -348,13 +348,13 @@ export default {
   font-weight: 600;
   text-decoration: none;
   transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 14px rgba(23, 162, 184, 0.35);
+  box-shadow: 0 4px 14px var(--info-glow);
 }
 
 .btn-back-home:hover {
   color: #fff !important;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(23, 162, 184, 0.45);
+  box-shadow: 0 6px 20px var(--info-glow);
 }
 
 /* Estilos para el selector de fechas */
@@ -366,7 +366,7 @@ export default {
   background: var(--gray-bs-100);
   border-radius: 15px;
   border: none;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 5px 20px var(--shadow-soft);
   transition: all 0.3s ease;
   position: relative;
   overflow: visible;
@@ -374,7 +374,7 @@ export default {
 
 .date-range-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 30px var(--shadow-hover);
 }
 
 .date-range-card .card-body {

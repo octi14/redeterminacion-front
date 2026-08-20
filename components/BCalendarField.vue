@@ -494,7 +494,7 @@ export default {
 }
 
 .b-calendar-grid-body .btn-outline-light:hover:not(.disabled):not(.active) {
-  background-color: rgba(12, 104, 26, 0.12);
+  background-color: var(--green-fill);
 }
 
 .b-calendar-grid-body .btn-success.active {

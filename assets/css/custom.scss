@@ -3,11 +3,34 @@
 // ============================================
 $color-orange-primary: #E27910;
 $color-green-primary: #0c681a;
-$color-green-text: #0c6919;
 $color-white: #ffffff;
 $color-gray-dark: #353535;
 $color-gray-light: #666;
 $color-radio-border: #555555;
+
+// Elevación: 4 negros con alpha. El resto de rgba(0,0,0,α) se mapea acá.
+$shadow-soft: rgba(0, 0, 0, 0.08);
+$shadow-mid: rgba(0, 0, 0, 0.12);
+$shadow-hover: rgba(0, 0, 0, 0.15);
+$shadow-card: rgba(0, 0, 0, 0.75);
+
+// RGBA cromáticos (mint / azul / info). Target ~13 literales.
+$mint-shadow-soft: rgba(34, 76, 63, 0.08);
+$mint-shadow-mid: rgba(7, 94, 74, 0.25);
+$mint-focus: rgba(20, 131, 94, 0.1);
+$blue-focus: rgba(0, 123, 255, 0.25);
+$blue-glow: rgba(0, 123, 255, 0.35);
+$info-glow: rgba(23, 162, 184, 0.35);
+$primary-focus: rgba(42, 67, 161, 0.2);
+$green-fill: rgba(12, 104, 26, 0.12);
+$green-focus: rgba(40, 167, 69, 0.25);
+$green-glow: rgba(40, 167, 69, 0.3);
+
+// Velos blancos. Las páginas de boletas / tasa-automotor no inventan rgba.
+$white-veil-soft: rgba(255, 255, 255, 0.08);
+$white-veil-mid: rgba(255, 255, 255, 0.28);
+$white-veil-strong: rgba(255, 255, 255, 0.8);
+$white-veil-card: rgba(255, 255, 255, 0.96);
 
 @mixin internal-use-form-control-visible {
   width: 1.2em;
@@ -36,6 +59,25 @@ $gray-bs-900: #212529;
 :root {
   --color-white: #{$color-white};
   --color-dark: #{$dark};
+  --color-gray-light: #{$color-gray-light};
+  --shadow-soft: #{$shadow-soft};
+  --shadow-mid: #{$shadow-mid};
+  --shadow-hover: #{$shadow-hover};
+  --shadow-card: #{$shadow-card};
+  --mint-shadow-soft: #{$mint-shadow-soft};
+  --mint-shadow-mid: #{$mint-shadow-mid};
+  --mint-focus: #{$mint-focus};
+  --blue-focus: #{$blue-focus};
+  --blue-glow: #{$blue-glow};
+  --info-glow: #{$info-glow};
+  --primary-focus: #{$primary-focus};
+  --green-fill: #{$green-fill};
+  --green-focus: #{$green-focus};
+  --green-glow: #{$green-glow};
+  --white-veil-soft: #{$white-veil-soft};
+  --white-veil-mid: #{$white-veil-mid};
+  --white-veil-strong: #{$white-veil-strong};
+  --white-veil-card: #{$white-veil-card};
   --gray-bs-100: #{$gray-bs-100};
   --gray-bs-200: #{$gray-bs-200};
   --gray-bs-300: #{$gray-bs-300};
@@ -140,7 +182,7 @@ body.modal-open .modal-body {
 
     .toast-header {
       background-color: var(--bs-#{$variant}) !important;
-      border-bottom-color: rgba(0, 0, 0, 0.1) !important;
+      border-bottom-color: var(--shadow-mid) !important;
 
       @if $variant == warning or $variant == info or $variant == secondary {
         color: var(--bs-#{$variant}-text-emphasis) !important;
@@ -396,21 +438,21 @@ body:not(.modal-open) #app-content {
 .btn-5:hover {
   // border: 1px solid;
   // border-radius: 12%;
-  // box-shadow: inset 0 0 3px 3px rgba(4, 93, 5, 0.313), 0 1px 4px 4px rgba(0, 123, 4, 0.467);
+  // box-shadow: inset 0 0 3px 3px var(--green-fill), 0 1px 4px 4px var(--green-glow);
   // outline-offset: 30px;
   text-shadow: 0 0 3px #15ff00cd;
 }
 
 
 .btn-4 {
-  box-shadow: inset 0 0 0 0 rgba(6, 47, 11, 0.559), 0 0 1px 1px rgba(1, 121, 37, 0.331);
+  box-shadow: inset 0 0 0 0 rgba(1, 121, 37, 0.33), 0 0 1px 1px rgba(1, 121, 37, 0.33);
   transition: all 500ms cubic-bezier(0.19, 1, 0.2, 1.25);
 }
 
 .btn-4:hover {
   border: 1px solid;
   border-color: #607b07;
-  box-shadow: inset 0 0 7px 4px rgba(42, 24, 5, 0), 0 0 3px 4px rgba(162, 179, 143, 0.769);
+  box-shadow: inset 0 0 7px 4px transparent, 0 0 3px 4px rgba(1, 121, 37, 0.33);
   outline-offset: 15px;
   text-shadow: 2px 4px 3px #034c578b;
 }
@@ -423,13 +465,7 @@ body:not(.modal-open) #app-content {
   transition: all 500ms cubic-bezier(0.19, 1, 0.2, 1.25);
 }
 
-.btn-2 {
-  background-color: rgba(65, 10, 244, 0.848);
-  box-shadow: inset 0 0 0 0 rgba(69, 6, 6, 0.575), 0 1px 1px 1px rgba(1, 23, 121, 0.331);
-  outline-color: rgba(10, 14, 126, 0.38);
-  border: 1px;
-  transition: all 500ms cubic-bezier(0.19, 1, 0.2, 1.25);
-}
+
 
 .btn-3:hover {
   // border: 1px solid;
@@ -440,14 +476,6 @@ body:not(.modal-open) #app-content {
   text-shadow: 2px 5px 12px #034c578b;
 }
 
-.btn-2:hover {
-  // border: 1px solid;
-  // border-radius: 12%;
-  background-color: #04047d;
-  box-shadow: inset 0 0 7px 4px rgba(9, 1, 73, 0.2), 0 2px 6px 4px rgba(16, 6, 94, 0.331);
-  outline-offset: 15px;
-  text-shadow: 2px 5px 12px #034c578b;
-}
 
 .a:hover {
   text-decoration: underline;
@@ -467,7 +495,7 @@ body:not(.modal-open) #app-content {
 }
 
 .shadow-card{
-  box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
+  box-shadow: 0px 2px 5px 0px var(--shadow-card);
 }
 
 .white{
@@ -495,7 +523,7 @@ body:not(.modal-open) #app-content {
 }
 
 .text-green {
-  color: $color-green-text !important;
+  color: $color-green-primary !important;
 }
 
 // En Nuxt 2 se usaba b-icon-caret-right-fill / b-icon-check con tono naranja (icon-orange).

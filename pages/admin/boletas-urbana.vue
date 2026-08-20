@@ -296,13 +296,13 @@ export default {
 <style scoped>
 .boletas-page { min-height: 100vh; padding-top: 58px; color: #173e32; }
 .container { max-width: 1240px; }
-.upload-hero { position: relative; overflow: hidden; display: grid; grid-template-columns: 1.12fr .88fr; gap: 3rem; align-items: center; padding: 3.5rem; border-radius: 28px; color: #ffffff; background: radial-gradient(circle at 5% 0%, rgba(255,255,255,.18), transparent 38%), linear-gradient(135deg, #075e4a, #14835e); box-shadow: 0 24px 60px rgba(7, 94, 74, .24); }
-.upload-hero::after { content: ""; position: absolute; width: 340px; height: 340px; right: -150px; bottom: -210px; border: 52px solid rgba(255,255,255,.08); border-radius: 50%; }
+.upload-hero { position: relative; overflow: hidden; display: grid; grid-template-columns: 1.12fr .88fr; gap: 3rem; align-items: center; padding: 3.5rem; border-radius: 28px; color: var(--color-white); background: radial-gradient(circle at 5% 0%, var(--white-veil-soft), transparent 38%), linear-gradient(135deg, #075e4a, #14835e); box-shadow: 0 24px 60px var(--mint-shadow-mid); }
+.upload-hero::after { content: ""; position: absolute; width: 340px; height: 340px; right: -150px; bottom: -210px; border: 52px solid var(--white-veil-soft); border-radius: 50%; }
 .hero-copy, .upload-card { position: relative; z-index: 1; }
 .eyebrow { display: block; margin-bottom: .65rem; color: #20c997; font-size: .74rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
 .hero-copy h1 { max-width: 590px; margin-bottom: 1rem; font-size: 2.6rem; font-weight: 800; line-height: 1.08; }
-.hero-copy p { max-width: 620px; margin-bottom: 0; color: rgba(255,255,255,.8); font-size: 1.04rem; line-height: 1.65; }
-.upload-card { padding: 1.25rem; border: 1px solid rgba(255,255,255,.28); border-radius: 22px; background: rgba(255,255,255,.96); box-shadow: 0 20px 45px rgba(0,0,0,.15); }
+.hero-copy p { max-width: 620px; margin-bottom: 0; color: var(--white-veil-strong); font-size: 1.04rem; line-height: 1.65; }
+.upload-card { padding: 1.25rem; border: 1px solid var(--white-veil-mid); border-radius: 22px; background: var(--white-veil-card); box-shadow: 0 20px 45px var(--shadow-hover); }
 .drop-zone { min-height: 245px; padding: 2rem 1.2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px dashed #e2ebe4; border-radius: 16px; color: #284c42; background: #f7fbf8; cursor: pointer; transition: .2s ease; text-align: center; }
 .drop-zone:hover, .drop-zone.dragging { border-color: #14835e; background: #e3f6ee; transform: translateY(-2px); }
 .drop-zone.selected { border-style: solid; }
@@ -334,7 +334,7 @@ export default {
 .issue-row.warning .issue-type { color: #e27910; }
 .issue-row-number { color: #666666; }
 .no-access { min-height: calc(100vh - 58px); display: grid; place-items: center; padding: 2rem; }
-.no-access-card { max-width: 520px; padding: 3rem; border-radius: 22px; background: #ffffff; box-shadow: 0 20px 50px rgba(0,0,0,.12); text-align: center; }
+.no-access-card { max-width: 520px; padding: 3rem; border-radius: 22px; background: #ffffff; box-shadow: 0 20px 50px var(--shadow-mid); text-align: center; }
 .no-access-card i { color: #666666; font-size: 4rem; }
 .no-access-card h1 { margin-top: 1rem; font-size: 1.8rem; font-weight: 800; }
 @media (max-width: 900px) {

@@ -658,7 +658,7 @@ export default {
   border: 1px solid var(--gray-bs-400);
   border-top: none;
   border-radius: 0 0 0.25rem 0.25rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px var(--shadow-mid);
 }
 
 .sugerencia-item {

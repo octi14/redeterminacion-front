@@ -321,7 +321,7 @@ export default{
 .btn:hover{ background-color:#15571f; border-color:#15571f; }
 .btn-cancel{ background-color:#e53749; border-color:#e53749; }
 .btn-cancel:hover{ background-color:#f09658; border-color:#f09658; }
-.section-card{ box-shadow:0px 2px 5px 0px rgba(0,0,0,0.75); -webkit-box-shadow:0px 2px 5px 0px rgba(0,0,0,0.75); -moz-box-shadow:0px 2px 5px 0px rgba(0,0,0,0.75); }
+.section-card{ box-shadow:0px 2px 5px 0px var(--shadow-card); -webkit-box-shadow:0px 2px 5px 0px var(--shadow-card); -moz-box-shadow:0px 2px 5px 0px var(--shadow-card); }
 h3{ font-weight:bold; color:#0c681a !important; margin:1rem 0; }
 .modal h3{ color: var(--color-white) !important; font-weight:bold; font-size:1.5rem; }
 .modal .modal-subtitle{ color:#0c681a !important; font-size:1.25rem; font-weight:bold; margin-bottom: 15px; }

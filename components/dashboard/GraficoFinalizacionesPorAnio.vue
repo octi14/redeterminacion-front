@@ -81,7 +81,7 @@ export default {
     },
     backgroundColor: {
       type: String,
-      default: 'rgba(40, 167, 69, 0.25)'
+      default: '#28a745'
     },
     soloRenovaciones: {
       type: Boolean,

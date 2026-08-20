@@ -2353,9 +2353,9 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
     border-radius: 1rem;
   }
   .section-card{
-    box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
-    -webkit-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
-    -moz-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
+    box-shadow: 0px 2px 5px 0px var(--shadow-card);
+    -webkit-box-shadow: 0px 2px 5px 0px var(--shadow-card);
+    -moz-box-shadow: 0px 2px 5px 0px var(--shadow-card);
   }
   form p{
     font-weight: 600;

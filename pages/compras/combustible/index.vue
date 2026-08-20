@@ -1232,7 +1232,7 @@ export default {
   padding: 1rem 0.5rem 1rem 1rem !important;
   border-radius: 3px !important;
   border: 1px solid var(--gray-bs-300) !important;
-  box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
+  box-shadow: 0px 2px 5px 0px var(--shadow-card);
 }
 
 .dashboard-combustible {

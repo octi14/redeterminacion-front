@@ -236,7 +236,7 @@ export default {
 
 .area-select:focus {
   border-color: #28a745;
-  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+  box-shadow: 0 0 0 0.2rem var(--green-focus);
 }
 
 .clear-btn {
@@ -322,7 +322,7 @@ export default {
   background: var(--gray-bs-200);
   border-color: #28a745;
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px var(--shadow-mid);
 }
 
 .vehiculo-info {

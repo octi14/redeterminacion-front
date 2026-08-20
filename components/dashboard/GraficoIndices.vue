@@ -579,15 +579,15 @@ export default {
 }
 
 .table-hover tbody tr:hover {
-  background-color: rgba(0, 123, 255, 0.1);
+  background-color: var(--blue-focus);
 }
 
 .table-success {
-  background-color: rgba(40, 167, 69, 0.1) !important;
+  background-color: var(--green-focus) !important;
 }
 
 .table-danger {
-  background-color: rgba(229, 55, 73, 0.1) !important;
+  background-color: var(--danger-bs-100) !important;
 }
 </style>
 

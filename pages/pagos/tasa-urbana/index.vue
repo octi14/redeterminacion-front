@@ -616,7 +616,7 @@ export default {
   margin: 0 auto;
   border-radius: 1rem;
   background: #fff;
-  box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 2px 5px 0px var(--shadow-card);
   overflow: hidden;
 }
 .urbana-card--simple {
@@ -889,7 +889,7 @@ export default {
 }
 .pn-redirect-title {
   margin: 0 0 1.15rem;
-  color: #198754;
+  color: #0c681a;
   font-size: 1.15rem;
   font-weight: 700;
   line-height: 1.35;

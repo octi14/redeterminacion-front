@@ -406,7 +406,7 @@ export default {
   padding: 1.5rem 1.75rem;
   border-radius: 12px;
   border: 1px solid var(--gray-bs-200);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 3px var(--shadow-soft);
 }
 
 .filters-section__grid {
@@ -443,7 +443,7 @@ export default {
 .filter-block__input:focus,
 .filter-block__select:focus {
   border-color: #2a43a1;
-  box-shadow: 0 0 0 2px rgba(42, 67, 161, 0.2);
+  box-shadow: 0 0 0 2px var(--primary-focus);
 }
 
 .filter-block__dates-row {

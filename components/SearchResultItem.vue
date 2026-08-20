@@ -92,14 +92,14 @@ export default {
 
 .search-result-card {
   padding: 0.5rem 0;
-  border: 1px solid rgba(12, 104, 26, 0.15);
+  border: 1px solid var(--green-fill);
   border-radius: 0.375rem;
   transition: box-shadow 0.2s ease, transform 0.2s ease;
   cursor: pointer;
 }
 
 .search-result-link:hover .search-result-card {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 12px var(--shadow-mid);
   transform: translateY(-1px);
 }
 
@@ -112,7 +112,7 @@ export default {
   margin-bottom: 0.45rem;
   padding: 0.15rem 0.55rem;
   border-radius: 0.25rem;
-  background-color: rgba(12, 104, 26, 0.12);
+  background-color: var(--green-fill);
   color: #0c681a;
   font-size: 0.75rem;
   font-weight: 700;
@@ -133,7 +133,7 @@ export default {
 .search-result-card--compact {
   padding: 0;
   box-shadow: none;
-  border-color: rgba(12, 104, 26, 0.1);
+  border-color: var(--green-fill);
 }
 
 .search-result-text--compact {

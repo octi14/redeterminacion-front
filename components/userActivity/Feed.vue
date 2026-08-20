@@ -287,7 +287,7 @@ export default {
 }
 
 .activity-item:hover {
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px var(--shadow-mid);
   transform: translateY(-1px);
 }
 

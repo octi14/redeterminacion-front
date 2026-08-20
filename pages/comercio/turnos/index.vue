@@ -694,7 +694,7 @@ IMPORTANTE:
 }
 
 .turnera-calendar :deep(.b-calendar-grid) {
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 4px var(--shadow-soft);
 }
 
 @media (max-width: 720px){
@@ -742,7 +742,7 @@ IMPORTANTE:
     background-color:#0c681a;
   }
   .disabled-option {
-    color: rgb(164, 163, 163);
+    color: var(--gray-bs-500);
   }
   .centeredContainer {
     width: auto;
@@ -864,9 +864,9 @@ IMPORTANTE:
     margin: 2rem auto !important;
     padding: 2rem 4rem;
     border-radius: 1rem;
-    box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
-    -webkit-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
-    -moz-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
+    box-shadow: 0px 2px 5px 0px var(--shadow-card);
+    -webkit-box-shadow: 0px 2px 5px 0px var(--shadow-card);
+    -moz-box-shadow: 0px 2px 5px 0px var(--shadow-card);
   }
   .section-card .btn-container{
     width: fit-content;

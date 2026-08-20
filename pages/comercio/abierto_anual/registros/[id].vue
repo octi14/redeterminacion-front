@@ -223,7 +223,7 @@
     width: 450px;
     border-radius: 5px;
     z-index: 1; /* Asegura que esté encima del ícono */
-    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3); /* Agrega una sombra */
+    box-shadow: 0px 0px 5px var(--shadow-hover); /* Agrega una sombra */
   }
 
   /* body {

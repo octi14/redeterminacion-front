@@ -1837,7 +1837,7 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
   width: min(450px, 85vw);
   border-radius: 5px;
   z-index: 20;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 8px var(--shadow-hover);
   font-size: 0.9rem;
   font-weight: 400;
   line-height: 1.35;

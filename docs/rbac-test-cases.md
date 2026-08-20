@@ -41,7 +41,7 @@ Crear o usar estos usuarios de prueba:
 
 | ID | Caso | Usuario | Validar |
 | --- | --- | --- | --- |
-| NAV-01 | Menu privado sin permisos | Sin permisos | No aparecen Obras, Indices, Comercio, Recaudaciones admin, Cementerio, Compras, Usuarios ni Dashboard. |
+| NAV-01 | Menu privado sin permisos | Sin permisos | No aparecen Obras, Indices, Comercio, Tasas admin, Cementerio, Compras, Usuarios ni Dashboard. |
 | NAV-02 | Menu por area | Cada rol operativo | Solo aparece el menu de su area. |
 | NAV-03 | Acceso directo bloqueado | Cada rol operativo | Pegar URL de otra area; no debe cargar datos ni permitir acciones. |
 | NAV-04 | Publico | Sin login | Home, buscador de tramites, listado de tramites y consultas publicas de boletas deben seguir accesibles. |

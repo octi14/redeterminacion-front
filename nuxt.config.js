@@ -6,6 +6,11 @@ export default defineNuxtConfig({
     preset: 'node-server',
   },
 
+  routeRules: {
+    '/recaudaciones': { redirect: '/tasas' },
+    '/recaudaciones/**': { redirect: '/tasas/**' },
+  },
+
   app: {
     pageTransition: {
       name: 'page',

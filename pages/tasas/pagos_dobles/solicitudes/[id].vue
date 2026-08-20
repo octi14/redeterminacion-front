@@ -1,6 +1,6 @@
 <template>
   <div class="page main-background">
-    <Banner title="Detalles de solicitud"/>
+    <Banner title="Detalles de solicitud" subtitle="Pagos dobles" />
     <LoadingState
       v-if="!pago"
       size="lg"
@@ -150,7 +150,7 @@
     </template>
 
     <div class="page-btn-volver-wrap">
-      <NuxtLink to="/recaudaciones/pagos_dobles/solicitudes">
+      <NuxtLink to="/tasas/pagos_dobles/solicitudes">
         <b-button variant="primary" size="sm" class="page-btn-volver">Volver</b-button>
       </NuxtLink>
     </div>

@@ -876,7 +876,7 @@
       </div>
     </div>
   </BModal>
-  <BModal v-model="showPopupFormLoading" no-close-on-backdrop title="" :header-bg-variant="'success'" no-footer centered>
+  <BModal v-model="showPopupFormLoading" no-close-on-backdrop no-close-on-esc no-header-close title="" :header-bg-variant="'success'" no-footer centered>
     <template #header>
       <h5 class="centeredContainer">Solicitud en Proceso</h5>
     </template>
@@ -1695,42 +1695,39 @@
 
               // 2) Presign: reserva nroTramite + URLs PUT
               const { nroTramite, uploads } = await useHabilitacionesStore().presignDocumentos({
-                files: filesMeta.map(({ nombreDocumento, contentType }) => ({
+                files: filesMeta.map(({ campo, nombreDocumento, contentType }) => ({
+                  campo,
                   nombreDocumento,
                   contentType,
                 })),
               });
 
-              // 3) Subir cada archivo directo a S3 (binario, sin pasar por el dyno)
-              const documentosParaGuardar = {};
+              const uploadsByCampo = {};
               const uploadsByNombre = {};
               for (const upload of uploads || []) {
+                if (upload.campo) uploadsByCampo[upload.campo] = upload;
                 uploadsByNombre[upload.nombreDocumento] = upload;
               }
 
-              for (const meta of filesMeta) {
-                const upload = uploadsByNombre[meta.nombreDocumento];
+              // 3) Subir con concurrencia 3, reintentos y fallback al proxy
+              const documentosParaGuardar = {};
+
+              await this.mapWithConcurrency(filesMeta, 3, async (meta) => {
+                const upload = uploadsByCampo[meta.campo] || uploadsByNombre[meta.nombreDocumento];
                 if (!upload || !upload.uploadUrl) {
                   throw new Error(`No se recibió URL de subida para ${meta.nombreDocumento}`);
                 }
-                const blob = blobsByCampo[meta.campo];
-                const putRes = await fetch(upload.uploadUrl, {
-                  method: 'PUT',
-                  body: blob,
-                  headers: {
-                    'Content-Type': meta.contentType,
-                  },
+                const result = await this.uploadOneDocumento({
+                  meta,
+                  upload,
+                  blob: blobsByCampo[meta.campo],
+                  nroTramite,
                 });
-                if (!putRes.ok) {
-                  throw new Error(
-                    `Error subiendo ${meta.nombreDocumento} a S3 (HTTP ${putRes.status}).`
-                  );
-                }
                 documentosParaGuardar[meta.campo] = {
-                  nombreDocumento: meta.nombreDocumento,
-                  url: upload.url,
+                  nombreDocumento: result.nombreDocumento,
+                  url: result.url,
                 };
-              }
+              });
 
               // 4) Crear trámite solo con metadatos + URLs (JSON chico)
               const { ningunaAnterior, ...inmuebleSinNinguna } = this.inmueble;
@@ -1974,6 +1971,85 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
       },
       wait(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
+      },
+      async mapWithConcurrency(items, limit, fn) {
+        const results = new Array(items.length);
+        let nextIndex = 0;
+        const workerCount = Math.min(limit, items.length);
+        const workers = Array.from({ length: workerCount }, async () => {
+          while (nextIndex < items.length) {
+            const index = nextIndex;
+            nextIndex += 1;
+            results[index] = await fn(items[index], index);
+          }
+        });
+        await Promise.all(workers);
+        return results;
+      },
+      async putToS3(uploadUrl, blob, contentType) {
+        const putRes = await fetch(uploadUrl, {
+          method: 'PUT',
+          body: blob,
+          headers: {
+            'Content-Type': contentType,
+          },
+        });
+        if (!putRes.ok) {
+          const err = new Error(`S3 PUT HTTP ${putRes.status}`);
+          err.status = putRes.status;
+          throw err;
+        }
+      },
+      async uploadOneDocumento({ meta, upload, blob, nroTramite }) {
+        const delays = [1000, 3000, 8000];
+        let current = upload;
+        for (let attempt = 0; attempt <= delays.length; attempt++) {
+          try {
+            await this.putToS3(current.uploadUrl, blob, current.contentType);
+            return {
+              nombreDocumento: meta.nombreDocumento,
+              url: current.url,
+              campo: meta.campo,
+            };
+          } catch (e) {
+            console.error(
+              `Error subiendo ${meta.nombreDocumento} (intento ${attempt + 1}):`,
+              e
+            );
+            if (attempt === delays.length) break;
+            const isNetworkError = !e || e.status == null;
+            if (isNetworkError && attempt >= 1) break;
+            if (e && (e.status === 403 || e.status === 401)) {
+              try {
+                const { uploads } = await useHabilitacionesStore().presignDocumentos({
+                  files: [{
+                    campo: meta.campo,
+                    nombreDocumento: meta.nombreDocumento,
+                    contentType: meta.contentType,
+                  }],
+                  nroSolicitud: nroTramite,
+                });
+                if (uploads && uploads[0]) current = uploads[0];
+              } catch (presignErr) {
+                console.error('Error re-presign:', presignErr);
+              }
+            }
+            await this.wait(delays[attempt]);
+          }
+        }
+        const data = await useHabilitacionesStore().uploadDocumentoProxy({
+          nroSolicitud: nroTramite,
+          nombreDocumento: meta.nombreDocumento,
+          campo: meta.campo,
+          key: current.key,
+          contentType: current.contentType,
+          blob,
+        });
+        return {
+          nombreDocumento: meta.nombreDocumento,
+          url: (data && data.url) || current.url,
+          campo: meta.campo,
+        };
       },
       async onPrintTicket() {
         this.showPopupFormOk = false;

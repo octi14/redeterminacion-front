@@ -48,11 +48,14 @@
         </b-nav-item-dropdown>
 
         <b-nav-item-dropdown v-if="showRecaudacionesMenu" text="Recaudaciones">
-          <b-dropdown-item v-if="adminRecaudaciones" to="/recaudaciones/pagos_dobles/solicitudes">
+          <b-dropdown-item v-if="adminRecaudaciones" to="/tasas/pagos_dobles/solicitudes">
             Pagos dobles
           </b-dropdown-item>
           <b-dropdown-item v-if="canManageBoletas" to="/admin/boletas">
             Administrar boletas
+          </b-dropdown-item>
+          <b-dropdown-item v-if="canManageBoletas || adminHacienda" to="/admin/boletas-urbana">
+            Pago tasa urbana
           </b-dropdown-item>
         </b-nav-item-dropdown>
 
@@ -129,7 +132,7 @@ export default {
       return this.adminComercio || this.adminInspeccion || this.adminArvige
     },
     showRecaudacionesMenu() {
-      return this.adminRecaudaciones || this.canManageBoletas
+      return this.adminRecaudaciones || this.canManageBoletas || this.adminHacienda
     },
     username() {
       return this.userStore.username

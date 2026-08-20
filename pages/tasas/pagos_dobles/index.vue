@@ -1,6 +1,6 @@
 <template>
   <div class="page main-background">
-    <Banner title="Recaudaciones" />
+    <Banner title="Pagos dobles" subtitle="Recaudaciones" />
 
     <div class="col-10 mainCarrousel" style="margin: auto; margin-top: 2rem">
             <b-carousel
@@ -276,7 +276,7 @@ export default {
     proceedToFormAndGo() {
       if (!this.documentCheckboxChecked) return;
       this.proceedToForm();
-      this.$router.push('/recaudaciones/pagos_dobles/form');
+      this.$router.push('/tasas/pagos_dobles/form');
     },
     onSlideStart() {},
     onSlideEnd() {},

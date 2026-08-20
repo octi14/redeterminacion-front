@@ -80,7 +80,7 @@
             </b-form-checkbox>
             <small>
               <b-spinner v-if="configLoading" small class="mr-1"></b-spinner>
-              {{ configLoading ? 'Guardando configuración...' : 'Controla el botón en Recaudaciones y el acceso público a la página de descarga.' }}
+              {{ configLoading ? 'Guardando configuración...' : 'Controla el botón en Tasas y el acceso público a la página de descarga.' }}
             </small>
           </div>
         </div>

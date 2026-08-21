@@ -1166,7 +1166,7 @@ export default {
 }
 
 .combustible-form-hint {
-  color: #6c757d;
+  color: var(--gray-bs-600);
   font-size: 0.9rem;
 }
 
@@ -1189,7 +1189,7 @@ export default {
 .numero-orden-separator {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #333;
+  color: #353535;
 }
 
 .combustible-montos-group {
@@ -1211,7 +1211,7 @@ export default {
 .combustible-monto-currency {
   flex: 0 0 auto;
   font-weight: 600;
-  color: #212529;
+  color: var(--gray-bs-900);
 }
 
 .combustible-monto-remove {
@@ -1228,11 +1228,11 @@ export default {
 
 /* Sección de filtros con color personalizado */
 .filtro-section {
-  background: #b4c0f3 !important;
+  background: var(--gray-bs-100) !important;
   padding: 1rem 0.5rem 1rem 1rem !important;
   border-radius: 3px !important;
-  border: 1px solid #c3cae5 !important;
-  box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
+  border: 1px solid var(--gray-bs-300) !important;
+  box-shadow: 0px 2px 5px 0px var(--shadow-card);
 }
 
 .dashboard-combustible {

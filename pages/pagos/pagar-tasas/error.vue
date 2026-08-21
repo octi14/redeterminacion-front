@@ -33,7 +33,7 @@ export default {
   methods: {
     volver() {
       if (import.meta.client) localStorage.removeItem(STORAGE_KEY)
-      this.$router.push('/pagos/tasa-urbana')
+      this.$router.push('/pagos/pagar-tasas')
     },
   },
 }
@@ -81,7 +81,7 @@ export default {
   margin-bottom: 0.75rem;
 }
 .pn-result-sub {
-  color: #222;
+  color: #212529;
   margin-bottom: 1.25rem;
 }
 .pn-result-btn--error {

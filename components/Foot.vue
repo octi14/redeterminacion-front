@@ -187,7 +187,7 @@ export default {
 }
 
 .footer-contact h6 {
-  color: #f8f9fa !important;
+  color: var(--gray-bs-100) !important;
   font-weight: 400;
   font-size: 1.35rem;
   font-family: 'Roboto', sans-serif;
@@ -199,7 +199,7 @@ export default {
   padding-bottom: 0;
   font-size: 0.85rem;
   font-weight: 400;
-  color: #e9ecef !important;
+  color: var(--gray-bs-200) !important;
   letter-spacing: 0.3px;
   line-height: 1.2;
   font-family: 'Roboto', sans-serif;
@@ -230,10 +230,10 @@ export default {
 }
 
 .footer-contact .map-container {
-  border: 1px solid #dee2e6;
+  border: 1px solid var(--gray-bs-300);
   border-radius: 4px;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px var(--shadow-mid);
   width: 100%;
 }
 
@@ -246,7 +246,7 @@ export default {
 .footer-contact p a,
 .footer-contact p a.text-light,
 .footer-contact a.text-light {
-  color: #e9ecef !important;
+  color: var(--gray-bs-200) !important;
   text-decoration: none !important;
   font-family: 'Roboto', sans-serif !important;
   font-weight: 400 !important;
@@ -258,7 +258,7 @@ export default {
 .footer-contact p a:hover,
 .footer-contact p a.text-light:hover,
 .footer-contact a.text-light:hover {
-  color: #e9ecef !important;
+  color: var(--gray-bs-200) !important;
   text-decoration: none !important;
 }
 
@@ -403,7 +403,7 @@ export default {
 }
 
 .footer-contact small {
-  color: #adb5bd !important;
+  color: var(--gray-bs-500) !important;
   font-size: 0.7rem;
   font-family: 'Roboto', sans-serif;
 }
@@ -416,7 +416,7 @@ export default {
 }
 
 .footer-contact a:hover {
-  color: #20c997 !important;
+  color: #17a2b8 !important;
   text-decoration: underline;
 }
 
@@ -507,7 +507,7 @@ export default {
   .footer-contact .footer-col-departamentos .department-section {
     text-align: center;
     border-left: none;
-    border-top: 1px solid #6c757d;
+    border-top: 1px solid var(--gray-bs-600);
     padding-left: 0;
     padding-top: 1rem;
     margin-top: 0.5rem;
@@ -564,7 +564,7 @@ export default {
 @media (max-width: 768px) {
   .footer-contact .department-section {
     border-left: none;
-    border-top: 1px solid #6c757d;
+    border-top: 1px solid var(--gray-bs-600);
     padding-left: 0;
     padding-top: 10px;
     margin-top: 10px;
@@ -585,7 +585,7 @@ export default {
   padding-bottom: 0;
   font-size: 0.9rem;
   font-weight: 400;
-  color: white !important;
+  color: var(--color-white) !important;
   font-family: 'Roboto', sans-serif;
 }
 

@@ -81,7 +81,7 @@ export default {
     },
     backgroundColor: {
       type: String,
-      default: 'rgba(40, 167, 69, 0.25)'
+      default: '#28a745'
     },
     soloRenovaciones: {
       type: Boolean,
@@ -442,7 +442,7 @@ export default {
 }
 
 .metric-card {
-  background: #f8f9fa;
+  background: var(--gray-bs-100);
 }
 
 .metric-label {

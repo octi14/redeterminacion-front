@@ -8,7 +8,7 @@
         v-model="slide"
         :interval="4000"
         img-width="100%"
-        style="text-shadow: 1px 1px 2px #333;"
+        style="text-shadow: 1px 1px 2px #353535;"
         @sliding-start="onSlideStart"
         @sliding-end="onSlideEnd"
       >
@@ -21,7 +21,7 @@
         v-model="slide"
         :interval="4000"
         img-width="100%"
-        style="text-shadow: 1px 1px 2px #333;"
+        style="text-shadow: 1px 1px 2px #353535;"
         @sliding-start="onSlideStart"
         @sliding-end="onSlideEnd"
       >
@@ -149,7 +149,7 @@ export default {
 .confirmation-popup-body p{
   text-align: center;
   font-size: 1.25rem;
-  color: black;
+  color: var(--color-dark);
 }
 .confirmation-popup-body .form-check{
   margin: auto;
@@ -162,9 +162,9 @@ export default {
 .section-card{
   margin: 1rem 0;
   padding: 0.5rem 0;
-  box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
-  -webkit-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
-  -moz-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
+  box-shadow: 0px 2px 5px 0px var(--shadow-card);
+  -webkit-box-shadow: 0px 2px 5px 0px var(--shadow-card);
+  -moz-box-shadow: 0px 2px 5px 0px var(--shadow-card);
 }
 .section-title {
   color: #0c681a !important;

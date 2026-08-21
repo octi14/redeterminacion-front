@@ -10,9 +10,9 @@
     <MenuItem
       v-if="mostrarPagoUrbana"
       icon="building"
-      to="/pagos/tasa-urbana"
-      title="Pagar tasa urbana"
-      description="Pago de Tasa por Servicios Urbanos (Provincia NET)"
+      to="/pagos/pagar-tasas"
+      title="Pagar tasas"
+      description="Pago online de tasas municipales"
     />
     <div class="page-btn-volver-wrap">
       <NuxtLink to="/">

@@ -132,7 +132,7 @@
 }
 
 .text-title {
-  color: #514e4b !important;
+  color: #505050 !important;
   font-size: 35px;
   margin-left: 3rem;
   font-weight: bold;

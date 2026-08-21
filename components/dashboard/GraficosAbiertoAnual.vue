@@ -176,14 +176,14 @@ export default {
             label: 'Con Facturas',
             data: conFacturas,
             backgroundColor: '#28a745',
-            borderColor: '#1e7e34',
+            borderColor: '#28a745',
             borderWidth: 2
           },
           {
             label: 'Sin Facturas',
             data: sinFacturas,
-            backgroundColor: '#dc3545',
-            borderColor: '#bd2130',
+            backgroundColor: '#e53749',
+            borderColor: '#e53749',
             borderWidth: 2
           }
         ]
@@ -333,9 +333,9 @@ export default {
 
 .periodo-item {
   padding: 1rem;
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--gray-bs-200);
   border-radius: 8px;
-  background: #f8f9fa;
+  background: var(--gray-bs-100);
 }
 
 .progress {
@@ -353,9 +353,9 @@ export default {
 
 .motivo-item {
   padding: 1rem;
-  border: 1px solid #ffeaa7;
+  border: 1px solid #cbc508;
   border-radius: 8px;
-  background: #fff8e1;
+  background: #f0f0f0;
 }
 
 .periodo-count {
@@ -368,12 +368,12 @@ export default {
 }
 
 .badge-warning {
-  background-color: #ffc107;
-  color: #212529;
+  background-color: #cbc508;
+  color: var(--gray-bs-900);
 }
 
 .badge-danger {
-  background-color: #dc3545;
+  background-color: #e53749;
 }
 
 .badge-success {
@@ -386,16 +386,16 @@ export default {
 }
 
 .periodo-tarde {
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--gray-bs-200);
   border-radius: 8px;
-  background: #f8f9fa;
+  background: var(--gray-bs-100);
   transition: all 0.3s ease;
 }
 
 .periodo-tarde:hover {
-  background: #e9ecef;
+  background: var(--gray-bs-200);
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px var(--shadow-mid);
 }
 </style>
 

@@ -204,8 +204,8 @@ export const SITE_NAVIGATION_ITEMS = [
   // —— Tasas ——
   {
     id: 'tasas-tasa-automotor',
-    title: 'Descargar tasa de automotores',
-    description: 'Consultar y descargar boletas de patente de rodados',
+    title: 'Descargar Tasa Automotor',
+    description: 'Consultar y descargar boletas de Automotores por dominio',
     to: '/tasas/tasa-automotor',
     section: 'Tasas',
     aliases: ['patente', 'rodado', 'rodados', 'automotor', 'tasa automotor', 'recaudaciones'],
@@ -213,7 +213,7 @@ export const SITE_NAVIGATION_ITEMS = [
   {
     id: 'tasas-pagos-dobles',
     title: 'Informar pagos dobles',
-    description: 'Realizar un reclamo por pago doble de tasas',
+    description: 'Realizar un reclamo por pago doble de tasa urbana',
     to: '/tasas/pagos_dobles',
     section: 'Tasas',
     aliases: ['pago doble', 'doble pago', 'pago duplicado', 'devolución', 'saldo excedente', 'recaudaciones'],

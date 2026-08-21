@@ -80,14 +80,14 @@ export default {
 
 .menu-item-card {
   padding: 0.25rem 0;
-  border: 1px solid rgba(12, 104, 26, 0.15);
+  border: 1px solid var(--green-fill);
   border-radius: 0.375rem;
   transition: box-shadow 0.2s ease, transform 0.2s ease;
   cursor: pointer;
 }
 
 .menu-item-link:hover .menu-item-card {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 12px var(--shadow-mid);
   transform: translateY(-1px);
 }
 
@@ -110,7 +110,7 @@ export default {
 }
 
 .menu-item-description {
-  color: #6c757d;
+  color: var(--gray-bs-600);
   font-weight: 400;
 }
 

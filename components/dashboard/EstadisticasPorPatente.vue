@@ -289,7 +289,7 @@ export default {
 }
 
 .table-row:hover {
-  background-color: #f8f9fa;
+  background-color: var(--gray-bs-100);
 }
 
 .patente-name {
@@ -300,12 +300,12 @@ export default {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: #e9ecef;
+  background: var(--gray-bs-200);
   display: flex;
   align-items: center;
   justify-content: center;
   margin-right: 0.5rem;
-  color: #6c757d;
+  color: var(--gray-bs-600);
 }
 
 :deep(.badge) {
@@ -314,17 +314,17 @@ export default {
 }
 
 .sin-patente-row {
-  background-color: #fff3cd !important;
-  border-left: 4px solid #ffc107;
+  background-color: #f0f0f0 !important;
+  border-left: 4px solid #cbc508;
 }
 
 .sin-patente-row:hover {
-  background-color: #ffeaa7 !important;
+  background-color: #f0f0f0 !important;
 }
 
 .sin-patente-row .patente-icon {
-  background: #ffc107 !important;
-  color: #856404 !important;
+  background: #cbc508 !important;
+  color: #666666 !important;
 }
 </style>
 

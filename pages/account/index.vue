@@ -3,10 +3,10 @@
     <Banner title="Mi cuenta"/>
     <div class="text-center col-md-4 col-sm-8 card shadow-card mt-4 mx-auto">
       <div class="text-center mt-5">
-        <p class="h4" style="color:#07691c"><b>Cambiar contraseña</b></p>
+        <p class="h4" style="color:#0c681a"><b>Cambiar contraseña</b></p>
       </div> <hr/>
       <b-form class="mt-4" @submit.prevent="onResetPassword" @reset="onCancel">
-        <h6 style="color:#07691c"><b> Contraseña anterior </b></h6>
+        <h6 style="color:#0c681a"><b> Contraseña anterior </b></h6>
         <div class="col-10 mx-auto mb-3 position-relative">
           <b-form-input v-model="oldPassword" :type="visibleOldPass ? 'text' : 'password'"
                         class="position-relative">
@@ -18,7 +18,7 @@
             <i v-else class="far fa-eye"></i>
           </div>
         </div>
-        <h6 style="color:#07691c"><b> Nueva contraseña </b></h6>
+        <h6 style="color:#0c681a"><b> Nueva contraseña </b></h6>
         <div class="col-10 mx-auto mb-3 position-relative">
           <b-form-input v-model="newPassword" :type="visibleNewPass ? 'text' : 'password'"
                         class="position-relative">
@@ -30,7 +30,7 @@
             <i v-else class="far fa-eye"></i>
           </div>
         </div>
-        <h6 style="color:#07691c"><b> Repetir contraseña </b></h6>
+        <h6 style="color:#0c681a"><b> Repetir contraseña </b></h6>
         <div class="col-10 mx-auto mb-3 position-relative">
           <b-form-input v-model="repeatNewPassword" :type="visibleRepeat ? 'text' : 'password'"
                         class="position-relative">

@@ -269,7 +269,7 @@ export default {
             label: 'Trámites Ingresados',
             data: this.tramitesPorMes.map(item => item.cantidad),
             backgroundColor: '#17a2b8',
-            borderColor: '#138496',
+            borderColor: '#17a2b8',
             borderWidth: 2
           }]
         },
@@ -341,8 +341,8 @@ export default {
 
       // Colores predefinidos para los rubros principales
       const coloresDisponibles = [
-        '#28a745', '#17a2b8', '#ffc107', '#dc3545', '#6f42c1',
-        '#fd7e14', '#20c997', '#e83e8c', '#343a40'
+        '#28a745', '#17a2b8', '#ffc107', '#e53749', '#9966FF',
+        '#e27910', '#2196f3', '#e53749', '#353535'
       ]
 
       let colorIndex = 0
@@ -429,13 +429,13 @@ export default {
           datasets: [{
             data: this.tiposSolicitud.map(item => item.value),
             backgroundColor: [
-              '#FF6384',
-              '#36A2EB',
+              '#e53749',
+              '#2196f3',
               '#FFCE56',
-              '#4BC0C0',
+              '#17a2b8',
               '#9966FF',
-              '#FF9F40',
-              '#FF6384',
+              '#ef8918',
+              '#e53749',
               '#C9CBCF'
             ],
             borderWidth: 2,
@@ -507,14 +507,14 @@ export default {
           datasets: [{
             data: this.localidadesSolicitante.map(item => item.value),
             backgroundColor: [
-              '#4BC0C0',
+              '#17a2b8',
               '#9966FF',
-              '#FF9F40',
-              '#FF6384',
-              '#36A2EB',
+              '#ef8918',
+              '#e53749',
+              '#2196f3',
               '#FFCE56',
               '#C9CBCF',
-              '#4BC0C0'
+              '#17a2b8'
             ],
             borderWidth: 2,
             borderColor: '#fff'
@@ -581,7 +581,7 @@ export default {
       // Colores específicos para las regiones
       const regionColors = {
         'Partido de Villa Gesell': '#28a745', // Verde para Villa Gesell
-        'Fuera de Villa Gesell': '#dc3545'    // Rojo para fuera
+        'Fuera de Villa Gesell': '#e53749'    // Rojo para fuera
       }
 
       this.chartRegionesSolicitante = new Chart(ctx, {
@@ -640,14 +640,14 @@ export default {
 
       // Colores específicos para estados
       const estadoColors = {
-        'En revisión': '#36A2EB',
-        'Finalizada': '#4BC0C0',
-        'Rechazada': '#FF6384',
+        'En revisión': '#2196f3',
+        'Finalizada': '#17a2b8',
+        'Rechazada': '#e53749',
         'Rectificación': '#FFCE56',
         'Esperando turno': '#9966FF',
-        'Esperando inspección': '#FF9F40',
-        'Inspeccionado': '#4BC0C0',
-        'Esperando documentación': '#4BC0C0',
+        'Esperando inspección': '#ef8918',
+        'Inspeccionado': '#17a2b8',
+        'Esperando documentación': '#17a2b8',
         'Prórroga 1': '#C9CBCF',
         'Prórroga 2': '#C9CBCF'
       }

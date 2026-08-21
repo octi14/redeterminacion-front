@@ -311,10 +311,10 @@ export default {
     },
     async consultar() {
       if (this.isConsulting) return; // Prevenir múltiples clics
-      
+
       this.enterKeyPressed = true
       this.isConsulting = true
-      
+
       if (!this.nroTramiteIngresado) {
         this.showPopupNoEntry = true
         this.isConsulting = false
@@ -322,7 +322,7 @@ export default {
         this.enterKeyPressed = false
         return
       }
-      
+
       try{
         const nroTramite = this.nroTramiteIngresado
 
@@ -498,11 +498,11 @@ export default {
   }
 
   .modal-warning .modal-subtitle{
-    color: #ddbc04 !important;
+    color: #daa511 !important;
   }
 
   .modal-primary .modal-subtitle{
-    color: #1d96fe !important;
+    color: #2196f3 !important;
   }
 
   .modal-error .centeredContainer{
@@ -510,7 +510,7 @@ export default {
   }
 
   .modal-error p{
-    color: black;
+    color: var(--color-dark);
     font-weight: 500;
     font-size: 1.1rem;
     padding: 0 1rem;
@@ -522,7 +522,7 @@ export default {
   }
 
   .modal-primary p{
-    color: black;
+    color: var(--color-dark);
     font-weight: 500;
     font-size: 1.1rem;
     padding: 0 1rem;
@@ -534,7 +534,7 @@ export default {
   }
 
   .modal-success p{
-    color: black;
+    color: var(--color-dark);
     font-weight: 500;
     font-size: 1.1rem;
     padding: 0 1.5rem;
@@ -554,9 +554,9 @@ export default {
     margin: 2rem auto !important;
     padding: 2rem 4rem;
     border-radius: 1rem;
-    box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
-    -webkit-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
-    -moz-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
+    box-shadow: 0px 2px 5px 0px var(--shadow-card);
+    -webkit-box-shadow: 0px 2px 5px 0px var(--shadow-card);
+    -moz-box-shadow: 0px 2px 5px 0px var(--shadow-card);
   }
   .section-card .btn-container{
     width: fit-content;

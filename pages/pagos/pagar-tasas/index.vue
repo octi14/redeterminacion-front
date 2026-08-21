@@ -2,50 +2,61 @@
   <div class="page main-background urbana-page">
     <Banner title="Pagos" />
 
-    <main class="container py-5">
+    <main
+      class="container py-5 urbana-main"
+      :class="{ 'urbana-main--compact': !(deuda && itemsPagables.length) }"
+    >
       <section v-if="puedeAcceder" class="urbana-card">
         <header class="urbana-header">
           <h1>Pago online de tasas</h1>
           <p>
-            Consultá el saldo, completá los datos del pagador y continuá en Provincia NET.
+            Consultá el saldo, completá los datos del pagador y continuá con el pago.
           </p>
         </header>
 
-        <b-form class="urbana-form" @submit.prevent="iniciarPago">
+        <b-form
+          class="urbana-form"
+          :class="{ 'urbana-form--consulta': !(deuda && itemsPagables.length) }"
+          @submit.prevent="iniciarPago"
+        >
           <div class="form-section">
             <h2>Datos de la cuenta</h2>
-            <div class="cuenta-grid">
-              <b-form-group label="Tipo de tasa *" label-for="tipoTasa" class="mb-0">
-                <b-form-select
-                  id="tipoTasa"
-                  v-model="tipoTasa"
-                  :options="tipoTasaOptions"
-                  required
-                  @change="onTipoTasaChange"
-                />
-              </b-form-group>
-              <b-form-group :label="identificadorLabel + ' *'" label-for="objetoClave" class="mb-0">
-                <div class="clave-row">
-                  <b-form-input
-                    id="objetoClave"
-                    v-model="objetoClave"
-                    required
-                    autocomplete="off"
-                    :placeholder="identificadorPlaceholder"
-                    @input="normalizarClave"
-                    @blur="consultarDeuda"
-                  />
-                  <b-button
-                    variant="outline-success"
-                    :disabled="consultando || !claveValida"
-                    @click="consultarDeuda"
-                  >
-                    <b-spinner v-if="consultando" small></b-spinner>
-                    <span v-else>Consultar</span>
-                  </b-button>
-                </div>
-              </b-form-group>
+            <div class="tasa-tabs" role="tablist" aria-label="Tipo de tasa">
+              <button
+                v-for="opcion in tipoTasaOptions"
+                :key="opcion.value"
+                type="button"
+                class="tasa-tab"
+                :class="{ active: tipoTasa === opcion.value }"
+                role="tab"
+                :aria-selected="tipoTasa === opcion.value"
+                @click="seleccionarTipoTasa(opcion.value)"
+              >
+                <i :class="opcion.value === 'AUTOMOTORES' ? 'bi bi-car-front-fill' : 'bi bi-house-door-fill'" aria-hidden="true"></i>
+                {{ opcion.text }}
+              </button>
             </div>
+            <b-form-group :label="identificadorLabel + ' *'" label-for="objetoClave" class="mb-0">
+              <div class="clave-row">
+                <b-form-input
+                  id="objetoClave"
+                  v-model="objetoClave"
+                  required
+                  autocomplete="off"
+                  :placeholder="identificadorPlaceholder"
+                  @input="normalizarClave"
+                  @blur="consultarDeuda"
+                />
+                <b-button
+                  variant="success"
+                  :disabled="consultando || !claveValida"
+                  @click="consultarDeuda"
+                >
+                  <b-spinner v-if="consultando" small></b-spinner>
+                  <span v-else>Consultar</span>
+                </b-button>
+              </div>
+            </b-form-group>
           </div>
 
           <div v-if="deuda" class="form-section deuda-section">
@@ -54,9 +65,6 @@
               <strong class="deuda-total">{{ formatMoney(saldoSeleccionado) }}</strong>
             </div>
             <div class="deuda-meta">
-              <span v-if="deuda.contribuyente?.nombre">
-                <b>Titular:</b> {{ deuda.contribuyente.nombre }}
-              </span>
               <span v-if="deuda.contribuyente?.domicilio">
                 <b>Domicilio:</b> {{ deuda.contribuyente.domicilio }}
               </span>
@@ -139,7 +147,7 @@
             {{ deudaMsg }}
           </b-alert>
 
-          <div class="form-section">
+          <div v-if="deuda && itemsPagables.length" ref="pagadorSection" class="form-section pagador-section">
             <h2>Datos del pagador</h2>
             <div class="payer-grid">
               <b-form-group label="Nombre *" label-for="first_name" class="mb-0">
@@ -204,7 +212,7 @@
             <i class="bi bi-exclamation-octagon text-danger mr-1"></i>{{ errorMsg }}
           </b-alert>
 
-          <div class="pay-footer">
+          <div v-if="deuda && itemsPagables.length" class="pay-footer">
             <p class="pay-hint mb-0">
               Te vamos a redirigir al sitio seguro de pago en una nueva pestaña.
             </p>
@@ -223,7 +231,7 @@
       <section v-else-if="accesoResuelto" class="urbana-card urbana-card--simple">
         <h1>Acceso restringido</h1>
         <p class="mb-0">
-          El pago de tasa urbana no está disponible en este momento.
+          El pago de tasas no está disponible en este momento.
         </p>
       </section>
 
@@ -346,7 +354,7 @@ export default {
       },
       tipoTasaOptions: [
         { value: 'URBANA', text: 'Tasa urbana' },
-        { value: 'AUTOMOTORES', text: 'Automotor' },
+        { value: 'AUTOMOTORES', text: 'Tasa automotor' },
       ],
       documentTypeOptions: [
         { value: '1', text: 'DNI' },
@@ -420,6 +428,11 @@ export default {
       } finally {
         this.accesoResuelto = true
       }
+    },
+    seleccionarTipoTasa(value) {
+      if (this.tipoTasa === value) return
+      this.tipoTasa = value
+      this.onTipoTasaChange()
     },
     onTipoTasaChange() {
       this.objetoClave = ''
@@ -521,6 +534,9 @@ export default {
           .filter((item) => !this.esPeriodoVencido(item))
           .map((item) => item.id)
         this.deudaMsg = ''
+        this.$nextTick(() => {
+          this.$refs.pagadorSection?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+        })
       } catch (e) {
         this.deudaMsg =
           e?.response?.data?.message ||
@@ -608,7 +624,15 @@ export default {
 
 <style scoped>
 .urbana-page {
-  min-height: 100vh;
+  height: auto;
+  min-height: 0;
+}
+.urbana-main--compact {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+.urbana-form--consulta {
+  padding-bottom: 1.15rem;
 }
 
 .urbana-card {
@@ -616,7 +640,7 @@ export default {
   margin: 0 auto;
   border-radius: 1rem;
   background: #fff;
-  box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 2px 5px 0px var(--shadow-card);
   overflow: hidden;
 }
 .urbana-card--simple {
@@ -635,8 +659,8 @@ export default {
 
 .urbana-header {
   padding: 1.75rem 2rem 1.35rem;
-  border-bottom: 1px solid #e2ebe4;
-  background: #f7fbf8;
+  border-bottom: 1px solid #dee2e6;
+  background: var(--green-fill);
 }
 .urbana-header h1 {
   margin: 0 0 0.55rem;
@@ -664,10 +688,40 @@ export default {
   font-size: 1.15rem;
   font-weight: bold;
 }
-.cuenta-grid {
+.tasa-tabs {
   display: grid;
-  grid-template-columns: 1fr 1.4fr;
-  gap: 1rem 1.15rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem;
+  margin-bottom: 1rem;
+}
+.tasa-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 2.75rem;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid #dee2e6;
+  border-radius: 10px;
+  background: var(--color-white);
+  color: #353535;
+  font-family: var(--font-inter);
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+}
+.tasa-tab i {
+  font-size: 1.1rem;
+  color: #0c681a;
+}
+.tasa-tab.active {
+  border-color: #0c681a;
+  background: #0c681a;
+  color: var(--color-white);
+}
+.tasa-tab.active i {
+  color: var(--color-white);
 }
 .clave-row {
   display: flex;
@@ -680,9 +734,9 @@ export default {
 
 .deuda-section {
   padding: 1rem 1.1rem;
-  border: 1px solid #e2ebe4;
+  border: 1px solid #dee2e6;
   border-radius: 0.85rem;
-  background: #f7fbf8;
+  background: var(--green-fill);
 }
 .deuda-header {
   display: flex;
@@ -709,11 +763,11 @@ export default {
 .deuda-group + .deuda-group {
   margin-top: 1.1rem;
   padding-top: 1rem;
-  border-top: 1px solid #e2ebe4;
+  border-top: 1px solid #dee2e6;
 }
 .deuda-group-title {
   margin: 0 0 0.55rem;
-  color: #173e32;
+  color: #0c681a;
   font-size: 0.95rem;
   font-weight: 700;
 }
@@ -730,7 +784,7 @@ export default {
 .deuda-help-icon {
   flex-shrink: 0;
   margin-top: 0.15rem;
-  color: #e27910;
+  color: #E27910;
   font-size: 1rem;
 }
 .deuda-group-help a {
@@ -739,13 +793,13 @@ export default {
   text-decoration: underline;
 }
 .deuda-group--info .deuda-group-title {
-  color: #e27910;
+  color: #E27910;
 }
 .deuda-empty {
   padding: 0.85rem 0.95rem;
   border-radius: 0.65rem;
   background: #fff;
-  border: 1px dashed #e2ebe4;
+  border: 1px dashed #dee2e6;
   color: #666666;
   font-weight: 600;
 }
@@ -760,7 +814,7 @@ export default {
   gap: 0.75rem;
   align-items: center;
   padding: 0.7rem 0.85rem;
-  border: 1px solid #e2ebe4;
+  border: 1px solid #dee2e6;
   border-radius: 0.65rem;
   background: #fff;
   cursor: pointer;
@@ -776,7 +830,7 @@ export default {
   gap: 0.15rem;
 }
 .deuda-item-body strong {
-  color: #173e32;
+  color: #0c681a;
 }
 .deuda-item-body small {
   color: #666666;
@@ -787,7 +841,7 @@ export default {
 }
 .deuda-item-amount {
   font-weight: 700;
-  color: #173e32;
+  color: #0c681a;
 }
 .deuda-vencidos {
   list-style: none;
@@ -804,13 +858,13 @@ export default {
   align-items: center;
   padding: 0.65rem 0.85rem;
   border-radius: 0.65rem;
-  background: #f0f0f0;
+  background: var(--gray-bs-200);
   border: 1px solid #dee2e6;
 }
 .deuda-vencido-row .deuda-item-body strong,
 .deuda-vencido-row .deuda-item-body small,
 .deuda-vencido-row .deuda-item-amount {
-  color: #9aa0a6;
+  color: #6c757d;
 }
 .deuda-vencido-row .deuda-item-amount {
   font-weight: 600;
@@ -824,6 +878,9 @@ export default {
 .payer-field--full {
   grid-column: 1 / -1;
 }
+.pagador-section {
+  scroll-margin-top: 1rem;
+}
 
 .pay-footer {
   display: flex;
@@ -831,7 +888,7 @@ export default {
   justify-content: space-between;
   gap: 1.25rem;
   padding-top: 0.35rem;
-  border-top: 1px solid #e2ebe4;
+  border-top: 1px solid #dee2e6;
 }
 .pay-hint {
   color: #666;
@@ -889,7 +946,7 @@ export default {
 }
 .pn-redirect-title {
   margin: 0 0 1.15rem;
-  color: #198754;
+  color: #0c681a;
   font-size: 1.15rem;
   font-weight: 700;
   line-height: 1.35;
@@ -915,7 +972,7 @@ export default {
   margin-bottom: 0;
 }
 .pn-redirect-list i {
-  color: #ffc107;
+  color: #E27910;
   font-size: 1.05rem;
   line-height: 1.45;
   flex-shrink: 0;
@@ -950,7 +1007,6 @@ export default {
   .urbana-header h1 {
     font-size: 1.65rem;
   }
-  .cuenta-grid,
   .payer-grid {
     grid-template-columns: 1fr;
   }

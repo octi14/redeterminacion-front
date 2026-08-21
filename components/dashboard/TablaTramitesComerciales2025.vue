@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="tabla-tramites-comerciales-2025">
     <b-card class="mb-4 shadow-sm">
       <template #header>
@@ -354,13 +354,13 @@ export default {
 }
 
 .tramites-table th {
-  background-color: #f8f9fa;
+  background-color: var(--gray-bs-100);
   font-weight: 600;
-  border-bottom: 2px solid #dee2e6;
+  border-bottom: 2px solid var(--gray-bs-300);
 }
 
 .tramites-table tbody tr:hover {
-  background-color: #f1f3f5;
+  background-color: var(--gray-bs-200);
   transition: background-color 0.2s;
 }
 </style>

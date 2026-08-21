@@ -5,12 +5,23 @@
     <main v-if="puedeVerModulo" class="container py-5">
       <section class="search-card">
         <div class="search-copy">
-          <span class="eyebrow">Boletas de Automotores</span>
-          <h1>Consultá tus períodos disponibles</h1>
-          <p>Ingresá el dominio sin espacios. Después podrás elegir qué boletas descargar.</p>
+          <span class="eyebrow">Tasas municipales</span>
+          <h1>Descargá tus boletas de tasa automotor</h1>
+          <p>Consultá los períodos disponibles y descargá las boletas de pago.</p>
         </div>
         <form class="domain-form" @submit.prevent="buscar">
-          <label for="dominio">Dominio del vehículo</label>
+          <label for="dominio">
+            <i class="bi bi-caret-right-fill" aria-hidden="true"></i>
+            Ingresá el dominio de tu vehículo sin espacios
+            <button
+              type="button"
+              class="help-btn"
+              title="Ejemplo: ABC123 o AB123CD. Sin espacios ni guiones."
+              aria-label="Ayuda sobre el dominio"
+            >
+              <i class="bi bi-question-circle"></i>
+            </button>
+          </label>
           <div class="domain-input">
             <i class="bi bi-car-front-fill"></i>
             <input
@@ -18,14 +29,14 @@
               v-model="dominio"
               maxlength="9"
               autocomplete="off"
-              placeholder="Ejemplo: AB123CD"
+              placeholder="AB123CD"
               :disabled="buscando || descargando"
               @input="normalizarDominio"
             >
           </div>
           <button class="btn btn-search" type="submit" :disabled="!dominioValido || buscando || descargando">
             <b-spinner v-if="buscando" small class="mr-2"></b-spinner>
-            <i v-else class="bi bi-search mr-2"></i>
+            <i v-else class="bi bi-download mr-2"></i>
             {{ buscando ? 'Buscando...' : 'Buscar boletas' }}
           </button>
         </form>
@@ -38,110 +49,122 @@
       <section v-if="resultado" class="periods-card">
         <div class="vehicle-heading">
           <div class="vehicle-icon"><i class="bi bi-car-front-fill"></i></div>
-          <div>
+          <div class="vehicle-copy">
             <span>Dominio</span>
             <h2>{{ resultado.dominio }}</h2>
-            <p>{{ descripcionVehiculo }}</p>
+            <p v-if="descripcionVehiculo">{{ descripcionVehiculo }}</p>
           </div>
-          <button class="btn btn-link" type="button" :disabled="descargando" @click="limpiar">
+          <button class="btn btn-other-domain" type="button" :disabled="descargando" @click="limpiar">
+            <i class="bi bi-search mr-2"></i>
             Buscar otro dominio
           </button>
         </div>
 
-        <div class="periods-heading">
-          <div>
-            <h3>Seleccioná los períodos</h3>
+        <div class="periods-body">
+          <div class="periods-heading">
+            <h3>Seleccioná los períodos a descargar</h3>
+            <p>Podés seleccionar hasta {{ maxPeriodosSeleccionados }} períodos a la vez.</p>
           </div>
-          <b-form-checkbox
-            :checked="todosSeleccionados"
-            :indeterminate="algunosSeleccionados"
-            :disabled="descargando"
-            @change="seleccionarTodos"
-          >
-            {{ resultado.periodos.length > maxPeriodosSeleccionados ? 'Seleccionar máximo permitido' : 'Seleccionar todos' }}
-          </b-form-checkbox>
-        </div>
 
-        <div class="period-toolbar">
-          <b-form-select v-model="ordenCampo" size="sm" :disabled="descargando">
-            <option value="periodo">Ordenar por período</option>
-            <option value="importe">Ordenar por importe</option>
-          </b-form-select>
-          <button class="btn btn-outline-success btn-sm" type="button" :disabled="descargando" @click="ordenDescendente = !ordenDescendente">
-            <i :class="ordenDescendente ? 'bi bi-sort-down' : 'bi bi-sort-up'"></i>
-            {{ ordenDescendente ? 'Descendente' : 'Ascendente' }}
-          </button>
-          <span>{{ periodosOrdenados.length }} períodos disponibles</span>
-        </div>
-
-        <div class="period-grid">
-          <label
-            v-for="periodo in periodosPaginados"
-            :key="periodo.periodo"
-            class="period-card"
-            :class="{ selected: seleccionados.includes(periodo.periodo), disabled: descargando }"
-          >
-            <input
-              type="checkbox"
-              :checked="seleccionados.includes(periodo.periodo)"
+          <div class="period-toolbar">
+            <b-form-select v-model="ordenCampo" size="sm" :disabled="descargando">
+              <option value="periodo">Ordenar por período</option>
+              <option value="importe">Ordenar por importe</option>
+            </b-form-select>
+            <button
+              class="btn btn-sort"
+              type="button"
               :disabled="descargando"
-              @change="cambiarSeleccion(periodo.periodo, $event.target.checked)"
+              :title="ordenDescendente ? 'Orden descendente' : 'Orden ascendente'"
+              @click="ordenDescendente = !ordenDescendente"
             >
-            <div class="period-check"><i class="bi bi-check-lg"></i></div>
-            <div class="period-main">
-              <span>Cuota {{ String(periodo.cuota).padStart(2, '0') }}</span>
-              <strong>{{ periodo.periodo }}</strong>
-            </div>
-            <div class="period-amount">
-              <span>Importe</span>
-              <strong>{{ formatMoney(periodo.importeCentavos) }}</strong>
-            </div>
-            <small>{{ vencimientoLabel(periodo) }}</small>
-          </label>
-        </div>
+              <i :class="ordenDescendente ? 'bi bi-sort-down' : 'bi bi-sort-up'"></i>
+            </button>
+            <label class="select-all" :class="{ disabled: descargando }">
+              <input
+                type="checkbox"
+                :checked="todosSeleccionados"
+                :disabled="descargando"
+                @change="seleccionarTodos($event.target.checked)"
+              >
+              Seleccionar todos
+            </label>
+          </div>
 
-        <div v-if="paginasPeriodos > 1" class="period-pagination">
-          <span>Mostrando {{ primeraFilaPeriodo }}-{{ ultimaFilaPeriodo }} de {{ periodosOrdenados.length }}</span>
-          <b-pagination
-            v-model="paginaPeriodos"
-            :total-rows="periodosOrdenados.length"
-            :per-page="periodosPorPagina"
-            size="sm"
-            class="mb-0"
-          ></b-pagination>
+          <div class="period-grid">
+            <label
+              v-for="periodo in periodosPaginados"
+              :key="periodo.periodo"
+              class="period-card"
+              :class="{ selected: seleccionados.includes(periodo.periodo), disabled: descargando }"
+            >
+              <input
+                type="checkbox"
+                :checked="seleccionados.includes(periodo.periodo)"
+                :disabled="descargando"
+                @change="cambiarSeleccion(periodo.periodo, $event.target.checked)"
+              >
+              <div class="period-main">
+                <span>Cuota {{ String(periodo.cuota).padStart(2, '0') }}</span>
+                <strong>{{ periodo.periodo }}</strong>
+                <small>Consultá el vencimiento una vez descargada la boleta</small>
+              </div>
+              <div class="period-amount">
+                <span>Importe</span>
+                <strong>{{ formatMoney(periodo.importeCentavos) }}</strong>
+              </div>
+            </label>
+          </div>
+
+          <div v-if="paginasPeriodos > 1" class="period-pagination">
+            <span>Mostrando {{ primeraFilaPeriodo }}-{{ ultimaFilaPeriodo }} de {{ periodosOrdenados.length }}</span>
+            <b-pagination
+              v-model="paginaPeriodos"
+              :total-rows="periodosOrdenados.length"
+              :per-page="periodosPorPagina"
+              size="sm"
+              class="mb-0"
+            ></b-pagination>
+          </div>
         </div>
 
         <div class="download-bar">
           <div>
-            <span>Se descargará un único archivo PDF con todos los períodos seleccionados.</span>
+            <strong>{{ seleccionados.length }} de {{ maxPeriodosSeleccionados }} períodos seleccionados</strong>
+            <span>Las boletas se descargarán en un único archivo pdf y podrá incluir hasta dos talones de pago por página.</span>
           </div>
           <div class="download-actions">
             <button class="btn btn-download" :disabled="!seleccionados.length || descargando" @click="descargar">
               <b-spinner v-if="descargando" small class="mr-2"></b-spinner>
-              <i v-else class="bi bi-file-earmark-pdf-fill mr-2"></i>
-              {{ descargando ? 'Generando PDF...' : 'Descargar boletas' }}
+              <i v-else class="bi bi-download mr-2"></i>
+              {{ descargando ? 'Generando PDF...' : 'Descargar boleta' }}
             </button>
             <a class="btn btn-pay" href="http://arvige.gob.ar/lpagos">
-              <i class="bi bi-credit-card-fill mr-2"></i>
               Ir a pagar
             </a>
           </div>
         </div>
       </section>
 
-      <div class="text-center mt-4">
-        <b-button variant="primary" :disabled="buscando || descargando" @click="$router.push('/tasas')">Volver</b-button>
+      <div class="page-btn-volver-wrap">
+        <NuxtLink to="/tasas">
+          <b-button variant="primary" size="sm" class="page-btn-volver" :disabled="buscando || descargando">
+            Volver
+          </b-button>
+        </NuxtLink>
       </div>
     </main>
     <main v-else class="container py-5">
       <section class="search-card unavailable-card">
         <div class="search-copy">
-          <span class="eyebrow">Boletas de Automotores</span>
+          <span class="eyebrow">Tasas municipales</span>
           <h1>Servicio no disponible</h1>
           <p>La descarga de tasa automotor no se encuentra disponible en este momento.</p>
         </div>
-        <div class="text-center">
-          <b-button variant="primary" @click="$router.push('/tasas')">Volver</b-button>
+        <div class="page-btn-volver-wrap">
+          <NuxtLink to="/tasas">
+            <b-button variant="primary" size="sm" class="page-btn-volver">Volver</b-button>
+          </NuxtLink>
         </div>
       </section>
     </main>
@@ -151,19 +174,25 @@
       centered
       hide-header
       hide-footer
+      no-header-close
       no-close-on-backdrop
       no-close-on-esc
       modal-class="automotor-wait-modal"
     >
-      <div class="wait-content" role="status" aria-live="polite">
-        <div class="wait-spinner">
-          <b-spinner label="Esperando respuesta del servidor"></b-spinner>
+      <div class="wait-dialog">
+        <div class="wait-dialog-bar">
+          <button type="button" class="btn-close btn-close-white" aria-label="Cerrar" disabled></button>
         </div>
-        <span class="eyebrow">{{ descargando ? 'Preparando descarga' : 'Consultando boletas' }}</span>
-        <h3>{{ mensajeEspera }}</h3>
-        <p>{{ detalleEspera }}</p>
-        <b-progress :value="100" animated height="7px"></b-progress>
-        <small>No cierres esta ventana mientras completamos la operación.</small>
+        <div class="wait-content" role="status" aria-live="polite">
+          <b-spinner
+            class="wait-spinner"
+            variant="success"
+            label="Esperando respuesta del servidor"
+          ></b-spinner>
+          <h3>{{ mensajeEspera }}</h3>
+          <p>{{ detalleEspera }}</p>
+          <small>No cierres esta ventana mientras completamos la operación</small>
+        </div>
       </div>
     </b-modal>
   </div>
@@ -208,13 +237,10 @@ export default {
     descripcionVehiculo() {
       if (!this.resultado) return ''
       const vehiculo = this.resultado.vehiculo || {}
-      return [vehiculo.marca, vehiculo.modelo, vehiculo.anioModelo].filter(Boolean).join(' · ')
+      return [vehiculo.marca, vehiculo.modelo, vehiculo.anioModelo].filter(Boolean).join(' - ')
     },
     todosSeleccionados() {
       return Boolean(this.resultado && this.seleccionados.length === Math.min(this.resultado.periodos.length, this.maxPeriodosSeleccionados))
-    },
-    algunosSeleccionados() {
-      return this.seleccionados.length > 0 && !this.todosSeleccionados
     },
     operacionActiva() {
       return this.buscando || this.descargando
@@ -224,8 +250,8 @@ export default {
     },
     detalleEspera() {
       return this.descargando
-        ? `Preparando ${this.seleccionados.length} ${this.seleccionados.length === 1 ? 'boleta' : 'boletas'}. Esto puede demorar unos segundos.`
-        : `Consultando el dominio ${this.dominio}.`
+        ? `Preparando ${this.seleccionados.length} ${this.seleccionados.length === 1 ? 'boleta' : 'boletas'}`
+        : `Consultando boleta para el dominio ${this.dominio}`
     },
     periodosOrdenados() {
       if (!this.resultado) return []
@@ -357,11 +383,6 @@ export default {
     formatMoney(centavos) {
       return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format((centavos || 0) / 100)
     },
-    vencimientoLabel(periodo) {
-      const first = periodo.vencimientos && periodo.vencimientos.find(item => item.orden === 1)
-      if (!first) return 'Consultar vencimiento en la boleta'
-      return `1er vencimiento: ${new Intl.DateTimeFormat('es-AR', { timeZone: 'UTC' }).format(new Date(first.fecha))}`
-    },
     authHeaders() {
       const token = useUserStore().token
       return token ? { Authorization: `Bearer ${token}` } : {}
@@ -371,73 +392,424 @@ export default {
 </script>
 
 <style scoped>
-.automotor-page { min-height: 100vh; }
-.search-card, .periods-card { max-width: 1040px; margin: 0 auto; border-radius: 24px; background: white; box-shadow: 0 18px 55px rgba(23, 74, 58, .12); }
-.search-card { display: grid; grid-template-columns: 1.15fr .85fr; gap: 3rem; padding: 3rem; background: linear-gradient(135deg, #fff 60%, #edf8f3); }
-.eyebrow { color: #16805e; font-size: .75rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
-.search-copy h1 { margin: .6rem 0 1rem; color: #173e32; font-weight: 800; }
-.search-copy p, .periods-heading p, .vehicle-heading p { margin: 0; color: #71837d; }
-.unavailable-card { align-items: center; }
-.domain-form label { color: #264b40; font-weight: 700; }
-.domain-input { display: flex; align-items: center; border: 2px solid #dcebe5; border-radius: 14px; background: white; transition: .2s; }
-.domain-input:focus-within { border-color: #14835e; box-shadow: 0 0 0 4px rgba(20, 131, 94, .1); }
-.domain-input i { padding-left: 1rem; color: #14835e; font-size: 1.25rem; }
-.domain-input input { width: 100%; border: 0; outline: 0; padding: .95rem; background: transparent; color: #173e32; font-size: 1.2rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-.btn-search, .btn-download { border: 0; border-radius: 12px; color: white; background: linear-gradient(135deg, #14835e, #075e4a); font-weight: 700; }
-.btn-search { width: 100%; margin-top: 1rem; padding: .85rem; }
-.result-alert { max-width: 1040px; margin: 1.5rem auto 0; border-radius: 12px; }
-.periods-card { margin-top: 2rem; overflow: hidden; }
-.vehicle-heading { display: flex; align-items: center; gap: 1rem; padding: 2rem 2.5rem; background: #f1f9f5; }
-.vehicle-heading h2 { margin: 0; color: #173e32; font-weight: 800; letter-spacing: .08em; }
-.vehicle-heading .btn { margin-left: auto; color: #147a59; font-weight: 700; }
-.vehicle-icon { width: 62px; height: 62px; display: grid; place-items: center; border-radius: 18px; color: white; background: #14835e; font-size: 1.7rem; }
-.periods-heading { display: flex; justify-content: space-between; align-items: center; padding: 2rem 2.5rem 1rem; }
-.periods-heading h3 { margin: 0 0 .25rem; color: #173e32; font-weight: 800; }
-.period-toolbar, .period-pagination { display: flex; align-items: center; justify-content: flex-end; gap: .65rem; padding: 0 2.5rem 1rem; }
-.period-toolbar .custom-select { width: 190px; }
-.period-toolbar span, .period-pagination span { margin-right: auto; color: #71837d; font-size: .78rem; font-weight: 700; }
-.period-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; padding: 1rem 2.5rem 2.5rem; }
-.period-card { position: relative; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 1rem; margin: 0; padding: 1.15rem; border: 2px solid #e3eee9; border-radius: 16px; cursor: pointer; transition: .2s; }
-.period-card:hover, .period-card.selected { border-color: #16805e; background: #f3fbf7; transform: translateY(-2px); }
-.period-card.disabled { cursor: wait; opacity: .7; }
-.period-card input { position: absolute; opacity: 0; }
-.period-check { width: 28px; height: 28px; display: grid; place-items: center; border: 2px solid #cadbd4; border-radius: 8px; color: transparent; }
-.period-card.selected .period-check { border-color: #16805e; color: white; background: #16805e; }
-.period-main, .period-amount { display: flex; flex-direction: column; }
-.period-main span, .period-amount span, .period-card small { color: #7d8e88; font-size: .75rem; }
-.period-main strong, .period-amount strong { color: #24483d; }
-.period-amount { text-align: right; }
-.period-card small { grid-column: 2 / 4; }
-.period-pagination { justify-content: space-between; border-top: 1px solid #e8f0ec; padding-top: 1rem; }
-.download-bar { display: flex; justify-content: space-between; align-items: center; padding: 1.4rem 2.5rem; background: #173e32; color: white; }
-.download-bar > div:first-child { display: flex; flex-direction: column; }
-.download-bar span { color: #b9d0c7; font-size: .85rem; }
-.btn-download { padding: .8rem 1.25rem; background: #ef8918; }
-.download-actions { display: flex; align-items: center; gap: .75rem; }
-.btn-pay { padding: .8rem 1.25rem; border: 1px solid rgba(255, 255, 255, .4); border-radius: 12px; color: white; background: transparent; font-weight: 700; }
-.btn-pay:hover { color: #173e32; background: white; }
-.btn:disabled { cursor: not-allowed; opacity: .6; }
+.automotor-page {
+  min-height: 100vh;
+}
+.search-card,
+.periods-card {
+  max-width: 1040px;
+  margin: 0 auto;
+  border-radius: 24px;
+  background: var(--color-white);
+  box-shadow: 0px 2px 5px 0px var(--shadow-card);
+}
+.search-card {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 3rem;
+  align-items: center;
+  padding: 2.75rem 3rem;
+  margin: 0 auto 1.5rem;
+}
+.unavailable-card {
+  grid-template-columns: 1fr;
+}
+.eyebrow {
+  color: #0c681a;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.search-copy h1 {
+  margin: 0.45rem 0 0.75rem;
+  color: #0c681a;
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+.search-copy p,
+.periods-heading p,
+.vehicle-copy p {
+  margin: 0;
+  color: #666;
+}
+.domain-form label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.65rem;
+  color: #353535;
+  font-weight: 600;
+}
+.domain-form label .bi-caret-right-fill {
+  color: #E27910;
+  font-size: 0.85rem;
+}
+.help-btn {
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #6c757d;
+  line-height: 1;
+}
+.domain-input {
+  display: flex;
+  align-items: center;
+  border: 1px solid #dee2e6;
+  border-radius: 10px;
+  background: var(--color-white);
+}
+.domain-input:focus-within {
+  border-color: #0c681a;
+  box-shadow: 0 0 0 3px var(--green-fill);
+}
+.domain-input i {
+  padding-left: 0.9rem;
+  color: #0c681a;
+  font-size: 1.15rem;
+}
+.domain-input input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  padding: 0.85rem 0.9rem;
+  background: transparent;
+  color: #353535;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.btn-search,
+.btn-other-domain {
+  border: 0;
+  border-radius: 10px;
+  color: var(--color-white);
+  font-weight: 700;
+}
+.btn-search {
+  width: 100%;
+  margin-top: 0.85rem;
+  padding: 0.75rem 1rem;
+  background: #19a02d;
+}
+.btn-other-domain {
+  background: #0c681a;
+}
+.btn-search:hover {
+  background: #0c681a;
+  color: var(--color-white);
+}
+.btn-other-domain:hover {
+  background: #0c681a;
+  color: var(--color-white);
+  filter: brightness(0.95);
+}
+.result-alert {
+  max-width: 1040px;
+  margin: 1.5rem auto 0;
+  border-radius: 12px;
+}
+.periods-card {
+  overflow: hidden;
+}
+.vehicle-heading {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem 2rem;
+  background: var(--green-fill);
+}
+.vehicle-copy span {
+  color: #666;
+  font-size: 0.75rem;
+}
+.vehicle-copy h2 {
+  margin: 0;
+  color: #0c681a;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+.vehicle-copy p {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+}
+.vehicle-icon {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  color: var(--color-white);
+  background: #0c681a;
+  font-size: 1.4rem;
+}
+.btn-other-domain {
+  margin-left: auto;
+  padding: 0.55rem 1rem;
+  white-space: nowrap;
+}
+.periods-body {
+  padding: 1.75rem 2rem 1.5rem;
+}
+.periods-heading h3 {
+  margin: 0 0 0.35rem;
+  color: #0c681a;
+  font-weight: 800;
+}
+.period-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin: 1.25rem 0 1rem;
+}
+.period-toolbar .form-select,
+.period-toolbar :deep(.form-select) {
+  width: 220px;
+  border: 1px solid #6c757d;
+  border-radius: 8px;
+}
+.btn-sort {
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1px solid #0c681a;
+  border-radius: 8px;
+  color: #0c681a;
+  background: var(--color-white);
+}
+.select-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0 0 0 auto;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid #6c757d;
+  border-radius: 8px;
+  background: #dee2e6;
+  color: #6c757d;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.select-all.disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+.select-all input {
+  accent-color: #0c681a;
+}
+.period-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.85rem;
+}
+.period-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: start;
+  gap: 0.85rem;
+  margin: 0;
+  padding: 1rem 1.1rem;
+  border: 1px solid #6c757d;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: var(--font-montserrat);
+}
+.period-card:hover,
+.period-card.selected {
+  border-color: #0c681a;
+}
+.period-card.selected {
+  background: var(--green-fill);
+}
+.period-card.disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+.period-card input {
+  margin-top: 0.2rem;
+  accent-color: #0c681a;
+}
+.period-main,
+.period-amount {
+  display: flex;
+  flex-direction: column;
+}
+.period-main span,
+.period-amount span,
+.period-main small {
+  color: #666;
+  font-size: 0.75rem;
+}
+.period-main strong {
+  color: #0c681a;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+.period-main small {
+  margin-top: 0.35rem;
+}
+.period-amount {
+  text-align: right;
+}
+.period-amount strong {
+  color: #0c681a;
+  font-weight: 800;
+}
+.period-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid #dee2e6;
+  color: #666;
+  font-size: 0.78rem;
+}
+.download-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.35rem 2rem;
+  background: #0c681a;
+  color: var(--color-white);
+}
+.download-bar > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.download-bar strong {
+  font-size: 1.05rem;
+}
+.download-bar span {
+  color: var(--color-white);
+  font-size: 0.82rem;
+  opacity: 0.9;
+}
+.download-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.btn-download,
+.btn-pay {
+  padding: 0.7rem 1.15rem;
+  border: 0;
+  border-radius: 8px;
+  color: var(--color-white);
+  background: #E27910;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.btn-download:hover,
+.btn-pay:hover {
+  color: var(--color-white);
+  background: #E27910;
+  filter: brightness(0.95);
+}
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
 @media (max-width: 767px) {
-  .search-card { grid-template-columns: 1fr; gap: 1.5rem; padding: 1.5rem; }
-  .vehicle-heading, .periods-heading, .download-bar { align-items: flex-start; padding: 1.25rem; }
-  .vehicle-heading { flex-wrap: wrap; }
-  .vehicle-heading .btn { width: 100%; margin-left: 0; padding-left: 0; text-align: left; }
-  .periods-heading, .download-bar { flex-direction: column; gap: 1rem; }
-  .period-toolbar, .period-pagination { align-items: stretch; flex-direction: column; padding: 0 1.25rem 1rem; }
-  .period-toolbar .custom-select, .period-toolbar .btn { width: 100%; }
-  .period-grid { grid-template-columns: 1fr; padding: 1rem 1.25rem 1.5rem; }
-  .download-actions { width: 100%; flex-direction: column; align-items: stretch; }
-  .btn-download, .btn-pay { width: 100%; }
+  .search-card {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
+  .vehicle-heading,
+  .periods-body,
+  .download-bar {
+    padding: 1.25rem;
+  }
+  .vehicle-heading {
+    flex-wrap: wrap;
+  }
+  .btn-other-domain {
+    width: 100%;
+    margin-left: 0;
+  }
+  .period-toolbar,
+  .download-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .period-toolbar .form-select,
+  .period-toolbar :deep(.form-select),
+  .select-all {
+    width: 100%;
+    margin-left: 0;
+  }
+  .period-grid {
+    grid-template-columns: 1fr;
+  }
+  .download-actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 </style>
 
 <style>
-.automotor-wait-modal .modal-content { overflow: hidden; border: 0; border-radius: 22px; box-shadow: 0 28px 75px rgba(15, 50, 40, .25); }
+.automotor-wait-modal .modal-content {
+  overflow: hidden;
+  border: 0;
+  border-radius: 16px;
+  box-shadow: 0px 2px 5px 0px var(--shadow-card);
+}
+.automotor-wait-modal .modal-header,
+.automotor-wait-modal .modal-content > .btn-close {
+  display: none;
+}
 .automotor-wait-modal .modal-body { padding: 0; }
-.wait-content { padding: 2.5rem; color: #173e32; text-align: center; }
-.wait-spinner { width: 82px; height: 82px; margin: 0 auto 1.25rem; display: grid; place-items: center; border-radius: 50%; color: #14835e; background: #e3f6ee; }
-.wait-spinner .spinner-border { width: 2.7rem; height: 2.7rem; }
-.wait-content h3 { margin: .65rem 0; font-weight: 800; }
-.wait-content p { margin-bottom: 1.4rem; color: #71837d; }
-.wait-content small { display: block; margin-top: .8rem; color: #84938e; }
+.wait-dialog-bar {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  min-height: 3.15rem;
+  padding: 0.45rem 0.85rem;
+  background: #19a02d;
+}
+.wait-dialog-bar .btn-close { justify-self: end; }
+.wait-content {
+  padding: 1.75rem 1.6rem 1.7rem;
+  text-align: center;
+  font-family: var(--font-inter);
+}
+.wait-spinner {
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: 0.35rem auto 1.15rem;
+  color: #19a02d;
+}
+.wait-content h3 {
+  margin: 0 auto 0.85rem;
+  max-width: 22rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #dee2e6;
+  color: #0c681a;
+  font-family: var(--font-montserrat);
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+.wait-content p {
+  margin: 0 0 0.85rem;
+  color: #353535;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.wait-content small {
+  display: block;
+  max-width: 16rem;
+  margin: 0 auto;
+  color: #666;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
 </style>

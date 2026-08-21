@@ -14,10 +14,7 @@ $shadow-mid: rgba(0, 0, 0, 0.12);
 $shadow-hover: rgba(0, 0, 0, 0.15);
 $shadow-card: rgba(0, 0, 0, 0.75);
 
-// RGBA cromáticos (mint / azul / info). Target ~13 literales.
-$mint-shadow-soft: rgba(34, 76, 63, 0.08);
-$mint-shadow-mid: rgba(7, 94, 74, 0.25);
-$mint-focus: rgba(20, 131, 94, 0.1);
+// RGBA cromáticos (azul / info / verde).
 $blue-focus: rgba(0, 123, 255, 0.25);
 $blue-glow: rgba(0, 123, 255, 0.35);
 $info-glow: rgba(23, 162, 184, 0.35);
@@ -25,12 +22,6 @@ $primary-focus: rgba(42, 67, 161, 0.2);
 $green-fill: rgba(12, 104, 26, 0.12);
 $green-focus: rgba(40, 167, 69, 0.25);
 $green-glow: rgba(40, 167, 69, 0.3);
-
-// Velos blancos. Las páginas de boletas / tasa-automotor no inventan rgba.
-$white-veil-soft: rgba(255, 255, 255, 0.08);
-$white-veil-mid: rgba(255, 255, 255, 0.28);
-$white-veil-strong: rgba(255, 255, 255, 0.8);
-$white-veil-card: rgba(255, 255, 255, 0.96);
 
 @mixin internal-use-form-control-visible {
   width: 1.2em;
@@ -64,9 +55,6 @@ $gray-bs-900: #212529;
   --shadow-mid: #{$shadow-mid};
   --shadow-hover: #{$shadow-hover};
   --shadow-card: #{$shadow-card};
-  --mint-shadow-soft: #{$mint-shadow-soft};
-  --mint-shadow-mid: #{$mint-shadow-mid};
-  --mint-focus: #{$mint-focus};
   --blue-focus: #{$blue-focus};
   --blue-glow: #{$blue-glow};
   --info-glow: #{$info-glow};
@@ -74,10 +62,6 @@ $gray-bs-900: #212529;
   --green-fill: #{$green-fill};
   --green-focus: #{$green-focus};
   --green-glow: #{$green-glow};
-  --white-veil-soft: #{$white-veil-soft};
-  --white-veil-mid: #{$white-veil-mid};
-  --white-veil-strong: #{$white-veil-strong};
-  --white-veil-card: #{$white-veil-card};
   --gray-bs-100: #{$gray-bs-100};
   --gray-bs-200: #{$gray-bs-200};
   --gray-bs-300: #{$gray-bs-300};
@@ -87,6 +71,8 @@ $gray-bs-900: #212529;
   --gray-bs-700: #{$gray-bs-700};
   --gray-bs-800: #{$gray-bs-800};
   --gray-bs-900: #{$gray-bs-900};
+  --font-montserrat: #{$headings-font-family};
+  --font-inter: Inter, system-ui, sans-serif;
 }
 
 // ============================================
@@ -365,8 +351,8 @@ body:not(.modal-open) #app-content {
   }
 
   .form-check-input[value='incorrecto']:checked {
-    background-color: #dc3545;
-    border-color: #dc3545;
+    background-color: #e53749;
+    border-color: #e53749;
   }
 }
 
@@ -454,7 +440,6 @@ body:not(.modal-open) #app-content {
   border-color: #607b07;
   box-shadow: inset 0 0 7px 4px transparent, 0 0 3px 4px rgba(1, 121, 37, 0.33);
   outline-offset: 15px;
-  text-shadow: 2px 4px 3px #034c578b;
 }
 
 .btn-3 {
@@ -473,7 +458,7 @@ body:not(.modal-open) #app-content {
   background-color: #cc0025;
   box-shadow: inset 0 0 7px 4px rgba(73, 1, 1, 0.2), 0 2px 6px 4px rgba(94, 18, 6, 0.331);
   outline-offset: 15px;
-  text-shadow: 2px 5px 12px #034c578b;
+  // text-shadow: 2px 5px 12px #034c578b;
 }
 
 
@@ -482,7 +467,7 @@ body:not(.modal-open) #app-content {
 }
 
 .text-lightgreen{
-  color: #24ce3d;
+  color: #28a745;
 }
 
 .text-darkgreen{
@@ -491,7 +476,7 @@ body:not(.modal-open) #app-content {
 
 
 .text-lightblue{
-  color: #5473ea;
+  color: #2196f3;
 }
 
 .shadow-card{

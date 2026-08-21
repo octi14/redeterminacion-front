@@ -416,7 +416,7 @@ export default {
 }
 
 .footer-contact a:hover {
-  color: #20c997 !important;
+  color: #17a2b8 !important;
   text-decoration: underline;
 }
 

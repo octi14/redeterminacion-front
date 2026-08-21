@@ -6,11 +6,6 @@ export default defineNuxtConfig({
     preset: 'node-server',
   },
 
-  routeRules: {
-    '/recaudaciones': { redirect: '/tasas' },
-    '/recaudaciones/**': { redirect: '/tasas/**' },
-  },
-
   app: {
     pageTransition: {
       name: 'page',
@@ -26,7 +21,15 @@ export default defineNuxtConfig({
         { name: 'description', content: '' },
         { name: 'format-detection', content: 'telephone=no' },
       ],
-      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.png' }],
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' },
+        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' },
+        {
+          rel: 'stylesheet',
+          href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
+        },
+      ],
       script: [
         {
           src: 'https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit',
@@ -65,8 +68,8 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiBase: 'https://redeterminacion-back.herokuapp.com/',
-      // apiBase: 'http://127.0.0.1:5000/',
+      // apiBase: 'https://redeterminacion-back.herokuapp.com/',
+      apiBase: 'http://127.0.0.1:5000/',
     },
   },
 

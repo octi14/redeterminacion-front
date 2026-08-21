@@ -311,10 +311,10 @@ export default {
     },
     async consultar() {
       if (this.isConsulting) return; // Prevenir múltiples clics
-      
+
       this.enterKeyPressed = true
       this.isConsulting = true
-      
+
       if (!this.nroTramiteIngresado) {
         this.showPopupNoEntry = true
         this.isConsulting = false
@@ -322,7 +322,7 @@ export default {
         this.enterKeyPressed = false
         return
       }
-      
+
       try{
         const nroTramite = this.nroTramiteIngresado
 
@@ -498,7 +498,7 @@ export default {
   }
 
   .modal-warning .modal-subtitle{
-    color: #ddbc04 !important;
+    color: #daa511 !important;
   }
 
   .modal-primary .modal-subtitle{

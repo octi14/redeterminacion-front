@@ -5,14 +5,14 @@
       icon="info-circle"
       to="/tasas/pagos_dobles"
       title="Informar pagos dobles"
-      description="Realizar un reclamo por pago doble de tasas"
+      description="Realizar un reclamo por pago doble de tasa urbana"
     />
     <MenuItem
       v-if="mostrarTasaAutomotor"
       icon="car-front"
       to="/tasas/tasa-automotor"
-      title="Descargar tasa de automotores"
-      description="Consultar y descargar boletas de patente de rodados"
+      title="Descargar Tasa Automotor"
+      description="Consultar y descargar boletas de Automotores por dominio"
     />
     <div class="page-btn-volver-wrap">
       <NuxtLink to="/">

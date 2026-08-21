@@ -342,7 +342,7 @@ export default {
       // Colores predefinidos para los rubros principales
       const coloresDisponibles = [
         '#28a745', '#17a2b8', '#ffc107', '#e53749', '#9966FF',
-        '#e27910', '#20c997', '#e53749', '#353535'
+        '#e27910', '#2196f3', '#e53749', '#353535'
       ]
 
       let colorIndex = 0
@@ -434,7 +434,7 @@ export default {
               '#FFCE56',
               '#17a2b8',
               '#9966FF',
-              '#FF9F40',
+              '#ef8918',
               '#e53749',
               '#C9CBCF'
             ],
@@ -509,7 +509,7 @@ export default {
             backgroundColor: [
               '#17a2b8',
               '#9966FF',
-              '#FF9F40',
+              '#ef8918',
               '#e53749',
               '#2196f3',
               '#FFCE56',
@@ -645,7 +645,7 @@ export default {
         'Rechazada': '#e53749',
         'Rectificación': '#FFCE56',
         'Esperando turno': '#9966FF',
-        'Esperando inspección': '#FF9F40',
+        'Esperando inspección': '#ef8918',
         'Inspeccionado': '#17a2b8',
         'Esperando documentación': '#17a2b8',
         'Prórroga 1': '#C9CBCF',

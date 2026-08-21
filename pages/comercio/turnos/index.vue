@@ -813,7 +813,7 @@ IMPORTANTE:
   }
 
   .modal-warning .modal-subtitle{
-    color: #ddbc04 !important;
+    color: #daa511 !important;
   }
 
   .modal-error .centeredContainer{

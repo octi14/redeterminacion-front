@@ -37,7 +37,7 @@
           <button class="btn btn-search" type="submit" :disabled="!dominioValido || buscando || descargando">
             <b-spinner v-if="buscando" small class="mr-2"></b-spinner>
             <i v-else class="bi bi-download mr-2"></i>
-            {{ buscando ? 'Buscando...' : 'Descargar boleta' }}
+            {{ buscando ? 'Buscando...' : 'Buscar boletas' }}
           </button>
         </form>
       </section>

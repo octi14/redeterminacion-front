@@ -273,10 +273,10 @@ export default {
 
 <style scoped>
 .date-range-selector {
-  background: #f8f9fa;
+  background: var(--gray-bs-100);
   border-radius: 10px;
   padding: 1.5rem;
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--gray-bs-200);
   position: relative;
   overflow: visible;
 }
@@ -295,34 +295,34 @@ export default {
 
 .quick-range-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+  box-shadow: 0 2px 8px var(--blue-glow);
 }
 
 .custom-date-range {
-  background: white;
+  background: var(--color-white);
   border-radius: 8px;
   padding: 1rem;
-  border: 1px solid #dee2e6;
+  border: 1px solid var(--gray-bs-300);
   position: relative;
   overflow: visible;
 }
 
 .form-label {
   font-weight: 600;
-  color: #495057;
+  color: var(--gray-bs-700);
   margin-bottom: 0.5rem;
 }
 
 .date-picker {
   border-radius: 6px;
-  border: 1px solid #ced4da;
+  border: 1px solid var(--gray-bs-400);
   transition: all 0.2s ease;
   position: relative;
 }
 
 .date-picker:focus {
   border-color: #007bff;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  box-shadow: 0 0 0 0.2rem var(--blue-focus);
 }
 
 /* Estilos para el dropdown del calendario */
@@ -380,7 +380,7 @@ export default {
 }
 
 .date-separator {
-  color: #6c757d;
+  color: var(--gray-bs-600);
   font-weight: 500;
   font-size: 0.9rem;
 }
@@ -405,13 +405,13 @@ export default {
 
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+    box-shadow: 0 0 0 0 var(--green-glow);
   }
   70% {
-    box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
+    box-shadow: 0 0 0 10px transparent;
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+    box-shadow: 0 0 0 0 transparent;
   }
 }
 

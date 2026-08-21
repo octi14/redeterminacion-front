@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="mx-auto" style="color: black">
+    <div class="mx-auto" style="color: var(--color-dark)">
       <b-form style="margin-left:10px;margin-right:10px"
         @submit.stop.prevent="onSubmit"
         @reset.stop.prevent="onResetForm"

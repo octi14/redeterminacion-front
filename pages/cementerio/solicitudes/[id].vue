@@ -19,7 +19,7 @@
       <div class="row col-10 mx-auto justify-content-center" v-if="adminCementerio">
         <b-button @click="onShowApprove" variant="success" class="btn-4 mt-3 mx-1" v-if="item.estado==='En revisión'"> Aprobar solicitud </b-button>
         <b-button @click="onShowReject" class="btn-3 mt-3 mx-1"> Rechazar solicitud </b-button>
-        <b-button @click="onShowRestore" variant="secondary" class="btn-2 mt-3 mx-1"> Volver a En revisión </b-button>
+        <b-button @click="onShowRestore" variant="secondary" class="mt-3 mx-1"> Volver a En revisión </b-button>
       </div>
 
       <!-- Datos funeraria y óbito -->
@@ -228,7 +228,6 @@ Saludos cordiales.`
 .col-main { flex: 1; }
 .col-complementary { flex: 1; }
 .icon-orange{ color: #E27910; }
-.text-loading{ color: #0eb7b2ab; }
 @media only screen and (min-width: 640px) { .layout { display: flex; max-width: 90%; margin: auto; } }
 </style>
 

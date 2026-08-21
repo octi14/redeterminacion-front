@@ -133,8 +133,8 @@ export default {
 }
 
 .login-submit-btn:hover:not(:disabled) {
-  background-color: #d97a15;
-  border-color: #d97a15;
+  background-color: #e27910;
+  border-color: #e27910;
   color: #fff;
 }
 

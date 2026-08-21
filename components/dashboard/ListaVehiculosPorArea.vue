@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="lista-vehiculos-por-area">
     <div class="header-section">
       <h4 class="section-title">
@@ -230,31 +230,31 @@ export default {
 
 .area-select {
   border-radius: 25px;
-  border: 2px solid #e9ecef;
+  border: 2px solid var(--gray-bs-200);
   transition: all 0.3s ease;
 }
 
 .area-select:focus {
   border-color: #28a745;
-  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+  box-shadow: 0 0 0 0.2rem var(--green-focus);
 }
 
 .clear-btn {
   border-radius: 25px;
-  border: 2px solid #6c757d;
+  border: 2px solid var(--gray-bs-600);
   transition: all 0.3s ease;
 }
 
 .clear-btn:hover {
-  background-color: #6c757d;
-  border-color: #6c757d;
+  background-color: var(--gray-bs-600);
+  border-color: var(--gray-bs-600);
 }
 
 .summary-alert {
   border-radius: 15px;
   border: none;
-  background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
-  color: #0c5460;
+  background: var(--gray-bs-100);
+  color: #17a2b8;
 }
 
 .area-info {
@@ -266,12 +266,12 @@ export default {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  background: #28a745;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-right: 1rem;
-  color: white;
+  color: var(--color-white);
   font-size: 1.2rem;
 }
 
@@ -281,13 +281,13 @@ export default {
 
 .area-name {
   margin: 0;
-  color: #495057;
+  color: var(--gray-bs-700);
   font-weight: 600;
 }
 
 .area-count {
   margin: 0;
-  color: #6c757d;
+  color: var(--gray-bs-600);
   font-size: 0.9rem;
 }
 
@@ -310,7 +310,7 @@ export default {
   display: flex;
   align-items: center;
   padding: 1rem;
-  background: #f8f9fa;
+  background: var(--gray-bs-100);
   border-radius: 10px;
   transition: all 0.3s ease;
   border: 1px solid transparent;
@@ -319,10 +319,10 @@ export default {
 }
 
 .vehiculo-item:hover {
-  background: #e9ecef;
+  background: var(--gray-bs-200);
   border-color: #28a745;
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px var(--shadow-mid);
 }
 
 .vehiculo-info {
@@ -334,12 +334,12 @@ export default {
   width: 35px;
   height: 35px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  background: #007bff;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-right: 1rem;
-  color: white;
+  color: var(--color-white);
   font-size: 1rem;
 }
 
@@ -349,13 +349,13 @@ export default {
 
 .vehiculo-patente {
   margin: 0;
-  color: #495057;
+  color: var(--gray-bs-700);
   font-weight: 600;
   font-size: 1.1rem;
 }
 
 .vehiculo-id {
-  color: #6c757d;
+  color: var(--gray-bs-600);
   font-size: 0.8rem;
 }
 

@@ -876,7 +876,7 @@
       </div>
     </div>
   </BModal>
-  <BModal v-model="showPopupFormLoading" no-close-on-backdrop title="" :header-bg-variant="'success'" no-footer centered>
+  <BModal v-model="showPopupFormLoading" no-close-on-backdrop no-close-on-esc no-header-close title="" :header-bg-variant="'success'" no-footer centered>
     <template #header>
       <h5 class="centeredContainer">Solicitud en Proceso</h5>
     </template>
@@ -1695,42 +1695,39 @@
 
               // 2) Presign: reserva nroTramite + URLs PUT
               const { nroTramite, uploads } = await useHabilitacionesStore().presignDocumentos({
-                files: filesMeta.map(({ nombreDocumento, contentType }) => ({
+                files: filesMeta.map(({ campo, nombreDocumento, contentType }) => ({
+                  campo,
                   nombreDocumento,
                   contentType,
                 })),
               });
 
-              // 3) Subir cada archivo directo a S3 (binario, sin pasar por el dyno)
-              const documentosParaGuardar = {};
+              const uploadsByCampo = {};
               const uploadsByNombre = {};
               for (const upload of uploads || []) {
+                if (upload.campo) uploadsByCampo[upload.campo] = upload;
                 uploadsByNombre[upload.nombreDocumento] = upload;
               }
 
-              for (const meta of filesMeta) {
-                const upload = uploadsByNombre[meta.nombreDocumento];
+              // 3) Subir con concurrencia 3, reintentos y fallback al proxy
+              const documentosParaGuardar = {};
+
+              await this.mapWithConcurrency(filesMeta, 3, async (meta) => {
+                const upload = uploadsByCampo[meta.campo] || uploadsByNombre[meta.nombreDocumento];
                 if (!upload || !upload.uploadUrl) {
                   throw new Error(`No se recibió URL de subida para ${meta.nombreDocumento}`);
                 }
-                const blob = blobsByCampo[meta.campo];
-                const putRes = await fetch(upload.uploadUrl, {
-                  method: 'PUT',
-                  body: blob,
-                  headers: {
-                    'Content-Type': meta.contentType,
-                  },
+                const result = await this.uploadOneDocumento({
+                  meta,
+                  upload,
+                  blob: blobsByCampo[meta.campo],
+                  nroTramite,
                 });
-                if (!putRes.ok) {
-                  throw new Error(
-                    `Error subiendo ${meta.nombreDocumento} a S3 (HTTP ${putRes.status}).`
-                  );
-                }
                 documentosParaGuardar[meta.campo] = {
-                  nombreDocumento: meta.nombreDocumento,
-                  url: upload.url,
+                  nombreDocumento: result.nombreDocumento,
+                  url: result.url,
                 };
-              }
+              });
 
               // 4) Crear trámite solo con metadatos + URLs (JSON chico)
               const { ningunaAnterior, ...inmuebleSinNinguna } = this.inmueble;
@@ -1975,6 +1972,85 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
       wait(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
       },
+      async mapWithConcurrency(items, limit, fn) {
+        const results = new Array(items.length);
+        let nextIndex = 0;
+        const workerCount = Math.min(limit, items.length);
+        const workers = Array.from({ length: workerCount }, async () => {
+          while (nextIndex < items.length) {
+            const index = nextIndex;
+            nextIndex += 1;
+            results[index] = await fn(items[index], index);
+          }
+        });
+        await Promise.all(workers);
+        return results;
+      },
+      async putToS3(uploadUrl, blob, contentType) {
+        const putRes = await fetch(uploadUrl, {
+          method: 'PUT',
+          body: blob,
+          headers: {
+            'Content-Type': contentType,
+          },
+        });
+        if (!putRes.ok) {
+          const err = new Error(`S3 PUT HTTP ${putRes.status}`);
+          err.status = putRes.status;
+          throw err;
+        }
+      },
+      async uploadOneDocumento({ meta, upload, blob, nroTramite }) {
+        const delays = [1000, 3000, 8000];
+        let current = upload;
+        for (let attempt = 0; attempt <= delays.length; attempt++) {
+          try {
+            await this.putToS3(current.uploadUrl, blob, current.contentType);
+            return {
+              nombreDocumento: meta.nombreDocumento,
+              url: current.url,
+              campo: meta.campo,
+            };
+          } catch (e) {
+            console.error(
+              `Error subiendo ${meta.nombreDocumento} (intento ${attempt + 1}):`,
+              e
+            );
+            if (attempt === delays.length) break;
+            const isNetworkError = !e || e.status == null;
+            if (isNetworkError && attempt >= 1) break;
+            if (e && (e.status === 403 || e.status === 401)) {
+              try {
+                const { uploads } = await useHabilitacionesStore().presignDocumentos({
+                  files: [{
+                    campo: meta.campo,
+                    nombreDocumento: meta.nombreDocumento,
+                    contentType: meta.contentType,
+                  }],
+                  nroSolicitud: nroTramite,
+                });
+                if (uploads && uploads[0]) current = uploads[0];
+              } catch (presignErr) {
+                console.error('Error re-presign:', presignErr);
+              }
+            }
+            await this.wait(delays[attempt]);
+          }
+        }
+        const data = await useHabilitacionesStore().uploadDocumentoProxy({
+          nroSolicitud: nroTramite,
+          nombreDocumento: meta.nombreDocumento,
+          campo: meta.campo,
+          key: current.key,
+          contentType: current.contentType,
+          blob,
+        });
+        return {
+          nombreDocumento: meta.nombreDocumento,
+          url: (data && data.url) || current.url,
+          campo: meta.campo,
+        };
+      },
       async onPrintTicket() {
         this.showPopupFormOk = false;
         this.printing = true;
@@ -2044,7 +2120,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
   }
   .printing-modal .card-header h5,
   .comercio-comprobante-header h5 {
-    color: white !important;
+    color: var(--color-white) !important;
   }
   .printing-modal h5,
   .comercio-comprobante-header h5 {
@@ -2074,7 +2150,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
     list-style: none;
     padding: 0;
     margin: 0 0 1.25rem;
-    border: 1px solid #dee2e6;
+    border: 1px solid var(--gray-bs-300);
     border-radius: 0.375rem;
     overflow: hidden;
   }
@@ -2084,13 +2160,13 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
     align-items: center;
     gap: 1rem;
     padding: 0.65rem 1rem;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #f0f0f0;
   }
   .comprobante-datos li:last-child {
     border-bottom: none;
   }
   .comprobante-datos li:nth-child(odd) {
-    background-color: #f8f9fa;
+    background-color: var(--gray-bs-100);
   }
   .comprobante-label {
     font-weight: 600;
@@ -2108,7 +2184,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
   .comprobante-value {
     text-align: right;
     font-weight: 600;
-    color: #333;
+    color: #353535;
   }
   .comprobante-notas {
     border-top: 1px solid #ccc;
@@ -2126,7 +2202,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
     line-height: 1.45;
   }
   .green{
-      background-color:#0b6919;
+      background-color:#0c681a;
     }
   .centeredContainer{
     width:  auto;
@@ -2181,7 +2257,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
     padding: 1.5rem 1rem;
   }
   .modal h5, .modal h3{
-    color: white !important;
+    color: var(--color-white) !important;
     font-weight: bold;
     font-size: 1.5rem;
   }
@@ -2202,7 +2278,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
     color: #e53749 !important;
   }
   .modal-error p{
-    color: black;
+    color: var(--color-dark);
     font-weight: 500;
     padding: 0 1rem;
   }
@@ -2277,9 +2353,9 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
     border-radius: 1rem;
   }
   .section-card{
-    box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
-    -webkit-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
-    -moz-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
+    box-shadow: 0px 2px 5px 0px var(--shadow-card);
+    -webkit-box-shadow: 0px 2px 5px 0px var(--shadow-card);
+    -moz-box-shadow: 0px 2px 5px 0px var(--shadow-card);
   }
   form p{
     font-weight: 600;

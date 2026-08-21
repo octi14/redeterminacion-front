@@ -104,6 +104,6 @@ export default {
 
 <style>
 .link {
-  color: #018811;
+  color: #0c681a;
 }
 </style>

@@ -84,7 +84,7 @@ function goHome() {
 }
 
 .error-code {
-  color: #6c757d;
+  color: var(--gray-bs-600);
   font-size: 0.95rem;
   font-weight: 600;
   letter-spacing: 0.04em;
@@ -92,13 +92,13 @@ function goHome() {
 }
 
 .error-title {
-  color: #07691c;
+  color: #0c681a;
   font-size: 1.5rem;
   font-weight: 700;
 }
 
 .error-message {
-  color: #333;
+  color: #353535;
   font-size: 1.05rem;
   margin-left: auto;
   margin-right: auto;

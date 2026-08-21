@@ -296,7 +296,7 @@ export default {
     }
     .DFE-card{
       min-width: 80% !important;
-      background-color: #FACD8A;
+      background-color: #ffce56;
       padding: 1rem;
       border-radius: 1rem;
       padding-bottom: 2rem;

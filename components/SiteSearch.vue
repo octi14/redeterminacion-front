@@ -108,7 +108,7 @@ export default {
   display: block;
   margin-bottom: 0.65rem;
   font-weight: 600;
-  color: #0b6819;
+  color: #0c681a;
 }
 
 .search-hero-form {
@@ -148,8 +148,9 @@ export default {
 
 .search-hero-submit:hover,
 .search-hero-submit:focus {
-  background-color: #223687;
-  border-color: #223687;
+  background-color: #2a43a1;
+  border-color: #2a43a1;
+  filter: brightness(0.88);
 }
 
 @media (max-width: 575.98px) {

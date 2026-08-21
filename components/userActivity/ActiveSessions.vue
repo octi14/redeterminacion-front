@@ -296,10 +296,10 @@ export default {
 
 <style scoped>
 .active-sessions {
-  background: white;
+  background: var(--color-white);
   padding: 1.5rem;
   border-radius: 0.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px var(--shadow-mid);
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -315,11 +315,11 @@ export default {
 
 .session-card {
   transition: all 0.2s ease;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--gray-bs-300);
 }
 
 .session-card:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 8px var(--shadow-hover);
   transform: translateY(-2px);
 }
 
@@ -329,7 +329,7 @@ export default {
 }
 
 .user-name {
-  color: #333;
+  color: #353535;
   font-size: 0.95rem;
   line-height: 1.2;
 }
@@ -372,7 +372,7 @@ export default {
 }
 
 .sessions-list::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #f0f0f0;
   border-radius: 10px;
 }
 
@@ -382,7 +382,7 @@ export default {
 }
 
 .sessions-list::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: var(--gray-bs-700);
 }
 </style>
 

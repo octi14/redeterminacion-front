@@ -31,7 +31,7 @@
 }
 
 .login-page-icon {
-  color: #07691c;
+  color: #0c681a;
   font-size: 5rem;
   line-height: 1;
   margin-top: 2.5rem;

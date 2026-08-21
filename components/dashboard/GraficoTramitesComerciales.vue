@@ -437,12 +437,12 @@ export default {
 }
 
 .summary-label {
-  color: #6c757d;
+  color: var(--gray-bs-600);
   font-size: 0.9rem;
 }
 
 .summary-value {
-  color: #495057;
+  color: var(--gray-bs-700);
   font-weight: 600;
   font-size: 1.1rem;
 }

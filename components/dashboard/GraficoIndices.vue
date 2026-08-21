@@ -343,7 +343,7 @@ export default {
       }
 
       // Dibujar ejes
-      ctx.strokeStyle = '#ddd'
+      ctx.strokeStyle = '#dee2e6'
       ctx.lineWidth = 1
 
       // Eje Y izquierdo (valores)
@@ -443,7 +443,7 @@ export default {
       }
 
       // Dibujar etiquetas
-      ctx.fillStyle = '#666'
+      ctx.fillStyle = '#6c757d'
       ctx.font = '12px Arial'
       ctx.textAlign = 'center'
 
@@ -472,12 +472,12 @@ export default {
       }
 
       // Títulos de los ejes
-      ctx.fillStyle = '#333'
+      ctx.fillStyle = '#353535'
       ctx.font = 'bold 14px Arial'
       ctx.textAlign = 'center'
 
       // Título principal del gráfico
-      ctx.fillStyle = '#333'
+      ctx.fillStyle = '#353535'
       ctx.font = 'bold 16px Arial'
       ctx.textAlign = 'center'
       ctx.fillText(`Evolución: ${this.getNombreCategoria(this.categoriaSeleccionada)}`, canvas.width / 2, 25)
@@ -521,9 +521,9 @@ export default {
 .stat-box {
   text-align: center;
   padding: 1rem;
-  background: #f8f9fa;
+  background: var(--gray-bs-100);
   border-radius: 10px;
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--gray-bs-200);
 }
 
 .stat-value {
@@ -534,13 +534,13 @@ export default {
 
 .stat-label {
   font-size: 0.875rem;
-  color: #6c757d;
+  color: var(--gray-bs-600);
   font-weight: 500;
 }
 
 .category-card {
-  background: #f8f9fa;
-  border: 1px solid #e9ecef;
+  background: var(--gray-bs-100);
+  border: 1px solid var(--gray-bs-200);
   border-radius: 10px;
   padding: 1rem;
   cursor: pointer;
@@ -548,14 +548,14 @@ export default {
 }
 
 .category-card:hover {
-  background: #e9ecef;
+  background: var(--gray-bs-200);
   border-color: #28a745;
   transform: translateY(-2px);
 }
 
 .category-name {
   font-weight: 600;
-  color: #495057;
+  color: var(--gray-bs-700);
   margin-bottom: 0.5rem;
 }
 
@@ -570,24 +570,24 @@ export default {
 }
 
 .stat-item .stat-label {
-  color: #6c757d;
+  color: var(--gray-bs-600);
 }
 
 .stat-item .stat-value {
   font-weight: 600;
-  color: #495057;
+  color: var(--gray-bs-700);
 }
 
 .table-hover tbody tr:hover {
-  background-color: rgba(0, 123, 255, 0.1);
+  background-color: var(--blue-focus);
 }
 
 .table-success {
-  background-color: rgba(40, 167, 69, 0.1) !important;
+  background-color: var(--green-focus) !important;
 }
 
 .table-danger {
-  background-color: rgba(220, 53, 69, 0.1) !important;
+  background-color: var(--danger-bs-100) !important;
 }
 </style>
 

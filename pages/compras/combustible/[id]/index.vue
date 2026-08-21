@@ -27,7 +27,7 @@
         <b-button v-if="orden && orden.id" @click="$router.push(`/compras/combustible/${orden.id}/generar`)" variant="success" class="btn-4 mt-3 mx-1 orden-acciones-btn">
           + | Agregar vales
         </b-button>
-        <b-button @click="onShowObservaciones" variant="primary" class="btn-2 mt-3 mx-1 orden-acciones-btn"> Ver observaciones </b-button>
+        <b-button @click="onShowObservaciones" variant="primary" class="mt-3 mx-1 orden-acciones-btn"> Ver observaciones </b-button>
       </div>
 
       <!--Datos de orden de compra-->
@@ -761,7 +761,7 @@ export default {
       canvas.height = backgroundImage.height;
 
       // 🔹 Fondo blanco sólido
-      ctx.fillStyle = "white";
+      ctx.fillStyle = "#ffffff";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       // 🔹 Dibujar imagen de fondo
@@ -771,7 +771,7 @@ export default {
       const montoTexto = `Pesos ${numeroATexto(vale.monto)}`;
 
       // 🔹 Agregar texto
-      ctx.fillStyle = "black";
+      ctx.fillStyle = "#000000";
       ctx.font = "500 40px sans-serif";
       //Original
       ctx.fillText(`${this.orden.nroOrden}`, 600, 368);
@@ -856,7 +856,7 @@ export default {
         canvas.width = fondoWidth;
         canvas.height = fondoHeight * 2; // Duplicamos la altura para dos filas
 
-        ctx.fillStyle = "white";
+        ctx.fillStyle = "#ffffff";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         // Fila 1 (vales i y i+1)
@@ -885,12 +885,12 @@ export default {
       const pos = (x, y) => [offsetX + x, offsetY + y];
 
       // Fondo blanco (opcional, si ya lo hiciste antes)
-      // ctx.fillStyle = "white";
+      // ctx.fillStyle = "#ffffff";
       // ctx.fillRect(offsetX, offsetY, 1748, altoDelVale);
 
       const montoTexto = `Pesos ${numeroATexto(vale.monto)}`;
 
-      ctx.fillStyle = "black";
+      ctx.fillStyle = "#000000";
       ctx.font = "500 38px sans-serif";
 
       // Ejemplo de coordenadas, ajustalas si hace falta
@@ -1525,7 +1525,7 @@ export default {
   }
 }
 .separador{
-  color:rgba(0, 0, 0, 0.5);
+  color:var(--color-gray-light);
   font-size: 35px;
   opacity:0.3;
 }
@@ -1539,7 +1539,7 @@ export default {
 /* Fondo gris del círculo */
 .progress-background {
   fill: none;
-  stroke: #e9e9e9;
+  stroke: var(--gray-bs-300);
   stroke-linecap: round;
   stroke-width: 10;
 }
@@ -1547,7 +1547,7 @@ export default {
 /* Barra de progreso */
 .progress-bar {
   fill: none;
-  stroke: #e59335;
+  stroke: #e27910;
   stroke-linecap: butt;
   stroke-dasharray: 314.16, 314.16; /* Longitud total del círculo (basado en el radio de 50) */
   transition: stroke-dasharray 1.5s ease-in-out;
@@ -1561,13 +1561,13 @@ export default {
 .fuel-container-h {
   display: flex;
   align-items: center;  /* Alinear los elementos verticalmente */
-  background: #f9f9f9;
+  background: #f0f0f0;
   border-radius: 8px;
-  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 2px 8px var(--shadow-mid);
   padding: 16px;
   min-width: 400px;  /* Ajusta el tamaño de la tarjeta */
   min-height: 150px; /* Ajusta la altura para que todas sean iguales */
-  border: 1px solid #333;
+  border: 1px solid #353535;
   padding: 2rem 1rem;
   margin: auto;
   margin-bottom: 2rem;
@@ -1577,18 +1577,18 @@ export default {
 
 .fuel-container-h:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px var(--shadow-hover);
 }
 
 .fuel-container-selected {
-  background: #e3f2fd !important;
+  background: var(--gray-bs-200) !important;
   border-color: #2196f3 !important;
-  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3) !important;
+  box-shadow: 0 4px 12px var(--blue-glow) !important;
   transform: translateY(-2px);
 }
 
 .fuel-container-selected .fuel-title-h p {
-  color: #1976d2;
+  color: #2196f3;
   font-weight: bold;
 }
 
@@ -1598,7 +1598,7 @@ export default {
   justify-content: space-between;
   width: 120px;
   height: 120px;
-  background: #f9f9f9;
+  background: #f0f0f0;
   border-radius: 8px;
 }
 
@@ -1617,7 +1617,7 @@ export default {
 
 .fuel-saldos-h {
   font-size: 15px;
-  color: #333;
+  color: #353535;
   margin-top: 8px;
 }
 .fuel-title-h {
@@ -1628,7 +1628,7 @@ export default {
 }
 .fuel-title-h p{
   font-size: 24px;
-  color: #333;
+  color: #353535;
   font-weight: bold;
   text-transform: uppercase;
   margin: 0;
@@ -1645,7 +1645,7 @@ export default {
 .stroke-color-0 { stroke: blue; }
 .stroke-color-1 { stroke: orange; }
 .stroke-color-2 { stroke: red; }
-.stroke-color-3 { stroke: green; }
+.stroke-color-3 { stroke: #19a02d; }
 .stroke-color-4 { stroke: cadetblue; }
 .stroke-color-5 { stroke: darkmagenta; }
 .stroke-color-6 { stroke: gold; }
@@ -1654,7 +1654,7 @@ export default {
 .fill-color-0 { fill: blue; }
 .fill-color-1 { fill: orange; }
 .fill-color-2 { fill: red; }
-.fill-color-3 { fill: green; }
+.fill-color-3 { fill: #19a02d; }
 .fill-color-4 { fill: cadetblue; }
 .fill-color-5 { fill: darkmagenta; }
 .fill-color-6 { fill: gold; }
@@ -1663,7 +1663,7 @@ export default {
 .text-color-0 { color: blue !important; }
 .text-color-1 { color: orange !important;; }
 .text-color-2 { color: red !important;; }
-.text-color-3 { color: green !important;; }
+.text-color-3 { color: #19a02d !important;; }
 .text-color-4 { color: cadetblue !important;; }
 .text-color-5 { color: darkmagenta !important;; }
 .text-color-6 { color: gold !important;; }
@@ -1709,7 +1709,7 @@ export default {
   width: 450px;
   border-radius: 5px;
   z-index: 1; /* Asegura que esté encima del ícono */
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3); /* Agrega una sombra */
+  box-shadow: 0px 0px 5px var(--shadow-hover); /* Agrega una sombra */
 }
 
 .combustible-detalle-page .fuel-saldos-h p {
@@ -1727,8 +1727,8 @@ export default {
 }
 
 .vales-list-table thead th {
-  background-color: #f8f9fa;
-  border-bottom: 2px solid #dee2e6;
+  background-color: var(--gray-bs-100);
+  border-bottom: 2px solid var(--gray-bs-300);
   font-weight: 600;
   font-size: 14px;
   padding: 12px 8px;
@@ -1742,7 +1742,7 @@ export default {
 
 /* Filas alternadas: blanco y gris */
 .vales-list-table tbody tr:nth-child(even) {
-  background-color: #f8f9fa;
+  background-color: var(--gray-bs-100);
 }
 
 .vales-list-table tbody tr:nth-child(odd) {
@@ -1750,7 +1750,7 @@ export default {
 }
 
 .vales-list-table tbody tr:hover {
-  background-color: #e9ecef !important;
+  background-color: var(--gray-bs-200) !important;
 }
 
 .vales-list-table tbody tr.vale-disabled {
@@ -1762,18 +1762,18 @@ export default {
 }
 
 .vales-list-table tbody tr.vale-disabled:nth-child(odd) {
-  background-color: #f8f8f8;
+  background-color: #f0f0f0;
 }
 
 .vales-list-table tbody tr.vale-disabled:hover {
-  background-color: #e0e0e0 !important;
+  background-color: var(--gray-bs-300) !important;
 }
 
 .vales-list-table tbody td {
   padding: 12px 8px;
   vertical-align: middle;
   font-size: 14px;
-  border-bottom: 1px solid #dee2e6;
+  border-bottom: 1px solid var(--gray-bs-300);
 }
 
 .vale-checkbox {

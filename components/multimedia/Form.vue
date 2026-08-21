@@ -16,10 +16,10 @@
         </b-form-select-option>
       </b-form-select>
       <b-button type="submit" size="md" variant="success">
-        <h5 class="my-auto" style="color:white">{{ create ? 'Crear' : 'Editar' }} </h5>
+        <h5 class="my-auto" style="color: var(--color-white)">{{ create ? 'Crear' : 'Editar' }} </h5>
       </b-button>
       <b-button type="reset" size="md">
-        <h5 class="my-auto" style="color:white"> Volver </h5>
+        <h5 class="my-auto" style="color: var(--color-white)"> Volver </h5>
       </b-button>
     </b-form>
   </div>
@@ -169,16 +169,4 @@ export default {
   border-radius: 12%;
   overflow: visible;
 }
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  background-color: #000000c3;
-}
-
 </style>

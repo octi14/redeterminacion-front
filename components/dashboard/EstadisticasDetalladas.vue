@@ -522,9 +522,9 @@ export default {
         case 'Incorrecto':
           return 'red'
         case 'Correcto':
-          return 'green'
+          return '#0c681a'
         case 'En revisión':
-          return '#FADD1A'
+          return '#ffc107'
         default:
           return 'lightgrey'
       }

@@ -13,7 +13,7 @@
       <section class="upload-hero">
         <div class="hero-copy">
           <span class="eyebrow">Administración interna de boletas</span>
-          <h1 style="color:white">Importar boletas de Automotores</h1>
+          <h1>Importar boletas de automotores</h1>
           <p>
             Subí el archivo generado por Hacienda. Antes de publicarlo,
             verificaremos estructura, períodos, importes, vencimientos y códigos de pago.
@@ -54,9 +54,8 @@
               </button>
             </template>
             <template v-else>
-              <strong>Arrastrá el archivo aquí</strong>
-              <span>o hacé clic para seleccionarlo</span>
-              <small>Solamente archivos .xlsx</small>
+              <strong>Seleccioná el archivo haciendo click o arrastralo hasta aquí</strong>
+              <small>Solamente se aceptan archivos .xlsx</small>
             </template>
           </div>
 
@@ -80,7 +79,7 @@
             </b-form-checkbox>
             <small>
               <b-spinner v-if="configLoading" small class="mr-1"></b-spinner>
-              {{ configLoading ? 'Guardando configuración...' : 'Controla el botón en Recaudaciones y el acceso público a la página de descarga.' }}
+              {{ configLoading ? 'Guardando configuración...' : 'Controla el botón en Tasas y el acceso público a la página de descarga.' }}
             </small>
           </div>
         </div>
@@ -89,8 +88,9 @@
       <section class="period-management-section">
         <div class="section-heading">
           <div>
-            <!--<span class="eyebrow">Disponibilidad pública</span>-->
+
             <h2>Períodos cargados</h2>
+            <p>Administrá qué versión de cada período pueden descargar los contribuyentes.</p>
           </div>
           <div class="period-toolbar">
             <b-form-select v-model="periodStatusFilter" size="sm">
@@ -126,6 +126,9 @@
               <strong>{{ year.year }}</strong>
               <span>{{ year.periods.length }} períodos · {{ year.enabledCount }} habilitados</span>
             </div>
+            <span v-if="year.enabledCount === 0" class="year-warning" title="Ningún período habilitado">
+              <i class="bi bi-exclamation-triangle-fill"></i>
+            </span>
             <i class="bi bi-chevron-down"></i>
           </summary>
           <div class="year-periods">
@@ -186,7 +189,7 @@
       <section class="history-section">
         <div class="section-heading">
           <div>
-            <!-- <span class="eyebrow">Trazabilidad</span> -->
+
             <h2>Historial de cargas</h2>
             <p>Cargas analizadas y publicadas desde este panel.</p>
           </div>
@@ -286,7 +289,7 @@
                   @click="downloadStoredReport(data.item)"
                 >
                   <b-spinner v-if="reportDownloadingId === data.item.id" small></b-spinner>
-                  <i v-else class="bi bi-download"></i>
+                  <i v-else class="bi bi-search"></i>
                 </button>
                 <button
                   v-if="puedeGestionarBoletasCompleto && data.item.status !== 'disabled'"
@@ -339,6 +342,7 @@
       centered
       hide-header
       hide-footer
+      no-header-close
       :no-close-on-backdrop="disablingImport"
       :no-close-on-esc="disablingImport"
       modal-class="publish-modal"
@@ -387,37 +391,53 @@
 
     <b-modal
       v-model="showAnalysisModal"
-      size="lg"
       centered
       hide-header
       hide-footer
+      no-header-close
       no-close-on-backdrop
       :no-close-on-esc="analysisState === 'processing'"
-      modal-class="analysis-modal"
+      modal-class="boletas-dialog-modal"
     >
-      <div v-if="analysisState === 'processing'" class="analysis-processing">
-        <div class="loader-orbit">
-          <div class="loader-core"><i class="bi bi-file-earmark-spreadsheet"></i></div>
+      <div v-if="analysisState === 'processing'" class="boletas-dialog">
+        <div class="boletas-dialog-bar boletas-dialog-bar--success boletas-dialog-bar--empty">
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            aria-label="Cerrar"
+            disabled
+          ></button>
         </div>
-        <span class="eyebrow">Procesando archivo</span>
-        <h3>{{ processingMessage }}</h3>
-        <p>{{ selectedFile ? selectedFile.name : '' }}</p>
-        <b-progress :value="analysisProgress" :max="100" height="8px"></b-progress>
-        <div class="processing-steps">
-          <span :class="{ active: analysisProgress >= 15 }">Subida</span>
-          <span :class="{ active: analysisProgress >= 45 }">Estructura</span>
-          <span :class="{ active: analysisProgress >= 75 }">Registros</span>
-          <span :class="{ active: analysisProgress >= 100 }">Resultado</span>
+        <div class="boletas-dialog-body">
+          <b-spinner class="boletas-dialog-spinner" variant="success" label="Cargando"></b-spinner>
+          <h3>Tu archivo se está cargando</h3>
+          <p>Estamos guardando las boletas y actualizando los períodos activos. Este proceso puede demorar unos minutos.</p>
+          <button class="btn btn-dialog-cancel" type="button" disabled>Cancelar</button>
         </div>
       </div>
 
-      <div v-else-if="analysisResult" class="analysis-result">
-        <div class="result-icon" :class="analysisResult.errorCount ? 'has-errors' : 'is-success'">
-          <i :class="analysisResult.errorCount ? 'bi bi-x-lg' : 'bi bi-check-lg'"></i>
+      <div v-else-if="analysisResult" class="boletas-dialog">
+        <div
+          class="boletas-dialog-bar"
+          :class="analysisResult.errorCount ? 'boletas-dialog-bar--danger' : 'boletas-dialog-bar--success'"
+        >
+          <span class="boletas-dialog-bar-icon" aria-hidden="true">
+            <i :class="analysisResult.errorCount ? 'bi bi-x-lg' : 'bi bi-check-lg'"></i>
+          </span>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            aria-label="Cerrar"
+            @click="closeAnalysis"
+          ></button>
         </div>
-        <span class="eyebrow">Análisis finalizado</span>
-        <h3>{{ resultTitle }}</h3>
+        <div class="boletas-dialog-body">
+        <h3 class="boletas-dialog-title">{{ resultTitle }}</h3>
         <p class="result-description">{{ resultDescription }}</p>
+        <p
+          v-if="analysisResult.fileName && !(selectedFile && analysisResult.fileName !== selectedFile.name)"
+          class="boletas-dialog-file"
+        >{{ analysisResult.fileName }}</p>
         <div v-if="analysisResult.fileName && selectedFile && analysisResult.fileName !== selectedFile.name" class="renamed-file-notice">
           <i class="bi bi-files"></i>
           Ya existía un archivo con ese nombre. Esta carga se guardó como
@@ -425,10 +445,10 @@
         </div>
 
         <div class="summary-grid">
-          <div><span>Entradas</span><strong>{{ formatNumber(analysisResult.entries) }}</strong></div>
-          <div><span>Dominios</span><strong>{{ formatNumber(analysisResult.domains) }}</strong></div>
-          <div><span>Errores</span><strong class="text-danger">{{ analysisResult.errorCount }}</strong></div>
-          <div><span>Advertencias</span><strong class="text-warning">{{ analysisResult.warningCount }}</strong></div>
+          <div><strong>{{ formatNumber(analysisResult.entries) }}</strong><span>Entradas</span></div>
+          <div><strong>{{ formatNumber(analysisResult.domains) }}</strong><span>Dominios</span></div>
+          <div><strong class="summary-error">{{ analysisResult.errorCount }}</strong><span>Errores</span></div>
+          <div><strong class="summary-warn">{{ analysisResult.warningCount }}</strong><span>Advertencias</span></div>
         </div>
 
         <div v-if="analysisIssues.length" class="issues-panel">
@@ -457,15 +477,16 @@
         </div>
 
         <div class="result-actions">
-          <button class="btn btn-outline-secondary" @click="closeAnalysis">Cerrar</button>
+          <button class="btn btn-dialog-cancel" type="button" @click="closeAnalysis">Cancelar</button>
           <button
             v-if="!analysisResult.errorCount"
-            class="btn btn-publish"
+            class="btn btn-dialog-ok"
+            type="button"
             @click="requestPublish"
           >
-            <i class="bi bi-cloud-check mr-2"></i>
             Confirmar y publicar
           </button>
+        </div>
         </div>
       </div>
     </b-modal>
@@ -475,16 +496,34 @@
       centered
       hide-header
       hide-footer
+      no-header-close
       :no-close-on-backdrop="isPublishing"
       :no-close-on-esc="isPublishing"
-      modal-class="publish-modal"
+      modal-class="boletas-dialog-modal"
     >
-      <div class="publish-confirmation" :class="{ 'is-publishing': isPublishing }">
-        <div class="confirm-icon">
-          <b-spinner v-if="isPublishing" label="Publicando"></b-spinner>
-          <i v-else class="bi bi-cloud-arrow-up-fill"></i>
+      <div class="boletas-dialog" :class="{ 'is-publishing': isPublishing }">
+        <div
+          class="boletas-dialog-bar"
+          :class="isPublishing ? 'boletas-dialog-bar--success boletas-dialog-bar--empty' : 'boletas-dialog-bar--warn'"
+        >
+          <i v-if="!isPublishing" class="bi bi-exclamation-lg" aria-hidden="true"></i>
+          <button
+            type="button"
+            class="btn-close"
+            :class="{ 'btn-close-white': isPublishing }"
+            aria-label="Cerrar"
+            :disabled="isPublishing"
+            @click="showPublishConfirmation = false"
+          ></button>
         </div>
-        <h3>{{ isPublishing ? 'Publicando la carga...' : '¿Publicar esta carga?' }}</h3>
+        <div class="boletas-dialog-body">
+        <b-spinner
+          v-if="isPublishing"
+          class="boletas-dialog-spinner"
+          variant="success"
+          label="Publicando"
+        ></b-spinner>
+        <h3>{{ isPublishing ? 'Tu archivo se está cargando' : '¿Deseás publicar el archivo cargado?' }}</h3>
         <p v-if="isPublishing">
           Estamos guardando las boletas y actualizando los períodos activos.
           Este proceso puede demorar unos minutos.
@@ -526,23 +565,23 @@
         </div>
         <div class="confirm-actions">
           <button
-            class="btn btn-outline-secondary"
+            class="btn btn-dialog-cancel"
+            type="button"
             :disabled="isPublishing"
             @click="showPublishConfirmation = false"
           >
             Cancelar
           </button>
           <button
-            class="btn btn-publish"
-            :disabled="isPublishing || (publishedPeriodsAffectedByPublication.length > 0 && !overwriteConfirmed) || (futurePeriods.length > 0 && !futurePeriodsConfirmed)"
+            v-if="!isPublishing"
+            class="btn btn-dialog-ok"
+            type="button"
+            :disabled="(publishedPeriodsAffectedByPublication.length > 0 && !overwriteConfirmed) || (futurePeriods.length > 0 && !futurePeriodsConfirmed)"
             @click="publishCurrentImport"
           >
-            <b-spinner v-if="isPublishing" small class="mr-2"></b-spinner>
-            <template v-if="isPublishing">Publicando...</template>
-            <template v-else>
-              {{ publishedPeriodsAffectedByPublication.length ? 'Deshabilitar anteriores y publicar' : 'Sí, publicar' }}
-            </template>
+            {{ publishedPeriodsAffectedByPublication.length ? 'Deshabilitar anteriores y publicar' : 'Confirmar y publicar' }}
           </button>
+        </div>
         </div>
       </div>
     </b-modal>
@@ -1229,8 +1268,8 @@ export default {
       return period.habilitadas > 0 ? 'enabled' : 'disabled'
     },
     periodVersionStateLabel(version) {
-      if (version.estadoImportacion === 'deshabilitada') return 'Deshabilitado'
-      return version.habilitado ? 'Habilitado' : 'Deshabilitado'
+      if (version.estadoImportacion === 'deshabilitada') return 'Carga deshabilitada'
+      return version.habilitado ? 'Habilitado' : 'Habilitar'
     },
     periodVersionStateClass(version) {
       if (version.estadoImportacion === 'deshabilitada') return 'disabled'
@@ -1260,183 +1299,782 @@ export default {
 </script>
 
 <style scoped>
-.boletas-page { min-height: 100vh; padding-top: 58px; color: #17332d; }
+.boletas-page {
+  min-height: 100vh;
+  padding-top: 58px;
+  color: #353535;
+}
 .container { max-width: 1240px; }
-.upload-hero { position: relative; overflow: hidden; display: grid; grid-template-columns: 1.12fr .88fr; gap: 3rem; align-items: center; padding: 3.5rem; border-radius: 28px; color: white; background: radial-gradient(circle at 5% 0%, rgba(255,255,255,.18), transparent 38%), linear-gradient(135deg, #075e4a, #13875e); box-shadow: 0 24px 60px rgba(7, 94, 74, .24); }
-.upload-hero::after { content: ""; position: absolute; width: 340px; height: 340px; right: -150px; bottom: -210px; border: 52px solid rgba(255,255,255,.08); border-radius: 50%; }
-.hero-copy, .upload-card { position: relative; z-index: 1; }
-.eyebrow { display: block; margin-bottom: .65rem; color: #77e0bd; font-size: .74rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
-.hero-copy h1 { max-width: 590px; margin-bottom: 1rem; font-size: 2.6rem; font-weight: 800; line-height: 1.08; }
-.hero-copy p { max-width: 620px; margin-bottom: 1.5rem; color: rgba(255,255,255,.8); font-size: 1.04rem; line-height: 1.65; }
-.hero-notes { display: flex; flex-wrap: wrap; gap: .7rem; }
-.hero-notes span { padding: .48rem .75rem; border: 1px solid rgba(255,255,255,.16); border-radius: 100px; background: rgba(255,255,255,.08); font-size: .78rem; }
-.hero-notes i { margin-right: .35rem; }
-.upload-card { padding: 1.25rem; border: 1px solid rgba(255,255,255,.28); border-radius: 22px; background: rgba(255,255,255,.96); box-shadow: 0 20px 45px rgba(0,0,0,.15); }
-.drop-zone { min-height: 245px; padding: 2rem 1.2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px dashed #b7d8cb; border-radius: 16px; color: #284c42; background: #f5fbf8; cursor: pointer; transition: .2s ease; text-align: center; }
-.drop-zone:hover, .drop-zone.dragging { border-color: #14835e; background: #eaf8f1; transform: translateY(-2px); }
-.drop-zone.selected { border-style: solid; }
-.drop-zone strong { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.drop-zone span, .drop-zone small { margin-top: .25rem; color: #6b837b; }
-.upload-icon { width: 68px; height: 68px; margin-bottom: 1rem; display: grid; place-items: center; border-radius: 20px; color: #0d7655; background: #dff4eb; font-size: 2rem; }
-.btn-analyze, .btn-publish { border: none; color: white; background: linear-gradient(135deg, #13875e, #075e4a); font-weight: 700; }
-.btn-analyze { margin-top: 1rem; padding: .85rem; border-radius: 12px; }
-.btn-analyze:disabled { opacity: .48; }
-.storage-option { margin-top: .9rem; padding: .8rem .9rem; border: 1px solid #dceae4; border-radius: 12px; color: #315c50; background: #f6faf8; font-size: .82rem; }
-.storage-option small { display: block; margin-top: .25rem; color: #758a83; line-height: 1.35; }
-.period-management-section { margin: 4rem 0 2rem; }
-.period-toolbar { display: flex; align-items: center; gap: .6rem; }
-.period-toolbar .custom-select { width: 190px; border-color: #d5e5de; color: #315b50; font-weight: 700; }
-.periods-empty { min-height: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .7rem; border: 1px dashed #bfd6cc; border-radius: 18px; color: #71847d; background: rgba(255,255,255,.72); }
-.periods-empty i { color: #87a49a; font-size: 2rem; }
-.year-archive { overflow: hidden; margin-bottom: 1rem; border: 1px solid #dfeae5; border-radius: 18px; background: white; box-shadow: 0 12px 32px rgba(34, 76, 63, .07); }
-.year-archive summary { display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 1.5rem; cursor: pointer; list-style: none; background: #f5faf8; }
+.upload-hero {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 2.5rem;
+  align-items: center;
+  padding: 3.1rem 3.25rem;
+  border-radius: 24px;
+  color: var(--color-white);
+  background: #15571f;
+  font-family: var(--font-inter);
+  box-shadow: 0px 2px 5px 0px var(--shadow-card);
+}
+.hero-copy {
+  font-family: var(--font-inter);
+}
+.hero-copy .eyebrow {
+  display: inline-block;
+  margin-bottom: 1.15rem;
+  padding: 0.22rem 0.65rem;
+  border-radius: 6px;
+  background: var(--color-white);
+  color: #0c681a;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.hero-copy h1 {
+  max-width: 520px;
+  margin-bottom: 1.05rem;
+  color: var(--color-white);
+  font-family: var(--font-inter);
+  font-size: 2.7rem;
+  font-weight: 700;
+  line-height: 1.12;
+}
+.hero-copy p {
+  max-width: 540px;
+  margin-bottom: 0;
+  color: var(--color-white);
+  font-family: var(--font-inter);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.55;
+}
+.upload-card {
+  padding: 1.2rem;
+  border-radius: 20px;
+  background: var(--color-white);
+}
+.drop-zone {
+  min-height: 196px;
+  padding: 1.6rem 1.1rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px dashed #dee2e6;
+  border-radius: 16px;
+  color: #0c681a;
+  background: var(--color-white);
+  cursor: pointer;
+  text-align: center;
+  font-family: var(--font-inter);
+}
+.drop-zone:hover,
+.drop-zone.dragging {
+  border-color: #19a02d;
+  background: var(--green-fill);
+}
+.drop-zone.selected { border-style: solid; border-color: #0c681a; }
+.drop-zone strong {
+  max-width: 13.5rem;
+  color: #0c681a;
+  font-family: var(--font-montserrat);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.drop-zone small {
+  margin-top: 0.35rem;
+  color: #666;
+  font-size: 0.68rem;
+  font-weight: 400;
+}
+.upload-icon {
+  width: 56px;
+  height: 56px;
+  margin-bottom: 0.9rem;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  color: #19a02d;
+  background: var(--green-fill);
+  font-size: 1.45rem;
+}
+.btn-analyze,
+.btn-publish {
+  border: 0;
+  color: var(--color-white);
+  background: #19a02d;
+  font-family: var(--font-inter);
+  font-weight: 600;
+}
+.btn-analyze {
+  width: 100%;
+  margin-top: 0.85rem;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+}
+.btn-analyze:hover,
+.btn-publish:hover {
+  background: #0c681a;
+  color: var(--color-white);
+}
+.btn-analyze:disabled { opacity: 0.48; }
+.storage-option {
+  margin-top: 0.85rem;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid #dee2e6;
+  border-radius: 10px;
+  color: #353535;
+  background: var(--gray-bs-100);
+  font-size: 0.82rem;
+}
+.storage-option small {
+  display: block;
+  margin-top: 0.25rem;
+  color: #666;
+  line-height: 1.35;
+}
+.period-management-section { margin: 3.5rem 0 2rem; }
+.period-toolbar { display: flex; align-items: center; gap: 0.6rem; }
+.period-toolbar .custom-select,
+.period-toolbar :deep(.form-select) {
+  width: 190px;
+}
+.periods-empty {
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  border: 1px dashed #dee2e6;
+  border-radius: 16px;
+  color: #666;
+  background: var(--gray-bs-100);
+}
+.periods-empty i { font-size: 2rem; }
+.year-archive {
+  overflow: hidden;
+  margin-bottom: 1rem;
+  border: 1px solid #dee2e6;
+  border-radius: 16px;
+  background: var(--green-fill);
+}
+.year-archive summary {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.1rem 1.35rem;
+  cursor: pointer;
+  list-style: none;
+}
 .year-archive summary::-webkit-details-marker { display: none; }
-.year-archive summary div { display: flex; align-items: baseline; gap: .8rem; }
-.year-archive summary strong { color: #164b3b; font-size: 1.45rem; }
-.year-archive summary span { color: #72857e; font-size: .82rem; font-weight: 700; }
-.year-archive summary i { color: #16805e; transition: transform .2s; }
-.year-archive[open] summary i { transform: rotate(180deg); }
-.year-periods { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; padding: 1.25rem; }
-.loaded-period-card { overflow: hidden; border: 1px solid #e1ebe7; border-radius: 15px; background: #fff; }
-.loaded-period-card header { display: flex; align-items: center; justify-content: space-between; padding: .9rem 1rem; border-bottom: 1px solid #edf2f0; background: #fbfdfc; }
-.loaded-period-card header span:first-child { color: #7b8d86; font-size: .7rem; font-weight: 800; text-transform: uppercase; }
-.loaded-period-card h3 { margin: .1rem 0 0; color: #22483d; font-size: 1.15rem; font-weight: 800; }
-.period-state { padding: .3rem .55rem; border-radius: 100px; font-size: .68rem; font-weight: 800; text-transform: uppercase; }
-.period-state.enabled { color: #08714d; background: #dff5ea; }
-.period-state.partial { color: #786016; background: #fff1bd; }
-.period-state.disabled { color: #687873; background: #e9eeec; }
-.period-versions { padding: .45rem .8rem; }
-.period-versions.has-overflow { max-height: 220px; overflow-y: auto; scrollbar-color: #9bc7b6 #edf5f1; scrollbar-width: thin; }
-.period-versions.has-overflow::-webkit-scrollbar { width: 7px; }
-.period-versions.has-overflow::-webkit-scrollbar-track { border-radius: 8px; background: #edf5f1; }
-.period-versions.has-overflow::-webkit-scrollbar-thumb { border-radius: 8px; background: #9bc7b6; }
-.period-version { display: flex; align-items: center; justify-content: space-between; gap: .6rem; padding: .7rem .2rem; border-top: 1px solid #eef3f1; }
+.year-archive summary div {
+  display: flex;
+  align-items: baseline;
+  gap: 0.8rem;
+  margin-right: auto;
+}
+.year-archive summary strong {
+  color: #0c681a;
+  font-size: 1.45rem;
+}
+.year-archive summary span {
+  color: #666;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+.year-archive summary > .bi-chevron-down {
+  color: #0c681a;
+  transition: transform 0.2s;
+}
+.year-archive[open] summary > .bi-chevron-down { transform: rotate(180deg); }
+.year-warning {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: var(--color-white);
+  background: #0c681a;
+}
+.year-warning i { font-size: 0.85rem; }
+.year-periods {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  padding: 0 1.25rem 1.25rem;
+}
+.loaded-period-card {
+  overflow: hidden;
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  background: var(--color-white);
+}
+.loaded-period-card header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1rem;
+}
+.loaded-period-card header span:first-child {
+  color: #666;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.loaded-period-card h3 {
+  margin: 0.1rem 0 0;
+  color: #0c681a;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+.period-state {
+  padding: 0.3rem 0.55rem;
+  border-radius: 100px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.period-state.enabled { color: #0c681a; background: var(--green-fill); }
+.period-state.partial { color: #E27910; background: var(--gray-bs-100); }
+.period-state.disabled { color: #666; background: var(--gray-bs-200); }
+.period-versions { padding: 0.2rem 0.9rem 0.7rem; }
+.period-versions.has-overflow {
+  max-height: 220px;
+  overflow-y: auto;
+  scrollbar-color: #666 var(--gray-bs-100);
+  scrollbar-width: thin;
+}
+.period-version {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.7rem 0;
+  border-top: 1px solid #dee2e6;
+}
 .period-version:first-child { border-top: 0; }
-.period-version.active { color: #0b684c; }
-.version-file { min-width: 0; display: flex; align-items: center; gap: .55rem; }
-.version-file i { flex: 0 0 auto; color: #6f8a80; font-size: 1.2rem; }
-.period-version.active .version-file i { color: #13875e; }
+.version-file { min-width: 0; display: flex; align-items: center; gap: 0.55rem; }
+.version-file i { flex: 0 0 auto; color: #666; font-size: 1.2rem; }
 .version-file div { min-width: 0; }
-.version-file strong, .version-file small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.version-file strong { max-width: 235px; font-size: .77rem; }
-.version-file small { max-width: 235px; color: #82928c; font-size: .67rem; }
-.version-state { flex: 0 0 auto; padding: .34rem .6rem; border-radius: 999px; font-size: .67rem; font-weight: 800; text-transform: uppercase; white-space: nowrap; }
-.version-state.enabled { color: #08714d; background: #dff5ea; }
-.version-state.disabled { color: #687873; background: #e9eeec; }
-.versions-overflow-note { padding: .45rem .8rem; border-top: 1px solid #e5efea; color: #71877e; background: #f6faf8; font-size: .68rem; font-weight: 700; text-align: center; }
-.versions-overflow-note i { margin-right: .25rem; color: #16805e; }
-.year-pagination { display: flex; align-items: center; justify-content: space-between; margin-top: 1.1rem; padding: .8rem 1rem; border: 1px solid #dfeae5; border-radius: 14px; color: #70847c; background: rgba(255,255,255,.82); font-size: .76rem; font-weight: 700; }
-.history-section { margin: 4rem 0 2rem; }
-.section-heading { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.25rem; }
-.section-heading .eyebrow { color: #13875e; }
-.section-heading h2 { margin: 0 0 .35rem; font-weight: 800; }
-.section-heading p { margin: 0; color: #6b7f78; }
-.history-count { min-width: 95px; padding: .65rem 1rem; border-radius: 14px; color: #0b664b; background: #e5f5ee; text-align: center; }
-.history-count strong, .history-count span { display: block; }
+.version-file strong,
+.version-file small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.version-file strong { max-width: 235px; font-size: 0.77rem; }
+.version-file small { max-width: 235px; color: #666; font-size: 0.67rem; }
+.version-state {
+  flex: 0 0 auto;
+  padding: 0.28rem 0.7rem;
+  border: 1px solid #19a02d;
+  border-radius: 8px;
+  color: #19a02d;
+  background: var(--color-white);
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.version-state.enabled { border-color: #0c681a; color: #0c681a; }
+.version-state.disabled { border-color: #19a02d; color: #19a02d; }
+.versions-overflow-note {
+  padding: 0.45rem 0.8rem;
+  border-top: 1px solid #dee2e6;
+  color: #666;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-align: center;
+}
+.year-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1.1rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  color: #666;
+  background: var(--color-white);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+.history-section { margin: 3.5rem 0 2rem; }
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 1.25rem;
+}
+.section-heading .eyebrow {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: #0c681a;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.section-heading h2 {
+  margin: 0 0 0.35rem;
+  color: #353535;
+  font-weight: 800;
+}
+.section-heading p { margin: 0; color: #666; }
+.history-count {
+  min-width: 95px;
+  padding: 0.65rem 1rem;
+  border-radius: 14px;
+  color: #0c681a;
+  background: var(--green-fill);
+  text-align: center;
+}
+.history-count strong,
+.history-count span { display: block; }
 .history-count strong { font-size: 1.4rem; }
-.history-count span { font-size: .72rem; font-weight: 700; text-transform: uppercase; }
-.history-card { overflow: hidden; border: 1px solid #e3ece8; border-radius: 18px; background: white; box-shadow: 0 14px 40px rgba(34, 76, 63, .08); }
-.history-toolbar { display: grid; grid-template-columns: minmax(240px, 1fr) 190px 175px auto; gap: .65rem; align-items: center; padding: 1rem; border-bottom: 1px solid #e7efeb; background: #f7faf9; }
-.history-toolbar .custom-select { height: 38px; border-color: #d4e3dc; color: #315b50; font-weight: 700; }
-.history-search { display: flex; align-items: center; height: 38px; border: 1px solid #d4e3dc; border-radius: .2rem; background: white; }
-.history-search:focus-within { border-color: #16805e; box-shadow: 0 0 0 3px rgba(22,128,94,.1); }
-.history-search i { padding-left: .75rem; color: #16805e; }
-.history-search input { width: 100%; min-width: 0; border: 0; outline: 0; padding: .5rem .7rem; background: transparent; color: #294d42; font-size: .82rem; }
+.history-count span {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.history-card {
+  overflow: hidden;
+  border: 1px solid #dee2e6;
+  border-radius: 16px;
+  background: var(--color-white);
+}
+.history-toolbar {
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) 190px 175px auto;
+  gap: 0.65rem;
+  align-items: center;
+  padding: 1rem;
+}
+.history-search {
+  display: flex;
+  align-items: center;
+  height: 38px;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  background: var(--color-white);
+}
+.history-search:focus-within {
+  border-color: #0c681a;
+  box-shadow: 0 0 0 3px var(--green-fill);
+}
+.history-search i { padding-left: 0.75rem; color: #0c681a; }
+.history-search input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  padding: 0.5rem 0.7rem;
+  background: transparent;
+  color: #353535;
+  font-size: 0.82rem;
+}
 .history-sort-direction { height: 38px; white-space: nowrap; font-weight: 700; }
-.history-pagination { display: flex; align-items: center; justify-content: space-between; padding: .8rem 1rem; border-top: 1px solid #e7efeb; color: #70847c; background: #f7faf9; font-size: .76rem; font-weight: 700; }
-.history-loading { display: flex; align-items: center; justify-content: center; gap: .6rem; padding: 2rem; color: #55756a; font-weight: 700; }
-.server-activity { position: fixed; z-index: 1080; right: 1.25rem; bottom: 1.25rem; display: flex; align-items: center; gap: .65rem; max-width: calc(100vw - 2.5rem); padding: .8rem 1rem; border: 1px solid rgba(255,255,255,.2); border-radius: 14px; color: white; background: #075e4a; box-shadow: 0 14px 35px rgba(7, 94, 74, .28); font-size: .82rem; font-weight: 700; }
-.server-activity-enter-active, .server-activity-leave-active { transition: .2s ease; }
-.server-activity-enter, .server-activity-leave-to { opacity: 0; transform: translateY(10px); }
-.file-cell { min-width: 0; display: flex; align-items: center; gap: .65rem; }
+.history-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 1rem;
+  border-top: 1px solid #dee2e6;
+  color: #666;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+.history-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 2rem;
+  color: #666;
+  font-weight: 700;
+}
+.server-activity {
+  position: fixed;
+  z-index: 1080;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  max-width: calc(100vw - 2.5rem);
+  padding: 0.8rem 1rem;
+  border-radius: 12px;
+  color: var(--color-white);
+  background: #0c681a;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+.server-activity-enter-active,
+.server-activity-leave-active { transition: 0.2s ease; }
+.server-activity-enter,
+.server-activity-leave-to { opacity: 0; transform: translateY(10px); }
+.file-cell { min-width: 0; display: flex; align-items: center; gap: 0.65rem; }
 .file-cell div { min-width: 0; }
-.file-cell i { color: #16845f; font-size: 1.5rem; }
-.file-cell strong, .file-cell small { display: block; }
-.file-cell strong, .text-cell { overflow: hidden; display: block; text-overflow: ellipsis; white-space: nowrap; }
-.file-cell small { color: #82928c; }
+.file-cell i { color: #19a02d; font-size: 1.5rem; }
+.file-cell strong,
+.file-cell small { display: block; }
+.file-cell strong,
+.text-cell {
+  overflow: hidden;
+  display: block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.file-cell small { color: #666; }
 .cell-compact { display: block; max-width: 105px; }
-.period-cell { overflow: hidden; display: -webkit-box; max-width: 150px; line-height: 1.35; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
-.history-actions { display: flex; justify-content: flex-end; gap: .35rem; white-space: nowrap; }
-.result-cell span { display: block; white-space: nowrap; font-size: .78rem; font-weight: 700; }
-.status-badge { display: inline-block; padding: .35rem .65rem; border-radius: 100px; font-size: .73rem; font-weight: 800; white-space: nowrap; }
-.status-published { color: #0d684b; background: #dcf5e9; }
-.status-validated { color: #805d00; background: #fff3c4; }
-.status-rejected { color: #9a3030; background: #ffe0e0; }
-.status-replaced { color: #596b65; background: #e7ecea; }
-.status-partially-replaced { color: #6d5b24; background: #f4edd2; }
-.status-disabled { color: #8c3030; background: #f7dddd; }
-.no-access { min-height: calc(100vh - 58px); display: grid; place-items: center; padding: 2rem; }
-.no-access-card { max-width: 520px; padding: 3rem; border-radius: 22px; background: white; box-shadow: 0 20px 50px rgba(0,0,0,.12); text-align: center; }
-.no-access-card i { color: #698079; font-size: 4rem; }
+.period-cell {
+  overflow: hidden;
+  display: -webkit-box;
+  max-width: 150px;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+.history-actions { display: flex; justify-content: flex-end; gap: 0.35rem; white-space: nowrap; }
+.result-cell span { display: block; white-space: nowrap; font-size: 0.78rem; font-weight: 700; }
+.status-badge {
+  display: inline-block;
+  padding: 0.35rem 0.65rem;
+  border-radius: 100px;
+  font-size: 0.73rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.status-published { color: #0c681a; background: var(--green-fill); }
+.status-validated { color: #E27910; background: var(--gray-bs-100); }
+.status-rejected { color: #cc0025; background: var(--gray-bs-100); }
+.status-replaced { color: #666; background: var(--gray-bs-200); }
+.status-partially-replaced { color: #E27910; background: var(--gray-bs-100); }
+.status-disabled { color: #cc0025; background: var(--gray-bs-100); }
+.no-access {
+  min-height: calc(100vh - 58px);
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+}
+.no-access-card {
+  max-width: 520px;
+  padding: 3rem;
+  border-radius: 22px;
+  background: var(--color-white);
+  box-shadow: 0 20px 50px var(--shadow-mid);
+  text-align: center;
+}
+.no-access-card i { color: #666; font-size: 4rem; }
 .no-access-card h1 { margin-top: 1rem; font-size: 1.8rem; font-weight: 800; }
-</style>
-
-<style>
-.boletas-page .history-card .table-responsive { width: 100%; }
-.boletas-page .history-card table { width: 100%; min-width: 1145px; table-layout: fixed; }
-.boletas-page .history-card th, .boletas-page .history-card td { overflow: hidden; vertical-align: top; }
-.boletas-page .history-card thead th { border-bottom: 1px solid #c7d7d1; color: #25483e; background: #dfe9e5; font-weight: 800; }
-.analysis-modal .modal-content, .publish-modal .modal-content { overflow: hidden; border: 0; border-radius: 24px; box-shadow: 0 30px 80px rgba(15, 50, 40, .25); }
-.analysis-modal .modal-body, .publish-modal .modal-body { padding: 0; }
-.analysis-processing, .analysis-result, .publish-confirmation { padding: 2.5rem; text-align: center; }
-.publication-progress { margin-top: 1.25rem; text-align: left; }
-.publication-progress small { display: block; margin-top: .45rem; color: #71837d; text-align: center; }
-.loader-orbit { width: 110px; height: 110px; margin: 0 auto 1.5rem; display: grid; place-items: center; border: 3px solid #dcefe8; border-top-color: #13875e; border-radius: 50%; animation: orbit 1.2s linear infinite; }
-.loader-core { width: 76px; height: 76px; display: grid; place-items: center; border-radius: 50%; color: #0b6b4e; background: #e3f6ee; font-size: 2.2rem; animation: counterOrbit 1.2s linear infinite; }
-@keyframes orbit { to { transform: rotate(360deg); } }
-@keyframes counterOrbit { to { transform: rotate(-360deg); } }
-.analysis-processing .eyebrow, .analysis-result .eyebrow { color: #14835e; }
-.analysis-processing h3, .analysis-result h3, .publish-confirmation h3 { color: #193d33; font-weight: 800; }
-.analysis-processing p, .result-description, .publish-confirmation p { color: #71837d; }
-.processing-steps { display: flex; justify-content: space-between; margin-top: .65rem; color: #a5b2ae; font-size: .7rem; font-weight: 800; text-transform: uppercase; }
-.processing-steps .active { color: #13875e; }
-.result-icon, .confirm-icon { width: 80px; height: 80px; margin: 0 auto 1.2rem; display: grid; place-items: center; border-radius: 50%; font-size: 2.2rem; }
-.result-icon.is-success { color: #0c7654; background: #dcf5e9; }
-.result-icon.has-errors { color: #a93636; background: #ffe3e3; }
-.confirm-icon { color: #0d7655; background: #e1f6ed; }
-.confirm-icon.disable-icon { color: #a94747; background: #fde7e7; }
-.overwrite-warning { margin: 1.25rem 0 0; padding: 1rem; border: 1px solid #f1cb76; border-radius: 14px; color: #6f520d; background: #fff8e6; text-align: left; }
-.overwrite-warning-title { display: flex; align-items: center; gap: .5rem; margin-bottom: .5rem; color: #7d5900; font-weight: 800; }
-.overwrite-warning p { margin-bottom: .75rem; color: #735c25; font-size: .86rem; }
-.future-warning { border-color: #e5a1a1; color: #7b3030; background: #fff1f1; }
-.future-warning .overwrite-warning-title, .future-warning p, .future-warning .overwrite-check { color: #7b3030; }
-.overwrite-check { display: flex; align-items: flex-start; gap: .55rem; margin: 0; color: #604b18; font-size: .82rem; font-weight: 700; cursor: pointer; }
-.overwrite-check input { margin-top: .18rem; }
-.btn-publish:disabled { cursor: not-allowed; opacity: .45; }
-.summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .75rem; margin: 1.5rem 0; }
-.renamed-file-notice { margin: 1rem 0 0; padding: .8rem 1rem; border: 1px solid #cde3da; border-radius: 12px; color: #315c50; background: #f2faf6; font-size: .82rem; }
-.renamed-file-notice i { margin-right: .35rem; color: #13875e; }
-.summary-grid div { padding: .8rem; border: 1px solid #e4ece9; border-radius: 12px; background: #f8fbfa; }
-.summary-grid span, .summary-grid strong { display: block; }
-.summary-grid span { color: #7d8d88; font-size: .7rem; font-weight: 800; text-transform: uppercase; }
-.summary-grid strong { margin-top: .25rem; color: #1d463a; font-size: 1.15rem; }
-.issues-panel { overflow: hidden; margin-top: 1.2rem; border: 1px solid #e4e9e7; border-radius: 14px; text-align: left; }
-.issues-heading { padding: .75rem 1rem; display: flex; justify-content: space-between; align-items: center; background: #f3f7f5; }
-.issues-list { max-height: 245px; overflow-y: auto; }
-.issue-row { display: grid; grid-template-columns: 88px 72px 125px 1fr; gap: .6rem; padding: .65rem 1rem; border-top: 1px solid #edf1ef; font-size: .75rem; align-items: center; }
-.issue-row.error { border-left: 4px solid #dc5353; }
-.issue-row.warning { border-left: 4px solid #e4ad32; }
-.issue-type { font-weight: 800; text-transform: uppercase; }
-.issue-row.error .issue-type { color: #b13c3c; }
-.issue-row.warning .issue-type { color: #9a6c00; }
-.issue-row-number { color: #74857f; }
-.issues-more { display: block; padding: .7rem 1rem; color: #6f817b; background: #fafcfc; }
-.result-actions, .confirm-actions { display: flex; justify-content: center; gap: .75rem; margin-top: 1.5rem; }
-.result-actions .btn, .confirm-actions .btn { min-width: 145px; padding: .65rem 1rem; border-radius: 10px; font-weight: 700; }
 @media (max-width: 900px) {
   .upload-hero { grid-template-columns: 1fr; padding: 2rem; }
   .hero-copy h1 { font-size: 2rem; }
   .section-heading { align-items: flex-start; flex-direction: column; gap: 1rem; }
   .period-toolbar { width: 100%; }
-  .period-toolbar .custom-select { flex: 1; width: auto; }
-  .year-periods { grid-template-columns: 1fr; padding: .8rem; }
+  .period-toolbar .custom-select,
+  .period-toolbar :deep(.form-select) { flex: 1; width: auto; }
+  .year-periods { grid-template-columns: 1fr; padding: 0.8rem; }
   .period-version { align-items: flex-start; flex-direction: column; }
-  .period-version .btn { width: 100%; }
-  .year-pagination { align-items: flex-start; flex-direction: column; gap: .6rem; }
+  .year-pagination { align-items: flex-start; flex-direction: column; gap: 0.6rem; }
   .history-toolbar { grid-template-columns: 1fr; }
   .history-sort-direction { width: 100%; }
-  .history-pagination { align-items: flex-start; flex-direction: column; gap: .6rem; }
+  .history-pagination { align-items: flex-start; flex-direction: column; gap: 0.6rem; }
+}
+</style>
+
+<style>
+.boletas-page .pagination .page-item.active .page-link {
+  background-color: #E27910;
+  border-color: #E27910;
+  color: #fff;
+}
+.boletas-page .pagination .page-link {
+  color: #0c681a;
+}
+.boletas-page .history-card .table-responsive { width: 100%; }
+.boletas-page .history-card table { width: 100%; min-width: 1145px; table-layout: fixed; }
+.boletas-page .history-card th,
+.boletas-page .history-card td { overflow: hidden; vertical-align: top; }
+.boletas-page .history-card thead th {
+  border-bottom: 1px solid #dee2e6;
+  color: #353535;
+  background: var(--gray-bs-100);
+  font-weight: 800;
+}
+.analysis-modal .modal-content,
+.publish-modal .modal-content,
+.boletas-dialog-modal .modal-content {
+  overflow: hidden;
+  border: 0;
+  border-radius: 16px;
+  box-shadow: 0px 2px 5px 0px var(--shadow-card);
+}
+.analysis-modal .modal-header,
+.publish-modal .modal-header,
+.boletas-dialog-modal .modal-header,
+.analysis-modal .modal-content > .btn-close,
+.publish-modal .modal-content > .btn-close,
+.boletas-dialog-modal .modal-content > .btn-close {
+  display: none;
+}
+.analysis-modal .modal-body,
+.publish-modal .modal-body,
+.boletas-dialog-modal .modal-body { padding: 0; }
+.publish-confirmation { padding: 2.5rem; text-align: center; }
+.boletas-dialog-bar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  min-height: 3.15rem;
+  padding: 0.45rem 0.85rem;
+  color: var(--color-white);
+}
+.boletas-dialog-bar-icon {
+  grid-column: 2;
+  display: grid;
+  place-items: center;
+  width: 1.85rem;
+  height: 1.85rem;
+  border: 2px solid var(--color-white);
+  border-radius: 50%;
+}
+.boletas-dialog-bar-icon i,
+.boletas-dialog-bar i {
+  font-size: 1rem;
+  line-height: 1;
+}
+.boletas-dialog-bar > i {
+  grid-column: 2;
+  font-size: 1.45rem;
+}
+.boletas-dialog-bar .btn-close {
+  grid-column: 3;
+  justify-self: end;
+}
+.boletas-dialog-bar--empty {
+  grid-template-columns: 1fr auto;
+}
+.boletas-dialog-bar--empty .btn-close {
+  grid-column: 2;
+}
+.boletas-dialog-bar--success { background: #19a02d; }
+.boletas-dialog-bar--warn { background: #daa511; }
+.boletas-dialog-bar--danger { background: #cc0025; }
+.boletas-dialog-body {
+  padding: 1.75rem 1.6rem 1.7rem;
+  text-align: center;
+  font-family: var(--font-inter);
+}
+.boletas-dialog-spinner {
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: 0.35rem auto 1.15rem;
+}
+.boletas-dialog-body h3 {
+  margin: 0 auto 0.7rem;
+  max-width: 22rem;
+  color: #0c681a;
+  font-family: var(--font-montserrat);
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+.boletas-dialog-title {
+  max-width: none;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #dee2e6;
+}
+.boletas-dialog-body p,
+.result-description {
+  margin-bottom: 0.85rem;
+  color: #666;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+.boletas-dialog-file {
+  margin: 0 0 0.85rem;
+  color: #0c681a;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.renamed-file-notice {
+  margin: 0 0 0.85rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  color: #353535;
+  background: var(--green-fill);
+  font-size: 0.82rem;
+  text-align: left;
+}
+.renamed-file-notice i { margin-right: 0.35rem; color: #0c681a; }
+.btn-dialog-cancel,
+.btn-dialog-ok {
+  min-width: 9.5rem;
+  padding: 0.55rem 1.15rem;
+  border-radius: 8px;
+  font-family: var(--font-inter);
+  font-weight: 600;
+}
+.btn-dialog-cancel {
+  border: 0;
+  color: var(--color-white);
+  background: #cc0025;
+}
+.btn-dialog-cancel:hover,
+.btn-dialog-cancel:disabled {
+  color: var(--color-white);
+  background: #cc0025;
+}
+.btn-dialog-ok {
+  border: 0;
+  color: var(--color-white);
+  background: #19a02d;
+}
+.btn-dialog-ok:hover { color: var(--color-white); background: #0c681a; }
+.publication-progress { margin-top: 1.25rem; text-align: left; }
+.publication-progress small {
+  display: block;
+  margin-top: 0.45rem;
+  color: #666;
+  text-align: center;
+}
+.publish-confirmation h3 { color: #0c681a; font-weight: 700; }
+.publish-confirmation p { color: #666; }
+.result-icon,
+.confirm-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1.2rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 2.2rem;
+}
+.result-icon.is-success,
+.confirm-icon { color: #0c681a; background: var(--green-fill); }
+.result-icon.has-errors,
+.confirm-icon.disable-icon { color: #cc0025; background: var(--gray-bs-100); }
+.overwrite-warning {
+  margin: 1.25rem 0 0;
+  padding: 1rem;
+  border: 1px solid #cbc508;
+  border-radius: 14px;
+  color: #E27910;
+  background: var(--gray-bs-100);
+  text-align: left;
+}
+.overwrite-warning-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  color: #E27910;
+  font-weight: 800;
+}
+.overwrite-warning p { margin-bottom: 0.75rem; color: #E27910; font-size: 0.86rem; }
+.future-warning { border-color: #cc0025; color: #cc0025; }
+.future-warning .overwrite-warning-title,
+.future-warning p,
+.future-warning .overwrite-check { color: #cc0025; }
+.overwrite-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  margin: 0;
+  color: #E27910;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.overwrite-check input { margin-top: 0.18rem; }
+.btn-publish:disabled { cursor: not-allowed; opacity: 0.45; }
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin: 1.15rem 0 1.35rem;
+  font-family: var(--font-inter);
+}
+.summary-grid div {
+  padding: 1.05rem 0.7rem;
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  background: var(--gray-bs-100);
+}
+.summary-grid span,
+.summary-grid strong { display: block; }
+.summary-grid span {
+  margin-top: 0.2rem;
+  color: #353535;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+.summary-grid strong {
+  color: #353535;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+.summary-grid .summary-error { color: #cc0025; }
+.summary-grid .summary-warn { color: #daa511; }
+.issues-panel {
+  overflow: hidden;
+  margin-top: 1.2rem;
+  border: 1px solid #dee2e6;
+  border-radius: 14px;
+  text-align: left;
+}
+.issues-heading {
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--gray-bs-100);
+}
+.issues-list { max-height: 245px; overflow-y: auto; }
+.issue-row {
+  display: grid;
+  grid-template-columns: 88px 72px 125px 1fr;
+  gap: 0.6rem;
+  padding: 0.65rem 1rem;
+  border-top: 1px solid #dee2e6;
+  font-size: 0.75rem;
+  align-items: center;
+}
+.issue-row.error { border-left: 4px solid #cc0025; }
+.issue-row.warning { border-left: 4px solid #cbc508; }
+.issue-type { font-weight: 800; text-transform: uppercase; }
+.issue-row.error .issue-type { color: #cc0025; }
+.issue-row.warning .issue-type { color: #E27910; }
+.issue-row-number { color: #666; }
+.issues-more {
+  display: block;
+  padding: 0.7rem 1rem;
+  color: #666;
+  background: var(--gray-bs-100);
+}
+.result-actions,
+.confirm-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+.result-actions .btn,
+.confirm-actions .btn {
+  min-width: 9.5rem;
+  padding: 0.55rem 1.15rem;
+  border-radius: 8px;
+  font-weight: 600;
+}
+@media (max-width: 900px) {
   .summary-grid { grid-template-columns: repeat(2, 1fr); }
-  .issue-row { grid-template-columns: 1fr; gap: .2rem; }
+  .issue-row { grid-template-columns: 1fr; gap: 0.2rem; }
 }
 </style>

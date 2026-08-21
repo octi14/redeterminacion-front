@@ -55,7 +55,7 @@ export default {
         const data = res?.data || res
         this.status = data?.status || null
         if (this.status === 'Cancelado') {
-          this.$router.replace('/pagos/tasa-urbana/error')
+          this.$router.replace('/pagos/pagar-tasas/error')
         }
       } catch (e) {
         console.error(e)

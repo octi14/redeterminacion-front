@@ -745,7 +745,7 @@ export default{
       this.endButton = true
     },
     async onResetParams(){
-      await this.$router.push('/recaudaciones/pagos_dobles')
+      await this.$router.push('/tasas/pagos_dobles')
       this.showPopupFormOk = false;
       this.showPopupFormLoading = false;
       this.printing = false;
@@ -847,7 +847,7 @@ export default{
   padding: 0.85rem 1rem;
 }
 .pagos-dobles-comprobante-header h5 {
-  color: white !important;
+  color: var(--color-white) !important;
   margin: 0;
 }
 .pagos-dobles-comprobante-body {
@@ -863,7 +863,7 @@ export default{
   list-style: none;
   padding: 0;
   margin: 0 0 1.25rem;
-  border: 1px solid #dee2e6;
+  border: 1px solid var(--gray-bs-300);
   border-radius: 0.375rem;
   overflow: hidden;
 }
@@ -873,13 +873,13 @@ export default{
   align-items: center;
   gap: 1rem;
   padding: 0.65rem 1rem;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #f0f0f0;
 }
 .comprobante-datos li:last-child {
   border-bottom: none;
 }
 .comprobante-datos li:nth-child(odd) {
-  background-color: #f8f9fa;
+  background-color: var(--gray-bs-100);
 }
 .comprobante-label {
   font-weight: 600;
@@ -897,7 +897,7 @@ export default{
 .comprobante-value {
   text-align: right;
   font-weight: 600;
-  color: #333;
+  color: #353535;
 }
 .comprobante-notas {
   border-top: 1px solid #ccc;
@@ -915,7 +915,7 @@ export default{
   line-height: 1.45;
 }
 .green{
-    background-color:#0b6919;
+    background-color:#0c681a;
   }
 .centeredContainer{
   width:  auto;
@@ -975,7 +975,7 @@ ul{
   padding: 1.5rem 1rem;
 }
 .modal h5, .modal h3{
-  color: white !important;
+  color: var(--color-white) !important;
   font-weight: bold;
   font-size: 1.5rem;
 }
@@ -996,7 +996,7 @@ ul{
   color: #e53749 !important;
 }
 .modal-error p{
-  color: black;
+  color: var(--color-dark);
   font-weight: 500;
   padding: 0 1rem;
 }
@@ -1081,9 +1081,9 @@ form .card{
   border-radius: 1rem;
 }
 .section-card{
-  box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
-  -webkit-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
-  -moz-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
+  box-shadow: 0px 2px 5px 0px var(--shadow-card);
+  -webkit-box-shadow: 0px 2px 5px 0px var(--shadow-card);
+  -moz-box-shadow: 0px 2px 5px 0px var(--shadow-card);
 }
 form p{
   font-weight: 600;

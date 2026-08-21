@@ -1,18 +1,18 @@
 <template>
   <div class="page main-background">
-    <Banner title="Recaudaciones" />
+    <Banner title="Tasas" />
     <MenuItem
       icon="info-circle"
-      to="/recaudaciones/pagos_dobles"
+      to="/tasas/pagos_dobles"
       title="Informar pagos dobles"
-      description="Realizar un reclamo por pago doble de tasas"
+      description="Realizar un reclamo por pago doble de tasa urbana"
     />
     <MenuItem
       v-if="mostrarTasaAutomotor"
       icon="car-front"
-      to="/recaudaciones/tasa-automotor"
-      title="Descargar tasa de automotores"
-      description="Consultar y descargar boletas de patente de rodados"
+      to="/tasas/tasa-automotor"
+      title="Descargar Tasa Automotor"
+      description="Consultar y descargar boletas de Automotores por dominio"
     />
     <div class="page-btn-volver-wrap">
       <NuxtLink to="/">
@@ -24,7 +24,7 @@
 
 <script>
 export default {
-  name: 'RecaudacionesIndex',
+  name: 'TasasIndex',
   data() {
     return {
       tasaAutomotorPublicaHabilitada: true

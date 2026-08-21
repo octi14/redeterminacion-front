@@ -23,10 +23,10 @@
         <b-form-input v-model="dfe" type="text" readonly />
       </b-form-group>
       <b-button type="submit" size="md" variant="success" disabled>
-        <h5 class="my-auto" style="color:white">{{ create ? 'Crear' : 'Editar' }}</h5>
+        <h5 class="my-auto" style="color: var(--color-white)">{{ create ? 'Crear' : 'Editar' }}</h5>
       </b-button>
       <b-button type="reset" size="md" @click="volver">
-        <h5 class="my-auto" style="color:white">Volver</h5>
+        <h5 class="my-auto" style="color: var(--color-white)">Volver</h5>
       </b-button>
     </b-form>
   </div>

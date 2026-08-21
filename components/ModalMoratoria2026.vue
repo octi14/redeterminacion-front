@@ -101,7 +101,7 @@ export default {
   border-radius: 50%;
   border: none;
   background: none;
-  color: black;
+  color: var(--color-dark);
   cursor: pointer;
   z-index: 10;
   font-weight: 500;

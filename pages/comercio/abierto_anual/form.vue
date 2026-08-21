@@ -323,10 +323,10 @@
       margin-top: 5px;
     }
     .green{
-      background-color:#0b6919;
+      background-color:#0c681a;
     }
     .disabled-option {
-      color: rgb(164, 163, 163);
+      color: var(--gray-bs-500);
     }
     .centeredContainer{
       width:  auto;
@@ -376,7 +376,7 @@
     }
 
     .modal-warning .modal-subtitle{
-      color: #ddbc04 !important;
+      color: #daa511 !important;
     }
 
     .modal-error .centeredContainer{
@@ -384,7 +384,7 @@
     }
 
     .modal-error p{
-      color: black;
+      color: var(--color-dark);
       font-weight: 500;
       padding: 0 1rem;
     }
@@ -394,7 +394,7 @@
     }
 
     .modal-success p{
-      color: black;
+      color: var(--color-dark);
       font-weight: 500;
       font-size: 1.2rem;
       padding: 0 1.5rem;
@@ -405,7 +405,7 @@
     }
 
     .modal-warning p{
-      color: black;
+      color: var(--color-dark);
       font-weight: 500;
       padding: 0 1rem;
     }
@@ -423,7 +423,7 @@
       margin-right: 1rem;
     }
     .modal h5{
-      color: white !important;
+      color: var(--color-white) !important;
       font-weight: bold;
       font-size: 1.5rem;
       margin-top: 1.5rem;
@@ -449,22 +449,22 @@
     .confirmation-popup-body p, .closed-popup-body p{
       text-align: center;
       font-size: 1.25rem;
-      color: black;
+      color: var(--color-dark);
     }
     .confirmation-popup-body .form-check{
       margin: auto;
       margin-top: 1rem;
     }
     .confirmation-popup-body .li-content, .closed-popup-body .li-content{
-      color: black;
+      color: var(--color-dark);
     }
     .section-card{
       margin: 2rem auto !important;
       padding: 2rem 4rem;
       border-radius: 1rem;
-      box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
-      -webkit-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
-      -moz-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.75);
+      box-shadow: 0px 2px 5px 0px var(--shadow-card);
+      -webkit-box-shadow: 0px 2px 5px 0px var(--shadow-card);
+      -moz-box-shadow: 0px 2px 5px 0px var(--shadow-card);
     }
     .section-card .btn-container{
       width: fit-content;

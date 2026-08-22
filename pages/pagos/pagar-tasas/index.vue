@@ -314,6 +314,51 @@
         </button>
       </div>
     </b-modal>
+
+    <b-modal
+      v-model="showConsultaModal"
+      modal-class="pn-consulta-modal"
+      :header-bg-variant="consultaModal.variant === 'danger' ? 'danger' : 'success'"
+      header-class="border-0"
+      body-class="pn-consulta-body"
+      centered
+      hide-footer
+    >
+      <template #header>
+        <div class="pn-consulta-header">
+          <span class="pn-consulta-header-spacer"></span>
+          <i
+            class="bi pn-consulta-header-icon"
+            :class="consultaModal.variant === 'danger' ? 'bi-exclamation-triangle-fill' : 'bi-info-circle-fill'"
+            aria-hidden="true"
+          ></i>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            aria-label="Cerrar"
+            @click="showConsultaModal = false"
+          ></button>
+        </div>
+      </template>
+      <div class="pn-consulta-content">
+        <h2
+          class="pn-consulta-title"
+          :class="{ 'pn-consulta-title--danger': consultaModal.variant === 'danger' }"
+        >{{ consultaModal.title }}</h2>
+        <p>{{ consultaModal.message }}</p>
+        <p class="pn-consulta-help">
+          Si creés que es un error, escribinos a
+          <a href="mailto:recaudaciones@gesell.gob.ar">recaudaciones@gesell.gob.ar</a>.
+        </p>
+        <button
+          type="button"
+          class="btn btn-danger pn-consulta-ok"
+          @click="showConsultaModal = false"
+        >
+          Aceptar
+        </button>
+      </div>
+    </b-modal>
   </div>
 </template>
 
@@ -337,6 +382,12 @@ export default {
       deudaMsg: '',
       deudaVariant: 'info',
       showRedirectModal: false,
+      showConsultaModal: false,
+      consultaModal: {
+        title: '',
+        message: '',
+        variant: 'info',
+      },
       accesoResuelto: false,
       pagoUrbanaPublico: false,
       tipoTasa: 'URBANA',
@@ -519,6 +570,7 @@ export default {
       this.deudaMsg = ''
       this.deuda = null
       this.seleccionados = []
+      this.showConsultaModal = false
 
       if (!this.claveValida) return
 
@@ -534,19 +586,57 @@ export default {
           .filter((item) => !this.esPeriodoVencido(item))
           .map((item) => item.id)
         this.deudaMsg = ''
+
+        if (!(data.items || []).length) {
+          this.abrirConsultaModal({
+            code: 'SIN_DEUDA',
+            message: 'La cuenta existe, pero no tiene deuda para abonar online.',
+          })
+          return
+        }
+
         this.$nextTick(() => {
           this.$refs.pagadorSection?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
         })
       } catch (e) {
-        this.deudaMsg =
-          e?.response?.data?.message ||
-          e?.data?.message ||
+        const payload = e?.response?.data || e?.data || {}
+        const message =
+          payload.message ||
           e?.message ||
           'No se pudo consultar la deuda.'
-        this.deudaVariant = 'danger'
+        const code = payload.code || ''
+        if (code === 'CUENTA_NO_ENCONTRADA' || code === 'SIN_DEUDA' || e?.status === 404 || e?.response?.status === 404) {
+          this.abrirConsultaModal({ code, message })
+          this.deudaMsg = ''
+        } else {
+          this.deudaMsg = message
+          this.deudaVariant = 'danger'
+        }
       } finally {
         this.consultando = false
       }
+    },
+    abrirConsultaModal({ code, message }) {
+      const esUrbana = this.tipoTasa === 'URBANA'
+      const cuentaLabel = esUrbana ? 'partida' : 'dominio'
+      if (code === 'SIN_DEUDA') {
+        this.consultaModal = {
+          title: 'Sin deuda para abonar',
+          message:
+            message ||
+            `La ${cuentaLabel} existe, pero no tiene deuda activa para abonar online.`,
+          variant: 'info',
+        }
+      } else {
+        this.consultaModal = {
+          title: esUrbana ? 'Partida no encontrada' : 'Dominio no encontrado',
+          message:
+            message ||
+            `No encontramos esa ${cuentaLabel} en nuestros registros.`,
+          variant: 'danger',
+        }
+      }
+      this.showConsultaModal = true
     },
     iniciarPago() {
       this.errorMsg = ''
@@ -935,6 +1025,44 @@ export default {
 .pn-redirect-header .btn-close {
   justify-self: end;
 }
+.pn-consulta-header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  width: 100%;
+}
+.pn-consulta-header-icon {
+  font-size: 1.35rem;
+  color: #fff;
+  line-height: 1;
+}
+.pn-consulta-header .btn-close {
+  justify-self: end;
+}
+.pn-consulta-content {
+  text-align: center;
+  color: #212529;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+.pn-consulta-title {
+  margin: 0 0 1rem;
+  color: #0c681a;
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+.pn-consulta-title--danger {
+  color: var(--bs-danger, #dc3545);
+}
+.pn-consulta-help {
+  margin: 0 0 1.25rem;
+  color: #666;
+  font-size: 0.88rem;
+}
+.pn-consulta-ok {
+  min-width: 140px;
+}
 .pn-redirect-content {
   text-align: center;
   color: #212529;
@@ -1037,9 +1165,18 @@ export default {
 .pn-redirect-modal .modal-body {
   padding: 1.75rem 2rem 2.15rem;
 }
+.pn-consulta-modal .modal-header {
+  padding: 0.9rem 1.15rem;
+}
+.pn-consulta-modal .modal-body {
+  padding: 1.5rem 1.75rem 1.85rem;
+}
 @media (max-width: 767px) {
   .pn-redirect-modal .modal-body {
     padding: 1.35rem 1.25rem 1.65rem;
+  }
+  .pn-consulta-modal .modal-body {
+    padding: 1.25rem 1.15rem 1.45rem;
   }
 }
 </style>

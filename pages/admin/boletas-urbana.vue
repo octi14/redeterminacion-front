@@ -341,8 +341,14 @@ export default {
             cantidadImportadas: 0,
           }
         }
+        const cortada =
+          !error?.response &&
+          (error?.code === 'ECONNABORTED' ||
+            /network|timeout|aborted|exceeded/i.test(String(error?.message || '')))
         this.showToast(
-          payload.message || error.message || 'No se pudo importar el archivo.',
+          cortada
+            ? 'La conexión se cortó durante la importación. El archivo puede ser muy grande o el servidor se quedó sin memoria. Reintentá; si vuelve a fallar, avisanos.'
+            : payload.message || error.message || 'No se pudo importar el archivo.',
           { title: 'Error al importar', variant: 'danger', solid: true }
         )
       } finally {

@@ -23,7 +23,10 @@ const getDeuda = async (axios, { tipoTasa, objetoClave }, headers = {}) => {
 }
 
 const importarUrbana = async (axios, file, headers = {}) => {
-  return await axios.$post('/pagos/provincia-net/urbana/importar', file, { headers })
+  return await axios.$post('/pagos/provincia-net/urbana/importar', file, {
+    headers,
+    timeout: 10 * 60 * 1000,
+  })
 }
 
 export default {

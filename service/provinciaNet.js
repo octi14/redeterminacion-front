@@ -29,6 +29,25 @@ const importarUrbana = async (axios, file, headers = {}) => {
   })
 }
 
+const progresoImportUrbana = async (axios, importId, headers = {}) => {
+  return await axios.$get(
+    `/pagos/provincia-net/urbana/importar/${encodeURIComponent(importId)}/progreso`,
+    { headers }
+  )
+}
+
+const listarImportacionesUrbana = async (axios, headers = {}) => {
+  return await axios.$get('/pagos/provincia-net/urbana/importaciones', { headers })
+}
+
+const listarPeriodosUrbana = async (axios, headers = {}) => {
+  return await axios.$get('/pagos/provincia-net/urbana/periodos', { headers })
+}
+
+const cambiarEstadoPeriodoUrbana = async (axios, body, headers = {}) => {
+  return await axios.$put('/pagos/provincia-net/urbana/periodos/estado', body, { headers })
+}
+
 export default {
   createPreorder,
   getEstado,
@@ -36,4 +55,8 @@ export default {
   updateConfiguracion,
   getDeuda,
   importarUrbana,
+  progresoImportUrbana,
+  listarImportacionesUrbana,
+  listarPeriodosUrbana,
+  cambiarEstadoPeriodoUrbana,
 }

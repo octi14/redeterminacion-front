@@ -203,6 +203,14 @@ export const SITE_NAVIGATION_ITEMS = [
 
   // —— Tasas ——
   {
+    id: 'tasas-pagar-tasas',
+    title: 'Pagar tasas',
+    description: 'Pago online de tasas municipales',
+    to: '/tasas/pagar-tasas',
+    section: 'Tasas',
+    aliases: ['provincia net', 'net pagos', 'pagar tasa urbana', 'cuenta dni'],
+  },
+  {
     id: 'tasas-tasa-automotor',
     title: 'Descargar Tasa Automotor',
     description: 'Consultar y descargar boletas de Automotores por dominio',

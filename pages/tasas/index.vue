@@ -2,6 +2,13 @@
   <div class="page main-background">
     <Banner title="Tasas" />
     <MenuItem
+      v-if="mostrarPagoUrbana"
+      icon="building"
+      to="/tasas/pagar-tasas"
+      title="Pagar tasas"
+      description="Pago online de tasas municipales"
+    />
+    <MenuItem
       icon="info-circle"
       to="/tasas/pagos_dobles"
       title="Informar pagos dobles"
@@ -23,11 +30,14 @@
 </template>
 
 <script>
+import ProvinciaNetService from '~/service/provinciaNet.js'
+
 export default {
   name: 'TasasIndex',
   data() {
     return {
-      tasaAutomotorPublicaHabilitada: true
+      tasaAutomotorPublicaHabilitada: true,
+      pagoUrbanaPublico: false,
     }
   },
   computed: {
@@ -37,12 +47,29 @@ export default {
     },
     mostrarTasaAutomotor() {
       return this.usuarioInternoBoletas || this.tasaAutomotorPublicaHabilitada
-    }
+    },
+    usuarioInternoPagoUrbana() {
+      const admin = String(useUserStore().admin || '').trim().toLowerCase()
+      return ['hacienda', 'master', 'admin', 'true', 'boletas'].includes(admin)
+    },
+    mostrarPagoUrbana() {
+      return this.usuarioInternoPagoUrbana || this.pagoUrbanaPublico
+    },
   },
   mounted() {
     this.loadTasaAutomotorConfig()
+    this.loadPagoUrbanaConfig()
   },
   methods: {
+    async loadPagoUrbanaConfig() {
+      try {
+        const response = await ProvinciaNetService.getConfiguracion(this.$axios)
+        const data = response?.data || response
+        this.pagoUrbanaPublico = data?.habilitada === true
+      } catch (_) {
+        this.pagoUrbanaPublico = false
+      }
+    },
     async loadTasaAutomotorConfig() {
       try {
         const response = await this.$axios.get('/tasas/automotores/configuracion')

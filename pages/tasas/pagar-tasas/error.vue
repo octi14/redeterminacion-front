@@ -33,7 +33,7 @@ export default {
   methods: {
     volver() {
       if (import.meta.client) localStorage.removeItem(STORAGE_KEY)
-      this.$router.push('/pagos/pagar-tasas')
+      this.$router.push('/tasas/pagar-tasas')
     },
   },
 }

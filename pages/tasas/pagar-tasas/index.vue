@@ -21,21 +21,15 @@
         >
           <div class="form-section">
             <h2>Datos de la cuenta</h2>
-            <div class="tasa-tabs" role="tablist" aria-label="Tipo de tasa">
-              <button
-                v-for="opcion in tipoTasaOptions"
-                :key="opcion.value"
-                type="button"
-                class="tasa-tab"
-                :class="{ active: tipoTasa === opcion.value }"
-                role="tab"
-                :aria-selected="tipoTasa === opcion.value"
-                @click="seleccionarTipoTasa(opcion.value)"
-              >
-                <i :class="opcion.value === 'AUTOMOTORES' ? 'bi bi-car-front-fill' : 'bi bi-house-door-fill'" aria-hidden="true"></i>
-                {{ opcion.text }}
-              </button>
-            </div>
+            <b-form-group label="Tipo de tasa *" label-for="tipoTasa" class="mb-3">
+              <b-form-select
+                id="tipoTasa"
+                :model-value="tipoTasa"
+                :options="tipoTasaOptions"
+                required
+                @update:model-value="seleccionarTipoTasa"
+              />
+            </b-form-group>
             <b-form-group :label="identificadorLabel + ' *'" label-for="objetoClave" class="mb-0">
               <div class="clave-row">
                 <b-form-input
@@ -777,41 +771,6 @@ export default {
   color: #0c681a;
   font-size: 1.15rem;
   font-weight: bold;
-}
-.tasa-tabs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.55rem;
-  margin-bottom: 1rem;
-}
-.tasa-tab {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.45rem;
-  min-height: 2.75rem;
-  padding: 0.55rem 0.85rem;
-  border: 1px solid #dee2e6;
-  border-radius: 10px;
-  background: var(--color-white);
-  color: #353535;
-  font-family: var(--font-inter);
-  font-size: 0.92rem;
-  font-weight: 600;
-  line-height: 1.2;
-  cursor: pointer;
-}
-.tasa-tab i {
-  font-size: 1.1rem;
-  color: #0c681a;
-}
-.tasa-tab.active {
-  border-color: #0c681a;
-  background: #0c681a;
-  color: var(--color-white);
-}
-.tasa-tab.active i {
-  color: var(--color-white);
 }
 .clave-row {
   display: flex;

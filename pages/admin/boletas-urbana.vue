@@ -77,7 +77,7 @@
               {{
                 configLoading
                   ? 'Guardando configuración...'
-                  : 'Controla el botón “Pagar tasas” en /pagos y el acceso público al formulario.'
+                  : 'Controla el botón “Pagar tasas” en /tasas y el acceso público al formulario.'
               }}
             </small>
           </div>
@@ -796,7 +796,7 @@ export default {
         this.pagoTasaUrbanaPublico = data?.pagoTasaUrbanaPublico?.value === true
         this.showToast(
           this.pagoTasaUrbanaPublico
-            ? 'El pago de tasa urbana quedó visible en /pagos.'
+            ? 'El pago de tasa urbana quedó visible en /tasas.'
             : 'El pago de tasa urbana quedó oculto para el público.',
           { variant: 'success', solid: true }
         )

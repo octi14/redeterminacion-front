@@ -236,7 +236,7 @@
       </section>
 
       <div class="page-btn-volver-wrap">
-        <NuxtLink to="/pagos">
+        <NuxtLink to="/tasas">
           <b-button variant="primary" size="sm" class="page-btn-volver">Volver</b-button>
         </NuxtLink>
       </div>

@@ -811,8 +811,18 @@ export default {
       }
     },
     async waitForImport(importId) {
+      const startedAt = Date.now()
+      let lastProgressAt = Date.now()
+      let lastStamp = ''
+      const maxMs = 20 * 60 * 1000
+      const stuckMs = 10 * 60 * 1000
       while (this.importing) {
-        await this.pause(1600)
+        await this.pause(2500)
+        if (Date.now() - startedAt > maxMs) {
+          throw new Error(
+            'La importación tardó demasiado. Cerrá esta pantalla y, si sigue colgada, reiniciá el dyno.'
+          )
+        }
         const response = await ProvinciaNetService.progresoImportUrbana(
           this.$axios,
           importId,
@@ -820,6 +830,11 @@ export default {
         )
         const item = response?.data || response
         const progress = item.progreso || {}
+        const stamp = String(progress.actualizadoAt || '')
+        if (stamp && stamp !== lastStamp) {
+          lastStamp = stamp
+          lastProgressAt = Date.now()
+        }
         this.importProgress = {
           message: progress.mensaje || 'Procesando la importación...',
           percentage: progress.porcentaje || 0,
@@ -833,6 +848,11 @@ export default {
           const err = new Error(progress.error || 'La importación no pudo completarse.')
           err.analisis = item.resultado || null
           throw err
+        }
+        if (Date.now() - lastProgressAt > stuckMs) {
+          throw new Error(
+            'La importación no avanzó. El Excel se está leyendo o el servidor se quedó sin memoria. Cerrá esta pantalla para cortar las consultas.'
+          )
         }
       }
       return null

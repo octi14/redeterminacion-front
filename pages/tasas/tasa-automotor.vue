@@ -299,6 +299,9 @@ export default {
     normalizarDominio() {
       this.dominio = this.dominio.replace(/[\s-]/g, '').replace(/[^a-zA-Z0-9]/g, '').toUpperCase()
     },
+    usuarioActividad() {
+      return useUserStore().username || 'Usuario Anónimo'
+    },
     async buscar() {
       if (!this.puedeVerModulo) return
       if (!this.dominioValido) return
@@ -307,6 +310,11 @@ export default {
       this.resultado = null
       this.seleccionados = []
       try {
+        await this.$logUserActivity(
+          this.usuarioActividad(),
+          'Consulta de Tasa Automotor',
+          `Consulta de dominio ${this.dominio}`
+        )
         const response = await this.$axios.get(`/tasas/automotores/${this.dominio}`, { headers: this.authHeaders() })
         this.resultado = response.data.data
         this.maxPeriodosSeleccionados = this.resultado.maxPeriodosPorDescarga || 20
@@ -358,6 +366,11 @@ export default {
       this.descargando = true
       this.mensajeError = ''
       try {
+        await this.$logUserActivity(
+          this.usuarioActividad(),
+          'Descarga de Tasa Automotor',
+          `Descarga de dominio ${this.resultado.dominio} (${this.seleccionados.join(', ')})`
+        )
         const response = await this.$axios.post(
           `/tasas/automotores/${this.resultado.dominio}/pdf`,
           { periodos: this.seleccionados },

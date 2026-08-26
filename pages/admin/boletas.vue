@@ -10,6 +10,32 @@
     </div>
 
     <main v-else class="container py-5">
+      <section class="tax-selector">
+        <div>
+          <span class="eyebrow">Tipo de tasa</span>
+          <h2>Administrar boletas</h2>
+        </div>
+        <div class="tax-options">
+          <button
+            v-for="tasa in tasasPermitidas"
+            :key="tasa.codigo"
+            type="button"
+            class="tax-option"
+            :class="{ active: tasa.codigo === selectedTaxCode }"
+            @click="selectTax(tasa)"
+          >
+            <i :class="`bi bi-${tasa.icono}`"></i>
+            <span>
+              <strong>{{ tasa.nombre }}</strong>
+              <small>{{ tasa.descripcion }}</small>
+            </span>
+          </button>
+        </div>
+      </section>
+
+      <BoletasUrbanaPanel v-if="selectedTaxCode === 'URBANA'" />
+
+      <template v-else>
       <section class="upload-hero">
         <div class="hero-copy">
           <span class="eyebrow">Administración interna de boletas</span>
@@ -328,6 +354,7 @@
           </div>
         </div>
       </section>
+      </template>
     </main>
 
     <transition name="server-activity">
@@ -591,17 +618,35 @@
 <script setup>
 definePageMeta({
   middleware: ['authenticated', 'require-admin'],
-  adminRoles: ['admin', 'master', 'boletas'],
+  adminRoles: ['admin', 'master', 'boletas', 'hacienda', 'true'],
 })
 
 useHead({ title: 'Administrar boletas - Hacienda Villa Gesell' })
 </script>
 
 <script>
+import BoletasUrbanaPanel from '~/components/admin/BoletasUrbanaPanel.vue'
+
 export default {
   name: 'AdminBoletas',
+  components: { BoletasUrbanaPanel },
   data() {
     return {
+      selectedTaxCode: 'AUTOMOTORES',
+      tasasDisponibles: [
+        {
+          codigo: 'AUTOMOTORES',
+          nombre: 'Tasa automotor',
+          descripcion: 'Boletas por dominio',
+          icono: 'car-front',
+        },
+        {
+          codigo: 'URBANA',
+          nombre: 'Tasa urbana',
+          descripcion: 'Boletas por partida',
+          icono: 'buildings',
+        },
+      ],
       selectedFile: null,
       isDragging: false,
       showAnalysisModal: false,
@@ -655,7 +700,19 @@ export default {
   },
   computed: {
     puedeAdministrar() {
+      return this.puedeAdministrarAutomotor || this.puedeAdministrarUrbana
+    },
+    puedeAdministrarAutomotor() {
       return ['admin', 'master', 'true', 'boletas'].includes(String(useUserStore().admin || '').trim().toLowerCase())
+    },
+    puedeAdministrarUrbana() {
+      return ['admin', 'master', 'true', 'boletas', 'hacienda'].includes(String(useUserStore().admin || '').trim().toLowerCase())
+    },
+    tasasPermitidas() {
+      return this.tasasDisponibles.filter((tasa) => {
+        if (tasa.codigo === 'URBANA') return this.puedeAdministrarUrbana
+        return this.puedeAdministrarAutomotor
+      })
     },
     puedeGestionarBoletasCompleto() {
       return ['admin', 'master', 'true'].includes(String(useUserStore().admin || '').trim().toLowerCase())
@@ -820,14 +877,35 @@ export default {
     },
     historyPages(value) {
       if (value && this.historyPage > value) this.historyPage = value
-    }
+    },
+    selectedTaxCode(code) {
+      if (code === 'AUTOMOTORES') this.loadAutomotorAdmin()
+    },
   },
   mounted() {
-    this.loadHistory()
-    this.loadStorageConfig()
-    this.loadPeriods()
+    this.syncTaxFromRoute()
+    if (this.selectedTaxCode === 'AUTOMOTORES') this.loadAutomotorAdmin()
   },
   methods: {
+    syncTaxFromRoute() {
+      const tipo = String(this.$route.query.tipo || '').toUpperCase()
+      if (this.tasasPermitidas.some((tasa) => tasa.codigo === tipo)) {
+        this.selectedTaxCode = tipo
+        return
+      }
+      if (this.tasasPermitidas[0]) this.selectedTaxCode = this.tasasPermitidas[0].codigo
+    },
+    selectTax(tasa) {
+      this.selectedTaxCode = tasa.codigo
+      this.$router.replace({
+        query: { ...this.$route.query, tipo: tasa.codigo },
+      })
+    },
+    loadAutomotorAdmin() {
+      this.loadHistory()
+      this.loadStorageConfig()
+      this.loadPeriods()
+    },
     onFileSelected(event) {
       this.setFile(event.target.files && event.target.files[0])
     },
@@ -1305,6 +1383,55 @@ export default {
   color: #353535;
 }
 .container { max-width: 1240px; }
+.tax-selector {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.25rem;
+  margin-bottom: 1.75rem;
+}
+.tax-selector h2 {
+  margin: 0.35rem 0 0;
+  color: #0c681a;
+  font-size: 1.45rem;
+  font-weight: 800;
+}
+.tax-selector .eyebrow {
+  display: inline-block;
+  padding: 0.22rem 0.65rem;
+  border-radius: 6px;
+  background: var(--green-fill);
+  color: #0c681a;
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+.tax-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.tax-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 220px;
+  padding: 0.85rem 1rem;
+  border: 1px solid #d9e4d4;
+  border-radius: 14px;
+  background: #fff;
+  color: #353535;
+  text-align: left;
+  cursor: pointer;
+}
+.tax-option i { font-size: 1.35rem; color: #0c681a; }
+.tax-option strong { display: block; }
+.tax-option small { display: block; color: #6c757d; }
+.tax-option.active {
+  border-color: #15571f;
+  background: var(--green-fill);
+  box-shadow: 0px 2px 5px 0px var(--shadow-card);
+}
 .upload-hero {
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;

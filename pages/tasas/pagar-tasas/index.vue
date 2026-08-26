@@ -21,21 +21,15 @@
         >
           <div class="form-section">
             <h2>Datos de la cuenta</h2>
-            <div class="tasa-tabs" role="tablist" aria-label="Tipo de tasa">
-              <button
-                v-for="opcion in tipoTasaOptions"
-                :key="opcion.value"
-                type="button"
-                class="tasa-tab"
-                :class="{ active: tipoTasa === opcion.value }"
-                role="tab"
-                :aria-selected="tipoTasa === opcion.value"
-                @click="seleccionarTipoTasa(opcion.value)"
-              >
-                <i :class="opcion.value === 'AUTOMOTORES' ? 'bi bi-car-front-fill' : 'bi bi-house-door-fill'" aria-hidden="true"></i>
-                {{ opcion.text }}
-              </button>
-            </div>
+            <b-form-group label="Tipo de tasa *" label-for="tipoTasa" class="mb-3">
+              <b-form-select
+                id="tipoTasa"
+                :model-value="tipoTasa"
+                :options="tipoTasaOptions"
+                required
+                @update:model-value="seleccionarTipoTasa"
+              />
+            </b-form-group>
             <b-form-group :label="identificadorLabel + ' *'" label-for="objetoClave" class="mb-0">
               <div class="clave-row">
                 <b-form-input
@@ -317,47 +311,43 @@
 
     <b-modal
       v-model="showConsultaModal"
-      modal-class="pn-consulta-modal"
-      :header-bg-variant="consultaModal.variant === 'danger' ? 'danger' : 'success'"
-      header-class="border-0"
-      body-class="pn-consulta-body"
+      modal-class="consulta-error-modal"
       centered
-      hide-footer
+      :header-bg-variant="consultaModal.variant === 'danger' ? 'danger' : 'success'"
+      @click-outside="showConsultaModal = false"
     >
       <template #header>
-        <div class="pn-consulta-header">
-          <span class="pn-consulta-header-spacer"></span>
+        <div class="consulta-error-header">
           <i
-            class="bi pn-consulta-header-icon"
-            :class="consultaModal.variant === 'danger' ? 'bi-exclamation-triangle-fill' : 'bi-info-circle-fill'"
+            class="bi text-light"
+            :class="consultaModal.variant === 'danger' ? 'bi-exclamation-circle' : 'bi-info-circle'"
             aria-hidden="true"
           ></i>
-          <button
-            type="button"
-            class="btn-close btn-close-white"
-            aria-label="Cerrar"
-            @click="showConsultaModal = false"
-          ></button>
         </div>
       </template>
-      <div class="pn-consulta-content">
-        <h2
-          class="pn-consulta-title"
-          :class="{ 'pn-consulta-title--danger': consultaModal.variant === 'danger' }"
-        >{{ consultaModal.title }}</h2>
+      <div
+        class="consulta-error-body"
+        :class="{ 'consulta-error-body--ok': consultaModal.variant !== 'danger' }"
+      >
+        <p
+          class="consulta-error-title"
+          :class="consultaModal.variant === 'danger' ? 'text-danger' : ''"
+        >{{ consultaModal.title }}</p>
         <p>{{ consultaModal.message }}</p>
-        <p class="pn-consulta-help">
-          Si creés que es un error, escribinos a
-          <a href="mailto:recaudaciones@gesell.gob.ar">recaudaciones@gesell.gob.ar</a>.
+        <p class="consulta-error-help">
+          Si tenés dudas o necesitás verificar la información, comunicate con el Dto. Recaudaciones:
+          <a href="mailto:recaudaciones@gesell.gob.ar">recaudaciones@gesell.gob.ar</a>
         </p>
-        <button
-          type="button"
-          class="btn btn-danger pn-consulta-ok"
+      </div>
+      <template #footer>
+        <b-button
+          class="btn-cancel"
+          :variant="consultaModal.variant === 'danger' ? 'danger' : 'success'"
           @click="showConsultaModal = false"
         >
           Aceptar
-        </button>
-      </div>
+        </b-button>
+      </template>
     </b-modal>
   </div>
 </template>
@@ -629,10 +619,14 @@ export default {
         }
       } else {
         this.consultaModal = {
-          title: esUrbana ? 'Partida no encontrada' : 'Dominio no encontrado',
+          title: esUrbana
+            ? 'No hemos podido encontrar tu partida'
+            : 'No hemos podido encontrar tu dominio',
           message:
             message ||
-            `No encontramos esa ${cuentaLabel} en nuestros registros.`,
+            (esUrbana
+              ? 'La partida ingresada no se encuentra disponible en el sistema'
+              : 'El dominio ingresado no se encuentra disponible en el sistema'),
           variant: 'danger',
         }
       }
@@ -777,41 +771,6 @@ export default {
   color: #0c681a;
   font-size: 1.15rem;
   font-weight: bold;
-}
-.tasa-tabs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.55rem;
-  margin-bottom: 1rem;
-}
-.tasa-tab {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.45rem;
-  min-height: 2.75rem;
-  padding: 0.55rem 0.85rem;
-  border: 1px solid #dee2e6;
-  border-radius: 10px;
-  background: var(--color-white);
-  color: #353535;
-  font-family: var(--font-inter);
-  font-size: 0.92rem;
-  font-weight: 600;
-  line-height: 1.2;
-  cursor: pointer;
-}
-.tasa-tab i {
-  font-size: 1.1rem;
-  color: #0c681a;
-}
-.tasa-tab.active {
-  border-color: #0c681a;
-  background: #0c681a;
-  color: var(--color-white);
-}
-.tasa-tab.active i {
-  color: var(--color-white);
 }
 .clave-row {
   display: flex;
@@ -1025,44 +984,6 @@ export default {
 .pn-redirect-header .btn-close {
   justify-self: end;
 }
-.pn-consulta-header {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  width: 100%;
-}
-.pn-consulta-header-icon {
-  font-size: 1.35rem;
-  color: #fff;
-  line-height: 1;
-}
-.pn-consulta-header .btn-close {
-  justify-self: end;
-}
-.pn-consulta-content {
-  text-align: center;
-  color: #212529;
-  font-size: 0.95rem;
-  line-height: 1.5;
-}
-.pn-consulta-title {
-  margin: 0 0 1rem;
-  color: #0c681a;
-  font-size: 1.15rem;
-  font-weight: 700;
-  line-height: 1.35;
-}
-.pn-consulta-title--danger {
-  color: var(--bs-danger, #dc3545);
-}
-.pn-consulta-help {
-  margin: 0 0 1.25rem;
-  color: #666;
-  font-size: 0.88rem;
-}
-.pn-consulta-ok {
-  min-width: 140px;
-}
 .pn-redirect-content {
   text-align: center;
   color: #212529;
@@ -1165,18 +1086,51 @@ export default {
 .pn-redirect-modal .modal-body {
   padding: 1.75rem 2rem 2.15rem;
 }
-.pn-consulta-modal .modal-header {
-  padding: 0.9rem 1.15rem;
-}
-.pn-consulta-modal .modal-body {
-  padding: 1.5rem 1.75rem 1.85rem;
-}
 @media (max-width: 767px) {
   .pn-redirect-modal .modal-body {
     padding: 1.35rem 1.25rem 1.65rem;
   }
-  .pn-consulta-modal .modal-body {
-    padding: 1.25rem 1.15rem 1.45rem;
-  }
+}
+.consulta-error-modal .modal-header {
+  justify-content: center;
+}
+.consulta-error-header {
+  width: 100%;
+  text-align: center;
+}
+.consulta-error-header i {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+.consulta-error-body {
+  text-align: center;
+}
+.consulta-error-body p {
+  margin: 0 0 0.75rem;
+  color: #353535;
+  font-weight: 500;
+}
+.consulta-error-body .consulta-error-title {
+  margin: 0 0 0.85rem;
+  color: var(--bs-danger, #dc3545);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.consulta-error-body--ok .consulta-error-title {
+  color: #0c681a;
+}
+.consulta-error-help {
+  color: #666 !important;
+  font-size: 0.8rem;
+  font-weight: 400 !important;
+}
+.consulta-error-help a {
+  display: block;
+  margin-top: 0.35rem;
+  color: #0c681a;
+}
+.consulta-error-modal .modal-footer {
+  justify-content: center;
 }
 </style>

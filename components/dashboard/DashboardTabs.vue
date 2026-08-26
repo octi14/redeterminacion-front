@@ -217,6 +217,12 @@
           </template>
 
           <div class="tab-content-informes">
+            <div class="row mb-4">
+              <div class="col-12">
+                <GraficoTramitesComercialesEneJul2026 :habilitaciones="habilitaciones || []" />
+              </div>
+            </div>
+
             <!-- Gráfico Comparativo 2024 vs 2025 -->
             <div class="row mb-4">
               <div class="col-12">
@@ -371,6 +377,7 @@ import EstadisticasPorPatente from '~/components/dashboard/EstadisticasPorPatent
 import ListaVehiculosPorArea from '~/components/dashboard/ListaVehiculosPorArea.vue'
 import TablaTramitesComerciales2025 from '~/components/dashboard/TablaTramitesComerciales2025.vue'
 import GraficoComparativo2024vs2025 from '~/components/dashboard/GraficoComparativo2024vs2025.vue'
+import GraficoTramitesComercialesEneJul2026 from '~/components/dashboard/GraficoTramitesComercialesEneJul2026.vue'
 
 export default {
   name: 'DashboardTabs',
@@ -383,7 +390,8 @@ export default {
     EstadisticasPorPatente,
     ListaVehiculosPorArea,
     TablaTramitesComerciales2025,
-    GraficoComparativo2024vs2025
+    GraficoComparativo2024vs2025,
+    GraficoTramitesComercialesEneJul2026
   },
   props: {
     modulos: {

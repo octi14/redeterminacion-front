@@ -36,13 +36,13 @@
           </div>
           <button class="btn btn-search" type="submit" :disabled="!dominioValido || buscando || descargando">
             <b-spinner v-if="buscando" small class="mr-2"></b-spinner>
-            <i v-else class="bi bi-download mr-2"></i>
+            <i v-else class="bi bi-search mr-2"></i>
             {{ buscando ? 'Buscando...' : 'Buscar boletas' }}
           </button>
         </form>
       </section>
 
-      <b-alert v-if="mensajeError" show variant="danger" class="result-alert">
+      <b-alert v-if="mensajeError && !showDominioNoEncontrado" show variant="danger" class="result-alert">
         <i class="bi bi-exclamation-circle-fill mr-2"></i>{{ mensajeError }}
       </b-alert>
 
@@ -60,7 +60,7 @@
           </button>
         </div>
 
-        <div class="periods-body">
+        <div ref="periodosSection" class="periods-body">
           <div class="periods-heading">
             <h3>Seleccioná los períodos a descargar</h3>
             <p>Podés seleccionar hasta {{ maxPeriodosSeleccionados }} períodos a la vez.</p>
@@ -195,6 +195,31 @@
         </div>
       </div>
     </b-modal>
+
+    <b-modal
+      v-model="showDominioNoEncontrado"
+      modal-class="consulta-error-modal"
+      centered
+      :header-bg-variant="'danger'"
+      @click-outside="showDominioNoEncontrado = false"
+    >
+      <template #header>
+        <div class="consulta-error-header">
+          <i class="bi bi-exclamation-circle text-light" aria-hidden="true"></i>
+        </div>
+      </template>
+      <div class="consulta-error-body">
+        <p class="consulta-error-title text-danger">No hemos podido encontrar tu dominio</p>
+        <p>El dominio ingresado no se encuentra disponible en el sistema</p>
+        <p class="consulta-error-help">
+          Si tenés dudas o necesitás verificar la información, comunicate con el Dto. Recaudaciones:
+          <a href="mailto:recaudaciones@gesell.gob.ar">recaudaciones@gesell.gob.ar</a>
+        </p>
+      </div>
+      <template #footer>
+        <b-button variant="danger" class="btn-cancel" @click="showDominioNoEncontrado = false">Aceptar</b-button>
+      </template>
+    </b-modal>
   </div>
 </template>
 
@@ -220,7 +245,8 @@ export default {
       paginaPeriodos: 1,
       periodosPorPagina: PERIODOS_POR_PAGINA,
       maxPeriodosSeleccionados: 20,
-      tasaAutomotorPublicaHabilitada: true
+      tasaAutomotorPublicaHabilitada: true,
+      showDominioNoEncontrado: false,
     }
   },
   computed: {
@@ -299,21 +325,38 @@ export default {
     normalizarDominio() {
       this.dominio = this.dominio.replace(/[\s-]/g, '').replace(/[^a-zA-Z0-9]/g, '').toUpperCase()
     },
+    usuarioActividad() {
+      return useUserStore().username || 'Usuario Anónimo'
+    },
     async buscar() {
       if (!this.puedeVerModulo) return
       if (!this.dominioValido) return
       this.buscando = true
       this.mensajeError = ''
+      this.showDominioNoEncontrado = false
       this.resultado = null
       this.seleccionados = []
       try {
+        await this.$logUserActivity(
+          this.usuarioActividad(),
+          'Consulta de Tasa Automotor',
+          `Consulta de dominio ${this.dominio}`
+        )
         const response = await this.$axios.get(`/tasas/automotores/${this.dominio}`, { headers: this.authHeaders() })
         this.resultado = response.data.data
         this.maxPeriodosSeleccionados = this.resultado.maxPeriodosPorDescarga || 20
         this.seleccionados = []
         this.paginaPeriodos = 1
+        this.$nextTick(() => {
+          this.$refs.periodosSection?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+        })
       } catch (error) {
-        this.mensajeError = error.response?.data?.message || 'No se pudieron consultar las boletas.'
+        if (error.response?.status === 404) {
+          this.showDominioNoEncontrado = true
+          this.mensajeError = ''
+        } else {
+          this.mensajeError = error.response?.data?.message || 'No se pudieron consultar las boletas.'
+        }
       } finally {
         this.buscando = false
       }
@@ -345,6 +388,7 @@ export default {
       this.resultado = null
       this.seleccionados = []
       this.mensajeError = ''
+      this.showDominioNoEncontrado = false
       this.dominio = ''
       this.paginaPeriodos = 1
     },
@@ -358,6 +402,11 @@ export default {
       this.descargando = true
       this.mensajeError = ''
       try {
+        await this.$logUserActivity(
+          this.usuarioActividad(),
+          'Descarga de Tasa Automotor',
+          `Descarga de dominio ${this.resultado.dominio} (${this.seleccionados.join(', ')})`
+        )
         const response = await this.$axios.post(
           `/tasas/automotores/${this.resultado.dominio}/pdf`,
           { periodos: this.seleccionados },
@@ -811,5 +860,44 @@ export default {
   color: #666;
   font-size: 0.8rem;
   line-height: 1.4;
+}
+.consulta-error-modal .modal-header {
+  justify-content: center;
+}
+.consulta-error-header {
+  width: 100%;
+  text-align: center;
+}
+.consulta-error-header i {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+.consulta-error-body {
+  text-align: center;
+}
+.consulta-error-body p {
+  margin: 0 0 0.75rem;
+  color: #353535;
+  font-weight: 500;
+}
+.consulta-error-body .consulta-error-title {
+  margin: 0 0 0.85rem;
+  color: var(--bs-danger, #dc3545);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.consulta-error-help {
+  color: #666 !important;
+  font-size: 0.8rem;
+  font-weight: 400 !important;
+}
+.consulta-error-help a {
+  display: block;
+  margin-top: 0.35rem;
+  color: #0c681a;
+}
+.consulta-error-modal .modal-footer {
+  justify-content: center;
 }
 </style>

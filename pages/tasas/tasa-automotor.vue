@@ -209,7 +209,7 @@
         </div>
       </template>
       <div class="consulta-error-body">
-        <p class="consulta-error-title">No hemos podido encontrar tu dominio</p>
+        <p class="consulta-error-title text-danger">No hemos podido encontrar tu dominio</p>
         <p>El dominio ingresado no se encuentra disponible en el sistema</p>
         <p class="consulta-error-help">
           Si tenés dudas o necesitás verificar la información, comunicate con el Dto. Recaudaciones:
@@ -875,17 +875,17 @@ export default {
 .consulta-error-body {
   text-align: center;
 }
-.consulta-error-title {
-  margin: 0 0 0.85rem;
-  color: #cc0025;
-  font-size: 1.25rem;
-  font-weight: 700;
-  line-height: 1.3;
-}
 .consulta-error-body p {
   margin: 0 0 0.75rem;
   color: #353535;
   font-weight: 500;
+}
+.consulta-error-body .consulta-error-title {
+  margin: 0 0 0.85rem;
+  color: var(--bs-danger, #dc3545);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.3;
 }
 .consulta-error-help {
   color: #666 !important;

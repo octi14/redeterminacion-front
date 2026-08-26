@@ -329,7 +329,10 @@
         class="consulta-error-body"
         :class="{ 'consulta-error-body--ok': consultaModal.variant !== 'danger' }"
       >
-        <p class="consulta-error-title">{{ consultaModal.title }}</p>
+        <p
+          class="consulta-error-title"
+          :class="consultaModal.variant === 'danger' ? 'text-danger' : ''"
+        >{{ consultaModal.title }}</p>
         <p>{{ consultaModal.message }}</p>
         <p class="consulta-error-help">
           Si tenés dudas o necesitás verificar la información, comunicate con el Dto. Recaudaciones:
@@ -1102,20 +1105,20 @@ export default {
 .consulta-error-body {
   text-align: center;
 }
-.consulta-error-title {
+.consulta-error-body p {
+  margin: 0 0 0.75rem;
+  color: #353535;
+  font-weight: 500;
+}
+.consulta-error-body .consulta-error-title {
   margin: 0 0 0.85rem;
-  color: #cc0025;
+  color: var(--bs-danger, #dc3545);
   font-size: 1.25rem;
   font-weight: 700;
   line-height: 1.3;
 }
 .consulta-error-body--ok .consulta-error-title {
   color: #0c681a;
-}
-.consulta-error-body p {
-  margin: 0 0 0.75rem;
-  color: #353535;
-  font-weight: 500;
 }
 .consulta-error-help {
   color: #666 !important;

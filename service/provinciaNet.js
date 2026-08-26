@@ -48,6 +48,13 @@ const cambiarEstadoPeriodoUrbana = async (axios, body, headers = {}) => {
   return await axios.$put('/pagos/provincia-net/urbana/periodos/estado', body, { headers })
 }
 
+const descargarOriginalUrbana = async (axios, importId, headers = {}) => {
+  return await axios.get(
+    `/pagos/provincia-net/urbana/importaciones/${encodeURIComponent(importId)}/original`,
+    { headers, responseType: 'blob' }
+  )
+}
+
 export default {
   createPreorder,
   getEstado,
@@ -59,4 +66,5 @@ export default {
   listarImportacionesUrbana,
   listarPeriodosUrbana,
   cambiarEstadoPeriodoUrbana,
+  descargarOriginalUrbana,
 }

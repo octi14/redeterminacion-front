@@ -1,15 +1,5 @@
 <template>
-  <div class="page main-background boletas-page boletas-urbana-page">
-    <div v-if="!puedeAdministrar" class="no-access">
-      <div class="no-access-card">
-        <i class="bi bi-shield-lock-fill"></i>
-        <h1>Esta sección no está disponible</h1>
-        <p>No tenés permisos para administrar el pago de tasa urbana.</p>
-        <NuxtLink to="/" class="btn btn-success">Volver al inicio</NuxtLink>
-      </div>
-    </div>
-
-    <main v-else class="container py-5">
+  <div class="boletas-urbana-page">
       <section class="upload-hero">
         <div class="hero-copy">
           <span class="eyebrow">Administración interna de boletas</span>
@@ -327,6 +317,20 @@
             <template #cell(uploadedBy)="data">
               <span class="text-cell" :title="data.item.uploadedBy">{{ data.item.uploadedBy }}</span>
             </template>
+            <template #cell(actions)="data">
+              <div class="history-actions">
+                <button
+                  v-if="data.item.originalAvailable"
+                  class="btn btn-outline-success btn-sm"
+                  title="Descargar archivo original"
+                  :disabled="originalDownloadingId === data.item.id"
+                  @click="downloadOriginalFile(data.item)"
+                >
+                  <b-spinner v-if="originalDownloadingId === data.item.id" small></b-spinner>
+                  <i v-else class="bi bi-file-earmark-excel-fill"></i>
+                </button>
+              </div>
+            </template>
           </b-table>
           <div v-if="historyPages > 1" class="history-pagination">
             <span>
@@ -343,13 +347,6 @@
           </div>
         </div>
       </section>
-
-      <div class="page-btn-volver-wrap">
-        <NuxtLink to="/">
-          <b-button variant="primary" size="sm" class="page-btn-volver">Volver</b-button>
-        </NuxtLink>
-      </div>
-    </main>
 
     <b-modal
       v-model="importing"
@@ -430,7 +427,7 @@
 import ProvinciaNetService from '~/service/provinciaNet.js'
 
 export default {
-  name: 'AdminBoletasUrbana',
+  name: 'BoletasUrbanaPanel',
   setup() {
     const { showToast } = useProjectToast()
     return { showToast }
@@ -438,6 +435,7 @@ export default {
   data() {
     return {
       pagoTasaUrbanaPublico: false,
+      originalDownloadingId: null,
       configLoading: false,
       selectedFile: null,
       isDragging: false,
@@ -472,6 +470,7 @@ export default {
         { key: 'result', label: 'Resultado', thStyle: { width: '110px' } },
         { key: 'uploadedBy', label: 'Subido por', thStyle: { minWidth: '170px' } },
         { key: 'status', label: 'Estado', thStyle: { width: '160px' } },
+        { key: 'actions', label: '', thStyle: { width: '70px' } },
       ],
     }
   },
@@ -677,6 +676,7 @@ export default {
         warnings: item.cantidadAdvertencias || 0,
         uploadedBy: item.subidoPor?.username || '-',
         status: item.estado || 'procesando',
+        originalAvailable: Boolean(item.archivoOriginal?.almacenado && item.archivoOriginal?.key),
       }
     },
     async loadHistory() {
@@ -808,6 +808,33 @@ export default {
         })
       } finally {
         this.configLoading = false
+      }
+    },
+    async downloadOriginalFile(item) {
+      if (this.originalDownloadingId) return
+      this.originalDownloadingId = item.id
+      try {
+        const response = await ProvinciaNetService.descargarOriginalUrbana(
+          this.$axios,
+          item.id,
+          this.authHeaders()
+        )
+        const url = URL.createObjectURL(new Blob([response.data], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        }))
+        const link = document.createElement('a')
+        link.href = url
+        link.download = item.fileName
+        link.click()
+        setTimeout(() => URL.revokeObjectURL(url), 1000)
+      } catch (error) {
+        this.showToast(error.response?.data?.message || 'No se pudo descargar el archivo original.', {
+          title: 'Error al descargar',
+          variant: 'danger',
+          solid: true,
+        })
+      } finally {
+        this.originalDownloadingId = null
       }
     },
     async waitForImport(importId) {

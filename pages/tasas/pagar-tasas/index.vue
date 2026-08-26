@@ -311,38 +311,39 @@
 
     <b-modal
       v-model="showConsultaModal"
+      modal-class="consulta-error-modal"
       centered
       :header-bg-variant="consultaModal.variant === 'danger' ? 'danger' : 'success'"
       @click-outside="showConsultaModal = false"
     >
       <template #header>
-        <div class="centeredContainer">
-          <h3>
-            <i
-              class="bi text-light"
-              :class="consultaModal.variant === 'danger' ? 'bi-exclamation-octagon' : 'bi-info-circle'"
-            ></i>
-          </h3>
+        <div class="consulta-error-header">
+          <i
+            class="bi text-light"
+            :class="consultaModal.variant === 'danger' ? 'bi-exclamation-circle' : 'bi-info-circle'"
+            aria-hidden="true"
+          ></i>
         </div>
       </template>
-      <div class="centeredContainer modal-error" :class="{ 'modal-error--ok': consultaModal.variant !== 'danger' }">
-        <p class="modal-subtitle">{{ consultaModal.title }}</p>
+      <div
+        class="consulta-error-body"
+        :class="{ 'consulta-error-body--ok': consultaModal.variant !== 'danger' }"
+      >
+        <p class="consulta-error-title">{{ consultaModal.title }}</p>
         <p>{{ consultaModal.message }}</p>
-        <p class="minitext">
+        <p class="consulta-error-help">
           Si tenés dudas o necesitás verificar la información, comunicate con el Dto. Recaudaciones:
-          <a class="icon-green" href="mailto:recaudaciones@gesell.gob.ar">recaudaciones@gesell.gob.ar</a>
+          <a href="mailto:recaudaciones@gesell.gob.ar">recaudaciones@gesell.gob.ar</a>
         </p>
       </div>
       <template #footer>
-        <div style="margin: auto">
-          <b-button
-            class="btn-cancel"
-            :variant="consultaModal.variant === 'danger' ? 'danger' : 'success'"
-            @click="showConsultaModal = false"
-          >
-            Aceptar
-          </b-button>
-        </div>
+        <b-button
+          class="btn-cancel"
+          :variant="consultaModal.variant === 'danger' ? 'danger' : 'success'"
+          @click="showConsultaModal = false"
+        >
+          Aceptar
+        </b-button>
       </template>
     </b-modal>
   </div>
@@ -1087,35 +1088,46 @@ export default {
     padding: 1.35rem 1.25rem 1.65rem;
   }
 }
-.urbana-page .modal-error {
+.consulta-error-modal .modal-header {
+  justify-content: center;
+}
+.consulta-error-header {
+  width: 100%;
   text-align: center;
 }
-.urbana-page .modal-error .modal-subtitle {
-  margin-bottom: 15px;
-  color: #cc0025 !important;
+.consulta-error-header i {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+.consulta-error-body {
+  text-align: center;
+}
+.consulta-error-title {
+  margin: 0 0 0.85rem;
+  color: #cc0025;
   font-size: 1.25rem;
   font-weight: 700;
+  line-height: 1.3;
 }
-.urbana-page .modal-error--ok .modal-subtitle {
-  color: #0c681a !important;
+.consulta-error-body--ok .consulta-error-title {
+  color: #0c681a;
 }
-.urbana-page .modal-error p {
-  padding: 0 1rem;
-  color: var(--color-dark, #353535);
+.consulta-error-body p {
+  margin: 0 0 0.75rem;
+  color: #353535;
   font-weight: 500;
 }
-.urbana-page .modal-error .minitext {
+.consulta-error-help {
+  color: #666 !important;
   font-size: 0.8rem;
-  font-weight: 400;
-  color: #666;
+  font-weight: 400 !important;
 }
-.urbana-page .modal-error .icon-green {
+.consulta-error-help a {
   display: block;
   margin-top: 0.35rem;
   color: #0c681a;
 }
-.urbana-page .centeredContainer {
-  margin: 0 auto;
-  text-align: center;
+.consulta-error-modal .modal-footer {
+  justify-content: center;
 }
 </style>

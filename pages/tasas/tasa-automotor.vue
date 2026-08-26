@@ -198,27 +198,26 @@
 
     <b-modal
       v-model="showDominioNoEncontrado"
+      modal-class="consulta-error-modal"
       centered
       :header-bg-variant="'danger'"
       @click-outside="showDominioNoEncontrado = false"
     >
       <template #header>
-        <div class="centeredContainer">
-          <h3><i class="bi bi-exclamation-octagon text-light"></i></h3>
+        <div class="consulta-error-header">
+          <i class="bi bi-exclamation-circle text-light" aria-hidden="true"></i>
         </div>
       </template>
-      <div class="centeredContainer modal-error">
-        <p class="modal-subtitle">No hemos podido encontrar tu dominio</p>
+      <div class="consulta-error-body">
+        <p class="consulta-error-title">No hemos podido encontrar tu dominio</p>
         <p>El dominio ingresado no se encuentra disponible en el sistema</p>
-        <p class="minitext">
+        <p class="consulta-error-help">
           Si tenés dudas o necesitás verificar la información, comunicate con el Dto. Recaudaciones:
-          <a class="icon-green" href="mailto:recaudaciones@gesell.gob.ar">recaudaciones@gesell.gob.ar</a>
+          <a href="mailto:recaudaciones@gesell.gob.ar">recaudaciones@gesell.gob.ar</a>
         </p>
       </div>
       <template #footer>
-        <div style="margin: auto">
-          <b-button variant="danger" class="btn-cancel" @click="showDominioNoEncontrado = false">Aceptar</b-button>
-        </div>
+        <b-button variant="danger" class="btn-cancel" @click="showDominioNoEncontrado = false">Aceptar</b-button>
       </template>
     </b-modal>
   </div>
@@ -862,32 +861,43 @@ export default {
   font-size: 0.8rem;
   line-height: 1.4;
 }
-.automotor-page .modal-error {
+.consulta-error-modal .modal-header {
+  justify-content: center;
+}
+.consulta-error-header {
+  width: 100%;
   text-align: center;
 }
-.automotor-page .modal-error .modal-subtitle {
-  margin-bottom: 15px;
-  color: #cc0025 !important;
+.consulta-error-header i {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+.consulta-error-body {
+  text-align: center;
+}
+.consulta-error-title {
+  margin: 0 0 0.85rem;
+  color: #cc0025;
   font-size: 1.25rem;
   font-weight: 700;
+  line-height: 1.3;
 }
-.automotor-page .modal-error p {
-  padding: 0 1rem;
-  color: var(--color-dark, #353535);
+.consulta-error-body p {
+  margin: 0 0 0.75rem;
+  color: #353535;
   font-weight: 500;
 }
-.automotor-page .modal-error .minitext {
+.consulta-error-help {
+  color: #666 !important;
   font-size: 0.8rem;
-  font-weight: 400;
-  color: #666;
+  font-weight: 400 !important;
 }
-.automotor-page .modal-error .icon-green {
+.consulta-error-help a {
   display: block;
   margin-top: 0.35rem;
   color: #0c681a;
 }
-.automotor-page .centeredContainer {
-  margin: 0 auto;
-  text-align: center;
+.consulta-error-modal .modal-footer {
+  justify-content: center;
 }
 </style>

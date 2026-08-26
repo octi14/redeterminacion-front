@@ -622,11 +622,9 @@ export default {
           title: esUrbana
             ? 'No hemos podido encontrar tu partida'
             : 'No hemos podido encontrar tu dominio',
-          message:
-            message ||
-            (esUrbana
-              ? 'La partida ingresada no se encuentra disponible en el sistema'
-              : 'El dominio ingresado no se encuentra disponible en el sistema'),
+          message: esUrbana
+            ? 'La partida ingresada no se encuentra disponible en el sistema'
+            : 'El dominio ingresado no se encuentra disponible en el sistema',
           variant: 'danger',
         }
       }

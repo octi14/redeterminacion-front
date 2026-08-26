@@ -42,7 +42,7 @@
         </form>
       </section>
 
-      <b-alert v-if="mensajeError" show variant="danger" class="result-alert">
+      <b-alert v-if="mensajeError && !showDominioNoEncontrado" show variant="danger" class="result-alert">
         <i class="bi bi-exclamation-circle-fill mr-2"></i>{{ mensajeError }}
       </b-alert>
 
@@ -60,7 +60,7 @@
           </button>
         </div>
 
-        <div class="periods-body">
+        <div ref="periodosSection" class="periods-body">
           <div class="periods-heading">
             <h3>Seleccioná los períodos a descargar</h3>
             <p>Podés seleccionar hasta {{ maxPeriodosSeleccionados }} períodos a la vez.</p>
@@ -195,6 +195,32 @@
         </div>
       </div>
     </b-modal>
+
+    <b-modal
+      v-model="showDominioNoEncontrado"
+      centered
+      :header-bg-variant="'danger'"
+      @click-outside="showDominioNoEncontrado = false"
+    >
+      <template #header>
+        <div class="centeredContainer">
+          <h3><i class="bi bi-exclamation-octagon text-light"></i></h3>
+        </div>
+      </template>
+      <div class="centeredContainer modal-error">
+        <p class="modal-subtitle">No hemos podido encontrar tu dominio</p>
+        <p>El dominio ingresado no se encuentra disponible en el sistema</p>
+        <p class="minitext">
+          Si tenés dudas o necesitás verificar la información, comunicate con el Dto. Recaudaciones:
+          <a class="icon-green" href="mailto:recaudaciones@gesell.gob.ar">recaudaciones@gesell.gob.ar</a>
+        </p>
+      </div>
+      <template #footer>
+        <div style="margin: auto">
+          <b-button variant="danger" class="btn-cancel" @click="showDominioNoEncontrado = false">Aceptar</b-button>
+        </div>
+      </template>
+    </b-modal>
   </div>
 </template>
 
@@ -220,7 +246,8 @@ export default {
       paginaPeriodos: 1,
       periodosPorPagina: PERIODOS_POR_PAGINA,
       maxPeriodosSeleccionados: 20,
-      tasaAutomotorPublicaHabilitada: true
+      tasaAutomotorPublicaHabilitada: true,
+      showDominioNoEncontrado: false,
     }
   },
   computed: {
@@ -307,6 +334,7 @@ export default {
       if (!this.dominioValido) return
       this.buscando = true
       this.mensajeError = ''
+      this.showDominioNoEncontrado = false
       this.resultado = null
       this.seleccionados = []
       try {
@@ -320,8 +348,16 @@ export default {
         this.maxPeriodosSeleccionados = this.resultado.maxPeriodosPorDescarga || 20
         this.seleccionados = []
         this.paginaPeriodos = 1
+        this.$nextTick(() => {
+          this.$refs.periodosSection?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+        })
       } catch (error) {
-        this.mensajeError = error.response?.data?.message || 'No se pudieron consultar las boletas.'
+        if (error.response?.status === 404) {
+          this.showDominioNoEncontrado = true
+          this.mensajeError = ''
+        } else {
+          this.mensajeError = error.response?.data?.message || 'No se pudieron consultar las boletas.'
+        }
       } finally {
         this.buscando = false
       }
@@ -353,6 +389,7 @@ export default {
       this.resultado = null
       this.seleccionados = []
       this.mensajeError = ''
+      this.showDominioNoEncontrado = false
       this.dominio = ''
       this.paginaPeriodos = 1
     },
@@ -824,5 +861,33 @@ export default {
   color: #666;
   font-size: 0.8rem;
   line-height: 1.4;
+}
+.automotor-page .modal-error {
+  text-align: center;
+}
+.automotor-page .modal-error .modal-subtitle {
+  margin-bottom: 15px;
+  color: #cc0025 !important;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.automotor-page .modal-error p {
+  padding: 0 1rem;
+  color: var(--color-dark, #353535);
+  font-weight: 500;
+}
+.automotor-page .modal-error .minitext {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: #666;
+}
+.automotor-page .modal-error .icon-green {
+  display: block;
+  margin-top: 0.35rem;
+  color: #0c681a;
+}
+.automotor-page .centeredContainer {
+  margin: 0 auto;
+  text-align: center;
 }
 </style>

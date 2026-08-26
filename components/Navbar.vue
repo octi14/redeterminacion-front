@@ -51,11 +51,8 @@
           <b-dropdown-item v-if="adminRecaudaciones" to="/tasas/pagos_dobles/solicitudes">
             Pagos dobles
           </b-dropdown-item>
-          <b-dropdown-item v-if="canManageBoletas" to="/admin/boletas">
+          <b-dropdown-item v-if="canManageBoletas || adminHacienda" to="/admin/boletas">
             Administrar boletas
-          </b-dropdown-item>
-          <b-dropdown-item v-if="canManageBoletas || adminHacienda" to="/admin/boletas-urbana">
-            Pago tasa urbana
           </b-dropdown-item>
         </b-nav-item-dropdown>
 

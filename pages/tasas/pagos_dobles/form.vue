@@ -667,14 +667,18 @@ export default{
             pagoDoble,
           });
 
-          await MailerService.enviarCorreo(useApi(), {
-            destinatario: this.solicitante.mail,
-            asunto: 'Solicitud de pago doble recibida',
-            mensaje: `Estimado/a contribuyente,
+          try {
+            await MailerService.enviarCorreo(useApi(), {
+              destinatario: this.solicitante.mail,
+              asunto: 'Solicitud de pago doble recibida',
+              mensaje: `Estimado/a contribuyente,
             Su reclamo por pago doble ha sido registrado correctamente.
             En los próximos días recibirá un correo electrónico del Departamento Recaudaciones Municipal en el que le indicarán cómo continuar.
             Asegúrese de revisar la bandeja de correos no deseados (Spam).`
-          });
+            });
+          } catch (mailError) {
+            console.error('Error al enviar correo de confirmación (no bloquea el trámite):', mailError);
+          }
           this.nroTramite = response.data
           this.showPopupFormLoading = false
           await this.$nextTick()

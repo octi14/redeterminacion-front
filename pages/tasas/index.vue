@@ -2,6 +2,13 @@
   <div class="page main-background">
     <Banner title="Tasas" />
     <MenuItem
+      v-if="mostrarTasaAutomotor"
+      icon="car-front"
+      to="/tasas/tasa-automotor"
+      title="Descargar Tasa Automotor"
+      description="Consultar y descargar boletas de Automotores por dominio"
+    />
+    <MenuItem
       v-if="mostrarPagoUrbana"
       icon="building"
       to="/tasas/pagar-tasas"
@@ -13,13 +20,6 @@
       to="/tasas/pagos_dobles"
       title="Informar pagos dobles"
       description="Realizar un reclamo por pago doble de tasa urbana"
-    />
-    <MenuItem
-      v-if="mostrarTasaAutomotor"
-      icon="car-front"
-      to="/tasas/tasa-automotor"
-      title="Descargar Tasa Automotor"
-      description="Consultar y descargar boletas de Automotores por dominio"
     />
     <div class="page-btn-volver-wrap">
       <NuxtLink to="/">

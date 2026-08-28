@@ -200,7 +200,8 @@ export default {
       width: 10% !important;
     }
     .modal-dialog{
-      max-width: 100px !important;
+      max-width: calc(100% - 1.5rem) !important;
+      margin: 0.75rem auto;
     }
     .justify-content-center{
       margin: auto;

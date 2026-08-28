@@ -1788,6 +1788,21 @@ export default {
 
 /* Responsive para vista lista */
 @media (max-width: 768px) {
+  .combustible-detalle-page .big-container {
+    width: calc(100% - 0.75rem) !important;
+    max-width: calc(100% - 0.75rem) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding: 1rem 0.75rem;
+  }
+
+  .combustible-detalle-page .order-header,
+  .combustible-detalle-page .orden-acciones {
+    width: calc(100% - 0.75rem);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
   .vales-list-table {
     font-size: 12px;
   }

@@ -2112,7 +2112,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
   }
   @media (max-width: 480px) {
     .col-8{
-      max-width: 90%;
+      max-width: 100%;
     }
   }
   #captchaContainer{

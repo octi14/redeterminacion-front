@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="page main-background">
     <Banner title="Pagos dobles" subtitle="Recaudaciones" />
 
@@ -25,7 +25,7 @@
             @sliding-start="onSlideStart"
             @sliding-end="onSlideEnd"
             >
-                <b-carousel-slide :img-src="bannerPagoDoble"></b-carousel-slide>
+                <b-carousel-slide :img-src="bannerPagoDobleMobile"></b-carousel-slide>
             </b-carousel>
         </div>
 
@@ -236,11 +236,13 @@
 
 <script>
 import bannerPagoDoble from '~/assets/banner-pago-doble.png'
+import bannerPagoDobleMobile from '~/assets/cambio recaudaciones.png'
 
 export default {
   data(){
     return{
       bannerPagoDoble,
+      bannerPagoDobleMobile,
       slide: 0,
       showConfirmationPopup: false,
       showPopupA: false,
@@ -340,7 +342,7 @@ export default {
     display: block;
   }
   .col-8{
-    max-width: 90%;
+    max-width: 100%;
   }
   .botonera-container .row div{
     /*Opcion 1. 2 botones por fila*/

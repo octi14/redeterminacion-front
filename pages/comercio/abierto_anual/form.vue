@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="page main-background">
     <Banner title="Comercio Abierto Anual"/>
     <div class="mx-auto">
@@ -13,8 +13,8 @@
           <div class="li-row">
             <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1.5em"></i></div><div class="li-content"><p>Para comenzar, ingresá los siguientes datos del comercio:</p></div>
           </div>
-          <b-form @submit.prevent="sendData">
-            <b-row>
+          <b-form class="abierto-anual-form" @submit.prevent="sendData">
+            <b-row class="abierto-anual-first-field">
               <label for="cuit" class="col-6">CUIT/CUIM del titular del comercio: <span style="font-weight: 500"><i>(sin guiones)</i></span></label>
               <b-form-input class="col-6" v-model="cuit" id="cuit" type="number" placeholder="Ingrese su CUIT/CUIM" no-wheel></b-form-input>
               <div v-if="$v.cuit.$error" class="validation-error col-12">
@@ -268,6 +268,9 @@
       min-width: 60%;
     }
   }
+  .abierto-anual-first-field {
+    margin-top: 1rem;
+  }
   @media (max-width: 720px){
     .banner-container{
       margin:auto;
@@ -281,7 +284,8 @@
       margin-right: 5% !important;
     }
     .modal-dialog{
-      max-width: 100px !important;
+      max-width: calc(100% - 1.5rem) !important;
+      margin: 0.75rem auto;
     }
     .justify-content-center{
       margin: auto;

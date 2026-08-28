@@ -832,10 +832,10 @@ export default{
   }
 }
 @media (max-width: 480px) {
-  .col-8{
-    max-width: 90%;
+    .col-8{
+      max-width: 100%;
+    }
   }
-}
 #captchaContainer{
   margin-bottom: 1rem;
 }

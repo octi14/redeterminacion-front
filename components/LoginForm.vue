@@ -35,7 +35,7 @@
 
       <button
         type="button"
-        class="btn btn-lg login-field mb-6 mx-auto login-submit-btn"
+        class="btn btn-lg login-field mx-auto login-submit-btn"
         :disabled="loggingIn"
         @click="onSubmitLoginForm"
       >
@@ -123,6 +123,12 @@ export default {
 .login-form-body .form-control {
   padding-left: 1rem;
   padding-right: 1rem;
+  border-color: #6c757d;
+}
+
+.login-form-body .form-control:focus {
+  border-color: #495057;
+  box-shadow: 0 0 0 0.2rem rgba(73, 80, 87, 0.2);
 }
 
 .login-submit-btn {
@@ -130,6 +136,8 @@ export default {
   border-color: #ef8918;
   color: #fff;
   width: 100%;
+  margin-top: 1.5rem;
+  margin-bottom: 2.5rem;
 }
 
 .login-submit-btn:hover:not(:disabled) {
@@ -140,5 +148,11 @@ export default {
 
 .login-submit-btn:disabled {
   opacity: 0.7;
+}
+@media (max-width: 767.98px) {
+  .login-form-body {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
 }
 </style>

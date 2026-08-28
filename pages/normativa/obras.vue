@@ -1,5 +1,5 @@
-<template>
-  <div class="page main-background">
+﻿<template>
+  <div class="page main-background normativa-page-content">
     <Banner title="Normativa Obra Pública" />
     <MultimediaFeed keyword="Obras" />
     <div class="page-btn-volver-wrap">

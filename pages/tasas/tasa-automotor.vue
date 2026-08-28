@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="page main-background automotor-page">
     <Banner title="Descargar Tasa Automotor" />
 
@@ -10,17 +10,30 @@
           <p>Consultá los períodos disponibles y descargá las boletas de pago.</p>
         </div>
         <form class="domain-form" @submit.prevent="buscar">
-          <label for="dominio">
+          <label for="dominio" class="domain-label-row">
             <i class="bi bi-caret-right-fill" aria-hidden="true"></i>
-            Ingresá el dominio de tu vehículo sin espacios
-            <button
-              type="button"
-              class="help-btn"
-              title="Ejemplo: ABC123 o AB123CD. Sin espacios ni guiones."
-              aria-label="Ayuda sobre el dominio"
-            >
-              <i class="bi bi-question-circle"></i>
-            </button>
+            <span class="domain-label-text">Ingresá el dominio de tu vehículo sin espacios</span>
+            <span class="domain-help-wrap">
+              <i
+                class="bi bi-question-circle-fill text-info field-help-icon"
+                style="font-size: 1.15em"
+                role="button"
+                tabindex="0"
+                aria-label="Ayuda sobre el dominio"
+                :aria-expanded="showDominioAyuda ? 'true' : 'false'"
+                aria-controls="dominio-ayuda"
+                @click.stop.prevent="showDominioAyuda = !showDominioAyuda"
+                @keydown.enter.stop.prevent="showDominioAyuda = !showDominioAyuda"
+              ></i>
+              <span
+                v-show="showDominioAyuda"
+                id="dominio-ayuda"
+                class="domain-help-tooltip"
+                role="tooltip"
+              >
+                Ejemplo: ABC123 o AB123CD. Sin espacios ni guiones.
+              </span>
+            </span>
           </label>
           <div class="domain-input">
             <i class="bi bi-car-front-fill"></i>
@@ -247,6 +260,7 @@ export default {
       maxPeriodosSeleccionados: 20,
       tasaAutomotorPublicaHabilitada: true,
       showDominioNoEncontrado: false,
+      showDominioAyuda: false,
     }
   },
   computed: {
@@ -481,25 +495,49 @@ export default {
   margin: 0;
   color: #666;
 }
-.domain-form label {
+.domain-label-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.35rem;
   margin-bottom: 0.65rem;
   color: #353535;
   font-weight: 600;
+  line-height: 1.35;
 }
-.domain-form label .bi-caret-right-fill {
+.domain-label-text {
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+.domain-label-row .bi-caret-right-fill {
   color: #E27910;
   font-size: 0.85rem;
 }
-.help-btn {
+.domain-help-wrap {
+  position: relative;
   display: inline-flex;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: #6c757d;
-  line-height: 1;
+  flex: 0 0 auto;
+  align-items: center;
+}
+.domain-help-tooltip {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  right: 0;
+  left: auto;
+  z-index: 20;
+  width: max-content;
+  max-width: min(16rem, calc(100vw - 2rem));
+  padding: 0.55rem 0.7rem;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  color: #353535;
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1.35;
+  text-align: left;
+  white-space: normal;
 }
 .domain-input {
   display: flex;
@@ -769,6 +807,19 @@ export default {
     grid-template-columns: 1fr;
     gap: 1.5rem;
     padding: 1.5rem;
+  }
+  .domain-label-row {
+    position: relative;
+    font-size: 0.95rem;
+  }
+  .domain-help-wrap {
+    position: static;
+  }
+  .domain-help-tooltip {
+    right: 0;
+    left: auto;
+    max-width: calc(100% - 0.5rem);
+    width: auto;
   }
   .vehicle-heading,
   .periods-body,

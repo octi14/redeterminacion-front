@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="page main-background">
     <Banner title="Trámites comerciales" />
 
@@ -18,9 +18,9 @@
         <b-carousel-slide :img-src="carouselHabilita2" />
       </b-carousel>
     </div>
-    <div class="col-12 moblieCarrousel" style="margin-top: 0; background-color: #f0f0f0;">
+    <div class="col-12 mobileCarrousel" style="margin-top: 0; background-color: #f0f0f0;">
       <b-carousel
-        id="moblieCarousel"
+        id="mobileCarousel"
         v-model="slideMobile"
         :interval="0"
         :controls="false"
@@ -1723,7 +1723,7 @@ export default {
   }
 }
 
-#moblieCarousel {
+#mobileCarousel {
   .carousel-control-prev-icon,
   .carousel-control-next-icon {
     background-image: none;
@@ -1744,7 +1744,7 @@ export default {
 
 @media (max-width: 1200px) {
   #mainCarousel,
-  #moblieCarousel {
+  #mobileCarousel {
     .carousel-control-prev-icon::after,
     .carousel-control-next-icon::after {
       font-size: 30px;
@@ -1793,7 +1793,7 @@ export default {
 
 @media (max-width: 720px) {
   #mainCarousel,
-  #moblieCarousel {
+  #mobileCarousel {
     .carousel-control-prev,
     .carousel-control-next,
     .carousel-control-prev-icon,
@@ -1818,7 +1818,7 @@ export default {
   .tramites-carousel-wrap {
     padding-bottom: 2rem;
   }
-  .moblieCarrousel{
+  .mobileCarrousel{
     display: none;
   }
 @media (max-width: 1200px) {
@@ -1844,7 +1844,7 @@ export default {
   .mainCarrousel{
     display: block;
   }
-  .moblieCarrousel{
+  .mobileCarrousel{
     display: none;
   }
   .botonera-container .row > div{
@@ -1861,7 +1861,7 @@ export default {
   .mainCarrousel{
     display: none;
   }
-  .moblieCarrousel{
+  .mobileCarrousel{
     display: block;
     padding-left: 0.75rem;
     padding-right: 0.75rem;

@@ -178,6 +178,7 @@
                 </b-row>
               </b-card-text>
             </b-card>
+            <RecaptchaField v-if="page === 3" ref="captchaTurno" container-id="captcha-confirmar-turno" />
             <div class="btn-container">
               <b-button @click="page-= 1" class="btn-cancel">Volver</b-button>
               <b-button type="button" :disabled="sendingForm || !areAllFieldsComplete"  @click="onSelectTurno" variant="success">Continuar</b-button>
@@ -449,6 +450,10 @@ export default {
         return;
       }
 
+      if (!this.$refs.captchaTurno?.validate()) {
+        return;
+      }
+
       try {
         const turno = {
           dia: this.date,
@@ -511,6 +516,7 @@ IMPORTANTE:
         });
       } finally {
         this.sendingForm = false
+        this.$refs.captchaTurno?.reset()
       }
     },
     async onPrintTicket() {
@@ -715,13 +721,22 @@ IMPORTANTE:
   .section-card{
     padding: 1rem 1rem !important;
   }
+  .section-card .btn-container {
+    flex-direction: column;
+    width: 100%;
+    align-items: stretch;
+    gap: 0.65rem;
+    margin-top: 1rem;
+  }
+  .section-card .btn,
+  .btn{
+    width: 100% !important;
+    max-width: none;
+  }
   .card{
     width: 90% !important;
     margin-left: 5% !important;
     margin-right: 5% !important;
-  }
-  .btn{
-    width: 9rem !important;
   }
   .bi-ticket {
     width: 12% !important;

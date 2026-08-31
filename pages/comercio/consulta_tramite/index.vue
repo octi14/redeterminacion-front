@@ -21,6 +21,7 @@
           <b-form>
             <b-form-input :disabled="enterKeyPressed" @keydown.enter="consultar" v-model="nroTramiteIngresado" type="number" size="lg" class="col-md-6 col-sm-10 mt-4 mx-auto" placeholder="Número de trámite" no-wheel></b-form-input>
           </b-form>
+          <RecaptchaField ref="captchaConsulta" container-id="captcha-consulta-tramite" class="captcha-consulta" />
           <div class="btn-container col-sm-10">
             <b-button class="btn-cancel" @click="onResetParams" :disabled="isConsulting">Cancelar</b-button>
             <b-button variant="success" @click="consultar" :disabled="isConsulting">
@@ -323,6 +324,13 @@ export default {
         return
       }
 
+      if (!this.$refs.captchaConsulta?.validate()) {
+        this.isConsulting = false
+        await this.wait(500)
+        this.enterKeyPressed = false
+        return
+      }
+
       try{
         const nroTramite = this.nroTramiteIngresado
 
@@ -398,6 +406,7 @@ export default {
         });
       }finally{
         this.isConsulting = false
+        this.$refs.captchaConsulta?.reset()
         await this.wait(500)
         this.enterKeyPressed = false
       }
@@ -558,10 +567,16 @@ export default {
     -webkit-box-shadow: 0px 2px 5px 0px var(--shadow-card);
     -moz-box-shadow: 0px 2px 5px 0px var(--shadow-card);
   }
+  .section-card .captcha-consulta {
+    margin-top: 1.5rem;
+  }
   .section-card .btn-container{
     width: fit-content;
     margin: auto;
-    margin-top: 2rem;
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
   }
   .section-card .btn{
     padding: 0.5rem 3rem;
@@ -669,6 +684,19 @@ export default {
     .mx-auto {
       max-width: 100%;
       box-sizing: border-box;
+    }
+    .section-card .captcha-consulta {
+      width: 100%;
+    }
+    .section-card .btn-container {
+      flex-direction: column;
+      width: 100%;
+      align-items: stretch;
+      gap: 0.65rem;
+    }
+    .section-card .btn {
+      width: 100% !important;
+      max-width: none;
     }
   }
 </style>

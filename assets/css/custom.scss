@@ -1369,12 +1369,13 @@ form .field-help-icon,
     }
 
     .section-card #captchaContainer,
-    .section-card .g-recaptcha {
+    .section-card .g-recaptcha,
+    .section-card .recaptcha-field {
       display: flex;
       justify-content: center;
       margin: 0.75rem auto 1rem;
-      overflow-x: auto;
       max-width: 100%;
+      overflow: visible;
     }
 
     .section-card > .centeredContainer + .centeredContainer {

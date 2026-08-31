@@ -286,7 +286,7 @@
           </li>
         </ul>
         <p class="pn-redirect-cta">
-          Hacé click en el botón de pago para acceder al sitio de pago.
+          Hacé clic en el botón para acceder al sitio de pago.
         </p>
         <button
           type="button"
@@ -488,9 +488,10 @@ export default {
           .replace(/[\s-]/g, '')
           .toUpperCase()
       } else {
-        this.objetoClave = String(this.objetoClave || '')
+        const clave = String(this.objetoClave || '')
           .replace(/\s/g, '')
           .toUpperCase()
+        this.objetoClave = clave.length && clave.length < 8 ? clave.padStart(8, '0') : clave
       }
     },
     formatMoney(value) {

@@ -47,6 +47,7 @@
               @input="normalizarDominio"
             >
           </div>
+          <RecaptchaField ref="captchaBuscar" container-id="captcha-buscar-automotor" />
           <button class="btn btn-search" type="submit" :disabled="!dominioValido || buscando || descargando">
             <b-spinner v-if="buscando" small class="mr-2"></b-spinner>
             <i v-else class="bi bi-search mr-2"></i>
@@ -345,6 +346,7 @@ export default {
     async buscar() {
       if (!this.puedeVerModulo) return
       if (!this.dominioValido) return
+      if (!this.$refs.captchaBuscar?.validate()) return
       this.buscando = true
       this.mensajeError = ''
       this.showDominioNoEncontrado = false
@@ -373,6 +375,7 @@ export default {
         }
       } finally {
         this.buscando = false
+        this.$refs.captchaBuscar?.reset()
       }
     },
     seleccionarTodos(value) {
@@ -478,7 +481,7 @@ export default {
   grid-template-columns: 1fr;
 }
 .eyebrow {
-  color: #0c681a;
+  color: #666;
   font-size: 0.8rem;
   font-weight: 700;
 }
@@ -494,6 +497,9 @@ export default {
 .vehicle-copy p {
   margin: 0;
   color: #666;
+}
+.domain-form :deep(.recaptcha-field) {
+  margin: 0.65rem 0 0.85rem;
 }
 .domain-label-row {
   display: flex;
@@ -803,6 +809,9 @@ export default {
   opacity: 0.6;
 }
 @media (max-width: 767px) {
+  .automotor-page {
+    overflow-x: hidden;
+  }
   .search-card {
     grid-template-columns: 1fr;
     gap: 1.5rem;

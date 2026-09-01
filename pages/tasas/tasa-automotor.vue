@@ -153,9 +153,14 @@
               <i v-else class="bi bi-download mr-2"></i>
               {{ descargando ? 'Generando PDF...' : 'Descargar boleta' }}
             </button>
-            <a class="btn btn-pay" href="http://arvige.gob.ar/lpagos">
+            <button
+              type="button"
+              class="btn btn-pay"
+              :disabled="!pagoTasaUrbanaPublico"
+              @click="irAPagar"
+            >
               Ir a pagar
-            </a>
+            </button>
           </div>
         </div>
       </section>
@@ -242,6 +247,8 @@ useHead({ title: 'Tasa Automotor - Hacienda Villa Gesell' })
 </script>
 
 <script>
+import ProvinciaNetService from '~/service/provinciaNet.js'
+
 const PERIODOS_POR_PAGINA = 12
 
 export default {
@@ -260,6 +267,7 @@ export default {
       periodosPorPagina: PERIODOS_POR_PAGINA,
       maxPeriodosSeleccionados: 20,
       tasaAutomotorPublicaHabilitada: true,
+      pagoTasaUrbanaPublico: false,
       showDominioNoEncontrado: false,
       showDominioAyuda: false,
     }
@@ -327,8 +335,25 @@ export default {
   },
   mounted() {
     this.loadTasaAutomotorConfig()
+    this.loadPagoUrbanaConfig()
   },
   methods: {
+    async loadPagoUrbanaConfig() {
+      try {
+        const response = await ProvinciaNetService.getConfiguracion(this.$axios)
+        const data = response?.data || response
+        this.pagoTasaUrbanaPublico = data?.habilitada === true
+      } catch (_) {
+        this.pagoTasaUrbanaPublico = false
+      }
+    },
+    irAPagar() {
+      if (!this.pagoTasaUrbanaPublico || !this.dominio) return
+      this.$router.push({
+        path: '/tasas/pagar-tasas',
+        query: { tipoTasa: 'AUTOMOTORES', objetoClave: this.dominio },
+      })
+    },
     async loadTasaAutomotorConfig() {
       try {
         const response = await this.$axios.get('/tasas/automotores/configuracion')

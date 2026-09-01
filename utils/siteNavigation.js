@@ -52,15 +52,6 @@ export const SITE_NAVIGATION_ITEMS = [
     aliases: ['recaudaciones', 'impuestos', 'boletas'],
   },
   {
-    id: 'landing-pagos',
-    title: 'Pagos',
-    description: 'Portal de pagos municipales',
-    to: 'https://arvige.gob.ar/lpagos',
-    section: 'Inicio',
-    external: true,
-    aliases: ['pagar', 'boleta', 'descargar boleta', 'vencimientos'],
-  },
-  {
     id: 'landing-compras',
     title: 'Compras',
     description: 'Licitaciones, proveedores y suministros',

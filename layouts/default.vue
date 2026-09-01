@@ -6,7 +6,7 @@
     <div id="app-content" class="mt-5">
       <slot />
       <ModalSessionTimeout :mostrarModal="showSessionTimeoutModal" />
-      <ModalMoratoria2026 v-model:mostrar-modal="mostrarMoratoria" />
+      <ModalTasasHome v-model:mostrar-modal="mostrarPopupTasas" />
     </div>
     <Foot />
   </div>
@@ -19,8 +19,8 @@ export default {
   name: 'Default',
   provide() {
     return {
-      closeMoratoriaModal: () => {
-        this.cerrarMoratoria()
+      closeHomePopup: () => {
+        this.cerrarPopupTasas()
       },
     }
   },
@@ -28,7 +28,7 @@ export default {
     return {
       sessionExpired: false,
       manualLogout: false, // Bandera para detectar logout manual
-      mostrarMoratoria: false,
+      mostrarPopupTasas: false,
     };
   },
   computed: {
@@ -58,15 +58,15 @@ export default {
     '$route.path'(newPath) {
       if (!import.meta.client) return
       if (newPath !== '/') {
-        this.mostrarMoratoria = false
-      } else if (this.debeMostrarMoratoria()) {
-        this.mostrarMoratoria = true
+        this.mostrarPopupTasas = false
+      } else if (this.debeMostrarPopupTasas()) {
+        this.mostrarPopupTasas = true
       }
       forceCloseAllModals()
     },
-    mostrarMoratoria(visible) {
+    mostrarPopupTasas(visible) {
       if (!visible && import.meta.client) {
-        localStorage.setItem('moratoria2026cerrada', '1')
+        localStorage.setItem('popupTasasHomeCerrado', '1')
       }
     },
   },
@@ -87,9 +87,9 @@ export default {
       this.sessionExpired = this.checkTokenExpired(this.token);
     }
 
-    if (import.meta.client && this.$route?.path === '/' && this.debeMostrarMoratoria()) {
+    if (import.meta.client && this.$route?.path === '/' && this.debeMostrarPopupTasas()) {
       this.$nextTick(() => {
-        this.mostrarMoratoria = true
+        this.mostrarPopupTasas = true
       })
     }
 
@@ -99,14 +99,14 @@ export default {
     });
   },
   methods: {
-    debeMostrarMoratoria() {
+    debeMostrarPopupTasas() {
       if (!import.meta.client) return false
-      return !localStorage.getItem('moratoria2026cerrada')
+      return !localStorage.getItem('popupTasasHomeCerrado')
     },
-    cerrarMoratoria() {
-      this.mostrarMoratoria = false
+    cerrarPopupTasas() {
+      this.mostrarPopupTasas = false
       if (import.meta.client) {
-        localStorage.setItem('moratoria2026cerrada', '1')
+        localStorage.setItem('popupTasasHomeCerrado', '1')
       }
     },
     checkTokenExpired(token) {

@@ -33,7 +33,7 @@ import { forceCloseAllModals } from '~/utils/modalCleanup'
 export default {
   inject: {
     closeMoratoriaModal: {
-      from: 'closeMoratoriaModal',
+      from: 'closeHomePopup',
       default: null,
     },
   },

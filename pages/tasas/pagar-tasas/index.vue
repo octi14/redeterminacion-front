@@ -39,7 +39,6 @@
                   autocomplete="off"
                   :placeholder="identificadorPlaceholder"
                   @input="normalizarClave"
-                  @blur="consultarDeuda"
                 />
                 <b-button
                   variant="success"
@@ -498,6 +497,21 @@ export default {
         this.pagoUrbanaPublico = false
       } finally {
         this.accesoResuelto = true
+        await this.aplicarQueryInicial()
+      }
+    },
+    async aplicarQueryInicial() {
+      if (!this.puedeAcceder) return
+      const tipo = String(this.$route.query.tipoTasa || '').toUpperCase()
+      const clave = String(this.$route.query.objetoClave || '').trim()
+      if (tipo === 'AUTOMOTORES' || tipo === 'URBANA') {
+        this.tipoTasa = tipo
+      }
+      if (!clave) return
+      this.objetoClave = clave
+      this.normalizarClave()
+      if (this.claveValida) {
+        await this.consultarDeuda()
       }
     },
     seleccionarTipoTasa(value) {
@@ -518,11 +532,16 @@ export default {
           .replace(/[\s-]/g, '')
           .toUpperCase()
       } else {
-        const clave = String(this.objetoClave || '')
+        this.objetoClave = String(this.objetoClave || '')
           .replace(/\s/g, '')
           .toUpperCase()
-        this.objetoClave = clave.length && clave.length < 8 ? clave.padStart(8, '0') : clave
       }
+    },
+    claveParaConsulta() {
+      const clave = String(this.objetoClave || '')
+      if (this.tipoTasa === 'AUTOMOTORES') return clave
+      if (!clave || clave.length >= 8) return clave
+      return clave.padStart(8, '0')
     },
     formatMoney(value) {
       const n = Number(value || 0)
@@ -602,11 +621,11 @@ export default {
         await this.$logUserActivity(
           userId,
           'Consulta de deuda',
-          `Consulta de ${tipoLabel} ${this.objetoClave} (${this.tipoTasa})`
+          `Consulta de ${tipoLabel} ${this.claveParaConsulta()} (${this.tipoTasa})`
         )
         const response = await ProvinciaNetService.getDeuda(this.$axios, {
           tipoTasa: this.tipoTasa,
-          objetoClave: this.objetoClave,
+          objetoClave: this.claveParaConsulta(),
         })
         const data = response?.data || response
         this.deuda = data
@@ -744,10 +763,6 @@ export default {
 </script>
 
 <style scoped>
-.urbana-page {
-  height: auto;
-  min-height: 0;
-}
 .urbana-main--compact {
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;

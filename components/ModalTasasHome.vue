@@ -1,6 +1,6 @@
 <template>
   <BModal
-    id="modalMoratoria2026"
+    id="modalTasasHome"
     :model-value="mostrarModal"
     centered
     no-header
@@ -23,22 +23,24 @@
         >
           X
         </button>
-        <img
-          :src="moratoriaImg"
-          alt="Moratoria 2026"
-          class="moratoria-img"
-        />
+        <NuxtLink to="/tasas" class="moratoria-img-link" @click="cerrar">
+          <img
+            :src="tasasImg"
+            alt="Ya podés descargar tus boletas de tasa automotor y pagar tus tasas"
+            class="moratoria-img"
+          />
+        </NuxtLink>
       </div>
     </div>
   </BModal>
 </template>
 
 <script>
-import moratoriaImg from '~/assets/Moratoria 2026.png'
+import tasasImg from '~/assets/Descargá y pagá tus tasas.png'
 import { cleanupModalArtifacts as removeStaleModalLayers } from '~/utils/modalCleanup'
 
 export default {
-  name: 'ModalMoratoria2026',
+  name: 'ModalTasasHome',
   props: {
     mostrarModal: {
       type: Boolean,
@@ -48,7 +50,7 @@ export default {
   emits: ['close', 'update:mostrarModal'],
   data() {
     return {
-      moratoriaImg,
+      tasasImg,
     }
   },
   methods: {
@@ -87,6 +89,11 @@ export default {
   border-radius: 0;
   overflow: visible;
   display: inline-block;
+}
+
+.moratoria-img-link {
+  display: block;
+  line-height: 0;
 }
 
 .moratoria-close {

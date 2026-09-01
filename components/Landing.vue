@@ -31,7 +31,6 @@ export default {
         { to: '/modernizacion', icon: 'list-ul', title: 'Modernización', type: 'bootstrap-vue' },
         { to: '/comercio', icon: 'shop', title: 'Comercio', type: 'bootstrap-vue' },
         { to: '/tasas', icon: 'wallet', title: 'Tasas', type: 'bootstrap-vue' },
-        { to: 'https://arvige.gob.ar/lpagos', icon: 'cash-coin', title: 'Pagos', type: 'bootstrap-vue' },
       ],
     }
   },

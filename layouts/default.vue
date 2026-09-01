@@ -14,6 +14,7 @@
 
 <script>
 import { forceCloseAllModals } from '~/utils/modalCleanup'
+import ProvinciaNetService from '~/service/provinciaNet.js'
 
 export default {
   name: 'Default',
@@ -27,8 +28,9 @@ export default {
   data() {
     return {
       sessionExpired: false,
-      manualLogout: false, // Bandera para detectar logout manual
+      manualLogout: false,
       mostrarPopupTasas: false,
+      pagoTasaUrbanaPublico: false,
     };
   },
   computed: {
@@ -57,17 +59,12 @@ export default {
     },
     '$route.path'(newPath) {
       if (!import.meta.client) return
-      if (newPath !== '/') {
-        this.mostrarPopupTasas = false
-      } else if (this.debeMostrarPopupTasas()) {
+      if (newPath === '/' && this.debeMostrarPopupTasas()) {
         this.mostrarPopupTasas = true
+      } else {
+        this.mostrarPopupTasas = false
       }
       forceCloseAllModals()
-    },
-    mostrarPopupTasas(visible) {
-      if (!visible && import.meta.client) {
-        localStorage.setItem('popupTasasHomeCerrado', '1')
-      }
     },
   },
   mounted() {
@@ -87,10 +84,8 @@ export default {
       this.sessionExpired = this.checkTokenExpired(this.token);
     }
 
-    if (import.meta.client && this.$route?.path === '/' && this.debeMostrarPopupTasas()) {
-      this.$nextTick(() => {
-        this.mostrarPopupTasas = true
-      })
+    if (import.meta.client) {
+      this.loadPagoUrbanaConfig()
     }
 
     // Escuchar el evento de logout manual
@@ -99,9 +94,21 @@ export default {
     });
   },
   methods: {
+    async loadPagoUrbanaConfig() {
+      try {
+        const response = await ProvinciaNetService.getConfiguracion(this.$axios)
+        const data = response?.data || response
+        this.pagoTasaUrbanaPublico = data?.habilitada === true
+      } catch (_) {
+        this.pagoTasaUrbanaPublico = false
+      }
+      if (this.$route?.path === '/' && this.debeMostrarPopupTasas()) {
+        this.mostrarPopupTasas = true
+      }
+    },
     debeMostrarPopupTasas() {
       if (!import.meta.client) return false
-      return !localStorage.getItem('popupTasasHomeCerrado')
+      return this.pagoTasaUrbanaPublico && !localStorage.getItem('popupTasasHomeCerrado')
     },
     cerrarPopupTasas() {
       this.mostrarPopupTasas = false

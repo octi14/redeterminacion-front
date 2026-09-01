@@ -6,6 +6,12 @@ const getEstado = async (axios, uuid) => {
   return await axios.$get(`/pagos/provincia-net/estado/${encodeURIComponent(uuid)}`)
 }
 
+const rutaSegunStatus = (status) => {
+  if (status === 'Cancelado') return '/tasas/pagar-tasas/error'
+  if (status === 'Finalizado' || status === 'Parcial') return '/tasas/pagar-tasas/exito'
+  return null
+}
+
 const getConfiguracion = async (axios, headers = {}) => {
   return await axios.$get('/pagos/provincia-net/configuracion', { headers })
 }
@@ -58,6 +64,7 @@ const descargarOriginalUrbana = async (axios, importId, headers = {}) => {
 export default {
   createPreorder,
   getEstado,
+  rutaSegunStatus,
   getConfiguracion,
   updateConfiguracion,
   getDeuda,

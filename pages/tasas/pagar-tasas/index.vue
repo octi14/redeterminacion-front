@@ -367,6 +367,7 @@ export default {
     return {
       btnHorizontalVerde,
       pagando: false,
+      pollEstadoTimer: null,
       consultando: false,
       errorMsg: '',
       deudaMsg: '',
@@ -458,7 +459,36 @@ export default {
   mounted() {
     this.loadAccess()
   },
+  beforeDestroy() {
+    this.detenerPollEstado()
+  },
   methods: {
+    detenerPollEstado() {
+      if (this.pollEstadoTimer) {
+        clearInterval(this.pollEstadoTimer)
+        this.pollEstadoTimer = null
+      }
+    },
+    async consultarRutaEstado(uuid) {
+      const res = await ProvinciaNetService.getEstado(this.$axios, uuid)
+      const data = res?.data || res
+      return ProvinciaNetService.rutaSegunStatus(data?.status)
+    },
+    iniciarPollEstado(uuid) {
+      this.detenerPollEstado()
+      const tick = async () => {
+        try {
+          const ruta = await this.consultarRutaEstado(uuid)
+          if (!ruta) return
+          this.detenerPollEstado()
+          this.$router.push(ruta)
+        } catch (e) {
+          console.error(e)
+        }
+      }
+      tick()
+      this.pollEstadoTimer = setInterval(tick, 4000)
+    },
     async loadAccess() {
       try {
         const response = await ProvinciaNetService.getConfiguracion(this.$axios)
@@ -567,6 +597,13 @@ export default {
 
       this.consultando = true
       try {
+        const userId = useUserStore().username || 'Usuario Anónimo'
+        const tipoLabel = this.tipoTasa === 'URBANA' ? 'partida' : 'dominio'
+        await this.$logUserActivity(
+          userId,
+          'Consulta de deuda',
+          `Consulta de ${tipoLabel} ${this.objetoClave} (${this.tipoTasa})`
+        )
         const response = await ProvinciaNetService.getDeuda(this.$axios, {
           tipoTasa: this.tipoTasa,
           objetoClave: this.objetoClave,
@@ -676,6 +713,7 @@ export default {
 
         if (checkoutWindow && !checkoutWindow.closed) {
           checkoutWindow.location.href = url
+          this.iniciarPollEstado(uuid)
           this.showToast('Se abrió el sitio de pago en una nueva pestaña', {
             variant: 'success',
           })

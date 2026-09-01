@@ -30,35 +30,53 @@ export default {
   data() {
     return {
       status: null,
+      pollTimer: null,
     }
   },
   computed: {
     statusLabel() {
-      if (!this.status) return ''
       if (this.status === 'Parcial') {
         return 'El pago quedó parcial: algunos ítems se cobraron y otros no.'
       }
-      if (this.status === 'Finalizado') return ''
-      return `Estado actual: ${this.status}`
+      return ''
     },
   },
-  async mounted() {
-    await this.cargarEstado()
+  mounted() {
+    this.cargarEstado()
+  },
+  beforeDestroy() {
+    if (this.pollTimer) clearInterval(this.pollTimer)
   },
   methods: {
     async cargarEstado() {
       if (!import.meta.client) return
       const uuid = localStorage.getItem(STORAGE_KEY)
       if (!uuid) return
-      try {
-        const res = await ProvinciaNetService.getEstado(this.$axios, uuid)
-        const data = res?.data || res
-        this.status = data?.status || null
-        if (this.status === 'Cancelado') {
-          this.$router.replace('/tasas/pagar-tasas/error')
+      const tick = async () => {
+        try {
+          const res = await ProvinciaNetService.getEstado(this.$axios, uuid)
+          const data = res?.data || res
+          this.status = data?.status || null
+          const ruta = ProvinciaNetService.rutaSegunStatus(this.status)
+          if (ruta === '/tasas/pagar-tasas/error') {
+            if (this.pollTimer) clearInterval(this.pollTimer)
+            this.$router.replace(ruta)
+            return
+          }
+          if (
+            (this.status === 'Finalizado' || this.status === 'Parcial') &&
+            this.pollTimer
+          ) {
+            clearInterval(this.pollTimer)
+            this.pollTimer = null
+          }
+        } catch (e) {
+          console.error(e)
         }
-      } catch (e) {
-        console.error(e)
+      }
+      await tick()
+      if (this.status !== 'Finalizado' && this.status !== 'Parcial' && this.status !== 'Cancelado') {
+        this.pollTimer = setInterval(tick, 4000)
       }
     },
     finalizar() {

@@ -67,7 +67,7 @@
               {{
                 configLoading
                   ? 'Guardando configuración...'
-                  : 'Controla el botón “Pagar tasas” en /tasas y el acceso público al formulario.'
+                  : 'Habilita el botón “Pagar tasas” en /tasas, el formulario de pago, el popup de inicio y el botón “Ir a pagar” en descarga automotor.'
               }}
             </small>
           </div>

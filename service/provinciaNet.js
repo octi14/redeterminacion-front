@@ -1,3 +1,20 @@
+const STORAGE_KEY = 'provinciaNetUUID'
+const RESULT_REDIRECT_KEY = 'provinciaNetResultRedirect'
+
+const marcarRedirectResultado = (ruta) => {
+  if (import.meta.client) {
+    sessionStorage.setItem(RESULT_REDIRECT_KEY, ruta)
+  }
+}
+
+const consumirRedirectResultado = (ruta) => {
+  if (!import.meta.client) return false
+  const guardada = sessionStorage.getItem(RESULT_REDIRECT_KEY)
+  if (guardada !== ruta) return false
+  sessionStorage.removeItem(RESULT_REDIRECT_KEY)
+  return true
+}
+
 const createPreorder = async (axios, body) => {
   return await axios.$post('/pagos/provincia-net/preorder', body)
 }
@@ -62,9 +79,12 @@ const descargarOriginalUrbana = async (axios, importId, headers = {}) => {
 }
 
 export default {
+  STORAGE_KEY,
   createPreorder,
   getEstado,
   rutaSegunStatus,
+  marcarRedirectResultado,
+  consumirRedirectResultado,
   getConfiguracion,
   updateConfiguracion,
   getDeuda,

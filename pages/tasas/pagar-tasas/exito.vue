@@ -1,5 +1,5 @@
 <template>
-  <div class="page main-background pn-result-page">
+  <div v-if="accesoPermitido" class="page main-background pn-result-page">
     <div class="row no-gutters justify-content-center align-items-center pn-result-wrap">
       <div class="col-11 col-md-7 col-lg-5">
         <div class="pn-result-card pn-result-card--success">
@@ -24,16 +24,22 @@
 <script>
 import ProvinciaNetService from '~/service/provinciaNet.js'
 
-const STORAGE_KEY = 'provinciaNetUUID'
+const STORAGE_KEY = ProvinciaNetService.STORAGE_KEY
+const RUTA_EXITO = '/tasas/pagar-tasas/exito'
 
 export default {
   data() {
     return {
+      accesoPermitido: false,
       status: null,
       pollTimer: null,
     }
   },
   computed: {
+    esAdminInterno() {
+      const admin = String(useUserStore().admin || '').trim().toLowerCase()
+      return ['admin', 'master', 'true'].includes(admin)
+    },
     statusLabel() {
       if (this.status === 'Parcial') {
         return 'El pago quedó parcial: algunos ítems se cobraron y otros no.'
@@ -42,12 +48,20 @@ export default {
     },
   },
   mounted() {
+    if (!this.validarAcceso()) return
+    this.accesoPermitido = true
     this.cargarEstado()
   },
   beforeDestroy() {
     if (this.pollTimer) clearInterval(this.pollTimer)
   },
   methods: {
+    validarAcceso() {
+      if (this.esAdminInterno) return true
+      if (ProvinciaNetService.consumirRedirectResultado(RUTA_EXITO)) return true
+      this.$router.replace('/tasas/pagar-tasas')
+      return false
+    },
     async cargarEstado() {
       if (!import.meta.client) return
       const uuid = localStorage.getItem(STORAGE_KEY)
@@ -60,6 +74,7 @@ export default {
           const ruta = ProvinciaNetService.rutaSegunStatus(this.status)
           if (ruta === '/tasas/pagar-tasas/error') {
             if (this.pollTimer) clearInterval(this.pollTimer)
+            ProvinciaNetService.marcarRedirectResultado(ruta)
             this.$router.replace(ruta)
             return
           }

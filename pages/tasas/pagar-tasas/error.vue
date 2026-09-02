@@ -1,5 +1,5 @@
 <template>
-  <div class="page main-background pn-result-page">
+  <div v-if="accesoPermitido" class="page main-background pn-result-page">
     <div class="row no-gutters justify-content-center align-items-center pn-result-wrap">
       <div class="col-11 col-md-7 col-lg-5">
         <div class="pn-result-card pn-result-card--error">
@@ -27,10 +27,34 @@
 </template>
 
 <script>
-const STORAGE_KEY = 'provinciaNetUUID'
+import ProvinciaNetService from '~/service/provinciaNet.js'
+
+const STORAGE_KEY = ProvinciaNetService.STORAGE_KEY
+const RUTA_ERROR = '/tasas/pagar-tasas/error'
 
 export default {
+  data() {
+    return {
+      accesoPermitido: false,
+    }
+  },
+  computed: {
+    esAdminInterno() {
+      const admin = String(useUserStore().admin || '').trim().toLowerCase()
+      return ['admin', 'master', 'true'].includes(admin)
+    },
+  },
+  mounted() {
+    if (!this.validarAcceso()) return
+    this.accesoPermitido = true
+  },
   methods: {
+    validarAcceso() {
+      if (this.esAdminInterno) return true
+      if (ProvinciaNetService.consumirRedirectResultado(RUTA_ERROR)) return true
+      this.$router.replace('/tasas/pagar-tasas')
+      return false
+    },
     volver() {
       if (import.meta.client) localStorage.removeItem(STORAGE_KEY)
       this.$router.push('/tasas/pagar-tasas')

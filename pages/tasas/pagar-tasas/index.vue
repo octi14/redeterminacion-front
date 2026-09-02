@@ -1,6 +1,23 @@
 <template>
   <div class="page main-background urbana-page">
-    <Banner title="Pagos" />
+    <Banner title="Tasas" />
+
+    <div class="mx-auto">
+      <div class="pagar-tasas-hero banner-container">
+        <img
+          :src="heroDesktop"
+          class="pagar-tasas-hero__img pagar-tasas-hero__img--desktop d-none d-md-block"
+          width="1357"
+          height="536"
+          alt="Pagá tus tasas desde donde estés"
+        >
+        <img
+          :src="heroMobile"
+          class="pagar-tasas-hero__img d-md-none"
+          alt="Pagá tus tasas de modo online"
+        >
+      </div>
+    </div>
 
     <main
       class="container py-5 urbana-main"
@@ -128,6 +145,36 @@
                     <strong>Período {{ item.periodo }}</strong>
                     <small v-if="ultimoVencimiento(item)">
                       Venció el {{ formatDate(ultimoVencimiento(item).fecha) }}
+                    </small>
+                  </div>
+                  <span class="deuda-item-amount">{{ formatMoney(item.importe) }}</span>
+                </li>
+              </ul>
+            </div>
+
+            <div v-if="itemsPagados.length" class="deuda-group deuda-group--pagado">
+              <p class="deuda-group-title">Períodos ya abonados online</p>
+              <p class="deuda-group-help">
+                <i class="bi bi-check-circle-fill deuda-help-icon deuda-help-icon--pagado" aria-hidden="true"></i>
+                <span>
+                  <template v-if="itemsPagados.length === 1">
+                    Este período ya fue abonado por este medio.
+                  </template>
+                  <template v-else>
+                    Estos períodos ya fueron abonados por este medio.
+                  </template>
+                </span>
+              </p>
+              <ul class="deuda-vencidos">
+                <li
+                  v-for="item in itemsPagados"
+                  :key="item.id"
+                  class="deuda-pagado-row"
+                >
+                  <div class="deuda-item-body">
+                    <strong>Período {{ item.periodo }}</strong>
+                    <small v-if="item.pagadoAt">
+                      Abonado el {{ formatDate(item.pagadoAt) }}
                     </small>
                   </div>
                   <span class="deuda-item-amount">{{ formatMoney(item.importe) }}</span>
@@ -354,6 +401,8 @@
 <script>
 import ProvinciaNetService from '~/service/provinciaNet.js'
 import btnHorizontalVerde from '~/assets/provincianet/boton-cuenta-dni-horizontal-verde.svg'
+import heroDesktop from '~/assets/03. paga tus tasas desde donde estes.png?url'
+import heroMobile from '~/assets/04. paga tus tasas mobile.png?url'
 
 const STORAGE_KEY = 'provinciaNetUUID'
 
@@ -364,6 +413,8 @@ export default {
   },
   data() {
     return {
+      heroDesktop,
+      heroMobile,
       btnHorizontalVerde,
       pagando: false,
       pollEstadoTimer: null,
@@ -430,10 +481,17 @@ export default {
       return /^[A-Z0-9]{3,16}$/.test(this.objetoClave)
     },
     itemsPagables() {
-      return (this.deuda?.items || []).filter((item) => !this.esPeriodoVencido(item))
+      return (this.deuda?.items || []).filter(
+        (item) => !item.pagado && !this.esPeriodoVencido(item)
+      )
     },
     itemsVencidos() {
-      return (this.deuda?.items || []).filter((item) => this.esPeriodoVencido(item))
+      return (this.deuda?.items || []).filter(
+        (item) => !item.pagado && this.esPeriodoVencido(item)
+      )
+    },
+    itemsPagados() {
+      return (this.deuda?.items || []).filter((item) => item.pagado)
     },
     soloPeriodosVencidos() {
       return Boolean(this.deuda?.items?.length) && this.itemsPagables.length === 0
@@ -480,6 +538,7 @@ export default {
           const ruta = await this.consultarRutaEstado(uuid)
           if (!ruta) return
           this.detenerPollEstado()
+          ProvinciaNetService.marcarRedirectResultado(ruta)
           this.$router.push(ruta)
         } catch (e) {
           console.error(e)
@@ -598,7 +657,7 @@ export default {
       )
     },
     esPeriodoVencido(item) {
-      if (!item) return false
+      if (!item || item.pagado) return false
       if (typeof item.vencido === 'boolean') return item.vencido
       if (typeof item.pagable === 'boolean') return !item.pagable
       const vtos = this.vencimientosOrdenados(item)
@@ -630,7 +689,7 @@ export default {
         const data = response?.data || response
         this.deuda = data
         this.seleccionados = (data.items || [])
-          .filter((item) => !this.esPeriodoVencido(item))
+          .filter((item) => !item.pagado && !this.esPeriodoVencido(item))
           .map((item) => item.id)
         this.deudaMsg = ''
 
@@ -642,9 +701,11 @@ export default {
           return
         }
 
-        this.$nextTick(() => {
-          this.$refs.pagadorSection?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-        })
+        if (this.itemsPagables.length) {
+          this.$nextTick(() => {
+            this.$refs.pagadorSection?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+          })
+        }
       } catch (e) {
         const payload = e?.response?.data || e?.data || {}
         const message =
@@ -763,6 +824,26 @@ export default {
 </script>
 
 <style scoped>
+.pagar-tasas-hero.banner-container {
+  width: 100%;
+  max-width: 1357px;
+  margin: 0 auto 0.5rem;
+  line-height: 0;
+}
+.pagar-tasas-hero__img {
+  display: block;
+  margin: 0 auto;
+}
+.pagar-tasas-hero__img--desktop {
+  width: min(100%, 1357px);
+  height: auto;
+  aspect-ratio: 1357 / 536;
+}
+.pagar-tasas-hero__img:not(.pagar-tasas-hero__img--desktop) {
+  width: 100%;
+  height: auto;
+}
+
 .urbana-main--compact {
   padding-top: 1.5rem;
   padding-bottom: 1.5rem;
@@ -896,6 +977,12 @@ export default {
 .deuda-group--info .deuda-group-title {
   color: #E27910;
 }
+.deuda-group--pagado .deuda-group-title {
+  color: #0c681a;
+}
+.deuda-help-icon--pagado {
+  color: #0c681a;
+}
 .deuda-empty {
   padding: 0.85rem 0.95rem;
   border-radius: 0.65rem;
@@ -968,6 +1055,26 @@ export default {
   color: #6c757d;
 }
 .deuda-vencido-row .deuda-item-amount {
+  font-weight: 600;
+}
+.deuda-pagado-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.65rem 0.85rem;
+  border-radius: 0.65rem;
+  background: var(--green-fill);
+  border: 1px solid #dee2e6;
+}
+.deuda-pagado-row .deuda-item-body strong {
+  color: #0c681a;
+}
+.deuda-pagado-row .deuda-item-body small,
+.deuda-pagado-row .deuda-item-amount {
+  color: #0c681a;
+}
+.deuda-pagado-row .deuda-item-amount {
   font-weight: 600;
 }
 
@@ -1099,6 +1206,11 @@ export default {
 }
 
 @media (max-width: 767px) {
+  .pagar-tasas-hero.banner-container {
+    max-width: 100%;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
   .urbana-header,
   .urbana-form,
   .urbana-card--simple {

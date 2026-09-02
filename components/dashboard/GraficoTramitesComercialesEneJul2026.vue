@@ -117,7 +117,7 @@ const MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio']
 const MESES_CORTOS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul']
 const INICIO = new Date(2026, 0, 1)
 const FIN = new Date(2026, 6, 31, 23, 59, 59, 999)
-const COLORES = ['#007bff', '#28a745', '#ffc107', '#17a2b8', '#6f42c1', '#dc3545', '#fd7e14', '#20c997', '#6c757d', '#e83e8c']
+const COLORES = ['#007bff', '#28a745', '#ffc107', '#17a2b8', '#9966ff', '#e53749', '#e27910', '#2196f3', '#6c757d', '#ef8918']
 
 export default {
   name: 'GraficoTramitesComercialesEneJul2026',
@@ -307,7 +307,7 @@ export default {
             datasets: [{
               label: 'Trámites',
               data: this.porMes,
-              backgroundColor: 'rgba(0, 123, 255, 0.55)',
+              backgroundColor: 'rgba(0, 123, 255, 0.35)',
               borderColor: '#007bff',
               borderWidth: 1
             }]

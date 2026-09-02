@@ -748,6 +748,30 @@ export default {
       }
       this.showConsultaModal = true
     },
+    mostrarCargandoCheckout(win) {
+      if (!win || win.closed) return
+      try {
+        win.document.open()
+        win.document.write(`<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="utf-8">
+<title>Preparando el pago</title>
+<style>
+  html,body{height:100%;margin:0;font-family:system-ui,sans-serif;background:#f4f6f8;color:#1a2a3a}
+  body{display:flex;align-items:center;justify-content:center}
+  .box{text-align:center;padding:2rem}
+  .spin{width:40px;height:40px;margin:0 auto 1rem;border:3px solid #d0d7de;border-top-color:#0d6efd;border-radius:50%;animation:r .8s linear infinite}
+  @keyframes r{to{transform:rotate(360deg)}}
+  p{margin:0;font-size:1.05rem}
+</style>
+</head><body>
+<div class="box"><div class="spin"></div><p>Preparando el sitio de pago…</p></div>
+</body></html>`)
+        win.document.close()
+      } catch (_) {
+        /* la pestaña sigue en blanco hasta la URL de PN */
+      }
+    },
     iniciarPago() {
       this.errorMsg = ''
       if (!this.puedePagar) {
@@ -768,6 +792,7 @@ export default {
       let checkoutWindow = null
       if (import.meta.client) {
         checkoutWindow = window.open('about:blank', '_blank')
+        this.mostrarCargandoCheckout(checkoutWindow)
       }
 
       try {

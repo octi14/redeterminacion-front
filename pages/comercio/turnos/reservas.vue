@@ -172,7 +172,7 @@ export default{
         },
       ],
       estados: ['Pendiente de inspección','Cancelado', 'Inspeccionado','Prórroga 1','Prórroga 2', 'Inspección rechazada'],
-      tiposTramite: ['Habilitación', 'Baja', 'Renovación'], // Agrega los tipos de trámite necesarios
+      tiposTramite: ['Habilitación', 'Baja', 'Renovación', 'Reempadronamiento', 'Cambio de Titular'],
     }
   },
   async mounted() {
@@ -188,64 +188,49 @@ export default{
     inputNombreSolicitante() {
       this.currentPage = 1
     },
+    selectedEstado() {
+      this.currentPage = 1
+    },
+    selectedTipoTramite() {
+      this.currentPage = 1
+    },
+    hideFinalizados() {
+      this.currentPage = 1
+    },
   },
   computed: {
     turnos(){
       return useTurnosStore().all
     },
-    paginatedItems() {
-      const startIndex = (this.currentPage - 1) * this.perPage;
-      const endIndex = startIndex + this.perPage;
-
-      return this.items.filter((item) => {
-        let estadoMatch = true;
-        let tipoTramiteMatch = true;
-
-        if (this.selectedEstado) {
-          estadoMatch = item.status === this.selectedEstado;
-        }
-
-        if (this.selectedTipoTramite) {
-          tipoTramiteMatch = item.tipoTramite === this.selectedTipoTramite; // Ajusta esto según la estructura de tus datos
-        }
-
-        if (this.hideFinalizados) {
-          return estadoMatch && tipoTramiteMatch && !["Cancelado", "Inspeccionado"].includes(item.status);
-        } else {
-          return estadoMatch && tipoTramiteMatch;
-        }
-      }).slice(startIndex, endIndex);
-    },
     filteredItems() {
       let items = this.items;
+      const nroTramite = String(this.inputNroTramite || '').trim()
+      const nroLegajo = String(this.inputNroLegajo || '').trim()
+      const nombreBusqueda = String(this.inputNombreSolicitante || '').trim().toLowerCase()
 
-      if (this.inputNroTramite) {
-        items = items.filter(item => item.nroTramite && String(item.nroTramite).includes(this.inputNroTramite));
+      if (nroTramite) {
+        items = items.filter(item => item.nroTramite != null && String(item.nroTramite).includes(nroTramite));
       }
 
-      if (this.inputNroLegajo) {
-        items = items.filter(item => item.nroLegajoComercial && String(item.nroLegajoComercial).includes(this.inputNroLegajo));
+      if (nroLegajo) {
+        items = items.filter(item => item.nroLegajoComercial != null && String(item.nroLegajoComercial).includes(nroLegajo));
       }
 
-      if (this.inputNombreSolicitante && this.inputNombreSolicitante.trim()) {
-        const nombreBusqueda = this.inputNombreSolicitante.trim().toLowerCase();
+      if (nombreBusqueda) {
         items = items.filter(item => {
           const nombre = item.nombreSolicitante ? String(item.nombreSolicitante).toLowerCase() : '';
           return nombre.includes(nombreBusqueda);
         });
       }
 
-      // Filtrar por estado
       if (this.selectedEstado) {
         items = items.filter(item => item.status === this.selectedEstado);
       }
 
-      // Filtrar por tipo de trámite
       if (this.selectedTipoTramite) {
-        items = items.filter(item => item.tipoTramite === this.selectedTipoTramite);
+        items = items.filter(item => (item.tipoTramite || '').trim() === this.selectedTipoTramite);
       }
 
-      // Filtrar finalizados si está activo
       if (this.hideFinalizados) {
         items = items.filter(item => !["Cancelado", "Inspeccionado"].includes(item.status));
       }

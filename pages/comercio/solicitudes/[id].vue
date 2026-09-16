@@ -34,7 +34,7 @@
         <div class="col mx-auto" v-if="habilitacion.status === 'Finalizada' || !esHabilitacion">
           <div class="h5 d-flex align-items-center justify-content-center">
             <span>Número de expediente:</span>
-            <b class="text-success ml-1">{{ habilitacion.nroExpediente || '—' }}</b>
+            <b class="text-success ml-1">{{ textoExpediente(habilitacion.nroExpediente) }}</b>
           </div>
           <div class="h5 d-flex align-items-center justify-content-center" v-if="!esHabilitacion">
             <span>Alcance:</span>
@@ -989,6 +989,17 @@ export default {
     await this.loadSolicitud()
   },
   methods: {
+    textoExpediente(value) {
+      const texto = String(value ?? '').trim()
+      if (!texto || /null/i.test(texto)) return '—'
+      return texto
+    },
+    nroExpedienteArmado() {
+      if (this.nroExpediente1 == null || this.nroExpediente1 === '' || this.nroExpediente2 == null || this.nroExpediente2 === '') {
+        return ''
+      }
+      return `4124-${this.nroExpediente1}/${this.nroExpediente2}`
+    },
     async loadSolicitud() {
       const habilitacionId = this.$route.params.id
       await useHabilitacionesStore().getSingle({
@@ -1168,19 +1179,18 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
       this.showSolicitarDoc = false
     },
     async onSendFinalizar(){
-      var nroExpediente = ''
       var alcance = ''
       if(this.baja){
         alcance = this.alcance
       }
-      nroExpediente = "4124-" + this.nroExpediente1 + "/" + this.nroExpediente2
+      const nroExpediente = this.nroExpedienteArmado()
       const observaciones = this.habilitacion.observaciones || ""
       const habilitacion = {
         status: 'Finalizada',
-        nroExpediente: nroExpediente,
         alcance: alcance,
         observaciones: observaciones + " - " + "Se finaliza el trámite el día " + new Date().toLocaleDateString('es-AR')
       }
+      if (nroExpediente) habilitacion.nroExpediente = nroExpediente
       await this.updateHabilitacion(habilitacion)
       if(this.baja){
         this.registrarActividad('Finalizar Baja', 'Trámite Cerrado. Expediente: ' + nroExpediente + ". Alcance: " + alcance, this.habilitacion.nroTramite)
@@ -1202,8 +1212,7 @@ Su trámite comercial ha sido finalizado exitosamente.
 
 Número de trámite: ${this.habilitacion.nroTramite}
 Tipo de solicitud: ${this.habilitacion.tipoSolicitud}
-Rubro: ${this.habilitacion.rubro}
-Número de expediente: ${nroExpediente}${alcance ? '\nAlcance: ' + alcance : ''}
+Rubro: ${this.habilitacion.rubro}${nroExpediente ? `\nNúmero de expediente: ${nroExpediente}` : ''}${alcance ? '\nAlcance: ' + alcance : ''}
 
 El trámite ha sido culminado exitosamente. Recuerde que en el plazo de 10 dias hábiles deberá acreditar
 los originales de la documentación en el Departamento Comercio sito en Avda 3 N° 820 Planta Baja - Villa Gesell.`
@@ -1305,14 +1314,14 @@ ubicada en la Avenida Corrientes 1312, piso 11 oficina 42, CABA.`
     },
     async onSendAprobarBaja(){
       const observaciones = this.habilitacion.observaciones || " "
-      const nroExpediente = "4124 - " + this.nroExpediente1 + "/" + this.nroExpediente2
+      const nroExpediente = this.nroExpedienteArmado()
       const alcance = this.alcance
       const habilitacion = {
         status: 'Esperando pago',
-        nroExpediente: nroExpediente,
         alcance: alcance,
         observaciones: observaciones + " - " + "Se aprueba la solicitud el " + new Date().toLocaleDateString('es-AR') + " " + new Date().toLocaleTimeString() + ". Esperando pago."
       }
+      if (nroExpediente) habilitacion.nroExpediente = nroExpediente
       await this.updateHabilitacion(habilitacion)
       this.registrarActividad('Aprobar Baja', 'Baja Aprobada', this.habilitacion.nroTramite)
 
@@ -1351,14 +1360,14 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
     },
     async onSendFinalizarRenovacion(){
       const observaciones = this.habilitacion.observaciones || " "
-      const nroExpediente = "4124 - " + this.nroExpediente1 + "/" + this.nroExpediente2
+      const nroExpediente = this.nroExpedienteArmado()
       const alcance = this.alcance
       const habilitacion = {
         status: 'Finalizada',
-        nroExpediente: nroExpediente,
         alcance: alcance,
         observaciones: observaciones + " - " + "Se finaliza la solicitud el " + new Date().toLocaleDateString('es-AR') + " " + new Date().toLocaleTimeString()
       }
+      if (nroExpediente) habilitacion.nroExpediente = nroExpediente
       await this.updateHabilitacion(habilitacion)
       if(this.reempadronamiento){
         this.registrarActividad('Finalizar Reempadronamiento', 'Reempadronamiento Finalizado', this.habilitacion.nroTramite)
@@ -1381,8 +1390,7 @@ Su trámite de ${tipoTramite} ha sido finalizado exitosamente.
 
 Número de trámite: ${this.habilitacion.nroTramite}
 Tipo de solicitud: ${this.habilitacion.tipoSolicitud}
-Rubro: ${this.habilitacion.rubro}
-Número de expediente: ${nroExpediente}
+Rubro: ${this.habilitacion.rubro}${nroExpediente ? `\nNúmero de expediente: ${nroExpediente}` : ''}
 Alcance: ${alcance}
 
 El trámite está completo. En los próximos días recibirá la documentación correspondiente.

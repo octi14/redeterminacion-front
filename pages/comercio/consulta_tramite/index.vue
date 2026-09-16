@@ -253,7 +253,7 @@
         </template>
         <div class="centeredContainer modal-success">
           <p class="modal-subtitle">Tu trámite ha sido finalizado.</p>
-          <p> Tu solicitud ha sido aprobada con el expediente nro. <b>{{ nroExpediente }}.</b></p>
+          <p v-if="nroExpedienteVisible"> Tu solicitud ha sido aprobada con el expediente nro. <b>{{ nroExpedienteVisible }}.</b></p>
         </div>
         <template #footer>
           <div class="" style="margin: auto">
@@ -419,6 +419,11 @@ export default {
     },
   },
   computed: {
+    nroExpedienteVisible() {
+      const texto = String(this.nroExpediente ?? '').trim()
+      if (!texto || /null/i.test(texto)) return ''
+      return texto
+    },
     formattedDate() {
       if (this.date) {
         const day = this.date.getDate();

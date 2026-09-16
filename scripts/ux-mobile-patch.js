@@ -4,7 +4,7 @@ function w(path, fn) {
   fs.writeFileSync(path, fn(c), 'utf8')
   console.log(path, 'ok')
 }
-w('pages/tasas/tasa-automotor.vue', c => {
+w('pages/tasas/descargar-boletas.vue', c => {
   if (!c.includes('showDominioAyuda: false')) {
     c = c.replace('      showDominioNoEncontrado: false,\n    }', '      showDominioNoEncontrado: false,\n      showDominioAyuda: false,\n    }')
   }

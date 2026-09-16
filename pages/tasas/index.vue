@@ -3,10 +3,10 @@
     <Banner title="Tasas" />
     <MenuItem
       v-if="mostrarTasaAutomotor"
-      icon="car-front"
-      to="/tasas/tasa-automotor"
-      title="Descargar Tasa Automotor"
-      description="Consultar y descargar boletas de Automotores por dominio"
+      icon="receipt"
+      to="/tasas/descargar-boletas"
+      title="Descargar boletas"
+      description="Consultar y descargar boletas de tasas municipales"
     />
     <MenuItem
       v-if="mostrarPagoUrbana"

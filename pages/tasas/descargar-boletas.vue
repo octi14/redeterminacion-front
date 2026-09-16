@@ -1,54 +1,74 @@
 ﻿<template>
   <div class="page main-background automotor-page">
-    <Banner title="Descargar Tasa Automotor" />
+    <Banner title="Descargá tu boleta" />
 
     <main v-if="puedeVerModulo" class="container py-5">
+      <section class="tax-selector">
+        <h2>Seleccioná el tipo de tasa</h2>
+        <div class="tax-options">
+          <button
+            v-for="tasa in tasasDisponibles"
+            :key="tasa.codigo"
+            type="button"
+            class="tax-option"
+            :class="{ active: tasa.codigo === selectedTaxCode }"
+            :disabled="buscando || descargando"
+            @click="selectTax(tasa)"
+          >
+            <i :class="`bi bi-${tasa.icono}`"></i>
+            <span>
+              <strong>{{ tasa.nombre }}</strong>
+            </span>
+          </button>
+        </div>
+      </section>
+
       <section class="search-card">
         <div class="search-copy">
           <span class="eyebrow">Tasas municipales</span>
-          <h1>Descargá tus boletas de tasa automotor</h1>
+          <h1>{{ esUrbana ? 'Descargá tus boletas de tasa urbana' : 'Descargá tus boletas de tasa automotor' }}</h1>
           <p>Consultá los períodos disponibles y descargá las boletas de pago.</p>
         </div>
         <form class="domain-form" @submit.prevent="buscar">
-          <label for="dominio" class="domain-label-row">
+          <label for="identificador" class="domain-label-row">
             <i class="bi bi-caret-right-fill" aria-hidden="true"></i>
-            <span class="domain-label-text">Ingresá el dominio de tu vehículo sin espacios</span>
+            <span class="domain-label-text">{{ identificadorLabel }}</span>
             <span class="domain-help-wrap">
               <i
                 class="bi bi-question-circle-fill text-info field-help-icon"
                 style="font-size: 1.15em"
                 role="button"
                 tabindex="0"
-                aria-label="Ayuda sobre el dominio"
+                :aria-label="esUrbana ? 'Ayuda sobre la partida' : 'Ayuda sobre el dominio'"
                 :aria-expanded="showDominioAyuda ? 'true' : 'false'"
-                aria-controls="dominio-ayuda"
+                aria-controls="identificador-ayuda"
                 @click.stop.prevent="showDominioAyuda = !showDominioAyuda"
                 @keydown.enter.stop.prevent="showDominioAyuda = !showDominioAyuda"
               ></i>
               <span
                 v-show="showDominioAyuda"
-                id="dominio-ayuda"
+                id="identificador-ayuda"
                 class="domain-help-tooltip"
                 role="tooltip"
               >
-                Ejemplo: ABC123 o AB123CD. Sin espacios ni guiones.
+                {{ esUrbana ? 'Ejemplo: 12345678. Sin espacios.' : 'Ejemplo: ABC123 o AB123CD. Sin espacios ni guiones.' }}
               </span>
             </span>
           </label>
           <div class="domain-input">
-            <i class="bi bi-car-front-fill"></i>
+            <i :class="esUrbana ? 'bi bi-buildings' : 'bi bi-car-front-fill'"></i>
             <input
-              id="dominio"
-              v-model="dominio"
-              maxlength="9"
+              id="identificador"
+              v-model="identificador"
+              :maxlength="esUrbana ? 16 : 9"
               autocomplete="off"
-              placeholder="AB123CD"
+              :placeholder="esUrbana ? '12345678' : 'AB123CD'"
               :disabled="buscando || descargando"
-              @input="normalizarDominio"
+              @input="normalizarIdentificador"
             >
           </div>
           <RecaptchaField ref="captchaBuscar" container-id="captcha-buscar-automotor" />
-          <button class="btn btn-search" type="submit" :disabled="!dominioValido || buscando || descargando">
+          <button class="btn btn-search" type="submit" :disabled="!identificadorValido || buscando || descargando">
             <b-spinner v-if="buscando" small class="mr-2"></b-spinner>
             <i v-else class="bi bi-search mr-2"></i>
             {{ buscando ? 'Buscando...' : 'Buscar boletas' }}
@@ -62,15 +82,15 @@
 
       <section v-if="resultado" class="periods-card">
         <div class="vehicle-heading">
-          <div class="vehicle-icon"><i class="bi bi-car-front-fill"></i></div>
+          <div class="vehicle-icon"><i :class="esUrbana ? 'bi bi-buildings' : 'bi bi-car-front-fill'"></i></div>
           <div class="vehicle-copy">
-            <span>Dominio</span>
-            <h2>{{ resultado.dominio }}</h2>
-            <p v-if="descripcionVehiculo">{{ descripcionVehiculo }}</p>
+            <span>{{ esUrbana ? 'Partida' : 'Dominio' }}</span>
+            <h2>{{ identificadorResultado }}</h2>
+            <p v-if="descripcionCuenta">{{ descripcionCuenta }}</p>
           </div>
           <button class="btn btn-other-domain" type="button" :disabled="descargando" @click="limpiar">
             <i class="bi bi-search mr-2"></i>
-            Buscar otro dominio
+            {{ esUrbana ? 'Buscar otra partida' : 'Buscar otro dominio' }}
           </button>
         </div>
 
@@ -81,6 +101,7 @@
           </div>
 
           <div class="period-toolbar">
+            <div class="period-toolbar-sort">
             <b-form-select v-model="ordenCampo" size="sm" :disabled="descargando">
               <option value="periodo">Ordenar por período</option>
               <option value="importe">Ordenar por importe</option>
@@ -94,6 +115,7 @@
             >
               <i :class="ordenDescendente ? 'bi bi-sort-down' : 'bi bi-sort-up'"></i>
             </button>
+            </div>
             <label class="select-all" :class="{ disabled: descargando }">
               <input
                 type="checkbox"
@@ -141,6 +163,15 @@
             ></b-pagination>
           </div>
         </div>
+
+        <span v-if="esUrbana" class="tasas-mail-aviso">
+          <i class="bi bi-exclamation-circle tasas-mail-aviso-icon" aria-hidden="true"></i>
+          <span class="tasas-mail-aviso-text">
+            Recordá que podés adherirte al servicio de Tasas por Mail, ingresando en
+            <a href="https://mail.arvige.gob.ar/boleta" target="_blank" rel="noopener noreferrer">mail.arvige.gob.ar/boleta</a>
+            y completando tus datos.
+          </span>
+        </span>
 
         <div class="download-bar">
           <div>
@@ -228,8 +259,8 @@
         </div>
       </template>
       <div class="consulta-error-body">
-        <p class="consulta-error-title text-danger">No hemos podido encontrar tu dominio</p>
-        <p>El dominio ingresado no se encuentra disponible en el sistema</p>
+        <p class="consulta-error-title text-danger">{{ esUrbana ? 'No hemos podido encontrar tu partida' : 'No hemos podido encontrar tu dominio' }}</p>
+        <p>{{ esUrbana ? 'La partida ingresada no se encuentra disponible en el sistema' : 'El dominio ingresado no se encuentra disponible en el sistema' }}</p>
         <p class="consulta-error-help">
           Si tenés dudas o necesitás verificar la información, comunicate con el Dto. Recaudaciones:
           <a href="mailto:recaudaciones@gesell.gob.ar">recaudaciones@gesell.gob.ar</a>
@@ -243,7 +274,7 @@
 </template>
 
 <script setup>
-useHead({ title: 'Tasa Automotor - Hacienda Villa Gesell' })
+useHead({ title: 'Descargar boletas - Hacienda Villa Gesell' })
 </script>
 
 <script>
@@ -252,10 +283,25 @@ import ProvinciaNetService from '~/service/provinciaNet.js'
 const PERIODOS_POR_PAGINA = 12
 
 export default {
-  name: 'TasaAutomotor',
+  name: 'DescargarBoletas',
   data() {
     return {
-      dominio: '',
+      selectedTaxCode: 'AUTOMOTORES',
+      tasasDisponibles: [
+        {
+          codigo: 'AUTOMOTORES',
+          nombre: 'Tasa automotor',
+          descripcion: 'Boletas por dominio',
+          icono: 'car-front',
+        },
+        {
+          codigo: 'URBANA',
+          nombre: 'Tasa urbana',
+          descripcion: 'Boletas por partida',
+          icono: 'buildings',
+        },
+      ],
+      identificador: '',
       buscando: false,
       descargando: false,
       mensajeError: '',
@@ -273,18 +319,34 @@ export default {
     }
   },
   computed: {
-    dominioValido() {
-      return /^[A-Z0-9]{5,9}$/.test(this.dominio)
+    esUrbana() {
+      return this.selectedTaxCode === 'URBANA'
+    },
+    identificadorLabel() {
+      return this.esUrbana
+        ? 'Ingresá el número de partida sin espacios'
+        : 'Ingresá el dominio de tu vehículo sin espacios'
+    },
+    identificadorValido() {
+      if (this.esUrbana) return /^[A-Z0-9]{3,16}$/.test(this.identificador)
+      return /^[A-Z0-9]{5,9}$/.test(this.identificador)
     },
     usuarioInternoBoletas() {
       const role = String(useUserStore().admin || '').trim().toLowerCase()
-      return ['admin', 'master', 'true', 'boletas'].includes(role)
+      return ['admin', 'master', 'true', 'boletas', 'hacienda'].includes(role)
     },
     puedeVerModulo() {
       return this.usuarioInternoBoletas || this.tasaAutomotorPublicaHabilitada
     },
-    descripcionVehiculo() {
+    identificadorResultado() {
       if (!this.resultado) return ''
+      return this.resultado.partida || this.resultado.dominio || this.identificador
+    },
+    descripcionCuenta() {
+      if (!this.resultado) return ''
+      if (this.esUrbana) {
+        return (this.resultado.contribuyente || {}).domicilio || ''
+      }
       const vehiculo = this.resultado.vehiculo || {}
       return [vehiculo.marca, vehiculo.modelo, vehiculo.anioModelo].filter(Boolean).join(' - ')
     },
@@ -300,7 +362,7 @@ export default {
     detalleEspera() {
       return this.descargando
         ? `Preparando ${this.seleccionados.length} ${this.seleccionados.length === 1 ? 'boleta' : 'boletas'}`
-        : `Consultando boleta para el dominio ${this.dominio}`
+        : `Consultando boleta para ${this.esUrbana ? 'la partida' : 'el dominio'} ${this.identificador}`
     },
     periodosOrdenados() {
       if (!this.resultado) return []
@@ -334,10 +396,18 @@ export default {
     }
   },
   mounted() {
+    const tipo = String(this.$route.query.tipoTasa || '').toUpperCase()
+    if (tipo === 'URBANA' || tipo === 'AUTOMOTORES') this.selectedTaxCode = tipo
     this.loadTasaAutomotorConfig()
     this.loadPagoUrbanaConfig()
   },
   methods: {
+    selectTax(tasa) {
+      if (this.selectedTaxCode === tasa.codigo) return
+      this.selectedTaxCode = tasa.codigo
+      this.limpiar()
+      this.showDominioAyuda = false
+    },
     async loadPagoUrbanaConfig() {
       try {
         const response = await ProvinciaNetService.getConfiguracion(this.$axios)
@@ -348,10 +418,10 @@ export default {
       }
     },
     irAPagar() {
-      if (!this.pagoTasaUrbanaPublico || !this.dominio) return
+      if (!this.pagoTasaUrbanaPublico || !this.identificadorResultado) return
       this.$router.push({
         path: '/tasas/pagar-tasas',
-        query: { tipoTasa: 'AUTOMOTORES', objetoClave: this.dominio },
+        query: { tipoTasa: this.selectedTaxCode, objetoClave: this.identificadorResultado },
       })
     },
     async loadTasaAutomotorConfig() {
@@ -362,15 +432,24 @@ export default {
         this.tasaAutomotorPublicaHabilitada = true
       }
     },
-    normalizarDominio() {
-      this.dominio = this.dominio.replace(/[\s-]/g, '').replace(/[^a-zA-Z0-9]/g, '').toUpperCase()
+    normalizarIdentificador() {
+      if (this.esUrbana) {
+        this.identificador = String(this.identificador || '').replace(/\s/g, '').replace(/[^a-zA-Z0-9]/g, '').toUpperCase()
+        return
+      }
+      this.identificador = String(this.identificador || '').replace(/[\s-]/g, '').replace(/[^a-zA-Z0-9]/g, '').toUpperCase()
     },
     usuarioActividad() {
       return useUserStore().username || 'Usuario Anónimo'
     },
+    claveConsulta() {
+      const clave = String(this.identificador || '')
+      if (!this.esUrbana || !clave || clave.length >= 8) return clave
+      return clave.padStart(8, '0')
+    },
     async buscar() {
       if (!this.puedeVerModulo) return
-      if (!this.dominioValido) return
+      if (!this.identificadorValido) return
       if (!this.$refs.captchaBuscar?.validate()) return
       this.buscando = true
       this.mensajeError = ''
@@ -378,12 +457,15 @@ export default {
       this.resultado = null
       this.seleccionados = []
       try {
+        const clave = this.claveConsulta()
+        const tipoLabel = this.esUrbana ? 'partida' : 'dominio'
         await this.$logUserActivity(
           this.usuarioActividad(),
-          'Consulta de Tasa Automotor',
-          `Consulta de dominio ${this.dominio}`
+          this.esUrbana ? 'Consulta de Tasa Urbana' : 'Consulta de Tasa Automotor',
+          `Consulta de ${tipoLabel} ${clave}`
         )
-        const response = await this.$axios.get(`/tasas/automotores/${this.dominio}`, { headers: this.authHeaders() })
+        const url = this.esUrbana ? `/tasas/urbana/${clave}` : `/tasas/automotores/${clave}`
+        const response = await this.$axios.get(url, { headers: this.authHeaders() })
         this.resultado = response.data.data
         this.maxPeriodosSeleccionados = this.resultado.maxPeriodosPorDescarga || 20
         this.seleccionados = []
@@ -431,7 +513,7 @@ export default {
       this.seleccionados = []
       this.mensajeError = ''
       this.showDominioNoEncontrado = false
-      this.dominio = ''
+      this.identificador = ''
       this.paginaPeriodos = 1
     },
     async descargar() {
@@ -443,21 +525,26 @@ export default {
       }
       this.descargando = true
       this.mensajeError = ''
+      const clave = this.identificadorResultado
+      const tipoLabel = this.esUrbana ? 'partida' : 'dominio'
       try {
         await this.$logUserActivity(
           this.usuarioActividad(),
-          'Descarga de Tasa Automotor',
-          `Descarga de dominio ${this.resultado.dominio} (${this.seleccionados.join(', ')})`
+          this.esUrbana ? 'Descarga de Tasa Urbana' : 'Descarga de Tasa Automotor',
+          `Descarga de ${tipoLabel} ${clave} (${this.seleccionados.join(', ')})`
         )
+        const urlPdf = this.esUrbana
+          ? `/tasas/urbana/${clave}/pdf`
+          : `/tasas/automotores/${clave}/pdf`
         const response = await this.$axios.post(
-          `/tasas/automotores/${this.resultado.dominio}/pdf`,
+          urlPdf,
           { periodos: this.seleccionados },
           { responseType: 'blob', headers: this.authHeaders() }
         )
         const url = URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }))
         const link = document.createElement('a')
         link.href = url
-        link.download = `tasa-automotor-${this.resultado.dominio}.pdf`
+        link.download = this.esUrbana ? `tasa-urbana-${clave}.pdf` : `tasa-automotor-${clave}.pdf`
         link.click()
         setTimeout(() => URL.revokeObjectURL(url), 1000)
         this.showToast('El PDF fue generado y la descarga debería comenzar automáticamente.', {
@@ -483,6 +570,51 @@ export default {
 </script>
 
 <style scoped>
+.tax-selector {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.25rem;
+  max-width: 1040px;
+  margin: 0 auto 1.5rem;
+}
+.tax-selector h2 {
+  margin: 0;
+  color: #0c681a;
+  font-size: 1.45rem;
+  font-weight: 800;
+}
+.tax-options {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.75rem;
+}
+.tax-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 220px;
+  padding: 0.85rem 1rem;
+  border: 1px solid #d9e4d4;
+  border-radius: 14px;
+  background: #fff;
+  color: #353535;
+  text-align: left;
+  cursor: pointer;
+}
+.tax-option i { font-size: 1.35rem; color: #0c681a; }
+.tax-option strong { display: block; }
+.tax-option small { display: block; color: #6c757d; }
+.tax-option.active {
+  border-color: #15571f;
+  background: var(--green-fill);
+  box-shadow: 0px 2px 5px 0px var(--shadow-card);
+}
+.tax-option:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
 .automotor-page {
   min-height: 100vh;
 }
@@ -681,8 +813,14 @@ export default {
   gap: 0.65rem;
   margin: 1.25rem 0 1rem;
 }
-.period-toolbar .form-select,
-.period-toolbar :deep(.form-select) {
+.period-toolbar-sort {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+}
+.period-toolbar-sort .form-select,
+.period-toolbar-sort :deep(.form-select) {
   width: 220px;
   border: 1px solid #6c757d;
   border-radius: 8px;
@@ -795,6 +933,39 @@ export default {
   background: #0c681a;
   color: var(--color-white);
 }
+.tasas-mail-aviso {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin: 0 2rem 1.15rem;
+  padding: 1.1rem 1.25rem;
+  border-radius: 1rem;
+  background: #ffce56;
+  color: #353535;
+  font-family: var(--font-montserrat);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+.tasas-mail-aviso-icon {
+  flex-shrink: 0;
+  color: #353535;
+  font-size: 2.35rem;
+  line-height: 1;
+  background: none;
+}
+.tasas-mail-aviso-text {
+  flex: 1;
+  min-width: 0;
+  font-weight: 700;
+}
+.tasas-mail-aviso a {
+  display: inline;
+  color: #1d4a12;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  white-space: nowrap;
+}
 .download-bar > div:first-child {
   display: flex;
   flex-direction: column;
@@ -834,6 +1005,21 @@ export default {
   opacity: 0.6;
 }
 @media (max-width: 767px) {
+  .tax-selector {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .tax-options {
+    width: 100%;
+  }
+  .tax-option {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0.7rem 0.65rem;
+    gap: 0.45rem;
+  }
+  .tax-option i { font-size: 1.15rem; }
+  .tax-option strong { font-size: 0.88rem; }
   .automotor-page {
     overflow-x: hidden;
   }
@@ -860,6 +1046,15 @@ export default {
   .download-bar {
     padding: 1.25rem;
   }
+  .tasas-mail-aviso {
+    margin: 0 1.25rem 1rem;
+    padding: 1rem 1rem;
+    gap: 0.7rem;
+  }
+  .tasas-mail-aviso a {
+    display: inline-block;
+    white-space: nowrap;
+  }
   .vehicle-heading {
     flex-wrap: wrap;
   }
@@ -872,8 +1067,15 @@ export default {
     flex-direction: column;
     align-items: stretch;
   }
-  .period-toolbar .form-select,
-  .period-toolbar :deep(.form-select),
+  .period-toolbar-sort {
+    width: 100%;
+  }
+  .period-toolbar-sort .form-select,
+  .period-toolbar-sort :deep(.form-select) {
+    flex: 1;
+    width: auto;
+    min-width: 0;
+  }
   .select-all {
     width: 100%;
     margin-left: 0;

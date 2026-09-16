@@ -194,10 +194,10 @@ export const SITE_NAVIGATION_ITEMS = [
 
   // —— Tasas ——
   {
-    id: 'tasas-tasa-automotor',
-    title: 'Descargar Tasa Automotor',
-    description: 'Consultar y descargar boletas de Automotores por dominio',
-    to: '/tasas/tasa-automotor',
+    id: 'tasas-descargar-boletas',
+    title: 'Descargar boletas',
+    description: 'Consultar y descargar boletas de tasas municipales',
+    to: '/tasas/descargar-boletas',
     section: 'Tasas',
     aliases: ['patente', 'rodado', 'rodados', 'automotor', 'tasa automotor', 'recaudaciones'],
   },

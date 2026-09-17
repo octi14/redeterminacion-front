@@ -812,6 +812,11 @@ form .b-form-group:has(input[type='file']) > label[for] {
   cursor: default;
 }
 
+// Sin label-for, BFormGroup usa <legend>; Minty le pone Montserrat (títulos, no campos)
+form .b-form-group > legend {
+  font-family: inherit;
+}
+
 form .field-help-icon,
 .field-help-icon {
   cursor: pointer;

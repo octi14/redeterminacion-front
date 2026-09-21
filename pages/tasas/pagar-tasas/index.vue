@@ -2,21 +2,22 @@
   <div class="page main-background urbana-page">
     <Banner title="Tasas" />
 
-    <div class="mx-auto">
-      <div class="pagar-tasas-hero banner-container">
-        <img
-          :src="heroDesktop"
-          class="pagar-tasas-hero__img pagar-tasas-hero__img--desktop d-none d-md-block"
-          width="1357"
-          height="536"
-          alt="Pagá tus tasas desde donde estés"
-        >
-        <img
-          :src="heroMobile"
-          class="pagar-tasas-hero__img d-md-none"
-          alt="Pagá tus tasas de modo online"
-        >
-      </div>
+    <div
+      class="col-10 d-none d-md-block pagar-tasas-hero"
+      style="margin: auto; margin-top: 2rem"
+    >
+      <img
+        :src="heroDesktop"
+        class="pagar-tasas-hero__img"
+        alt="Pagá tus tasas desde donde estés"
+      >
+    </div>
+    <div class="pagar-tasas-hero pagar-tasas-hero--mobile d-md-none">
+      <img
+        :src="heroMobile"
+        class="pagar-tasas-hero__img"
+        alt="Pagá tus tasas desde donde estés"
+      >
     </div>
 
     <main
@@ -402,7 +403,7 @@
 import ProvinciaNetService from '~/service/provinciaNet.js'
 import btnHorizontalVerde from '~/assets/provincianet/boton-cuenta-dni-horizontal-verde.svg'
 import heroDesktop from '~/assets/03. paga tus tasas desde donde estes.png?url'
-import heroMobile from '~/assets/04. paga tus tasas mobile.png?url'
+import heroMobile from '~/assets/2. Pagá online Mobile.png?url'
 
 const STORAGE_KEY = 'provinciaNetUUID'
 
@@ -849,24 +850,19 @@ export default {
 </script>
 
 <style scoped>
-.pagar-tasas-hero.banner-container {
-  width: 100%;
-  max-width: 1357px;
-  margin: 0 auto 0.5rem;
+.pagar-tasas-hero {
   line-height: 0;
 }
 .pagar-tasas-hero__img {
   display: block;
-  margin: 0 auto;
-}
-.pagar-tasas-hero__img--desktop {
-  width: min(100%, 1357px);
-  height: auto;
-  aspect-ratio: 1357 / 536;
-}
-.pagar-tasas-hero__img:not(.pagar-tasas-hero__img--desktop) {
   width: 100%;
   height: auto;
+}
+.pagar-tasas-hero--mobile {
+  width: 100%;
+  margin: 0 auto 0.5rem;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 
 .urbana-main--compact {
@@ -1231,11 +1227,6 @@ export default {
 }
 
 @media (max-width: 767px) {
-  .pagar-tasas-hero.banner-container {
-    max-width: 100%;
-    padding-left: 15px;
-    padding-right: 15px;
-  }
   .urbana-header,
   .urbana-form,
   .urbana-card--simple {

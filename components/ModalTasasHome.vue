@@ -26,7 +26,7 @@
         <NuxtLink to="/tasas" class="moratoria-img-link" @click="cerrar">
           <img
             :src="tasasImg"
-            alt="Ya podés descargar tus boletas de tasa automotor y pagar tus tasas"
+            alt="Ya podés descargar tus boletas y pagar tus tasas desde nuestro sitio"
             class="moratoria-img"
           />
         </NuxtLink>
@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import tasasImg from '~/assets/Descargá y pagá tus tasas.png'
+import tasasImg from '~/assets/0. Pop up_ Tasas y Boletas.png'
 import { cleanupModalArtifacts as removeStaleModalLayers } from '~/utils/modalCleanup'
 
 export default {

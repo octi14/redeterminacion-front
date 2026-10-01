@@ -180,6 +180,14 @@
                 <a>{{ habilitacion.cuit }}</a>
               </p>
             </div>
+            <div class="layout" v-if="habilitacion.cuitPersonaJuridica != null && habilitacion.cuitPersonaJuridica !== ''">
+              <p class="col col-main">
+                <strong>CUIT de la Persona Jurídica</strong><br>
+              </p>
+              <p class="col col-complementary" role="complementary">
+                <a>{{ habilitacion.cuitPersonaJuridica }}</a>
+              </p>
+            </div>
             <div class="layout">
               <p class="col col-main">
                 <strong>Razón social</strong><br>

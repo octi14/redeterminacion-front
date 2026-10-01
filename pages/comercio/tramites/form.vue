@@ -600,13 +600,19 @@
         <!-- Sección: Datos del Apoderado -->
       <fieldset v-if="solicitante.esPersonaJuridica === 'true'">
         <p>A continuación deberás cargar la Escritura constitutiva de la Persona Jurídica y el Acta de Directorio actualizada.</p>
-        <b-form-group label="Acta de Constitución de Persona Jurídica *">
-          <b-form-file v-model="documentos.actaPersonaJuridica.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*"  :state="getFormFieldState('actaPersonaJuridica')" @change="handleDocumentUpdate('actaPersonaJuridica'); checkDocumentSize('actaPersonaJuridica', $event)" @input="clearFormFieldState('actaPersonaJuridica')"></b-form-file>
+        <b-form-group label="CUIT de la Persona Jurídica *" label-for="cuitPersonaJuridica">
+          <b-form-input id="cuitPersonaJuridica" v-model="solicitante.cuitPersonaJuridica" inputmode="numeric" @blur="$v.solicitante.cuitPersonaJuridica.$touch()"></b-form-input>
+          <div v-if="$v.solicitante.cuitPersonaJuridica.$error" class="validation-error">
+            <i class="bi bi-exclamation-octagon text-danger"></i> Introduce un CUIT válido, sin guiones ni caracteres especiales.
+          </div>
+        </b-form-group>
+        <b-form-group label="Acta de Constitución de Persona Jurídica *" label-for="actaPersonaJuridica">
+          <b-form-file id="actaPersonaJuridica" v-model="documentos.actaPersonaJuridica.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*"  :state="getFormFieldState('actaPersonaJuridica')" @change="handleDocumentUpdate('actaPersonaJuridica'); checkDocumentSize('actaPersonaJuridica', $event)" @input="clearFormFieldState('actaPersonaJuridica')"></b-form-file>
           <div v-if="$v.documentos.actaPersonaJuridica.contenido.$error || fileTooLargeError.actaPersonaJuridica" class="validation-error">
             <i class="bi bi-exclamation-octagon text-danger"></i> {{ fileTooLargeError.actaPersonaJuridica || 'Debe seleccionar un archivo.' }}
           </div>
         </b-form-group>
-        <b-form-group>
+        <b-form-group label-for="actaDirectorio">
           <template #label>
             <span class="actaDirectorio-label">Acta de Directorio Actualizada <i>(En caso que corresponda)</i> </span>
           </template>
@@ -947,6 +953,14 @@
           apellido: { required },
           dni: { required, numeric, maxLength: maxLength(9), minLength: minLength(7) },
           cuit: { required, numeric, maxLength: maxLength(12), minLength: minLength(10) },
+          cuitPersonaJuridica: {
+            requiredIf: requiredIf(function () {
+              return this.solicitante.esPersonaJuridica === 'true'
+            }),
+            numeric,
+            maxLength: maxLength(12),
+            minLength: minLength(10),
+          },
           domicilioReal: { required },
           telefono: { required, numeric },
           codigoPostal: { required, numeric, maxLength: maxLength(4), minLength: minLength(4) },
@@ -1110,6 +1124,7 @@
           apellido: '',
           dni: '',
           cuit: '',
+          cuitPersonaJuridica: '',
           razonSocial: '',
           domicilioReal: '',
           telefono: '',
@@ -1424,6 +1439,7 @@
         // Verificar campos condicionales de persona jurídica
         if (this.solicitante.esPersonaJuridica === 'true') {
           if (!this.documentos.actaPersonaJuridica.contenido) return false;
+          if (!this.solicitante.cuitPersonaJuridica) return false;
         }
 
         return true;
@@ -1487,6 +1503,14 @@
         // Si se selecciona cualquier otra opción, deseleccionar "Ninguna de las anteriores"
         if (newValue) {
           this.inmueble.ningunaAnterior = false;
+        }
+      },
+      'solicitante.esPersonaJuridica'(newValue) {
+        if (newValue !== 'true') {
+          this.solicitante.cuitPersonaJuridica = ''
+          if (this.$v.solicitante.cuitPersonaJuridica) {
+            this.$v.solicitante.cuitPersonaJuridica.$reset()
+          }
         }
       },
       'inmueble.mesas'(newValue) {
@@ -1820,6 +1844,7 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
         this.solicitante.apellido = ''
         this.solicitante.dni = ''
         this.solicitante.cuit = ''
+        this.solicitante.cuitPersonaJuridica = ''
         this.solicitante.razonSocial = ''
         this.solicitante.domicilioReal = ''
         this.solicitante.telefono = ''

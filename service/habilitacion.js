@@ -129,6 +129,7 @@ const formatExtendedFile = (FileResponse) => {
   apellido: FileResponse.solicitante.apellido,
   dni: FileResponse.solicitante.dni,
   cuit: FileResponse.solicitante.cuit,
+  cuitPersonaJuridica: FileResponse.solicitante.cuitPersonaJuridica ?? null,
   razonSocial: FileResponse.solicitante.razonSocial,
   domicilioReal: FileResponse.solicitante.domicilioReal,
   telefono: FileResponse.solicitante.telefono,

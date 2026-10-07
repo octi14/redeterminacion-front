@@ -162,6 +162,14 @@ export const SITE_NAVIGATION_ITEMS = [
     section: 'Trámites comerciales',
     aliases: ['cambio de titularidad', 'transferencia', 'cesión'],
   },
+  {
+    id: 'tramite-cambio-domicilio',
+    title: 'Cambio de Domicilio',
+    description: 'Trasladar una habilitación comercial a un nuevo domicilio',
+    to: '/comercio/tramites?tramite=Cambio de Domicilio',
+    section: 'Trámites comerciales',
+    aliases: ['traslado', 'mudanza', 'cambio de dirección'],
+  },
 
   // —— Compras ——
   {

@@ -66,6 +66,7 @@
             <b-form-select-option value="Renovación">Renovación de comercio</b-form-select-option>
             <b-form-select-option value="Reempadronamiento">Reempadronamiento de comercio</b-form-select-option>
             <b-form-select-option value="Cambio de Titular">Cambio de Titular</b-form-select-option>
+            <b-form-select-option value="Cambio de Domicilio">Cambio de Domicilio</b-form-select-option>
             <!-- Agrega más opciones según sea necesario -->
           </b-form-select>
         </b-form-group>
@@ -195,8 +196,8 @@
       </b-row>
       <!-- Sección: Datos del Apoderado -->
       <fieldset v-if="solicitante.esApoderado === 'true'">
-          <p>En este campo deberás cargar <span v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">la <a href="https://drive.google.com/file/d/1m5ouibBL4sWokhkSR5keTjbUVo-I4TOU/view" target="_blank" class="external-link">Planilla de autorización de trámite</a> o </span>el Poder autorizado por escribano que te indicamos que completes previamente.</p>
-          <b-form-group v-if="solicitante.esApoderado === 'true'" :label="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento') ? 'Planilla de autorización de trámite *' : 'Poder Autorizado por Escribano *'">
+          <p>En este campo deberás cargar <span v-if="((solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Domicilio') || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">la <a href="https://drive.google.com/file/d/1m5ouibBL4sWokhkSR5keTjbUVo-I4TOU/view" target="_blank" class="external-link">Planilla de autorización de trámite</a> o </span>el Poder autorizado por escribano que te indicamos que completes previamente.</p>
+          <b-form-group v-if="solicitante.esApoderado === 'true'" :label="((solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Domicilio') || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento') ? 'Planilla de autorización de trámite *' : 'Poder Autorizado por Escribano *'">
           <b-form-file id="documentos.planillaAutorizacion.contenido" v-model="documentos.planillaAutorizacion.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('planillaAutorizacion')" @change="checkDocumentSize('planillaAutorizacion', $event)" @input="clearFormFieldState('planillaAutorizacion')"></b-form-file>
           <div v-if="$v.documentos.planillaAutorizacion.contenido.$error || fileTooLargeError.planillaAutorizacion" class="validation-error">
             <i class="bi bi-exclamation-octagon text-danger"></i> {{ fileTooLargeError.planillaAutorizacion || 'Debe seleccionar un archivo.' }}
@@ -287,7 +288,7 @@
         </b-row>
         <b-row >
           <b-col lg="12" md="12">
-          <div v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular')  || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">
+          <div v-if="((solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Domicilio') || solicitante.tipoSolicitud == 'Cambio de Titular')  || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">
             <b-form-group label="Describí brevemente la actividad a realizar (En caso de no encontrar un rubro que represente con precisión la misma)" label-for="nombre-fantasia" >
               <b-form-textarea id="descripcionRubro" v-model="inmueble.descripcionRubro">
               </b-form-textarea>
@@ -323,7 +324,7 @@
         <b-form-group label="Nombre de Fantasía (En caso de que lo posea)" label-for="nombre-fantasia" >
           <b-form-input id="nombre-fantasia" v-model="inmueble.nombreFantasia"></b-form-input>
         </b-form-group>
-      <fieldset  v-if="isHoteleria && ((solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento'))" key="rubro-h">
+      <fieldset  v-if="isHoteleria && (((solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Domicilio') || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento'))" key="rubro-h">
         <h5>Servicios exclusivos del rubro {{inmueble.rubro}} *</h5>
         <p>Seleccioná los servicios que brinda tu establecimiento:</p>
 
@@ -342,7 +343,7 @@
           </div>
         </b-form-group>
       </fieldset>
-        <b-form-group v-if="rubroSeleccionado.croquis === true && isHoteleria && ((solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento'))" >
+        <b-form-group v-if="rubroSeleccionado.croquis === true && isHoteleria && (((solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Domicilio') || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento'))" >
           <template #label>
             <span class="rubro-label">Croquis <i>(en casos en que hay más de una parcela para uso de la actividad comercial y las mismas no se hallan reunidas por plano de mensura y unificación o reunidas de oficio)</i></span>
           </template>
@@ -353,9 +354,9 @@
             <i class="bi bi-exclamation-octagon text-danger"></i> {{ fileTooLargeError.croquis }}
           </div>
         </b-form-group>
-        <b-form-group v-if="rubroSeleccionado.croquis === true && !isHoteleria && ((solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento'))" >
+        <b-form-group v-if="rubroSeleccionado.croquis === true && !isHoteleria && (((solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Domicilio') || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento'))" >
           <template #label>
-            <span class="rubro-label">Croquis <span v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular')">*</span></span>
+            <span class="rubro-label">Croquis <span v-if="((solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Domicilio') || solicitante.tipoSolicitud == 'Cambio de Titular')">*</span></span>
           </template>
           <b-form-file v-model="documentos.croquis.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('croquis')"
           @change="checkDocumentSize('croquis', $event)"
@@ -364,7 +365,7 @@
             <i class="bi bi-exclamation-octagon text-danger"></i> {{ fileTooLargeError.croquis || 'Debe seleccionar un archivo.' }}
           </div>
         </b-form-group>
-      <fieldset  v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">
+      <fieldset  v-if="((solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Domicilio') || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">
          <b-row>
                 <b-col lg="5" md="8" sm="7">
                   <h5>Uso de espacio público *</h5>
@@ -463,7 +464,7 @@
             </b-form-group>
           </b-col>
         </b-row>
-        <b-form-group v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular')">
+        <b-form-group v-if="((solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Domicilio') || solicitante.tipoSolicitud == 'Cambio de Titular')">
           <template #label>
             <span class="rubro-label">Constancia de CUIT actualizada / Inscripción a AFIP * <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1em" role="button" tabindex="0" @click.stop.prevent="openPopup('ConstanciaCUIT')" @keydown.enter.stop.prevent="openPopup('ConstanciaCUIT')"></i></span>
           </template>
@@ -475,7 +476,7 @@
             <i class="bi bi-exclamation-octagon text-danger"></i> {{ fileTooLargeError.constanciaCuit || 'Debe seleccionar un archivo.' }}
           </div>
         </b-form-group>
-        <b-form-group v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">
+        <b-form-group v-if="((solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Domicilio') || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">
           <template #label>
             <span class="rubro-label">Constancia de inscripción a Ingresos Brutos * <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1em" role="button" tabindex="0" @click.stop.prevent="openPopup('ConstanciaIngresosBrutos')" @keydown.enter.stop.prevent="openPopup('ConstanciaIngresosBrutos')"></i></span>
           </template>
@@ -510,7 +511,7 @@
             <i class="bi bi-exclamation-octagon text-danger"></i> {{ fileTooLargeError.constanciaAFIP || 'Debe seleccionar un archivo.' }}
           </div>
         </b-form-group>
-        <b-form-group v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">
+        <b-form-group v-if="((solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Domicilio') || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">
           <template #label>
             <span class="rubro-label">Certificado de domicilio Ingresos Brutos * <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1em" role="button" tabindex="0" @click.stop.prevent="openPopup('certificadoDomicilio')" @keydown.enter.stop.prevent="openPopup('certificadoDomicilio')"></i></span>
           </template>
@@ -546,7 +547,7 @@
         </b-form-group>
         <b-form-group v-if="solicitante.tipoSolicitud != 'Reempadronamiento'">
           <template #label>
-            <span v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación')"><span v-if="solicitante.tipoSolicitud != 'Renovación' && solicitante.tipoSolicitud != 'Reempadronamiento'">Escritura traslativa de Dominio del inmueble /</span> Contrato de locación / Otro. <span v-if="solicitante.tipoSolicitud != 'Reempadronamiento'">*</span><i v-else>(Sólo en caso que presente modificaciones desde la fecha en que se extendió el certificado de habilitación original)</i></span>
+            <span v-if="((solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Domicilio') || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación')"><span v-if="solicitante.tipoSolicitud != 'Renovación' && solicitante.tipoSolicitud != 'Reempadronamiento'">Escritura traslativa de Dominio del inmueble /</span> Contrato de locación / Otro. <span v-if="solicitante.tipoSolicitud != 'Reempadronamiento'">*</span><i v-else>(Sólo en caso que presente modificaciones desde la fecha en que se extendió el certificado de habilitación original)</i></span>
             <span v-if="solicitante.tipoSolicitud=='Baja'"><span v-if="solicitante.tipoSolicitud != 'Renovación' && solicitante.tipoSolicitud != 'Reempadronamiento'"> Escritura traslativa de Dominio del inmueble / </span>Contrato de locación / Boleto de Compraventa. <span v-if="!solicitante.esTitular && solicitante.esPropietario">* </span></span>
           </template>
           <b-form-file id="tituloPropiedad" v-model="documentos.tituloPropiedad.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar"
@@ -566,9 +567,9 @@
             <b-form-radio id="esModificacionesPlano-si" v-model="solicitante.esModificacionesPlano" name="radio-esModificacionesPlano" value="true">Sí</b-form-radio>
           </b-col>
         </b-row>
-        <b-form-group v-if="solicitante.tipoSolicitud == 'Habilitación' || (solicitante.tipoSolicitud == 'Cambio de Titular' && solicitante.esModificacionesPlano=='true')">
+        <b-form-group v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Domicilio') || (solicitante.tipoSolicitud == 'Cambio de Titular' && solicitante.esModificacionesPlano=='true')">
           <template #label>
-            <span class="rubro-label">Plano o Informe técnico <span v-if="(solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Titular')">. *</span><span v-if="(solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')"><i>(En caso de continuar en trámite)</i>.</span> <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1em" role="button" tabindex="0" @click.stop.prevent="openPopup('plano')" @keydown.enter.stop.prevent="openPopup('plano')"></i></span>
+            <span class="rubro-label">Plano o Informe técnico <span v-if="((solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Domicilio') || solicitante.tipoSolicitud == 'Cambio de Titular')">. *</span><span v-if="(solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')"><i>(En caso de continuar en trámite)</i>.</span> <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1em" role="button" tabindex="0" @click.stop.prevent="openPopup('plano')" @keydown.enter.stop.prevent="openPopup('plano')"></i></span>
           </template>
           <b-form-file id="plano" v-model="documentos.plano.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*"  :state="getFormFieldState('plano')"
           @change="handleDocumentUpdate('plano'); checkDocumentSize('plano', $event)"
@@ -969,10 +970,10 @@
           mail: { required, email },
           mail2: { required, email, sameAs: sameAs( function(){return this.solicitante.mail } ) },
           esPropietario: { requiredIfAtLeastOneChecked: (value) => {
-              return value || this.solicitante.esTitular || (this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Titular') || this.solicitante.tipoSolicitud === 'Renovación' || this.solicitante.tipoSolicitud === 'Reempadronamiento';
+              return value || this.solicitante.esTitular || ((this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Domicilio') || this.solicitante.tipoSolicitud === 'Cambio de Titular') || this.solicitante.tipoSolicitud === 'Renovación' || this.solicitante.tipoSolicitud === 'Reempadronamiento';
             } },
           esTitular: { requiredIfAtLeastOneChecked: (value) => {
-              return value || this.solicitante.esPropietario || (this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Titular') || this.solicitante.tipoSolicitud === 'Renovación' || this.solicitante.tipoSolicitud === 'Reempadronamiento';
+              return value || this.solicitante.esPropietario || ((this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Domicilio') || this.solicitante.tipoSolicitud === 'Cambio de Titular') || this.solicitante.tipoSolicitud === 'Renovación' || this.solicitante.tipoSolicitud === 'Reempadronamiento';
             } },
         },
         inmueble: {
@@ -990,7 +991,7 @@
                   break; // Termina la iteración si encuentra al menos uno seleccionado
                 }
               }
-              return alMenosUnoSeleccionado || !this.isHoteleria || !((this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Titular') || this.solicitante.tipoSolicitud === 'Renovación' || this.solicitante.tipoSolicitud === 'Reempadronamiento');
+              return alMenosUnoSeleccionado || !this.isHoteleria || !(((this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Domicilio') || this.solicitante.tipoSolicitud === 'Cambio de Titular') || this.solicitante.tipoSolicitud === 'Renovación' || this.solicitante.tipoSolicitud === 'Reempadronamiento');
             }
           },
           otrosServicios: { requiredIf: requiredIf(function () {
@@ -1053,19 +1054,19 @@
             return this.solicitante.esPersonaJuridica === 'true' })}},
           //Validaciones exclusivas de Habilitación
           constanciaCuit: { contenido:{requiredIf: requiredIf(function () {
-            return ((this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Titular')) }) } },
+            return (((this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Domicilio') || this.solicitante.tipoSolicitud === 'Cambio de Titular')) }) } },
           constanciaIngresosBrutos: { contenido:{requiredIf: requiredIf(function () {
-            return ((this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Titular')|| this.solicitante.tipoSolicitud === 'Renovación' || this.solicitante.tipoSolicitud === 'Reempadronamiento') }) } },
+            return (((this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Domicilio') || this.solicitante.tipoSolicitud === 'Cambio de Titular')|| this.solicitante.tipoSolicitud === 'Renovación' || this.solicitante.tipoSolicitud === 'Reempadronamiento') }) } },
           certificadoDomicilio: { contenido:{requiredIf: requiredIf(function () {
-            return ((this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Titular')|| this.solicitante.tipoSolicitud === 'Renovación' || this.solicitante.tipoSolicitud === 'Reempadronamiento') }) }
+            return (((this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Domicilio') || this.solicitante.tipoSolicitud === 'Cambio de Titular')|| this.solicitante.tipoSolicitud === 'Renovación' || this.solicitante.tipoSolicitud === 'Reempadronamiento') }) }
           },
           libreDeudaSegHig: { contenido:{requiredIf: requiredIf(function () {
             return (this.solicitante.tipoSolicitud === 'Renovación' || this.solicitante.tipoSolicitud === 'Baja' || this.solicitante.tipoSolicitud === 'Reempadronamiento') }) }
           },
           plano: { contenido:{requiredIf: requiredIf(function () {
-            return ((this.solicitante.tipoSolicitud === 'Habilitación' || (this.solicitante.tipoSolicitud === 'Cambio de Titular' && this.solicitante.esModificacionesPlano === 'true'))) }) }},
+            return (((this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Domicilio') || (this.solicitante.tipoSolicitud === 'Cambio de Titular' && this.solicitante.esModificacionesPlano === 'true'))) }) }},
           croquis: { contenido:{requiredIf: requiredIf(function () {
-            return this.rubroSeleccionado.croquis && !this.isHoteleria && ((this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Titular')) })}},
+            return this.rubroSeleccionado.croquis && !this.isHoteleria && (((this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Domicilio') || this.solicitante.tipoSolicitud === 'Cambio de Titular')) })}},
 
           //Validaciones exclusivas de Baja
           libreDeudaIB: { contenido:{ requiredIf: requiredIf(function () {
@@ -1081,7 +1082,7 @@
 
           //Validaciones con varias condiciones
           tituloPropiedad: { contenido:{ requiredIf: requiredIf(function () {
-            return ((this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Titular') || this.solicitante.tipoSolicitud === 'Renovación') || (
+            return (((this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Domicilio') || this.solicitante.tipoSolicitud === 'Cambio de Titular') || this.solicitante.tipoSolicitud === 'Renovación') || (
               this.solicitante.tipoSolicitud === 'Baja' && this.solicitante.esPropietario && !this.solicitante.esTitular)
             }) }},
 
@@ -1361,7 +1362,7 @@
         if (!documentosBasicos) return false;
 
         // Verificar campos condicionales según tipo de solicitud
-        if (this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Titular') {
+        if ((this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Domicilio') || this.solicitante.tipoSolicitud === 'Cambio de Titular') {
           if (!this.documentos.constanciaCuit.contenido ||
               !this.documentos.constanciaIngresosBrutos.contenido ||
               !this.documentos.certificadoDomicilio.contenido ||
@@ -1370,7 +1371,7 @@
           }
 
           // Verificar plano para habilitación o cambio con modificaciones
-          if (this.solicitante.tipoSolicitud === 'Habilitación' ||
+          if ((this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Domicilio') ||
               (this.solicitante.tipoSolicitud === 'Cambio de Titular' && this.solicitante.esModificacionesPlano === 'true')) {
             if (!this.documentos.plano.contenido) return false;
           }
@@ -1553,7 +1554,7 @@
             console.log("this.$v.documentos.planillaAutorizacion.contenido.$error: " + this.$v.documentos.planillaAutorizacion.contenido.$error);
             console.log("this.solicitante.esPersonaJuridica: " + this.solicitante.esPersonaJuridica);
             console.log("this.$v.documentos.actaPersonaJuridica.contenido.$error: " + this.$v.documentos.actaPersonaJuridica.contenido.$error);
-            if(this.solicitante.tipoSolicitud==="Habilitación"){
+            if((this.solicitante.tipoSolicitud==="Habilitación" || this.solicitante.tipoSolicitud === "Cambio de Domicilio")){
               console.log("-*-*Validaciones Exclusivas de Habilitación*-*-");
               console.log("this.$v.inmueble.serviciosHoteleria.$error: " + this.$v.inmueble.serviciosHoteleria.$error);
               console.log("this.$v.inmueble.otrosServicios.$error: " + this.$v.inmueble.otrosServicios.$error);

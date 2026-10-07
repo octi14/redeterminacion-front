@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="page main-background">
     <Banner title="Trámites comerciales" />
 
@@ -64,7 +64,9 @@
                 </div>
               </b-col>
               <b-col lg="3" md="4" sm="6">
-                <img id="btn-Cambio-Domicilio" class="disabled w-100" :src="btnCambioDomicilio" alt="Cambio de Domicilio">
+                <div class="tramite-btn" role="button" tabindex="0" @click="seleccionarTramite('Cambio de Domicilio')">
+                  <img id="btn-Cambio-Domicilio" class="w-100" :src="btnCambioDomicilio" alt="Cambio de Domicilio">
+                </div>
               </b-col>
               <b-col lg="3" md="4" sm="6">
                 <img id="btn-Anexo" class="disabled w-100" :src="btnAnexo" alt="Anexo">
@@ -1203,6 +1205,380 @@
         <div class="page-btn-iniciar-tramite-wrap"><b-button variant="success" size="sm" class="btn-form page-btn-iniciar-tramite" @click="openPopup('Form')">Iniciar Trámite</b-button></div>
         <br />
         </b-col>
+        <b-col v-if="tramiteSeleccionado=='Cambio de Domicilio'">
+          <br />
+          <b-card class="section-card" id="card-cambio-domicilio" :class="{ expanded: isCardExpanded(28) }">
+            <h4 class="section-title" @click="toggleCard(28)">
+              ¿Qué significa realizar una Habilitacion Comercial?
+              <i class="bi bi-chevron-compact-down"></i>
+              <i class="bi bi-chevron-compact-up"></i>
+            </h4>
+            <div class="section-card-panel">
+                <div class="li-row first-li" style="margin-bottom: 1rem">
+                  <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
+                  <p class="li-content">La Municipalidad de Villa Gesell dispone que toda persona humana o jurídica que pretenda ejercer el comercio, industria o actividad asimilable deberá, previo a su desarrollo dentro del Partido, solicitar la habilitación pertinente.</p>
+                </div>
+                <div class="li-row">
+                  <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
+                  <div class="li-content">
+                    <p class="li-title">¿Qué sucede si abro un local comercial sin realizar la habilitación correspondiente?</p>
+                    <div class="li-row">
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
+                      <div class="li-content"><p>La omisión de la habilitación determinará la inmediata clausura del establecimiento, debiendo abonar la multa correspondiente para quienes cometieran tal infracción.</p></div>
+                    </div>
+                    <div class="li-row">
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
+                      <div class="li-content"><p>El establecimiento deberá permanecer cerrado hasta tanto regularice su trámite de habilitación.</p></div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+          </b-card>
+          <b-card class="section-card" :class="{ expanded: isCardExpanded(29) }">
+            <h4 class="section-title" @click="toggleCard(29)">
+              ¿Quién puede iniciar un Cambio de Domicilio?
+              <i class="bi bi-chevron-compact-down"></i>
+              <i class="bi bi-chevron-compact-up"></i>
+            </h4>
+            <div class="section-card-panel">
+                <div class="li-row first-li">
+                  <div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> El <b>interesado futuro comerciante/industrial o afin</b> mayor de 18 años.</div>
+                </div>
+                <div class="li-row">
+                  <div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> El <b>representante o apoderado/a de la persona</b> interesada con documentación que acredite el carácter de tal. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('A')" @keydown.enter.stop.prevent="openPopup('A')"></i></div>
+                </div>
+            </div>
+          </b-card>
+
+          <b-card class="section-card" :class="{ expanded: isCardExpanded(30) }">
+            <h4 class="section-title" @click="toggleCard(30)">
+              ¿Qué documentación necesito para iniciar un Cambio de Domicilio?
+              <i class="bi bi-chevron-compact-down"></i>
+              <i class="bi bi-chevron-compact-up"></i>
+            </h4>
+            <div class="section-card-panel">
+                <div class="li-row first-li"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> DNI del solicitante <i>(imagen del frente y dorso)</i>.</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Domicilio real y legal del <b>nuevo</b> establecimiento <i>(deberá constar calle y número)</i>. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('NroInmueble')" @keydown.enter.stop.prevent="openPopup('NroInmueble')"></i></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Copia de plano del <b>nuevo local</b> (en alguna de sus dos posibilidades: <i>1. Conforme a obra o Medición aprobado / 2. Conforme a obra o Medición registrado).</i> En caso de no poseerlo, se requerirá el Informe Técnico debidamente visado por el Colegio Profesional correspondiente. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('B')" @keydown.enter.stop.prevent="openPopup('B')"></i></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Libre deuda de <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Tasa por Sevicios Urbanos</a> <b>de ambos locales</b> <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('LibreDeuda')" @keydown.enter.stop.prevent="openPopup('LibreDeuda')"></i></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Libre deuda de Tasa de Inspección por Seguridad e Higiene <b>de ambos locales</b>. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('ConstanciaLibreDeudaSegHig')" @keydown.enter.stop.prevent="openPopup('ConstanciaLibreDeudaSegHig')"></i></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Copia de la Escritura traslativa de Dominio del inmueble donde se desarrollará la actividad / Contrato de locación / Boleto de Compraventa o afín, con el correspondiente Impuesto de Sellos Provincial y firma certificada por Escribano Público, Entidad Bancaria o Autoridad Administrativa.</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> <a href="https://seti.afip.gob.ar/padron-puc-constancia-internet/ConsultaConstanciaAction.do" target="_blank" class="external-link">Constancia de inscripción de AFIP</a> actualizada.</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" class="external-link">Constancia de Inscripción en Ingresos Brutos</a> (ARBA) actualizada al momento de la solicitud. Esta deberá mantenerse activa mientras el comercio, industria o asimilable esté habilitado, bajo pena de ser pasible de la clausura del establecimiento.</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> <a href="https://sso.arba.gov.ar/Login/login?service=https%3A%2F%2Fapp.arba.gov.ar%3A443%2FWebTramites%2Fwelcome.do" target="_blank" class="external-link">Certificado de domicilio Ingresos Brutos (ARBA).</a></div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> <a href="https://drive.google.com/file/d/1m5ouibBL4sWokhkSR5keTjbUVo-I4TOU/view" target="_blank" class="external-link">Planilla de Autorización de Trámite</a> o poder autorizado por escribano <i>(únicamente si el trámite es iniciado mediante representante o apoderado/a)</i>.</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> <b>Personas Jurídicas:</b> Escritura constitutiva de la misma con designación actual de sus representantes.</div></div>
+              <div class="separador-top">
+                <p>Excepto el domicilio, el resto de los <b>documentos</b> deberán encontrarse <b>digitalizados</b> (podés escanearlos o sacarles una foto) y deben <b>ser legibles</b>. Pueden encontrarse <b>en formato pdf o imagen</b> y tener un <b>peso máximo de 15 Mb</b>.</p>
+              </div>
+              <b-card border-variant="warning" align="center" class="importante-card" >
+                <b-card-text>
+                  <b-row >
+                    <b-col md="2">
+                      <i class="bi bi-exclamation-triangle text-warning" style="font-size: 5em"></i>
+                      <p class="li-title"><u><b>¡Importante!</b></u></p>
+                    </b-col>
+                    <b-col  md="10">
+                        <div class="li-row"><div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div><div class="li-content">Si en el <b>nuevo domicilio existía otro comercio antes, este último debe estar dado de baja.</b> En caso de que aún no se haya regularizado esta situación,  deberás realizar el <a href="#card-baja" id="btnB" class="external-link" @click="seleccionarTramite('Baja')">Trámite de Baja Comercial</a> para poder iniciar el trámite de habilitación.</div></div>
+                        <div class="li-row"><div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div><div class="li-content">Tené en cuenta que <b>la iniciación y pago del trámite no implican la habilitación tácita</b>, ya que <b>la misma está sujeta a la entrega de la documentación original y al retiro del certificado de habilitación</b>. <u>Mientras tanto el local deberá permanecer cerrado.</u></div></div>
+                    </b-col>
+                  </b-row>
+                </b-card-text>
+              </b-card>
+            </div>
+          </b-card>
+
+          <b-card class="section-card" :class="{ expanded: isCardExpanded(31) }">
+            <h4 class="section-title" @click="toggleCard(31)">
+              Requisitos por rubros comerciales
+              <i class="bi bi-chevron-compact-down"></i>
+              <i class="bi bi-chevron-compact-up"></i>
+            </h4>
+            <div class="section-card-panel">
+                <div class="li-row first-li">
+                  <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
+                  <div class="li-content">
+                    <p>Seleccioná el rubro de tu comercio para conocer los requisitos a los que se debe adecuar y el mapa de zonas permitidas donde se puede ubicar.</p>
+                    <b-form-group label="" label-for="rubro">
+                      <b-form-select v-model="rubroSeleccionado.id" :options="filteredRubros" value-field="id" text-field="nombre" @change="handleRubroChange" style="margin:10px 0;"></b-form-select>
+                    </b-form-group>
+                  </div>
+                </div>
+
+                <div v-if="rubroSeleccionado.id">
+
+                    <div v-if="rubroSeleccionado.descripcion != ''" class="li-row">
+                      <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
+                      <div class="li-content">
+                        <p class="li-title">¿A qué nos referimos cuando hablamos de “{{ rubroSeleccionado.nombre }}”?</p>
+                        <p class="li-p">{{ rubroSeleccionado.descripcion }}</p>
+                      </div>
+                    </div>
+                    <div v-if="rubroSeleccionado.requisitos.length" class="li-row">
+                      <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
+                      <div class="li-content" style="width:inherit;">
+                        <p class="li-title">Requisitos Generales  <a href="https://drive.google.com/file/d/1I3BW2F16ZhW7tLqPU6qSmRYybkMKBTXS/view" target="_blank" class="external-link" style="font-weight: 500">(Ord. 1958/04)</a></p>
+                        <div v-if="rubroSeleccionado.requisitos.length" class="li-p">
+                          <div class="li-row" v-for="(req, index) in rubroSeleccionado.requisitos" :key="index">
+                            <div class="li-icon"><i class="bi bi-check-lg"></i></div>
+                            <div class="li-content" >
+                              <p> {{ req }}</p>
+                            </div>
+                          </div>
+                        </div></div>
+                    </div>
+                    <div v-if="rubroSeleccionado.especiales.length" class="li-row">
+                      <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
+                      <div class="li-content" style="width:inherit;">
+                        <p class="li-title">Requisitos <span v-if="rubroSeleccionado.requisitos.length">específicos para el rubro</span><span v-else>Generales</span></p>
+                        <div v-if="rubroSeleccionado.especiales.length" class="li-p">
+                          <div class="li-row" v-for="(req, index) in rubroSeleccionado.especiales" :key="index">
+                            <div class="li-icon"><i class="bi bi-check-lg"></i></div>
+                            <div class="li-content" >
+                              <a v-if="rubroSeleccionado.links.length && rubroSeleccionado.links[index]!='' && rubroSeleccionado.links[index]!=null" :href="`${rubroSeleccionado.links[index]}`" target="_blank" class="external-link" > {{ req }}</a>
+                              <p v-else> {{ req }}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <b-card v-if="rubroSeleccionado.inspeccion"  border-variant="warning" align="center" class="importante-card li-p" >
+                      <b-card-text>
+                        <b-row >
+                          <b-col md="2">
+                            <i class="bi bi-exclamation-triangle text-warning" style="font-size: 5em"></i>
+                            <p class="li-title"><u><b>¡Importante!</b></u></p>
+                          </b-col>
+                          <b-col  md="10">
+                              <div class="li-row"><div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div><div class="li-content">Para habilitar un comercio del rubro {{ rubroSeleccionado.nombre }} <b>necesitás solicitar turno para llevar a cabo la inspección</b> correspondiente. Allí se constatará el cumplimiento de los requisitos mencionados previamente.</div></div>
+                              <div class="li-row"><div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div><div class="li-content">Los turnos de Inspección se solicitan <b>luego de recibir el correo electrónico del Departamento Comercio</b> autorizando el Formulario de Solicitud de Habilitación (donde te indicarán los pasos a seguir para continuar).</div></div>
+                          </b-col>
+                        </b-row>
+                      </b-card-text>
+                    </b-card>
+                    <b-card v-else border-variant="info" align="center" class="importante-card li-p" >
+                      <b-card-text>
+                        <b-row >
+                          <b-col md="2">
+                            <i class="bi bi-exclamation-triangle text-info" style="font-size: 5em"></i>
+                            <p class="li-title"><u><b>¡Importante!</b></u></p>
+                          </b-col>
+                          <b-col  md="10">
+                              <div class="li-row"><div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div><div class="li-content">Los comercios del rubro {{ rubroSeleccionado.nombre }} <b>no requieren inspección</b> para llevar a cabo la habilitación.</div></div>
+                              <div class="li-row"><div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div><div class="li-content">Los documentos originales se solicitan luego de recibir el correo electrónico del Departamento Comercio autorizando el Formulario de Solicitud de Habilitación (donde te indicarán los pasos a seguir para continuar).</div></div>
+                          </b-col>
+                        </b-row>
+                      </b-card-text>
+                    </b-card>
+                    <div v-if="rubroSeleccionado.croquisExpandido === true" class="li-row">
+                      <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
+                      <div class="li-content">
+                        <p class="li-title">Requisitos especiales en casos en que haya más de una parcela para uso de la actividad comercial (y las mismas no se encuentren reunidas por plano de mensura y unificación o reunidas de oficio)</p>
+                        <div class="li-p"><p><b>Deberá acreditar:</b> Croquis  del Establecimiento efectuado por profesional habilitante en escala 1:100 en donde debe indicarse:</p>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">a)</span> Acceso peatonal y vehicular.</div>
+                          </div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">b)</span> Estacionamiento.</div>
+                          </div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">c)</span> Pileta, espejo de agua, natatorio, destacando profundidad y cercado tipo y altura.</div>
+                          </div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">d)</span> Cercado perimetral.</div>
+                          </div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">e)</span> Forestación existente.</div>
+                          </div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">f)</span> Juegos para niños.</div>
+                          </div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">g)</span> Administración o recepción.</div>
+                          </div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">h)</span> Depósito, guardarropas, vestuarios.</div>
+                          </div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">i)</span> Zona de desayuno, comedores, cocinas.</div>
+                          </div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">j)</span> Ubicación de matafuegos internos.</div>
+                          </div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">k)</span> Carteles en el predio de “EVITE PROVOCAR INCENDIOS”.</div>
+                          </div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">l)</span> Señalización con números o letras de las unidades de viviendas, cabañas, departamentos, bungalows, que se afectan al servicio del pasajero.</div>
+                          </div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">ll)</span> Vivienda particular que no se afectaría al servicio, con nombre del destinatario y período de ocupación.</div>
+                          </div>
+                          <div class="li-row"><div class="li-icon"></div>
+                            <div class="li-content"><span class="icon-orange">m)</span> Espacios con otros destinos (spa, gimnasio, salón de usos múltiples, lavaderos, depósitos externos, etc).</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div v-if="rubroSeleccionado.pom" >
+                      <div class="li-row">
+                        <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
+                        <div class="li-content">
+                          <p class="li-title">Zonas permitidas para el rubro: {{ rubroSeleccionado.nombre }}</p>
+                          <div class="li-row">
+                            <div class="li-icon"><i class="bi bi-check-lg"></i></div>
+                            <div class="li-content"><p class="">En este mapa se indican las zonas permitidas para tu comercio de acuerdo a lo determinado por la Ordenanza 3069/21 Mod 3138/21 (Plan de Ordenamiento Municipal).</p></div>
+                          </div>
+                          <div class="li-row">
+                            <div class="li-icon"><i class="bi bi-check-lg"></i></div>
+                            <div class="li-content"><p class="li-p">La zona coloreada del mapa señala el espacio catastral donde es posible habilitar comercios de tu rubro <i>(no indica ubicaciones catastrales que se encuentren libres)</i>.</p></div>
+                          </div>
+                        </div>
+                      </div>
+                      <iframe :src="`${rubroSeleccionado.pom}`" width="100%" height="800" allow="autoplay" class="li-p"></iframe>
+                      <p v-if="rubroSeleccionado" class="li-p">Descargá el mapa de zonas permitidas para tu rubro haciendo <a class="external-link" target="_blank" :href="`${rubroSeleccionado.pom}`">click aquí</a></p>
+                    </div>
+                </div>
+            </div>
+          </b-card>
+          <b-card class="section-card FAQs-card" :class="{ expanded: isCardExpanded(32) }">
+            <h4 class="section-title" @click="toggleCard(32)">Preguntas Frecuentes
+              <i class="bi bi-chevron-compact-down"></i>
+              <i class="bi bi-chevron-compact-up"></i>
+            </h4>
+            <div class="section-card-panel">
+                <div class="li-row first-li">
+                  <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
+                  <div class="li-content">
+                    <p class="li-title">¿Qué sucede si en el local donde voy a habilitar mi comercio existía otro antes?</p>
+                    <p>En este caso, el comercio anterior debe estar dado de baja. Dicho trámite se realiza de manera virtual haciendo <a href="#card-baja" id="btnB" class="external-link" @click="seleccionarTramite('Baja')">click aquí</a>.</p>
+                  </div>
+                </div>
+                <div class="li-row">
+                  <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
+                  <div class="li-content">
+                    <p class="li-title">¿Cómo se calcula la Tasa de Habilitación?</p>
+                    <p class="li-p">La Tasa de Habilitación depende de los siguientes factores:</p>
+                    <div class="li-row">
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
+                      <div class="li-content"><p>El rubro que se quiere habilitar.</p></div>
+                    </div>
+                    <div class="li-row">
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
+                      <div class="li-content"><p>La zona donde se encuentra el local.</p></div>
+                    </div>
+                    <div class="li-row">
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
+                      <div class="li-content"><p>La superficie total afectada a la actividad comercial (que implican el sector de atención al público, depósito, espacio de circulación, entrepiso, sanitarios, entre otros).</p></div>
+                    </div>
+                    <div class="li-row">
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
+                      <div class="li-content"><p>La condición del plano de obra (aprobado o registrado).</p></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="li-row">
+                  <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
+                  <div class="li-content">
+                    <p class="li-title">Para facilitar la búsqueda de un local: ¿Dónde puedo consultar la Zona Comercial Apta para habilitar y los requisitos edilicios para su instalación y funcionamiento?</p>
+                    <p class="li-p">Para realizar tu consulta, podés enviar un correo electrónico a: <a class="external-link" href="mailto:deptocomercio@gesell.gob.ar" target="_blank">deptocomercio@gesell.gob.ar</a> informando los siguientes datos:</p>
+                    <div class="li-row">
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
+                      <div class="li-content"><p>Rubro a habilitar.</p></div>
+                    </div>
+                    <div class="li-row">
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
+                      <div class="li-content"><p>Domicilio real del local (Calle y Número).</p></div>
+                    </div>
+                    <div class="li-row">
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
+                      <div class="li-content"><p>Localidad de ubicación en el Partido de Villa Gesell.</p></div>
+                    </div>
+                    <div class="li-row">
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
+                      <div class="li-content"><p>Datos catastrales: Chacra- Quinta- Manzana - Parcela - Unidad Contributiva.</p></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="li-row">
+                  <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
+                  <div class="li-content">
+                    <p class="li-title">¿Deben renovarse las habilitaciones comerciales?</p>
+                    <div class="li-row">
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
+                      <div class="li-content"><p><b>En caso de contrato de locación:</b> Las habilitaciones se extienden por el período que abarca el contrato de locación y deben reempadronarse anualmente, según corresponda, teniendo en cuenta la normativa vigente.</p></div>
+                    </div>
+                    <div class="li-row">
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
+                      <div class="li-content"><p><b>En caso de ser propietario/a del inmueble:</b> Las habilitaciones no tienen caducidad si la titularidad o las condiciones acreditadas al momento de la entrega del certificado de habilitación no cambian.</p></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="li-row">
+                  <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
+                  <div class="li-content">
+                    <p class="li-title">¿Cómo puedo obtener el Registro Provincial para la Comercialización de Bebidas Alcohólicas (REBA)?</p>
+                    <p class="li-p">Las actividades que comercializan bebidas alcohólicas deben tramitar el certificado del REBA correspondiente.</p>
+                    <div class="li-row">
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
+                      <div class="li-content"><p>Para tramitarlo debés tener tu habilitación comercial vigente.</p></div>
+                    </div>
+                    <div class="li-row">
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
+                      <div class="li-content"><p>Su costo dependerá de la actividad comercial que se lleve a cabo.</p></div>
+                    </div>
+                    <div class="li-row">
+                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
+                      <div class="li-content"><p>El trámite se lleva a cabo <b>personalmente</b> en la Municipalidad una vez iniciado el trámite online.</p></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="li-row">
+                  <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
+                  <div class="li-content">
+                    <p class="li-title">¿Por qué no cargan mis archivos?</p>
+                    <p>Puede ser que los archivos que quieras cargar superen el peso máximo soportado. En ese caso, te sugerimos reducirlos con alguna herramienta digital (por ejemplo: <a href="https://www.ilovepdf.com/es/comprimir_pdf" target="_blank" class="external-link">ilovepdf</a>). Si el problema persiste podés comunicarte con <a href="mailto:deptocomercio@gesell.gob.ar" target="_blank" class="external-link">deptocomercio@gesell.gob.ar</a></p>
+                  </div>
+                </div>
+                <div class="li-row first-li">
+                  <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
+                  <div class="li-content">
+                    <p class="li-title">¿Cómo cargo varias imágenes en un campo único del formulario?</p>
+                    <p>En caso de que el archivo que vayas a subir tenga varias páginas (y, por ejemplo, vos las hayas fotografiado) deberás compilarlas en un único archivo pdf. Para ello existen diversas herramientas digitales (por ejemplo, <a href="https://www.ilovepdf.com/es/jpg_a_pdf" target="_blank" class="external-link">ilovepdf</a>) que te permiten hacerlo de manera sencilla y gratuita. </p>
+                  </div>
+                </div>
+                <div class="li-row first-li">
+                  <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
+                  <div class="li-content">
+                    <p class="li-title">¿Cómo puedo saber en qué estado se encuentra mi trámite?</p>
+                    <p>Hacé click en el botón <a class="external-link" href="/comercio/consulta_tramite">consulta de trámites</a> que se encuentra en la página de inicio y escribí el número de trámite que te dio el sistema cuando completaste tu solicitud.</p>
+                  </div>
+                </div>
+                <div class="li-row first-li">
+                  <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
+                  <div class="li-content">
+                    <p class="li-title">Para visualizar como realizar tu trámite, podés mirar este video tutorial</p>
+                    <iframe class="videoTuto" width="560" height="315" src="https://www.youtube.com/embed/HJwZkfxsnOw?si=EszZ_Byjmv2-ysF8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                  </div>
+                </div>
+            </div>
+          </b-card>
+          <b-card id="normas" class="section-card" :class="{ expanded: isCardExpanded(33) }">
+            <h4 class="section-title" @click="toggleCard(33)">
+              Condiciones legales
+              <i class="bi bi-chevron-compact-down"></i>
+              <i class="bi bi-chevron-compact-up"></i>
+            </h4>
+            <div class="section-card-panel">
+                <p class="first-li">
+                  La habilitación de comercios/industrias o asimilables deberá adecuarse a lo determinado en concordancia con leyes nacionales, provinciales y
+                  <a href="https://arvige.gob.ar/legislacion/pdf/12" target="_blank" class="external-link">el Digesto de Habilitaciones Comerciales (Ord.1958/04 (TO2024)</a>.
+                </p>
+            </div>
+          </b-card>
+        <div class="page-btn-iniciar-tramite-wrap"><b-button variant="success" size="sm" class="btn-form page-btn-iniciar-tramite" @click="openPopup('Form')">Iniciar Trámite</b-button></div>
+        <br />
+        </b-col>
       </b-row>
     </b-container>
 
@@ -1407,6 +1783,7 @@ const TRAMITE_BTN_IDS = {
   'Renovación': 'btn-Renovación',
   Reempadronamiento: 'btn-Reempadronamiento',
   'Cambio de Titular': 'btn-Cambio-Titular',
+  'Cambio de Domicilio': 'btn-Cambio-Domicilio',
 }
 
 /** Primer card de cada trámite (scroll al seleccionar). */
@@ -1416,6 +1793,7 @@ const TRAMITE_SCROLL_IDS = {
   'Renovación': 'card-renovacion',
   Reempadronamiento: 'card-reempadronamiento',
   'Cambio de Titular': 'card-cambio-titular',
+  'Cambio de Domicilio': 'card-cambio-domicilio',
 }
 
 /** Trámites válidos (p. ej. desde ?tramite= del buscador general del sitio). */

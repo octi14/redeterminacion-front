@@ -67,6 +67,12 @@
             </b-badge>
           </template>
 
+          <template #cell(cambioDomicilio)="row">
+            <b-badge variant="dark" pill>
+              {{ row.value || 0 }}
+            </b-badge>
+          </template>
+
           <template #cell(total)="row">
             <strong class="text-dark">{{ row.value }}</strong>
           </template>
@@ -107,6 +113,12 @@
               <div class="text-center p-3 border rounded bg-light">
                 <div class="h4 text-secondary font-weight-bold mb-1">{{ resumenTotales.cambioTitular }}</div>
                 <div class="text-muted small">Cambio de Titular</div>
+              </div>
+            </b-col>
+            <b-col md="2" sm="4" class="mb-3">
+              <div class="text-center p-3 border rounded bg-light">
+                <div class="h4 text-dark font-weight-bold mb-1">{{ resumenTotales.cambioDomicilio }}</div>
+                <div class="text-muted small">Cambio de Domicilio</div>
               </div>
             </b-col>
           </b-row>
@@ -176,6 +188,13 @@ export default {
           tdClass: 'text-center'
         },
         {
+          key: 'cambioDomicilio',
+          label: 'Cambio de Domicilio',
+          sortable: true,
+          thClass: 'text-center',
+          tdClass: 'text-center'
+        },
+        {
           key: 'total',
           label: 'Total',
           sortable: true,
@@ -221,6 +240,7 @@ export default {
           renovacion: 0,
           reempadronamiento: 0,
           cambioTitular: 0,
+          cambioDomicilio: 0,
           total: 0
         }
       })
@@ -264,7 +284,8 @@ export default {
         baja: 0,
         renovacion: 0,
         reempadronamiento: 0,
-        cambioTitular: 0
+        cambioTitular: 0,
+        cambioDomicilio: 0
       }
 
       this.tramitesAnio.forEach(tramite => {
@@ -288,7 +309,8 @@ export default {
         'Baja': 'baja',
         'Renovación': 'renovacion',
         'Reempadronamiento': 'reempadronamiento',
-        'Cambio de Titular': 'cambioTitular'
+        'Cambio de Titular': 'cambioTitular',
+        'Cambio de Domicilio': 'cambioDomicilio'
       }
 
       return tipos[tipo] || tipo.toLowerCase()

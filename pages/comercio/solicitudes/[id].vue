@@ -829,6 +829,21 @@
       </div>
     </BModal>
 
+    <!-- Modal para archivos HEIC -->
+    <BModal v-model="showHeicModal" header-bg-variant="warning" title="Archivo no compatible" title-class="text-light" no-footer centered>
+      <div class="text-center">
+        <i class="bi bi-exclamation-triangle-fill text-warning"></i>
+        <h5 class="my-3">Este archivo no pudo ser abierto desde el navegador</h5>
+        <p class="mb-4">El formato HEIC no es compatible con tu navegador.<br/> Podés descargar el archivo para visualizarlo en tu dispositivo.</p>
+        <b-button @click="downloadHeicFile" variant="success" class="mr-2 btn-download-heic">
+          <i class="bi bi-download"></i> Descargar
+        </b-button>
+        <b-button @click="showHeicModal = false" variant="secondary">
+          Cerrar
+        </b-button>
+      </div>
+    </BModal>
+
     <!--Modal revisión incompleta-->
     <BModal v-model="showRevisionIncompleta" no-footer :header-bg-variant="'warning'" centered>
       <template #header>
@@ -921,6 +936,9 @@ export default {
       nroExpediente2: null,
       alcance: null,
       showDocumentoModal: false,
+      showHeicModal: false,
+      currentDocumento: null,
+      currentNombreDocumento: null,
       DocumentoModalTitle: "",
       showRevisionIncompleta: false,
       showRechazoAutomatico: false,
@@ -1621,7 +1639,45 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
         }
       });
     },*/
+    isHeic(documento) {
+      const type = (documento?.contentType || '').toLowerCase();
+      const name = (documento?.filename || '').toLowerCase();
+      return type === 'image/heic' || type === 'image/heif' || name.endsWith('.heic') || name.endsWith('.heif');
+    },
+    async downloadHeicFile() {
+      const documento = this.currentDocumento;
+      if (!documento) return;
+      try {
+        let blob;
+        if (documento.url || !documento.data) {
+          const buffer = await DocumentoService.downloadFileBuffer(useApi(), {
+            id: this.habilitacion.id,
+            nombreDocumento: this.currentNombreDocumento,
+            url: documento.url,
+          });
+          blob = new Blob([buffer], { type: documento.contentType || 'image/heic' });
+        } else {
+          const decodedData = atob(documento.data);
+          const arrayBuffer = new Uint8Array(decodedData.length);
+          for (let i = 0; i < decodedData.length; i++) {
+            arrayBuffer[i] = decodedData.charCodeAt(i);
+          }
+          blob = new Blob([arrayBuffer], { type: documento.contentType || 'image/heic' });
+        }
+        await saveAsFile(blob, documento.filename || `${this.currentNombreDocumento || 'archivo'}.heic`);
+        this.showHeicModal = false;
+      } catch (error) {
+        console.error('Error al descargar el archivo HEIC:', error);
+        this.showToast('Error al descargar el archivo', { variant: 'danger', title: 'Error' });
+      }
+    },
     openDocumento(documento, nombreDocumento) {
+  if (this.isHeic(documento)) {
+    this.currentDocumento = documento;
+    this.currentNombreDocumento = nombreDocumento;
+    this.showHeicModal = true;
+    return;
+  }
   // Preferir URL firmada S3 (sin base64 en el store / dyno)
   if (documento && documento.url) {
     window.open(documento.url, '_blank');

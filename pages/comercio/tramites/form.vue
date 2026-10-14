@@ -101,7 +101,7 @@
           </b-col>
           <b-col lg="6">
             <b-form-group label="CUIT *" label-for="cuit" >
-              <b-form-input id="cuit" v-model="solicitante.cuit" @blur="$v.solicitante.cuit.$touch()"></b-form-input>
+              <b-form-input id="cuit" v-model="solicitante.cuit" inputmode="numeric" @input="soloDigitos('cuit', $event)" @blur="$v.solicitante.cuit.$touch()"></b-form-input>
               <div v-if="$v.solicitante.cuit.$error" class="validation-error">
                 <i class="bi bi-exclamation-octagon text-danger"></i> Introduce un CUIT válido, sin guiones ni caracteres especiales.
               </div>
@@ -123,7 +123,7 @@
         <b-row>
           <b-col lg="6">
             <b-form-group label="Teléfono *" label-for="telefonoTitular" >
-              <b-form-input id="telefonoTitular" v-model="solicitante.telefono" no-wheel @blur="$v.solicitante.telefono.$touch()"></b-form-input>
+              <b-form-input id="telefonoTitular" v-model="solicitante.telefono" inputmode="numeric" no-wheel @input="soloDigitos('telefono', $event)" @blur="$v.solicitante.telefono.$touch()"></b-form-input>
               <div v-if="$v.solicitante.telefono.$error" class="validation-error">
                 <i class="bi bi-exclamation-octagon text-danger"></i> El teléfono no puede estar vacío, contener letras o caracteres especiales.
               </div>
@@ -601,7 +601,7 @@
       <fieldset v-if="solicitante.esPersonaJuridica === 'true'">
         <p>A continuación deberás cargar la Escritura constitutiva de la Persona Jurídica y el Acta de Directorio actualizada.</p>
         <b-form-group label="CUIT de la Persona Jurídica *" label-for="cuitPersonaJuridica">
-          <b-form-input id="cuitPersonaJuridica" v-model="solicitante.cuitPersonaJuridica" inputmode="numeric" @blur="$v.solicitante.cuitPersonaJuridica.$touch()"></b-form-input>
+          <b-form-input id="cuitPersonaJuridica" v-model="solicitante.cuitPersonaJuridica" inputmode="numeric" @input="soloDigitos('cuitPersonaJuridica', $event)" @blur="$v.solicitante.cuitPersonaJuridica.$touch()"></b-form-input>
           <div v-if="$v.solicitante.cuitPersonaJuridica.$error" class="validation-error">
             <i class="bi bi-exclamation-octagon text-danger"></i> Introduce un CUIT válido, sin guiones ni caracteres especiales.
           </div>
@@ -1464,6 +1464,9 @@
       });
     },
     watch: {
+      'solicitante.cuit'(value) { this.soloDigitos('cuit', value); },
+      'solicitante.telefono'(value) { this.soloDigitos('telefono', value); },
+      'solicitante.cuitPersonaJuridica'(value) { this.soloDigitos('cuitPersonaJuridica', value); },
       'inmueble.carteles'(newValue) {
         // Si se deselecciona carteles, limpiar las medidas
         if (!newValue) {
@@ -1671,6 +1674,10 @@
       cancelForm(){
         //console.log("CANCEL FORM");
       },
+      soloDigitos(campo, valor) {
+        const raw = valor && valor.target ? valor.target.value : (valor ?? this.solicitante[campo]);
+        this.solicitante[campo] = String(raw ?? '').replace(/\D/g, '');
+      },
         async submitForm() {
           if(false){
             console.log("SUBMIT FORM CALLED");
@@ -1688,6 +1695,9 @@
           }else{
             console.log("SUBMIT FORM CALLED:");
 
+            this.soloDigitos('cuit');
+            this.soloDigitos('telefono');
+            this.soloDigitos('cuitPersonaJuridica');
             this.$v.$touch(); // Marca los campos como tocados para mostrar los errores
             //this.LoguearValidaciones();
             if (!this.$v.$invalid && !Object.values(this.fileTooLargeError).some(error => !!error) && this.isCaptchaOK()) {

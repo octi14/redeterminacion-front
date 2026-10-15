@@ -1,34 +1,9 @@
 const formatFile = (FileResponse) => {
-  const rawStatus = Array.isArray(FileResponse.status) ? FileResponse.status : []
-  const rawFacturas = Array.isArray(FileResponse.facturas) ? FileResponse.facturas : []
-  const rawFechasCarga = Array.isArray(FileResponse.fechasCarga) ? FileResponse.fechasCarga : []
-
-  // La UI asume que:
-  // status[0] / facturas[0] / fechasCarga[0] => Período 1
-  // status[1] / facturas[1] / fechasCarga[1] => Período 2
-  // status[2] / facturas[2] / fechasCarga[2] => Período 3
-  // Si el backend devuelve esas 3 posiciones en otro orden, se desfasarán los círculos.
-  let status = rawStatus
-  let facturas = rawFacturas
-  let fechasCarga = rawFechasCarga
-
-  const len = Math.min(rawStatus.length, rawFacturas.length, rawFechasCarga.length)
-  if (len >= 3) {
-    const indices = rawFechasCarga.slice(0, len).map((fecha, idx) => {
-      const t = new Date(fecha).getTime()
-      return { idx, t: Number.isFinite(t) ? t : Number.POSITIVE_INFINITY }
-    })
-
-    indices.sort((a, b) => {
-      if (a.t !== b.t) return a.t - b.t
-      return a.idx - b.idx
-    })
-
-    const orderedIdx = indices.map((x) => x.idx)
-    status = orderedIdx.map((i) => rawStatus[i])
-    facturas = orderedIdx.map((i) => rawFacturas[i])
-    fechasCarga = orderedIdx.map((i) => rawFechasCarga[i])
-  }
+  // La posición en cada array es el período: [0] => Período 1, [1] => Período 2, [2] => Período 3.
+  // No reordenar: el admin guarda status/facturas completos y desalinearía los datos en MongoDB.
+  const status = Array.isArray(FileResponse.status) ? FileResponse.status : []
+  const facturas = Array.isArray(FileResponse.facturas) ? FileResponse.facturas : []
+  const fechasCarga = Array.isArray(FileResponse.fechasCarga) ? FileResponse.fechasCarga : []
 
   return ({
     id: FileResponse._id,

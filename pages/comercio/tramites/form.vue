@@ -95,7 +95,7 @@
             <b-form-group label="DNI / Pasaporte *" label-for="DNISolicitante" >
               <b-form-input id="DNISolicitante" v-model="solicitante.dni" @blur="$v.solicitante.dni.$touch()"></b-form-input>
               <div v-if="$v.solicitante.dni.$error" class="validation-error">
-                <i class="bi bi-exclamation-octagon text-danger"></i> Introduce un DNI válido.
+                <i class="bi bi-exclamation-octagon text-danger"></i> Introduce un DNI válido: entre 7 y 9 números, sin letras.
               </div>
             </b-form-group>
           </b-col>
@@ -103,7 +103,7 @@
             <b-form-group label="CUIT *" label-for="cuit" >
               <b-form-input id="cuit" v-model="solicitante.cuit" @blur="$v.solicitante.cuit.$touch()"></b-form-input>
               <div v-if="$v.solicitante.cuit.$error" class="validation-error">
-                <i class="bi bi-exclamation-octagon text-danger"></i> Introduce un CUIT válido, sin guiones ni caracteres especiales.
+                <i class="bi bi-exclamation-octagon text-danger"></i> Introduce un CUIT válido: entre 10 y 12 números, sin letras.
               </div>
             </b-form-group>
           </b-col>
@@ -125,7 +125,7 @@
             <b-form-group label="Teléfono *" label-for="telefonoTitular" >
               <b-form-input id="telefonoTitular" v-model="solicitante.telefono" no-wheel @blur="$v.solicitante.telefono.$touch()"></b-form-input>
               <div v-if="$v.solicitante.telefono.$error" class="validation-error">
-                <i class="bi bi-exclamation-octagon text-danger"></i> El teléfono no puede estar vacío, contener letras o caracteres especiales.
+                <i class="bi bi-exclamation-octagon text-danger"></i> El teléfono no puede estar vacío ni contener letras.
               </div>
             </b-form-group>
           </b-col>
@@ -249,7 +249,7 @@
             <b-form-group label="Nro de Legajo *" label-for="nroLegajo" >
                 <b-form-input id="nroLegajo" v-model="nroLegajo" no-wheel @blur="$v.nroLegajo.$touch()"></b-form-input>
               <div v-if="$v.nroLegajo.$error" class="validation-error">
-                <i class="bi bi-exclamation-octagon text-danger"></i> El nro de legajo no puede estar vacío y debe contener solo números.
+                <i class="bi bi-exclamation-octagon text-danger"></i> El nro de legajo no puede estar vacío y debe contener solo números (sin letras ni barras).
               </div>
             </b-form-group>
           </b-col>
@@ -603,7 +603,7 @@
         <b-form-group label="CUIT de la Persona Jurídica *" label-for="cuitPersonaJuridica">
           <b-form-input id="cuitPersonaJuridica" v-model="solicitante.cuitPersonaJuridica" inputmode="numeric" @blur="$v.solicitante.cuitPersonaJuridica.$touch()"></b-form-input>
           <div v-if="$v.solicitante.cuitPersonaJuridica.$error" class="validation-error">
-            <i class="bi bi-exclamation-octagon text-danger"></i> Introduce un CUIT válido, sin guiones ni caracteres especiales.
+            <i class="bi bi-exclamation-octagon text-danger"></i> Introduce un CUIT válido: entre 10 y 12 números, sin letras.
           </div>
         </b-form-group>
         <b-form-group label="Acta de Constitución de Persona Jurídica *" label-for="actaPersonaJuridica">
@@ -666,13 +666,22 @@
       <div class="centeredContainer">
         <fieldset>
           <b-button size="lg" @click="onResetParams" variant="danger" class="btn-cancel" >Cancelar</b-button>
-          <b-button size="lg" type="submit" variant="success" :disabled="!areAllFieldsComplete" class="">Enviar</b-button>
+          <b-button size="lg" type="submit" variant="success" :disabled="!puedeEnviar" class="">Enviar</b-button>
         </fieldset>
           <div v-if="!areAllFieldsComplete" class="validation-error">
             <i class="bi bi-exclamation-octagon text-danger"></i> Completar todos los campos marcados con (*).
           </div>
-          <div v-if="!areAllFieldsValid" class="validation-error">
-            <i class="bi bi-exclamation-octagon text-danger"></i> Por favor, revisa el formulario en busca de errores.
+          <div v-if="areAllFieldsComplete && camposConError.length" class="validation-error">
+            <i class="bi bi-exclamation-octagon text-danger"></i> Revisá estos datos: {{ camposConError.join(', ') }}. Revisá que no tengan letras ni barras y que tengan la cantidad de números correcta (en la altura de la calle no se acepta "S/N"), y que los dos correos sean iguales.
+          </div>
+          <div v-if="areAllFieldsComplete && !camposConError.length && $v.$invalid" class="validation-error">
+            <i class="bi bi-exclamation-octagon text-danger"></i> Por favor, revisá el formulario en busca de errores marcados en rojo.
+          </div>
+          <div v-if="archivosMuyPesados.length" class="validation-error">
+            <i class="bi bi-exclamation-octagon text-danger"></i> Estos archivos superan los {{ maxFileSize / 1024 / 1024 }}MB y hay que reemplazarlos por uno más liviano: {{ archivosMuyPesados.join(', ') }}.
+          </div>
+          <div v-if="!captchaOk" class="validation-error">
+            <i class="bi bi-exclamation-octagon text-danger"></i> Marcá la casilla "No soy un robot". Si ya la habías marcado y pasó un rato, volvé a marcarla.
           </div>
       </div>
     </b-card>
@@ -943,26 +952,38 @@
   import { required, requiredIf, alpha, numeric, email, minLength, maxLength, sameAs } from '@vuelidate/validators';
   import { helpers } from '@vuelidate/validators';
   import MailerService from "@/service/mailer.js";
+
+  const SEPARADORES = /[-.]/g;
+  const SEPARADORES_TELEFONO = /[-.()+]/g;
+  const quitarSeparadores = (valor, separadores = SEPARADORES) =>
+    valor == null || valor === '' ? valor : String(valor).replace(separadores, '');
+  const soloDigitos = (separadores = SEPARADORES) => (valor) =>
+    !helpers.req(valor) || /^\d+$/.test(quitarSeparadores(valor, separadores));
+  const cantidadDigitos = (min, max) => (valor) => {
+    if (!helpers.req(valor)) return true;
+    const largo = quitarSeparadores(valor).length;
+    return largo >= min && largo <= max;
+  };
+
   export default {
     validations() {
       return {
         nroLegajo: { requiredIf: requiredIf(function () {
-          return (this.solicitante.tipoSolicitud == 'Baja' || this.solicitante.tipoSolicitud == 'Renovación' || this.solicitante.tipoSolicitud == 'Reempadronamiento' || this.solicitante.tipoSolicitud == 'Cambio de Titular') }) , numeric },
+          return (this.solicitante.tipoSolicitud == 'Baja' || this.solicitante.tipoSolicitud == 'Renovación' || this.solicitante.tipoSolicitud == 'Reempadronamiento' || this.solicitante.tipoSolicitud == 'Cambio de Titular') }) , soloDigitos: soloDigitos() },
         solicitante: {
           nombre: { required },
           apellido: { required },
-          dni: { required, numeric, maxLength: maxLength(9), minLength: minLength(7) },
-          cuit: { required, numeric, maxLength: maxLength(12), minLength: minLength(10) },
+          dni: { required, soloDigitos: soloDigitos(), cantidadDigitos: cantidadDigitos(7, 9) },
+          cuit: { required, soloDigitos: soloDigitos(), cantidadDigitos: cantidadDigitos(10, 12) },
           cuitPersonaJuridica: {
             requiredIf: requiredIf(function () {
               return this.solicitante.esPersonaJuridica === 'true'
             }),
-            numeric,
-            maxLength: maxLength(12),
-            minLength: minLength(10),
+            soloDigitos: soloDigitos(),
+            cantidadDigitos: cantidadDigitos(10, 12),
           },
           domicilioReal: { required },
-          telefono: { required, numeric },
+          telefono: { required, soloDigitos: soloDigitos(SEPARADORES_TELEFONO) },
           codigoPostal: { required, numeric, maxLength: maxLength(4), minLength: minLength(4) },
           localidad: { required },
           provincia: { required },
@@ -1451,6 +1472,37 @@
           return !this.$v.$invalid && !Object.values(this.fileTooLargeError).some(error => !!error)
         }
         return true;
+      },
+      camposConError() {
+        const v = this.$v;
+        const campos = [
+          [v.solicitante.dni, 'DNI'],
+          [v.solicitante.cuit, 'CUIT'],
+          [v.solicitante.cuitPersonaJuridica, 'CUIT de la Persona Jurídica'],
+          [v.solicitante.telefono, 'Teléfono'],
+          [v.solicitante.codigoPostal, 'Código Postal'],
+          [v.solicitante.mail, 'Correo Electrónico'],
+          [v.solicitante.mail2, 'Repita el Correo Electrónico'],
+          [v.nroLegajo, 'Nro de Legajo'],
+          [v.inmueble.nro, 'Número de la calle'],
+          [v.inmueble.medidasCartel.width, 'Ancho del cartel'],
+          [v.inmueble.medidasCartel.height, 'Alto del cartel'],
+        ];
+        return campos.filter(([campo]) => campo && campo.$invalid).map(([, label]) => label);
+      },
+      archivosMuyPesados() {
+        return Object.keys(this.fileTooLargeError)
+          .filter((campo) => this.fileTooLargeError[campo])
+          .map((campo) => this.documentos[campo]?.nombreDocumento || campo);
+      },
+      captchaOk() {
+        return this.TEST_submit || !!this.captchaResponse;
+      },
+      puedeEnviar() {
+        return this.areAllFieldsComplete
+          && !this.$v.$invalid
+          && this.archivosMuyPesados.length === 0
+          && this.captchaOk;
       }
     },
     mounted() {
@@ -1460,10 +1512,29 @@
       grecaptcha.ready(() => {
       grecaptcha.render('captchaContainer', {
         sitekey: this.recaptchaSiteKey,
+        callback: (token) => {
+          this.captchaResponse = token;
+          this.captchaError = false;
+        },
+        'expired-callback': () => {
+          this.captchaResponse = null;
+        },
+        'error-callback': () => {
+          this.captchaResponse = null;
+        },
         });
       });
     },
     watch: {
+      'solicitante.dni'(v) { this.limpiarCampo(this.solicitante, 'dni', v) },
+      'solicitante.cuit'(v) { this.limpiarCampo(this.solicitante, 'cuit', v) },
+      'solicitante.cuitPersonaJuridica'(v) { this.limpiarCampo(this.solicitante, 'cuitPersonaJuridica', v) },
+      'solicitante.telefono'(v) { this.limpiarCampo(this.solicitante, 'telefono', v) },
+      'solicitante.codigoPostal'(v) { this.limpiarCampo(this.solicitante, 'codigoPostal', v) },
+      'solicitante.mail'(v) { this.limpiarCampo(this.solicitante, 'mail', v, { minusculas: true }) },
+      'solicitante.mail2'(v) { this.limpiarCampo(this.solicitante, 'mail2', v, { minusculas: true }) },
+      'inmueble.nro'(v) { this.limpiarCampo(this.inmueble, 'nro', v) },
+      'nroLegajo'(v) { this.limpiarCampo(this, 'nroLegajo', v) },
       'inmueble.carteles'(newValue) {
         // Si se deselecciona carteles, limpiar las medidas
         if (!newValue) {
@@ -1521,6 +1592,12 @@
       }
     },
     methods: {
+      limpiarCampo(obj, key, valor, { minusculas = false } = {}) {
+        if (typeof valor !== 'string') return;
+        let limpio = valor.replace(/[\s\u00A0\u200B-\u200D\u2060\uFEFF]/g, '');
+        if (minusculas) limpio = limpio.toLowerCase();
+        if (limpio !== valor) obj[key] = limpio;
+      },
       isCaptchaOK(){
           console.log("isCAPTCHAOK?? = " + (typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0));
           this.captchaError = !(typeof grecaptcha !== 'undefined' && grecaptcha.getResponse().length > 0);
@@ -1763,11 +1840,19 @@
                 ),
               };
 
+              const solicitanteParaEnviar = {
+                ...this.solicitante,
+                dni: quitarSeparadores(this.solicitante.dni),
+                cuit: quitarSeparadores(this.solicitante.cuit),
+                cuitPersonaJuridica: quitarSeparadores(this.solicitante.cuitPersonaJuridica),
+                telefono: quitarSeparadores(this.solicitante.telefono, SEPARADORES_TELEFONO),
+              };
+
               const habilitacion = {
                 documentos: documentosParaGuardar,
-                solicitante: this.solicitante,
+                solicitante: solicitanteParaEnviar,
                 inmueble: inmuebleParaEnviar,
-                nroLegajo: this.nroLegajo,
+                nroLegajo: quitarSeparadores(this.nroLegajo),
                 nroSolicitud: nroTramite,
               };
               const response = await useHabilitacionesStore().create({

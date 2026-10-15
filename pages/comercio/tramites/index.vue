@@ -1207,34 +1207,7 @@
         </b-col>
         <b-col v-if="tramiteSeleccionado=='Cambio de Domicilio'">
           <br />
-          <b-card class="section-card" id="card-cambio-domicilio" :class="{ expanded: isCardExpanded(28) }">
-            <h4 class="section-title" @click="toggleCard(28)">
-              ¿Qué significa realizar una Habilitacion Comercial?
-              <i class="bi bi-chevron-compact-down"></i>
-              <i class="bi bi-chevron-compact-up"></i>
-            </h4>
-            <div class="section-card-panel">
-                <div class="li-row first-li" style="margin-bottom: 1rem">
-                  <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
-                  <p class="li-content">La Municipalidad de Villa Gesell dispone que toda persona humana o jurídica que pretenda ejercer el comercio, industria o actividad asimilable deberá, previo a su desarrollo dentro del Partido, solicitar la habilitación pertinente.</p>
-                </div>
-                <div class="li-row">
-                  <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
-                  <div class="li-content">
-                    <p class="li-title">¿Qué sucede si abro un local comercial sin realizar la habilitación correspondiente?</p>
-                    <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
-                      <div class="li-content"><p>La omisión de la habilitación determinará la inmediata clausura del establecimiento, debiendo abonar la multa correspondiente para quienes cometieran tal infracción.</p></div>
-                    </div>
-                    <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
-                      <div class="li-content"><p>El establecimiento deberá permanecer cerrado hasta tanto regularice su trámite de habilitación.</p></div>
-                    </div>
-                  </div>
-                </div>
-            </div>
-          </b-card>
-          <b-card class="section-card" :class="{ expanded: isCardExpanded(29) }">
+          <b-card class="section-card" id="card-cambio-domicilio" :class="{ expanded: isCardExpanded(29) }">
             <h4 class="section-title" @click="toggleCard(29)">
               ¿Quién puede iniciar un Cambio de Domicilio?
               <i class="bi bi-chevron-compact-down"></i>
@@ -1263,7 +1236,7 @@
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Libre deuda de <a href="https://arvige.gob.ar/lpagos" target="_blank" class="external-link">Tasa por Sevicios Urbanos</a> <b>de ambos locales</b> <i>(o última factura de pago que indique que la Tasa municipal no registra deuda)</i>. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('LibreDeuda')" @keydown.enter.stop.prevent="openPopup('LibreDeuda')"></i></div></div>
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Libre deuda de Tasa de Inspección por Seguridad e Higiene <b>de ambos locales</b>. <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1.25em" role="button" tabindex="0" @click.stop.prevent="openPopup('ConstanciaLibreDeudaSegHig')" @keydown.enter.stop.prevent="openPopup('ConstanciaLibreDeudaSegHig')"></i></div></div>
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> Copia de la Escritura traslativa de Dominio del inmueble donde se desarrollará la actividad / Contrato de locación / Boleto de Compraventa o afín, con el correspondiente Impuesto de Sellos Provincial y firma certificada por Escribano Público, Entidad Bancaria o Autoridad Administrativa.</div></div>
-                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> <a href="https://seti.afip.gob.ar/padron-puc-constancia-internet/ConsultaConstanciaAction.do" target="_blank" class="external-link">Constancia de inscripción de AFIP</a> actualizada.</div></div>
+                <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> <a href="https://seti.afip.gob.ar/padron-puc-constancia-internet/ConsultaConstanciaAction.do" target="_blank" class="external-link">Constancia de inscripción de ARCA</a> actualizada.</div></div>
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> <a href="https://www.arba.gov.ar/GuiaTramites/TramiteSeleccionado.asp?tramite=582&categ=34" target="_blank" class="external-link">Constancia de Inscripción en Ingresos Brutos</a> (ARBA) actualizada al momento de la solicitud. Esta deberá mantenerse activa mientras el comercio, industria o asimilable esté habilitado, bajo pena de ser pasible de la clausura del establecimiento.</div></div>
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> <a href="https://sso.arba.gov.ar/Login/login?service=https%3A%2F%2Fapp.arba.gov.ar%3A443%2FWebTramites%2Fwelcome.do" target="_blank" class="external-link">Certificado de domicilio Ingresos Brutos (ARBA).</a></div></div>
                 <div class="li-row"><div class="li-icon"><i class="bi bi-check-lg"></i></div><div class="li-content"> <a href="https://drive.google.com/file/d/1m5ouibBL4sWokhkSR5keTjbUVo-I4TOU/view" target="_blank" class="external-link">Planilla de Autorización de Trámite</a> o poder autorizado por escribano <i>(únicamente si el trámite es iniciado mediante representante o apoderado/a)</i>.</div></div>
@@ -1271,20 +1244,6 @@
               <div class="separador-top">
                 <p>Excepto el domicilio, el resto de los <b>documentos</b> deberán encontrarse <b>digitalizados</b> (podés escanearlos o sacarles una foto) y deben <b>ser legibles</b>. Pueden encontrarse <b>en formato pdf o imagen</b> y tener un <b>peso máximo de 15 Mb</b>.</p>
               </div>
-              <b-card border-variant="warning" align="center" class="importante-card" >
-                <b-card-text>
-                  <b-row >
-                    <b-col md="2">
-                      <i class="bi bi-exclamation-triangle text-warning" style="font-size: 5em"></i>
-                      <p class="li-title"><u><b>¡Importante!</b></u></p>
-                    </b-col>
-                    <b-col  md="10">
-                        <div class="li-row"><div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div><div class="li-content">Si en el <b>nuevo domicilio existía otro comercio antes, este último debe estar dado de baja.</b> En caso de que aún no se haya regularizado esta situación,  deberás realizar el <a href="#card-baja" id="btnB" class="external-link" @click="seleccionarTramite('Baja')">Trámite de Baja Comercial</a> para poder iniciar el trámite de habilitación.</div></div>
-                        <div class="li-row"><div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div><div class="li-content">Tené en cuenta que <b>la iniciación y pago del trámite no implican la habilitación tácita</b>, ya que <b>la misma está sujeta a la entrega de la documentación original y al retiro del certificado de habilitación</b>. <u>Mientras tanto el local deberá permanecer cerrado.</u></div></div>
-                    </b-col>
-                  </b-row>
-                </b-card-text>
-              </b-card>
             </div>
           </b-card>
 
@@ -1450,41 +1409,11 @@
                 <div class="li-row first-li">
                   <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
                   <div class="li-content">
-                    <p class="li-title">¿Qué sucede si en el local donde voy a habilitar mi comercio existía otro antes?</p>
-                    <p>En este caso, el comercio anterior debe estar dado de baja. Dicho trámite se realiza de manera virtual haciendo <a href="#card-baja" id="btnB" class="external-link" @click="seleccionarTramite('Baja')">click aquí</a>.</p>
-                  </div>
-                </div>
-                <div class="li-row">
-                  <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
-                  <div class="li-content">
-                    <p class="li-title">¿Cómo se calcula la Tasa de Habilitación?</p>
-                    <p class="li-p">La Tasa de Habilitación depende de los siguientes factores:</p>
-                    <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
-                      <div class="li-content"><p>El rubro que se quiere habilitar.</p></div>
-                    </div>
-                    <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
-                      <div class="li-content"><p>La zona donde se encuentra el local.</p></div>
-                    </div>
-                    <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
-                      <div class="li-content"><p>La superficie total afectada a la actividad comercial (que implican el sector de atención al público, depósito, espacio de circulación, entrepiso, sanitarios, entre otros).</p></div>
-                    </div>
-                    <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
-                      <div class="li-content"><p>La condición del plano de obra (aprobado o registrado).</p></div>
-                    </div>
-                  </div>
-                </div>
-                <div class="li-row">
-                  <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
-                  <div class="li-content">
                     <p class="li-title">Para facilitar la búsqueda de un local: ¿Dónde puedo consultar la Zona Comercial Apta para habilitar y los requisitos edilicios para su instalación y funcionamiento?</p>
                     <p class="li-p">Para realizar tu consulta, podés enviar un correo electrónico a: <a class="external-link" href="mailto:deptocomercio@gesell.gob.ar" target="_blank">deptocomercio@gesell.gob.ar</a> informando los siguientes datos:</p>
                     <div class="li-row">
                       <div class="li-icon"><i class="bi bi-check-lg"></i></div>
-                      <div class="li-content"><p>Rubro a habilitar.</p></div>
+                      <div class="li-content"><p>Rubro.</p></div>
                     </div>
                     <div class="li-row">
                       <div class="li-icon"><i class="bi bi-check-lg"></i></div>
@@ -1503,15 +1432,22 @@
                 <div class="li-row">
                   <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
                   <div class="li-content">
-                    <p class="li-title">¿Deben renovarse las habilitaciones comerciales?</p>
-                    <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
-                      <div class="li-content"><p><b>En caso de contrato de locación:</b> Las habilitaciones se extienden por el período que abarca el contrato de locación y deben reempadronarse anualmente, según corresponda, teniendo en cuenta la normativa vigente.</p></div>
-                    </div>
-                    <div class="li-row">
-                      <div class="li-icon"><i class="bi bi-check-lg"></i></div>
-                      <div class="li-content"><p><b>En caso de ser propietario/a del inmueble:</b> Las habilitaciones no tienen caducidad si la titularidad o las condiciones acreditadas al momento de la entrega del certificado de habilitación no cambian.</p></div>
-                    </div>
+                    <p class="li-title">¿Cuál es el costo del trámite?</p>
+                    <p>El costo del trámite se encuentra determinado en la Ordenanza 2156/08 (TO 2023).</p>
+                  </div>
+                </div>
+                <div class="li-row">
+                  <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
+                  <div class="li-content">
+                    <p class="li-title">¿Cómo finaliza el trámite?</p>
+                    <p>Una vez completado el formulario, el Dpto. Comercio se comunicará a través del correo electrónico oficial (<a class="external-link" href="mailto:deptocomercio@gesell.gob.ar" target="_blank">deptocomercio@gesell.gob.ar</a>), indicándote los pasos a seguir y los costos administrativos del trámite.</p>
+                  </div>
+                </div>
+                <div class="li-row first-li">
+                  <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
+                  <div class="li-content">
+                    <p class="li-title">¿Cómo puedo saber en qué estado se encuentra mi trámite?</p>
+                    <p>Hacé click en el botón <a class="external-link" href="/comercio/consulta_tramite">consulta de trámites</a> que se encuentra en la página de inicio y escribí el número de trámite que te dio el sistema cuando completaste tu solicitud.</p>
                   </div>
                 </div>
                 <div class="li-row">
@@ -1545,13 +1481,6 @@
                   <div class="li-content">
                     <p class="li-title">¿Cómo cargo varias imágenes en un campo único del formulario?</p>
                     <p>En caso de que el archivo que vayas a subir tenga varias páginas (y, por ejemplo, vos las hayas fotografiado) deberás compilarlas en un único archivo pdf. Para ello existen diversas herramientas digitales (por ejemplo, <a href="https://www.ilovepdf.com/es/jpg_a_pdf" target="_blank" class="external-link">ilovepdf</a>) que te permiten hacerlo de manera sencilla y gratuita. </p>
-                  </div>
-                </div>
-                <div class="li-row first-li">
-                  <div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div>
-                  <div class="li-content">
-                    <p class="li-title">¿Cómo puedo saber en qué estado se encuentra mi trámite?</p>
-                    <p>Hacé click en el botón <a class="external-link" href="/comercio/consulta_tramite">consulta de trámites</a> que se encuentra en la página de inicio y escribí el número de trámite que te dio el sistema cuando completaste tu solicitud.</p>
                   </div>
                 </div>
                 <div class="li-row first-li">

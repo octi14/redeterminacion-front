@@ -185,6 +185,7 @@
         </b-form-group>
       </fieldset>
 
+      <fieldset>
       <b-row class="align-items-center si-no-radios-row">
         <b-col lg="6" md="8" sm="8">
           <h5 class="mb-0">¿Sos representante o apoderado/a del solicitante? <i class="bi bi-question-circle-fill text-info field-help-icon" style="font-size: 1em" role="button" tabindex="0" @click.stop.prevent="openPopup('ApoderadoRepresentante')" @keydown.enter.stop.prevent="openPopup('ApoderadoRepresentante')"></i></h5>
@@ -194,6 +195,7 @@
           <b-form-radio id="esApoderado-si" v-model="solicitante.esApoderado" name="radio-esApoderado" value="true">Sí</b-form-radio>
         </b-col>
       </b-row>
+      </fieldset>
       <!-- Sección: Datos del Apoderado -->
       <fieldset v-if="solicitante.esApoderado === 'true'">
           <p>En este campo deberás cargar <span v-if="((solicitante.tipoSolicitud == 'Habilitación' || solicitante.tipoSolicitud == 'Cambio de Domicilio') || solicitante.tipoSolicitud == 'Cambio de Titular') || (solicitante.tipoSolicitud == 'Renovación' || solicitante.tipoSolicitud == 'Reempadronamiento')">la <a href="https://drive.google.com/file/d/1m5ouibBL4sWokhkSR5keTjbUVo-I4TOU/view" target="_blank" class="external-link">Planilla de autorización de trámite</a> o </span>el Poder autorizado por escribano que te indicamos que completes previamente.</p>
@@ -272,8 +274,7 @@
             </b-form-group>
           </b-col>
           <b-col lg="6" md="12">
-            <b-form-group label-for="rubro">
-              <label for="rubro" class="rubro-label">Rubro *</label>
+            <b-form-group label="Rubro *" label-for="rubro">
               <b-form-select id="rubro" v-model="inmueble.rubro"  @change="handleRubroChange">
                 <option value="" disabled>Selecciona un Rubro</option>
                 <option v-for="(rubro, index) in listaRubros" :key="index" :value="rubro.nombre">
@@ -2404,11 +2405,14 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
     box-sizing: border-box;
     padding: 0 1rem;
   }
+  fieldset fieldset {
+    padding: 0;
+  }
   legend {
     width: auto;
     max-width: 100%;
     box-sizing: border-box;
-    padding: 0 0.5rem;
+    padding: 0;
   }
   legend h3 {
     max-width: 100%;

@@ -95,7 +95,7 @@
             <b-form-group label="DNI / Pasaporte *" label-for="DNISolicitante" >
               <b-form-input id="DNISolicitante" v-model="solicitante.dni" @blur="$v.solicitante.dni.$touch()"></b-form-input>
               <div v-if="$v.solicitante.dni.$error" class="validation-error">
-                <i class="bi bi-exclamation-octagon text-danger"></i> Introduce un DNI válido: entre 7 y 9 números, sin letras.
+                <i class="bi bi-exclamation-octagon text-danger"></i> Introduce un DNI válido (entre 7 y 9 números) o un número de pasaporte.
               </div>
             </b-form-group>
           </b-col>
@@ -672,7 +672,7 @@
             <i class="bi bi-exclamation-octagon text-danger"></i> Completar todos los campos marcados con (*).
           </div>
           <div v-if="areAllFieldsComplete && camposConError.length" class="validation-error">
-            <i class="bi bi-exclamation-octagon text-danger"></i> Revisá estos datos: {{ camposConError.join(', ') }}. Revisá que no tengan letras ni barras y que tengan la cantidad de números correcta (en la altura de la calle no se acepta "S/N"), y que los dos correos sean iguales.
+            <i class="bi bi-exclamation-octagon text-danger"></i> Revisá estos datos: {{ camposConError.join(', ') }}. Los datos numéricos no pueden tener letras ni barras (en la altura de la calle no se acepta "S/N") y los dos correos deben ser iguales.
           </div>
           <div v-if="areAllFieldsComplete && !camposConError.length && $v.$invalid" class="validation-error">
             <i class="bi bi-exclamation-octagon text-danger"></i> Por favor, revisá el formulario en busca de errores marcados en rojo.
@@ -952,6 +952,7 @@
   import { required, requiredIf, alpha, numeric, email, minLength, maxLength, sameAs } from '@vuelidate/validators';
   import { helpers } from '@vuelidate/validators';
   import MailerService from "@/service/mailer.js";
+  import { useVuelidate } from '@vuelidate/core';
 
   const SEPARADORES = /[-.]/g;
   const SEPARADORES_TELEFONO = /[-.()+]/g;
@@ -964,8 +965,39 @@
     const largo = quitarSeparadores(valor).length;
     return largo >= min && largo <= max;
   };
+  const dniOPasaporte = (valor) => {
+    if (!helpers.req(valor)) return true;
+    const limpio = quitarSeparadores(valor);
+    return /^\d{7,9}$/.test(limpio) || (/^[A-Za-z0-9]{6,12}$/.test(limpio) && /[A-Za-z]/.test(limpio));
+  };
+
+  const ETIQUETAS_CAMPOS = {
+    nroLegajo: 'Nro de Legajo',
+    'solicitante.dni': 'DNI / Pasaporte',
+    'solicitante.cuit': 'CUIT',
+    'solicitante.cuitPersonaJuridica': 'CUIT de la Persona Jurídica',
+    'solicitante.telefono': 'Teléfono',
+    'solicitante.codigoPostal': 'Código Postal',
+    'solicitante.mail': 'Correo Electrónico',
+    'solicitante.mail2': 'Repita el Correo Electrónico',
+    'solicitante.esTitular': 'Caso que corresponda (titular / propietario)',
+    'solicitante.esPropietario': 'Caso que corresponda (titular / propietario)',
+    'inmueble.nro': 'Número de la calle',
+    'inmueble.marquesina': 'Uso de espacio público',
+    'inmueble.mercaderia': 'Uso de espacio público',
+    'inmueble.carteles': 'Uso de espacio público',
+    'inmueble.mesas': 'Uso de espacio público',
+    'inmueble.ningunaAnterior': 'Uso de espacio público',
+    'inmueble.serviciosHoteleria': 'Servicios de hotelería',
+    'inmueble.otrosServicios': 'Otros servicios de hotelería',
+    'inmueble.medidasCartel.width': 'Ancho del cartel',
+    'inmueble.medidasCartel.height': 'Alto del cartel',
+  };
 
   export default {
+    setup() {
+      return { v$: useVuelidate() };
+    },
     validations() {
       return {
         nroLegajo: { requiredIf: requiredIf(function () {
@@ -973,7 +1005,7 @@
         solicitante: {
           nombre: { required },
           apellido: { required },
-          dni: { required, soloDigitos: soloDigitos(), cantidadDigitos: cantidadDigitos(7, 9) },
+          dni: { required, dniOPasaporte },
           cuit: { required, soloDigitos: soloDigitos(), cantidadDigitos: cantidadDigitos(10, 12) },
           cuitPersonaJuridica: {
             requiredIf: requiredIf(function () {
@@ -988,7 +1020,7 @@
           localidad: { required },
           provincia: { required },
           mail: { required, email },
-          mail2: { required, email, sameAs: sameAs( function(){return this.solicitante.mail } ) },
+          mail2: { required, email, sameAs: sameAs(this.solicitante.mail) },
           esPropietario: { requiredIfAtLeastOneChecked: (value) => {
               return value || this.solicitante.esTitular || (this.solicitante.tipoSolicitud === 'Habilitación' || this.solicitante.tipoSolicitud === 'Cambio de Titular') || this.solicitante.tipoSolicitud === 'Renovación' || this.solicitante.tipoSolicitud === 'Reempadronamiento';
             } },
@@ -1337,17 +1369,6 @@
           return true;
         }
 
-        // Usar Vuelidate para verificar que todos los campos requeridos estén completos
-        // Primero verificamos que no haya errores de validación
-        if (this.$v.$invalid) {
-          return false;
-        }
-
-        // Verificar errores de archivos demasiado grandes
-        if (Object.values(this.fileTooLargeError).some(error => !!error)) {
-          return false;
-        }
-
         // Verificar campos básicos del solicitante
         const camposSolicitante =
           this.solicitante.nombre &&
@@ -1474,21 +1495,14 @@
         return true;
       },
       camposConError() {
-        const v = this.$v;
-        const campos = [
-          [v.solicitante.dni, 'DNI'],
-          [v.solicitante.cuit, 'CUIT'],
-          [v.solicitante.cuitPersonaJuridica, 'CUIT de la Persona Jurídica'],
-          [v.solicitante.telefono, 'Teléfono'],
-          [v.solicitante.codigoPostal, 'Código Postal'],
-          [v.solicitante.mail, 'Correo Electrónico'],
-          [v.solicitante.mail2, 'Repita el Correo Electrónico'],
-          [v.nroLegajo, 'Nro de Legajo'],
-          [v.inmueble.nro, 'Número de la calle'],
-          [v.inmueble.medidasCartel.width, 'Ancho del cartel'],
-          [v.inmueble.medidasCartel.height, 'Alto del cartel'],
-        ];
-        return campos.filter(([campo]) => campo && campo.$invalid).map(([, label]) => label);
+        const errores = Array.isArray(this.$v.$silentErrors) ? this.$v.$silentErrors : [];
+        const etiquetas = errores.map(({ $propertyPath }) => {
+          if (ETIQUETAS_CAMPOS[$propertyPath]) return ETIQUETAS_CAMPOS[$propertyPath];
+          const doc = $propertyPath.match(/^documentos\.(\w+)\.contenido$/);
+          if (doc) return this.documentos[doc[1]]?.nombreDocumento || doc[1];
+          return $propertyPath;
+        });
+        return [...new Set(etiquetas)];
       },
       archivosMuyPesados() {
         return Object.keys(this.fileTooLargeError)

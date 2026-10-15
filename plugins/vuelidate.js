@@ -23,7 +23,26 @@ function createEmptyVuelidateProxy() {
   })
 }
 
-/** Vuelidate 0.7-style `validations` + `$v` en Options API. */
+/** Completa con el proxy vacío los nodos que Vuelidate todavía no creó (SSR / antes de montar). */
+function withEmptyFallback(v) {
+  return new Proxy(v, {
+    get(target, prop, receiver) {
+      const value = Reflect.get(target, prop, receiver)
+      if (value !== undefined || typeof prop !== 'string' || prop === 'then' || prop.startsWith('__v')) {
+        return value && typeof value === 'object' && !Array.isArray(value) && !prop.startsWith('__v')
+          ? withEmptyFallback(value)
+          : value
+      }
+      return createEmptyVuelidateProxy()
+    },
+  })
+}
+
+/**
+ * Vuelidate 0.7-style `validations` + `$v` en Options API.
+ * Vue 3 no ejecuta `setup()` de mixins: cada componente debe declarar
+ * `setup() { return { v$: useVuelidate() } }` para que `$v` valide de verdad.
+ */
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.mixin({
     setup() {
@@ -56,7 +75,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     },
     computed: {
       $v() {
-        return this.v$ ?? createEmptyVuelidateProxy()
+        return this.v$ ? withEmptyFallback(this.v$) : createEmptyVuelidateProxy()
       },
     },
   })

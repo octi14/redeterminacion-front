@@ -101,7 +101,7 @@
           </b-col>
           <b-col lg="6">
             <b-form-group label="CUIT *" label-for="cuit" >
-              <b-form-input id="cuit" v-model="solicitante.cuit" @blur="$v.solicitante.cuit.$touch()"></b-form-input>
+              <b-form-input id="cuit" v-model="solicitante.cuit" inputmode="numeric" @blur="$v.solicitante.cuit.$touch()"></b-form-input>
               <div v-if="$v.solicitante.cuit.$error" class="validation-error">
                 <i class="bi bi-exclamation-octagon text-danger"></i> Introduce un CUIT válido: entre 10 y 12 números, sin letras.
               </div>
@@ -123,7 +123,7 @@
         <b-row>
           <b-col lg="6">
             <b-form-group label="Teléfono *" label-for="telefonoTitular" >
-              <b-form-input id="telefonoTitular" v-model="solicitante.telefono" no-wheel @blur="$v.solicitante.telefono.$touch()"></b-form-input>
+              <b-form-input id="telefonoTitular" v-model="solicitante.telefono" inputmode="numeric" no-wheel @blur="$v.solicitante.telefono.$touch()"></b-form-input>
               <div v-if="$v.solicitante.telefono.$error" class="validation-error">
                 <i class="bi bi-exclamation-octagon text-danger"></i> El teléfono no puede estar vacío ni contener letras.
               </div>

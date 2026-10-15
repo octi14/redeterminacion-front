@@ -105,6 +105,24 @@
 
           <!-- Activity Feed Column (70%) -->
           <div class="col-lg-8 col-md-12">
+            <div class="activity-tabs" role="tablist">
+              <button
+                v-for="tab in tabs"
+                :key="tab.value"
+                type="button"
+                role="tab"
+                :aria-selected="activeTab === tab.value"
+                class="activity-tabs__btn"
+                :class="{ 'activity-tabs__btn--active': activeTab === tab.value }"
+                @click="setTab(tab.value)"
+              >
+                <i :class="tab.icon"></i>
+                <span>{{ tab.label }}</span>
+                <b-badge pill :variant="activeTab === tab.value ? 'light' : 'secondary'">
+                  {{ tab.value === 'anonimos' ? anonymousCount : registeredCount }}
+                </b-badge>
+              </button>
+            </div>
             <div class="activity-section">
               <UserActivityFeed
                 :limit="itemsPerPage"
@@ -176,6 +194,11 @@ export default {
       itemsPerPage: 50,
       loadMode: 'last30', // 'last30' | 'all'
       loadingAll: false,
+      activeTab: 'registrados',
+      tabs: [
+        { value: 'registrados', label: 'Registrados', icon: 'bi bi-person-check' },
+        { value: 'anonimos', label: 'Anónimos', icon: 'bi bi-incognito' }
+      ],
 
       paginationOptions: [
         { value: 10, text: '10 por página' },
@@ -209,9 +232,17 @@ export default {
       return this.showRecent ? this.recent : this.all
     },
 
-    // Aplicar filtros locales (solo por usuario)
+    anonymousCount() {
+      return this.currentActivities.filter(this.isAnonymous).length
+    },
+
+    registeredCount() {
+      return this.currentActivities.length - this.anonymousCount
+    },
+
     filteredActivities() {
-      let activities = this.currentActivities
+      const wantAnon = this.activeTab === 'anonimos'
+      let activities = this.currentActivities.filter(a => this.isAnonymous(a) === wantAnon)
       if (this.userFilter) {
         const filter = this.userFilter.toLowerCase()
         activities = activities.filter(activity =>
@@ -268,6 +299,16 @@ export default {
       } finally {
         this.loadingAll = false
       }
+    },
+
+    isAnonymous(activity) {
+      const id = (activity.userId || '').trim().toLowerCase()
+      return !id || id === 'usuario anónimo' || id === 'usuario anonimo'
+    },
+
+    setTab(tab) {
+      this.activeTab = tab
+      this.currentPage = 1
     },
 
     // Métodos de paginación
@@ -507,6 +548,40 @@ export default {
   margin-top: 0.1rem;
 }
 
+
+.activity-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.activity-tabs__btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--gray-bs-300);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--gray-bs-700);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.activity-tabs__btn--active {
+  background: #2a43a1;
+  border-color: #2a43a1;
+  color: #fff;
+}
+
+@media (min-width: 768px) {
+  .activity-tabs__btn {
+    flex: 0 0 auto;
+  }
+}
 
 .activity-section {
   background: #fff;

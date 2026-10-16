@@ -84,17 +84,17 @@
                   <p>Los <b>documentos</b> deberán encontrarse <b>digitalizados</b> (podés escanearlos o sacarles una foto) y deben <b>ser legibles</b>. Pueden encontrarse <b>en formato pdf o imagen</b> y tener un <b>peso máximo de 15 Mb</b>.</p>
                 </div>
                 <b-card border-variant="warning" align="center" class="importante-card" >
-                  <b-card-text>
-                    <b-row >
-                      <b-col md="2">
-                        <i class="bi bi-exclamation-triangle text-warning" style="font-size: 5em"></i>
+                  <div class="importante-body">
+                    <b-row class="align-items-center">
+                      <b-col cols="12" md="2" class="importante-aside">
+                        <i class="bi bi-exclamation-triangle text-warning"></i>
                         <p class="li-title"><u><b>¡Importante!</b></u></p>
                       </b-col>
-                      <b-col  md="10">
-                          <div class="li-row"><div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div><div class="li-content">Una vez completado el formulario, el Dpto. Recaudaciones se comunicará a través del correo electrónico oficial (recaudaciones@gesell.gob.ar), indicándote los pasos a seguir.</div></div>
+                      <b-col cols="12" md="10">
+                          <div class="li-row"><div class="li-icon"><i class="bi bi-caret-right-fill" style="font-size: 1em"></i></div><div class="li-content">Una vez completado el formulario, el Dpto. Recaudaciones se comunicará a través del correo electrónico oficial (<a href="mailto:recaudaciones@gesell.gob.ar" class="external-link">recaudaciones@gesell.gob.ar</a>), indicándote los pasos a seguir.</div></div>
                       </b-col>
                     </b-row>
-                  </b-card-text>
+                  </div>
                 </b-card>
             </div>
           </b-card>
@@ -362,13 +362,27 @@ p, .li-content{
 }
 .importante-card .li-content{
   text-align: left;
-  margin-bottom: 1rem;
+  margin-bottom: 0;
 }
-.importante-card .card-body{
+.importante-card .card-body,
+.importante-body{
   padding-bottom: 0.25rem;
 }
-.importante-card .col-md-2 .li-title{
-    margin-bottom: 1rem;
+.importante-aside{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.importante-aside > .bi{
+  display: block;
+  font-size: 4rem;
+  line-height: 1;
+}
+.importante-aside .li-title{
+  margin: 0.35rem 0 0;
+  line-height: 1.1;
 }
 .separador-top{
   border-top: 1px solid #ccc;

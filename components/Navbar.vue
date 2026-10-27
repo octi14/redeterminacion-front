@@ -69,7 +69,7 @@
             <i class="bi bi-person-circle app-user-menu__icon" aria-hidden="true" />
             Mi cuenta
           </b-dropdown-item>
-          <b-dropdown-divider v-if="adminMaster" />
+          <b-dropdown-divider v-if="adminMaster || canAccessPresupuesto" />
           <b-dropdown-item v-if="adminMaster" to="/actividades">
             <i class="bi bi-clock-history app-user-menu__icon" aria-hidden="true" />
             Actividades
@@ -77,6 +77,10 @@
           <b-dropdown-item v-if="adminMaster" to="/admin/dashboard">
             <i class="bi bi-bar-chart-line app-user-menu__icon" aria-hidden="true" />
             Estadisticas
+          </b-dropdown-item>
+          <b-dropdown-item v-if="canAccessPresupuesto" to="/admin/presupuesto-2027">
+            <i class="bi bi-pie-chart app-user-menu__icon" aria-hidden="true" />
+            Presupuesto 2027
           </b-dropdown-item>
           <b-dropdown-divider />
           <b-dropdown-item @click="onUserLogout">
@@ -93,6 +97,8 @@
 </template>
 
 <script>
+import { PRESUPUESTO_2027_USERNAMES, userCanAccessAdminRoute } from '~/utils/access-control'
+
 export default {
   computed: {
     userStore() {
@@ -121,6 +127,12 @@ export default {
     },
     adminMaster() {
       return this.userStore.admin === 'master'
+    },
+    canAccessPresupuesto() {
+      return userCanAccessAdminRoute(this.userStore, {
+        adminRoles: ['master'],
+        allowedUsernames: PRESUPUESTO_2027_USERNAMES,
+      })
     },
     canManageBoletas() {
       return ['admin', 'master', 'true', 'boletas'].includes(String(this.userStore.admin || '').trim().toLowerCase())

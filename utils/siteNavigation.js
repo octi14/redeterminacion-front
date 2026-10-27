@@ -1,4 +1,4 @@
-import { COMBUSTIBLE_DASHBOARD_USERNAMES } from '~/utils/access-control'
+import { COMBUSTIBLE_DASHBOARD_USERNAMES, PRESUPUESTO_2027_USERNAMES } from '~/utils/access-control'
 
 /**
  * Índice de navegación buscable del sitio.
@@ -242,6 +242,17 @@ export const SITE_NAVIGATION_ITEMS = [
     to: '/normativa/obras',
     section: 'Normativa',
     aliases: ['ordenanzas obras', 'código de edificación'],
+  },
+
+  {
+    id: 'admin-presupuesto-2027',
+    title: 'Presupuesto 2027',
+    description: 'Proyecto de presupuesto 2027: categorías programáticas y gasto por objeto',
+    to: '/admin/presupuesto-2027',
+    section: 'Hacienda',
+    adminRoles: ['master'],
+    allowedUsernames: PRESUPUESTO_2027_USERNAMES,
+    aliases: ['presupuesto', 'gasto por objeto', 'programática', 'crédito original'],
   },
 ]
 

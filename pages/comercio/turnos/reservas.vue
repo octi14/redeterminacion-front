@@ -172,7 +172,7 @@ export default{
         },
       ],
       estados: ['Pendiente de inspección','Cancelado', 'Inspeccionado','Prórroga 1','Prórroga 2', 'Inspección rechazada'],
-      tiposTramite: ['Habilitación', 'Baja', 'Renovación', 'Reempadronamiento', 'Cambio de Titular'],
+      tiposTramite: ['Habilitación', 'Baja', 'Renovación', 'Reempadronamiento', 'Cambio de Titular', 'Cambio de Domicilio'],
     }
   },
   async mounted() {

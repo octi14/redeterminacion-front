@@ -1,0 +1,229 @@
+{
+  "incisos": {
+    "1": "Gastos en personal",
+    "2": "Bienes de consumo",
+    "3": "Servicios no personales",
+    "4": "Bienes de uso",
+    "5": "Transferencias",
+    "7": "Servicio de la deuda y disminución de otros pasivos"
+  },
+  "partidas": [
+    {
+      "c": "1.1.0.0",
+      "n": "Personal permanente",
+      "i": 1,
+      "t": "Gastos corrientes",
+      "v": 30973188727.21
+    },
+    {
+      "c": "1.2.0.0",
+      "n": "Personal temporario",
+      "i": 1,
+      "t": "Gastos corrientes",
+      "v": 2288465382.37
+    },
+    {
+      "c": "1.3.0.0",
+      "n": "Servicios extraordinarios",
+      "i": 1,
+      "t": "Gastos corrientes",
+      "v": 7002870384.6
+    },
+    {
+      "c": "1.4.0.0",
+      "n": "Asignaciones familiares",
+      "i": 1,
+      "t": "Gastos corrientes",
+      "v": 898226649.45
+    },
+    {
+      "c": "1.5.0.0",
+      "n": "Asistencia social al personal",
+      "i": 1,
+      "t": "Gastos corrientes",
+      "v": 6214043.21
+    },
+    {
+      "c": "1.6.0.0",
+      "n": "Beneficios y compensaciones",
+      "i": 1,
+      "t": "Gastos corrientes",
+      "v": 92158540.42
+    },
+    {
+      "c": "2.1.0.0",
+      "n": "Productos alimenticios agropecuarios y forestales",
+      "i": 2,
+      "t": "Gastos corrientes",
+      "v": 843502051.47
+    },
+    {
+      "c": "2.2.0.0",
+      "n": "Textiles y vestuario",
+      "i": 2,
+      "t": "Gastos corrientes",
+      "v": 218272903.86
+    },
+    {
+      "c": "2.3.0.0",
+      "n": "Productos de papel, cartón e impresos",
+      "i": 2,
+      "t": "Gastos corrientes",
+      "v": 117480285.64
+    },
+    {
+      "c": "2.4.0.0",
+      "n": "Productos de cuero y caucho",
+      "i": 2,
+      "t": "Gastos corrientes",
+      "v": 161690528.88
+    },
+    {
+      "c": "2.5.0.0",
+      "n": "Productos químicos, combustibles y lubricantes",
+      "i": 2,
+      "t": "Gastos corrientes",
+      "v": 3229602912.68
+    },
+    {
+      "c": "2.6.0.0",
+      "n": "Productos de minerales no metálicos",
+      "i": 2,
+      "t": "Gastos corrientes",
+      "v": 126059183.24
+    },
+    {
+      "c": "2.7.0.0",
+      "n": "Productos metálicos",
+      "i": 2,
+      "t": "Gastos corrientes",
+      "v": 100184052.67
+    },
+    {
+      "c": "2.8.0.0",
+      "n": "Minerales",
+      "i": 2,
+      "t": "Gastos corrientes",
+      "v": 604158050.5
+    },
+    {
+      "c": "2.9.0.0",
+      "n": "Otros bienes de consumo",
+      "i": 2,
+      "t": "Gastos corrientes",
+      "v": 1086962323.45
+    },
+    {
+      "c": "3.1.0.0",
+      "n": "Servicios básicos",
+      "i": 3,
+      "t": "Gastos corrientes",
+      "v": 1476595624.56
+    },
+    {
+      "c": "3.2.0.0",
+      "n": "Alquileres y derechos",
+      "i": 3,
+      "t": "Gastos corrientes",
+      "v": 1482337545.9
+    },
+    {
+      "c": "3.3.0.0",
+      "n": "Mantenimiento, reparación y limpieza",
+      "i": 3,
+      "t": "Gastos corrientes",
+      "v": 4925535789.56
+    },
+    {
+      "c": "3.4.0.0",
+      "n": "Servicios técnicos y profesionales",
+      "i": 3,
+      "t": "Gastos corrientes",
+      "v": 516748552.28
+    },
+    {
+      "c": "3.5.0.0",
+      "n": "Servicios comerciales y financieros",
+      "i": 3,
+      "t": "Gastos corrientes",
+      "v": 519678418.58
+    },
+    {
+      "c": "3.6.0.0",
+      "n": "Publicidad y propaganda",
+      "i": 3,
+      "t": "Gastos corrientes",
+      "v": 364174108.37
+    },
+    {
+      "c": "3.7.0.0",
+      "n": "Pasajes y viáticos",
+      "i": 3,
+      "t": "Gastos corrientes",
+      "v": 233732391
+    },
+    {
+      "c": "3.8.0.0",
+      "n": "Impuestos, derechos y tasas",
+      "i": 3,
+      "t": "Gastos corrientes",
+      "v": 68498136
+    },
+    {
+      "c": "3.9.0.0",
+      "n": "Otros servicios",
+      "i": 3,
+      "t": "Gastos corrientes",
+      "v": 1098704420
+    },
+    {
+      "c": "4.2.0.0",
+      "n": "Construcciones",
+      "i": 4,
+      "t": "Gastos de capital",
+      "v": 4513913440.27
+    },
+    {
+      "c": "4.3.0.0",
+      "n": "Maquinaria y equipo",
+      "i": 4,
+      "t": "Gastos de capital",
+      "v": 766266236.78
+    },
+    {
+      "c": "4.4.0.0",
+      "n": "Equipo de seguridad",
+      "i": 4,
+      "t": "Gastos de capital",
+      "v": 810000
+    },
+    {
+      "c": "4.6.0.0",
+      "n": "Obras de arte",
+      "i": 4,
+      "t": "Gastos de capital",
+      "v": 3192750
+    },
+    {
+      "c": "5.1.0.0",
+      "n": "Transferencias al sector privado para financiar gastos corrientes",
+      "i": 5,
+      "t": "Gastos corrientes",
+      "v": 709750586.02
+    },
+    {
+      "c": "5.4.0.0",
+      "n": "Transferencias al Sector Público Nacional, al Sector Público Provincial y al Sector Público Municipal para financiar gastos de capital",
+      "i": 5,
+      "t": "Gastos de capital",
+      "v": 907200
+    },
+    {
+      "c": "7.6.0.0",
+      "n": "Disminución de cuentas y documentos a pagar",
+      "i": 7,
+      "t": "Aplicaciones financieras",
+      "v": 2944826518.55
+    }
+  ]
+}

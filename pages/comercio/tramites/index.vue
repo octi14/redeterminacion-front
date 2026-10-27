@@ -64,11 +64,6 @@
                 </div>
               </b-col>
               <b-col lg="3" md="4" sm="6">
-                <div class="tramite-btn" role="button" tabindex="0" @click="seleccionarTramite('Cambio de Domicilio')">
-                  <img id="btn-Cambio-Domicilio" class="w-100" :src="btnCambioDomicilio" alt="Cambio de Domicilio">
-                </div>
-              </b-col>
-              <b-col lg="3" md="4" sm="6">
                 <img id="btn-Anexo" class="disabled w-100" :src="btnAnexo" alt="Anexo">
               </b-col>
               <b-col lg="3" md="4" sm="6">
@@ -1702,7 +1697,6 @@ import btnBaja from '~/assets/btn/btn_baja.png'
 import btnRenovacion from '~/assets/btn/btn_renovacion.png'
 import btnReempadronamiento from '~/assets/btn/btn_reempadronamiento.png'
 import btnCambioTitular from '~/assets/btn/btn_cambio_titular.png'
-import btnCambioDomicilio from '~/assets/btn/btn_cambio_domicilio.png'
 import btnAnexo from '~/assets/btn/btn_anexo.png'
 import btnAnexoCambio from '~/assets/btn/btn_anexo_cambio.png'
 
@@ -1726,7 +1720,9 @@ const TRAMITE_SCROLL_IDS = {
 }
 
 /** Trámites válidos (p. ej. desde ?tramite= del buscador general del sitio). */
-const TRAMITES_VALIDOS = Object.keys(TRAMITE_BTN_IDS)
+const TRAMITES_VALIDOS = Object.keys(TRAMITE_BTN_IDS).filter(
+  (tramite) => tramite !== 'Cambio de Domicilio'
+)
 
 export default {
   data:function() {
@@ -1739,7 +1735,6 @@ export default {
       btnRenovacion,
       btnReempadronamiento,
       btnCambioTitular,
-      btnCambioDomicilio,
       btnAnexo,
       btnAnexoCambio,
       slideDesktop: 0,

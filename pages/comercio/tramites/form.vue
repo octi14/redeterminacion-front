@@ -66,7 +66,6 @@
             <b-form-select-option value="Renovación">Renovación de comercio</b-form-select-option>
             <b-form-select-option value="Reempadronamiento">Reempadronamiento de comercio</b-form-select-option>
             <b-form-select-option value="Cambio de Titular">Cambio de Titular</b-form-select-option>
-            <b-form-select-option value="Cambio de Domicilio">Cambio de Domicilio</b-form-select-option>
             <!-- Agrega más opciones según sea necesario -->
           </b-form-select>
         </b-form-group>
@@ -1292,10 +1291,12 @@
     computed: {
       tipoSolicitudSeleccionada: {
         get() {
-          //console.log("tipoSolicitudSeleccionada: " + this.$route.query.tramite);
-          this.tipoSolicitud = this.$route.query.tramite;
-          this.solicitante.tipoSolicitud = this.tipoSolicitud;
-          return this.tipoSolicitud;
+          const tramite = this.$route.query.tramite === 'Cambio de Domicilio'
+            ? undefined
+            : this.$route.query.tramite
+          this.tipoSolicitud = tramite
+          this.solicitante.tipoSolicitud = this.tipoSolicitud
+          return this.tipoSolicitud
         },
         set(value) {
           // Este método se invoca cuando el usuario selecciona una opción en el <b-form-select>

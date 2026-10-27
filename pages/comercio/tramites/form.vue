@@ -1291,12 +1291,10 @@
     computed: {
       tipoSolicitudSeleccionada: {
         get() {
-          const tramite = this.$route.query.tramite === 'Cambio de Domicilio'
-            ? undefined
-            : this.$route.query.tramite
-          this.tipoSolicitud = tramite
-          this.solicitante.tipoSolicitud = this.tipoSolicitud
-          return this.tipoSolicitud
+          //console.log("tipoSolicitudSeleccionada: " + this.$route.query.tramite);
+          this.tipoSolicitud = this.$route.query.tramite;
+          this.solicitante.tipoSolicitud = this.tipoSolicitud;
+          return this.tipoSolicitud;
         },
         set(value) {
           // Este método se invoca cuando el usuario selecciona una opción en el <b-form-select>

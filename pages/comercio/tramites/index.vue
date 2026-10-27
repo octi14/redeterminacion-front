@@ -64,6 +64,9 @@
                 </div>
               </b-col>
               <b-col lg="3" md="4" sm="6">
+                <img id="btn-Cambio-Domicilio" class="disabled w-100" :src="btnCambioDomicilio" alt="Cambio de Domicilio">
+              </b-col>
+              <b-col lg="3" md="4" sm="6">
                 <img id="btn-Anexo" class="disabled w-100" :src="btnAnexo" alt="Anexo">
               </b-col>
               <b-col lg="3" md="4" sm="6">
@@ -1697,6 +1700,7 @@ import btnBaja from '~/assets/btn/btn_baja.png'
 import btnRenovacion from '~/assets/btn/btn_renovacion.png'
 import btnReempadronamiento from '~/assets/btn/btn_reempadronamiento.png'
 import btnCambioTitular from '~/assets/btn/btn_cambio_titular.png'
+import btnCambioDomicilio from '~/assets/btn/btn_cambio_domicilio.png'
 import btnAnexo from '~/assets/btn/btn_anexo.png'
 import btnAnexoCambio from '~/assets/btn/btn_anexo_cambio.png'
 
@@ -1706,7 +1710,6 @@ const TRAMITE_BTN_IDS = {
   'Renovación': 'btn-Renovación',
   Reempadronamiento: 'btn-Reempadronamiento',
   'Cambio de Titular': 'btn-Cambio-Titular',
-  'Cambio de Domicilio': 'btn-Cambio-Domicilio',
 }
 
 /** Primer card de cada trámite (scroll al seleccionar). */
@@ -1716,13 +1719,10 @@ const TRAMITE_SCROLL_IDS = {
   'Renovación': 'card-renovacion',
   Reempadronamiento: 'card-reempadronamiento',
   'Cambio de Titular': 'card-cambio-titular',
-  'Cambio de Domicilio': 'card-cambio-domicilio',
 }
 
 /** Trámites válidos (p. ej. desde ?tramite= del buscador general del sitio). */
-const TRAMITES_VALIDOS = Object.keys(TRAMITE_BTN_IDS).filter(
-  (tramite) => tramite !== 'Cambio de Domicilio'
-)
+const TRAMITES_VALIDOS = Object.keys(TRAMITE_BTN_IDS)
 
 export default {
   data:function() {
@@ -1735,6 +1735,7 @@ export default {
       btnRenovacion,
       btnReempadronamiento,
       btnCambioTitular,
+      btnCambioDomicilio,
       btnAnexo,
       btnAnexoCambio,
       slideDesktop: 0,

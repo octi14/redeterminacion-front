@@ -71,6 +71,22 @@ const cambiarEstadoPeriodoUrbana = async (axios, body, headers = {}) => {
   return await axios.$put('/pagos/provincia-net/urbana/periodos/estado', body, { headers })
 }
 
+const publicarImportacionUrbana = async (axios, importId, body, headers = {}) => {
+  return await axios.$post(
+    `/pagos/provincia-net/urbana/importaciones/${encodeURIComponent(importId)}/publicar`,
+    body,
+    { headers }
+  )
+}
+
+const programarPublicacionUrbana = async (axios, importId, body, headers = {}) => {
+  return await axios.$put(
+    `/pagos/provincia-net/urbana/importaciones/${encodeURIComponent(importId)}/publicacion`,
+    body,
+    { headers }
+  )
+}
+
 const descargarOriginalUrbana = async (axios, importId, headers = {}) => {
   return await axios.get(
     `/pagos/provincia-net/urbana/importaciones/${encodeURIComponent(importId)}/original`,
@@ -93,5 +109,7 @@ export default {
   listarImportacionesUrbana,
   listarPeriodosUrbana,
   cambiarEstadoPeriodoUrbana,
+  publicarImportacionUrbana,
+  programarPublicacionUrbana,
   descargarOriginalUrbana,
 }

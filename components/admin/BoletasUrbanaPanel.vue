@@ -42,6 +42,12 @@
             </template>
           </div>
 
+          <label class="schedule-option">
+            <span>Publicar el día (opcional)</span>
+            <input v-model="publicarAtInput" type="date">
+            <small>Sin fecha te preguntamos si borrar el lote anterior. Con fecha, al vencer se publica y se borra lo anterior.</small>
+          </label>
+
           <button
             class="btn btn-analyze btn-block"
             :disabled="!selectedFile || importing"
@@ -198,12 +204,24 @@
                     <div>
                       <strong>{{ version.nombreArchivo }}</strong>
                       <small>{{ formatNumber(version.cantidadEntradas) }} entradas · {{ formatDateTime(version.publicadoAt || version.actualizadoAt) }}</small>
+                      <small v-if="version.publicarAt && !version.habilitado">
+                        Programada: {{ formatDate(version.publicarAt) }}
+                      </small>
                     </div>
                   </div>
-                  <span class="version-state" :class="periodVersionStateClass(version)">
-                    <b-spinner v-if="togglingVersionKey === versionToggleKey(version)" small></b-spinner>
-                    <template v-else>{{ periodVersionStateLabel(version) }}</template>
-                  </span>
+                  <div class="version-side" @click.stop>
+                    <input
+                      v-if="!version.habilitado && version.importacionId"
+                      class="version-date"
+                      type="date"
+                      :value="dateInputValue(version.publicarAt)"
+                      @change="programarVersion(version, $event.target.value)"
+                    >
+                    <span class="version-state" :class="periodVersionStateClass(version)">
+                      <b-spinner v-if="togglingVersionKey === versionToggleKey(version)" small></b-spinner>
+                      <template v-else>{{ periodVersionStateLabel(version) }}</template>
+                    </span>
+                  </div>
                 </div>
               </div>
               <footer v-if="period.versions.length > 3" class="versions-overflow-note">
@@ -253,6 +271,8 @@
             <b-form-select v-model="historyStatusFilter" size="sm">
               <option value="all">Todos los estados</option>
               <option value="procesando">Procesando</option>
+              <option value="pendiente_publicacion">Pendiente</option>
+              <option value="programada">Programada</option>
               <option value="completada">Completada</option>
               <option value="fallida">Fallida</option>
             </b-form-select>
@@ -319,6 +339,15 @@
             </template>
             <template #cell(actions)="data">
               <div class="history-actions">
+                <button
+                  v-if="data.item.status === 'pendiente_publicacion'"
+                  class="btn btn-outline-success btn-sm"
+                  title="Publicar"
+                  :disabled="publishing"
+                  @click="abrirPublicar(data.item)"
+                >
+                  <i class="bi bi-broadcast"></i>
+                </button>
                 <button
                   v-if="data.item.originalAvailable"
                   class="btn btn-outline-success btn-sm"
@@ -406,7 +435,10 @@
         </div>
         <div class="boletas-dialog-body">
           <h3>El archivo está listo</h3>
-          <p>La estructura y los registros fueron cargados.</p>
+          <p v-if="lastImport.estado === 'programada'">
+            Se publicará el {{ formatDate(lastImport.publicarAt) }} y se borrará el lote anterior.
+          </p>
+          <p v-else>La estructura y los registros fueron cargados.</p>
           <p v-if="lastImport.fileName" class="boletas-dialog-file">{{ lastImport.fileName }}</p>
           <div class="summary-grid">
             <div><strong>{{ formatNumber(lastImport.cantidadEntradas) }}</strong><span>Entradas</span></div>
@@ -416,6 +448,35 @@
           </div>
           <div class="result-actions">
             <button class="btn btn-dialog-ok" type="button" @click="showImportResult = false">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </b-modal>
+
+    <b-modal
+      v-model="showDeletePrevious"
+      centered
+      hide-header
+      hide-footer
+      no-header-close
+      no-close-on-backdrop
+      modal-class="boletas-dialog-modal"
+    >
+      <div class="boletas-dialog">
+        <div class="boletas-dialog-bar boletas-dialog-bar--success">
+          <i class="bi bi-question-lg" aria-hidden="true"></i>
+        </div>
+        <div class="boletas-dialog-body">
+          <h3>¿Borrar la importación anterior?</h3>
+          <p>Las boletas pagadas se conservan. Si no, el lote viejo sigue visible.</p>
+          <div class="result-actions result-actions--stack">
+            <button class="btn btn-dialog-ok" type="button" :disabled="publishing" @click="confirmarPublicar(true)">
+              <b-spinner v-if="publishing" small class="mr-2"></b-spinner>
+              Sí, borrar
+            </button>
+            <button class="btn btn-dialog-cancel" type="button" :disabled="publishing" @click="confirmarPublicar(false)">
+              No, dejarla
+            </button>
           </div>
         </div>
       </div>
@@ -441,6 +502,10 @@ export default {
       isDragging: false,
       importing: false,
       showImportResult: false,
+      showDeletePrevious: false,
+      publishing: false,
+      pendingPublishId: null,
+      publicarAtInput: '',
       lastImport: null,
       importProgress: {
         message: 'Subiendo el archivo...',
@@ -611,11 +676,15 @@ export default {
       return token ? { Authorization: `Bearer ${token}` } : {}
     },
     fileRequestHeaders() {
-      return {
+      const headers = {
         ...this.authHeaders(),
         'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'X-File-Name': encodeURIComponent(this.selectedFile.name),
       }
+      if (this.publicarAtInput) {
+        headers['X-Publicar-At'] = encodeURIComponent(`${this.publicarAtInput}T00:00:00`)
+      }
+      return headers
     },
     formatFileSize(bytes) {
       if (!bytes) return '0 KB'
@@ -628,12 +697,24 @@ export default {
       if (!value) return '-'
       return new Date(value).toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' })
     },
+    formatDate(value) {
+      if (!value) return '-'
+      return new Date(value).toLocaleDateString('es-AR', { dateStyle: 'short' })
+    },
+    dateInputValue(value) {
+      if (!value) return ''
+      const d = new Date(value)
+      if (Number.isNaN(d.getTime())) return ''
+      return d.toISOString().slice(0, 10)
+    },
     versionToggleKey(version) {
       return `${version.importBatchId || version.importacionId}-${version.anio}-${version.cuota}`
     },
     statusLabel(status) {
       return {
         procesando: 'Procesando',
+        pendiente_publicacion: 'Pendiente',
+        programada: 'Programada',
         completada: 'Completada',
         fallida: 'Fallida',
       }[status] || status
@@ -676,6 +757,8 @@ export default {
         warnings: item.cantidadAdvertencias || 0,
         uploadedBy: item.subidoPor?.username || '-',
         status: item.estado || 'procesando',
+        publicarAt: item.publicarAt || null,
+        importBatchId: item.importBatchId,
         originalAvailable: Boolean(item.archivoOriginal?.almacenado && item.archivoOriginal?.key),
       }
     },
@@ -868,8 +951,13 @@ export default {
           processed: progress.procesadas || 0,
           total: progress.total || 0,
         }
-        if (item.estado === 'completada') {
-          return item.resultado
+        if (['completada', 'programada', 'pendiente_publicacion'].includes(item.estado)) {
+          return {
+            ...(item.resultado || {}),
+            estado: item.estado,
+            publicarAt: item.publicarAt || item.resultado?.publicarAt,
+            importId: item.importId,
+          }
         }
         if (item.estado === 'fallida') {
           const err = new Error(progress.error || 'La importación no pudo completarse.')
@@ -914,8 +1002,13 @@ export default {
         const data = await this.waitForImport(started.importId)
         this.lastImport = data
         this.clearFile()
-        this.showImportResult = true
         await Promise.all([this.loadHistory(), this.loadPeriods()])
+        if (data.estado === 'pendiente_publicacion') {
+          this.pendingPublishId = data.importId
+          this.showDeletePrevious = true
+        } else {
+          this.showImportResult = true
+        }
         this.showToast(
           `Se importaron ${this.formatNumber(data.cantidadImportadas)} boletas urbanas.`,
           { title: 'Importación completada', variant: 'success', solid: true }
@@ -942,6 +1035,58 @@ export default {
         )
       } finally {
         this.importing = false
+      }
+    },
+    abrirPublicar(item) {
+      this.pendingPublishId = item.id
+      this.showDeletePrevious = true
+    },
+    async confirmarPublicar(borrarAnterior) {
+      if (!this.pendingPublishId || this.publishing) return
+      this.publishing = true
+      try {
+        await ProvinciaNetService.publicarImportacionUrbana(
+          this.$axios,
+          this.pendingPublishId,
+          { borrarAnterior },
+          this.authHeaders()
+        )
+        this.showDeletePrevious = false
+        this.pendingPublishId = null
+        await Promise.all([this.loadHistory(), this.loadPeriods()])
+        this.showToast(
+          borrarAnterior
+            ? 'Publicada. Se borró el lote anterior.'
+            : 'Publicada. El lote anterior sigue visible.',
+          { variant: 'success', solid: true }
+        )
+      } catch (error) {
+        this.showToast(
+          error?.response?.data?.message || error?.message || 'No se pudo publicar.',
+          { title: 'Error', variant: 'danger', solid: true }
+        )
+      } finally {
+        this.publishing = false
+      }
+    },
+    async programarVersion(version, value) {
+      if (!version?.importacionId || !value) return
+      try {
+        await ProvinciaNetService.programarPublicacionUrbana(
+          this.$axios,
+          version.importacionId,
+          {
+            periodos: [{ anio: version.anio, cuota: version.cuota, publicarAt: `${value}T00:00:00` }],
+          },
+          this.authHeaders()
+        )
+        await this.loadPeriods()
+        this.showToast('Publicación programada para ese período.', { variant: 'success', solid: true })
+      } catch (error) {
+        this.showToast(
+          error?.response?.data?.message || error?.message || 'No se pudo programar.',
+          { title: 'Error', variant: 'danger', solid: true }
+        )
       }
     },
   },
@@ -1050,6 +1195,28 @@ export default {
   color: #19a02d;
   background: var(--green-fill);
   font-size: 1.45rem;
+}
+.schedule-option {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.85rem;
+  color: #353535;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.schedule-option input[type="date"] {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid #dee2e6;
+  border-radius: 10px;
+}
+.schedule-option small {
+  color: #666;
+  font-size: 0.72rem;
+  font-weight: 400;
+  line-height: 1.35;
 }
 .btn-analyze {
   width: 100%;
@@ -1238,6 +1405,20 @@ export default {
   text-align: center;
   white-space: nowrap;
 }
+.version-side {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.45rem;
+}
+.version-date {
+  min-height: 40px;
+  padding: 0.2rem 0.45rem;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  font-size: 0.75rem;
+}
 .version-state.enabled { border-color: #0c681a; color: #0c681a; }
 .version-state.disabled { border-color: #19a02d; color: #19a02d; }
 .versions-overflow-note {
@@ -1367,8 +1548,22 @@ export default {
   white-space: nowrap;
 }
 .status-procesando { color: #E27910; background: var(--gray-bs-100); }
+.status-pendiente_publicacion { color: #E27910; background: var(--gray-bs-100); }
+.status-programada { color: #0c681a; background: var(--gray-bs-100); }
 .status-completada { color: #0c681a; background: var(--green-fill); }
 .status-fallida { color: #cc0025; background: var(--gray-bs-100); }
+.result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+.result-actions--stack {
+  flex-direction: column;
+  align-items: stretch;
+}
+.result-actions--stack .btn { width: 100%; min-width: 0; }
 .import-result-section { margin: 2.5rem 0 1rem; }
 .section-heading {
   display: flex;
@@ -1471,6 +1666,8 @@ export default {
   .period-toolbar :deep(.form-select) { flex: 1; width: auto; }
   .year-periods { grid-template-columns: 1fr; padding: 0.8rem; }
   .period-version { align-items: flex-start; flex-direction: column; }
+  .version-side { width: 100%; justify-content: space-between; }
+  .version-date { flex: 1; min-width: 0; }
   .year-pagination { align-items: flex-start; flex-direction: column; gap: 0.6rem; }
   .history-toolbar { grid-template-columns: 1fr; }
   .history-sort-direction { width: 100%; }

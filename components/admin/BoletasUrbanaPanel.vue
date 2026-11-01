@@ -194,10 +194,6 @@
                   :key="`${version.importBatchId || version.importacionId}-${version.periodo}`"
                   class="period-version"
                   :class="{ active: version.habilitado, toggling: togglingVersionKey === versionToggleKey(version) }"
-                  role="button"
-                  tabindex="0"
-                  @click="togglePeriodVersion(version)"
-                  @keydown.enter.prevent="togglePeriodVersion(version)"
                 >
                   <div class="version-file">
                     <i class="bi bi-file-earmark-spreadsheet"></i>
@@ -209,18 +205,25 @@
                       </small>
                     </div>
                   </div>
-                  <div class="version-side" @click.stop>
+                  <div class="version-side">
                     <input
                       v-if="!version.habilitado && version.importacionId"
                       class="version-date"
                       type="date"
                       :value="dateInputValue(version.publicarAt)"
+                      @click.stop
                       @change="programarVersion(version, $event.target.value)"
                     >
-                    <span class="version-state" :class="periodVersionStateClass(version)">
+                    <button
+                      type="button"
+                      class="version-state"
+                      :class="periodVersionStateClass(version)"
+                      :disabled="togglingVersionKey === versionToggleKey(version)"
+                      @click="pedirTogglePeriodo(version)"
+                    >
                       <b-spinner v-if="togglingVersionKey === versionToggleKey(version)" small></b-spinner>
                       <template v-else>{{ periodVersionStateLabel(version) }}</template>
-                    </span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -454,6 +457,62 @@
     </b-modal>
 
     <b-modal
+      v-model="showTogglePeriod"
+      centered
+      hide-header
+      hide-footer
+      no-header-close
+      modal-class="boletas-dialog-modal"
+    >
+      <div v-if="pendingToggle" class="boletas-dialog">
+        <div class="boletas-dialog-bar" :class="pendingToggle.habilitar ? 'boletas-dialog-bar--success' : 'boletas-dialog-bar--danger'">
+          <i :class="pendingToggle.habilitar ? 'bi bi-question-lg' : 'bi bi-exclamation-lg'" aria-hidden="true"></i>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            aria-label="Cerrar"
+            :disabled="Boolean(togglingVersionKey)"
+            @click="showTogglePeriod = false"
+          ></button>
+        </div>
+        <div class="boletas-dialog-body">
+          <h3>
+            {{ pendingToggle.habilitar ? '¿Habilitar este período?' : '¿Deshabilitar este período?' }}
+          </h3>
+          <p>
+            {{ pendingToggle.periodo }} · {{ pendingToggle.nombreArchivo }}
+          </p>
+          <p v-if="pendingToggle.habilitar">
+            Estas boletas pasan a verse. Si hay otra carga del mismo período, deja de mostrarse.
+          </p>
+          <p v-else>
+            Estas boletas dejan de verse para los contribuyentes.
+          </p>
+          <div class="result-actions result-actions--stack">
+            <button
+              class="btn"
+              :class="pendingToggle.habilitar ? 'btn-dialog-ok' : 'btn-dialog-cancel'"
+              type="button"
+              :disabled="Boolean(togglingVersionKey)"
+              @click="confirmarTogglePeriodo"
+            >
+              <b-spinner v-if="togglingVersionKey" small class="mr-2"></b-spinner>
+              {{ pendingToggle.habilitar ? 'Sí, habilitar' : 'Sí, deshabilitar' }}
+            </button>
+            <button
+              class="btn btn-dialog-cancel"
+              type="button"
+              :disabled="Boolean(togglingVersionKey)"
+              @click="showTogglePeriod = false"
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </div>
+    </b-modal>
+
+    <b-modal
       v-model="showDeletePrevious"
       centered
       hide-header
@@ -502,6 +561,8 @@ export default {
       isDragging: false,
       importing: false,
       showImportResult: false,
+      showTogglePeriod: false,
+      pendingToggle: null,
       showDeletePrevious: false,
       publishing: false,
       pendingPublishId: null,
@@ -731,7 +792,7 @@ export default {
       return period.habilitadas > 0 ? 'enabled' : 'disabled'
     },
     periodVersionStateLabel(version) {
-      return version.habilitado ? 'Habilitado' : 'Habilitar'
+      return version.habilitado ? 'Deshabilitar' : 'Habilitar'
     },
     periodVersionStateClass(version) {
       return version.habilitado ? 'enabled' : 'disabled'
@@ -797,26 +858,41 @@ export default {
         this.periodsLoading = false
       }
     },
-    async togglePeriodVersion(version) {
+    pedirTogglePeriodo(version) {
       if (!version?.importBatchId || this.togglingVersionKey) return
-      const key = this.versionToggleKey(version)
-      this.togglingVersionKey = key
+      this.pendingToggle = {
+        importBatchId: version.importBatchId,
+        anio: version.anio,
+        cuota: version.cuota,
+        periodo: version.periodo,
+        nombreArchivo: version.nombreArchivo,
+        habilitar: !version.habilitado,
+        key: this.versionToggleKey(version),
+      }
+      this.showTogglePeriod = true
+    },
+    async confirmarTogglePeriodo() {
+      const pending = this.pendingToggle
+      if (!pending?.importBatchId || this.togglingVersionKey) return
+      this.togglingVersionKey = pending.key
       try {
         await ProvinciaNetService.cambiarEstadoPeriodoUrbana(
           this.$axios,
           {
-            importBatchId: version.importBatchId,
-            anio: version.anio,
-            cuota: version.cuota,
-            habilitar: !version.habilitado,
+            importBatchId: pending.importBatchId,
+            anio: pending.anio,
+            cuota: pending.cuota,
+            habilitar: pending.habilitar,
           },
           this.authHeaders()
         )
+        this.showTogglePeriod = false
+        this.pendingToggle = null
         await this.loadPeriods()
         this.showToast(
-          version.habilitado
-            ? 'El período quedó deshabilitado.'
-            : 'El período quedó habilitado.',
+          pending.habilitar
+            ? `El período ${pending.periodo} quedó habilitado.`
+            : `El período ${pending.periodo} quedó deshabilitado.`,
           { variant: 'success', solid: true }
         )
       } catch (error) {
@@ -1376,7 +1452,6 @@ export default {
   gap: 0.6rem;
   padding: 0.7rem 0;
   border-top: 1px solid #dee2e6;
-  cursor: pointer;
 }
 .period-version:first-child { border-top: 0; }
 .period-version.toggling { opacity: 0.65; pointer-events: none; }
@@ -1394,7 +1469,8 @@ export default {
 .version-file small { max-width: 235px; color: #666; font-size: 0.67rem; }
 .version-state {
   flex: 0 0 auto;
-  min-width: 5.5rem;
+  min-width: 7.2rem;
+  min-height: 40px;
   padding: 0.28rem 0.7rem;
   border: 1px solid #19a02d;
   border-radius: 8px;
@@ -1404,7 +1480,9 @@ export default {
   font-weight: 700;
   text-align: center;
   white-space: nowrap;
+  cursor: pointer;
 }
+.version-state:disabled { opacity: 0.65; cursor: wait; }
 .version-side {
   display: flex;
   flex-wrap: wrap;
@@ -1731,6 +1809,7 @@ export default {
   grid-column: 2;
 }
 .boletas-dialog-bar--success { background: #19a02d; }
+.boletas-dialog-bar--danger { background: #cc0025; }
 .boletas-dialog-body {
   padding: 1.75rem 1.6rem 1.7rem;
   text-align: center;

@@ -42,7 +42,6 @@
         <input v-model="max" type="number" min="0" step="1000000">
       </div>
       <button type="button" @click="reset">Limpiar filtros</button>
-      <button type="button" @click="exportCsv">Exportar CSV</button>
     </section>
 
     <div class="chips">
@@ -202,7 +201,7 @@
 
 <script>
 import DATA from '~/assets/data/presupuesto-2027-programatica.json'
-import { money, mm, pct, downloadCsv } from '~/utils/presupuestoFormat'
+import { money, mm, pct } from '~/utils/presupuestoFormat'
 
 const PAL = ['#28a745', '#17a2b8', '#ffc107', '#e53749', '#9966FF', '#e27910']
 const DIMS = [
@@ -444,14 +443,6 @@ export default {
     sortBy(k) {
       this.sortD = this.sortK === k ? -this.sortD : k === 'm' ? -1 : 1
       this.sortK = k
-    },
-    async exportCsv() {
-      const q = (v) => '"' + String(v).replace(/"/g, '""') + '"'
-      const head = ['Órgano', 'Secretaría', 'Programa', 'Subprograma', 'Obra / actividad', 'Nivel', 'Crédito original'].join(';')
-      const body = this.filtered
-        .map((r) => [r.o, r.s, r.pk, r.sk, r.ok, r.n].map(q).concat(r.m.toFixed(2).replace('.', ',')).join(';'))
-        .join('\n')
-      await downloadCsv(head + '\n' + body, 'presupuesto_2027_filtrado.csv')
     },
   },
 }

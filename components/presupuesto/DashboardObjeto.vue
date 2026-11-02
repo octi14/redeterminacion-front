@@ -105,10 +105,7 @@
     </section>
 
     <section class="card">
-      <h2>
-        Detalle de partidas
-        <button type="button" class="obtn csv" @click="exportCsv">Exportar CSV</button>
-      </h2>
+      <h2>Detalle de partidas</h2>
       <div class="tw">
         <table>
           <thead>
@@ -145,7 +142,7 @@
 
 <script>
 import DATA from '~/assets/data/presupuesto-2027-objeto.json'
-import { money0, mm, pct, downloadCsv } from '~/utils/presupuestoFormat'
+import { money0, mm, pct } from '~/utils/presupuestoFormat'
 
 const COL = ['#28a745', '#17a2b8', '#ffc107', '#e53749', '#9966FF', '#e27910']
 const TIPOS = ['Gastos corrientes', 'Gastos de capital', 'Aplicaciones financieras']
@@ -268,12 +265,6 @@ export default {
       this.sortD = this.sortK === k ? -this.sortD : k === 'v' || k === 'pct' ? -1 : 1
       this.sortK = k
     },
-    async exportCsv() {
-      const r = this.filtered
-      const t = 'Código;Partida;Inciso;Tipo;Crédito original\n' +
-        r.map((d) => [d.c, '"' + d.n + '"', this.incisos[d.i], d.t, d.v.toFixed(2).replace('.', ',')].join(';')).join('\n')
-      await downloadCsv(t, 'presupuesto_2027_gasto_por_objeto.csv')
-    },
   },
 }
 </script>
@@ -332,7 +323,6 @@ input[type=range] { width: 100%; max-width: 220px; accent-color: var(--ac); }
   cursor: pointer;
   font: inherit;
 }
-.csv { float: right; padding: 2px 10px; text-transform: none; letter-spacing: 0; }
 .g2 { display: grid; grid-template-columns: 1fr; gap: 14px; }
 .dn { width: 100%; max-width: 230px; display: block; margin: 0 auto 8px; }
 .leg { display: flex; align-items: center; gap: 7px; font-size: 12px; padding: 3px 4px; border-radius: 5px; cursor: pointer; }

@@ -17,11 +17,3 @@ export const mm = (v) =>
 
 export const pct = (v) =>
   (v * 100).toLocaleString('es-AR', { maximumFractionDigits: 1 }) + ' %'
-
-export async function downloadCsv(content, filename) {
-  const { saveAsFile } = await import('~/utils/saveAsFile')
-  await saveAsFile(
-    new Blob(['\ufeff' + content], { type: 'text/csv;charset=utf-8' }),
-    filename,
-  )
-}

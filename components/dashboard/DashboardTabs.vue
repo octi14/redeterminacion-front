@@ -217,19 +217,6 @@
           </template>
 
           <div class="tab-content-informes">
-            <div class="row mb-4">
-              <div class="col-12">
-                <NuxtLink to="/admin/presupuesto-2027" class="presupuesto-entry">
-                  <span class="presupuesto-entry__icon" aria-hidden="true"><i class="bi bi-pie-chart-fill"></i></span>
-                  <span class="presupuesto-entry__text">
-                    <strong>Presupuesto 2027</strong>
-                    <small>Categorías programáticas y gasto por objeto</small>
-                  </span>
-                  <span class="presupuesto-entry__go">Ver dashboards →</span>
-                </NuxtLink>
-              </div>
-            </div>
-
             <!-- Tabla de Trámites Comerciales 2025 -->
             <div class="row mb-4">
               <div class="col-12">
@@ -483,30 +470,6 @@ export default {
 }
 
 
-
-.presupuesto-entry {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 14px;
-  border-radius: 12px;
-  background: #0c681a;
-  color: #fff !important;
-  text-decoration: none;
-}
-.presupuesto-entry:hover { color: #fff !important; filter: brightness(1.08); }
-.presupuesto-entry__icon { font-size: 1.4rem; }
-.presupuesto-entry__text { display: flex; flex-direction: column; gap: 2px; }
-.presupuesto-entry__text small { opacity: 0.85; }
-.presupuesto-entry__go { font-size: 13px; opacity: 0.9; }
-@media (min-width: 640px) {
-  .presupuesto-entry {
-    flex-direction: row;
-    align-items: center;
-    padding: 16px 20px;
-  }
-  .presupuesto-entry__text { flex: 1; }
-}
 
 /* Contenido de las pestañas */
 .tab-content-comercio,

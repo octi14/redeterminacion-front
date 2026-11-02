@@ -31,6 +31,12 @@ export default {
         { to: '/modernizacion', icon: 'list-ul', title: 'Modernización', type: 'bootstrap-vue' },
         { to: '/comercio', icon: 'shop', title: 'Comercio', type: 'bootstrap-vue' },
         { to: '/tasas', icon: 'wallet', title: 'Tasas', type: 'bootstrap-vue' },
+        {
+          to: '/presupuesto-2027',
+          icon: 'bar-chart-line-fill',
+          title: 'Proyecto de presupuesto 2027',
+          type: 'bootstrap-icons',
+        },
       ],
     }
   },

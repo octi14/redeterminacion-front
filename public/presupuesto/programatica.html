@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Presupuesto 2027 · Gasto por categoría programática · Municipalidad de Villa Gesell</title>
+<style>
+:root{
+  --ink:#10303C; --ink2:#4A6571; --sea:#16708C; --sea-d:#0D4559; --bg:#EDF2F4; --card:#FFFFFF;
+  --line:#D3DEE3; --coral:#D9573B; --pine:#2E7D5B; --sand:#E9DDBF; --focus:#E9A21F;
+  --serif:Georgia,"Iowan Old Style","Times New Roman",serif;
+  --sans:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.45}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+a{color:var(--sea-d)}
+
+/* Encabezado */
+.top{background:var(--sea-d);color:#fff;position:relative;padding:22px 28px 46px}
+.top .in{max-width:1400px;margin:0 auto;display:flex;flex-wrap:wrap;gap:18px 40px;align-items:flex-end;justify-content:space-between}
+.brand{display:flex;gap:14px;align-items:center}
+.mark{width:52px;height:52px;border-radius:50%;background:var(--sea);display:grid;place-items:center;flex:none;border:2px solid rgba(255,255,255,.35)}
+.brand b{display:block;font-family:var(--serif);font-size:19px;font-weight:700;letter-spacing:.2px}
+.brand span{font-size:13px;opacity:.85}
+.ttl h1{margin:0;font-family:var(--serif);font-weight:700;font-size:34px;line-height:1.1}
+.ttl p{margin:4px 0 0;font-size:14px;opacity:.9}
+.ttl small{display:block;margin-top:6px;opacity:.7;font-style:italic}
+.wave{position:absolute;left:0;right:0;bottom:-1px;width:100%;height:26px;display:block}
+
+main{max-width:1400px;margin:0 auto;padding:16px 20px 30px}
+
+/* Filtros */
+.filters{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;position:sticky;top:0;z-index:30;box-shadow:0 6px 14px -10px rgba(16,48,60,.5)}
+.frow{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.facet{position:relative}
+.flabel{display:block;font-size:12px;color:var(--ink2);margin-bottom:3px}
+.fbtn{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:170px;padding:7px 10px;border:1px solid var(--line);border-radius:7px;background:#fff;text-align:left}
+.fbtn:hover{border-color:var(--sea)}
+.fbtn[aria-expanded=true]{border-color:var(--sea);box-shadow:0 0 0 2px rgba(22,112,140,.18)}
+.fbtn .v{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px}
+.fbtn.on{background:#E4F1F5;border-color:var(--sea)}
+.badge{background:var(--sea);color:#fff;border-radius:10px;font-size:11px;padding:0 7px;min-width:18px;text-align:center}
+.panel{position:absolute;left:0;top:100%;margin-top:4px;width:min(420px,92vw);background:#fff;border:1px solid var(--sea);border-radius:9px;box-shadow:0 14px 30px -10px rgba(16,48,60,.45);z-index:40;display:none}
+.panel.open{display:block}
+.panel .ps{padding:8px}
+.panel input[type=search]{width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:6px}
+.plist{max-height:300px;overflow:auto;border-top:1px solid var(--line)}
+.opt{display:flex;gap:8px;align-items:flex-start;padding:6px 10px;cursor:pointer}
+.opt:hover{background:#F0F6F8}
+.opt input{margin-top:3px;accent-color:var(--sea)}
+.opt .on{flex:1;word-break:break-word}
+.opt .ov{color:var(--ink2);font-size:12px;white-space:nowrap}
+.pfoot{display:flex;justify-content:space-between;gap:8px;padding:7px 8px;border-top:1px solid var(--line);background:#F7FAFB;border-radius:0 0 9px 9px}
+.lnk{background:none;border:0;color:var(--sea-d);text-decoration:underline;padding:2px 4px}
+.fin{padding:7px 10px;border:1px solid var(--line);border-radius:7px;background:#fff}
+.fin.s{width:200px}.fin.n{width:128px}
+.chk{display:flex;gap:6px;align-items:center;padding:8px 2px}
+.chk input{accent-color:var(--sea)}
+.btn{padding:7px 13px;border-radius:7px;border:1px solid var(--sea);background:var(--sea);color:#fff}
+.btn:hover{background:var(--sea-d)}
+.btn.o{background:#fff;color:var(--sea-d)}
+.btn.o:hover{background:#E4F1F5}
+.sp{flex:1}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chips:empty{display:none}
+.chip{display:inline-flex;align-items:center;gap:6px;background:#FCEBE6;border:1px solid #F0B8AA;color:#7C2A18;border-radius:14px;padding:2px 4px 2px 10px;font-size:12.5px}
+.chip button{border:0;background:rgba(0,0,0,.08);border-radius:50%;width:18px;height:18px;line-height:16px;padding:0}
+.chip button:hover{background:rgba(0,0,0,.2)}
+
+/* KPIs */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:16px 0}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;border-top:4px solid var(--sea)}
+.kpi:nth-child(2){border-top-color:var(--pine)}
+.kpi:nth-child(3){border-top-color:#C9922E}
+.kpi:nth-child(4){border-top-color:#7A5C9E}
+.kpi:nth-child(5){border-top-color:var(--coral)}
+.kpi:nth-child(6){border-top-color:#4F6D7A}
+.kpi .l{font-size:12.5px;color:var(--ink2)}
+.kpi .n{font-family:var(--serif);font-size:25px;font-weight:700;line-height:1.2;margin-top:2px}
+.kpi .s{font-size:12px;color:var(--ink2);margin-top:2px;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+
+/* Tarjetas */
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;min-width:0}
+.c7{grid-column:span 7}.c5{grid-column:span 5}.c12{grid-column:span 12}
+.card h2{margin:0;font-family:var(--serif);font-size:18px}
+.card .hint{margin:2px 0 10px;color:var(--ink2);font-size:12.5px}
+.chead{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.seg button{border:0;background:#fff;padding:5px 10px;border-right:1px solid var(--line)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed=true]{background:var(--sea);color:#fff}
+.empty{padding:34px 10px;text-align:center;color:var(--ink2)}
+
+/* Ranking */
+.rank{display:flex;flex-direction:column;gap:3px}
+.rk{display:grid;grid-template-columns:minmax(120px,38%) 1fr;gap:10px;align-items:center;border:0;background:none;text-align:left;padding:3px 4px;border-radius:6px;width:100%}
+.rk:hover{background:#F0F6F8}
+.rk .nm{font-size:13px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.rk .bw{display:flex;align-items:center;gap:8px}
+.rk .bar{height:18px;background:var(--sea);border-radius:3px;min-width:2px}
+.rk .vl{font-size:12px;color:var(--ink2);white-space:nowrap}
+.rk.sel .bar{background:var(--coral)}
+.rk.dim{opacity:.45}
+.rk.sel{background:#FCEBE6}
+
+/* Donut */
+.dwrap{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:center}
+.dleg{flex:1;min-width:210px;display:flex;flex-direction:column;gap:3px}
+.dl{display:grid;grid-template-columns:14px 1fr auto;gap:8px;align-items:center;border:0;background:none;text-align:left;padding:4px 6px;border-radius:6px;width:100%}
+.dl:hover{background:#F0F6F8}
+.dl i{width:12px;height:12px;border-radius:3px;display:block}
+.dl small{color:var(--ink2);display:block}
+.dl.sel{background:#FCEBE6}
+.dl.dim{opacity:.45}
+.dl .r{text-align:right;white-space:nowrap}
+
+/* Treemap */
+#tm{width:100%;display:block}
+#tm text{font-family:var(--sans);pointer-events:none}
+#tm [data-k]{cursor:pointer}
+
+/* Tabla */
+.tw{overflow:auto;border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;min-width:900px}
+th,td{padding:7px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:#F3F7F9;position:sticky;top:0;white-space:nowrap}
+th button{border:0;background:none;font-weight:700;padding:0}
+th .ar{color:var(--sea);margin-left:4px}
+td.m,th.m{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+tr:hover td{background:#F7FAFB}
+tfoot td{font-weight:700;background:#F3F7F9;position:sticky;bottom:0}
+.pg{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-top:10px}
+
+/* Pie */
+footer{background:var(--sea-d);color:#fff;margin-top:10px;padding:22px 28px}
+footer .in{max-width:1400px;margin:0 auto;display:flex;flex-wrap:wrap;gap:12px 34px;justify-content:space-between}
+footer b{font-family:var(--serif)}
+footer a{color:#fff}
+footer .ct{display:flex;flex-wrap:wrap;gap:6px 26px}
+footer small{display:block;opacity:.75;margin-top:4px}
+
+#tip{position:fixed;pointer-events:none;background:var(--ink);color:#fff;padding:7px 10px;border-radius:7px;font-size:12.5px;max-width:320px;z-index:100;display:none;box-shadow:0 8px 20px -8px rgba(0,0,0,.5)}
+#tip b{display:block;margin-bottom:2px}
+
+@media (max-width:980px){.c7,.c5{grid-column:span 12}.ttl h1{font-size:27px}.filters{position:static}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media print{
+  .filters .frow,.pg button,.seg,.noprint{display:none!important}
+  .filters{position:static;box-shadow:none}
+  body{background:#fff}.card,.kpi{break-inside:avoid}
+  .top,footer{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+
+<main>
+  <section class="filters" aria-label="Filtros">
+    <div class="frow" id="frow"></div>
+    <div class="frow" style="margin-top:10px">
+      <div><label class="flabel" for="q">Buscar texto</label><input class="fin s" id="q" type="search" placeholder="Ej.: alumbrado, SAME, escuelas"></div>
+      <div><label class="flabel" for="mn">Monto desde ($)</label><input class="fin n" id="mn" inputmode="numeric" placeholder="0"></div>
+      <div><label class="flabel" for="mx">Monto hasta ($)</label><input class="fin n" id="mx" inputmode="numeric" placeholder="sin límite"></div>
+      <label class="chk"><input type="checkbox" id="hz"> Ocultar partidas en $ 0</label>
+      <div class="sp"></div>
+      <button class="btn o noprint" id="clr">Borrar filtros</button>
+      <button class="btn o noprint" id="csv">Descargar CSV</button>
+      <button class="btn noprint" id="prt">Imprimir</button>
+    </div>
+    <div class="chips" id="chips" aria-live="polite"></div>
+  </section>
+
+  <section class="kpis" id="kpis" aria-label="Indicadores"></section>
+
+  <section class="grid">
+    <article class="card c7">
+      <div class="chead">
+        <div><h2 id="rkTitle">Gasto por secretaría</h2><p class="hint" id="rkHint">Hacé clic en una barra para filtrar todo el tablero. Podés elegir varias.</p></div>
+        <div class="seg" id="rkSeg" role="group" aria-label="Agrupar por">
+          <button data-d="uni" aria-pressed="true">Secretaría</button>
+          <button data-d="prog" aria-pressed="false">Programa</button>
+          <button data-d="sub" aria-pressed="false">Subprograma</button>
+          <button data-d="proy" aria-pressed="false">Proyecto / obra</button>
+        </div>
+      </div>
+      <div id="rank"></div>
+      <div class="pg"><span id="rkInfo" class="hint" style="margin:0"></span><button class="lnk noprint" id="rkMore"></button></div>
+    </article>
+
+    <article class="card c5">
+      <h2>Partidas según su tamaño</h2>
+      <p class="hint">Cuánto del gasto se concentra en partidas chicas o grandes. Hacé clic para filtrar.</p>
+      <div id="donut"></div>
+    </article>
+
+    <article class="card c12">
+      <h2>Mapa del presupuesto</h2>
+      <p class="hint">Cada recuadro de color es una secretaría; adentro, sus programas. El área es proporcional al monto. Clic en un programa o en el título de una secretaría para filtrar.</p>
+      <div id="tmw"><svg id="tm" role="img" aria-label="Mapa de árbol del presupuesto por secretaría y programa"></svg></div>
+    </article>
+
+    <article class="card c12">
+      <div class="chead">
+        <div><h2>Detalle de partidas</h2><p class="hint" id="tbInfo"></p></div>
+      </div>
+      <div class="tw"><table id="tb"></table></div>
+      <div class="pg" id="pg"></div>
+    </article>
+  </section>
+</main>
+
+<div id="tip" role="tooltip"></div>
+
+<script>
+"use strict";
+const DATA = [{"jur":"Departamento Ejecutivo","uni":"Administración Central","prog":"01.00.00 - EJECUCION DE POLITICAS PUBLICAS","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":430309952.53,"nivel":"Programa","tramo":"$ 100 M a $ 500 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Hacienda","prog":"01.00.00 - ADMINISTRACION FISCAL, TRIBUTARIA Y FINANCIERA","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":3055496688.23,"nivel":"Programa","tramo":"$ 1.000 M a $ 5.000 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Hacienda","prog":"16.00.00 - AR.VI.GE","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":302407133.63,"nivel":"Programa","tramo":"$ 100 M a $ 500 M"},{"jur":"Departamento Ejecutivo","uni":"Servicios de la Deuda","prog":"91.00.00 - DEUDA FLOTANTE","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":2944826518.55,"nivel":"Programa","tramo":"$ 1.000 M a $ 5.000 M"},{"jur":"Departamento Ejecutivo","uni":"Servicios de la Deuda","prog":"92.00.00 - AMORTIZACION DE LA DEUDA CONSOLIDADA","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":0.0,"nivel":"Programa","tramo":"Sin crédito ($ 0)"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Turismo","prog":"01.00.00 - DISEÑO, GESTION Y DESARROLLO TURISTICO","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":951496194.11,"nivel":"Programa","tramo":"$ 500 M a $ 1.000 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Turismo","prog":"30.00.00 - PROMOCION TURISTICA","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":736685175.07,"nivel":"Programa","tramo":"$ 500 M a $ 1.000 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Cultura, Educación y Deportes","prog":"01.00.00 - DISEÑO, GESTION Y DESARROLLO DE POLITICAS CULTURALES","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":2508350601.23,"nivel":"Programa","tramo":"$ 1.000 M a $ 5.000 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Cultura, Educación y Deportes","prog":"16.00.00 - ACCIONES EN DEPORTE Y RECREACION","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":1191267803.72,"nivel":"Programa","tramo":"$ 1.000 M a $ 5.000 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Cultura, Educación y Deportes","prog":"17.00.00 - TEATRO MUNICIPAL","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":158011242.89,"nivel":"Programa","tramo":"$ 100 M a $ 500 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Cultura, Educación y Deportes","prog":"18.00.00 - ACCIONES EN EDUCACION","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":224044115.57,"nivel":"Programa","tramo":"$ 100 M a $ 500 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Cultura, Educación y Deportes","prog":"19.00.00 - CASA DE LA CULTURA EN MAR AZUL","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":378126276.16,"nivel":"Programa","tramo":"$ 100 M a $ 500 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Cultura, Educación y Deportes","prog":"31.00.00 - ACCION EN ARTE Y CULTURA","sub":"31.01.00 - ESCUELAS DE ARTE CULTURA Y EDUCACION","proy":"(Sin proyecto / obra)","monto":962894954.49,"nivel":"Subprograma","tramo":"$ 500 M a $ 1.000 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Cultura, Educación y Deportes","prog":"31.00.00 - ACCION EN ARTE Y CULTURA","sub":"31.02.00 - MUSEOS Y CASA HISTORICA","proy":"(Sin proyecto / obra)","monto":72028783.46,"nivel":"Subprograma","tramo":"Menos de $ 100 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Salud","prog":"01.00.00 - ATENCION Y PREVENCION DE LA SALUD","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":991975666.78,"nivel":"Programa","tramo":"$ 500 M a $ 1.000 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Salud","prog":"16.00.00 - ATENCION Y PREVENCION DE LA SALUD EN UNIDADES CON INTERNACION","sub":"16.01.00 - TRATAMIENTO AMBULATORIO","proy":"(Sin proyecto / obra)","monto":705970712.56,"nivel":"Subprograma","tramo":"$ 500 M a $ 1.000 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Salud","prog":"16.00.00 - ATENCION Y PREVENCION DE LA SALUD EN UNIDADES CON INTERNACION","sub":"16.02.00 - UNIDAD DE TERAPIA INTENSIVA","proy":"(Sin proyecto / obra)","monto":1088471034.64,"nivel":"Subprograma","tramo":"$ 1.000 M a $ 5.000 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Salud","prog":"16.00.00 - ATENCION Y PREVENCION DE LA SALUD EN UNIDADES CON INTERNACION","sub":"16.03.00 - SERVICIO DE EMERGENCIAS MEDICAS","proy":"(Sin proyecto / obra)","monto":9467120270.09,"nivel":"Subprograma","tramo":"Más de $ 5.000 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Salud","prog":"16.00.00 - ATENCION Y PREVENCION DE LA SALUD EN UNIDADES CON INTERNACION","sub":"16.05.00 - INTERNACION EN SALAS A Y B","proy":"(Sin proyecto / obra)","monto":498384734.07,"nivel":"Subprograma","tramo":"$ 100 M a $ 500 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Salud","prog":"16.00.00 - ATENCION Y PREVENCION DE LA SALUD EN UNIDADES CON INTERNACION","sub":"16.06.00 - SERVICIOS GENERALES HOSPITALARIOS","proy":"(Sin proyecto / obra)","monto":3700677948.56,"nivel":"Subprograma","tramo":"$ 1.000 M a $ 5.000 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Salud","prog":"17.00.00 - ATENCION PRIMARIA DE LA SALUD EN UNIDADES SIN INTERNACION","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":511121329.01,"nivel":"Programa","tramo":"$ 500 M a $ 1.000 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Salud","prog":"18.00.00 - BROMATOLOGIA Y DISPENSARIO MUNICIPAL","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":225091615.38,"nivel":"Programa","tramo":"$ 100 M a $ 500 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Salud","prog":"19.00.00 - PLAN SUMAR","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":94269611.96,"nivel":"Programa","tramo":"Menos de $ 100 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Salud","prog":"20.00.00 - SISTEMA DE ATENCION MEDICA DE EMERGENCIA (SAME)","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":1720428950.85,"nivel":"Programa","tramo":"$ 1.000 M a $ 5.000 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Seguridad y Coordinacion Legal","prog":"01.00.00 - ACCIONES Y RELACIONES CIUDADANAS","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":2238068291.98,"nivel":"Programa","tramo":"$ 1.000 M a $ 5.000 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Seguridad y Coordinacion Legal","prog":"16.00.00 - SEGURIDAD CIUDADANA","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":971290591.68,"nivel":"Programa","tramo":"$ 500 M a $ 1.000 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Seguridad y Coordinacion Legal","prog":"17.00.00 - OPERATIVO SEGURIDAD PLAYA","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":3017786879.36,"nivel":"Programa","tramo":"$ 1.000 M a $ 5.000 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Seguridad y Coordinacion Legal","prog":"19.00.00 - POLICIA COMUNAL","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":164150676.05,"nivel":"Programa","tramo":"$ 100 M a $ 500 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Seguridad y Coordinacion Legal","prog":"20.00.00 - TASA DE SOSTENIMIENTO BOMBEROS VOLUNTARIOS Ord. 1989","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":215518407.74,"nivel":"Programa","tramo":"$ 100 M a $ 500 M"},{"jur":"Departamento Ejecutivo","uni":"Jefatura de Gabinete de Secretarios del D.E.","prog":"01.00.00 - RELACIONES CON LA COMUNIDAD","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":3259461784.39,"nivel":"Programa","tramo":"$ 1.000 M a $ 5.000 M"},{"jur":"Departamento Ejecutivo","uni":"Jefatura de Gabinete de Secretarios del D.E.","prog":"21.00.00 - OMIC VILLA GESELL","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":54130804.23,"nivel":"Programa","tramo":"Menos de $ 100 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Planeamiento y Habitat","prog":"01.00.00 - PLANEAMIENTO DESARROLLO URBANO HABITAT","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":700802614.98,"nivel":"Programa","tramo":"$ 500 M a $ 1.000 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Planeamiento y Habitat","prog":"60.00.00 - GENERACION DE LOTES Y CONCLUSION VIVIENDAS","sub":"60.01.00 - CREACION DE LOTES CON SERVICIOS","proy":"(Sin proyecto / obra)","monto":100000000.0,"nivel":"Subprograma","tramo":"$ 100 M a $ 500 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Planeamiento y Habitat","prog":"60.00.00 - GENERACION DE LOTES Y CONCLUSION VIVIENDAS","sub":"60.02.00 - CONCLUSION VIVIENDAS SOCIALES","proy":"(Sin proyecto / obra)","monto":41160418.42,"nivel":"Subprograma","tramo":"Menos de $ 100 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"01.00.00 - OBRAS Y SERVICIOS PUBLICOS","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":2871185004.2,"nivel":"Programa","tramo":"$ 1.000 M a $ 5.000 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"41.00.00 - OBRAS Y SERVICIOS PUBLICOS PARA LA COMUNIDAD","sub":"41.01.00 - SERVICIOS PUBLICOS -ALUMBRADO, LIMPIEZA, BARRIDO Y OTROS","proy":"(Sin proyecto / obra)","monto":3351903088.3,"nivel":"Subprograma","tramo":"$ 1.000 M a $ 5.000 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"41.00.00 - OBRAS Y SERVICIOS PUBLICOS PARA LA COMUNIDAD","sub":"41.46.00 - ADQ, Y MANTENIMIENTO DE LA RED VIAL","proy":"(Sin proyecto / obra)","monto":1434138750.89,"nivel":"Subprograma","tramo":"$ 1.000 M a $ 5.000 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"41.00.00 - OBRAS Y SERVICIOS PUBLICOS PARA LA COMUNIDAD","sub":"41.51.00 - INFRAESTRUCTURA Y MEJORAMIENTO ESCUELAS PUBLICAS","proy":"(Sin proyecto / obra)","monto":628093494.75,"nivel":"Subprograma","tramo":"$ 500 M a $ 1.000 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"41.00.00 - OBRAS Y SERVICIOS PUBLICOS PARA LA COMUNIDAD","sub":"41.52.00 - PLAN INFRAESTRUCTURA 2024 - 2027 / DOMINIO PRIVADO DEL ESTADO","proy":"41.52.51 - PASEO DEL MUELLE","monto":36621416.2,"nivel":"Proyecto / obra","tramo":"Menos de $ 100 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"41.00.00 - OBRAS Y SERVICIOS PUBLICOS PARA LA COMUNIDAD","sub":"41.52.00 - PLAN INFRAESTRUCTURA 2024 - 2027 / DOMINIO PRIVADO DEL ESTADO","proy":"41.52.52 - PARQUE AMBIENTAL","monto":12207138.65,"nivel":"Proyecto / obra","tramo":"Menos de $ 100 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"41.00.00 - OBRAS Y SERVICIOS PUBLICOS PARA LA COMUNIDAD","sub":"41.52.00 - PLAN INFRAESTRUCTURA 2024 - 2027 / DOMINIO PRIVADO DEL ESTADO","proy":"41.52.53 - INFRASESTRUCTURA HOSPITALARIA Y CENTRO DE SALUD","monto":122071386.51,"nivel":"Proyecto / obra","tramo":"$ 100 M a $ 500 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"41.00.00 - OBRAS Y SERVICIOS PUBLICOS PARA LA COMUNIDAD","sub":"41.52.00 - PLAN INFRAESTRUCTURA 2024 - 2027 / DOMINIO PRIVADO DEL ESTADO","proy":"41.52.54 - CENTRO UNIVERSITARIO","monto":91553539.88,"nivel":"Proyecto / obra","tramo":"Menos de $ 100 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"41.00.00 - OBRAS Y SERVICIOS PUBLICOS PARA LA COMUNIDAD","sub":"41.52.00 - PLAN INFRAESTRUCTURA 2024 - 2027 / DOMINIO PRIVADO DEL ESTADO","proy":"41.52.55 - CONSTRUCCION Y MEJORAS DE INSTALACIONES DEPORTIVAS","monto":61035693.26,"nivel":"Proyecto / obra","tramo":"Menos de $ 100 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"41.00.00 - OBRAS Y SERVICIOS PUBLICOS PARA LA COMUNIDAD","sub":"41.52.00 - PLAN INFRAESTRUCTURA 2024 - 2027 / DOMINIO PRIVADO DEL ESTADO","proy":"41.52.56 - MEJORAS CEMENTERIO","monto":30517846.62,"nivel":"Proyecto / obra","tramo":"Menos de $ 100 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"41.00.00 - OBRAS Y SERVICIOS PUBLICOS PARA LA COMUNIDAD","sub":"41.52.00 - PLAN INFRAESTRUCTURA 2024 - 2027 / DOMINIO PRIVADO DEL ESTADO","proy":"41.52.57 - LOTES CON SERVICIOS","monto":305178466.29,"nivel":"Proyecto / obra","tramo":"$ 100 M a $ 500 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"41.00.00 - OBRAS Y SERVICIOS PUBLICOS PARA LA COMUNIDAD","sub":"41.52.00 - PLAN INFRAESTRUCTURA 2024 - 2027 / DOMINIO PRIVADO DEL ESTADO","proy":"41.52.58 - MEJORAS UNIDADES SERVICIOS PUBLICOS","monto":61035693.26,"nivel":"Proyecto / obra","tramo":"Menos de $ 100 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"41.00.00 - OBRAS Y SERVICIOS PUBLICOS PARA LA COMUNIDAD","sub":"41.52.00 - PLAN INFRAESTRUCTURA 2024 - 2027 / DOMINIO PRIVADO DEL ESTADO","proy":"41.52.59 - MEJORAS EDIFICIOS MUNICIPALES","monto":30517846.62,"nivel":"Proyecto / obra","tramo":"Menos de $ 100 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"41.00.00 - OBRAS Y SERVICIOS PUBLICOS PARA LA COMUNIDAD","sub":"41.61.00 - EQUIPAMIENTO E INFRAESTRUCTURA EN SALUD","proy":"(Sin proyecto / obra)","monto":2029601276.94,"nivel":"Subprograma","tramo":"$ 1.000 M a $ 5.000 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"41.00.00 - OBRAS Y SERVICIOS PUBLICOS PARA LA COMUNIDAD","sub":"41.77.00 - PLAN INFRASTRUCTURA PUBLICO 2024-2027","proy":"41.77.76 - BACHEO Y ASFALTADO","monto":122071386.51,"nivel":"Proyecto / obra","tramo":"$ 100 M a $ 500 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"41.00.00 - OBRAS Y SERVICIOS PUBLICOS PARA LA COMUNIDAD","sub":"41.77.00 - PLAN INFRASTRUCTURA PUBLICO 2024-2027","proy":"41.77.77 - VEREDAS EN EL PARTIDO","monto":61035692.46,"nivel":"Proyecto / obra","tramo":"Menos de $ 100 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"41.00.00 - OBRAS Y SERVICIOS PUBLICOS PARA LA COMUNIDAD","sub":"41.77.00 - PLAN INFRASTRUCTURA PUBLICO 2024-2027","proy":"41.77.78 - BICISENDAS","monto":18310707.98,"nivel":"Proyecto / obra","tramo":"Menos de $ 100 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"41.00.00 - OBRAS Y SERVICIOS PUBLICOS PARA LA COMUNIDAD","sub":"41.77.00 - PLAN INFRASTRUCTURA PUBLICO 2024-2027","proy":"41.77.79 - DESAGÜES PLUVIALES","monto":12207138.65,"nivel":"Proyecto / obra","tramo":"Menos de $ 100 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"41.00.00 - OBRAS Y SERVICIOS PUBLICOS PARA LA COMUNIDAD","sub":"41.77.00 - PLAN INFRASTRUCTURA PUBLICO 2024-2027","proy":"41.77.80 - LUMINARIAS LED","monto":61035693.26,"nivel":"Proyecto / obra","tramo":"Menos de $ 100 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"41.00.00 - OBRAS Y SERVICIOS PUBLICOS PARA LA COMUNIDAD","sub":"41.77.00 - PLAN INFRASTRUCTURA PUBLICO 2024-2027","proy":"41.77.81 - MEJORAS ESP. PUB. CART. URBANA","monto":61035693.26,"nivel":"Proyecto / obra","tramo":"Menos de $ 100 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"41.00.00 - OBRAS Y SERVICIOS PUBLICOS PARA LA COMUNIDAD","sub":"41.77.00 - PLAN INFRASTRUCTURA PUBLICO 2024-2027","proy":"41.77.82 - ARBOLADO URBANO","monto":9155354.0,"nivel":"Proyecto / obra","tramo":"Menos de $ 100 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"41.00.00 - OBRAS Y SERVICIOS PUBLICOS PARA LA COMUNIDAD","sub":"41.77.00 - PLAN INFRASTRUCTURA PUBLICO 2024-2027","proy":"41.77.83 - MEJORAS EN AV 3. DESDE PASEO 104 HASTA AV BS AS.","monto":122071368.58,"nivel":"Proyecto / obra","tramo":"$ 100 M a $ 500 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"41.00.00 - OBRAS Y SERVICIOS PUBLICOS PARA LA COMUNIDAD","sub":"41.77.00 - PLAN INFRASTRUCTURA PUBLICO 2024-2027","proy":"41.77.84 - MEJORAS PASEO 105 GASTRÓNOMICOS","monto":61035693.26,"nivel":"Proyecto / obra","tramo":"Menos de $ 100 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"41.00.00 - OBRAS Y SERVICIOS PUBLICOS PARA LA COMUNIDAD","sub":"41.77.00 - PLAN INFRASTRUCTURA PUBLICO 2024-2027","proy":"41.77.85 - MEJORAS EN PINARES","monto":61035693.26,"nivel":"Proyecto / obra","tramo":"Menos de $ 100 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"41.00.00 - OBRAS Y SERVICIOS PUBLICOS PARA LA COMUNIDAD","sub":"41.77.00 - PLAN INFRASTRUCTURA PUBLICO 2024-2027","proy":"41.77.86 - MEJORAS EN AVE BUENOS AIRES","monto":61035693.26,"nivel":"Proyecto / obra","tramo":"Menos de $ 100 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"41.00.00 - OBRAS Y SERVICIOS PUBLICOS PARA LA COMUNIDAD","sub":"41.77.00 - PLAN INFRASTRUCTURA PUBLICO 2024-2027","proy":"41.77.87 - MEJORA Y EXTENSIÓN, RAMBLA COSTANERA","monto":122071368.51,"nivel":"Proyecto / obra","tramo":"$ 100 M a $ 500 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"41.00.00 - OBRAS Y SERVICIOS PUBLICOS PARA LA COMUNIDAD","sub":"41.77.00 - PLAN INFRASTRUCTURA PUBLICO 2024-2027","proy":"41.77.88 - MEJORAS CENTRO MAR PAMPAS","monto":61035693.26,"nivel":"Proyecto / obra","tramo":"Menos de $ 100 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"41.00.00 - OBRAS Y SERVICIOS PUBLICOS PARA LA COMUNIDAD","sub":"41.77.00 - PLAN INFRASTRUCTURA PUBLICO 2024-2027","proy":"41.77.89 - ACCESIBILIDAD EN PLAYA","monto":30517846.62,"nivel":"Proyecto / obra","tramo":"Menos de $ 100 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"42.00.00 - RECOLECCION Y DISPOSICION FINAL DE RESIDUOS DOMICILIARIOS","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":5066280016.85,"nivel":"Programa","tramo":"Más de $ 5.000 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"43.00.00 - SERVICIOS SANITARIOS","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":879711183.22,"nivel":"Programa","tramo":"$ 500 M a $ 1.000 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"44.00.00 - MANTENIMIENTO Y GESTION DEL ALUMBRADO PUBLICO","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":1571720970.82,"nivel":"Programa","tramo":"$ 1.000 M a $ 5.000 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Obras y Servicios Publicos","prog":"45.00.00 - DESARROLLO Y PROTECCION DE MEDIO AMBIENTE","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":140365167.99,"nivel":"Programa","tramo":"$ 100 M a $ 500 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Politicas de Genero y Juventud","prog":"01.00.00 - DISEÑO, PROGRAMACION Y MONITOREO DE POLITICAS","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":297280760.47,"nivel":"Programa","tramo":"$ 100 M a $ 500 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Desarrollo con la Comunidad","prog":"01.00.00 - POLITICAS DE DESARROLLO COMUNITARIO","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":2079818026.55,"nivel":"Programa","tramo":"$ 1.000 M a $ 5.000 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Desarrollo con la Comunidad","prog":"20.00.00 - FORTALECIMIENTO SOCIAL Y UDI","sub":"20.01.00 - UNIDAD DE DESARROLLO INFANTIL","proy":"(Sin proyecto / obra)","monto":61380107.05,"nivel":"Subprograma","tramo":"Menos de $ 100 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Desarrollo con la Comunidad","prog":"20.00.00 - FORTALECIMIENTO SOCIAL Y UDI","sub":"20.02.00 - COMEDORES INFANTILES","proy":"(Sin proyecto / obra)","monto":117265961.57,"nivel":"Subprograma","tramo":"$ 100 M a $ 500 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Desarrollo con la Comunidad","prog":"20.00.00 - FORTALECIMIENTO SOCIAL Y UDI","sub":"20.03.00 - FORTALECIMIENTO SOCIAL","proy":"(Sin proyecto / obra)","monto":169885911.55,"nivel":"Subprograma","tramo":"$ 100 M a $ 500 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Desarrollo con la Comunidad","prog":"22.00.00 - PROGRAMA ENVION","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":79991970.94,"nivel":"Programa","tramo":"Menos de $ 100 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Desarrollo con la Comunidad","prog":"23.00.00 - PACIENTES ALTA COMPLEJIDAD","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":114026471.93,"nivel":"Programa","tramo":"$ 100 M a $ 500 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria de Desarrollo con la Comunidad","prog":"26.00.00 - CASA DE ABRIGO","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":142357078.42,"nivel":"Programa","tramo":"$ 100 M a $ 500 M"},{"jur":"Departamento Ejecutivo","uni":"Secretaria Legal y Tecnica","prog":"01.00.00 - RELACIONES JURIDICAS MUNICIPALES","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":269505647.69,"nivel":"Programa","tramo":"$ 100 M a $ 500 M"},{"jur":"H.C.D.","uni":"H.C.D.","prog":"01.00.00 - ACCION LEGISLATIVA","sub":"(Sin subprograma)","proy":"(Sin proyecto / obra)","monto":773975014.86,"nivel":"Programa","tramo":"$ 500 M a $ 1.000 M"}];
+const TOTAL = 67374707737.52;
+const NS = "(Sin subprograma)", NP = "(Sin proyecto / obra)";
+const FACETS = [
+  {k:"jur",  l:"Jurisdicción"},
+  {k:"uni",  l:"Secretaría / unidad"},
+  {k:"prog", l:"Programa"},
+  {k:"sub",  l:"Subprograma"},
+  {k:"proy", l:"Proyecto / obra"},
+  {k:"nivel",l:"Nivel de apertura"},
+  {k:"tramo",l:"Tamaño de la partida"}
+];
+const ORDER = {
+  nivel:["Programa","Subprograma","Proyecto / obra"],
+  tramo:["Más de $ 5.000 M","$ 1.000 M a $ 5.000 M","$ 500 M a $ 1.000 M","$ 100 M a $ 500 M","Menos de $ 100 M","Sin crédito ($ 0)"]
+};
+const PAL = ["#16708C","#2E7D5B","#C9922E","#7A5C9E","#D2603F","#3A8FB7","#8A9A2B","#B5446E","#4F6D7A","#E0A33A","#2F9C95","#8C5E3C","#6C7FBF","#9A6B2F"];
+const TRAMO_COL = ["#0D4559","#16708C","#3A8FB7","#7FB6CC","#B7D5E1","#C4C9CC"];
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const short = s => String(s).replace(/^[\d.]+ - /,"");
+
+function fnum(n,d){
+  const neg = n<0; n=Math.abs(n);
+  const [i,f] = n.toFixed(d).split(".");
+  return (neg?"-":"")+i.replace(/\B(?=(\d{3})+(?!\d))/g,".")+(f?","+f:"");
+}
+const fARS = n => "$ "+fnum(n,2);
+const fM = n => n===0 ? "$ 0" : "$ "+fnum(n/1e6,1)+" M";
+const fP = n => fnum(n*100,2)+"%";
+
+// Colores estables por secretaría
+const UNITS = [...new Set(DATA.map(r=>r.uni))];
+const UCOL = {}; UNITS.forEach((u,i)=>UCOL[u]=PAL[i%PAL.length]);
+
+// Estado
+const sel = {}; FACETS.forEach(f=>sel[f.k]=new Set());
+const st = {q:"",mn:null,mx:null,hz:false,rank:"uni",all:false,sort:"monto",dir:-1,page:0,open:null,pq:{}};
+const PAGE = 15;
+
+function match(r, ex){
+  for(const f of FACETS){
+    if(f.k===ex) continue;
+    const s = sel[f.k];
+    if(s.size && !s.has(r[f.k])) return false;
+  }
+  if(st.hz && r.monto===0) return false;
+  if(st.mn!==null && r.monto<st.mn) return false;
+  if(st.mx!==null && r.monto>st.mx) return false;
+  if(st.q){
+    const h = (r.jur+" "+r.uni+" "+r.prog+" "+r.sub+" "+r.proy).toLowerCase();
+    if(!st.q.split(/\s+/).every(w=>h.includes(w))) return false;
+  }
+  return true;
+}
+const rows = ex => DATA.filter(r=>match(r,ex));
+const sum = a => a.reduce((t,r)=>t+r.monto,0);
+function group(a,k){
+  const m = new Map();
+  for(const r of a){
+    const g = m.get(r[k]) || {key:r[k],v:0,n:0};
+    g.v+=r.monto; g.n++; m.set(r[k],g);
+  }
+  return [...m.values()];
+}
+function toggle(k,v){
+  const s = sel[k];
+  s.has(v) ? s.delete(v) : s.add(v);
+  st.page=0; render();
+}
+
+/* ---------- Tooltip ---------- */
+const tip = $("#tip");
+function showTip(html,e){
+  tip.innerHTML = html; tip.style.display="block";
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  let x = e.clientX+14, y = e.clientY+14;
+  if(x+w>innerWidth-8) x = e.clientX-w-14;
+  if(y+h>innerHeight-8) y = e.clientY-h-14;
+  tip.style.left = Math.max(4,x)+"px"; tip.style.top = Math.max(4,y)+"px";
+}
+const hideTip = () => tip.style.display="none";
+function tipHTML(name,v,n,extra){
+  const f = rows(null);
+  return "<b>"+esc(name)+"</b>"+fARS(v)+"<br>"+fP(v/TOTAL)+" del presupuesto total"+
+    (n!=null?"<br>"+n+(n===1?" partida":" partidas"):"")+(extra?"<br>"+esc(extra):"");
+}
+
+/* ---------- Filtros desplegables ---------- */
+function buildFacets(){
+  const fr = $("#frow");
+  fr.innerHTML = FACETS.map(f=>
+    '<div class="facet" data-f="'+f.k+'"><span class="flabel">'+f.l+'</span>'+
+    '<button class="fbtn" aria-expanded="false" aria-haspopup="listbox"><span class="v">Todos</span><span class="badge" hidden></span></button>'+
+    '<div class="panel"><div class="ps"><input type="search" placeholder="Buscar en '+f.l.toLowerCase()+'" aria-label="Buscar opciones"></div>'+
+    '<div class="plist" role="listbox" aria-multiselectable="true"></div>'+
+    '<div class="pfoot"><button class="lnk" data-a="all">Marcar las visibles</button><button class="lnk" data-a="none">Borrar selección</button></div></div></div>'
+  ).join("");
+  fr.querySelectorAll(".facet").forEach(el=>{
+    const k = el.dataset.f;
+    const btn = el.querySelector(".fbtn"), pnl = el.querySelector(".panel"), inp = el.querySelector("input");
+    btn.addEventListener("click",()=>{
+      const open = !pnl.classList.contains("open");
+      closePanels();
+      if(open){ pnl.classList.add("open"); btn.setAttribute("aria-expanded","true"); st.open=k; fillPanel(k); inp.focus(); }
+    });
+    inp.addEventListener("input",()=>{ st.pq[k]=inp.value.toLowerCase(); fillPanel(k); });
+    pnl.addEventListener("change",e=>{
+      if(e.target.type==="checkbox"){ toggle(k,e.target.dataset.v); }
+    });
+    pnl.querySelectorAll("[data-a]").forEach(b=>b.addEventListener("click",()=>{
+      if(b.dataset.a==="none") sel[k].clear();
+      else options(k).forEach(o=>sel[k].add(o.key));
+      st.page=0; render();
+    }));
+  });
+}
+function closePanels(){
+  document.querySelectorAll(".panel.open").forEach(p=>p.classList.remove("open"));
+  document.querySelectorAll(".fbtn[aria-expanded=true]").forEach(b=>b.setAttribute("aria-expanded","false"));
+  st.open=null;
+}
+function options(k){
+  const g = group(rows(k),k);
+  sel[k].forEach(v=>{ if(!g.find(x=>x.key===v)) g.push({key:v,v:0,n:0}); });
+  const q = st.pq[k]||"";
+  let out = g.filter(o=>!q || o.key.toLowerCase().includes(q));
+  if(ORDER[k]) out.sort((a,b)=>ORDER[k].indexOf(a.key)-ORDER[k].indexOf(b.key));
+  else out.sort((a,b)=>b.v-a.v || a.key.localeCompare(b.key,"es"));
+  return out;
+}
+function fillPanel(k){
+  const el = document.querySelector('.facet[data-f="'+k+'"] .plist');
+  const o = options(k);
+  el.innerHTML = o.length ? o.map(x=>
+    '<label class="opt" role="option"><input type="checkbox" data-v="'+esc(x.key)+'"'+(sel[k].has(x.key)?" checked":"")+'>'+
+    '<span class="on">'+esc(x.key)+'</span><span class="ov">'+fM(x.v)+'</span></label>'
+  ).join("") : '<div class="empty">No hay opciones con los otros filtros aplicados.</div>';
+}
+function updateFacetButtons(){
+  FACETS.forEach(f=>{
+    const el = document.querySelector('.facet[data-f="'+f.k+'"]');
+    const b = el.querySelector(".fbtn"), v = el.querySelector(".v"), bd = el.querySelector(".badge");
+    const n = sel[f.k].size;
+    b.classList.toggle("on",n>0);
+    v.textContent = n===0 ? "Todos" : (n===1 ? short([...sel[f.k]][0]) : n+" seleccionados");
+    bd.hidden = n===0; bd.textContent = n;
+  });
+  if(st.open) fillPanel(st.open);
+}
+
+/* ---------- Chips ---------- */
+function renderChips(){
+  const c = [];
+  FACETS.forEach(f=>sel[f.k].forEach(v=>c.push({t:f.l+": "+short(v),f:()=>{sel[f.k].delete(v);}})));
+  if(st.q) c.push({t:"Texto: “"+st.q+"”",f:()=>{st.q="";$("#q").value="";}});
+  if(st.mn!==null) c.push({t:"Desde "+fARS(st.mn),f:()=>{st.mn=null;$("#mn").value="";}});
+  if(st.mx!==null) c.push({t:"Hasta "+fARS(st.mx),f:()=>{st.mx=null;$("#mx").value="";}});
+  if(st.hz) c.push({t:"Sin partidas en $ 0",f:()=>{st.hz=false;$("#hz").checked=false;}});
+  const box = $("#chips");
+  box.innerHTML = c.map((x,i)=>'<span class="chip">'+esc(x.t)+'<button data-i="'+i+'" aria-label="Quitar filtro">×</button></span>').join("");
+  box.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{ c[+b.dataset.i].f(); st.page=0; render(); }));
+}
+
+/* ---------- KPIs ---------- */
+const ALL_UNITS = UNITS.length;
+const ALL_PROGS = new Set(DATA.map(r=>r.uni+"|"+r.prog)).size;
+function renderKPIs(){
+  const a = rows(null), t = sum(a);
+  const nu = new Set(a.map(r=>r.uni)).size, np = new Set(a.map(r=>r.uni+"|"+r.prog)).size;
+  const big = a.slice().sort((x,y)=>y.monto-x.monto)[0];
+  const k = [
+    ["Gasto del filtro actual", a.length?fM(t):"$ 0", fARS(t)],
+    ["Peso sobre el presupuesto total", fP(t/TOTAL), "Total: "+fARS(TOTAL)],
+    ["Secretarías / unidades", nu, "de "+ALL_UNITS+" en el presupuesto"],
+    ["Programas", np, "de "+ALL_PROGS+" en el presupuesto"],
+    ["Partidas", a.length, "de "+DATA.length+" · promedio "+(a.length?fM(t/a.length):"$ 0")],
+    ["Partida más grande", big?fM(big.monto):"—", big?short(big.proy!==NP?big.proy:big.sub!==NS?big.sub:big.prog)+" · "+big.uni:"Sin resultados"]
+  ];
+  $("#kpis").innerHTML = k.map(x=>'<div class="kpi"><div class="l">'+x[0]+'</div><div class="n">'+esc(x[1])+'</div><div class="s" title="'+esc(x[2])+'">'+esc(x[2])+'</div></div>').join("");
+}
+
+/* ---------- Ranking ---------- */
+const RK = {uni:"Gasto por secretaría",prog:"Gasto por programa",sub:"Gasto por subprograma",proy:"Gasto por proyecto / obra"};
+function renderRank(){
+  const d = st.rank;
+  $("#rkTitle").textContent = RK[d];
+  document.querySelectorAll("#rkSeg button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.d===d)));
+  let a = rows(d);
+  if(d==="sub") a = a.filter(r=>r.sub!==NS);
+  if(d==="proy") a = a.filter(r=>r.proy!==NP);
+  let g = group(a,d).sort((x,y)=>y.v-x.v);
+  sel[d].forEach(v=>{ if(!g.find(x=>x.key===v)) g.push({key:v,v:0,n:0}); });
+  const LIM = 12, shown = st.all ? g : g.slice(0,LIM);
+  const max = Math.max(...g.map(x=>x.v),1);
+  const anySel = sel[d].size>0;
+  const tt = sum(rows(null));
+  $("#rank").innerHTML = shown.length ? '<div class="rank">'+shown.map(x=>{
+    const s = sel[d].has(x.key);
+    return '<button class="rk'+(s?" sel":"")+(anySel&&!s?" dim":"")+'" data-v="'+esc(x.key)+'" aria-pressed="'+s+'">'+
+      '<span class="nm">'+esc(d==="uni"?x.key:short(x.key))+'</span>'+
+      '<span class="bw"><span class="bar" style="width:calc('+(x.v/max*100).toFixed(2)+'% - 130px)"></span><span class="vl">'+fM(x.v)+' · '+fP(x.v/TOTAL)+'</span></span></button>';
+  }).join("")+'</div>' : '<div class="empty">No hay partidas con los filtros elegidos. Quitá alguno para volver a ver resultados.</div>';
+  $("#rank").querySelectorAll(".rk").forEach(b=>{
+    const x = g.find(y=>y.key===b.dataset.v);
+    b.addEventListener("click",()=>toggle(d,b.dataset.v));
+    b.addEventListener("mousemove",e=>showTip(tipHTML(d==="uni"?x.key:short(x.key),x.v,x.n,d==="proy"||d==="sub"||d==="prog"?"":""),e));
+    b.addEventListener("mouseleave",hideTip);
+  });
+  const more = $("#rkMore");
+  more.hidden = g.length<=LIM;
+  more.textContent = st.all ? "Ver solo los 12 mayores" : "Ver los "+g.length+" elementos";
+  $("#rkInfo").textContent = g.length+" elementos · "+(d==="sub"||d==="proy"?"solo partidas con ese nivel de apertura":"suman "+fM(sum(a)));
+}
+
+/* ---------- Donut ---------- */
+function arc(cx,cy,r0,r1,a0,a1){
+  const p = (r,a)=>[cx+r*Math.cos(a),cy+r*Math.sin(a)];
+  const large = a1-a0>Math.PI?1:0;
+  const [x0,y0]=p(r1,a0),[x1,y1]=p(r1,a1),[x2,y2]=p(r0,a1),[x3,y3]=p(r0,a0);
+  return "M"+x0+" "+y0+"A"+r1+" "+r1+" 0 "+large+" 1 "+x1+" "+y1+"L"+x2+" "+y2+"A"+r0+" "+r0+" 0 "+large+" 0 "+x3+" "+y3+"Z";
+}
+function renderDonut(){
+  const a = rows("tramo");
+  const g = ORDER.tramo.map((k,i)=>{
+    const f = a.filter(r=>r.tramo===k);
+    return {key:k,v:sum(f),n:f.length,c:TRAMO_COL[i]};
+  }).filter(x=>x.n>0 || sel.tramo.has(x.key));
+  const tot = g.reduce((t,x)=>t+x.v,0), any = sel.tramo.size>0;
+  if(!g.length || tot===0 && !g.some(x=>x.n)){ $("#donut").innerHTML='<div class="empty">No hay partidas con los filtros elegidos.</div>'; return; }
+  let ang = -Math.PI/2, paths = "";
+  g.forEach(x=>{
+    if(x.v<=0) return;
+    const sw = x.v/tot*2*Math.PI, a1 = ang+Math.min(sw,2*Math.PI-1e-4);
+    const s = sel.tramo.has(x.key);
+    paths += '<path d="'+arc(100,100,58,s?96:90,ang,a1)+'" fill="'+x.c+'" stroke="'+(s?"#D9573B":"#fff")+'" stroke-width="'+(s?3:1.5)+'" opacity="'+(any&&!s?.4:1)+'" data-v="'+esc(x.key)+'" style="cursor:pointer"></path>';
+    ang += sw;
+  });
+  $("#donut").innerHTML = '<div class="dwrap"><svg viewBox="0 0 200 200" width="210" height="210" role="img" aria-label="Distribución del gasto por tamaño de partida">'+paths+
+    '<text x="100" y="96" text-anchor="middle" font-size="11" fill="#4A6571">Total</text><text x="100" y="115" text-anchor="middle" font-size="15" font-weight="700" fill="#10303C" font-family="Georgia,serif">'+fM(tot)+'</text></svg>'+
+    '<div class="dleg">'+g.map(x=>{
+      const s = sel.tramo.has(x.key);
+      return '<button class="dl'+(s?" sel":"")+(any&&!s?" dim":"")+'" data-v="'+esc(x.key)+'" aria-pressed="'+s+'"><i style="background:'+x.c+'"></i><span>'+esc(x.key)+'<small>'+x.n+(x.n===1?" partida":" partidas")+'</small></span><span class="r">'+fM(x.v)+'<small>'+(tot?fP(x.v/tot):"0%")+'</small></span></button>';
+    }).join("")+'</div></div>';
+  const root = $("#donut");
+  root.querySelectorAll("[data-v]").forEach(el=>{
+    const x = g.find(y=>y.key===el.dataset.v);
+    el.addEventListener("click",()=>toggle("tramo",el.dataset.v));
+    el.addEventListener("mousemove",e=>showTip(tipHTML(x.key,x.v,x.n),e));
+    el.addEventListener("mouseleave",hideTip);
+  });
+}
+
+/* ---------- Treemap ---------- */
+function squarify(items,x,y,w,h){
+  const total = items.reduce((t,i)=>t+i.v,0), out = [];
+  if(!total||w<=0||h<=0) return out;
+  const scale = w*h/total;
+  let rest = items.map(i=>({it:i,a:i.v*scale}));
+  while(rest.length){
+    const side = Math.min(w,h);
+    let row = [], s = 0, best = Infinity;
+    for(let i=0;i<rest.length;i++){
+      const nr = row.concat(rest[i]), ns = s+rest[i].a;
+      const mx = Math.max(...nr.map(r=>r.a)), mn = Math.min(...nr.map(r=>r.a));
+      const worst = Math.max(side*side*mx/(ns*ns), ns*ns/(side*side*mn));
+      if(row.length && worst>best) break;
+      row = nr; s = ns; best = worst;
+    }
+    rest = rest.slice(row.length);
+    const th = s/side; let off = 0;
+    if(w>=h){
+      row.forEach(r=>{ const l=r.a/th; out.push({it:r.it,x:x,y:y+off,w:th,h:l}); off+=l; });
+      x+=th; w-=th;
+    } else {
+      row.forEach(r=>{ const l=r.a/th; out.push({it:r.it,x:x+off,y:y,w:l,h:th}); off+=l; });
+      y+=th; h-=th;
+    }
+  }
+  return out;
+}
+function clip(t,w,fs){ const n = Math.max(0,Math.floor((w-8)/(fs*0.56))); return t.length>n ? (n>3?t.slice(0,n-1)+"…":"") : t; }
+function renderTree(){
+  const svg = $("#tm"), W = Math.max(320,$("#tmw").clientWidth), H = Math.round(Math.max(360,Math.min(560,W*0.5)));
+  svg.setAttribute("viewBox","0 0 "+W+" "+H); svg.setAttribute("height",H);
+  const a = rows(null).filter(r=>r.monto>0);
+  if(!a.length){ svg.innerHTML='<text x="'+W/2+'" y="'+H/2+'" text-anchor="middle" fill="#4A6571">No hay partidas con los filtros elegidos.</text>'; return; }
+  const us = group(a,"uni").sort((x,y)=>y.v-x.v);
+  const ur = squarify(us,0,0,W,H);
+  let s = "";
+  ur.forEach(u=>{
+    const col = UCOL[u.it.key], hh = (u.h>64&&u.w>90)?20:0;
+    const ua = a.filter(r=>r.uni===u.it.key);
+    const ps = group(ua,"prog").sort((x,y)=>y.v-x.v);
+    const sU = sel.uni.has(u.it.key);
+    s += '<g><rect x="'+(u.x+1)+'" y="'+(u.y+1)+'" width="'+Math.max(0,u.w-2)+'" height="'+Math.max(0,u.h-2)+'" fill="'+col+'" stroke="'+(sU?"#D9573B":"#fff")+'" stroke-width="'+(sU?3:1)+'" data-k="uni" data-v="'+esc(u.it.key)+'" data-t="'+esc(u.it.key)+'" data-m="'+u.it.v+'" data-n="'+u.it.n+'"></rect>';
+    if(hh) s += '<text x="'+(u.x+7)+'" y="'+(u.y+15)+'" font-size="12" font-weight="700" fill="#fff">'+esc(clip(u.it.key,u.w-4,12))+'</text>';
+    const inner = squarify(ps,u.x+3,u.y+3+hh,u.w-6,u.h-6-hh);
+    inner.forEach((p,i)=>{
+      const sp = sel.prog.has(p.it.key);
+      const nm = short(p.it.key);
+      s += '<rect x="'+p.x+'" y="'+p.y+'" width="'+Math.max(0,p.w-1.5)+'" height="'+Math.max(0,p.h-1.5)+'" fill="#000" fill-opacity="'+(i%2?0.2:0.3)+'" stroke="'+(sp?"#FFD54A":"rgba(255,255,255,.55)")+'" stroke-width="'+(sp?3:1)+'" data-k="prog" data-v="'+esc(p.it.key)+'" data-t="'+esc(nm)+'" data-u="'+esc(u.it.key)+'" data-m="'+p.it.v+'" data-n="'+p.it.n+'"></rect>';
+      if(p.w>58&&p.h>24){
+        s += '<text x="'+(p.x+6)+'" y="'+(p.y+15)+'" font-size="11" font-weight="600" fill="#fff">'+esc(clip(nm,p.w-2,11))+'</text>';
+        if(p.h>40&&p.w>70) s += '<text x="'+(p.x+6)+'" y="'+(p.y+29)+'" font-size="10.5" fill="#fff" fill-opacity=".92">'+esc(fM(p.it.v))+'</text>';
+      }
+    });
+    s += '</g>';
+  });
+  svg.innerHTML = s;
+}
+function treeEvents(){
+  const svg = $("#tm");
+  svg.addEventListener("click",e=>{ const t=e.target.closest("[data-k]"); if(t) toggle(t.dataset.k,t.dataset.v); });
+  svg.addEventListener("mousemove",e=>{
+    const t = e.target.closest("[data-k]"); if(!t){hideTip();return;}
+    showTip(tipHTML(t.dataset.t,+t.dataset.m,+t.dataset.n,t.dataset.u||""),e);
+  });
+  svg.addEventListener("mouseleave",hideTip);
+}
+
+/* ---------- Tabla ---------- */
+const COLS = [
+  {k:"uni",l:"Secretaría / unidad"},{k:"prog",l:"Programa"},{k:"sub",l:"Subprograma"},{k:"proy",l:"Proyecto / obra"},
+  {k:"monto",l:"Monto ($)",m:true},{k:"pf",l:"% del filtro",m:true},{k:"pt",l:"% del total",m:true}
+];
+function renderTable(){
+  const a = rows(null), t = sum(a);
+  const k = st.sort==="pf"||st.sort==="pt" ? "monto" : st.sort;
+  a.sort((x,y)=>{
+    const r = typeof x[k]==="number" ? x[k]-y[k] : String(x[k]).localeCompare(String(y[k]),"es");
+    return r*st.dir;
+  });
+  const pages = Math.max(1,Math.ceil(a.length/PAGE));
+  st.page = Math.min(st.page,pages-1);
+  const sl = a.slice(st.page*PAGE,(st.page+1)*PAGE);
+  $("#tb").innerHTML =
+    '<thead><tr>'+COLS.map(c=>'<th class="'+(c.m?"m":"")+'"><button data-s="'+c.k+'" title="Ordenar">'+c.l+(st.sort===c.k?'<span class="ar">'+(st.dir<0?"▼":"▲")+'</span>':"")+'</button></th>').join("")+'</tr></thead>'+
+    '<tbody>'+(sl.length?sl.map(r=>'<tr><td>'+esc(r.uni)+'</td><td>'+esc(short(r.prog))+'</td><td>'+esc(r.sub===NS?"—":short(r.sub))+'</td><td>'+esc(r.proy===NP?"—":short(r.proy))+'</td><td class="m">'+fnum(r.monto,2)+'</td><td class="m">'+(t?fP(r.monto/t):"—")+'</td><td class="m">'+fP(r.monto/TOTAL)+'</td></tr>').join(""):'<tr><td colspan="7"><div class="empty">No hay partidas con los filtros elegidos.</div></td></tr>')+'</tbody>'+
+    '<tfoot><tr><td colspan="4">Total del filtro ('+a.length+(a.length===1?" partida":" partidas")+')</td><td class="m">'+fnum(t,2)+'</td><td class="m">'+(a.length?"100,00%":"—")+'</td><td class="m">'+fP(t/TOTAL)+'</td></tr></tfoot>';
+  $("#tb").querySelectorAll("th button").forEach(b=>b.addEventListener("click",()=>{
+    const c = b.dataset.s;
+    if(st.sort===c) st.dir*=-1; else { st.sort=c; st.dir = (c==="monto"||c==="pf"||c==="pt")?-1:1; }
+    renderTable();
+  }));
+  $("#tbInfo").textContent = "Hacé clic en el título de una columna para ordenar. Los porcentajes se calculan sobre el filtro actual y sobre el total.";
+  $("#pg").innerHTML = '<span class="hint" style="margin:0">Página '+(st.page+1)+' de '+pages+'</span><span><button class="btn o" id="pp"'+(st.page===0?" disabled":"")+'>Anterior</button> <button class="btn o" id="pn"'+(st.page>=pages-1?" disabled":"")+'>Siguiente</button></span>';
+  $("#pp").onclick = ()=>{st.page--;renderTable();};
+  $("#pn").onclick = ()=>{st.page++;renderTable();};
+}
+
+/* ---------- Exportar ---------- */
+function exportCSV(){
+  const a = rows(null).sort((x,y)=>y.monto-x.monto), t = sum(a);
+  const q = v => '"'+String(v).replace(/"/g,'""')+'"';
+  const lines = [["Jurisdicción","Secretaría / unidad","Programa","Subprograma","Proyecto / obra","Monto","% del filtro","% del total"].map(q).join(";")];
+  a.forEach(r=>lines.push([r.jur,r.uni,r.prog,r.sub===NS?"":r.sub,r.proy===NP?"":r.proy].map(q).join(";")+";"+r.monto.toFixed(2).replace(".",",")+";"+(t?(r.monto/t*100).toFixed(4).replace(".",","):"")+";"+(r.monto/TOTAL*100).toFixed(4).replace(".",",")));
+  const blob = new Blob(["\ufeff"+lines.join("\r\n")],{type:"text/csv;charset=utf-8"});
+  const l = document.createElement("a");
+  l.href = URL.createObjectURL(blob); l.download = "presupuesto_2027_filtrado.csv";
+  document.body.appendChild(l); l.click(); l.remove(); setTimeout(()=>URL.revokeObjectURL(l.href),1000);
+}
+
+/* ---------- Render general ---------- */
+function render(){
+  updateFacetButtons(); renderChips(); renderKPIs(); renderRank(); renderDonut(); renderTree(); renderTable();
+}
+
+/* ---------- Eventos ---------- */
+function num(v){ const n = parseFloat(String(v).replace(/\./g,"").replace(",",".")); return isNaN(n)?null:n; }
+function init(){
+  buildFacets(); treeEvents();
+  let tm;
+  $("#q").addEventListener("input",e=>{ clearTimeout(tm); tm=setTimeout(()=>{st.q=e.target.value.trim().toLowerCase();st.page=0;render();},180); });
+  $("#mn").addEventListener("change",e=>{ st.mn=num(e.target.value); st.page=0; render(); });
+  $("#mx").addEventListener("change",e=>{ st.mx=num(e.target.value); st.page=0; render(); });
+  $("#hz").addEventListener("change",e=>{ st.hz=e.target.checked; st.page=0; render(); });
+  $("#clr").addEventListener("click",()=>{
+    FACETS.forEach(f=>sel[f.k].clear()); st.q="";st.mn=null;st.mx=null;st.hz=false;st.pq={};st.page=0;
+    $("#q").value="";$("#mn").value="";$("#mx").value="";$("#hz").checked=false;
+    document.querySelectorAll(".facet input[type=search]").forEach(i=>i.value="");
+    render();
+  });
+  $("#csv").addEventListener("click",exportCSV);
+  $("#prt").addEventListener("click",()=>window.print());
+  $("#rkSeg").addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b) return; st.rank=b.dataset.d; st.all=false; renderRank(); });
+  $("#rkMore").addEventListener("click",()=>{ st.all=!st.all; renderRank(); });
+  document.addEventListener("click",e=>{ if(!e.target.closest(".facet")) closePanels(); });
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape") closePanels(); });
+  let rt; addEventListener("resize",()=>{ clearTimeout(rt); rt=setTimeout(renderTree,150); });
+  render();
+}
+init();
+</script>
+</body>
+</html>

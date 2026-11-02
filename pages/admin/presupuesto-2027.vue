@@ -18,8 +18,18 @@
         <button type="button" :class="{ on: tab === 'o' }" @click="tab = 'o'">Gasto por objeto</button>
       </div>
 
-      <DashboardProgramatica v-if="tab === 'p'" />
-      <DashboardObjeto v-else />
+      <iframe
+        v-if="tab === 'p'"
+        class="dash-frame"
+        src="/presupuesto/programatica.html"
+        title="Gasto por categoría programática"
+      ></iframe>
+      <iframe
+        v-else
+        class="dash-frame"
+        src="/presupuesto/objeto.html"
+        title="Gasto por objeto"
+      ></iframe>
     </div>
   </div>
 </template>
@@ -35,13 +45,10 @@ definePageMeta({
 </script>
 
 <script>
-import DashboardProgramatica from '~/components/presupuesto/DashboardProgramatica.vue'
-import DashboardObjeto from '~/components/presupuesto/DashboardObjeto.vue'
 import { PRESUPUESTO_2027_USERNAMES, userCanAccessAdminRoute } from '~/utils/access-control'
 
 export default {
   name: 'Presupuesto2027',
-  components: { DashboardProgramatica, DashboardObjeto },
   data() {
     return { tab: 'p' }
   },
@@ -76,6 +83,7 @@ export default {
   cursor: pointer;
 }
 .tabs-bar .on { background: #0c681a; color: #fff; border-color: #0c681a; }
+.dash-frame { width: 100%; height: calc(100vh - 180px); min-height: 640px; border: 0; display: block; }
 @media (min-width: 768px) {
   .head h1 { font-size: 1.75rem; }
 }

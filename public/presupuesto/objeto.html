@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Presupuesto 2027 · Gasto por Objeto · Municipalidad de Villa Gesell</title>
+<style>
+:root{--bg:#f8f9fa;--cd:#fff;--tx:#353535;--mu:#6c757d;--bd:#dee2e6;--ac:#0c681a;--ac2:rgba(12,104,26,.12)}
+*{box-sizing:border-box}html{color-scheme:light}body{margin:0;font:14px/1.4 system-ui,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--tx)}
+main{max-width:1400px;margin:auto;padding:16px 20px}
+.card{background:var(--cd);border:1px solid var(--bd);border-radius:10px;padding:14px;min-width:0}
+.card h2{margin:0 0 10px;font-size:12px;color:var(--mu);text-transform:uppercase;letter-spacing:.05em}
+.g{display:grid;gap:14px;margin-bottom:14px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g5{grid-template-columns:repeat(5,1fr)}
+@media(max-width:900px){.g2,.g3,.g5{grid-template-columns:1fr 1fr}}@media(max-width:560px){.g2,.g3,.g5{grid-template-columns:1fr}}
+.fl{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.fr{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-end}
+label{font-size:12px;color:var(--mu);display:flex;flex-direction:column;gap:3px}
+input[type=search],input[type=number]{padding:6px 8px;border:1px solid var(--bd);border-radius:6px;background:var(--cd);color:var(--tx);width:150px}
+button{font:inherit;cursor:pointer}
+.chip{border:1px solid var(--bd);background:var(--cd);color:var(--tx);border-radius:16px;padding:4px 11px;display:inline-flex;align-items:center;gap:6px}
+.chip i{width:10px;height:10px;border-radius:50%;display:inline-block}.chip.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.btn{border:1px solid var(--ac);background:var(--cd);color:var(--ac);border-radius:6px;padding:6px 12px}.btn.p{background:var(--ac);color:#fff}
+.kpi b{display:block;font-size:20px;margin:2px 0}.kpi span{color:var(--mu);font-size:12px}.kpi small{color:var(--mu);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.br{display:grid;grid-template-columns:42% 1fr 80px;gap:8px;align-items:center;padding:3px 4px;border-radius:5px;cursor:pointer}.br:hover{background:var(--ac2)}.br.dim{opacity:.35}
+.bl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}.bt{background:var(--ac2);height:14px;border-radius:3px;overflow:hidden}.bt b{display:block;height:100%}.bv{text-align:right;font-size:12px}
+.dn{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.dn svg{width:170px;flex:none}.dn circle{cursor:pointer}.lg{flex:1;min-width:200px}
+.tw{max-height:420px;overflow:auto}table{border-collapse:collapse;width:100%}th,td{padding:6px 8px;text-align:left;border-bottom:1px solid var(--bd);font-size:13px}
+th{position:sticky;top:0;background:var(--cd);cursor:pointer;white-space:nowrap}td.r,th.r{text-align:right}tr[data-k]{cursor:pointer}tr.on td{background:var(--ac2)}tr[data-k]:hover td{background:var(--ac2)}
+.af{font-size:12px;color:var(--mu);margin:6px 0 0}.pa svg{width:100%;height:auto}.pa rect{cursor:pointer}
+@media print{.np{display:none!important}body{background:#fff}}
+</style></head><body>
+<main>
+<section class="card np g" style="display:grid">
+ <div class="fr"><label>Buscar partida / código<input type="search" id="q" placeholder="ej. combustibles, 3.3"></label>
+  <label>Monto mínimo (millones $)<input type="number" id="mn" min="0" step="10"></label>
+  <label>Monto máximo (millones $)<input type="number" id="mx" min="0" step="10"></label>
+  <label>Participación mínima: <b id="pv">0,0%</b><input type="range" id="pc" min="0" max="12" step="0.1" value="0"></label>
+  <button class="btn p" id="rs">Limpiar filtros</button><button class="btn" id="csv">Exportar CSV</button><button class="btn" onclick="print()">Imprimir</button></div>
+ <div><span class="af">Inciso (objeto del gasto) — se pueden combinar varios</span><div class="fl" id="chInc"></div></div>
+ <div><span class="af">Carácter económico</span><div class="fl" id="chCar"></div></div>
+ <div class="af" id="af"></div>
+</section>
+<section class="g g5" id="kpis"></section>
+<section class="g g2">
+ <div class="card"><h2>Distribución por inciso (clic para filtrar)</h2><div class="dn" id="dn"></div></div>
+ <div class="card"><h2>Carácter económico</h2><div id="car"></div><h2 style="margin-top:14px">Mayores partidas (top 12)</h2><div id="top"></div></div>
+</section>
+<section class="g"><div class="card pa"><h2>Pareto: acumulado de partidas filtradas (línea = % acumulado, punteada = 80%)</h2><div id="pa"></div></div></section>
+<section class="g"><div class="card"><h2>Detalle de partidas <span class="af" id="cnt"></span></h2><div class="tw"><table><thead><tr id="th"></tr></thead><tbody id="tb"></tbody><tfoot id="tf"></tfoot></table></div></div></section>
+</main>
+<script>
+const D=[{"c":"1.1.0.0","n":"Personal permanente","i":"1","k":"Corriente","m":30973188727.27},{"c":"1.2.0.0","n":"Personal temporario","i":"1","k":"Corriente","m":2288465382.37},{"c":"1.3.0.0","n":"Servicios extraordinarios","i":"1","k":"Corriente","m":7002870384.6},{"c":"1.4.0.0","n":"Asignaciones familiares","i":"1","k":"Corriente","m":898226649.45},{"c":"1.5.0.0","n":"Asistencia social al personal","i":"1","k":"Corriente","m":6214043.21},{"c":"1.6.0.0","n":"Beneficios y compensaciones","i":"1","k":"Corriente","m":92158540.42},{"c":"2.1.0.0","n":"Productos alimenticios agropecuarios y forestales","i":"2","k":"Corriente","m":950812243.66},{"c":"2.2.0.0","n":"Textiles y vestuario","i":"2","k":"Corriente","m":187111638.8},{"c":"2.3.0.0","n":"Productos de papel, cartón e impresos","i":"2","k":"Corriente","m":109049694.3},{"c":"2.4.0.0","n":"Productos de cuero y caucho","i":"2","k":"Corriente","m":158000820},{"c":"2.5.0.0","n":"Productos químicos, combustibles y lubricantes","i":"2","k":"Corriente","m":2793367833.17},{"c":"2.6.0.0","n":"Productos de minerales no metálicos","i":"2","k":"Corriente","m":100743123.4},{"c":"2.7.0.0","n":"Productos metálicos","i":"2","k":"Corriente","m":49414578.6},{"c":"2.8.0.0","n":"Minerales","i":"2","k":"Corriente","m":492395372},{"c":"2.9.0.0","n":"Otros bienes de consumo","i":"2","k":"Corriente","m":866104321.78},{"c":"3.1.0.0","n":"Servicios básicos","i":"3","k":"Corriente","m":2244556091.96},{"c":"3.2.0.0","n":"Alquileres y derechos","i":"3","k":"Corriente","m":1441095603.08},{"c":"3.3.0.0","n":"Mantenimiento, reparación y limpieza","i":"3","k":"Corriente","m":5092698522.75},{"c":"3.4.0.0","n":"Servicios técnicos y profesionales","i":"3","k":"Corriente","m":621786675.57},{"c":"3.5.0.0","n":"Servicios comerciales y financieros","i":"3","k":"Corriente","m":635344915},{"c":"3.6.0.0","n":"Publicidad y propaganda","i":"3","k":"Corriente","m":342304108.37},{"c":"3.7.0.0","n":"Pasajes y viáticos","i":"3","k":"Corriente","m":125466828.6},{"c":"3.8.0.0","n":"Impuestos, derechos y tasas","i":"3","k":"Corriente","m":60000000},{"c":"3.9.0.0","n":"Otros servicios","i":"3","k":"Corriente","m":1042686420},{"c":"4.2.0.0","n":"Construcciones","i":"4","k":"Capital","m":4515417813.71},{"c":"4.3.0.0","n":"Maquinaria y equipo","i":"4","k":"Capital","m":653566583.68},{"c":"4.6.0.0","n":"Obras de arte","i":"4","k":"Capital","m":5506812},{"c":"5.1.0.0","n":"Transferencias al sector privado para financiar gastos corrientes","i":"5","k":"Corriente","m":680127491.22},{"c":"5.4.0.0","n":"Transferencias al Sector Público Nacional, al Sector Público Provincial y al Sector Público Municipal para financiar gastos de capital","i":"5","k":"Capital","m":1200000},{"c":"7.6.0.0","n":"Disminución de cuentas y documentos a pagar","i":"7","k":"Aplicaciones financieras","m":2944826518.55}],META={"inc": {"1": "Gastos en personal", "2": "Bienes de consumo", "3": "Servicios no personales", "4": "Bienes de uso", "5": "Transferencias", "7": "Servicio de la deuda y disminución de otros pasivos"}};
+const $=s=>document.querySelector(s);
+const fmt=new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:0});
+const nf=new Intl.NumberFormat('es-AR',{maximumFractionDigits:1});
+const short=v=>v>=1e9?'$ '+nf.format(v/1e9)+' mil M':v>=1e6?'$ '+nf.format(v/1e6)+' M':fmt.format(v);
+const sum=a=>a.reduce((s,r)=>s+r.m,0),TOT=sum(D);
+const pct=v=>nf.format(v*100)+'%';
+const COL=['#28a745','#17a2b8','#ffc107','#e53749','#9966FF','#e27910'];
+const incs=Object.keys(META.inc),cols={};incs.forEach((k,i)=>cols[k]=COL[i%6]);
+const CARS=['Corriente','Capital','Aplicaciones financieras'];
+const S={inc:new Set(),car:new Set(),sel:new Set(),q:'',min:0,max:Infinity,pct:0,sort:'c',dir:1};
+function rows(skip){return D.filter(r=>(skip=='inc'||!S.inc.size||S.inc.has(r.i))&&(skip=='car'||!S.car.size||S.car.has(r.k))&&(skip=='sel'||!S.sel.size||S.sel.has(r.c))&&r.m>=S.min&&r.m<=S.max&&r.m/TOT*100>=S.pct&&(!S.q||(r.c+' '+r.n).toLowerCase().includes(S.q)))}
+$('#chInc').innerHTML=incs.map(k=>`<button class="chip" data-k="inc" data-v="${k}"><i style="background:${cols[k]}"></i>${k}. ${META.inc[k]}</button>`).join('');
+$('#chCar').innerHTML=CARS.map(c=>`<button class="chip" data-k="car" data-v="${c}">${c}</button>`).join('');
+const TH=[['c','Código'],['n','Concepto'],['i','Inciso'],['k','Carácter'],['m','Monto ($)','r'],['p','% del total','r']];
+$('#th').innerHTML=TH.map(h=>`<th data-s="${h[0]}" class="${h[2]||''}">${h[1]}</th>`).join('');
+const bar=(k,v,label,val,max,color)=>`<div class="br${!S[k].size||S[k].has(v)?'':' dim'}" data-k="${k}" data-v="${v}"><span class="bl" title="${label}">${label}</span><span class="bt"><b style="width:${max?val/max*100:0}%;background:${color}"></b></span><span class="bv">${short(val)}</span></div>`;
+function render(){
+ const F=rows(),tot=sum(F);
+ document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',S[c.dataset.k].has(c.dataset.v)));
+ const sm=F.map(r=>r.m).sort((a,b)=>a-b),med=sm.length?(sm[sm.length>>1]+sm[(sm.length-1)>>1])/2:0;
+ const big=F.reduce((a,r)=>!a||r.m>a.m?r:a,null);
+ $('#kpis').innerHTML=[['Monto filtrado',short(tot),fmt.format(tot)],['% del presupuesto',pct(tot/TOT),'de '+short(TOT)],['Partidas',F.length+' de '+D.length,'cumplen los filtros'],['Promedio por partida',F.length?short(tot/F.length):'—',F.length?'Mediana '+short(med):''],['Partida mayor',big?short(big.m):'—',big?big.n:'']].map(k=>`<div class="card kpi"><span>${k[0]}</span><b>${k[1]}</b><small title="${k[2]}">${k[2]}</small></div>`).join('');
+ // donut
+ const Fi=rows('inc'),td=sum(Fi),R=60,C=2*Math.PI*R;let off=0;
+ const arcs=incs.map(k=>{const v=sum(Fi.filter(r=>r.i==k)),len=td?v/td*C:0;const e=`<circle data-k="inc" data-v="${k}" r="${R}" cx="80" cy="80" fill="none" stroke="${cols[k]}" stroke-width="26" stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 80 80)" opacity="${!S.inc.size||S.inc.has(k)?1:.25}"><title>${META.inc[k]}: ${fmt.format(v)}</title></circle>`;off+=len;return e}).join('');
+ $('#dn').innerHTML=`<svg viewBox="0 0 160 160">${arcs}<text x="80" y="78" text-anchor="middle" font-size="11" fill="currentColor">Total</text><text x="80" y="94" text-anchor="middle" font-size="12" font-weight="700" fill="currentColor">${short(td)}</text></svg><div class="lg">${incs.map(k=>{const v=sum(Fi.filter(r=>r.i==k));return `<div class="br${!S.inc.size||S.inc.has(k)?'':' dim'}" style="grid-template-columns:1fr 80px 50px" data-k="inc" data-v="${k}"><span class="bl" title="${META.inc[k]}"><i class="chip" style="padding:0;width:10px;height:10px;border:0;background:${cols[k]}"></i> ${META.inc[k]}</span><span class="bv">${short(v)}</span><span class="bv">${td?pct(v/td):'—'}</span></div>`}).join('')}</div>`;
+ // carácter
+ const Fc=rows('car'),mc=Math.max(...CARS.map(c=>sum(Fc.filter(r=>r.k==c))));
+ $('#car').innerHTML=CARS.map(c=>bar('car',c,c,sum(Fc.filter(r=>r.k==c)),mc,'var(--ac)')).join('');
+ // top
+ const Fp=rows('sel').sort((a,b)=>b.m-a.m).slice(0,12);
+ $('#top').innerHTML=Fp.length?Fp.map(r=>bar('sel',r.c,r.c+' '+r.n,r.m,Fp[0].m,cols[r.i])).join(''):'<p class="af">Sin datos con estos filtros.</p>';
+ // pareto
+ const P=F.slice().sort((a,b)=>b.m-a.m),W=700,H=240,L=40,B=26,n=P.length;
+ if(!n){$('#pa').innerHTML='<p class="af">Sin datos con estos filtros.</p>'}else{
+  const bw=(W-L-40)/n,ph=H-B-10;let c=0,pts=[];
+  const bs=P.map((r,i)=>{c+=r.m;const h=r.m/P[0].m*ph,x=L+i*bw;pts.push((x+bw/2).toFixed(1)+','+(10+ph*(1-c/tot)).toFixed(1));return `<rect data-k="sel" data-v="${r.c}" x="${x.toFixed(1)}" y="${(10+ph-h).toFixed(1)}" width="${Math.max(bw-1.5,1).toFixed(1)}" height="${h.toFixed(1)}" fill="${cols[r.i]}" opacity="${!S.sel.size||S.sel.has(r.c)?1:.3}"><title>${r.c} ${r.n}: ${fmt.format(r.m)}</title></rect>`}).join('');
+  const y80=10+ph*.2;
+  $('#pa').innerHTML=`<svg viewBox="0 0 ${W} ${H}">${bs}<polyline points="${pts.join(' ')}" fill="none" stroke="#e53749" stroke-width="2"/><line x1="${L}" x2="${W-40}" y1="${y80}" y2="${y80}" stroke="currentColor" stroke-dasharray="4 4" opacity=".5"/>${[0,50,100].map(p=>`<text x="${L-6}" y="${(10+ph*(1-p/100)+4).toFixed(0)}" text-anchor="end" font-size="10" fill="currentColor">${p}%</text>`).join('')}<text x="${L}" y="${H-8}" font-size="10" fill="currentColor">Partidas ordenadas de mayor a menor monto (${n})</text></svg>`}
+ // tabla
+ const key={c:r=>r.c,n:r=>r.n,i:r=>r.i,k:r=>r.k,m:r=>r.m,p:r=>r.m}[S.sort];
+ F.sort((a,b)=>{const x=key(a),y=key(b);return (x<y?-1:x>y?1:0)*S.dir});
+ document.querySelectorAll('th[data-s]').forEach(t=>t.textContent=TH.find(h=>h[0]==t.dataset.s)[1]+(t.dataset.s==S.sort?(S.dir>0?' ▲':' ▼'):''));
+ $('#tb').innerHTML=F.map(r=>`<tr data-k="sel" data-v="${r.c}" class="${S.sel.has(r.c)?'on':''}"><td>${r.c}</td><td>${r.n}</td><td>${r.i}. ${META.inc[r.i]}</td><td>${r.k}</td><td class="r">${fmt.format(r.m)}</td><td class="r">${(r.m/TOT*100).toFixed(2).replace('.',',')}%</td></tr>`).join('');
+ $('#tf').innerHTML=`<tr><th colspan="4">Total filtrado</th><th class="r">${fmt.format(tot)}</th><th class="r">${pct(tot/TOT)}</th></tr>`;
+ $('#cnt').textContent='· '+F.length+' de '+D.length+' partidas';
+ const af=[];if(S.inc.size)af.push('Inciso: '+[...S.inc].join(', '));if(S.car.size)af.push('Carácter: '+[...S.car].join(', '));if(S.sel.size)af.push('Partidas seleccionadas: '+S.sel.size);if(S.q)af.push('Texto: "'+S.q+'"');if(S.min>0)af.push('Mín. '+short(S.min));if(S.max<Infinity)af.push('Máx. '+short(S.max));if(S.pct>0)af.push('Participación ≥ '+nf.format(S.pct)+'%');
+ $('#af').textContent=af.length?'Filtros activos: '+af.join(' · '):'Sin filtros activos: se muestra el presupuesto completo. Hacé clic en gráficos, barras o filas para filtrar.';
+}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-k]');if(t){const s=S[t.dataset.k],v=t.dataset.v;s.has(v)?s.delete(v):s.add(v);render();return}
+ const h=e.target.closest('th[data-s]');if(h){S.dir=S.sort==h.dataset.s?-S.dir:(h.dataset.s=='m'||h.dataset.s=='p'?-1:1);S.sort=h.dataset.s;render()}});
+$('#q').oninput=e=>{S.q=e.target.value.trim().toLowerCase();render()};
+$('#mn').oninput=e=>{S.min=(parseFloat(e.target.value)||0)*1e6;render()};
+$('#mx').oninput=e=>{const v=parseFloat(e.target.value);S.max=isNaN(v)?Infinity:v*1e6;render()};
+$('#pc').oninput=e=>{S.pct=parseFloat(e.target.value);$('#pv').textContent=nf.format(S.pct).replace(/^(\d+)$/,'$1,0')+'%';render()};
+$('#rs').onclick=()=>{S.inc.clear();S.car.clear();S.sel.clear();Object.assign(S,{q:'',min:0,max:Infinity,pct:0});['#q','#mn','#mx'].forEach(i=>$(i).value='');$('#pc').value=0;$('#pv').textContent='0,0%';render()};
+$('#csv').onclick=()=>{const q=s=>'"'+String(s).replace(/"/g,'""')+'"';const t=[['Código','Concepto','Inciso','Carácter económico','Monto ARS','% del total'].map(q).join(';'),...rows().map(r=>[r.c,r.n,META.inc[r.i],r.k,r.m.toFixed(2).replace('.',','),(r.m/TOT*100).toFixed(4).replace('.',',')].map(q).join(';'))].join('\r\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+t],{type:'text/csv'}));a.download='presupuesto2027_filtrado.csv';a.click()};
+render();
+</script></body></html>

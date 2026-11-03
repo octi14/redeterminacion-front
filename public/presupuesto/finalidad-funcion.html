@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Presupuesto de Gastos 2027 por Finalidad y Función · Villa Gesell</title>
+<style>
+:root{--bg:#f3f6fa;--card:#fff;--tx:#14233a;--mu:#5d6b80;--bd:#dde4ee;--pr:#0b5ea8;--ac:#e8f1fb}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1722;--card:#18222f;--tx:#e8eef6;--mu:#9aa9bc;--bd:#2a3748;--pr:#5aa9ec;--ac:#1d3045}}
+*{box-sizing:border-box}body{margin:0;font:14px/1.4 system-ui,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--tx)}
+header{background:#0c681a;color:#fff;padding:18px max(24px, calc(50% - 700px))}
+header h1{margin:0;font:700 22px/1.25 "Segoe UI",system-ui,sans-serif}header p{margin:4px 0 0;opacity:.9;font-size:14px}
+main{padding:16px 24px;max-width:1400px;margin:auto}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px}
+.filters{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-bottom:14px}
+.filters label{font-size:12px;color:var(--mu);display:block;margin-bottom:4px;font-weight:600}
+input[type=text],select{width:100%;padding:7px;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--tx)}
+input[type=range]{width:100%}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--bd);background:var(--bg);color:var(--tx);border-radius:16px;padding:4px 10px;cursor:pointer;font-size:12px}
+.chip.on{background:var(--pr);color:#fff;border-color:var(--pr)}
+button{cursor:pointer;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:6px;padding:7px 12px}
+.kpis{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin-bottom:14px}
+.kpi b{display:block;font-size:22px;color:var(--pr)}.kpi span{color:var(--mu);font-size:12px}
+.grid{display:grid;gap:14px;grid-template-columns:minmax(300px,1fr) 2fr;margin-bottom:14px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}}
+h3{margin:0 0 10px;font-size:14px}
+.bar{display:flex;align-items:center;gap:8px;margin:3px 0;cursor:pointer;padding:2px 4px;border-radius:4px}.bar:hover{background:var(--ac)}.bar.sel{background:var(--ac);outline:1px solid var(--pr)}
+.bar .l{width:38%;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bar .t{flex:1;background:var(--bg);border-radius:3px;height:16px}.bar .f{height:100%;border-radius:3px}.bar .v{width:120px;text-align:right;font-size:12px}
+.leg{font-size:12px;margin-top:8px}.leg div{display:flex;gap:6px;align-items:center;cursor:pointer;margin:2px 0}.leg i{width:10px;height:10px;border-radius:2px;flex:none}
+.tw{overflow:auto;max-height:420px}table{width:100%;border-collapse:collapse}th,td{padding:6px 8px;border-bottom:1px solid var(--bd);text-align:left}
+th{cursor:pointer;position:sticky;top:0;background:var(--card)}td.r,th.r{text-align:right}
+footer{padding:16px 24px;text-align:center;color:var(--mu);font-size:12px;border-top:1px solid var(--bd)}
+</style></head><body>
+<header>
+<div><h1>Presupuesto de Gastos 2027 por Finalidad y Función</h1><p>Municipalidad de Villa Gesell · Secretaría de Hacienda · Montos en pesos argentinos</p></div></header>
+<main>
+<div class="card filters">
+<div><label>Finalidad (clic para elegir varias)</label><div class="chips" id="fch"></div></div>
+<div><label>Función</label><select id="fn"><option value="">Todas</option></select></div>
+<div><label>Buscar</label><input type="text" id="q" placeholder="Nombre o código…"></div>
+<div><label>Monto mínimo: <span id="mv">$0</span></label><input type="range" id="mn" min="0" max="100" value="0"></div>
+<div style="align-self:end"><button id="rs">Limpiar filtros</button></div>
+</div>
+<div class="kpis" id="kpis"></div>
+<div class="grid"><div class="card"><h3>Distribución por Finalidad</h3><div id="donut"></div><div class="leg" id="leg"></div></div>
+<div class="card"><h3>Monto por Función (clic para filtrar)</h3><div id="bars"></div></div></div>
+<div class="card"><h3>Detalle</h3><div class="tw"><table><thead><tr><th data-k="c">Cód.</th><th data-k="n">Función</th><th data-k="f">Finalidad</th><th data-k="g">Agrupación</th><th class="r" data-k="v">Monto ($)</th><th class="r" data-k="p">% filtrado</th></tr></thead><tbody id="tb"></tbody></table></div></div>
+</main>
+<script>
+const D=[{"fc": "100", "f": "Administración gubernamental", "c": "110", "n": "Legislativa", "g": "", "v": 773975014.86}, {"fc": "100", "f": "Administración gubernamental", "c": "130", "n": "Dirección superior ejecutiva", "g": "", "v": 3959277384.61}, {"fc": "100", "f": "Administración gubernamental", "c": "160", "n": "Administración Fiscal", "g": "", "v": 3055496688.23}, {"fc": "100", "f": "Administración gubernamental", "c": "170", "n": "Control de la gestión pública", "g": "", "v": 356537937.86}, {"fc": "200", "f": "Servicios de seguridad", "c": "210", "n": "Seguridad interior", "g": "", "v": 6606814846.81}, {"fc": "300", "f": "Servicios sociales", "c": "310", "n": "Salud", "g": "", "v": 21033113150.84}, {"fc": "300", "f": "Servicios sociales", "c": "320", "n": "Promoción y asistencia social", "g": "", "v": 2764725528.01}, {"fc": "300", "f": "Servicios sociales", "c": "341", "n": "Administración de la educación", "g": "Educación y cultura", "v": 224044115.57}, {"fc": "300", "f": "Servicios sociales", "c": "344", "n": "Educación superior y universitaria", "g": "Educación y cultura", "v": 91553539.88}, {"fc": "300", "f": "Servicios sociales", "c": "345", "n": "Cultura (incluye culto)", "g": "Educación y cultura", "v": 4079411858.23}, {"fc": "300", "f": "Servicios sociales", "c": "346", "n": "Deporte y recreación", "g": "Educación y cultura", "v": 1252303496.98}, {"fc": "300", "f": "Servicios sociales", "c": "370", "n": "Vivienda", "g": "", "v": 446338884.71}, {"fc": "300", "f": "Servicios sociales", "c": "380", "n": "Agua potable y alcantarillado", "g": "", "v": 12207138.65}, {"fc": "300", "f": "Servicios sociales", "c": "391", "n": "Planeamiento y desarrollo urbano", "g": "Urbanismo", "v": 1631596900.66}, {"fc": "300", "f": "Servicios sociales", "c": "392", "n": "Alumbrado público", "g": "Urbanismo", "v": 1632756664.08}, {"fc": "300", "f": "Servicios sociales", "c": "394", "n": "Cementerios", "g": "Urbanismo", "v": 30517846.62}, {"fc": "300", "f": "Servicios sociales", "c": "399", "n": "Otros servivicios urbanos", "g": "Urbanismo", "v": 14432712399.46}, {"fc": "400", "f": "Servicios económicos", "c": "440", "n": "Ecología y medio ambiente", "g": "", "v": 61035693.26}, {"fc": "400", "f": "Servicios económicos", "c": "470", "n": "Comercio, turismo y otros servicios", "g": "", "v": 1688181369.18}, {"fc": "900", "f": "Sin Clasificar", "c": "990", "n": "Sin Clasificar", "g": "", "v": 3242107279.02}];const COL=['#0b5ea8','#e07b00','#2a9d6f','#8e44ad','#c0392b','#16a2b8'];
+const $=i=>document.getElementById(i);const fmt=n=>'$'+n.toLocaleString('es-AR',{maximumFractionDigits:0});
+const FIN=[...new Set(D.map(d=>d.f))];const col=f=>COL[FIN.indexOf(f)%COL.length];
+const MAX=Math.max(...D.map(d=>d.v));const TOT=D.reduce((a,d)=>a+d.v,0);
+let S={fin:new Set(),fn:'',q:'',mn:0,sk:'v',sd:-1};
+$('mn').max=Math.ceil(MAX);$('mn').step=Math.ceil(MAX/100);
+D.forEach(d=>{const o=document.createElement('option');o.value=d.c;o.textContent=d.c+' - '+d.n;$('fn').appendChild(o)});
+function flt(){const q=S.q.toLowerCase();return D.filter(d=>(!S.fin.size||S.fin.has(d.f))&&(!S.fn||d.c===S.fn)&&d.v>=S.mn&&(!q||(d.c+' '+d.n+' '+d.f+' '+d.g).toLowerCase().includes(q)))}
+function render(){const R=flt(),T=R.reduce((a,d)=>a+d.v,0);
+$('fch').innerHTML=FIN.map(f=>`<span class="chip ${S.fin.has(f)?'on':''}" data-f="${f}">${f}</span>`).join('');
+const top=[...R].sort((a,b)=>b.v-a.v)[0];
+$('kpis').innerHTML=[[fmt(T),'Total filtrado'],[(TOT?T/TOT*100:0).toFixed(1)+'%','% del presupuesto total ('+fmt(TOT)+')'],[R.length+' de '+D.length,'Funciones'],[top?top.n:'—','Mayor función'+(top?' ('+fmt(top.v)+')':'')]].map(k=>`<div class="card kpi"><b>${k[0]}</b><span>${k[1]}</span></div>`).join('');
+const bf={};R.forEach(d=>bf[d.f]=(bf[d.f]||0)+d.v);
+let a=0,sv='';const C=2*Math.PI*60;
+FIN.forEach(f=>{const v=bf[f]||0;if(!T||!v)return;const l=v/T*C;sv+=`<circle r="60" cx="90" cy="90" fill="none" stroke="${col(f)}" stroke-width="32" stroke-dasharray="${l} ${C-l}" stroke-dashoffset="${-a}" transform="rotate(-90 90 90)" style="cursor:pointer" data-f="${f}"><title>${f}: ${fmt(v)}</title></circle>`;a+=l});
+$('donut').innerHTML=`<svg viewBox="0 0 180 180" width="100%" style="max-width:240px;display:block;margin:auto">${sv}<text x="90" y="88" text-anchor="middle" font-size="9" fill="currentColor">Total</text><text x="90" y="101" text-anchor="middle" font-size="9" font-weight="700" fill="currentColor">${T?fmt(T):'$0'}</text></svg>`;
+$('leg').innerHTML=FIN.map(f=>`<div data-f="${f}"><i style="background:${col(f)}"></i>${f}: ${fmt(bf[f]||0)} (${T?((bf[f]||0)/T*100).toFixed(1):0}%)</div>`).join('');
+const mx=Math.max(...R.map(d=>d.v),1);
+$('bars').innerHTML=[...R].sort((a,b)=>b.v-a.v).map(d=>`<div class="bar ${S.fn===d.c?'sel':''}" data-c="${d.c}"><div class="l" title="${d.n}">${d.c} ${d.n}</div><div class="t"><div class="f" style="width:${d.v/mx*100}%;background:${col(d.f)}"></div></div><div class="v">${fmt(d.v)}</div></div>`).join('')||'<p>Sin datos con estos filtros.</p>';
+const rows=R.map(d=>({...d,p:T?d.v/T*100:0})).sort((a,b)=>{const x=a[S.sk],y=b[S.sk];return(typeof x=='number'?x-y:String(x).localeCompare(y))*S.sd});
+$('tb').innerHTML=rows.map(d=>`<tr><td>${d.c}</td><td>${d.n}</td><td>${d.f}</td><td>${d.g}</td><td class="r">${fmt(d.v)}</td><td class="r">${d.p.toFixed(1)}%</td></tr>`).join('')+`<tr><td colspan="4"><b>Total</b></td><td class="r"><b>${fmt(T)}</b></td><td class="r"><b>${T?'100.0%':'0%'}</b></td></tr>`;
+$('mv').textContent=fmt(S.mn);$('fn').value=S.fn}
+function tf(f){S.fin.has(f)?S.fin.delete(f):S.fin.add(f);render()}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-f]');if(t&&!t.closest('table'))return tf(t.dataset.f);
+const b=e.target.closest('.bar');if(b){S.fn=S.fn===b.dataset.c?'':b.dataset.c;render()}
+const h=e.target.closest('th');if(h){const k=h.dataset.k;S.sd=S.sk===k?-S.sd:(k=='v'||k=='p'?-1:1);S.sk=k;render()}});
+$('fn').onchange=e=>{S.fn=e.target.value;render()};$('q').oninput=e=>{S.q=e.target.value;render()};$('mn').oninput=e=>{S.mn=+e.target.value;render()};
+$('rs').onclick=()=>{S={fin:new Set(),fn:'',q:'',mn:0,sk:'v',sd:-1};$('q').value='';$('mn').value=0;render()};
+render();
+</script></body></html>

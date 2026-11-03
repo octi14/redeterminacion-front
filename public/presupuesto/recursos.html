@@ -1,0 +1,84 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cálculo de Recursos por Rubros 2027 · Municipalidad de Villa Gesell</title>
+<style>
+:root{--bg:#f3f6f9;--card:#fff;--tx:#1b2a3a;--mu:#6b7b8c;--br:#dbe3ea;--p:#0b5c8e;--p2:#e6f1f8}
+*{box-sizing:border-box}body{margin:0;font:14px/1.4 system-ui,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--tx)}
+header{background:#0c681a;color:#fff;padding:18px max(24px, calc(50% - 700px))}
+.ht{max-width:none;margin:0}h1{margin:0;font:700 22px/1.25 "Segoe UI",system-ui,sans-serif}.ht p{margin:4px 0 0;opacity:.9;font-size:14px}
+main{padding:16px 24px;max-width:1500px;margin:auto}
+.filters{background:var(--card);border:1px solid var(--br);border-radius:10px;padding:12px 14px;display:grid;grid-template-columns:2fr 2fr 1fr 1fr auto;gap:12px;align-items:start}
+.filters label{font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;display:block;margin-bottom:4px}
+input[type=text],input[type=number]{width:100%;padding:7px 9px;border:1px solid var(--br);border-radius:6px;font:inherit}
+.chips{display:flex;flex-wrap:wrap;gap:5px;max-height:92px;overflow:auto}
+.chip{border:1px solid var(--br);background:#fff;border-radius:14px;padding:3px 10px;font-size:12px;cursor:pointer;color:var(--tx)}
+.chip.on{background:var(--p);color:#fff;border-color:var(--p)}
+button.act{background:var(--p);color:#fff;border:0;border-radius:6px;padding:8px 12px;cursor:pointer;font:inherit;margin-bottom:6px;display:block;width:100%}button.sec{background:#fff;color:var(--p);border:1px solid var(--p)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:14px 0}
+.kpi,.card{background:var(--card);border:1px solid var(--br);border-radius:10px;padding:12px 14px}
+.kpi small{color:var(--mu);font-size:11px;text-transform:uppercase;font-weight:700}.kpi div{font-size:20px;font-weight:700;color:var(--p);margin-top:2px;word-break:break-word}.kpi span{font-size:11.5px;color:var(--mu)}
+.grid{display:grid;grid-template-columns:1fr 1.4fr;gap:12px;margin-bottom:12px}.card h3{margin:0 0 8px;font-size:14px}
+.row{display:grid;grid-template-columns:minmax(120px,38%) 1fr auto;gap:8px;align-items:center;margin:3px 0;cursor:pointer;font-size:12px;padding:1px 3px;border-radius:4px}.row:hover{background:var(--p2)}.row.sel{background:var(--p2);outline:1px solid var(--p)}
+.row i{display:block;height:14px;border-radius:3px;background:var(--p)}.row em{font-style:normal;color:var(--mu);white-space:nowrap}.row span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.donut{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.donut svg{width:190px;height:190px;flex:none}.donut path{cursor:pointer;stroke:#fff;stroke-width:1.5}
+.lg div{font-size:12px;margin:3px 0;cursor:pointer}.lg b{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px}
+.tw{max-height:460px;overflow:auto}table{width:100%;border-collapse:collapse;font-size:12.5px}th{position:sticky;top:0;background:#eaf0f5;text-align:left;padding:7px 8px;cursor:pointer;white-space:nowrap}td{padding:5px 8px;border-bottom:1px solid #edf1f5}td.n,th.n{text-align:right}tfoot td{font-weight:700;background:#eaf0f5;position:sticky;bottom:0}
+footer{text-align:center;color:var(--mu);font-size:12px;padding:14px}
+@media(max-width:900px){.filters,.grid{grid-template-columns:1fr}.ct{text-align:left}}
+@media print{.filters,button{display:none}}
+</style></head><body>
+<header>
+<div class="ht"><h1>Cálculo de Recursos por Rubros</h1><p>Secretaría de Hacienda · Proyecto de Presupuesto 2027</p></div>
+</header>
+<main>
+<section class="filters">
+<div><label>Rubro (multi-selección)</label><div class="chips" id="fR"></div></div>
+<div><label>Subrubro (multi-selección)</label><div class="chips" id="fS"></div></div>
+<div><label>Buscar recurso o código</label><input type="text" id="q" placeholder="ej. tasa, 1212"></div>
+<div><label>Monto mínimo ($)</label><input type="number" id="mn" min="0" placeholder="0"></div>
+<div><button class="act" id="clr">Limpiar filtros</button></div>
+</section>
+<section class="kpis" id="kp"></section>
+<section class="grid"><div class="card"><h3>Participación por rubro <small style="color:var(--mu)">(clic para filtrar)</small></h3><div class="donut"><svg viewBox="-1 -1 2 2" id="dn"></svg><div class="lg" id="lg"></div></div></div>
+<div class="card"><h3>Recaudación por subrubro <small style="color:var(--mu)">(clic para filtrar)</small></h3><div id="bs" class="tw" style="max-height:230px"></div></div></section>
+<section class="grid" style="grid-template-columns:1fr 1.4fr"><div class="card"><h3>Top 10 recursos</h3><div id="tp"></div></div>
+<div class="card"><h3>Detalle de recursos <small style="color:var(--mu)">(clic en encabezado para ordenar)</small></h3><div class="tw"><table><thead><tr id="th"></tr></thead><tbody id="tb"></tbody><tfoot id="tf"></tfoot></table></div></div></section>
+</main>
+<script>
+const D=[["1140100", "Ingresos Tributarios", "Coparticipación de impuestos", "Coparticipación Pcial. de Impuesto Ley 10.559", 27341209679.09], ["1140300", "Ingresos Tributarios", "Coparticipación de impuestos", "Descentralizacion Tributaria", 248241820.74], ["1140400", "Ingresos Tributarios", "Coparticipación de impuestos", "Coparticipacion Juegos de Azar", 357786400.15], ["1140500", "Ingresos Tributarios", "Coparticipación de impuestos", "Fondos Programas Sociales", 274165928.4], ["1140700", "Ingresos Tributarios", "Coparticipación de impuestos", "Fondo para el fortalecimiento de Recursos Municipales", 1462303644.99], ["1140800", "Ingresos Tributarios", "Coparticipación de impuestos", "Fondo Municipal de Inclusión social", 392495769.22], ["1141000", "Ingresos Tributarios", "Coparticipación de impuestos", "Fondo Educativo 40% DGE", 628093494.75], ["1141100", "Ingresos Tributarios", "Coparticipación de impuestos", "Fondo Educativo", 962525614.32], ["1190100", "Ingresos Tributarios", "Otros tributarios", "Impuesto a los Automotores", 275283875.06], ["1210100", "Ingresos No Tributarios", "Tasas", "Tasa por Servicios Urbanos", 5716182618.16], ["1210200", "Ingresos No Tributarios", "Tasas", "Servicios especiales de limpieza e Higiene", 50000000], ["1210300", "Ingresos No Tributarios", "Tasas", "Tasa por Conservacion de Accesos a zonas sin urbanizar", 8312695.33], ["1210400", "Ingresos No Tributarios", "Tasas", "Habilitación de comercios e industrias", 159885106.89], ["1210500", "Ingresos No Tributarios", "Tasas", "Inspección de seguridad e higiene", 1687751812.19], ["1211100", "Ingresos No Tributarios", "Tasas", "Servicios Asistenciales", 830807644.29], ["1211400", "Ingresos No Tributarios", "Tasas", "Tasas por Servicios Varios", 479382900], ["1211500", "Ingresos No Tributarios", "Tasas", "Servicios Sanitarios", 2287255522.02], ["1211600", "Ingresos No Tributarios", "Tasas", "Promoción Turística", 713041815.77], ["1211700", "Ingresos No Tributarios", "Tasas", "Ingresos Varios", 79003443.18], ["1211900", "Ingresos No Tributarios", "Tasas", "Tasa para Bomberos", 215518407.74], ["1212100", "Ingresos No Tributarios", "Tasas", "Tasa por Seguridad de Playa", 1288974582.16], ["1212400", "Ingresos No Tributarios", "Tasas", "Tasa de Seguridad", 1430345490.55], ["1212500", "Ingresos No Tributarios", "Tasas", "Tasa de Salud", 2747358469.97], ["1212600", "Ingresos No Tributarios", "Tasas", "Tasa de Disposición Final de Residuos", 2098872631.21], ["1212700", "Ingresos No Tributarios", "Tasas", "Grandes Generadores de residuos", 175273488.05], ["1212800", "Ingresos No Tributarios", "Tasas", "Tasa Cementerio Tit XXI Ord. 2156", 171822365.29], ["1213000", "Ingresos No Tributarios", "Tasas", "Tasa por Factibilidad Antenas", 90000000], ["1213100", "Ingresos No Tributarios", "Tasas", "Tasa por Inspeccion Antenas", 90000000], ["1213200", "Ingresos No Tributarios", "Tasas", "Tasa por Contribucion Unificada Grandes Contribuyentes", 18330000], ["1213400", "Ingresos No Tributarios", "Tasas", "Tasa Atencion Pacientes con Alta Complejidad", 114026471.93], ["1213600", "Ingresos No Tributarios", "Tasas", "Fondo de Infraestructura 2018", 1614394050.16], ["1213700", "Ingresos No Tributarios", "Tasas", "Fdo. Maq. Viales", 1434138750.89], ["1213900", "Ingresos No Tributarios", "Tasas", "Fondo Construccion Hospital Municipal", 2029601276.94], ["1214000", "Ingresos No Tributarios", "Tasas", "Tasa Turistica Cultura, Educacion y Deportes", 81853908.34], ["1214200", "Ingresos No Tributarios", "Tasas", "Tasa por Contribucion al Desarrollo Urbano", 141160418.42], ["1214300", "Ingresos No Tributarios", "Tasas", "Tasa Visado Articulo 247 Codigo Tributario", 288522198.29], ["1214400", "Ingresos No Tributarios", "Tasas", "Tasa a los Combustibles Mantenimiento Red Vial", 1275021000], ["1220100", "Ingresos No Tributarios", "Derechos", "Espectáculos públicos", 70070546.73], ["1220300", "Ingresos No Tributarios", "Derechos", "Publicidad y propaganda", 300709067.87], ["1220500", "Ingresos No Tributarios", "Derechos", "Derecho de Ocupacion por uso espacio publico", 217303810.81], ["1220600", "Ingresos No Tributarios", "Derechos", "Espectaculos Publicos", 80000000], ["1220700", "Ingresos No Tributarios", "Derechos", "De Conexión a la Red Agua Corriente", 85300000], ["1220800", "Ingresos No Tributarios", "Derechos", "Cementerio", 65000000], ["1221000", "Ingresos No Tributarios", "Derechos", "Patentes de Rodados", 22452061.82], ["1221100", "Ingresos No Tributarios", "Derechos", "Derechos de Construcción", 232920507.17], ["1221200", "Ingresos No Tributarios", "Derechos", "de oficina", 477078447.84], ["1221400", "Ingresos No Tributarios", "Derechos", "Arancelamiento Museo", 15000000], ["1221600", "Ingresos No Tributarios", "Derechos", "Canon por Concesiones de Unidades Truisticas Fiscales", 130631687.02], ["1221900", "Ingresos No Tributarios", "Derechos", "Canon Venta Ambulante en Playa Ordenanza 2510", 6324576.08], ["1222200", "Ingresos No Tributarios", "Derechos", "Canon Venta en Playa Ord.2050 Ordinarios", 56921184.68], ["1260100", "Ingresos No Tributarios", "Multas", "Multas por contravenciones", 720238325.97], ["1260200", "Ingresos No Tributarios", "Multas", "Infracción a las Obligaciones Fiscales", 936388357.9], ["1260800", "Ingresos No Tributarios", "Multas", "Infracciones Tasa por Promoción Turistica", 23643359.3], ["1261300", "Ingresos No Tributarios", "Multas", "Multas Seguridad Vial", 683298114.32], ["1291600", "Ingresos No Tributarios", "Otros", "Plan Nacer", 94269611.96], ["1291700", "Ingresos No Tributarios", "Otros", "Gravamen Ley 11769 Art. 75", 1692000000], ["1620100", "Rentas de la propiedad", "Intereses por depósitos", "Intereses por depósitos internos", 24355486.88], ["1710300", "Transferencias corrientes", "Del sector privado", "De empresas privadas", 420000000], ["1750100", "Transferencias corrientes", "De gobiernos e instituciones provinciales y municipales", "De gobiernos provinciales", 652320648.91], ["1750500", "Transferencias corrientes", "De gobiernos e instituciones provinciales y municipales", "Programa Operadores de Calle", 50748912.01], ["2111400", "Recursos propios de capital", "Venta de activos", "Venta de Lotes con Servicios", 185404580.53], ["3370100", "Recuperación de préstamos de corto plazo", "De empresas públicas no financieras", "Anticipo Jubilatorio", 86605155.23], ["3510100", "Disminución de otros activos financieros", "De disponibilidades", "De caja y bancos", 786780000]].map(r=>({c:r[0],r:r[1],s:r[2],n:r[3],v:r[4]}));
+const $=i=>document.getElementById(i),F=new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:0}),
+M=v=>v>=1e9?'$ '+(v/1e9).toLocaleString('es-AR',{maximumFractionDigits:2})+' mil M':'$ '+(v/1e6).toLocaleString('es-AR',{maximumFractionDigits:1})+' M',
+P=v=>(v*100).toLocaleString('es-AR',{maximumFractionDigits:1})+'%',
+COL=['#0b5c8e','#e07a1f','#2a9d6f','#8e44ad','#c0392b','#16a2b8','#b8a100','#6c7a89','#d35d8a'],
+TOT=D.reduce((a,x)=>a+x.v,0),RS=[...new Set(D.map(x=>x.r))],SS=[...new Set(D.map(x=>x.s))];
+let st={R:new Set,S:new Set,q:'',mn:0,k:'v',d:-1};
+const tog=(s,v)=>s.has(v)?s.delete(v):s.add(v);
+const rc=r=>COL[RS.indexOf(r)%COL.length],esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const sum=(a,k)=>{const m={};a.forEach(x=>m[x[k]]=(m[x[k]]||0)+x.v);return Object.entries(m).sort((a,b)=>b[1]-a[1])};
+function filt(skip){return D.filter(x=>(skip=='R'||!st.R.size||st.R.has(x.r))&&(skip=='S'||!st.S.size||st.S.has(x.s))&&x.v>=st.mn&&(!st.q||(x.n+' '+x.c+' '+x.s+' '+x.r).toLowerCase().includes(st.q)))}
+function bars(el,data,key,sel,color){const mx=Math.max(1,...data.map(d=>d[1]));el.innerHTML=data.map(d=>`<div class="row ${sel&&sel.has(d[0])?'sel':''}" data-k="${esc(d[0])}" title="${esc(d[0])}: ${F.format(d[1])}"><span>${esc(d[0])}</span><i style="width:${d[1]/mx*100}%;background:${color?color(d[0]):'var(--p)'}"></i><em>${M(d[1])}</em></div>`).join('')||'<p style="color:var(--mu)">Sin datos</p>';
+ if(key)el.querySelectorAll('.row').forEach(e=>e.onclick=()=>{tog(st[key],e.dataset.k);draw()})}
+function draw(){
+ $('fR').innerHTML=RS.map(r=>`<span class="chip ${st.R.has(r)?'on':''}" data-v="${esc(r)}">${esc(r)}</span>`).join('');
+ const vs=[...new Set(D.filter(x=>!st.R.size||st.R.has(x.r)).map(x=>x.s))];[...st.S].forEach(s=>{if(!vs.includes(s))st.S.delete(s)});
+ $('fS').innerHTML=vs.map(r=>`<span class="chip ${st.S.has(r)?'on':''}" data-v="${esc(r)}">${esc(r)}</span>`).join('');
+ $('fR').querySelectorAll('.chip').forEach(e=>e.onclick=()=>{tog(st.R,e.dataset.v);draw()});
+ $('fS').querySelectorAll('.chip').forEach(e=>e.onclick=()=>{tog(st.S,e.dataset.v);draw()});
+ const f=filt(),T=f.reduce((a,x)=>a+x.v,0),mx=f.reduce((a,x)=>x.v>a.v?x:a,{v:0,n:'—'});
+ $('kp').innerHTML=[['Total recursos',M(T),F.format(T)],['% del total general',P(T/TOT),'de '+M(TOT)],['Cantidad de recursos',f.length,'de '+D.length],['Rubros / Subrubros',new Set(f.map(x=>x.r)).size+' / '+new Set(f.map(x=>x.s)).size,''],['Recurso mayor',f.length?M(mx.v):'—',mx.n],['Promedio por recurso',f.length?M(T/f.length):'—','']].map(k=>`<div class="kpi"><small>${k[0]}</small><div>${k[1]}</div><span>${esc(k[2])}</span></div>`).join('');
+ const rr=sum(filt('R'),'r'),rt=rr.reduce((a,x)=>a+x[1],0);let a0=-Math.PI/2;
+ $('dn').innerHTML=rr.map(([k,v])=>{const a=v/(rt||1)*2*Math.PI,a1=a0+Math.min(a,6.2830),l=a>Math.PI?1:0,p=`M${Math.cos(a0)} ${Math.sin(a0)}A1 1 0 ${l} 1 ${Math.cos(a1)} ${Math.sin(a1)}L${Math.cos(a1)*.58} ${Math.sin(a1)*.58}A.58 .58 0 ${l} 0 ${Math.cos(a0)*.58} ${Math.sin(a0)*.58}Z`;a0+=a;return`<path d="${p}" fill="${rc(k)}" data-k="${esc(k)}" opacity="${st.R.size&&!st.R.has(k)?.35:1}"><title>${esc(k)}: ${F.format(v)}</title></path>`}).join('');
+ $('lg').innerHTML=rr.map(([k,v])=>`<div data-k="${esc(k)}"><b style="background:${rc(k)}"></b>${esc(k)} <em style="color:var(--mu);font-style:normal">${P(v/rt)}</em></div>`).join('');
+ document.querySelectorAll('#dn path,#lg div').forEach(e=>e.onclick=()=>{tog(st.R,e.dataset.k);draw()});
+ bars($('bs'),sum(filt('S'),'s'),'S',st.S);
+ bars($('tp'),f.slice().sort((a,b)=>b.v-a.v).slice(0,10).map(x=>[x.n,x.v]),null,null,null);
+ const H=[['c','Código'],['r','Rubro'],['s','Subrubro'],['n','Recurso'],['v','Monto','n'],['p','% filtrado','n']];
+ $('th').innerHTML=H.map(h=>`<th class="${h[2]||''}" data-k="${h[0]}">${h[1]}${st.k==h[0]?(st.d>0?' ▲':' ▼'):''}</th>`).join('');
+ $('th').querySelectorAll('th').forEach(e=>e.onclick=()=>{const k=e.dataset.k=='p'?'v':e.dataset.k;st.d=st.k==k?-st.d:(k=='v'?-1:1);st.k=k;draw()});
+ const g=f.slice().sort((a,b)=>(a[st.k]>b[st.k]?1:-1)*st.d);
+ $('tb').innerHTML=g.map(x=>`<tr><td>${x.c}</td><td>${esc(x.r)}</td><td>${esc(x.s)}</td><td>${esc(x.n)}</td><td class="n">${F.format(x.v)}</td><td class="n">${P(x.v/(T||1))}</td></tr>`).join('');
+ $('tf').innerHTML=`<tr><td colspan="4">Total (${g.length} recursos)</td><td class="n">${F.format(T)}</td><td class="n">${T?'100%':'—'}</td></tr>`}
+$('q').oninput=e=>{st.q=e.target.value.toLowerCase().trim();draw()};
+$('mn').oninput=e=>{st.mn=+e.target.value||0;draw()};
+$('clr').onclick=()=>{st.R.clear();st.S.clear();st.q='';st.mn=0;$('q').value='';$('mn').value='';draw()};
+draw();
+</script></body></html>

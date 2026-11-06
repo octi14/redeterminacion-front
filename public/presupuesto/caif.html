@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CAIF 2027 · Municipalidad de Villa Gesell</title>
+<style>
+:root{--bg:#f1f5f9;--card:#fff;--tx:#0f172a;--mu:#64748b;--pr:#0b4f8a;--bd:#e2e8f0}
+*{box-sizing:border-box}body{margin:0;font:14px system-ui,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--tx)}
+header{background:#0c681a;color:#fff;padding:18px max(24px, calc(50% - 700px))}
+header h1{margin:0;font:700 22px/1.25 "Segoe UI",system-ui,sans-serif}header p{margin:4px 0 0;opacity:.9;font-size:14px}
+.ct{margin-left:auto;font-size:12.5px;line-height:1.6;text-align:right}
+main{padding:16px 24px;max-width:1300px;margin:auto}
+.bar{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:12px;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end}
+.bar label{font-size:11px;color:var(--mu);display:block;margin-bottom:3px;font-weight:600}
+select,input[type=text],input[type=number]{padding:6px 8px;border:1px solid #cbd5e1;border-radius:6px;font:inherit;min-width:150px}
+button{padding:7px 12px;border:0;border-radius:6px;background:var(--pr);color:#fff;cursor:pointer;font:inherit}button.g{background:#475569}
+.chips{margin:8px 0;min-height:22px}.chip{display:inline-block;background:#dbeafe;color:#1e3a8a;padding:2px 9px;border-radius:12px;margin-right:6px;font-size:12px;cursor:pointer}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:10px 0}
+.k{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:12px;border-left:5px solid var(--pr)}
+.k small{color:var(--mu);display:block}.k b{font-size:19px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:12px;overflow:auto}
+.card h3{margin:0 0 8px;font-size:14px}
+.row{display:flex;align-items:center;gap:8px;margin:4px 0;cursor:pointer;font-size:12px}.row:hover{background:#f1f5f9}.row.off{opacity:.35}
+.row .n{width:200px;flex:none}.row .b{flex:1;background:#e2e8f0;border-radius:4px;height:16px}.row .b i{display:block;height:100%;border-radius:4px}.row .v{width:120px;text-align:right;flex:none}
+table{width:100%;border-collapse:collapse;font-size:12.5px}th,td{padding:6px;border-bottom:1px solid var(--bd);text-align:left}th{cursor:pointer;background:#f8fafc}td.r,th.r{text-align:right}
+footer{text-align:center;color:var(--mu);padding:16px;font-size:12px}
+.leg{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.leg div{font-size:12px;cursor:pointer}.leg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px}
+</style></head><body>
+<header>
+<div><h1>Cuenta Ahorro Inversión Financiamiento 2027</h1>
+<p>Secretaría de Hacienda · Presupuesto 2027 · Valores en pesos argentinos ($)</p></div>
+</header>
+<main>
+<div class="bar">
+<div><label>Tipo</label><select id="fT"></select></div>
+<div><label>Sección</label><select id="fS"></select></div>
+<div><label>Naturaleza</label><select id="fG"></select></div>
+<div><label>Concepto (buscar)</label><input type="text" id="fQ" placeholder="ej. Transferencias"></div>
+<div><label>Monto mínimo ($)</label><input type="number" id="fM" min="0" placeholder="0"></div>
+<div><label>Unidad</label><select id="fU"><option value="1">Pesos</option><option value="1e6">Millones</option></select></div>
+<button class="g" id="rs">Limpiar filtros</button>
+</div>
+<div class="chips" id="chips"></div>
+<div class="kpis" id="kpis"></div>
+<div class="grid">
+<div class="card"><h3>Montos por concepto (clic para filtrar)</h3><div id="bars"></div></div>
+<div class="card"><h3>Participación por sección (clic para filtrar)</h3><svg id="pie" viewBox="0 0 260 200" width="100%" height="200"></svg><div class="leg" id="leg"></div></div>
+</div>
+<div class="card" style="margin-top:12px"><h3>Detalle</h3><table id="tb"></table></div>
+</main>
+<script>
+const D=[
+["Ingreso","I. Ingresos corrientes","Corriente","Ingresos no tributarios",33226386727.24],
+["Ingreso","I. Ingresos corrientes","Corriente","Ingresos tributarios",31942106226.72],
+["Ingreso","I. Ingresos corrientes","Corriente","Rentas de la propiedad",24355486.88],
+["Ingreso","I. Ingresos corrientes","Corriente","Transferencias corrientes",1123069560.92],
+["Gasto","II. Gastos corrientes","Corriente","Gastos de consumo",58574062518.36],
+["Gasto","II. Gastos corrientes","Corriente","Transferencias corrientes",680127491.22],
+["Ingreso","IV. Recursos de capital","Capital","Disminución de la inversión financiera",86605155.23],
+["Ingreso","IV. Recursos de capital","Capital","Recursos propios de capital",185404580.53],
+["Gasto","V. Gastos de capital","Capital","Inversión real directa",5174491209.39],
+["Gasto","V. Gastos de capital","Capital","Transferencias de capital",1200000],
+["Fuente financiera","IX. Fuentes financieras","Financiera","Disminución de la inversión financiera",786780000],
+["Aplicación financiera","X. Aplicaciones financieras","Financiera","Amortización de la deuda y disminución de otros pasivos",2944826518.55]
+].map(r=>({t:r[0],s:r[1],g:r[2],c:r[3],m:r[4]}));
+const COL=["#0b4f8a","#dc2626","#0e7490","#d97706","#7c3aed","#16a34a"];
+const $=id=>document.getElementById(id);
+const F={t:"",s:"",g:"",q:"",m:0,c:""};let sort={k:"m",d:-1};
+const uniq=k=>[...new Set(D.map(r=>r[k]))];
+function opts(id,k,lbl){$(id).innerHTML='<option value="">'+lbl+'</option>'+uniq(k).map(v=>`<option>${v}</option>`).join("")}
+opts("fT","t","Todos");opts("fS","s","Todas");opts("fG","g","Todas");
+const u=()=>+$("fU").value;
+const fmt=v=>u()==1?"$ "+v.toLocaleString("es-AR",{maximumFractionDigits:0}):"$ "+(v/1e6).toLocaleString("es-AR",{maximumFractionDigits:1})+" M";
+const flt=()=>D.filter(r=>(!F.t||r.t==F.t)&&(!F.s||r.s==F.s)&&(!F.g||r.g==F.g)&&(!F.c||r.c==F.c)&&r.c.toLowerCase().includes(F.q.toLowerCase())&&r.m>=F.m);
+const sum=a=>a.reduce((x,r)=>x+r.m,0);
+function render(){
+const d=flt(),ing=sum(d.filter(r=>r.t=="Ingreso")),gas=sum(d.filter(r=>r.t=="Gasto"));
+const ic=sum(d.filter(r=>r.t=="Ingreso"&&r.g=="Corriente")),gc=sum(d.filter(r=>r.t=="Gasto"&&r.g=="Corriente"));
+const fu=sum(d.filter(r=>r.t=="Fuente financiera")),ap=sum(d.filter(r=>r.t=="Aplicación financiera"));
+const K=[["Ingresos totales",ing],["Gastos totales",gas],["Ahorro corriente (I − II)",ic-gc],["Resultado financiero (VI − VII)",ing-gas],["Fuentes financieras",fu],["Aplicaciones financieras",ap],["Resultado final (incl. financiamiento)",ing-gas+fu-ap]];
+$("kpis").innerHTML=K.map(([n,v],i)=>`<div class="k" style="border-color:${COL[i%6]}"><small>${n}</small><b style="color:${v<0?'#dc2626':'inherit'}">${fmt(v)}</b></div>`).join("");
+$("chips").innerHTML=[["t","Tipo"],["s","Sección"],["g","Naturaleza"],["c","Concepto"]].filter(([k])=>F[k]).map(([k,l])=>`<span class="chip" data-k="${k}">${l}: ${F[k]} ✕</span>`).join("");
+// bars by concept (aggregate by tipo+concepto)
+const mx=Math.max(1,...d.map(r=>r.m)),ti=uniq("t");
+$("bars").innerHTML=[...d].sort((a,b)=>b.m-a.m).map(r=>`<div class="row ${F.c&&F.c!=r.c?'off':''}" data-c="${r.c}" title="${r.s}"><span class="n">${r.c}<br><small style="color:#64748b">${r.t}</small></span><span class="b"><i style="width:${Math.max(.5,r.m/mx*100)}%;background:${COL[ti.indexOf(r.t)]}"></i></span><span class="v">${fmt(r.m)}</span></div>`).join("")||"Sin datos para los filtros elegidos.";
+// donut by section
+const ss=uniq("s").map(s=>({s,v:sum(d.filter(r=>r.s==s))})).filter(x=>x.v>0),tot=sum(ss.map(x=>({m:x.v})))||1;let a=-Math.PI/2,p="";
+ss.forEach((x,i)=>{const b=a+x.v/tot*2*Math.PI-.0001,R=90,r=52,cx=100,cy=100,L=b-a>Math.PI?1:0,P=(q,n)=>[cx+q*Math.cos(n),cy+q*Math.sin(n)];
+const[a1,a2]=[P(R,a),P(R,b)],[b1,b2]=[P(r,b),P(r,a)];
+p+=`<path data-s="${x.s}" style="cursor:pointer;opacity:${F.s&&F.s!=x.s?.3:1}" fill="${COL[i%6]}" d="M${a1}A${R},${R} 0 ${L} 1 ${a2}L${b1}A${r},${r} 0 ${L} 0 ${b2}Z"><title>${x.s}: ${(x.v/tot*100).toFixed(1)}%</title></path>`;a=b});
+$("pie").innerHTML=p;
+$("leg").innerHTML=ss.map((x,i)=>`<div data-s="${x.s}"><i style="background:${COL[i%6]}"></i>${x.s} (${(x.v/tot*100).toFixed(1)}%)</div>`).join("");
+// table
+const rows=[...d].sort((x,y)=>(x[sort.k]>y[sort.k]?1:-1)*sort.d);
+const H=[["t","Tipo"],["s","Sección"],["g","Naturaleza"],["c","Concepto"],["m","Presupuestado"]];
+$("tb").innerHTML="<tr>"+H.map(([k,l])=>`<th class="${k=='m'?'r':''}" data-o="${k}">${l}${sort.k==k?(sort.d>0?' ▲':' ▼'):''}</th>`).join("")+"</tr>"+rows.map(r=>`<tr><td>${r.t}</td><td>${r.s}</td><td>${r.g}</td><td>${r.c}</td><td class="r">${fmt(r.m)}</td></tr>`).join("")+`<tr><th colspan="4">Total filtrado</th><th class="r">${fmt(sum(d))}</th></tr>`;
+}
+const tg=(k,v)=>{F[k]=F[k]==v?"":v;sync();render()};
+function sync(){$("fT").value=F.t;$("fS").value=F.s;$("fG").value=F.g}
+$("fT").onchange=e=>{F.t=e.target.value;render()};$("fS").onchange=e=>{F.s=e.target.value;render()};$("fG").onchange=e=>{F.g=e.target.value;render()};
+$("fQ").oninput=e=>{F.q=e.target.value;render()};$("fM").oninput=e=>{F.m=+e.target.value||0;render()};$("fU").onchange=render;
+$("rs").onclick=()=>{Object.assign(F,{t:"",s:"",g:"",q:"",m:0,c:""});$("fQ").value="";$("fM").value="";sync();render()};
+document.body.addEventListener("click",e=>{const x=e.target.closest("[data-c],[data-s],[data-k],[data-o]");if(!x)return;
+if(x.dataset.c)tg("c",x.dataset.c);else if(x.dataset.s)tg("s",x.dataset.s);else if(x.dataset.k){F[x.dataset.k]="";sync();render()}
+else if(x.dataset.o){sort={k:x.dataset.o,d:sort.k==x.dataset.o?-sort.d:1};render()}});
+render();
+</script></body></html>

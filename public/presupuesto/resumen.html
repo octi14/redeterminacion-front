@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proyecto de Presupuesto 2027 – Municipalidad de Villa Gesell</title>
+<style>
+:root{--bg:#f3eee1;--card:#fffdf7;--ink:#14323b;--mut:#5d6f74;--line:#d9d1bb;--sea:#0e4a5a;--pine:#2f6b45;--sun:#d99a1e;--sky:#4f8fa3;--hd:#0c681a;--hdt:#fff}
+@media(prefers-color-scheme:dark){:root{--bg:#10252b;--card:#173037;--ink:#ece6d4;--mut:#9db3b8;--line:#2c4a52;--sea:#6fb7cb;--pine:#7cc493;--sun:#e8b43f;--sky:#79b2c4;--hd:#0c681a;--hdt:#fff}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Segoe UI",system-ui,sans-serif}
+header{background:var(--hd);color:var(--hdt);padding:18px max(24px, calc(50% - 700px))}
+.hd{max-width:none;margin:0}
+h1{font:700 22px/1.25 "Segoe UI",system-ui,sans-serif;margin:0}
+.sub{margin:4px 0 0;opacity:.9;font-size:14px}
+main{max-width:1100px;margin:auto;padding:20px 24px 8px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.kpi small{color:var(--mut);display:block}
+.kpi b{font:700 26px/1.2 Georgia,serif;display:block;margin-top:2px}
+.kpi.big{grid-column:1/-1;border-left:6px solid var(--sun)}
+.kpi.big b{font-size:clamp(28px,5vw,46px)}
+section{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;margin-top:18px}
+h2{font:700 20px Georgia,serif;margin:0 0 4px}
+.hint{color:var(--mut);margin:0 0 12px;font-size:14px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+button.t{font:inherit;border:1px solid var(--line);background:transparent;color:var(--ink);padding:6px 14px;border-radius:20px;cursor:pointer}
+button.t[aria-pressed=true]{background:var(--sea);color:var(--bg);border-color:var(--sea)}
+button:focus-visible,input:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.bars{display:grid;gap:10px}
+.row{display:grid;grid-template-columns:minmax(130px,200px) 1fr 70px;gap:10px;align-items:center}
+.track{background:var(--bg);height:24px;border-radius:5px;overflow:hidden}
+.fill{height:100%;transition:width .35s}
+.row span.v{text-align:right;font-weight:700}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px}
+.ctl{display:grid;grid-template-columns:1fr 70px;gap:4px 10px;margin-bottom:10px;align-items:center}
+.ctl label{grid-column:1/-1;font-size:14px;color:var(--mut)}
+input[type=range]{width:100%}
+.out{background:var(--bg);border-radius:8px;padding:10px 12px;margin-top:8px}
+.out b{font-family:Georgia,serif}
+input[type=text]{font:inherit;padding:6px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);width:100%}
+.sol{display:grid;gap:8px}
+.sol div{border:1px solid var(--line);border-radius:8px;padding:8px 12px}
+.sol div.hide{display:none}
+.sol b{display:block}
+.sol span{color:var(--mut);font-size:14px}
+.cmp{display:flex;gap:24px;align-items:flex-end;height:190px;padding:6px 0}
+.cmp div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%}
+.cmp i{display:block;width:100%;max-width:120px;border-radius:6px 6px 0 0;transition:height .35s}
+.cmp small{margin-top:6px;text-align:center;font-size:13px}
+footer{background:var(--hd);color:var(--hdt);margin-top:24px;padding:20px 24px}
+.ft{max-width:1100px;margin:auto;display:flex;gap:10px 32px;flex-wrap:wrap;font-size:15px}
+.ft b{font-family:Georgia,serif}
+@media(max-width:560px){.row{grid-template-columns:1fr 60px}.row .track{grid-column:1/-1;grid-row:2}h1{font-size:22px}}
+@media print{button.t,input{display:none}}
+</style>
+</head>
+<body>
+<header><div class="hd">
+<div><h1>Proyecto de Presupuesto 2027</h1>
+<p class="sub">Secretaría de Hacienda · Presupuesto de Gastos y Cálculo de Recursos</p></div>
+</div></header>
+
+<main>
+<div class="kpis">
+<div class="kpi big"><small>Cálculo equilibrado de Recursos y Gastos (sin déficit ni superávit), Art. 31 LOM</small><b id="total"></b></div>
+<div class="kpi"><small>Gastos proyectados al 31-12-2026</small><b id="g26"></b></div>
+<div class="kpi"><small>Incremento declarado en el proyecto</small><b>33 %</b></div>
+<div class="kpi"><small>Presupuesto 2027 en U$S (al tipo de cambio de la simulación)</small><b id="usd"></b></div>
+<div class="kpi"><small>Salario mínimo garantizado, noviembre 2027</small><b id="smg"></b></div>
+</div>
+
+<section>
+<h2>Pautas macroeconómicas y base municipal</h2>
+<p class="hint">En “real” se descuenta la inflación prevista.</p>
+<div class="tabs" id="modo">
+<button class="t" data-m="nom" aria-pressed="true">Nominal</button>
+<button class="t" data-m="real" aria-pressed="false">Real (sin inflación)</button>
+</div>
+<div class="bars" id="bars"></div>
+</section>
+
+<div class="grid2">
+<section>
+<h2>Simulador</h2>
+<div class="ctl"><label for="inf">Inflación prevista 2027</label><input id="inf" type="range" min="0" max="60" step="0.5" value="18"><b id="infv"></b></div>
+<div class="ctl"><label for="sal">Incremento anual de básicos salariales</label><input id="sal" type="range" min="0" max="60" step="0.5" value="30"><b id="salv"></b></div>
+<div class="ctl"><label for="mod">Incremento anual del Módulo Tributario</label><input id="mod" type="range" min="0" max="60" step="0.5" value="28"><b id="modv"></b></div>
+<div class="ctl"><label for="fx">Tipo de cambio al 31-12-2027 ($ por U$S)</label><input id="fx" type="range" min="1000" max="3500" step="5" value="1847.6"><b id="fxv"></b></div>
+<div class="out" id="sim"></div>
+</section>
+
+<section>
+<h2>Gastos: 2026 proyectado vs. Presupuesto 2027</h2>
+<p class="hint">Montos en millones de pesos.</p>
+<div class="cmp" id="cmp"></div>
+<div class="out" id="dif"></div>
+</section>
+</div>
+
+<section>
+<h2>Estructura del documento por solapa</h2>
+<input type="text" id="q" placeholder="Buscar solapa…" aria-label="Buscar solapa" style="margin-bottom:12px">
+<div class="sol" id="sol"></div>
+</section>
+
+<section>
+<h2>Marco normativo</h2>
+<ul style="margin:0;padding-left:20px">
+<li>Art. 109 del Decreto Ley 6769/58, Ley Orgánica de las Municipalidades de la Provincia de Buenos Aires.</li>
+<li>Decreto 2980/2000: Reforma de la Administración Financiera Municipal (RAFAM).</li>
+<li>Art. 15 del Anexo al Decreto 2980/2000: gastos del Departamento Deliberativo alineados con las pautas macroeconómicas.</li>
+<li>Gastos estructurados por programas, con recursos y gastos por sus montos íntegros, sin compensaciones.</li>
+</ul>
+</section>
+</main>
+
+<script>
+var TOTAL=67374707737.52,G26=52300000000,SMG=1300000;
+var $=function(i){return document.getElementById(i)};
+var nf=new Intl.NumberFormat("es-AR",{maximumFractionDigits:0}),nf2=new Intl.NumberFormat("es-AR",{minimumFractionDigits:2,maximumFractionDigits:2});
+var modo="nom";
+$("total").textContent="$ "+nf2.format(TOTAL);
+$("g26").textContent="$ "+nf.format(G26);
+$("smg").textContent="$ "+nf.format(SMG);
+
+function real(p,inf){return((1+p/100)/(1+inf/100)-1)*100}
+function bars(){
+ var inf=+$("inf").value,sal=+$("sal").value,mod=+$("mod").value;
+ var items=[
+  ["Inflación prevista",inf,"var(--sun)",0],
+  ["Crecimiento del PBI",4,"var(--sky)",1],
+  ["Básicos salariales",sal,"var(--sea)",0],
+  ["Módulo Tributario",mod,"var(--pine)",0],
+  ["Incremento del presupuesto",33,"var(--sea)",0]
+ ];
+ var h="",max=1;
+ var vals=items.map(function(x){var v=(modo=="real"&&x[3]==0&&x[0]!="Inflación prevista")?real(x[1],inf):x[1];if(modo=="real"&&x[0]=="Inflación prevista")v=0;if(modo=="real"&&x[3]==1)v=x[1];return v});
+ vals.forEach(function(v){max=Math.max(max,Math.abs(v))});
+ items.forEach(function(x,i){
+  var v=vals[i];
+  h+='<div class="row" title="'+x[0]+': '+v.toFixed(1)+'%"><span>'+x[0]+'</span><div class="track"><div class="fill" style="width:'+Math.max(0,Math.abs(v)/max*100)+'%;background:'+x[2]+'"></div></div><span class="v">'+v.toFixed(1).replace(".",",")+' %</span></div>';
+ });
+ $("bars").innerHTML=h;
+}
+function sim(){
+ var inf=+$("inf").value,sal=+$("sal").value,mod=+$("mod").value,fx=+$("fx").value;
+ $("infv").textContent=inf.toString().replace(".",",")+" %";
+ $("salv").textContent=sal.toString().replace(".",",")+" %";
+ $("modv").textContent=mod.toString().replace(".",",")+" %";
+ $("fxv").textContent="$ "+nf2.format(fx);
+ var rs=real(sal,inf),rm=real(mod,inf),usd=TOTAL/fx;
+ $("usd").textContent="U$S "+nf.format(usd);
+ $("sim").innerHTML="Salario real: <b>"+(rs>=0?"+":"")+rs.toFixed(1).replace(".",",")+" %</b> · Módulo Tributario real: <b>"+(rm>=0?"+":"")+rm.toFixed(1).replace(".",",")+" %</b><br>Presupuesto total: <b>U$S "+nf.format(usd)+"</b><br>Salario mínimo garantizado: <b>U$S "+nf.format(SMG/fx)+"</b>";
+ bars();
+}
+["inf","sal","mod","fx"].forEach(function(i){$(i).addEventListener("input",sim)});
+document.querySelectorAll("#modo button").forEach(function(b){b.addEventListener("click",function(){
+ modo=b.dataset.m;document.querySelectorAll("#modo button").forEach(function(x){x.setAttribute("aria-pressed",x===b)});bars();})});
+
+var mx=Math.max(TOTAL,G26);
+$("cmp").innerHTML=[["2026 proyectado",G26,"var(--sky)"],["Presupuesto 2027",TOTAL,"var(--sea)"]].map(function(x){
+ return '<div title="'+x[0]+'"><i style="height:'+(x[1]/mx*150)+'px;background:'+x[2]+'"></i><small><b>'+nf.format(x[1]/1e6)+'</b><br>'+x[0]+'</small></div>'}).join("");
+$("dif").innerHTML="Diferencia: <b>$ "+nf.format((TOTAL-G26)/1e6)+" millones</b> (el documento declara un incremento de 33 %)";
+
+var SOL=[
+["Solapa 1","Presupuesto de Recursos por Rubros","recursos rubros procedencia naturaleza económica"],
+["Solapa 2","Distribución del Presupuesto por Objeto del Gasto","gastos objeto partida principal"],
+["Solapa 3","Distribución del Presupuesto de Gastos por Categoría Programática","gastos categoría programática programas"],
+["Solapa 4","Distribución del Gasto por Finalidad y Función","gastos finalidad función"],
+["Solapa 5","Cuenta de Ahorro Inversión Financiamiento","ahorro inversión financiamiento cuenta"],
+["Solapa 6","Proyección mínima de la evolución del Salario Municipal","salario personal básicos mínimos"]];
+function sol(){
+ var q=$("q").value.toLowerCase();
+ $("sol").innerHTML=SOL.map(function(s){var ok=!q||(s.join(" ").toLowerCase().indexOf(q)>-1);
+  return '<div class="'+(ok?"":"hide")+'"><b>'+s[0]+'</b><span>'+s[1]+'</span></div>'}).join("");
+}
+$("q").addEventListener("input",sol);
+sim();sol();
+</script>
+</body>
+</html>

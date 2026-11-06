@@ -43,7 +43,14 @@ export const useAbiertoAnualStore = defineStore('abiertoAnual', {
       try {
         this.setSingle(await AbiertoAnualService.update(useApi(), id, { tramite }))
       } catch (e) {
-        throw new Error(e.message)
+        const msg =
+          e?.response?.data?.message ||
+          e?.data?.message ||
+          e?.message ||
+          'Error al actualizar abierto anual'
+        const err = new Error(msg)
+        err.response = e?.response || e
+        throw err
       }
     },
 

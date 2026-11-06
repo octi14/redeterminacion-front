@@ -2,8 +2,11 @@
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Presupuesto 2027 · Gasto por Objeto · Municipalidad de Villa Gesell</title>
 <style>
-:root{--bg:#f8f9fa;--cd:#fff;--tx:#353535;--mu:#6c757d;--bd:#dee2e6;--ac:#0c681a;--ac2:rgba(12,104,26,.12)}
-*{box-sizing:border-box}html{color-scheme:light}body{margin:0;font:14px/1.4 system-ui,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--tx)}
+:root{--bg:#f3f5f8;--cd:#fff;--tx:#17212b;--mu:#5b6b7a;--bd:#dde3ea;--ac:#0b5c8a;--ac2:#e3eff8}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1720;--cd:#18232f;--tx:#e8edf2;--mu:#98a8b8;--bd:#2a3846;--ac:#5db4e6;--ac2:#1c3347}}
+*{box-sizing:border-box}body{margin:0;font:14px/1.4 system-ui,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--tx)}
+header{background:#0c681a;color:#fff;padding:18px max(24px, calc(50% - 700px))}
+header h1{margin:0;font:700 22px/1.25 "Segoe UI",system-ui,sans-serif}header p{margin:4px 0 0;opacity:.9;font-size:14px}header .lema{font-weight:600;margin-top:6px}
 main{max-width:1400px;margin:auto;padding:16px 20px}
 .card{background:var(--cd);border:1px solid var(--bd);border-radius:10px;padding:14px;min-width:0}
 .card h2{margin:0 0 10px;font-size:12px;color:var(--mu);text-transform:uppercase;letter-spacing:.05em}
@@ -23,15 +26,17 @@ button{font:inherit;cursor:pointer}
 .tw{max-height:420px;overflow:auto}table{border-collapse:collapse;width:100%}th,td{padding:6px 8px;text-align:left;border-bottom:1px solid var(--bd);font-size:13px}
 th{position:sticky;top:0;background:var(--cd);cursor:pointer;white-space:nowrap}td.r,th.r{text-align:right}tr[data-k]{cursor:pointer}tr.on td{background:var(--ac2)}tr[data-k]:hover td{background:var(--ac2)}
 .af{font-size:12px;color:var(--mu);margin:6px 0 0}.pa svg{width:100%;height:auto}.pa rect{cursor:pointer}
+footer{background:#08405f;color:#fff;padding:18px 28px;margin-top:10px;font-size:13px}footer a{color:#bfe6ff}footer .n{opacity:.75;font-size:11px;margin-top:8px}
 @media print{.np{display:none!important}body{background:#fff}}
 </style></head><body>
+<header><h1>Gasto por objeto</h1><p>Secretaría de Hacienda · Ejercicio fiscal 2027 · Importes en pesos argentinos</p></header>
 <main>
 <section class="card np g" style="display:grid">
  <div class="fr"><label>Buscar partida / código<input type="search" id="q" placeholder="ej. combustibles, 3.3"></label>
   <label>Monto mínimo (millones $)<input type="number" id="mn" min="0" step="10"></label>
   <label>Monto máximo (millones $)<input type="number" id="mx" min="0" step="10"></label>
   <label>Participación mínima: <b id="pv">0,0%</b><input type="range" id="pc" min="0" max="12" step="0.1" value="0"></label>
-  <button class="btn p" id="rs">Limpiar filtros</button><button class="btn" id="csv">Exportar CSV</button><button class="btn" onclick="print()">Imprimir</button></div>
+  <button class="btn p" id="rs">Limpiar filtros</button></div>
  <div><span class="af">Inciso (objeto del gasto) — se pueden combinar varios</span><div class="fl" id="chInc"></div></div>
  <div><span class="af">Carácter económico</span><div class="fl" id="chCar"></div></div>
  <div class="af" id="af"></div>
@@ -52,7 +57,7 @@ const nf=new Intl.NumberFormat('es-AR',{maximumFractionDigits:1});
 const short=v=>v>=1e9?'$ '+nf.format(v/1e9)+' mil M':v>=1e6?'$ '+nf.format(v/1e6)+' M':fmt.format(v);
 const sum=a=>a.reduce((s,r)=>s+r.m,0),TOT=sum(D);
 const pct=v=>nf.format(v*100)+'%';
-const COL=['#28a745','#17a2b8','#ffc107','#e53749','#9966FF','#e27910'];
+const COL=['#0b5c8a','#e07a1f','#2a9d8f','#8e5ea2','#c8553d','#6b8e23'];
 const incs=Object.keys(META.inc),cols={};incs.forEach((k,i)=>cols[k]=COL[i%6]);
 const CARS=['Corriente','Capital','Aplicaciones financieras'];
 const S={inc:new Set(),car:new Set(),sel:new Set(),q:'',min:0,max:Infinity,pct:0,sort:'c',dir:1};
@@ -84,7 +89,7 @@ function render(){
   const bw=(W-L-40)/n,ph=H-B-10;let c=0,pts=[];
   const bs=P.map((r,i)=>{c+=r.m;const h=r.m/P[0].m*ph,x=L+i*bw;pts.push((x+bw/2).toFixed(1)+','+(10+ph*(1-c/tot)).toFixed(1));return `<rect data-k="sel" data-v="${r.c}" x="${x.toFixed(1)}" y="${(10+ph-h).toFixed(1)}" width="${Math.max(bw-1.5,1).toFixed(1)}" height="${h.toFixed(1)}" fill="${cols[r.i]}" opacity="${!S.sel.size||S.sel.has(r.c)?1:.3}"><title>${r.c} ${r.n}: ${fmt.format(r.m)}</title></rect>`}).join('');
   const y80=10+ph*.2;
-  $('#pa').innerHTML=`<svg viewBox="0 0 ${W} ${H}">${bs}<polyline points="${pts.join(' ')}" fill="none" stroke="#e53749" stroke-width="2"/><line x1="${L}" x2="${W-40}" y1="${y80}" y2="${y80}" stroke="currentColor" stroke-dasharray="4 4" opacity=".5"/>${[0,50,100].map(p=>`<text x="${L-6}" y="${(10+ph*(1-p/100)+4).toFixed(0)}" text-anchor="end" font-size="10" fill="currentColor">${p}%</text>`).join('')}<text x="${L}" y="${H-8}" font-size="10" fill="currentColor">Partidas ordenadas de mayor a menor monto (${n})</text></svg>`}
+  $('#pa').innerHTML=`<svg viewBox="0 0 ${W} ${H}">${bs}<polyline points="${pts.join(' ')}" fill="none" stroke="#c0392b" stroke-width="2"/><line x1="${L}" x2="${W-40}" y1="${y80}" y2="${y80}" stroke="currentColor" stroke-dasharray="4 4" opacity=".5"/>${[0,50,100].map(p=>`<text x="${L-6}" y="${(10+ph*(1-p/100)+4).toFixed(0)}" text-anchor="end" font-size="10" fill="currentColor">${p}%</text>`).join('')}<text x="${L}" y="${H-8}" font-size="10" fill="currentColor">Partidas ordenadas de mayor a menor monto (${n})</text></svg>`}
  // tabla
  const key={c:r=>r.c,n:r=>r.n,i:r=>r.i,k:r=>r.k,m:r=>r.m,p:r=>r.m}[S.sort];
  F.sort((a,b)=>{const x=key(a),y=key(b);return (x<y?-1:x>y?1:0)*S.dir});
@@ -93,7 +98,7 @@ function render(){
  $('#tf').innerHTML=`<tr><th colspan="4">Total filtrado</th><th class="r">${fmt.format(tot)}</th><th class="r">${pct(tot/TOT)}</th></tr>`;
  $('#cnt').textContent='· '+F.length+' de '+D.length+' partidas';
  const af=[];if(S.inc.size)af.push('Inciso: '+[...S.inc].join(', '));if(S.car.size)af.push('Carácter: '+[...S.car].join(', '));if(S.sel.size)af.push('Partidas seleccionadas: '+S.sel.size);if(S.q)af.push('Texto: "'+S.q+'"');if(S.min>0)af.push('Mín. '+short(S.min));if(S.max<Infinity)af.push('Máx. '+short(S.max));if(S.pct>0)af.push('Participación ≥ '+nf.format(S.pct)+'%');
- $('#af').textContent=af.length?'Filtros activos: '+af.join(' · '):'Sin filtros activos: se muestra el presupuesto completo. Hacé clic en gráficos, barras o filas para filtrar.';
+ $('#af').textContent=af.length?'Filtros activos: '+af.join(' · '):'Sin filtros activos.';
 }
 document.addEventListener('click',e=>{const t=e.target.closest('[data-k]');if(t){const s=S[t.dataset.k],v=t.dataset.v;s.has(v)?s.delete(v):s.add(v);render();return}
  const h=e.target.closest('th[data-s]');if(h){S.dir=S.sort==h.dataset.s?-S.dir:(h.dataset.s=='m'||h.dataset.s=='p'?-1:1);S.sort=h.dataset.s;render()}});
@@ -102,6 +107,5 @@ $('#mn').oninput=e=>{S.min=(parseFloat(e.target.value)||0)*1e6;render()};
 $('#mx').oninput=e=>{const v=parseFloat(e.target.value);S.max=isNaN(v)?Infinity:v*1e6;render()};
 $('#pc').oninput=e=>{S.pct=parseFloat(e.target.value);$('#pv').textContent=nf.format(S.pct).replace(/^(\d+)$/,'$1,0')+'%';render()};
 $('#rs').onclick=()=>{S.inc.clear();S.car.clear();S.sel.clear();Object.assign(S,{q:'',min:0,max:Infinity,pct:0});['#q','#mn','#mx'].forEach(i=>$(i).value='');$('#pc').value=0;$('#pv').textContent='0,0%';render()};
-$('#csv').onclick=()=>{const q=s=>'"'+String(s).replace(/"/g,'""')+'"';const t=[['Código','Concepto','Inciso','Carácter económico','Monto ARS','% del total'].map(q).join(';'),...rows().map(r=>[r.c,r.n,META.inc[r.i],r.k,r.m.toFixed(2).replace('.',','),(r.m/TOT*100).toFixed(4).replace('.',',')].map(q).join(';'))].join('\r\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+t],{type:'text/csv'}));a.download='presupuesto2027_filtrado.csv';a.click()};
 render();
 </script></body></html>

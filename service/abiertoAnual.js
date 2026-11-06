@@ -12,7 +12,12 @@ const formatFile = (FileResponse) => {
     dfe: FileResponse.dfe,
     facturas,
     status,
-    fechasCarga: fechasCarga.map((fecha) => new Date(fecha).toLocaleDateString('es-AR')),
+    fechasCarga: fechasCarga.map((fecha) => {
+      if (fecha == null || fecha === '') return null
+      const d = new Date(fecha)
+      if (Number.isNaN(d.getTime()) || d.getUTCFullYear() < 2000) return null
+      return d.toLocaleDateString('es-AR')
+    }),
     createdAt: new Date(FileResponse.createdAt).toLocaleDateString('es-AR'),
     updatedAt: new Date(FileResponse.updatedAt).toLocaleDateString('es-AR'),
     ultimaActualizacion: new Date(FileResponse.updatedAt),

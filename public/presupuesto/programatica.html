@@ -20,16 +20,12 @@ button{cursor:pointer}
 a{color:var(--sea-d)}
 
 /* Encabezado */
-.top{background:var(--sea-d);color:#fff;position:relative;padding:22px 28px 46px}
-.top .in{max-width:1400px;margin:0 auto;display:flex;flex-wrap:wrap;gap:18px 40px;align-items:flex-end;justify-content:space-between}
-.brand{display:flex;gap:14px;align-items:center}
-.mark{width:52px;height:52px;border-radius:50%;background:var(--sea);display:grid;place-items:center;flex:none;border:2px solid rgba(255,255,255,.35)}
-.brand b{display:block;font-family:var(--serif);font-size:19px;font-weight:700;letter-spacing:.2px}
-.brand span{font-size:13px;opacity:.85}
-.ttl h1{margin:0;font-family:var(--serif);font-weight:700;font-size:34px;line-height:1.1}
+.top{background:#0c681a;color:#fff;padding:18px max(24px, calc(50% - 700px))}
+.top .in{max-width:none;margin:0}
+.brand{display:none}
+.ttl h1{margin:0;font-family:var(--sans);font-weight:700;font-size:22px;line-height:1.25}
 .ttl p{margin:4px 0 0;font-size:14px;opacity:.9}
-.ttl small{display:block;margin-top:6px;opacity:.7;font-style:italic}
-.wave{position:absolute;left:0;right:0;bottom:-1px;width:100%;height:26px;display:block}
+.ttl small,.wave{display:none}
 
 main{max-width:1400px;margin:0 auto;padding:16px 20px 30px}
 
@@ -147,7 +143,7 @@ footer small{display:block;opacity:.75;margin-top:4px}
 #tip{position:fixed;pointer-events:none;background:var(--ink);color:#fff;padding:7px 10px;border-radius:7px;font-size:12.5px;max-width:320px;z-index:100;display:none;box-shadow:0 8px 20px -8px rgba(0,0,0,.5)}
 #tip b{display:block;margin-bottom:2px}
 
-@media (max-width:980px){.c7,.c5{grid-column:span 12}.ttl h1{font-size:27px}.filters{position:static}}
+@media (max-width:980px){.c7,.c5{grid-column:span 12}.filters{position:static}}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 @media print{
   .filters .frow,.pg button,.seg,.noprint{display:none!important}
@@ -159,6 +155,15 @@ footer small{display:block;opacity:.75;margin-top:4px}
 </head>
 <body>
 
+<header class="top">
+  <div class="in">
+    <div class="ttl">
+      <h1>Categorías programáticas</h1>
+      <p>Secretaría de Hacienda · montos en pesos argentinos</p>
+    </div>
+  </div>
+</header>
+
 <main>
   <section class="filters" aria-label="Filtros">
     <div class="frow" id="frow"></div>
@@ -169,8 +174,6 @@ footer small{display:block;opacity:.75;margin-top:4px}
       <label class="chk"><input type="checkbox" id="hz"> Ocultar partidas en $ 0</label>
       <div class="sp"></div>
       <button class="btn o noprint" id="clr">Borrar filtros</button>
-      <button class="btn o noprint" id="csv">Descargar CSV</button>
-      <button class="btn noprint" id="prt">Imprimir</button>
     </div>
     <div class="chips" id="chips" aria-live="polite"></div>
   </section>
@@ -180,7 +183,7 @@ footer small{display:block;opacity:.75;margin-top:4px}
   <section class="grid">
     <article class="card c7">
       <div class="chead">
-        <div><h2 id="rkTitle">Gasto por secretaría</h2><p class="hint" id="rkHint">Hacé clic en una barra para filtrar todo el tablero. Podés elegir varias.</p></div>
+        <div><h2 id="rkTitle">Gasto por secretaría</h2><p class="hint" id="rkHint">Clic en una barra para filtrar.</p></div>
         <div class="seg" id="rkSeg" role="group" aria-label="Agrupar por">
           <button data-d="uni" aria-pressed="true">Secretaría</button>
           <button data-d="prog" aria-pressed="false">Programa</button>
@@ -194,13 +197,13 @@ footer small{display:block;opacity:.75;margin-top:4px}
 
     <article class="card c5">
       <h2>Partidas según su tamaño</h2>
-      <p class="hint">Cuánto del gasto se concentra en partidas chicas o grandes. Hacé clic para filtrar.</p>
+      <p class="hint">Distribución del gasto según tamaño de partida.</p>
       <div id="donut"></div>
     </article>
 
     <article class="card c12">
       <h2>Mapa del presupuesto</h2>
-      <p class="hint">Cada recuadro de color es una secretaría; adentro, sus programas. El área es proporcional al monto. Clic en un programa o en el título de una secretaría para filtrar.</p>
+      <p class="hint">Área proporcional al monto, por secretaría y programa.</p>
       <div id="tmw"><svg id="tm" role="img" aria-label="Mapa de árbol del presupuesto por secretaría y programa"></svg></div>
     </article>
 
@@ -564,7 +567,7 @@ function renderTable(){
     if(st.sort===c) st.dir*=-1; else { st.sort=c; st.dir = (c==="monto"||c==="pf"||c==="pt")?-1:1; }
     renderTable();
   }));
-  $("#tbInfo").textContent = "Hacé clic en el título de una columna para ordenar. Los porcentajes se calculan sobre el filtro actual y sobre el total.";
+  $("#tbInfo").textContent = "Porcentajes sobre el filtro actual y el total.";
   $("#pg").innerHTML = '<span class="hint" style="margin:0">Página '+(st.page+1)+' de '+pages+'</span><span><button class="btn o" id="pp"'+(st.page===0?" disabled":"")+'>Anterior</button> <button class="btn o" id="pn"'+(st.page>=pages-1?" disabled":"")+'>Siguiente</button></span>';
   $("#pp").onclick = ()=>{st.page--;renderTable();};
   $("#pn").onclick = ()=>{st.page++;renderTable();};
@@ -602,8 +605,6 @@ function init(){
     document.querySelectorAll(".facet input[type=search]").forEach(i=>i.value="");
     render();
   });
-  $("#csv").addEventListener("click",exportCSV);
-  $("#prt").addEventListener("click",()=>window.print());
   $("#rkSeg").addEventListener("click",e=>{ const b=e.target.closest("button"); if(!b) return; st.rank=b.dataset.d; st.all=false; renderRank(); });
   $("#rkMore").addEventListener("click",()=>{ st.all=!st.all; renderRank(); });
   document.addEventListener("click",e=>{ if(!e.target.closest(".facet")) closePanels(); });

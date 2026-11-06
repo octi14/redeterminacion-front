@@ -10,7 +10,7 @@
           <i v-else-if="estadoIcono === 'correcto'" class="bi bi-check-circle-fill text-success" style="font-size: 4rem"></i>
           <i v-else-if="estadoIcono === 'loading'" class="bi bi-arrow-clockwise text-success" style="font-size: 5rem"></i>
           <i v-else-if="estadoIcono === 'revision'" class="bi bi-clipboard2-check text-warning" style="font-size: 4rem"></i>
-          
+
       </div>
       <div class="periodo-header">
           <b-card-text><h2>Período {{ periodo + 1 }}</h2></b-card-text>
@@ -183,6 +183,11 @@
               </b-col>
           </b-row>
       </b-card-text>
+      <div v-if="archivoNoEncontrado" class="archivo-missing-msg px-3 pb-2">
+          <p class="texto-exp text-danger mb-0">
+            <b>No se encontró el archivo de este período.</b>
+          </p>
+      </div>
       <div class="btn-abajo-container">
           <div class="card-actions-stack">
               <b-button
@@ -346,8 +351,21 @@ export default {
     observacionPeriodo() {
       return this.facturaPeriodo?.observaciones || ''
     },
+    facturasCargadas() {
+      return this.facturas != null
+    },
+    archivoPeriodoDoc() {
+      return this.facturas?.[this.periodo] || null
+    },
+    archivoNoEncontrado() {
+      if (!this.facturasCargadas) return false
+      if (![2, 3, 4, 8].includes(this.estadoActual)) return false
+      const doc = this.archivoPeriodoDoc
+      if (doc?.error) return true
+      return !doc?.data
+    },
     mostrarVerArchivo() {
-      return [2, 3, 4, 8].includes(this.estadoActual) && !!this.facturas?.[this.periodo]
+      return [2, 3, 4, 8].includes(this.estadoActual) && !!this.archivoPeriodoDoc?.data
     },
   },
   validations: {
@@ -470,10 +488,35 @@ export default {
           this.playAnimation(() => {
               },nextCard);
       },
+      sanitizarFacturasParaUpdate(facturas) {
+        // El back ignora URLs del cliente; no las mandamos para no reintroducir cruces.
+        return (Array.isArray(facturas) ? facturas : []).map((f) => {
+          if (f == null) return null
+          return {
+            observaciones: f.observaciones || '',
+            rectificando: !!f.rectificando,
+          }
+        })
+      },
+      periodoTieneArchivoValido() {
+        if (this.archivoPeriodoDoc?.data) return true
+        const url = this.facturaPeriodo?.url
+        if (!url || !this.tramite) return false
+        try {
+          const key = decodeURIComponent(new URL(url).pathname.replace(/^\//, ''))
+          const expected = `abierto-anual/${this.tramite.cuit}_${this.tramite.nroLegajo}_${this.periodo}.`
+          return key.startsWith(expected)
+        } catch {
+          return false
+        }
+      },
       async AvanzarPaso() {
         var nextCard = null;
-        var facturas = JSON.parse(JSON.stringify(this.tramite.facturas)); // Clonar el objeto para no mutar el estado Vuex
-        var status = JSON.parse(JSON.stringify(this.tramite.status)); // Clonar el objeto para no mutar el estado Vuex
+        var facturas = JSON.parse(JSON.stringify(this.tramite.facturas || []));
+        var status = JSON.parse(JSON.stringify(this.tramite.status || []));
+        while (facturas.length < 3) facturas.push(null)
+        while (status.length < 3) status.push('Incompleto')
+
         switch (this.estadoActual) {
             case 9:
                 nextCard = 7;
@@ -488,6 +531,13 @@ export default {
                 }
                 break;
             case 10:
+                if (!this.periodoTieneArchivoValido()) {
+                  this.showToast(
+                    'No se puede aprobar: no hay un archivo válido para este período.',
+                    { variant: 'danger', title: 'Abierto anual' }
+                  )
+                  return
+                }
                 nextCard = 3;
                 status[this.periodo] = "Correcto";
                 break;
@@ -497,29 +547,37 @@ export default {
             case 12:
                 nextCard = 4;
                 status[this.periodo] = "Incorrecto";
-                facturas[this.periodo].observaciones = this.motivo;
-                console.log(facturas)
+                if (!facturas[this.periodo]) {
+                  facturas[this.periodo] = { observaciones: this.motivo || '', rectificando: false }
+                } else {
+                  facturas[this.periodo].observaciones = this.motivo;
+                }
                 break;
             default:
                 nextCard = this.estadoActual;
         }
         const id = this.tramite.id;
         if (this.estadoActual != 11) {
-            await useAbiertoAnualStore().update({
-                id,
-                tramite: {
-                    facturas: facturas,
-                    status: status,
-                }
-            }).then(response => {
-                this.playAnimation(() => { }, nextCard);
-            }).catch(error => {
-                this.playAnimation(() => { console.log("13") }, 13);
-            });
-        }else{
+            try {
+              await useAbiertoAnualStore().update({
+                  id,
+                  tramite: {
+                      facturas: this.sanitizarFacturasParaUpdate(facturas),
+                      status: status,
+                  }
+              })
+              this.playAnimation(() => { }, nextCard);
+            } catch (error) {
+              const msg =
+                error?.response?.data?.message ||
+                error?.message ||
+                'No se pudo guardar el cambio de este período.'
+              this.showToast(msg, { variant: 'danger', title: 'Abierto anual' })
+              this.playAnimation(() => { }, 13);
+            }
+        } else {
           this.playAnimation(() => { }, nextCard);
         }
-        console.log("AvanzarPaso : nextCard -> " + nextCard);
     },
 
       RetrocederPaso() {
@@ -784,6 +842,13 @@ display: none;
 }
 .li-title{
 margin-bottom: 0.3rem;
+}
+.archivo-missing-msg {
+  text-align: center;
+}
+.archivo-missing-msg .texto-exp {
+  font-size: 0.95rem;
+  line-height: 1.35;
 }
 .periodo-esperando-card, .ticket-ok-card, .ticket-enviando-card, .ticket-enviando-fail-card, .ticket-revision-card, .rectificacion-card, .action-confirmation-card{
   margin-top: 4rem;

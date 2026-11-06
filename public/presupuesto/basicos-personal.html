@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Básicos mínimos al personal · Municipalidad de Villa Gesell</title>
+<style>
+:root{--bg:#eef2f5;--card:#fff;--tx:#12263a;--mu:#5b6b7b;--ac:#0a4d68;--bd:#d8e0e7;--hi:#e6f1f6}
+@media(prefers-color-scheme:dark){:root{--bg:#0e1822;--card:#15222f;--tx:#e4ecf3;--mu:#92a4b5;--ac:#5cb8d6;--bd:#26394a;--hi:#1c3142}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{padding:18px max(24px, calc(50% - 700px));background:#0c681a;color:#fff}
+h1{margin:0;font:700 22px/1.25 "Segoe UI",system-ui,sans-serif}header p{margin:4px 0 0;opacity:.9;font-size:14px}
+main{padding:16px 24px;max-width:1400px;margin:auto}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:14px}
+.filters{display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:12px;align-items:end;margin-bottom:12px}
+label{display:block;font-size:12px;color:var(--mu);margin-bottom:4px}
+input,select,button{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(--bd);border-radius:6px;padding:7px 9px;width:100%}
+button{cursor:pointer;width:auto}button:hover{background:var(--hi)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--bd);border-radius:14px;padding:4px 10px;cursor:pointer;display:flex;align-items:center;gap:6px;user-select:none}
+.chip i{width:10px;height:10px;border-radius:50%}.chip.off{opacity:.4}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:12px 0}
+.kpi b{display:block;font:700 20px Georgia,serif}.kpi span{color:var(--mu);font-size:12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+h2{margin:0 0 8px;font-size:15px}
+.bars{max-height:380px;overflow:auto}
+.br{display:grid;grid-template-columns:150px 1fr 100px;gap:8px;align-items:center;padding:2px 4px;cursor:pointer;border-radius:4px}
+.br:hover{background:var(--hi)}.br.sel{background:var(--hi);outline:1px solid var(--ac)}.br.dim{opacity:.35}
+.tr{height:12px;background:var(--bd);border-radius:3px}.tr div{height:100%;border-radius:3px}
+.br small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.br em{font-style:normal;text-align:right;font-variant-numeric:tabular-nums}
+.tw{max-height:420px;overflow:auto}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{padding:6px 8px;border-bottom:1px solid var(--bd);text-align:right;white-space:nowrap}
+th{position:sticky;top:0;background:var(--card);cursor:pointer}th:nth-child(-n+2),td:nth-child(-n+2){text-align:left}
+td.cp{background:var(--hi);font-weight:600}
+.warn{background:#fff4d6;color:#6b4a00;border-radius:6px;padding:6px 10px;margin:8px 0;display:none}
+.leg{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;margin-top:6px}.leg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px}
+footer{padding:14px 24px;color:var(--mu);border-top:1px solid var(--bd);text-align:center;font-size:12px}
+@media(max-width:900px){.filters,.grid,.kpis{grid-template-columns:1fr 1fr}.br{grid-template-columns:100px 1fr 90px}}
+</style></head><body>
+<header>
+<div><h1>Básicos mínimos al personal</h1><p>Secretaría de Hacienda · Municipalidad de Villa Gesell · Valores en pesos argentinos, 2027</p></div></header>
+<main>
+<div class="card"><label>Grupo de personal (clic para activar o desactivar)</label><div class="chips" id="gch"></div></div>
+<div class="filters" style="margin-top:12px">
+<div><label>Buscar categoría</label><input id="q" placeholder="Ej.: guardavidas, 12, médica"></div>
+<div><label>Período de referencia</label><select id="p"></select></div>
+<div><label>Básico mínimo ($)</label><input id="min" type="number" min="0"></div>
+<div><label>Básico máximo ($)</label><input id="max" type="number" min="0"></div>
+<div style="display:flex;gap:6px"><button id="rs">Limpiar filtros</button></div></div>
+<div class="warn" id="warn">La selección mezcla valor hora (horas cátedra) con básicos mensuales: promedio, mínimo y máximo no son comparables.</div>
+<div class="kpis" id="kpis"></div>
+<div class="grid">
+<div class="card"><h2>Básico por categoría <small style="font-weight:400;color:var(--mu)">(clic en una barra para filtrar todo el tablero)</small></h2><div class="bars" id="bars"></div></div>
+<div class="card"><h2>Evolución del básico, enero a noviembre</h2><div id="line"></div><div class="leg" id="leg"></div></div></div>
+<div class="card"><h2>Detalle por categoría</h2><div class="tw"><table id="tb"></table></div></div>
+</main>
+<script>
+const P=["01/01/27","01/03/27","01/05/27","01/07/27","01/09/27","01/11/27"];
+const G=[["Escalafón municipal (cat. 10–26)","#0a6c8f"],["Escalafón 70–86","#17a398"],["Salario garantizado","#e08a1e"],["Horas cátedra (valor hora)","#8e5bd1"],["Carrera médica 36 hs","#d9485f"],["Guardavidas","#5a9e2f"]];
+const S={10:[510594,528823,547067,583556,601822,623728],11:[516835,535286,553753,590688,609177,631351],12:[523416,542102,560805,598211,616935,639391],13:[534254,553326,572416,610596,629708,652629],14:[540538,559835,579149,617778,637115,660306],15:[551126,570801,590493,629879,649595,673240],16:[566450,586672,606912,647393,667657,691959],17:[579635,600328,621039,662463,683198,708066],19:[600998,622454,643929,686879,708378,734163],20:[621612,643804,666015,710438,732675,759344],22:[852864,883311,913786,974735,1005244,1041835],26:[938147,971639,1005160,1072204,1105764,1146014]};
+const D=[];
+[10,11,12,13,14,15,16,17,19,20].forEach(c=>D.push([0,"Cat. "+c,S[c]]));
+D.push([0,"Jefe de División (22)",S[22]],[0,"Jefe de Departamento (26)",S[26]],[0,"SubTesorero",S[26]],[0,"SubContador",S[26]]);
+D.push([1,"Cat. 70",[510594,528823,547067,583556,622480,645138]]);
+[[71,11],[72,12],[73,13],[74,14],[75,15],[76,16],[77,17],[79,19],[82,22],[86,26]].forEach(([a,b])=>D.push([1,"Cat. "+a,S[b]]));
+D.push([2,"Salario garantizado",[1050000,1100000,1150000,1200000,1250000,1300000]],
+[3,"Asistente Técnico Cultura",[11412,11819,12227,13043,13451,13941]],[3,"Profesor Educación Física",[11412,11819,12227,13043,13451,13941]],[3,"Idóneo Deportes",[10560,10937,11314,12069,12447,12900]],
+[4,"Médico Asistente · Clínica Médica",[726388,752320,778275,830186,856171,887336]],[4,"Médico Asistente · Especialidades",[887798,919493,951215,1014661,1046420,1084510]],[4,"Asistente UTI",[1129936,1170274,1210649,1291399,1331820,1380298]],[4,"Anestesia",[1129936,1170274,1210649,1291399,1331820,1380298]],
+[5,"Guardavidas · Categoría única",[1224980,1268712,1312482,1400025,1493407,1547767]]);
+const $=id=>document.getElementById(id),F=n=>n.toLocaleString("es-AR",{style:"currency",currency:"ARS",maximumFractionDigits:0});
+const st={g:new Set(G.map((_,i)=>i)),p:5,q:"",min:"",max:"",cats:new Set(),k:"g",d:1};
+const R=D.map((r,i)=>({id:i,g:r[0],c:r[1],v:r[2]}));
+$("p").innerHTML=P.map((x,i)=>`<option value="${i}">Básico al ${x}</option>`).join("");$("p").value=5;
+function base(){return R.filter(r=>st.g.has(r.g)&&r.c.toLowerCase().includes(st.q)&&(st.min===""||r.v[st.p]>=+st.min)&&(st.max===""||r.v[st.p]<=+st.max))}
+function draw(){
+ const b=base(),rows=st.cats.size?b.filter(r=>st.cats.has(r.id)):b,p=st.p;
+ $("gch").innerHTML=G.map((g,i)=>`<span class="chip ${st.g.has(i)?"":"off"}" data-g="${i}"><i style="background:${g[1]}"></i>${g[0]}</span>`).join("");
+ $("warn").style.display=rows.some(r=>r.g==3)&&rows.some(r=>r.g!=3)?"block":"none";
+ const vs=rows.map(r=>r.v[p]),avg=vs.length?vs.reduce((a,c)=>a+c,0)/vs.length:0;
+ $("kpis").innerHTML=[["Categorías",rows.length],["Básico promedio",vs.length?F(avg):"–"],["Mínimo",vs.length?F(Math.min(...vs)):"–"],["Máximo",vs.length?F(Math.max(...vs)):"–"]].map(k=>`<div class="card kpi"><b>${k[1]}</b><span>${k[0]}</span></div>`).join("");
+ const bs=[...b].sort((a,c)=>c.v[p]-a.v[p]),mx=Math.max(1,...bs.map(r=>r.v[p]));
+ $("bars").innerHTML=bs.length?bs.map(r=>`<div class="br ${st.cats.has(r.id)?"sel":st.cats.size?"dim":""}" data-c="${r.id}"><small title="${r.c}">${r.c}</small><div class="tr"><div style="width:${r.v[p]/mx*100}%;background:${G[r.g][1]}"></div></div><em>${F(r.v[p])}</em></div>`).join(""):"<p>Sin resultados con estos filtros.</p>";
+ let ser=[];
+ if(st.cats.size)ser=rows.slice(0,10).map((r,i)=>({n:r.c,c:G[r.g][1],v:r.v}));
+ else G.forEach((g,i)=>{const x=rows.filter(r=>r.g==i);if(x.length)ser.push({n:g[0],c:g[1],v:P.map((_,j)=>x.reduce((a,r)=>a+r.v[j],0)/x.length)})});
+ const W=560,H=250,m=60,all=ser.flatMap(s=>s.v),lo=Math.min(...all),hi=Math.max(...all),y=v=>H-30-(v-lo)/(hi-lo||1)*(H-60),x=i=>m+i*(W-m-15)/5;
+ $("line").innerHTML=ser.length?`<svg viewBox="0 0 ${W} ${H}" style="width:100%">${[0,.5,1].map(t=>{const v=lo+(hi-lo)*t;return`<line x1="${m}" x2="${W-10}" y1="${y(v)}" y2="${y(v)}" stroke="var(--bd)"/><text x="${m-6}" y="${y(v)+4}" text-anchor="end" font-size="10" fill="var(--mu)">${Math.round(v/1000)}k</text>`}).join("")}${P.map((l,i)=>`<text x="${x(i)}" y="${H-10}" text-anchor="middle" font-size="10" fill="var(--mu)">${l.slice(0,5)}</text>`).join("")}${ser.map(s=>`<polyline fill="none" stroke="${s.c}" stroke-width="2" points="${s.v.map((v,i)=>x(i)+","+y(v)).join(" ")}"/>${s.v.map((v,i)=>`<circle cx="${x(i)}" cy="${y(v)}" r="${i==p?5:2.5}" fill="${s.c}"><title>${s.n} · ${P[i]}: ${F(v)}</title></circle>`).join("")}`).join("")}</svg>`:"<p>Sin datos para graficar.</p>";
+ $("leg").innerHTML=st.cats.size?ser.map(s=>`<span><i style="background:${s.c}"></i>${s.n}</span>`).join(""):"<span>Promedio por grupo</span>"+ser.map(s=>`<span><i style="background:${s.c}"></i>${s.n}</span>`).join("");
+ const cols=[["g","Grupo"],["c","Categoría"],...P.map((l,i)=>[i,l])],key=r=>st.k=="g"?G[r.g][0]:st.k=="c"?r.c:r.v[st.k];
+ const ts=[...rows].sort((a,c)=>{const u=key(a),w=key(c);return(u>w?1:u<w?-1:0)*st.d});
+ $("tb").innerHTML=`<thead><tr>${cols.map(c=>`<th data-s="${c[0]}">${c[1]}${st.k==c[0]?(st.d>0?" ▲":" ▼"):""}</th>`).join("")}</tr></thead><tbody>${ts.map(r=>`<tr><td>${G[r.g][0]}</td><td>${r.c}</td>${r.v.map((v,i)=>`<td class="${i==p?"cp":""}">${F(v)}</td>`).join("")}</tr>`).join("")}</tbody>`;
+}
+document.addEventListener("click",e=>{
+ const g=e.target.closest("[data-g]"),c=e.target.closest("[data-c]"),s=e.target.closest("[data-s]");
+ if(g){const i=+g.dataset.g;st.g.has(i)?st.g.delete(i):st.g.add(i);st.cats.clear()}
+ if(c){const i=+c.dataset.c;st.cats.has(i)?st.cats.delete(i):st.cats.add(i)}
+ if(s){const k=isNaN(s.dataset.s)?s.dataset.s:+s.dataset.s;st.d=st.k===k?-st.d:1;st.k=k}
+ draw()});
+$("q").oninput=e=>{st.q=e.target.value.toLowerCase();draw()};
+$("p").onchange=e=>{st.p=+e.target.value;draw()};
+$("min").oninput=e=>{st.min=e.target.value;draw()};$("max").oninput=e=>{st.max=e.target.value;draw()};
+$("rs").onclick=()=>{Object.assign(st,{g:new Set(G.map((_,i)=>i)),q:"",min:"",max:"",cats:new Set()});["q","min","max"].forEach(i=>$(i).value="");draw()};
+draw();
+</script></body></html>

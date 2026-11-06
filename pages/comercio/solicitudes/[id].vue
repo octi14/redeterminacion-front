@@ -44,11 +44,11 @@
             <span>Legajo:</span>
             <b class="text-success ml-1">{{ habilitacion.nroLegajo || '—' }}</b>
           </div>
-        </div>        
+        </div>
         <div class="row justify-content-center mt-3" v-if="adminMaster">
           <div class="h5 d-flex align-items-center justify-content-center">
             <span>Visibilidad:</span>
-            <span :class="getStatusClass(habilitacion.status)" class="ml-2"> 
+            <span :class="getStatusClass(habilitacion.status)" class="ml-2">
               <i :class="visibleLocal ? 'bi bi-eye' : 'bi bi-eye-slash'"></i>
               <span v-if="visibleLocal">Visible</span>
               <span v-else>Invisible</span>
@@ -494,19 +494,28 @@
       </div>
     </template>
 
-    <!-- Botón Finalizar Revisión - Prominente y en su propia fila -->
-    <div class="text-center my-4" v-if="jefeComercio && habilitacion && habilitacion.status === 'En revisión'">
-      <b-button
-        @click="onFinalizarRevision"
-        variant="success"
-        class="px-4 py-2"
-        :disabled="!documentos || documentos === null"
-      >
-        <i v-if="documentos && documentos !== null" class="bi bi-check-circle-fill"></i>
-        <b-spinner v-else small class="mr-2"></b-spinner>
-        <span v-if="documentos && documentos !== null">Finalizar Revisión</span>
-        <span v-else>Esperando documentos...</span>
-      </b-button>
+    <!-- Botones Finalizar Revisión / Rechazar trámite -->
+    <div class="text-center my-4 px-3" v-if="jefeComercio && habilitacion && habilitacion.status === 'En revisión'">
+      <div class="revision-actions-row">
+        <b-button
+          @click="onFinalizarRevision"
+          variant="success"
+          class="px-3 px-md-4 py-2 revision-action-btn"
+          :disabled="!documentos || documentos === null"
+        >
+          <i v-if="documentos && documentos !== null" class="bi bi-check-circle-fill"></i>
+          <b-spinner v-else small class="mr-2"></b-spinner>
+          <span v-if="documentos && documentos !== null">Finalizar Revisión</span>
+          <span v-else>Esperando documentos...</span>
+        </b-button>
+        <b-button
+          variant="danger"
+          class="px-3 px-md-4 py-2 revision-action-btn"
+          @click="onRechazarPorOtroMotivo"
+        >
+          Rechazar por otro motivo
+        </b-button>
+      </div>
       <p v-if="!documentos || documentos === null" class="text-muted small mt-2">
         Los documentos se están cargando. El botón se habilitará cuando estén listos.
       </p>
@@ -543,11 +552,41 @@
             </ul>
           </div>
 
-          <!-- <p>Observaciones:  </p>
-          <b-form-textarea v-model="observaciones" required type="text" /> -->
+          <div v-if="mostrarSelectorMotivoRechazo" class="mt-3 text-start motivo-rechazo-datos">
+            <h6 class="text-danger mb-2"><b>Seleccioná el motivo de rechazo:</b></h6>
+            <div
+              v-for="(opcion, idx) in motivosRechazoDatosOpciones"
+              :key="opcion.value"
+              class="form-check mb-2"
+            >
+              <input
+                :id="'motivo-rechazo-' + idx"
+                v-model="motivoRechazoDatos"
+                class="form-check-input"
+                type="radio"
+                name="motivo-rechazo-datos"
+                :value="opcion.value"
+              >
+              <label class="form-check-label" :for="'motivo-rechazo-' + idx">
+                {{ opcion.text }}
+              </label>
+            </div>
+            <b-form-textarea
+              v-if="motivoRechazoDatos === 'Otros'"
+              v-model="motivoRechazoOtros"
+              rows="3"
+              maxlength="500"
+              placeholder="Indicá el motivo"
+              class="mt-2"
+            />
+          </div>
 
           <div class="text-center mt-3">
-            <b-button variant="danger" @click="onSendReject()" >
+            <b-button
+              variant="danger"
+              :disabled="mostrarSelectorMotivoRechazo && !motivoRechazoValido"
+              @click="onSendReject()"
+            >
                 Confirmar Rechazo
             </b-button>
           </div>
@@ -949,9 +988,33 @@ export default {
       revisionDocumentos: {},
       rechazoAutomaticoMostrado: false,
       elementosIncorrectos: [],
+      motivoRechazoDatos: null,
+      motivoRechazoOtros: '',
+      rechazoPorOtroMotivo: false,
+      motivosRechazoDatosOpciones: [
+        { text: 'No es zona comercial', value: 'No es zona comercial' },
+        { text: 'Legajo activo', value: 'Legajo activo' },
+        { text: 'El comercio está clausurado', value: 'El comercio está clausurado' },
+        { text: 'Otros', value: 'Otros' },
+      ],
     }
   },
   computed: {
+    motivoRechazoDatosTexto() {
+      if (this.motivoRechazoDatos === 'Otros') {
+        return (this.motivoRechazoOtros || '').trim()
+      }
+      return this.motivoRechazoDatos || ''
+    },
+    motivoRechazoValido() {
+      if (!this.motivoRechazoDatos) return false
+      if (this.motivoRechazoDatos === 'Otros') return !!(this.motivoRechazoOtros || '').trim()
+      return true
+    },
+    mostrarSelectorMotivoRechazo() {
+      if (this.rechazoPorOtroMotivo) return true
+      return this.revisionSolicitante === 'incorrecto' || this.revisionInmueble === 'incorrecto'
+    },
     mostrarIconoAdvertencia() {
       if(this.habilitacion){
         const fechaCreacion = this.habilitacion.createdAt;
@@ -1434,24 +1497,45 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
       this.showPrevApprove = false
       // this.showApprove = true
     },
+    onRechazarPorOtroMotivo(){
+      this.abrirRechazo(true)
+    },
     onRechazarSolicitud(){
+      this.abrirRechazo(false)
+    },
+    abrirRechazo(porOtroMotivo){
+      this.rechazoPorOtroMotivo = !!porOtroMotivo
+      this.actualizarElementosIncorrectos()
+      this.motivoRechazoDatos = null
+      this.motivoRechazoOtros = ''
       this.showRejectPopup = true
     },
     async onSendReject(){
-      const observaciones = this.habilitacion.observaciones || " "
+      if (this.mostrarSelectorMotivoRechazo && !this.motivoRechazoValido) {
+        this.showToast('Seleccioná un motivo de rechazo para continuar.', { variant: 'warning' })
+        return
+      }
 
-      // Construir la lista de elementos incorrectos para las observaciones
+      const observaciones = this.habilitacion.observaciones || " "
+      const motivoTexto = this.motivoRechazoDatosTexto
+
       let elementosIncorrectosTexto = ''
       if (this.elementosIncorrectos && this.elementosIncorrectos.length > 0) {
         elementosIncorrectosTexto = `Elementos incorrectos: ${this.elementosIncorrectos.join(', ')}`
       }
 
+      const motivoObs = motivoTexto ? ` Motivo: ${motivoTexto}.` : ''
+
       const habilitacion = {
-        observaciones: observaciones + " - " + "Solicitud rechazada el " + new Date().toLocaleDateString() + ". " + elementosIncorrectosTexto,
+        observaciones: observaciones + " - " + "Solicitud rechazada el " + new Date().toLocaleDateString() + ". " + elementosIncorrectosTexto + motivoObs,
         status: 'Rechazada'
       }
       await this.updateHabilitacion(habilitacion)
-      this.registrarActividad('Rechazar Solicitud', 'Rechazado por: ' + observaciones, this.habilitacion.nroTramite)
+      this.registrarActividad(
+        'Rechazar Solicitud',
+        'Rechazado' + (motivoTexto ? ` - Motivo: ${motivoTexto}` : '') + (elementosIncorrectosTexto ? ` - ${elementosIncorrectosTexto}` : ''),
+        this.habilitacion.nroTramite
+      )
 
       // --- Enviar correo al solicitante ---
       try {
@@ -1462,12 +1546,19 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
           const destinatario = this.habilitacion.mail
           const asunto = `Solicitud de trámite comercial rechazada - N° ${this.habilitacion.nroTramite}`
 
-        // Construir la lista de elementos incorrectos
-        let elementosIncorrectosTexto = ''
-        if (this.elementosIncorrectos && this.elementosIncorrectos.length > 0) {
-          elementosIncorrectosTexto = `
+          const hayElementosIncorrectos = this.elementosIncorrectos && this.elementosIncorrectos.length > 0
+          const elementosIncorrectosMail = hayElementosIncorrectos
+            ? `
+
+Se han detectado elementos incorrectos en la documentación presentada, los cuales se detallan a continuación:
 ${this.elementosIncorrectos.map(elemento => `• ${elemento}`).join('\n')}`
-        }
+            : ''
+
+          const motivoMail = motivoTexto
+            ? `
+
+Motivo de rechazo: ${motivoTexto}`
+            : ''
 
           const mensaje = `Estimado/a contribuyente,
 
@@ -1476,9 +1567,7 @@ Su solicitud de trámite comercial ha sido rechazada.
 Número de trámite: ${this.habilitacion.nroTramite}
 Tipo de solicitud: ${this.habilitacion.tipoSolicitud}
 Rubro: ${this.habilitacion.rubro}
-
-Se han detectado elementos incorrectos en la documentación presentada, los cuales se detallan a continuación:
-${elementosIncorrectosTexto}
+${motivoMail}${elementosIncorrectosMail}
 
 Deberá volver a presentar la solicitud una vez subsanados los errores detectados.
 
@@ -1492,6 +1581,9 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
 
       this.wait(300)
       this.observaciones = ''
+      this.motivoRechazoDatos = null
+      this.motivoRechazoOtros = ''
+      this.rechazoPorOtroMotivo = false
       this.showRejectPopup = false
     },
     async onDescargarHabilitacion() {
@@ -1956,6 +2048,41 @@ Importante: La documentación que adjunte debe ser legible y en formato PDF o im
 .form-check-label {
   font-size: 0.9rem;
   font-weight: 500;
+}
+
+.motivo-rechazo-datos {
+  max-width: 100%;
+}
+
+.motivo-rechazo-datos .form-check-label {
+  font-weight: 400;
+}
+
+.revision-actions-row {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.75rem;
+  max-width: 28rem;
+  margin: 0 auto;
+}
+
+.revision-action-btn {
+  width: 100%;
+}
+
+@media (min-width: 576px) {
+  .revision-actions-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: none;
+    align-items: center;
+  }
+
+  .revision-action-btn {
+    width: auto;
+  }
 }
 
 /* Estilos para los iconos de revisión */

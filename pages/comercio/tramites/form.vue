@@ -67,7 +67,6 @@
             <b-form-select-option value="Reempadronamiento">Reempadronamiento de comercio</b-form-select-option>
             <b-form-select-option value="Cambio de Titular">Cambio de Titular</b-form-select-option>
             <b-form-select-option value="Cambio de Domicilio">Cambio de Domicilio</b-form-select-option>
-            <!-- Agrega más opciones según sea necesario -->
           </b-form-select>
         </b-form-group>
 
@@ -441,6 +440,22 @@
       <fieldset >
         <legend><h3>Carga de Documentación</h3></legend>
         <p>Aquí deberás cargar los documentos requeridos previamente. Tené en cuenta que deben ser <u>legibles</u>, estar subidos en <u>formato de imagen ó pdf</u> y tener un <u>peso máximo de 15 mb</u>.</p>
+        <b-form-group v-if="solicitante.tipoSolicitud == 'Cambio de Domicilio'" label="Baja comercial del establecimiento anterior *">
+          <b-form-file id="bajaEstablecimientoAnterior" v-model="documentos.bajaEstablecimientoAnterior.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('bajaEstablecimientoAnterior')"
+          @change="handleDocumentUpdate('bajaEstablecimientoAnterior'); checkDocumentSize('bajaEstablecimientoAnterior', $event)"
+          @input="clearFormFieldState('bajaEstablecimientoAnterior')"></b-form-file>
+          <div v-if="$v.documentos.bajaEstablecimientoAnterior.contenido.$error || fileTooLargeError.bajaEstablecimientoAnterior" class="validation-error">
+            <i class="bi bi-exclamation-octagon text-danger"></i> {{ fileTooLargeError.bajaEstablecimientoAnterior || 'Debe seleccionar un archivo.' }}
+          </div>
+        </b-form-group>
+        <b-form-group v-if="solicitante.tipoSolicitud == 'Cambio de Domicilio'" label="Libre deuda del local activo *">
+          <b-form-file id="libreDeudaLocalActivo" v-model="documentos.libreDeudaLocalActivo.contenido" placeholder="No se seleccionó un archivo." browse-text="Examinar" accept=".pdf, image/*" :state="getFormFieldState('libreDeudaLocalActivo')"
+          @change="handleDocumentUpdate('libreDeudaLocalActivo'); checkDocumentSize('libreDeudaLocalActivo', $event)"
+          @input="clearFormFieldState('libreDeudaLocalActivo')"></b-form-file>
+          <div v-if="$v.documentos.libreDeudaLocalActivo.contenido.$error || fileTooLargeError.libreDeudaLocalActivo" class="validation-error">
+            <i class="bi bi-exclamation-octagon text-danger"></i> {{ fileTooLargeError.libreDeudaLocalActivo || 'Debe seleccionar un archivo.' }}
+          </div>
+        </b-form-group>
         <b-row>
           <b-col lg="6">
             <b-form-group label="DNI (Frente) *">
@@ -1049,6 +1064,10 @@
           constanciaCambioTitular: { contenido:{ requiredIf: requiredIf(function () {
             return this.solicitante.tipoSolicitud === 'Cambio de Titular' })} },
           libreDeudaUrbana: { contenido:{ required} },
+          bajaEstablecimientoAnterior: { contenido:{ requiredIf: requiredIf(function () {
+            return this.solicitante.tipoSolicitud === 'Cambio de Domicilio' }) } },
+          libreDeudaLocalActivo: { contenido:{ requiredIf: requiredIf(function () {
+            return this.solicitante.tipoSolicitud === 'Cambio de Domicilio' }) } },
           planillaAutorizacion: { contenido:{requiredIf: requiredIf(function () {
             return this.solicitante.esApoderado === 'true' })}},
           actaPersonaJuridica: { contenido:{requiredIf: requiredIf(function () {
@@ -1219,6 +1238,14 @@
             nombreDocumento: 'Libre Deuda de Tasa por Servicios Urbanos',
             contenido: null
           },
+          bajaEstablecimientoAnterior:{
+            nombreDocumento: 'Baja comercial del establecimiento anterior',
+            contenido: null
+          },
+          libreDeudaLocalActivo:{
+            nombreDocumento: 'Libre deuda del local activo',
+            contenido: null
+          },
           libreDeudaIB:{
             nombreDocumento: 'Libre Deuda de Ingresos Brutos',
             contenido: null
@@ -1262,6 +1289,8 @@
           actaPersonaJuridica: null,
           actaDirectorio: null,
           libreDeudaUrbana: null,
+          bajaEstablecimientoAnterior: null,
+          libreDeudaLocalActivo: null,
           libreDeudaSegHig: null,
           libreDeudaIB: null,
           tituloPropiedad: null,
@@ -1880,6 +1909,8 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
         this.documentos.actaPersonaJuridica.contenido = null
         this.documentos.actaDirectorio.contenido = null
         this.documentos.libreDeudaUrbana.contenido = null
+        this.documentos.bajaEstablecimientoAnterior.contenido = null
+        this.documentos.libreDeudaLocalActivo.contenido = null
         this.documentos.libreDeudaSegHig.contenido = null
         this.documentos.libreDeudaIB.contenido = null
         this.documentos.tituloPropiedad.contenido = null

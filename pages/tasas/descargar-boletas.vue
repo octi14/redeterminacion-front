@@ -167,7 +167,7 @@
         <span v-if="esUrbana" class="tasas-mail-aviso">
           <i class="bi bi-exclamation-circle tasas-mail-aviso-icon" aria-hidden="true"></i>
           <span class="tasas-mail-aviso-text">
-            Recordá que podés adherirte al servicio de Tasas por Mail, ingresando en
+            Recordá que por Decreto 1417/26 (Proyecto de Despapelización Municipal), a partir del 1/1/27 no se emitirán más tasas en papel, por lo que deberás adherirte a Tasas por Mail ingresando en
             <a href="https://mail.arvige.gob.ar/boleta" target="_blank" rel="noopener noreferrer">mail.arvige.gob.ar/boleta</a>
             y completando tus datos.
           </span>

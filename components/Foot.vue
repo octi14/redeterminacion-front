@@ -62,8 +62,7 @@
                   <div class="department-section mb-3">
                     <h6 class="text-light mb-2">Dpto. Comercio</h6>
                     <p class="mb-1"><i class="bi bi-geo-alt"></i>Av. 3 n° 820 - Palacio municipal</p>
-                    <p class="mb-1"><i class="bi bi-envelope"></i>deptocomercio@gesell.gob.ar</p>
-                    <p class="mb-0"><i class="bi bi-telephone"></i>(02255) 478056</p>
+                    <p class="mb-0"><i class="bi bi-envelope"></i>deptocomercio@gesell.gob.ar</p>
                   </div>
                 </div>
               </div>

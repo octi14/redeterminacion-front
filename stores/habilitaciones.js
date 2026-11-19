@@ -48,6 +48,10 @@ export const useHabilitacionesStore = defineStore('habilitaciones', {
       return await HabilitacionService.presignDocumentos(useApi(), { files, nroSolicitud })
     },
 
+    async logError(payload) {
+      return await HabilitacionService.logError(useApi(), payload)
+    },
+
     async uploadDocumentoProxy(payload) {
       return await HabilitacionService.uploadDocumentoProxy(useApi(), payload)
     },

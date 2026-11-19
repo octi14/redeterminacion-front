@@ -1785,6 +1785,8 @@
             if (!this.$v.$invalid && !Object.values(this.fileTooLargeError).some(error => !!error) && this.isCaptchaOK()) {
               // Si no hay errores, envía el formulario
               console.log("ENVIANDO FORMULARIO ");
+              let paso = 'inicio';
+              let nroTramiteReservado = null;
               try {
 
               this.openPopup('FormLoading');
@@ -1810,6 +1812,7 @@
               }
 
               // 2) Presign: reserva nroTramite + URLs PUT
+              paso = 'presign';
               const { nroTramite, uploads } = await useHabilitacionesStore().presignDocumentos({
                 files: filesMeta.map(({ campo, nombreDocumento, contentType }) => ({
                   campo,
@@ -1817,6 +1820,7 @@
                   contentType,
                 })),
               });
+              nroTramiteReservado = nroTramite;
 
               const uploadsByCampo = {};
               const uploadsByNombre = {};
@@ -1826,6 +1830,7 @@
               }
 
               // 3) Subir con concurrencia 3, reintentos y fallback al proxy
+              paso = 'upload';
               const documentosParaGuardar = {};
 
               await this.mapWithConcurrency(filesMeta, 3, async (meta) => {
@@ -1846,6 +1851,7 @@
               });
 
               // 4) Crear trámite solo con metadatos + URLs (JSON chico)
+              paso = 'create';
               const { ningunaAnterior, ...inmuebleSinNinguna } = this.inmueble;
               // No enviar `id` de UI: Mongoose lo interpreta como `_id` y falla el cast a ObjectId.
               const inmuebleParaEnviar = {
@@ -1900,6 +1906,21 @@ Si tiene dudas o necesita más información, por favor comuníquese con el Depar
               this.openPopup('FormOk');
             } catch (e) {
               console.error('Error al enviar trámite comercial:', e);
+              const httpStatus = e?.response?.status ?? e?.status ?? null;
+              const mensajeApi = e?.response?.data?.message || e?.message || String(e);
+              useHabilitacionesStore().logError({
+                paso,
+                nroSolicitud: nroTramiteReservado,
+                httpStatus,
+                codigoError: e?.code || e?.name || null,
+                mensaje: mensajeApi,
+                detalle: e?.stack || null,
+                contexto: {
+                  tipoSolicitud: this.solicitante?.tipoSolicitud,
+                  cuit: this.solicitante?.cuit,
+                  nroLegajo: this.nroLegajo,
+                },
+              });
               this.openPopup('FormError');
             }
           };

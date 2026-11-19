@@ -217,6 +217,14 @@ export default {
     return response.data;
   },
 
+  logError: async (axios, payload) => {
+    try {
+      await axios.$post('/habilitaciones/error-log', payload);
+    } catch (e) {
+      console.error('No se pudo registrar error de trámite:', e);
+    }
+  },
+
   /**
    * Fallback: sube UN archivo binario por el back si el PUT directo a S3 falla.
    */
